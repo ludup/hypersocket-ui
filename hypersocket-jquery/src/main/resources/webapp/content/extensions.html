@@ -1,0 +1,250 @@
+<div id="extensionsContent">
+<ul id="extensionsTabs">
+		<li id="updatesLi"><a href="#updatesTab"><span localize="extensionsUpdatable.label"></span></a></li>
+		<li><a href="#installedTab"><span localize="extensionsInstalled.label"></span></a></li>
+		<li><a href="#availableTab"><span localize="extensionsAvailable.label"></span></a></li>
+	</ul>
+
+	<div id="updatesTab">
+	</div>
+	<div id="installedTab">
+	</div>
+	<div id="availableTab">
+	</div>
+</div>
+<script type="text/javascript">
+
+function doRestart() {
+	
+	getJSON('extensions/apply', null, function(data) {
+		if(data.success) {
+			showInformation(false, data.message);
+		} else {
+			showError(false, data.message);
+		}
+	});
+};
+
+function doProgress(id, obj, action) {
+	if(!obj.progress) {
+		$('#progress' + id).hide();	
+		return;
+	}
+	
+	if(!$('#button' + id).hasClass('inProgress')) {
+		$('#button' + id).empty();
+		$('#button' + id).append('<img src="' + basePath + '/ui/images/' + action + '-inprogress.png">');
+		$('#button' + id).addClass('inProgress');	
+	}
+	
+	$('#progress' + id).progressbar({ max: obj.progress.totalBytes,
+        value: obj.progress.currentPosition} );
+	$('#progress' + id).height(12)
+	$('#progress' + id).show();
+	if(obj.progress.complete) {
+		$('#status' + id).text(getResource(action + '.restartRequired.label'));	
+	} else {
+		$('#status' + id).text(getResource(action + '.label'));
+	}
+
+	var intervalId = setInterval(function() {
+						getJSON('extensions/progress/' + obj.definition.id, null, function(data) {
+							if(data.success) {
+								if(!data.resource.complete && !data.resource.failed) {
+									$('#progress' + id).progressbar('option', 'value',  data.resource.currentPosition);
+								} else if(data.resource.complete) {
+									$('#progress' + id).progressbar('option', 'value',  data.resource.currentPosition);
+									showInformation(false, getResource(action + ".restartRequired.info"));
+									$('#status' + id).text(getResource(action + '.restartRequired.label'));	
+									clearInterval(intervalId);
+									$('#button' + id).empty();
+									$('#button' + id).append('<img src="' + basePath + '/ui/images/restart.png">');
+									$('#button' + id).removeClass('inProgress');	
+									$('#button' + id).addClass('doRestart');	
+									
+								} else if(data.resource.failed) {
+									$('#progress' + id).progressbar('option', 'value',  data.resource.currentPosition);
+									showError(false, getResource(action + ".failed.error"))
+									$('#status' + id).text(action + ".tryAgain.label");	
+									$('#button' + id).show();
+									clearInterval(intervalId);
+								}
+							} else {
+								showError(data.message);
+								$('#progress' + id).hide();	
+								clearInterval(intervalId);
+							}
+						});
+				}, 1000);
+};
+
+$(document).ready(function() {
+	
+	$('#extensionsContent').tabs();
+	var i = 0;
+	
+	$.ajax({
+	    url : "${uiPath}/content/extensionFragment.html",
+	    success : function(extHtml){
+	    	getJSON("extensions/installed", null, function(data) {
+	    		
+	    		$.each(data.resource, function(idx, obj) {
+	    			
+	    			var id = i++;
+	    			var ext = extHtml.replace("${image}", 
+	    					basePath + '/api/extensions/image/' 
+	    					+ obj.definition.image + '/');
+	    			ext = ext.replace('${title}', obj.name);
+	    			ext = ext.replace('${text}', obj.info);
+	    			ext = ext.replace('${vendor}', obj.definition.vendor);
+	    			ext = ext.replace('${url}', obj.definition.url);
+	    			ext = ext.replace('${license}', obj.definition.license);
+	    			if(obj.definition.system) {
+	    				ext = ext.replace('${actionImage}', 'blank24x24.png');
+	    			} else {
+	    				ext = ext.replace('${actionImage}', 'uninstalling.png');
+	    			}
+	    			ext = ext.replace('${buttonId}', 'button' + id);
+	    			ext = ext.replace('${infoId}', 'info' + id);
+	    			ext = ext.replace('${statusId}', 'status' + id);
+	    			ext = ext.replace('${progressId}', 'progress' + id);
+	    			
+	    			$('#installedTab').append(ext);
+
+	    			if(obj.definition.state == 'UPDATEABLE') {
+		    			$('#button' + id).click(function(evt) {
+		    					evt.preventDefault();
+								if($(this).hasClass('doRestart')) {
+	    							doRestart();
+	    						} else if(!$(this).hasClass('inProgress')) {
+		    				    	getJSON('extensions/update/' + obj.definition.id, null, function(data) {
+				    					if(data.success) {
+				    						doProgress(id, data.resource, 'installing');
+				    					} else {
+				    						
+				    					}
+				    				});
+		    				    }
+		    				});
+		    				
+	    				doProgress(id, obj, 'installing');
+	    			} else if((obj.definition.state == 'INSTALLED' || obj.definition.state == 'DEVELOPMENT') && !obj.definition.system) {
+	    				
+	    				$('#button' + id).click(function(evt) {
+	    					evt.preventDefault();
+	    					if($(this).hasClass('doRestart')) {
+	    						doRestart();
+	    					} else if(!$(this).hasClass('inProgress')) {
+	    				    	getJSON('extensions/uninstall/' + obj.definition.id, null, function(data) {
+			    					if(data.success) {
+			    						doProgress(id, data.resource, 'uninstalling');
+			    					} else {
+			    						
+			    					}
+			    				});
+	    				    }
+	    				});
+	    				
+    					doProgress(id, obj, 'uninstalling');
+	    			}
+	    			
+	    		});
+	    		
+				getJSON("extensions/updatable", null, function(data) {
+	    			
+					if(data.resource.length == 0) {
+						$('#updatesLi').hide();
+						$('#updatesTab').hide();
+					} else {
+		    			$.each(data.resource, function(idx, obj) {
+		    				
+		    				var id = i++;
+		    				var ext = extHtml.replace("${image}", 
+		    						obj.definition.remoteDefinitionUrl + '/' + obj.definition.image);
+			    			ext = ext.replace('${title}', obj.name);
+			    			ext = ext.replace('${text}', obj.info);
+			    			ext = ext.replace('${vendor}', obj.definition.vendor);
+			    			ext = ext.replace('${url}', obj.definition.url);
+			    			ext = ext.replace('${license}', obj.definition.license);
+			    			ext = ext.replace('${actionImage}', 'updating.png');
+			    			ext = ext.replace('${buttonId}', 'button' + id);
+			    			ext = ext.replace('${infoId}', 'info' + id);
+			    			ext = ext.replace('${statusId}', 'status' + id);
+			    			ext = ext.replace('${progressId}', 'progress' + id);
+			    			
+			    			$('#updatesTab').append(ext);
+	
+			    			$('#button' + id).click(function(evt) {
+			    				evt.preventDefault();
+								if($(this).hasClass('doRestart')) {
+									doRestart();
+		    					} else if(!$(this).hasClass('inProgress')) {
+				    				getJSON('extensions/update/' + obj.definition.id, null, function(data) {
+				    					if(data.success) {
+				    						doProgress(id, data.resource, 'updating');
+				    					} else {
+				    						showError(data.message);
+				    					}
+				    				});
+			    				}
+			    			});
+		
+			    			doProgress(id, obj, 'updating');
+			    			
+	
+		    			});
+					}
+					getJSON("extensions/available", null, function(data) {
+		    			
+		    			$.each(data.resource, function(idx, obj) {
+		    				
+		    				var id = i++;
+		    				var ext = extHtml.replace("${image}", obj.definition.remoteDefinitionUrl + '/' + obj.definition.image);
+			    			ext = ext.replace('${title}', obj.name);
+			    			ext = ext.replace('${text}', obj.info);
+			    			ext = ext.replace('${vendor}', obj.definition.vendor);
+			    			ext = ext.replace('${url}', obj.definition.url);
+			    			ext = ext.replace('${license}', obj.definition.license);
+			    			ext = ext.replace('${actionImage}', 'installing.png');
+			    			ext = ext.replace('${buttonId}', 'button' + id);
+			    			ext = ext.replace('${infoId}', 'info' + id);
+			    			ext = ext.replace('${statusId}', 'status' + id);
+			    			ext = ext.replace('${progressId}', 'progress' + id);
+			    			
+			    			$('#availableTab').append(ext);
+
+			    			$('#button' + id).click(function(evt) {
+			    				evt.preventDefault();
+								if($(this).hasClass('doRestart')) {
+		    						doRestart();
+		    					} else if(!$(this).hasClass('inProgress')) {
+				    				getJSON('extensions/install/' + obj.definition.id, null, function(data) {
+				    					if(data.success) {
+				    						doProgress(id, data.resource, 'installing');
+				    					} else {
+				    						showError(data.message);
+				    					}
+				    				});
+			    				}
+			    			});
+		
+			    			doProgress(id, obj, 'installing');
+			    			
+
+		    			});
+		    			
+
+		    			
+		    		    $('#extensionsContent').localize();
+		    			loadComplete();
+		    		});
+
+	    		});
+
+	    	});
+	    }
+	});
+
+});
+
+</script>

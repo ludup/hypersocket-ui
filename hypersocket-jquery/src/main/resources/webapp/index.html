@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>${appName}</title>
+<link rel="shortcut icon" href="${uiPath}/theme/hypersocket/images/favicon.ico">
+<link rel="icon" type="image/png" href="${uiPath}/theme/hypersocket/images/icon_16x16.png">
+<link rel="stylesheet" type="text/css" href="${uiPath}/theme/hypersocket/style.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="${uiPath}/theme/hypersocket/jquery-ui.custom.min.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="${uiPath}/css/jquery.dataTables.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="${uiPath}/css/jquery.dataTables_themeroller.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="${uiPath}/css/jquery.ui.potato.menu.css" media="screen"/>
+<link rel="stylesheet" type="text/css" href="${uiPath}/css/jquery.pnotify.default.css" media="screen"/>
+${stylesheets} 
+<!--[if IE 6]>
+<link rel="stylesheet" type="text/css" href="${uiPath}/css/style-ie.css" media="screen"/>
+<script type="text/javascript" src="${uiPath}/js/json3.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="${uiPath}/js/spin-min.js"></script>
+<script type="text/javascript" src="${uiPath}/js/jquery.js"></script>
+<script type="text/javascript" src="${uiPath}/js/jquery-ui.js"></script>
+<script type="text/javascript" src="${uiPath}/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="${uiPath}/js/jquery.ui.potato.menu.js"></script>
+<script type="text/javascript" src="${uiPath}/js/jquery.pnotify.min.js"></script>
+<script type="text/javascript" src="${uiPath}/js/hypersocket-utils.js"></script>
+<script type="text/javascript" src="${uiPath}/js/hypersocket-core.js"></script>
+${scripts} 
+<script type="text/javascript"> 
+var $buoop = {} 
+$buoop.ol = window.onload; 
+window.onload=function(){ 
+ try {if ($buoop.ol) $buoop.ol();}catch (e) {} 
+ var e = document.createElement("script"); 
+ e.setAttribute("type", "text/javascript"); 
+ e.setAttribute("src", "https://browser-update.org/update.js"); 
+ document.body.appendChild(e); 
+} 
+</script> 
+</head>
+<body>
+<div id="wrapper">
+	<div id="header" class="ui-widget-header" style="background-image: none">
+	    <div id="headerLogo"><img src="${uiPath}/theme/hypersocket/images/logo.png"></img></div>
+		<div id="headerActions">
+		</div>				
+	</div>
+	<div id="nav" class="ui-widget-header ui-state-default">
+		<div id="navMenu"></div>
+		<div id="navActions"></div>		
+	</div>
+	<div id="informationBar" class="ui-widget"/>
+	</div>
+	<div id="content">
+	</div>
+	<div id="footer" class="ui-widget-header" style="background-image: none">
+		<div id="copyright"></div>
+		<div id="footerActions"/></div>
+		<div id="progress"/>&nbsp</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+   $(document).ready(function() {
+	    logon();
+   });
+   
+</script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+@font-face {
+	font-family: 'PT Sans';
+	font-style: normal;
+	font-weight: 400;
+	src: local('PT Sans'), local('PTSans-Regular'),
+		url(/fonts/ptsans/v5/7YGmE4Ls5b94ct65u07hVQLUuEpTyoUstqEm5AMlJo4.woff),
+		format('woff');
+}
+
+html,body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	/*-webkit-font-smoothing: antialiased;*/
+	color: #333;
+	font: 1em PT Sans, Arial, sans-serif;
+}
+
+h1,h2,h3,h4 {
+	margin: 0;
+}
+
+#wrapper {
+	min-height: 100%;
+	position: relative;
+	height: 100%;
+}
+
+#header {
+	height: 100px;
+	padding: 10px;
+}
+
+#header .ui-icon {
+	background-image: url(images/ui-icons_fff_256x240.png);
+}
+
+#headerLogo {
+	float: left;
+	width: 600px;
+	margin: 10px;
+	height: 80px;
+}
+
+#headerActions {
+	float: right;
+	width: auto;
+	text-align: right;
+	padding-right: 10px;
+	padding-top: 10px;
+	"
+}
+
+#headerActions .ui-icon {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#nav {
+	height: 40px;
+	border: 0px;
+}
+
+#navMenu {
+	height: 40px;
+	float: left;
+}
+
+#navActions {
+	height: 34px;
+	float: right;
+	text-align: right;
+	padding: 5px;
+	overflow: hidden;
+}
+
+#footer {
+	height: 50px;
+	color: #fff;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+
+#content {
+	padding: 0px 5px 50px 5px;
+}
+
+#logonContent {
+	width: 500px;
+	height: auto;
+	margin: 100px auto 50px auto;
+	overflow: auto;
+}
+
+#logonContent label {
+	width: 100px;
+}
+
+#logonContent input {
+	
+}
+
+#logonTitle {
+	width: auto;
+	height: 1.2em;
+	padding: 10px 0 10px 0;
+	text-align: center;
+}
+
+.logonField {
+	overflow: auto;
+}
+
+.logonField p {
+	text-align: center;
+	margin: 20px 5px 20px 5px;
+}
+
+#logonForm {
+	padding-top: 10px;
+}
+
+#logonBanner {
+	width: 600px;
+	text-align: center;
+	height: auto;
+	margin: 25px auto;
+	overflow: auto;
+}
+
+.ui-state-error {
+	padding: .2em;
+	text-align: center;
+}
+
+.ui-state-error span {
+	line-height: 1.4em;
+	vertical-align: middle;
+}
+
+.logonLabel {
+	width: 35%;
+	text-align: right;
+	float: left;
+	margin: 5px;
+	overflow: auto;
+}
+
+.logonSelect {
+	float: left;
+	width: 60%;
+	margin: 5px;
+	overflow: auto;
+}
+
+.logonInput {
+	float: left;
+	width: 60%;
+	margin: 5px 5px 5px 0px;
+	overflow: auto;
+}
+
+#logonSubmit {
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#logonContent input[type="button"] {
+	width: auto;
+	margin: 0 auto;
+	text-align: center;
+}
+
+#copyright {
+	width: 600px;
+	float: left;
+}
+
+#copyright p {
+	font-size: .8em;
+	margin: 8px;
+	line-height: 1em;
+	vertical-align: middle;
+}
+
+#footerActions {
+	float: right;
+	height: 50px;
+	width: auto;
+	vertical-align: middle;
+	text-align: center;
+	margin: auto;
+	display:table-cell;
+	padding: 5px;
+}
+#progress {
+	float: right;
+	width: 50px;
+	height: 50px;
+	position: relative;
+}
+
+#mainContent {
+	position: relative;
+}
+
+.tabContent div {
+	height: 100%;
+	overflow: auto;
+}
+
+#informationBar {
+	padding: 5px;
+}
+
+#highlight {
+	padding: 0.5em;
+}
+
+span.ui-icon {
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+
+#contentArea {
+	min-height: 400px;
+}
+
+.tabActions {
+	padding-bottom: 10px;
+	padding-top: 10px;
+	overflow: auto;
+}
+
+.tabActions button {
+	float: right;
+	margin-left: 10px;
+}
+
+.propertyItem {
+	overflow: auto;
+	margin: 10px 0 10px 0;
+}
+
+.propertyLabel {
+	float: left;
+	width: 200px;
+	height: 100%;
+}
+
+.propertyLabel .ui-icon {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.propertyValue {
+	float: left;
+	width: auto;
+}
+
+.propertyValue .ui-icon {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.formInputField .ui-icon {
+	float: left;
+	margin-right: 5px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.form label {
+	width: 200px;
+	display: block;
+	float: left;
+}
+
+.form input {
+	display: block;
+	float: left;
+	margin-right: 10px;
+}
+
+.form select {
+	display: block;
+	float: left;
+	margin-right: 10px;
+	max-width: 250px;
+}
+
+.formInputField {
+	margin-bottom: 10px;
+	display: block;
+	overflow: auto;
+}
+
+.tableActions {
+	text-align: right;
+}
+
+.tableActions .ui-icon {
+	display: inline-block;
+	vertical-align: middle;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.dialog {
+	overflow: auto;
+}
+
+.dialogTab {
+	overflow: auto;
+}
+
+.dialogError {
+	margin-bottom: 10px;
+}
+
+.multiselectTooltip {
+	float: left;
+	width: 30px;
+	padding-top: 10px;
+}
+
+.excludedList {
+	float: left;
+}
+
+.excludedList label {
+	display: block;
+	font-size: 75%;
+	float: none;
+}
+
+.excludedList select {
+	width: 250px;
+	margin-right: 5px;
+}
+
+.listButtons {
+	float: left;
+	display: block;
+	margin-top: 20px;
+}
+
+.includedList {
+	float: left;
+}
+
+.includedList label {
+	display: block;
+	font-size: 75%;
+	margin-left: 5px;
+	float: none;
+}
+
+.includedList select {
+	width: 250px;
+	margin-left: 5px;
+}
+
+#certificateTab {
+	overflow: auto;
+}
+
+.certificateDesc {
+	height: 100px;
+	width: 65%;
+	padding-right: 10px;
+	float: left;
+	overflow: hidden;
+}
+
+.certificateAction {
+	height: 100px;
+	line-height: 100px;
+	width: 30%;
+	float: right;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.certificateAction button {
+	width: 100%;
+}
+
+.certificateAction img {
+	display: block;
+	margin-top: 25px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.fullwidth {
+	width: 100%;
+}
+
+.formLabelOptional {
+	opacity: 0.4;
+}
+
+.formLabel {
+	
+}
+
+#shutdownContent {
+	width: 500px;
+	height: auto;
+	margin: 100px auto 50px auto;
+	overflow: auto;
+}
+
+#shutdownContent label {
+	width: 100px;
+}
+
+#shutdownContent input {
+	
+}
+
+#shutdownTitle {
+	width: auto;
+	height: 1.2em;
+	padding: 10px 0 10px 0;
+	text-align: center;
+}
+
+.shutdownField {
+	overflow: auto;
+}
+
+#shutdownForm {
+	padding: 10px;
+}
+
+.shutdownLabel {
+	width: 35%;
+	text-align: right;
+	float: left;
+	margin: 5px;
+	overflow: auto;
+}
+
+.shutdownSelect {
+	float: left;
+	width: 60%;
+	margin: 5px;
+	overflow: auto;
+}
+
+.shutdownInput {
+	float: left;
+	width: 60%;
+	margin: 5px 5px 5px 0px;
+	overflow: auto;
+}
+
+#shutdownSubmit {
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#shutdownContent input[type="button"] {
+	width: auto;
+	margin: 0 auto;
+	text-align: center;
+}
+
+#shutdownContent input[type="radio"] {
+	width: auto;
+	margin: 0 auto;
+	text-align: center;
+}
+
+#installedTab {
+	overflow: auto;
+}
+
+.extensionDescImage {
+	position: absolute;
+	left: 0px;
+	top: 10px;
+	width: 64px;
+	
+}
+.extensionDesc {
+	position: relative;
+	padding-left: 70px;
+	height: auto;
+	width: auto;
+	overflow: visible;
+}
+
+.extensionDescHeader {
+	height: 32px;
+	padding-top: 10px;
+}
+
+.extensionDescHeaderLeft {
+	float: left;
+}
+
+.extensionDescHeaderRight {
+	float: right;
+	margin: auto;
+	padding: auto;
+	text-align: center;
+}
+
+.extensionDescHeaderRight span {
+	width: 150px;
+}
+
+.extensionProgress {
+	width: 150px;
+	height: 12px;
+}
+
+.extensionDescBody {
+	width: 100%;
+}
+
+.extensionDescFooter {
+	padding-top: 10px;
+	height: 32px;
+}
+
+.extensionDescFooterLeft {
+	float: left;
+}
+
+.extensionDescFooterRight {
+	float: right;
+	margin: auto;
+	padding: auto;
+	text-align: center;
+}
+.extensionSection {
+	overflow: auto;
+	height: auto;
+	margin: 5px;
+	padding: 5px;
+}
+
+.extensionStatus {
+	float: left;
+}
+
+.extensionActions {
+	float: left;
+	margin-left: 20px;
+}
+
+.extensionStatusText {
+	width: 150px;
+	font-size: 75%;
+	font-weight: normal;
+	text-align: center;
+}
+.extensionText {
+	display: block;
+	font-weight: normal;
+	margin-top: 5px;
+}
+
+.extensionText2 {
+	display: block;
+	margin-top: 5px;
+	font-weight: normal;
+	font-size: 75%;
+}
+.extensionSectionAlt {
+	background-color: #fafafa;
+	overflow: auto;
+	margin: 5px;
+	padding: 5px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	vertical-align: middle;
+}
+.extensionLogo {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;
+}
+
+.extensionImage {
+	position: absolute;
+	margin: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+
+.extensionAction button {
+	width: 100%;
+}
+
+.extensionAction img {
+	display: block;
+	margin-top: 25px;
+	margin-left: auto;
+	margin-right: auto;
+}
