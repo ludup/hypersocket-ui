@@ -8,10 +8,10 @@
 package com.hypersocket.ui.jquery;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.StringTokenizer;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -82,29 +82,33 @@ public class JQueryUIContentHandler implements ContentHandler, ApplicationListen
 
 	private void loadFileHandler() {
 		
-		FileContentHandler handler = new FileContentHandler("webapp", 1000,
-				new File("../ui-jquery/src/main/resources/webapp"));
-
-		File workspace = new File("..");
-
-		for (File module : workspace.listFiles(new FileFilter() {
-
-			@Override
-			public boolean accept(File file) {
-				return file.isDirectory() && !file.getName().equals("ui-jquery");
-			}
-		})) {
-			File webappFolder = new File(module, "src" + File.separator
-					+ "main" + File.separator + "resources"
-					+ File.separator + "webapp");
-			if(log.isInfoEnabled()) {
-				log.info("Checking workspace folder " + webappFolder.getPath());
-			}
-			if (webappFolder.exists()) {
+		StringTokenizer t = new StringTokenizer(System.getProperty("java.class.path"), File.pathSeparator);
+		
+		FileContentHandler handler = null;
+		
+		while(t.hasMoreTokens()) {
+			String path = FileUtils.checkEndsWithNoSlash(t.nextToken());
+			if(path.endsWith("/target/classes")) {
+				
+				path = path.substring(0, path.length()- 15);
+				
+				File webappFolder = new File(path, "src" + File.separator
+						+ "main" + File.separator + "resources"
+						+ File.separator + "webapp");
 				if(log.isInfoEnabled()) {
-					log.info("Adding JQuery UI content folder " + webappFolder.getPath());
+					log.info("Checking workspace folder " + webappFolder.getPath());
 				}
-				handler.addBaseDir(webappFolder);
+				if (webappFolder.exists()) {
+					if(log.isInfoEnabled()) {
+						log.info("Adding JQuery UI content folder " + webappFolder.getPath());
+					}
+					if(handler==null) {
+						handler = new FileContentHandler("webapp", 1000,
+								webappFolder);
+					} else {
+						handler.addBaseDir(webappFolder);
+					}
+				}
 			}
 		}
 
