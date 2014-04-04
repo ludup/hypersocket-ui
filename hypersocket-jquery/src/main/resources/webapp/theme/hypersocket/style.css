@@ -348,6 +348,11 @@ span.ui-icon {
 	margin-top: 20px;
 }
 
+.multipleTextInputButtons {
+	float: left;
+	display: block;
+}
+
 .includedList {
 	float: left;
 }

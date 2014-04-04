@@ -44,8 +44,11 @@ $.fn.prepareProperty = function(opts, id, originalValue, resourceKey) {
 };
 
 $.fn.revertProperty = function() {
+	
 	if($(this).data('isMultipleSelect')) {
 		$(this).multipleSelect();
+	} else if($(this).data('isMultipleTextInput')) {
+		$(this).multipleTextInput();
 	} else {
 		$(this).val($(this).data('originalValue'));
 		$(this).data('updated', false);
@@ -91,7 +94,11 @@ $.fn.validateProperty = function() {
 		return true;
 	} else if(obj.inputType == 'multipleSelect') {
 		return true;
+	} else if(obj.inputType == 'multipleTextInput') {
+		return true;
 	} else if(obj.inputType == 'boolean') {
+		return true;
+	} else if(obj.inputType == 'image') {
 		return true;
 	}
 	
@@ -163,7 +170,7 @@ $.fn.propertyPage = function(opts) {
 				  var inputTab = tab; 
 				  var inputObj = this;
 				  if(obj.inputType=='textarea') {
-					  $('#' + tab + '_value' + this.id).append('<textarea ' + (options.canUpdate ? '' : 'disabled ') + 'class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="30" rows="' + obj.rows + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
+					  $('#' + tab + '_value' + this.id).append('<textarea ' + (options.canUpdate ? '' : 'disabled ') + 'class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
 				  } else if(obj.inputType=='select') {
 					  $('#' + tab + '_value' + this.id).append('<select ' + (options.canUpdate ? '' : 'disabled ') + 'class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
 					  if(obj.options) {
@@ -204,14 +211,47 @@ $.fn.propertyPage = function(opts) {
 			    	  $('#' + tab + '_value' + this.id).addClass("propertyInput");
 			    	  
 			    	
-			      } else if(obj.inputType=='password') {
+			      } else if(obj.inputType=='multipleTextInput') {
+			    	  $('#' + tab + '_value' + this.id).multipleTextInput({ 
+		    			  values: splitFix(this.value),
+		    			  disabled: !options.canUpdate,
+		    			  resourceKey: this.resourceKey,
+		    			  change: function() {
+		    				  $(this).markUpdated();
+							  if(options.showButtons) {
+								  $(revertButton).button({disabled:false});
+								  $(applyButton).button({disabled:false});
+							  }
+		    			  }
+			    	  });
+			    	  $('#' + tab + '_value' + this.id).addClass("propertyInput");
+		    	  
+		    	
+		      } else if(obj.inputType=='password') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="password" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
 				  } else if(obj.inputType=='boolean') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
 				  } else if(obj.inputType=='image') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="file" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
+			          var input = $('#' + tab + '_input' + this.id);  
+					  input.change(function() {
+						  	var reader = new FileReader();
+				            reader.onload = function(readerEvt) {
+				                var binaryString = readerEvt.target.result;
+				                var encoded = btoa(binaryString);
+				                input.data('encoded', encoded);
+				            };
+				            reader.readAsBinaryString(input[0].files[0]);
+					  });
+					  
 				  } else {
-					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="text" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
+					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') 
+							  + 'type="text" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id 
+							  + '" size="' + (obj.size ? obj.size : 30) 
+							  + '" placeholder="' + (obj.placeholder ? obj.placeholder : '') 
+							  + '" maxlength="' + (obj.maxlength ? obj.maxlength : '') 
+							  + '" name="input' + this.id 
+							  + '" value="' + stripNull(this.value) + '"/>');
 				  }
 				  
 				  $('#' + tab + '_input' + this.id).prepareProperty(obj, this.id, this.value, this.resourceKey);
@@ -297,6 +337,7 @@ $.fn.clearProperties = function() {
 $.fn.saveProperties = function(includeAll, callback) {
 	
 	   var items = new Array();
+	   var files = new Array();
 	   
 	   var restart = false;
 	   
@@ -305,16 +346,18 @@ $.fn.saveProperties = function(includeAll, callback) {
 		   var item = $('#' + obj.id);
 		   restart |= item.data("restart");
 		   var name = item.prop("tagName");
-		   var isMultipleSelect = item.data('multipleSelect');
+		   var isMultipleSelect = item.data('isMultipleSelect') || item.data('isMultipleTextInput');
 		   if(name =="SELECT" && isMultipleSelect) {
 			   if(includeAll || item.data('updated')) {
 				   items.push(new PropertyItem(item.data('id'), item.multipleSelectValues({ isProperty: true }).join("]|[")));
 			   }
-		
 		   } else {
 			   if(includeAll || item.isUpdated()) {
 				    if(item.attr('type')=="checkbox") {
 				    	items.push(new PropertyItem(item.data('resourceKey'), item.prop("checked") ? "true" : "false"));
+				    } else if(item.attr('type')=="file") {
+				    	
+			            items.push(new PropertyItem(item.data('resourceKey'), item.data('encoded')));	
 				    } else {
 				    	items.push(new PropertyItem(item.data('resourceKey'), item.val()));	
 				    }
@@ -510,7 +553,6 @@ $.fn.multipleSelect = function(data) {
 	
     toSelect.data('id', options.resourceKey);
 	toSelect.data('restart', options.restart);
-	toSelect.data('multipleSelect', true);
 	toSelect.data('updated', false);
 	
 	if(options.values) {
@@ -566,12 +608,14 @@ $.fn.multipleSelect = function(data) {
 	
 };
 
-$.fn.multipleSearch = function(data) {
+$.fn.multipleTextInput = function(data) {
 	
 	if($(this).data('created')) {
 		
 		options = $(this).data('options');
 
+		var inputText = $('#' + $(this).attr('id') + 'ExcludedSelect');
+		inputText.val('');
 		var allIncludedOptions = $('#' + $(this).attr('id') + 'IncludedSelect option');
 		if(allIncludedOptions.length > 0) {
 			$(allIncludedOptions).remove();
@@ -579,56 +623,55 @@ $.fn.multipleSearch = function(data) {
 		
 		var toSelect = $('#' + $(this).attr('id') + 'IncludedSelect');
 		
-		if(options.selected) {
-			$.each(options.selected, function(idx, obj) {
+		if(options.values) {
+			$.each(options.values, function(idx, obj) {
 				toSelect.append('<option ' 
-						+ 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? 
-						(getResource(obj[options.nameAttr])==undefined ? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
+						+ 'value="' + obj + '">' + obj + "</option>");
 			});
 		} 
 		
-		if(data && data.insert) {
-			$.each(data.insert, function(idx, obj) {
-				
-				select.append('<option ' 
-						+ 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? 
-						(getResource(obj[options.nameAttr])==undefined ? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
-			});
-		}
+//		if(data && data.insert) {
+//			$.each(data.insert, function(idx, obj) {
+//				
+//				select.append('<option ' 
+//						+ 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? 
+//						(getResource(obj[options.nameAttr])==undefined ? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
+//			});
+//		}
 		
-		if(data && data.remove) {
-			$.each(data.remove, function(idx, obj) {
-				if(options.selectedIsObjectList) {
-					selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
-					if(!selectedOpt) {
-						selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
-					}
-				} else {
-					selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj + '"]');
-					if(!selectedOpt) {
-						selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj + '"]');
-					}
-				}
-				if(selectedOpt) {
-					$(selectedOpt).remove();
-				}
-			});
-		}
+//		if(data && data.remove) {
+//			$.each(data.remove, function(idx, obj) {
+//				if(options.selectedIsObjectList) {
+//					selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
+//					if(!selectedOpt) {
+//						selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
+//					}
+//				} else {
+//					selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj + '"]');
+//					if(!selectedOpt) {
+//						selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj + '"]');
+//					}
+//				}
+//				if(selectedOpt) {
+//					$(selectedOpt).remove();
+//				}
+//			});
+//		}
 		
-		if(data && data.selected) {
-			$.each(data.selected, function(idx, id) {
-				var selectedOpt;
-				if(options.selectedIsObjectList) {
-					selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
-				} else {
-					selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
-				}
-				if(selectedOpt) {
-					toSelect.append($(selectedOpt).clone());
-					$(selectedOpt).remove();
-				}
-			});
-		}
+//		if(data && data.selected) {
+//			$.each(data.selected, function(idx, id) {
+//				var selectedOpt;
+//				if(options.selectedIsObjectList) {
+//					selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+//				} else {
+//					selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+//				}
+//				if(selectedOpt) {
+//					toSelect.append($(selectedOpt).clone());
+//					$(selectedOpt).remove();
+//				}
+//			});
+//		}
 		
 		return;
 		
@@ -637,7 +680,7 @@ $.fn.multipleSearch = function(data) {
 		var options = $.extend({ idAttr: 'id', nameAttr: 'name', nameAttrIsResourceKey: false, selectAllIfEmpty: false, selectedIsObjectList: false, isPropertyInput: true, disabled: false }, data);
 		
 		$(this).data('created', true);
-		$(this).data('isMultipleSelect', true);
+		$(this).data('isMultipleTextInput', true);
 		$(this).data('options', options);
 		
 		$('#' + $(this).attr('id') + 'Excluded').remove();
@@ -645,16 +688,18 @@ $.fn.multipleSearch = function(data) {
 		$('#' + $(this).attr('id') + 'Included').remove();
 		
 		if(getResourceNoDefault(options.resourceKey + '.' + $(this).attr('id') + '.tooltip')!=undefined) {
-			$(this).append('<div class="multiselectTooltip"><span id="' + $(this).attr('id') + 'Tooltip" class="ui-icon ui-icon-info" title="' + getResource(options.resourceKey + '.' + $(this).attr('id') + '.tooltip') + '"></span></div>');
+			$(this).append('<div class="multisearchTooltip"><span id="' + $(this).attr('id') + 'Tooltip" class="ui-icon ui-icon-info" title="' + getResource(options.resourceKey + '.' + $(this).attr('id') + '.tooltip') + '"></span></div>');
 			$('#' + $(this).attr('id') + 'Tooltip').tooltip();
 		}
-		$(this).append('<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"><label>' + getResource('text.excluded') + '</label></div>');
-		$('#' + $(this).attr('id') + 'Excluded').append('<input type="text" ' + (!options.disabled ? '' : 'disabled ') + 'id="' + $(this).attr('id') + 'ExcludedSelect" class="formInput text ui-widget-content ui-corner-all"/>');
+//		$(this).append('<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"><label>' + getResource('text.excluded') + '</label></div>');
+		$(this).append('<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"></div>');
+		$('#' + $(this).attr('id') + 'Excluded').append('<input type="text" ' + (!options.disabled ? '' : 'disabled ') + 'id="' + $(this).attr('id') + 'ExcludedSelect" class="formInput text ui-widget-content ui-corner-all" />');
 	
-		$(this).append('<div class="listButtons" id="' + $(this).attr('id') + 'Buttons"/>');
+		$(this).append('<div class="multipleTextInputButtons" id="' + $(this).attr('id') + 'Buttons"/>');
 		$('#' + $(this).attr('id') + 'Buttons').append('<button id="' + $(this).attr('id') + 'AddButton">&gt;</button><br/>');
 		$('#' + $(this).attr('id') + 'Buttons').append('<button id="' + $(this).attr('id') + 'RemoveButton">&lt;</button>');
-		$(this).append('<div class="includedList" id="' + $(this).attr('id') + 'Included"><label>' + getResource('text.included') + '</label></div>');
+//		$(this).append('<div class="includedList" id="' + $(this).attr('id') + 'Included"><label>' + getResource('text.included') + '</label></div>');
+		$(this).append('<div class="includedList" id="' + $(this).attr('id') + 'Included"></div>');
 		$('#' + $(this).attr('id') + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(this).attr('id') + 'IncludedSelect" class="formInput text ui-widget-content ui-corner-all' + (options.isPropertyInput ? ' propertyInput' : '' ) + '"/>');
 	
 		$('#' + $(this).attr('id') + 'AddButton').button();
@@ -664,15 +709,16 @@ $.fn.multipleSearch = function(data) {
 		var toSelect = $('#' + $(this).attr('id') + 'IncludedSelect');
 		
 		$('#' + $(this).attr('id') + 'AddButton').click(function(e) {
-	        var selectedOpts = $('#' + select.attr('id') + ' option:selected');
-	        if (selectedOpts.length == 0) {
-	            e.preventDefault();
+			e.preventDefault();
+			var selectedText = select.val();
+	        if (selectedText == '') {
+	            
+	            return;
 	        }
 	
-	        toSelect.append($(selectedOpts).clone());
-	        $(selectedOpts).remove();
-	        e.preventDefault();
-	        
+	        toSelect.append('<option ' 
+					+ 'value="' + selectedText + '">' + selectedText + "</option>");
+	        select.val('');
 	        toSelect.data('updated', true);
 	        if(data.change) {
 	        	data.change();
@@ -680,14 +726,14 @@ $.fn.multipleSearch = function(data) {
 	    });
 	
 	    $('#' + $(this).attr('id') + 'RemoveButton').click(function(e) {
-	        var selectedOpts = $('#' + toSelect.attr('id') + ' option:selected');
+	    	e.preventDefault();
+	    	var selectedOpts = $('#' + toSelect.attr('id') + ' option:selected');
 	        if (selectedOpts.length == 0) {
-	            e.preventDefault();
+	        	return;
 	        }
 	
-	        select.append($(selectedOpts).clone());
+	        select.val($(selectedOpts).val());
 	        $(selectedOpts).remove();
-	        e.preventDefault();
 	        
 	        toSelect.data('updated', true);
 	        
@@ -700,59 +746,56 @@ $.fn.multipleSearch = function(data) {
 	
     toSelect.data('id', options.resourceKey);
 	toSelect.data('restart', options.restart);
-	toSelect.data('multipleSelect', true);
 	toSelect.data('updated', false);
 	
 	if(options.values) {
 		
 		$.each(options.values, function(idx, obj) {
-			
-			var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
-			selectItem.append('<option ' 
-					+ 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? 
-					(getResource(obj[options.nameAttr])==undefined ? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
+			toSelect.append('<option ' 
+					+ 'value="' + obj + '">' + obj + "</option>");
 		});
 		
-		if(options.selected) {
-			$.each(options.selected, function(idx, id) {
-				var selectedOpt;
-				if(options.selectedIsObjectList) {
-					selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
-				} else {
-					selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
-				}
-				if(selectedOpt) {
-					toSelect.append($(selectedOpt).clone());
-					$(selectedOpt).remove();
-				}
-			});
-		} 
+//		if(options.selected) {
+//			$.each(options.selected, function(idx, id) {
+//				var selectedOpt;
+//				if(options.selectedIsObjectList) {
+//					selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+//				} else {
+//					selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+//				}
+//				if(selectedOpt) {
+//					toSelect.append($(selectedOpt).clone());
+//					$(selectedOpt).remove();
+//				}
+//			});
+//		} 
 		
-	} else if(options.url) {
-		getJSON(options.url, null, function(data) {
-			$.each(data.interfaces, function(idx, obj) {
-				var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
-				selectItem.append('<option ' 
-						+ 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? 
-						(getResource(obj[options.nameAttr])==undefined ? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
-			});	
-			
-			if(options.selected) {
-				$.each(options.selected, function(idx, id) {
-					var selectedOpt;
-					if(options.selectedIsObjectList) {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
-					} else {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
-					}
-					if(selectedOpt) {
-						toSelect.append($(selectedOpt).clone());
-						$(selectedOpt).remove();
-					}
-				});
-			} 
-		});
-	}
+	} 
+//	else if(options.url) {
+//		getJSON(options.url, null, function(data) {
+//			$.each(data.interfaces, function(idx, obj) {
+//				var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
+//				selectItem.append('<option ' 
+//						+ 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? 
+//						(getResource(obj[options.nameAttr])==undefined ? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
+//			});	
+//			
+//			if(options.selected) {
+//				$.each(options.selected, function(idx, id) {
+//					var selectedOpt;
+//					if(options.selectedIsObjectList) {
+//						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+//					} else {
+//						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+//					}
+//					if(selectedOpt) {
+//						toSelect.append($(selectedOpt).clone());
+//						$(selectedOpt).remove();
+//					}
+//				});
+//			} 
+//		});
+//	}
 	
 };
 
