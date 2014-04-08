@@ -233,13 +233,15 @@ $.fn.propertyPage = function(opts) {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
 				  } else if(obj.inputType=='image') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="file" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
-			          var input = $('#' + tab + '_input' + this.id);  
+					  $('#' + tab + '_value' + this.id).append('<img class="imagePreview" src="' + this.value + '">');
+					  var input = $('#' + tab + '_input' + this.id);  
 					  input.change(function() {
 						  	var reader = new FileReader();
 				            reader.onload = function(readerEvt) {
 				                var binaryString = readerEvt.target.result;
 				                var encoded = btoa(binaryString);
-				                input.data('encoded', encoded);
+				                var fileName = input.val().split('/').pop().split('\\').pop();
+				                input.data('encoded', fileName + ";" + encoded);
 				            };
 				            reader.readAsBinaryString(input[0].files[0]);
 					  });
