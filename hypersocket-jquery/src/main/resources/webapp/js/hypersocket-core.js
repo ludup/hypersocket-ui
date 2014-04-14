@@ -234,20 +234,20 @@ $.fn.propertyPage = function(opts) {
 				  } else if(obj.inputType=='boolean') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
 				  }  else if(obj.inputType=='switch') {
-//					  $('#' + tab + '_value' + this.id).append('<select ' + (options.canUpdate ? '' : 'disabled ') + ' class="propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '><option selected="selected">On</option><option>Off</option></select>');
-//					  
-//					  $('#' + tab + '_input' + this.id).toggleSwitch({
-//						  highlight: true,
-//						  width: 25, 
-//						  change: function(e) {
-//						   
-//						  },
-//						  stop: function(e,val) {
-//						    
-//						  }
-//						});
+					  $('#' + tab + '_value' + this.id).append('<select ' + (options.canUpdate ? '' : 'disabled ') + ' class="propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"><option value="true" ' + (stripNull(this.value) == 'true' ? 'selected="selected"' : '') + '>' + getResource("text.on") + '</option><option value="false" ' + (stripNull(this.value) == 'false' ? 'selected="selected"' : '') + '>' + getResource("text.off") + '</option></select>');
+					  
+					  $('#' + tab + '_input' + this.id).toggleSwitch({
+						  highlight: true,
+						  width: 30, 
+						  change: function(e) {
+						   
+						  },
+						  stop: function(e,val) {
+						    
+						  }
+						});
 				  
-					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
+//					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
 				  } else if(obj.inputType=='image') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="file" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
 					  $('#' + tab + '_value' + this.id).append('<img class="imagePreview" src="' + this.value + '">');
@@ -375,7 +375,6 @@ $.fn.saveProperties = function(includeAll, callback) {
 				    if(item.attr('type')=="checkbox") {
 				    	items.push(new PropertyItem(item.data('resourceKey'), item.prop("checked") ? "true" : "false"));
 				    } else if(item.attr('type')=="file") {
-				    	
 			            items.push(new PropertyItem(item.data('resourceKey'), item.data('encoded')));	
 				    } else {
 				    	items.push(new PropertyItem(item.data('resourceKey'), item.val()));	

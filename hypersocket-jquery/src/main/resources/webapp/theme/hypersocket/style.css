@@ -206,7 +206,8 @@ h1,h2,h3,h4 {
 	position: relative;
 }
 
-.tabContent div {
+div .tabContent {
+	min-height: 400px;
 	height: 100%;
 	overflow: auto;
 }
@@ -258,6 +259,7 @@ span.ui-icon {
 
 .propertyValue {
 	float: left;
+	height: 100%
 	width: auto;
 }
 

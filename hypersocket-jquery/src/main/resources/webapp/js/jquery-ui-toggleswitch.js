@@ -1,14 +1,15 @@
-jQuery.fn.toggleSwitch = function(params) {
+jQuery.fn.toggleSwitch = function (params) {
 
     var defaults = {
         highlight: true,
         width: 25,
-        change: null
+        change: null,
+        stop: null
     };
 
     var options = $.extend({}, defaults, params);
 
-    $(this).each(function(i, item) {
+    return $(this).each(function (i, item) {
         generateToggle(item);
     });
 
@@ -18,32 +19,39 @@ jQuery.fn.toggleSwitch = function(params) {
         var $contain = $("<div />").addClass("ui-toggle-switch");
 
         // generate labels
-        $(selectObj).find("option").each(function(i, item) {
+        $(selectObj).find("option").each(function (i, item) {
             $contain.append("<label>" + $(item).text() + "</label>");
         }).end().addClass("ui-toggle-switch");
 
         // generate slider with established options
-        var $slider = $("<div />").slider({
+        var $slider = $("<div/>").slider({
             min: 0,
             max: 100,
             animate: "fast",
             change: options.change,
-            stop: function(e, ui) {
+            stop: function (e, ui) {
                 var roundedVal = Math.round(ui.value / 100);
                 var self = this;
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                     toggleValue(self.parentNode, roundedVal);
                 }, 11);
+
+                if(typeof options.stop === 'function') {
+                    options.stop.call(this, e, roundedVal);
+                }
             },
             range: (options.highlight && !$(selectObj).data("hideHighlight")) ? "max" : null
         }).width(options.width);
 
+        $slider.addClass("ui-toggleswitch-slider");
+        
         // put slider in the middle
         $slider.insertAfter(
-        $contain.children().eq(0));
+            $contain.children().eq(0)
+        );
 
         // bind interaction
-        $contain.delegate("label", "click", function() {
+        $contain.on("click", "label", function () {
             if ($(this).hasClass("ui-state-active")) {
                 return;
             }
@@ -52,9 +60,11 @@ jQuery.fn.toggleSwitch = function(params) {
         });
 
         function toggleValue(slideContain, index) {
-            $(slideContain).find("label").eq(index).addClass("ui-state-active").siblings("label").removeClass("ui-state-active");
-            $(slideContain).parent().find("option").eq(index).attr("selected", true);
-            $(slideContain).find(".ui-slider").slider("value", index * 100);
+            var $slideContain = $(slideContain), $parent = $slideContain.parent();
+            $slideContain.find("label").eq(index).addClass("ui-state-active").siblings("label").removeClass("ui-state-active");
+            $parent.find("option").prop("selected", false).eq(index).prop("selected", true);
+            $parent.find("select").trigger("change");
+            $slideContain.find(".ui-slider").slider("value", index * 100);
         }
 
         // initialise selected option
