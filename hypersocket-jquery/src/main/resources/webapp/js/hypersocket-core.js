@@ -100,6 +100,8 @@ $.fn.validateProperty = function() {
 		return true;
 	} else if(obj.inputType == 'image') {
 		return true;
+	} else if(obj.inputType == 'switch') {
+		return true;
 	}
 	
 	log("Validation failed for " + $(this).data('resourceKey'));
@@ -231,6 +233,21 @@ $.fn.propertyPage = function(opts) {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="password" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
 				  } else if(obj.inputType=='boolean') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
+				  }  else if(obj.inputType=='switch') {
+//					  $('#' + tab + '_value' + this.id).append('<select ' + (options.canUpdate ? '' : 'disabled ') + ' class="propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '><option selected="selected">On</option><option>Off</option></select>');
+//					  
+//					  $('#' + tab + '_input' + this.id).toggleSwitch({
+//						  highlight: true,
+//						  width: 25, 
+//						  change: function(e) {
+//						   
+//						  },
+//						  stop: function(e,val) {
+//						    
+//						  }
+//						});
+				  
+					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
 				  } else if(obj.inputType=='image') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="file" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
 					  $('#' + tab + '_value' + this.id).append('<img class="imagePreview" src="' + this.value + '">');
@@ -281,7 +298,7 @@ $.fn.propertyPage = function(opts) {
 		   
 		   if(options.additionalTabs) {
 			   $.each(options.additionalTabs, function() {
-				   $(contentTabs).append('<li><a href="#' + this.id + '"><span>' + this.name + '</span></a></li>');
+				   $(contentTabs).append('<li id="' + this.id + 'Li"><a href="#' + this.id + '"><span>' + this.name + '</span></a></li>');
 				   $('#'+ this.id).appendTo('#' + propertyDiv + 'Content');
 			   });
 		   }
