@@ -1,0 +1,374 @@
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+	padding-top: 50px;
+}
+
+/*
+ * Global add-ons
+ */
+.sub-header {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
+}
+
+/*
+ * Main content
+ */
+.main {
+	padding: 20px;
+}
+
+@media ( min-width : 768px) {
+	.main {
+		padding-right: 40px;
+		padding-left: 40px;
+	}
+}
+
+.main .page-header {
+	margin-top: 0;
+}
+
+/*
+ * Placeholder dashboard ideas
+ */
+.placeholders {
+	margin-bottom: 30px;
+	text-align: center;
+}
+
+.placeholders h4 {
+	margin-bottom: 0;
+}
+
+.placeholder {
+	margin-bottom: 20px;
+}
+
+.placeholder img {
+	display: inline-block;
+	border-radius: 50%;
+}
+
+.form-signin {
+	max-width: 330px;
+	padding: 15px;
+	margin: 0 auto;
+}
+
+.form-signin .form-signin-heading,.form-signin .checkbox {
+	margin-bottom: 10px;
+}
+
+.form-signin .checkbox {
+	font-weight: normal;
+}
+
+.form-signin .form-control {
+	position: relative;
+	height: auto;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px;
+	font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+	z-index: 2;
+}
+
+.form-signin input[type="email"] {
+	margin-bottom: -1px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+.form-signin button {
+	margin-top: 10px;
+}
+
+#footer {
+	padding: 10 10px;;
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+	/* Set the fixed height of the footer here */
+	height: 60px;
+	background-color: #f5f5f5;
+	bottom: 0;
+}
+
+#copyright {
+	width: 275px;
+	float: left;
+}
+
+#copyright p {
+	font-size: .8em;
+	margin: 8px;
+	line-height: 1em;
+	vertical-align: middle;
+}
+
+#footerActions {
+	float: right;
+	height: 50px;
+	width: auto;
+	vertical-align: middle;
+	text-align: center;
+	margin: auto;
+	display: table-cell;
+	padding: 5px;
+}
+
+#progress {
+	float: right;
+	width: 50px;
+	height: 50px;
+	position: relative;
+}
+
+/* Sidebar
+=================================================================== */
+.sidebar {
+	background: #384042;
+	color: #677679;
+	position: relative;
+}
+
+.sidebar:before {
+	position: absolute;
+	content: '';
+	background: #384042;
+	width: 100%;
+	height: 10000px;
+	left: 0;
+}
+
+.sidebar .nav-sidebar.title {
+	text-align: center;
+	margin: 25px 0 15px 0;
+	text-transform: uppercase;
+	font-size: 10px;
+	color: #4f5b5e;
+}
+
+.sidebar .nav-sidebar.title span {
+	position: relative;
+	z-index: 2;
+}
+
+.sidebar .nav-sidebar.title span:before {
+	content: '';
+	position: absolute;
+	border-bottom: 1px solid #4f5b5e;
+	width: 200%;
+	left: -50%;
+	top: 6px;
+	z-index: -1;
+}
+
+.sidebar .nav-sidebar.title span:after {
+	content: '';
+	position: absolute;
+	background: #384042;
+	width: 120%;
+	height: 100%;
+	top: 0;
+	left: -10%;
+	z-index: -1;
+}
+
+.sidebar ul.nav.nav-sidebar {
+	margin: 0 -15px;
+}
+
+.sidebar ul.nav.nav-sidebar li a {
+	color: #677679;
+}
+
+.sidebar ul.nav.nav-sidebar li a i {
+	width: 30px;
+	text-align: center;
+	margin: 0 10px;
+	font-size: 18px;
+}
+
+.sidebar ul.nav.nav-sidebar li a.active,.sidebar ul.nav.nav-sidebar li a:hover
+	{
+	background: #2c3334;
+	color: white;
+}
+
+.sidebar ul.nav.nav-sidebar li ul {
+	display: none;
+	background: #2c3334;
+	list-style: none;
+	padding: 5px 0 5px 25px;
+}
+
+.sidebar ul.nav.nav-sidebar li ul li {
+	padding: 10px 0;
+}
+
+.sidebar.minified {
+	width: 60px;
+	z-index: 3;
+}
+
+.sidebar.minified .nav-sidebar.title {
+	display: none;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li {
+	position: relative;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li>a {
+	width: 60px;
+	position: relative;
+	padding: 0;
+	line-height: 40px;
+	text-align: center;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li>a.open {
+	cursor: default;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li>a .chevron {
+	display: none;
+	position: absolute;
+	left: 178px;
+	z-index: 1000;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li>a .text {
+	position: absolute;
+	z-index: 1000;
+	background: #2c3334;
+	min-height: 40px;
+	width: 200px;
+	padding-left: 15px;
+	top: 0px;
+	left: 60px;
+	display: none !important;
+	text-align: left;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li>ul {
+	display: none !important;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li:hover {
+	background: #2c3334;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li:hover>a {
+	position: relative;
+	cursor: pointer;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li:hover>a .chevron {
+	display: inline-block;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li:hover>a .text {
+	width: 200px;
+	display: block !important;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li:hover>ul {
+	display: block !important;
+	position: absolute;
+	top: 40px;
+	left: 60px;
+	z-index: 1000;
+	width: 200px;
+	border-left: 1px solid #2c3334;
+	background: #384042;
+	padding: 0;
+	margin: 0;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li:hover>ul>li {
+	padding: 0;
+}
+
+.sidebar.minified ul.nav.nav-sidebar>li:hover>ul>li>a {
+	display: block;
+	width: 100%;
+	line-height: 40px;
+}
+
+.sidebar #main-menu-min {
+	display: block;
+	position: relative;
+	color: #4f5b5e;
+	font-size: 14px;
+	line-height: 26px;
+	width: 30px;
+	height: 30px;
+	margin: 20px auto;
+	z-index: 2;
+	border: 1px solid #4f5b5e;
+	-webkit-border-radius: 50em;
+	-moz-border-radius: 50em;
+	border-radius: 50em;
+	text-align: center;
+}
+
+@media ( min-width : 768px) and (max-width: 991px) {
+	.navbar-form input[type=text] {
+		width: 260px !important;
+	}
+	.sidebar {
+		background: #384042;
+		color: #677679;
+		position: relative;
+	}
+	.sidebar .nav-sidebar.title {
+		display: none;
+	}
+	.sidebar ul.nav.nav-sidebar {
+		margin: 0 -15px;
+	}
+	.sidebar ul.nav.nav-sidebar li {
+		line-height: 30px;
+		width: 100%;
+	}
+	.sidebar ul.nav.nav-sidebar li a {
+		color: #677679;
+	}
+	.sidebar ul.nav.nav-sidebar li a i {
+		width: 100%;
+		text-align: center;
+		margin: 0;
+	}
+	.sidebar ul.nav.nav-sidebar li ul {
+		padding: 5px 0;
+	}
+}
+
+@media ( max-width : 767px) {
+	.container-fluid.content {
+		overflow: hidden;
+	}
+	.sidebar:before {
+		height: auto;
+	}
+	.sidebar .nav-sidebar.title {
+	    padding-top: 15px;
+		margin: 0px 0 15px 0;
+	}
+}
