@@ -1592,7 +1592,7 @@ function home(data) {
 		
 		});
 
-		$('#navMenu').append('<li class="navicon"><a id="main-menu-toggle" href="#"><i class="fa fa-bars"></i></a></li>');
+		$('#navMenu').append('<li class="navicon"><a id="main-menu-toggle" class="hidden-sm hidden-md hidden-lg" href="#"><i class="fa fa-bars"></i></a></li>');
 		
 		$(window).resize(function() {
 			if($(this).width() < 959) {
