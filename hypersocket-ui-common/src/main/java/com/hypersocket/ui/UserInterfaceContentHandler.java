@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
+import com.hypersocket.i18n.I18NService;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.events.HypersocketServerEvent;
 import com.hypersocket.server.events.WebappCreatedEvent;
@@ -48,6 +49,9 @@ public class UserInterfaceContentHandler implements ContentHandler, ApplicationL
 	@Autowired
 	IndexPageFilter indexHeaderFilter;
 	
+	@Autowired
+	I18NService i18nService; 
+	
 	ContentHandlerImpl actualHandler;
 
 	public UserInterfaceContentHandler() {
@@ -59,19 +63,21 @@ public class UserInterfaceContentHandler implements ContentHandler, ApplicationL
 		if (Boolean.getBoolean("hypersocket.development")) {
 
 			if (log.isInfoEnabled()) {
-				log.info("Installing JQuery UI handler [development mode]");
+				log.info("Installing UI handler [development mode]");
 			}
 			
 			loadFileHandler();
 		} else {
 
 			if (log.isInfoEnabled()) {
-				log.info("Installing JQuery UI handler [runtime mode]");
+				log.info("Installing UI handler [runtime mode]");
 			}
 
 			loadClasspathHandler();
 		}
 
+		i18nService.registerBundle("ui");
+		
 		actualHandler.setServer(server);		
 	}
 	

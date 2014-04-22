@@ -112,7 +112,7 @@ $.fn.propertyPage = function(opts) {
 	
 	log("Creating property page for div " + $(this).attr('id'));
 	
-	var options = $.extend({ showButtons: true, canUpdate: false }, opts);
+	var options = $.extend({ showButtons: true, canUpdate: false, title: '', icon: 'fa-th' }, opts);
 	
 	$('body').append('<div id="tabTemp"/>');
 	$('#tabTemp').hide();
@@ -122,25 +122,35 @@ $.fn.propertyPage = function(opts) {
 		});
 	}
 	$(this).empty();
-	
 	propertyDiv = $(this).attr('id');
+	
 	getJSON(options.url, null, function(data) {
 		
 		   contentTabs = '#' + propertyDiv + 'Tabs';
 		   contentActions = '#' + propertyDiv + 'Actions';
 		   revertButton = '#' + propertyDiv + 'Revert';
 		   applyButton = '#' + propertyDiv + 'Apply';
+		   panel = '#' + propertyDiv + 'Panel';
 		   
-		   $('#'+propertyDiv).append('<div id="' + propertyDiv + 'Content"><ul id="' + propertyDiv + 'Tabs"/></div>');
+		   $('#'+propertyDiv).append('<div class="col-md-12" style="padding-left: 0px"><div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' + options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' + propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' + propertyDiv + 'Content" class="tab-content"></div></div></div></div>');
 		   
+//		   <div class="panel-footer">
+//           <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
+//           <button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Reset</button>
+//       </div>
+       
 		   if(options.showButtons) {
-			   $('#'+propertyDiv).append('<div id="' + propertyDiv + 'Actions" class="tabActions"><button id="' + propertyDiv + 'Revert">' + getResource('text.revert') + '</button><button id="' + propertyDiv + 'Apply">' + getResource('text.apply') + '</button></div>');
+			   $(panel).append('<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' + propertyDiv + 'Revert"><i class="fa fa-ban"></i>' + getResource('text.revert') + '</button><button class="btn btn-small btn-primary" id="' + propertyDiv + 'Apply"><i class="fa fa-check"></i>' + getResource('text.apply') + '</button></div>');
 		   }
+		   
+		   var first = true;
 		   $.each(data.resources, function() {
 			
 			   tab = "tab" + this.id;
-			   $(contentTabs).append('<li><a href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
-			   $('#' + propertyDiv + 'Content').append('<div id="' + tab +'" class="tabContent"/>');
+			   $(contentTabs).append('<li><a ' + (first ? 'class="active clickableTab"' : 'class="clickableTab"') + ' href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
+			   first = false;
+			   
+			   $('#' + propertyDiv + 'Content').append('<div id="' + tab +'" class="tab-pane"/>');
 			   
 			   var toSort = [];
 			   $.each(this.templates, function() {
@@ -158,12 +168,10 @@ $.fn.propertyPage = function(opts) {
 			   
 			   $.each(toSort, function() {
 				   
-				  $('#' + tab).append('<div class="propertyItem" id="' + tab + '_item' + this.id + '"/>');
-				  $('#' + tab + '_item' + this.id).append('<div class="propertyLabel" id="' + tab + '_label' + this.id + '"><span id="' + tab + '_info' + this.id + '" title="' + getResource(this.resourceKey + '.info') + '" class="ui-icon ui-icon-info"></span>&nbsp;<span>' + getResource(this.resourceKey) + '</span></div>');
-				  $('#' + tab + '_item' + this.id).append('<div class="propertyValue" id="' + tab + '_value' + this.id + '"></div>');
-				  
-				  
-				  $('#' + tab + '_info' + this.id).tooltip();
+				  $('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
+				  $('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResource(this.resourceKey) + '</label>');
+				  $('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
+			
 				  
 				  x = JSON.parse(this.metaData);
 				  var obj = $.extend({ restart: false, nameIsResourceKey: false }, x);
@@ -172,28 +180,57 @@ $.fn.propertyPage = function(opts) {
 				  var inputTab = tab; 
 				  var inputObj = this;
 				  if(obj.inputType=='textarea') {
-					  $('#' + tab + '_value' + this.id).append('<textarea ' + (options.canUpdate ? '' : 'disabled ') + 'class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
+					  $('#' + tab + '_value' + this.id).append('<textarea ' + (options.canUpdate ? '' : 'disabled ') + 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
 				  } else if(obj.inputType=='select') {
-					  $('#' + tab + '_value' + this.id).append('<select ' + (options.canUpdate ? '' : 'disabled ') + 'class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
+					  
+					  $('#' + tab + '_value' + this.id).append('<div class="btn-group"><input id="select_' + tab + this.id + '" class="propertyInput" type="hidden" name="select_value_' + this.id + '" value="' + this.value + '"><button id="select_button_' + this.id + '" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">' + (obj.nameIsResourceKey ? getResource(this.defaultValue) : this.defaultValue) + '&nbsp;<span class="caret"></span></button><ul id="' + tab + '_input' + this.id + '" class="dropdown-menu" role="menu"></div>');
 					  if(obj.options) {
 						  for (var i = 0; i < obj.options.length; i++) {
 							  if(this.value==obj.options[i].value) {
-								  $('#' + tab + '_input' + this.id).append('<option selected value="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</option>');
+								  $('#' + tab + '_input' + this.id).append('<li><a class="selectButton_' + this.id + '" href="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</a></li>');
 							  } else {
-								  $('#' + tab + '_input' + this.id).append('<option value="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</option>');
+								  $('#' + tab + '_input' + this.id).append('<li><a class="selectButton_' + this.id + '" href="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</a></li>');
 							  }
 						  };
 					  } else if(obj.url) {
 						  getJSON(obj.url, null, function(data) {
 								$.each(data.resources, function(idx, option) {
 									if(option.value==inputObj.value) {
-										  $('#' + inputTab + '_input' + inputId).append('<option selected value="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</option>');
+										  $('#' + inputTab + '_input' + inputId).append('<li><a class="selectButton_' + inputId + '" href="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</a></li>');
 									  } else {
-										  $('#' + inputTab + '_input' + inputId).append('<option value="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</option>');
+										  $('#' + inputTab + '_input' + inputId).append('<li><a class="selectButton' + inputId + '" href="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</a></li>');
 									  }
 								});	 
 							});
 					  }
+					  
+					  
+					  $('#select_button_' + this.id).click(function(evt) {
+						  evt.preventDefault();
+						  $('#select_value_' + this.id).value($(this).attr("href"));
+						  $('#select_button_' + this.id).value($(this).text() + " ");
+					  });
+					  
+//					  $('#' + tab + '_value' + this.id).append('<select ' + (options.canUpdate ? '' : 'disabled ') + 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
+//					  if(obj.options) {
+//						  for (var i = 0; i < obj.options.length; i++) {
+//							  if(this.value==obj.options[i].value) {
+//								  $('#' + tab + '_input' + this.id).append('<option selected value="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</option>');
+//							  } else {
+//								  $('#' + tab + '_input' + this.id).append('<option value="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</option>');
+//							  }
+//						  };
+//					  } else if(obj.url) {
+//						  getJSON(obj.url, null, function(data) {
+//								$.each(data.resources, function(idx, option) {
+//									if(option.value==inputObj.value) {
+//										  $('#' + inputTab + '_input' + inputId).append('<option selected value="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</option>');
+//									  } else {
+//										  $('#' + inputTab + '_input' + inputId).append('<option value="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</option>');
+//									  }
+//								});	 
+//							});
+//					  }
 			      } else if(obj.inputType=='multipleSelect') {
 			    	  $('#' + tab + '_value' + this.id).multipleSelect({ 
 			    			  url: obj.url,
@@ -205,8 +242,8 @@ $.fn.propertyPage = function(opts) {
 			    			  change: function() {
 			    				  $(this).markUpdated();
 								  if(options.showButtons) {
-									  $(revertButton).button({disabled:false});
-									  $(applyButton).button({disabled:false});
+									  $(revertButton).attr('disabled', false);
+									  $(applyButton).attr('disabled', false);
 								  }
 			    			  }
 			    	  });
@@ -221,8 +258,8 @@ $.fn.propertyPage = function(opts) {
 		    			  change: function() {
 		    				  $(this).markUpdated();
 							  if(options.showButtons) {
-								  $(revertButton).button({disabled:false});
-								  $(applyButton).button({disabled:false});
+								  $(revertButton).attr('disabled', false);
+								  $(applyButton).attr('disabled', false);
 							  }
 		    			  }
 			    	  });
@@ -230,26 +267,13 @@ $.fn.propertyPage = function(opts) {
 		    	  
 		    	
 		      } else if(obj.inputType=='password') {
-					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="password" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
+					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="password" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
 				  } else if(obj.inputType=='boolean') {
-					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
+					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
 				  }  else if(obj.inputType=='switch') {
-					  $('#' + tab + '_value' + this.id).append('<select ' + (options.canUpdate ? '' : 'disabled ') + ' class="propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"><option value="true" ' + (stripNull(this.value) == 'true' ? 'selected="selected"' : '') + '>' + getResource("text.on") + '</option><option value="false" ' + (stripNull(this.value) == 'false' ? 'selected="selected"' : '') + '>' + getResource("text.off") + '</option></select>');
-					  
-					  $('#' + tab + '_input' + this.id).toggleSwitch({
-						  highlight: true,
-						  width: 30, 
-						  change: function(e) {
-						   
-						  },
-						  stop: function(e,val) {
-						    
-						  }
-						});
-				  
-//					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
+					  $('#' + tab + '_value' + this.id).append('<label class="switch"><input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="switch-input propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '><span class="switch-label" data-on="' + getResource("text.on") + '" data-off="' + getResource("text.off") + '"></span> <span class="switch-handle"></span></label>');
 				  } else if(obj.inputType=='image') {
-					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="file" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
+					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="file" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
 					  $('#' + tab + '_value' + this.id).append('<img class="imagePreview" src="' + this.value + '">');
 					  var input = $('#' + tab + '_input' + this.id);  
 					  input.change(function() {
@@ -263,15 +287,30 @@ $.fn.propertyPage = function(opts) {
 				            reader.readAsBinaryString(input[0].files[0]);
 					  });
 					  
+				  } 
+				  else if(obj.inputType=='slider') {
+					  
+					  $('#' + tab + '_value' + this.id).append('<div id="slider_' + this.id + '" class="slider"></div><div class="slider-value"><span id="slider_value_' + this.id + '">' + this.value + ' ' + getResource(obj.labelResourceKey) + '</span></div>');
+					  $('#slider_' + this.id).slider({ min: obj.minValue, max: obj.maxValue, value: this.value, range: 'min'});
+					  var valueElement = $('#slider_value_' + this.id);
+					  $('#slider_' + this.id ).slider({
+						  change: function( event, ui ) {
+							 valueElement.text(ui.value + ' ' + getResource(obj.labelResourceKey));
+							 $(revertButton).attr('disabled', false);
+							 $(applyButton).attr('disabled', false);
+						  }
+					  });
 				  } else {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') 
-							  + 'type="text" class="ui-widget-content ui-corner-all propertyInput" id="' + tab + '_input' + this.id 
+							  + 'type="text" class="form-control propertyInput" id="' + tab + '_input' + this.id 
 							  + '" size="' + (obj.size ? obj.size : 30) 
 							  + '" placeholder="' + (obj.placeholder ? obj.placeholder : '') 
 							  + '" maxlength="' + (obj.maxlength ? obj.maxlength : '') 
 							  + '" name="input' + this.id 
 							  + '" value="' + stripNull(this.value) + '"/>');
 				  }
+				  
+				  $('#' + tab + '_value' + this.id).append('<div><span class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
 				  
 				  $('#' + tab + '_input' + this.id).prepareProperty(obj, this.id, this.value, this.resourceKey);
 				  
@@ -280,21 +319,31 @@ $.fn.propertyPage = function(opts) {
 					  if($(this).validateProperty()) {
 						  $(this).markUpdated();
 						  if(options.showButtons) {
-							  $(revertButton).button({disabled:false});
-							  $(applyButton).button({disabled:false});
+							  $(revertButton).attr('disabled', false);
+							  $(applyButton).attr('disabled', false);
 						  }
 					  } else {
 						    if($('#error' + this.id).length == 0) {
 						  		$(this).after('<span id="' + tab + '_error' + this.id + '" class="ui-icon ui-icon-alert"></span>');
 				  			}
 						    if(options.showButtons) {
-						    	$(applyButton).button({disabled:true});
+						    	$(revertButton).attr('disabled', true);
+								$(applyButton).attr('disabled', true);
 						    }
 					  }
 				  });
 				  
 			   });
+			   
+
 		   });
+		   
+		   $('.clickableTab').click(function(e) {
+			   e.preventDefault();
+			   $(this).tab('show');
+		   });
+		   
+		   $('.clickableTab').first().tab('show');
 		   
 		   if(options.additionalTabs) {
 			   $.each(options.additionalTabs, function() {
@@ -305,17 +354,20 @@ $.fn.propertyPage = function(opts) {
 		   
 		   $('#tabTemp').remove();
 		   
-		   $('#' + propertyDiv + 'Content').tabs();
+		   //$('#' + propertyDiv + 'Content').tabs();
 		   
 		   if(options.showButtons) {
-			   $(revertButton).button({disabled: true}).click(function() {
+			   $(revertButton).attr('disabled', true);
+			   $(applyButton).attr('disabled', true);
+			   
+			   $(revertButton).click(function() {
 				   $('.propertyInput').each(function(i,obj) {
 					  $(this).revertProperty(); 
 				   });
-				   $(revertButton).button({disabled:true});
-				   $(applyButton).button({disabled:true});
+				   $(revertButton).attr('disabled', true);
+				   $(applyButton).attr('disabled', true);
 			   });
-			   $(applyButton).button({disabled: true}).click(function() {
+			   $(applyButton).click(function() {
 	
 				   $('#' + propertyDiv).saveProperties(false, function(items) {
 					   postJSON(options.url, items, function(data) {
@@ -326,8 +378,8 @@ $.fn.propertyPage = function(opts) {
 						   } else {
 							   showError(false, data.message);
 						   }
-						  $(revertButton).button({disabled:true});
-						  $(applyButton).button({disabled:true});	
+						  $(revertButton).attr('disabled', true);
+						  $(applyButton).attr('disabled', true);	
 					   });
 				   });
 				   
@@ -515,18 +567,19 @@ $.fn.multipleSelect = function(data) {
 		$('#' + $(this).attr('id') + 'Buttons').remove();
 		$('#' + $(this).attr('id') + 'Included').remove();
 		
+		$(this).addClass('container-fluid');
 		if(getResourceNoDefault(options.resourceKey + '.' + $(this).attr('id') + '.tooltip')!=undefined) {
 			$(this).append('<div class="multiselectTooltip"><span id="' + $(this).attr('id') + 'Tooltip" class="ui-icon ui-icon-info" title="' + getResource(options.resourceKey + '.' + $(this).attr('id') + '.tooltip') + '"></span></div>');
 			$('#' + $(this).attr('id') + 'Tooltip').tooltip();
 		}
-		$(this).append('<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"><label>' + getResource('text.excluded') + '</label></div>');
-		$('#' + $(this).attr('id') + 'Excluded').append('<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(this).attr('id') + 'ExcludedSelect" class="formInput text ui-widget-content ui-corner-all"/>');
+		$(this).append('<div class="excludedList col-md-5" id="' + $(this).attr('id') + 'Excluded"><label>' + getResource('text.excluded') + '</label></div>');
+		$('#' + $(this).attr('id') + 'Excluded').append('<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(this).attr('id') + 'ExcludedSelect" class="formInput text form-control"/>');
 	
 		$(this).append('<div class="listButtons" id="' + $(this).attr('id') + 'Buttons"/>');
-		$('#' + $(this).attr('id') + 'Buttons').append('<button id="' + $(this).attr('id') + 'AddButton">&gt;</button><br/>');
-		$('#' + $(this).attr('id') + 'Buttons').append('<button id="' + $(this).attr('id') + 'RemoveButton">&lt;</button>');
-		$(this).append('<div class="includedList" id="' + $(this).attr('id') + 'Included"><label>' + getResource('text.included') + '</label></div>');
-		$('#' + $(this).attr('id') + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(this).attr('id') + 'IncludedSelect" class="formInput text ui-widget-content ui-corner-all' + (options.isPropertyInput ? ' propertyInput' : '' ) + '"/>');
+		$('#' + $(this).attr('id') + 'Buttons').append('<button class="btn-multiple-select btn btn-primary" id="' + $(this).attr('id') + 'AddButton"><i class="fa fa-chevron-circle-right"></i></button><br/>');
+		$('#' + $(this).attr('id') + 'Buttons').append('<button class="btn-multiple-select btn btn-primary" id="' + $(this).attr('id') + 'RemoveButton"><i class="fa fa-chevron-circle-left"></i></button>');
+		$(this).append('<div class="includedList col-md-5" id="' + $(this).attr('id') + 'Included"><label>' + getResource('text.included') + '</label></div>');
+		$('#' + $(this).attr('id') + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(this).attr('id') + 'IncludedSelect" class="formInput text form-control' + (options.isPropertyInput ? ' propertyInput' : '' ) + '"/>');
 	
 		$('#' + $(this).attr('id') + 'AddButton').button();
 		$('#' + $(this).attr('id') + 'RemoveButton').button();
@@ -711,14 +764,14 @@ $.fn.multipleTextInput = function(data) {
 		}
 //		$(this).append('<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"><label>' + getResource('text.excluded') + '</label></div>');
 		$(this).append('<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"></div>');
-		$('#' + $(this).attr('id') + 'Excluded').append('<input type="text" ' + (!options.disabled ? '' : 'disabled ') + 'id="' + $(this).attr('id') + 'ExcludedSelect" class="formInput text ui-widget-content ui-corner-all" />');
+		$('#' + $(this).attr('id') + 'Excluded').append('<input type="text" ' + (!options.disabled ? '' : 'disabled ') + 'id="' + $(this).attr('id') + 'ExcludedSelect" class="formInput text form-control" />');
 	
 		$(this).append('<div class="multipleTextInputButtons" id="' + $(this).attr('id') + 'Buttons"/>');
 		$('#' + $(this).attr('id') + 'Buttons').append('<button id="' + $(this).attr('id') + 'AddButton">&gt;</button><br/>');
 		$('#' + $(this).attr('id') + 'Buttons').append('<button id="' + $(this).attr('id') + 'RemoveButton">&lt;</button>');
 //		$(this).append('<div class="includedList" id="' + $(this).attr('id') + 'Included"><label>' + getResource('text.included') + '</label></div>');
 		$(this).append('<div class="includedList" id="' + $(this).attr('id') + 'Included"></div>');
-		$('#' + $(this).attr('id') + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(this).attr('id') + 'IncludedSelect" class="formInput text ui-widget-content ui-corner-all' + (options.isPropertyInput ? ' propertyInput' : '' ) + '"/>');
+		$('#' + $(this).attr('id') + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(this).attr('id') + 'IncludedSelect" class="formInput text form-control' + (options.isPropertyInput ? ' propertyInput' : '' ) + '"/>');
 	
 		$('#' + $(this).attr('id') + 'AddButton').button();
 		$('#' + $(this).attr('id') + 'RemoveButton').button();
@@ -1301,7 +1354,7 @@ function showLogon(credentials, message) {
 	$('div[role="dialog"]').remove();
 	$('#actionLogoff').remove();
 	$('#nav').hide();
-	
+	$('#navMenu').empty();
 	$.getJSON('../api/logon', credentials, 
 			 function(data) {
 
@@ -1326,25 +1379,24 @@ function processLogon(data, message) {
 		
 		$('#currentRealm').remove();
 		$('#lang').remove();
+		$('#navMenu').empty();
+		
 		if(data.showLocales) {
-			$('#footerActions').append('<select id="lang"></select>');
-			$('#lang').append('<option value="en">' + getResource("en") + '</option>');
-			$('#lang').append('<option value="da">' + getResource("da") + '</option>');
-			$('#lang').append('<option value="nl">' + getResource("nl") + '</option>');
-			$('#lang').append('<option value="fi">' + getResource("fi") + '</option>');
-			$('#lang').append('<option value="fr">' + getResource("fr") + '</option>');
-			$('#lang').append('<option value="de">' + getResource("de") + '</option>');
-			$('#lang').append('<option value="it">' + getResource("it") + '</option>');
-			$('#lang').append('<option value="no">' + getResource("no") + '</option>');
-			$('#lang').append('<option value="pl">' + getResource("pl") + '</option>');
-			$('#lang').append('<option value="ru">' + getResource("ru") + '</option>');
-			$('#lang').append('<option value="sv">' + getResource("sv") + '</option>');
-			$('#lang').append('<option value="es">' + getResource("es") + '</option>');
-			$('#lang').append('<option value="ja">' + getResource("ja") + '</option>');
-			
-			$("#lang option").filter(function() {
-			    return $(this).val() == $(document).data('i18n')['LANG']; 
-			}).prop('selected', true);
+			$('#navMenu').append('<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-globe"></i></a></li>');
+			$('#langMenu').append('<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("en") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("da") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("nl") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("fi") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("fr") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("de") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("it") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("no") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("pl") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("ru") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("sv") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("es") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("ja") + '</li>');
 		
 			$('#lang').change(function() {
 				
@@ -1414,7 +1466,7 @@ function processLogon(data, message) {
 
 		});
 	
-		$('#logonForm').append('<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' + getResource("text.logon") + '</button>');
+		$('#logonForm').append('<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' + getResource("text.logon") + '<i style="float: right; padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
 		$('#logonButton').click(function(evt) {
 			evt.preventDefault();
 			credentials = 'action=logon';
@@ -1485,7 +1537,7 @@ function home(data) {
 	
 	$(contentDiv).empty();
 	//$(contentDiv).append('<div class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div><a href="#" id="main-menu-min" class="full visible-md visible-lg"><i class="fa fa-angle-double-left"></i></a></div>');
-	$(contentDiv).append('<div class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
+	$(contentDiv).append('<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
 	
 	// Banner message (Todo: dialog)
 //	if(data.bannerMsg) {
@@ -1506,46 +1558,10 @@ function home(data) {
 	
 		log("Received menus");
 		
-		if(currentMenu==null) {
-			currentMenu = data.menus[0];
-		}
-	
 		$('#currentRealm').remove();
 		if(data.realms) {
 			$('#navActions').append('<select id="currentRealm"></select>');
 			loadRealms(data.realms);
-		}
-		
-		$('#lang').remove();
-		if(showLocales) {
-			$('#footerActions').append('<select id="lang"></select>');
-			$('#lang').append('<option value="en">' + getResource("en") + '</option>');
-			$('#lang').append('<option value="da">' + getResource("da") + '</option>');
-			$('#lang').append('<option value="nl">' + getResource("nl") + '</option>');
-			$('#lang').append('<option value="fi">' + getResource("fi") + '</option>');
-			$('#lang').append('<option value="fr">' + getResource("fr") + '</option>');
-			$('#lang').append('<option value="de">' + getResource("de") + '</option>');
-			$('#lang').append('<option value="it">' + getResource("it") + '</option>');
-			$('#lang').append('<option value="no">' + getResource("no") + '</option>');
-			$('#lang').append('<option value="pl">' + getResource("pl") + '</option>');
-			$('#lang').append('<option value="ru">' + getResource("ru") + '</option>');
-			$('#lang').append('<option value="sv">' + getResource("sv") + '</option>');
-			$('#lang').append('<option value="es">' + getResource("es") + '</option>');
-			$('#lang').append('<option value="ja">' + getResource("ja") + '</option>');
-			
-		
-			$("#lang option").filter(function() {
-			    return $(this).val() == $(document).data('i18n')['LANG']; 
-			}).prop('selected', true);
-		
-			$('#lang').change(function() {
-				
-				log("Switching language to " + this.value);
-				
-				getJSON('switchLanguage/' + this.value, null, function() {
-						document.location.reload();
-				});
-			});
 		}
 		
        
@@ -1557,29 +1573,90 @@ function home(data) {
 				var menu = '#sub_' + this.id;
 				$("#menu").append('<ul id="sub_' + this.id + '" class="nav nav-sidebar"/>');
 				$.each(this.menus, function() {
-					$(menu).append('<li><a id="' + this.id + '" href="#"><i class="fa fa-bar-chart-o"></i><span class="hidden-sm text">' + getResource(this.resourceKey + '.label') + '</span></span></a></li>');
+					$(menu).append('<li><a id="' + this.id + '" href="#"><i class="fa ' + this.icon + '"></i><span class="hidden-sm text">' + getResource(this.resourceKey + '.label') + '</span></span></a></li>');
 					$('#' + this.id).data('menu', this);
 					$('#' + this.id).click(function() {
 						$(this).addClass("active");
 						loadMenu($(this).data('menu'));
 					});
+					if(currentMenu==null) {
+						currentMenu = this;
+					}
 				});
 			}
 			
-//			$('#' + this.id).click(function() {
-//				$(this).addClass("selected");
-//				loadMenu($(this).data('menu'));
-//			});
+			$('#' + this.id).click(function() {
+				$(this).addClass("active");
+				loadMenu($(this).data('menu'));
+			});
 		
 		});
 
-//		$('#menu').ptMenu();
+		$('#navMenu').append('<li class="navicon"><a id="main-menu-toggle" href="#"><i class="fa fa-bars"></i></a></li>');
+		
+		$(window).resize(function() {
+			if($(this).width() < 959) {
+				if(!$('#main-menu').data('toggled')) {
+					$('#main-menu').addClass('hidden-xs');
+				}
+			} else {
+				$('#main-menu').data('toggled', false);
+				$('#main-menu').removeClass('hidden-xs');
+			}
+		})
+		
+		$('#main-menu-toggle').click(function() {
+			if($(window).width() < 959) {
+				$('#main-menu').data('toggled', true);
+				if($('#main-menu').hasClass('hidden-xs')) {
+					$('#main-menu').removeClass('hidden-xs');
+					$('#main-menu').show();
+				} else {
+					$('#main-menu').addClass('hidden-xs');
+				}
+			} else {
+				$('#main-menu').data('toggled', false);
+				if(!$('#main-menu').is(':visible')) {
+					$('#main-menu').show();
+				} else {
+					$('#main-menu').hide();
+				}
+				
+			}
+		});
+		
+		if(showLocales) {
+			$('#navMenu').append('<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-globe"></i></a></li>');
+			$('#langMenu').append('<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("en") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("da") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("nl") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("fi") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("fr") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("de") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("it") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("no") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("pl") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("ru") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("sv") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("es") + '</li>');
+			$('#lang').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("ja") + '</li>');
+
+			$('#lang').change(function() {
+				
+				log("Switching language to " + this.value);
+				
+				getJSON('switchLanguage/' + this.value, null, function() {
+						document.location.reload();
+				});
+			});
+		}
 		
 		// Load current page
-		$(contentDiv).append('<div id="mainContent"/>');
+		$(contentDiv).append('<div id="mainContent" class="col-md-10 col-sm-11 main"/>');
 		
 		// Setup header actions
-		$('#headerActions').append('&nbsp;<a title="' + getResource('label.logoff') + '" id="actionLogoff" href="#"><span class="ui-icon ui-icon-power"></span></a>');
+		$('#navMenu').append('<li class="navicon"><a id="actionLogoff" href="#"><i class="fa fa-sign-out"></i></a></li>');
 		
 		$('#actionLogoff').tooltip();
 		$('#actionLogoff').click(function() {
