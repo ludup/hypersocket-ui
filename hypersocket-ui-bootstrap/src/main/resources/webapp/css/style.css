@@ -123,6 +123,11 @@ h2 {
 	color: #374767;
 }
 
+#logonBanner {
+	text-align: center;
+	margin: 0 auto;
+}
+
 .excludedList {
 	float: left;
 	width: 40%;
@@ -478,6 +483,7 @@ h2 {
 	box-shadow: none;
 	border: 1px solid #e1e6ef;
 	margin-bottom: 30px;
+	height: inherit;
 }
 
 .panel.panel-default .panel-heading {
@@ -544,6 +550,26 @@ h2 {
 	padding: 11px 15px;
 	height: 40px;
 	color: #374767;
+}
+
+.panel .panel-heading .panel-actions i {
+	display: inline-block;
+	color: #e1e6ef;
+	text-align: center;
+	height: 40px;
+	width: 40px;
+	padding: 12px 0px;
+	-webkit-transition: all 0.1s ease-in-out;
+	-moz-transition: all 0.1s ease-in-out;
+	-ms-transition: all 0.1s ease-in-out;
+	-o-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
+	text-decoration: none;
+}
+
+.panel .panel-heading .panel-actions {
+	float: right;
+	margin-right: -15px;
 }
 
 .slider .ui-slider-handle {

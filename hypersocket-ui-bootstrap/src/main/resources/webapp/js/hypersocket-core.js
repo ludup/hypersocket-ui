@@ -1367,7 +1367,7 @@ function processLogon(data, message) {
 	log("Received logon data");
 	
 	$('#copyright').empty();
-	$('#copyright').append("<p>" + getResource("label.version") + " " + data.version + "</p><p>&copy; 2013 Hypersocket Limited. All rights reserved.</p>");
+	$('#copyright').append("<p>" + getResource("label.version") + " " + data.version + "</p><p>&copy; 2013-14 Hypersocket Limited. All rights reserved.</p>");
 	
 	 if(!data.success) {
 	
@@ -1408,12 +1408,14 @@ function processLogon(data, message) {
 			});
 		}
 		
-		$('#logonForm').append('<h2 class="form-signin-heading">Please sign in</h2>');
+		
 
 		if(data['errorMsg']) {
-			showError(false, (data.lastErrorIsResourceKey ? getResource(data['errorMsg']) : data['errorMsg']));
+			$('#logonForm').append('<h2 class="form-signin-heading">' + (data.lastErrorIsResourceKey ? getResource(data['errorMsg']) : data['errorMsg']) + '</h2>');
 		} else if(message) {
-			showError(false, message);
+			$('#logonForm').append('<h2 class="form-signin-heading">' + message + '</h2>');
+		} else {
+			$('#logonForm').append('<h2 class="form-signin-heading"></h2>');
 		}				
 		
 		
@@ -1453,14 +1455,6 @@ function processLogon(data, message) {
 						+ '" placeholder="' + getResource(this.resourceKey + ".label")
 						+ '" id="' + this.resourceKey
 						+ '" value="' + this.defaultValue + '"/>');
-				
-				if(this.type=="text" || this.type=="password") {
-					$('#' + this.resourceKey).keyup(function(e) {
-						if(e.keyCode == 13) {
-							$('#logonButton').trigger("click");
-						}
-					});
-				}
 			}
 			
 
@@ -1468,6 +1462,9 @@ function processLogon(data, message) {
 	
 		$('#logonForm').append('<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' + getResource("text.logon") + '<i style="float: right; padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
 		$('#logonButton').click(function(evt) {
+			
+			log("Submitting logon");
+			
 			evt.preventDefault();
 			credentials = 'action=logon';
 			$.each(data['formTemplate']['inputFields'], function() {
@@ -1481,7 +1478,7 @@ function processLogon(data, message) {
 		// Logon banner?
 		
 		if(data['bannerMsg']) {
-			$(contentDiv).append('<div id="logonBanner"><p>' + data['bannerMsg'] + '</p></div>');
+			$(contentDiv).append('<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + data['bannerMsg'] + '</p></div><div class="col-md-3"></div>');
 		}
 		
 	 } else {
@@ -1533,30 +1530,18 @@ function home(data) {
 	$('#navMenu').empty();
 	$('#nav').show();
 	$('#informationBar').empty();
-	
+	$('#main-menu').remove();
 	
 	$(contentDiv).empty();
-	//$(contentDiv).append('<div class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div><a href="#" id="main-menu-min" class="full visible-md visible-lg"><i class="fa fa-angle-double-left"></i></a></div>');
 	$(contentDiv).append('<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
-	
-	// Banner message (Todo: dialog)
-//	if(data.bannerMsg) {
-//		$.pnotify_remove_all();
-//		$.pnotify.defaults.styling = "jqueryui";
-//		$.pnotify({
-//			title: "Logon",
-//			text:  data.bannerMsg,
-//			delay: 2000,
-//			hide: true,
-//			animation: 'fade'
-//		});
-//	}
 	
 	currentRealm = data.session.currentRealm;
 	var showLocales = data.showLocales;
 	getJSON('menus', null, function(data) {
 	
 		log("Received menus");
+		
+		$('#menu').empty();
 		
 		$('#currentRealm').remove();
 		if(data.realms) {
