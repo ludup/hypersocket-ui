@@ -189,6 +189,10 @@ h2 {
 	margin-bottom: 10px;
 }
 
+.btn-multiple-select i {
+	margin-left: 5px;
+}
+
 #footer {
 	padding: 5 5 5 5px;
 	position: fixed;

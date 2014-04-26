@@ -50,7 +50,17 @@ $.fn.revertProperty = function() {
 	} else if($(this).data('isMultipleTextInput')) {
 		$(this).multipleTextInput();
 	} else {
-		$(this).val($(this).data('originalValue'));
+		var val = $(this).data('originalValue');
+		$(this).val(val);
+		if($(this).hasClass('switch-input')) {
+			val = (val == 'true' ? true : false);
+			var checked = $(this).prop('checked');
+			log($(this).attr('id') + ' checked=' + checked + ' and has value ' + val);
+			if(checked!=val) {
+				$(this).trigger('click');
+			} 
+		} 
+		$(this).attr('checked', val ? 'checked' : '');
 		$(this).data('updated', false);
 	}
 };
@@ -133,11 +143,6 @@ $.fn.propertyPage = function(opts) {
 		   panel = '#' + propertyDiv + 'Panel';
 		   
 		   $('#'+propertyDiv).append('<div class="col-md-12" style="padding-left: 0px"><div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' + options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' + propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' + propertyDiv + 'Content" class="tab-content"></div></div></div></div>');
-		   
-//		   <div class="panel-footer">
-//           <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
-//           <button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i> Reset</button>
-//       </div>
        
 		   if(options.showButtons) {
 			   $(panel).append('<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' + propertyDiv + 'Revert"><i class="fa fa-ban"></i>' + getResource('text.revert') + '</button><button class="btn btn-small btn-primary" id="' + propertyDiv + 'Apply"><i class="fa fa-check"></i>' + getResource('text.apply') + '</button></div>');
@@ -183,56 +188,56 @@ $.fn.propertyPage = function(opts) {
 					  $('#' + tab + '_value' + this.id).append('<textarea ' + (options.canUpdate ? '' : 'disabled ') + 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
 				  } else if(obj.inputType=='select') {
 					  
-					  $('#' + tab + '_value' + this.id).append('<div class="btn-group"><input id="select_' + tab + this.id + '" class="propertyInput" type="hidden" name="select_value_' + this.id + '" value="' + this.value + '"><button id="select_button_' + this.id + '" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">' + (obj.nameIsResourceKey ? getResource(this.defaultValue) : this.defaultValue) + '&nbsp;<span class="caret"></span></button><ul id="' + tab + '_input' + this.id + '" class="dropdown-menu" role="menu"></div>');
+					  $('#' + tab + '_value' + this.id).append('<div class="btn-group"><input id="' + tab + '_input' + this.id + '" class="propertyInput" type="hidden" name="select_value_' + this.id + '" value="' + this.value + '"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span id="select_button_' + this.id + '">' + (obj.nameIsResourceKey ? getResource(this.value) : this.value) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="' + inputTab + '_select' + inputId + '" class="dropdown-menu" role="menu"></div>');
 					  if(obj.options) {
 						  for (var i = 0; i < obj.options.length; i++) {
 							  if(this.value==obj.options[i].value) {
-								  $('#' + tab + '_input' + this.id).append('<li><a class="selectButton_' + this.id + '" href="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</a></li>');
+								  $('#select_button_' + inputId).text(obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name);
+								  $('#' + tab + '_select' + this.id).append('<li><a class="selectButton_' + this.id + '" href="#" data-value="' + stripNull(obj.options[i].value) + '" data-label="' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</a></li>');
 							  } else {
-								  $('#' + tab + '_input' + this.id).append('<li><a class="selectButton_' + this.id + '" href="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</a></li>');
+								  $('#' + tab + '_select' + this.id).append('<li><a class="selectButton_' + this.id + '" href="#" data-value="' + stripNull(obj.options[i].value) + '" data-label="' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</a></li>');
 							  }
 						  };
+						  
+						  $('.selectButton_' + inputId).on('click', function(evt) {
+							  evt.preventDefault();
+							  $('#' + inputTab + '_input' + inputId).val($(this).attr('data-value'));
+							  $('#select_button_' + inputId).text($(this).attr('data-label'));
+							  	$('#' + inputTab + '_input' + inputId).markUpdated();
+								if(options.showButtons) {
+									$(revertButton).attr('disabled', false);
+									$(applyButton).attr('disabled', false);
+								}
+						  });
+						  
 					  } else if(obj.url) {
 						  getJSON(obj.url, null, function(data) {
 								$.each(data.resources, function(idx, option) {
 									if(option.value==inputObj.value) {
-										  $('#' + inputTab + '_input' + inputId).append('<li><a class="selectButton_' + inputId + '" href="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</a></li>');
+										$('#select_button_' + inputId).text(obj.nameIsResourceKey ? getResource(option.name) : option.name);
+										  $('#' + inputTab + '_select' + inputId).append('<li><a class="selectButton_' + inputId + '" href="#" data-value="' + stripNull(option.value) + '" data-label="' + (obj.nameIsResourceKey ? getResource(option.name) :option.name) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</a></li>');
 									  } else {
-										  $('#' + inputTab + '_input' + inputId).append('<li><a class="selectButton' + inputId + '" href="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</a></li>');
+										  $('#' + inputTab + '_select' + inputId).append('<li><a class="selectButton_' + inputId + '" href="#" data-value="' + stripNull(option.value) + '" data-label="' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</a></li>');
 									  }
 								});	 
+								
+								  $('.selectButton_' + inputId).on('click', function(evt) {
+									  evt.preventDefault();
+									  $('#' + inputTab + '_input' + inputId).val($(this).attr('data-value'));
+									  $('#select_button_' + inputId).text($(this).attr('data-label'));
+									  	$('#' + inputTab + '_input' + inputId).markUpdated();
+										if(options.showButtons) {
+											$(revertButton).attr('disabled', false);
+											$(applyButton).attr('disabled', false);
+										}
+									  
+								  });
 							});
 					  }
 					  
-					  
-					  $('#select_button_' + this.id).click(function(evt) {
-						  evt.preventDefault();
-						  $('#select_value_' + this.id).value($(this).attr("href"));
-						  $('#select_button_' + this.id).value($(this).text() + " ");
-					  });
-					  
-//					  $('#' + tab + '_value' + this.id).append('<select ' + (options.canUpdate ? '' : 'disabled ') + 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
-//					  if(obj.options) {
-//						  for (var i = 0; i < obj.options.length; i++) {
-//							  if(this.value==obj.options[i].value) {
-//								  $('#' + tab + '_input' + this.id).append('<option selected value="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</option>');
-//							  } else {
-//								  $('#' + tab + '_input' + this.id).append('<option value="' + stripNull(obj.options[i].value) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</option>');
-//							  }
-//						  };
-//					  } else if(obj.url) {
-//						  getJSON(obj.url, null, function(data) {
-//								$.each(data.resources, function(idx, option) {
-//									if(option.value==inputObj.value) {
-//										  $('#' + inputTab + '_input' + inputId).append('<option selected value="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</option>');
-//									  } else {
-//										  $('#' + inputTab + '_input' + inputId).append('<option value="' + stripNull(option.value) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</option>');
-//									  }
-//								});	 
-//							});
-//					  }
 			      } else if(obj.inputType=='multipleSelect') {
-			    	  $('#' + tab + '_value' + this.id).multipleSelect({ 
+			    	  $('#' + tab + '_value' + this.id).multipleSelect({
+			    		      metaData: obj,
 			    			  url: obj.url,
 			    			  values: obj.values,
 			    			  disabled: !options.canUpdate,
@@ -247,7 +252,7 @@ $.fn.propertyPage = function(opts) {
 								  }
 			    			  }
 			    	  });
-			    	  $('#' + tab + '_value' + this.id).addClass("propertyInput");
+			    	  //$('#' + tab + '_value' + this.id).addClass("propertyInput");
 			    	  
 			    	
 			      } else if(obj.inputType=='multipleTextInput') {
@@ -263,7 +268,7 @@ $.fn.propertyPage = function(opts) {
 							  }
 		    			  }
 			    	  });
-			    	  $('#' + tab + '_value' + this.id).addClass("propertyInput");
+			    	  //$('#' + tab + '_value' + this.id).addClass("propertyInput");
 		    	  
 		    	
 		      } else if(obj.inputType=='password') {
@@ -271,7 +276,9 @@ $.fn.propertyPage = function(opts) {
 				  } else if(obj.inputType=='boolean') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
 				  }  else if(obj.inputType=='switch') {
+					  
 					  $('#' + tab + '_value' + this.id).append('<label class="switch"><input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="switch-input propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '><span class="switch-label" data-on="' + getResource("text.on") + '" data-off="' + getResource("text.off") + '"></span> <span class="switch-handle"></span></label>');
+				  
 				  } else if(obj.inputType=='image') {
 					  $('#' + tab + '_value' + this.id).append('<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="file" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
 					  $('#' + tab + '_value' + this.id).append('<img class="imagePreview" src="' + this.value + '">');
@@ -290,12 +297,15 @@ $.fn.propertyPage = function(opts) {
 				  } 
 				  else if(obj.inputType=='slider') {
 					  
-					  $('#' + tab + '_value' + this.id).append('<div id="slider_' + this.id + '" class="slider"></div><div class="slider-value"><span id="slider_value_' + this.id + '">' + this.value + ' ' + getResource(obj.labelResourceKey) + '</span></div>');
-					  $('#slider_' + this.id).slider({ min: obj.minValue, max: obj.maxValue, value: this.value, range: 'min'});
+					  $('#' + tab + '_value' + this.id).append('<div id="slider_' + this.id + '" class="slider"></div><input class="propertyInput" id="' + tab + '_input' + this.id + '" type="hidden" name="' + tab + '_input' + this.id + '" value="' + this.value + '"/><div class="slider-value"><span id="slider_value_' + this.id + '">' + this.value + ' ' + getResource(obj.labelResourceKey) + '</span></div>');
+					  $('#slider_' + this.id).slider({ min: obj.minValue, max: obj.maxValue, value: parseInt(this.value), range: 'min'});
 					  var valueElement = $('#slider_value_' + this.id);
+					  var valueInput = $('#' + tab + '_input' + this.id);
 					  $('#slider_' + this.id ).slider({
 						  change: function( event, ui ) {
 							 valueElement.text(ui.value + ' ' + getResource(obj.labelResourceKey));
+							 valueInput.val(ui.value);
+							 valueInput.data('updated', true);
 							 $(revertButton).attr('disabled', false);
 							 $(applyButton).attr('disabled', false);
 						  }
@@ -415,15 +425,17 @@ $.fn.saveProperties = function(includeAll, callback) {
 	   $('.propertyInput', '#' + $(this).attr('id')).each(function(i,obj) {
 		   
 		   var item = $('#' + obj.id);
+		   
+		   log("Checking property " + item.data('resourceKey'));
+		   
 		   restart |= item.data("restart");
-		   var name = item.prop("tagName");
-		   var isMultipleSelect = item.data('isMultipleSelect') || item.data('isMultipleTextInput');
-		   if(name =="SELECT" && isMultipleSelect) {
+		   if(item.data('isMultipleSelect') || item.data('isMultipleTextInput')) {
 			   if(includeAll || item.data('updated')) {
-				   items.push(new PropertyItem(item.data('id'), item.multipleSelectValues({ isProperty: true }).join("]|[")));
+				   items.push(new PropertyItem(item.data('resourceKey'), item.multipleSelectValues({ isProperty: true }).join("]|[")));
 			   }
 		   } else {
 			   if(includeAll || item.isUpdated()) {
+				   log('Updating ' + item.data('resourceKey'));
 				    if(item.attr('type')=="checkbox") {
 				    	items.push(new PropertyItem(item.data('resourceKey'), item.prop("checked") ? "true" : "false"));
 				    } else if(item.attr('type')=="file") {
@@ -449,7 +461,7 @@ $.fn.saveCompleted = function() {
 		   
 		   var item = $('#' + obj.id);
 		   
-		   if(item.prop("tagName")=="SELECT" && item.data('multipleSelect')) {
+		   if(item.data('multipleSelect')) {
 			   item.data('updated', false);
 		   } else {
 			   item.data('updated', false);
@@ -460,13 +472,10 @@ $.fn.saveCompleted = function() {
 
 $.fn.multipleSelectValues = function(data) {
 	
-	var options = $.extend({ isProperty: false }, data);
 	result = new Array();
 	
 	var id = $(this).attr('id');
-	if(!options.isProperty) {
-		id += 'IncludedSelect';
-	} 
+	id += 'IncludedSelect'; 
 	
 	$('#' + id + ' option').each(function() {
 		result.push($(this).val());
@@ -559,9 +568,12 @@ $.fn.multipleSelect = function(data) {
 		
 		var options = $.extend({ idAttr: 'id', nameAttr: 'name', nameAttrIsResourceKey: false, selectAllIfEmpty: false, selectedIsObjectList: false, isPropertyInput: true, disabled: false }, data);
 		
+		$(this).data('resourceKey', options.resourceKey);
 		$(this).data('created', true);
 		$(this).data('isMultipleSelect', true);
+		$(this).data('updated', false);
 		$(this).data('options', options);
+		$(this).addClass('propertyInput');
 		
 		$('#' + $(this).attr('id') + 'Excluded').remove();
 		$('#' + $(this).attr('id') + 'Buttons').remove();
@@ -579,11 +591,12 @@ $.fn.multipleSelect = function(data) {
 		$('#' + $(this).attr('id') + 'Buttons').append('<button class="btn-multiple-select btn btn-primary" id="' + $(this).attr('id') + 'AddButton"><i class="fa fa-chevron-circle-right"></i></button><br/>');
 		$('#' + $(this).attr('id') + 'Buttons').append('<button class="btn-multiple-select btn btn-primary" id="' + $(this).attr('id') + 'RemoveButton"><i class="fa fa-chevron-circle-left"></i></button>');
 		$(this).append('<div class="includedList col-md-5" id="' + $(this).attr('id') + 'Included"><label>' + getResource('text.included') + '</label></div>');
-		$('#' + $(this).attr('id') + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(this).attr('id') + 'IncludedSelect" class="formInput text form-control' + (options.isPropertyInput ? ' propertyInput' : '' ) + '"/>');
+		$('#' + $(this).attr('id') + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(this).attr('id') + 'IncludedSelect" class="formInput text form-control"/>');
 	
 		$('#' + $(this).attr('id') + 'AddButton').button();
 		$('#' + $(this).attr('id') + 'RemoveButton').button();
 		
+		var property = $(this);
 		var select = $('#' + $(this).attr('id') + 'ExcludedSelect');
 		var toSelect = $('#' + $(this).attr('id') + 'IncludedSelect');
 		
@@ -597,7 +610,7 @@ $.fn.multipleSelect = function(data) {
 	        $(selectedOpts).remove();
 	        e.preventDefault();
 	        
-	        toSelect.data('updated', true);
+	        property.data('updated', true);
 	        if(data.change) {
 	        	data.change();
 	        }
@@ -613,7 +626,7 @@ $.fn.multipleSelect = function(data) {
 	        $(selectedOpts).remove();
 	        e.preventDefault();
 	        
-	        toSelect.data('updated', true);
+	        property.data('updated', true);
 	        
 	        if(data.change) {
 	        	data.change();
@@ -621,10 +634,6 @@ $.fn.multipleSelect = function(data) {
 	    });
 	    
 	}
-	
-    toSelect.data('id', options.resourceKey);
-	toSelect.data('restart', options.restart);
-	toSelect.data('updated', false);
 	
 	if(options.values) {
 		
