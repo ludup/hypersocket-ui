@@ -193,6 +193,119 @@ h2 {
 	margin-left: 5px;
 }
 
+.large-button {
+	border: 1px solid #e1e6ef;
+	background: #f2f4f8;
+	margin-bottom: -1px;
+	padding: 30px 0px 10px 0px;
+	font-size: 14px;
+	display: block;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	color: #c0cadd;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+}
+
+.large-button:hover {
+	color: #9faecb;
+	text-decoration: none;
+	background: #e1e6ef;
+}
+
+.large-button i {
+	font-size: 32px;
+}
+
+table.table {
+	clear: both;
+	margin-top: 6px !important;
+	margin-bottom: 6px !important;
+	max-width: none !important;
+}
+
+.table thead>tr>th {
+	vertical-align: bottom;
+	border-bottom: 2px solid #e1e6ef;
+}
+
+.table thead>tr>th,.table tbody>tr>th,.table tfoot>tr>th,.table thead>tr>td,.table tbody>tr>td,.table tfoot>tr>td
+	{
+	padding: 8px;
+	line-height: 1.428571429;
+	vertical-align: top;
+	border-top: 1px solid #e1e6ef;
+}
+
+table.table a {
+	margin-right: 5px;
+}
+
+table.table .btn i {
+	margin: 0;
+}
+
+div.numRecords label {
+	font-weight: normal;
+	float: left;
+	text-align: left;
+}
+
+div.numRecords select {
+	width: 75px;
+}
+
+div.tableFilter label {
+	font-weight: normal;
+	float: right;
+}
+
+div.tableInfo {
+	padding-top: 8px;
+}
+
+div.tablePages {
+	float: right;
+	margin: 0;
+}
+
+div.tablePages ul.pagination {
+	margin: 2px;
+}
+
+select {
+	background: #ffffff url("../img/select.png") no-repeat !important;
+	background-size: 24px 20px !important;
+	background-position: right center !important;
+	-webkit-border-radius: 2px !important;
+	-moz-border-radius: 2px !important;
+	border-radius: 2px !important;
+	border: 1px solid #e1e6ef !important;
+	-webkit-box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	box-shadow: none !important;
+	color: #888;
+	border: none;
+	outline: none;
+	display: inline-block;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	cursor: pointer;
+}
+
+table {
+	margin: 1em 0;
+	clear: both;
+}
+
 #footer {
 	padding: 5 5 5 5px;
 	position: fixed;

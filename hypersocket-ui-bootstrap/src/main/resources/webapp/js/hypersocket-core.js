@@ -885,13 +885,18 @@ $.fn.resourcePage = function(params) {
 	
 	log("Creating resource page for div " + divName);
 	
-	var options = $.extend({ divName: divName, canCreate: false, canUpdate: false, canDelete: false}, params);
+	var options = $.extend({ divName: divName, canCreate: false, canUpdate: false, canDelete: false, idField: 'id'}, params);
 	
 	$(this).data('options', options);
 	
-	$(this).append('<table cellpadding="0" cellspacing="0" border="0" class="display" id="' + divName + 'Table'  
-			+ '"><thead><tr id="' + divName + 'TableHeader"></tr></thead></table>');
-	$(this).append('<div id="' + divName + 'Actions" class="tabActions"/>');
+	$(this).append('<div id="' + divName + 'Panel" class="panel-body"><div class="row"><div class="col-lg-6"><div class="numRecords">'
+			 + '<label><select size="1" name=""><option value="10" selected="selected">10</option>'
+			 + '<option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records per page</label></div>'
+			 + '</div><div class="col-lg-6"><div class="tableFilter"><label>Search: <input type="text"></label></div></div></div>'
+			 + '<table class="table table-striped" id="' + divName + 'Table'  
+			+ '"><thead><tr id="' + divName + 'TableHeader"></tr></thead></table></div>');
+	
+	$(this).append('<div id="' + divName + 'Actions" class="tabActions panel-footer"/>');
 	
 	$('div[dialog-for="' + divName + '"]').resourceDialog(options);
 	
@@ -905,103 +910,131 @@ $.fn.resourcePage = function(params) {
 				
 				$.each(options.fields, function(idx, obj) {
 					$('#' + divName + 'TableHeader').append('<th>' + getResource(options.resourceKey + "." + obj.name + '.label') + '</th>');
-					columns.push({ "mData": obj.name});
-					if(obj.isResourceKey) {
-						columnsDefs.push({
-		                         "aTargets": [idx],
-   		                         "mData": null,
-   		                         "mRender": function (data, type, full) {
-   		                             return getResource(options.resourceKey + "." + data + '.label');
-   		                         }
-   		                     });
-					}
+					columns.push(obj);
 				});
 				
-				var renderActions = function(idCol) {
-					var id = idCol.aData.id;
-					var renderedActions = '';
-
+//				var renderActions = function(idCol) {
+//					var id = idCol.aData.id;
+//					var renderedActions = '';
+//
+//					if(options.additionalActions) {
+//						$.each(options.additionalActions, function(x, act) {
+//							if(act.enabled) {
+//								renderedActions += '<span class="ui-icon ' + act.iconClass 
+//									+ ' row-' + act.resourceKey +'" title="' + getResource("text." + act.resourceKey) + '"></span>';
+//							
+//								$(document).off('click', '#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
+//								
+//								$(document).on('click', '#' + divName + 'Actions' + id + ' .row-' + act.resourceKey, function () {
+//									var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition($(this).closest("tr").get(0));
+//									var resource = $('#' + divName + 'Table').dataTable().fnGetData(curRow);
+//									act.action(resource);
+//								});
+//							}
+//						});
+//					}
+//					
+//					
+//					if(options.canUpdate) {
+//						renderedActions += '<span class="ui-icon ui-icon-wrench row-edit" title="' + getResource("text.edit") + '"></span>';
+//					
+//						$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
+//						
+//						$(document).on('click', '#' + divName + 'Actions' + id + ' .row-edit', function () {
+//							var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition($(this).closest("tr").get(0));
+//							var resource = $('#' + divName + 'Table').dataTable().fnGetData(curRow);
+//							$('div[dialog-for="' + divName + '"]').resourceDialog('edit', { 
+//									row: curRow, 
+//									resource : resource });
+//						});
+//					}
+//					
+//					if(options.canDelete) {
+//						renderedActions += '<span class="ui-icon ui-icon-trash row-delete" title="' + getResource("text.delete") + '"></span>';
+//					
+//						$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
+//						
+//						$(document).on('click', '#' + divName + 'Actions' + id + ' .row-delete', function () {
+//							
+//							log("Entering resource delete for id " + id);
+//							
+//							$(document).data('modal', true);
+//							
+//							var row = $(this).closest("tr").get(0);
+//							var resource = $('#' + divName + 'Table').dataTable().fnGetData(row);
+//							confirmBox( { title: getResource(options.resourceKey + ".delete.title"), 
+//								message: getResource(options.resourceKey + ".delete.desc").format(resource.name), 
+//								callback: function() {
+//				 		    		deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
+//				 		    			if(data.success) {
+//				 		    				if(options.resourceDeleted) {
+//				 		    					options.resourceDeleted(resource);
+//				 		    				}
+//				 		    				$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
+//				 						   showInformation(true, data.message);
+//				 						} else {
+//				 						  msgBox({ title: getResource("text.error"), message: data.message });
+//				 						}
+//			 		    		});
+//			 		    	}
+//			 		    	});
+//						});
+//					}
+//					
+//					return '<div id="' + divName + 'Actions' + id + '" class="tableActions">' + renderedActions + '</div>';
+//				};
+				
+				$('#' + divName + 'TableHeader').append('<th localize="text.actions"></th>');
+				
+				$('#' + divName + 'Table').append('<tbody id="' + divName + 'Body" ></tbody');
+			
+				$.each(data.resources, function(idx, obj) {
+					
+					var row = "<tr>";
+					$.each(columns, function(idx2, col) {
+						row += '<td>' + (col.isResourceKey ? getResource(options.resourceKey + "." + obj[col.name] + '.label') : obj[col.name]) + '</td>';
+					});
+					
+					row += '<td>';
+					
 					if(options.additionalActions) {
 						$.each(options.additionalActions, function(x, act) {
 							if(act.enabled) {
-								renderedActions += '<span class="ui-icon ' + act.iconClass 
-									+ ' row-' + act.resourceKey +'" title="' + getResource("text." + act.resourceKey) + '"></span>';
-							
-								$(document).off('click', '#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
-								
-								$(document).on('click', '#' + divName + 'Actions' + id + ' .row-' + act.resourceKey, function () {
-									var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition($(this).closest("tr").get(0));
-									var resource = $('#' + divName + 'Table').dataTable().fnGetData(curRow);
-									act.action(resource);
-								});
+								row += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + '" href="#" resource-value="' + obj[options.idField] + '"><i class="fa ' + act.iconClass + '"></i></a>';
 							}
 						});
 					}
-					
-					
-					if(options.canUpdate) {
-						renderedActions += '<span class="ui-icon ui-icon-wrench row-edit" title="' + getResource("text.edit") + '"></span>';
-					
-						$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 						
-						$(document).on('click', '#' + divName + 'Actions' + id + ' .row-edit', function () {
-							var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition($(this).closest("tr").get(0));
-							var resource = $('#' + divName + 'Table').dataTable().fnGetData(curRow);
-							$('div[dialog-for="' + divName + '"]').resourceDialog('edit', { 
-									row: curRow, 
-									resource : resource });
-						});
+					if(options.canUpdate) {
+						row += '<a class="btn btn-info editAction" href="#" resource-value="' + obj[options.idField] + '"><i class="fa fa-edit"></i></a>';
 					}
 					
 					if(options.canDelete) {
-						renderedActions += '<span class="ui-icon ui-icon-trash row-delete" title="' + getResource("text.delete") + '"></span>';
-					
-						$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
-						
-						$(document).on('click', '#' + divName + 'Actions' + id + ' .row-delete', function () {
-							
-							log("Entering resource delete for id " + id);
-							
-							$(document).data('modal', true);
-							
-							var row = $(this).closest("tr").get(0);
-							var resource = $('#' + divName + 'Table').dataTable().fnGetData(row);
-							confirmBox( { title: getResource(options.resourceKey + ".delete.title"), 
-								message: getResource(options.resourceKey + ".delete.desc").format(resource.name), 
-								callback: function() {
-				 		    		deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
-				 		    			if(data.success) {
-				 		    				if(options.resourceDeleted) {
-				 		    					options.resourceDeleted(resource);
-				 		    				}
-				 		    				$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
-				 						   showInformation(true, data.message);
-				 						} else {
-				 						  msgBox({ title: getResource("text.error"), message: data.message });
-				 						}
-			 		    		});
-			 		    	}
-			 		    	});
-						});
+						row += '<a class="btn btn-danger deleteAction" href="#" resource-value="' + obj[options.idField] + '"><i class="fa fa-trash-o"></i></a>';
 					}
+					row += '</td></tr>';
 					
-					return '<div id="' + divName + 'Actions' + id + '" class="tableActions">' + renderedActions + '</div>';
-				};
+					$('#' + divName + 'Body').append(row);
+				});
 				
-				$('#' + divName + 'TableHeader').append('<th localize="text.actions"></th>');
-				columns.push({ "mData": null, fnRender: renderActions});
-			
-				$('#' + divName + 'Table').dataTable(
-						{
-							"bJQueryUI" : true,
-							"aaData" : data["resources"],
-							"aoColumns" : columns,
-							"aoColumnDefs": columnsDefs
-						});
+				
+				$('.editAction').on('click', function(evt) {
+					evt.preventDefault();
+					//$('div[dialog-for="' + divName + '"]').resourceDialog('edit', { 
+					//	row: curRow, 
+					//	resource : resource });
+					//alert($(this).attr('resource-value'));
+				});
+				
 
+				$('.deleteAction').on('click', function(evt) {
+					alert($(this).attr('resource-value'));
+				});
+				
+				$('#' + divName + 'Panel').append('<div class="tableInfo">Showing 1 to 10 of 32 entries</div>');
+				$('#' + divName + 'Panel').append('<div class="tablePages paging_bootstrap"><ul class="pagination"><li class="prev disabled"><a href="#">← Previous</a></li><li class="active"><a href="#">1</a></li><li><a href="#">2</a></li><li><a href="#">3</a></li><li><a href="#">4</a></li><li class="next"><a href="#">Next → </a></li></ul></div>');
 				if(options.canCreate) {
-					$('#' + divName + 'Actions').append('<button id="' + divName + 'Add">' + getResource('text.add') + '</button>');
-					$('#' + divName + 'Add').button();
+					$('#' + divName + 'Actions').append('<button class="btn btn-primary" id="' + divName + 'Add"><i class="fa fa-plus-circle"></i>' + getResource('text.add') + '</button>');
 					$('#' + divName + 'Add').click(function() {
 						if(options.showCreate) {
 							options.showCreate();
@@ -1027,8 +1060,9 @@ $.fn.ajaxResourcePage = function(params) {
 	
 	$(this).data('options', options);
 	
-	$(this).append('<table cellpadding="0" cellspacing="0" border="0" class="display" id="' + divName + 'Table'  
-			+ '"><thead><tr id="' + divName + 'TableHeader"></tr></thead></table>');
+	$(this).append('<div id="' + divName + 'Panel" class="panel-body"><table class="table table-striped" id="' + divName + 'Table'  
+			+ '"><thead><tr id="' + divName + 'TableHeader"></tr></thead></table></div>');
+	
 	$(this).append('<div id="' + divName + 'Actions" class="tabActions"/>');
 	
 	$('div[dialog-for="' + divName + '"]').resourceDialog(options);
@@ -1050,6 +1084,9 @@ $.fn.ajaxResourcePage = function(params) {
 		}
 	});
 	
+	
+
+	
 	var renderActions = function(idCol) {
 		var id = idCol.aData.id;
 		var renderedActions = '';
@@ -1057,8 +1094,8 @@ $.fn.ajaxResourcePage = function(params) {
 		if(options.additionalActions) {
 			$.each(options.additionalActions, function(x, act) {
 				if(act.enabled) {
-					renderedActions += '<span class="ui-icon ' + act.iconClass 
-						+ ' row-' + act.resourceKey +'" title="' + getResource("text." + act.resourceKey) + '"></span>';
+					
+					renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i></a>';
 				
 					$(document).off('click', '#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
 					
@@ -1068,12 +1105,13 @@ $.fn.ajaxResourcePage = function(params) {
 						act.action(resource);
 					});
 				}
+				
 			});
 		}
 		
 		
 		if(options.canUpdate) {
-			renderedActions += '<span class="ui-icon ui-icon-wrench row-edit" title="' + getResource("text.edit") + '"></span>';
+			renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa fa-edit"></i></a>';
 		
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 			
@@ -1087,7 +1125,7 @@ $.fn.ajaxResourcePage = function(params) {
 		}
 		
 		if(options.canDelete) {
-			renderedActions += '<span class="ui-icon ui-icon-trash row-delete" title="' + getResource("text.delete") + '"></span>';
+			renderedActions += '<a class="btn btn-danger row-delete" href="#"><i class="fa fa-trash-o"></i></a>';
 		
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
 			
@@ -1124,9 +1162,9 @@ $.fn.ajaxResourcePage = function(params) {
 	$('#' + divName + 'TableHeader').append('<th localize="text.actions"></th>');
 	columns.push({ "mData": null, fnRender: renderActions});
 
+	
 	$('#' + divName + 'Table').dataTable(
 			{
-				"bJQueryUI" : true,
 				"bProcessing": true,
 				"bServerSide": true,
 				"sAjaxSource": basePath + "/api/" + options.tableUrl,
@@ -1135,8 +1173,8 @@ $.fn.ajaxResourcePage = function(params) {
 			});
 
 	if(options.canCreate) {
-		$('#' + divName + 'Actions').append('<button id="' + divName + 'Add">' + getResource('text.add') + '</button>');
-		$('#' + divName + 'Add').button();
+
+		$('#' + divName + 'Actions').append('<button id="' + divName + 'Add" class="btn btn-primary">' + getResource('text.add') + '</button>');
 		$('#' + divName + 'Add').click(function() {
 			if(options.showCreate) {
 				options.showCreate();

@@ -1,0 +1,169 @@
+<div id="realmsContent" class="col-md-12" style="padding-left: 0px;">
+	<div id="tabRealms" class="panel panel-default">
+		<div class="panel-heading">
+			<h2>
+				<i class="fa fa-user"></i><span class="break">Realms</span>
+			</h2>
+		</div>
+	</div>
+	<div id="addRealmForm" class="realmDialog" dialog-for="tabRealms">
+		<div id="dialogError"></div>
+		<form class="form">
+			<div class="formInputField">
+				<label for="name" class="formLabel" localize="realm.name.label"></label>
+				<input type="text" name="name" id="name"
+					class="formInput text ui-widget-content ui-corner-all" />
+			</div>
+			<div class="formInputField">
+				<label for="type" class="formLabel"
+					localize="realm.resourceCategory.label"></label> <select
+					name="type" id="type"
+					class="formInput text ui-widget-content ui-corner-all">
+				</select>
+			</div>
+			<input name="id" id="id" type="hidden" class="formInput" />
+			<div id="realmProperties" class=""></div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(document)
+			.ready(
+					function() {
+						$('#realmsContent').localize();
+						//$('#realmsContent').tabs();
+
+						$('#type').change(function() {
+							$('#realmProperties').propertyPage({
+								url : 'realm/template/' + $(this).val(),
+								showButtons : false,
+								canUpdate : currentMenu.canUpdate,
+								useTemplates : true
+							});
+						});
+
+						getJSON(
+								'realm/providers',
+								null,
+								function(data) {
+									$.each(data.resources, function() {
+										$('#type').append(
+												'<option id="realm' + this.module + '" value="' + this.module + '\">'
+														+ getResource("realm."
+																+ this.module
+																+ '.label')
+														+ '</option>');
+									});
+
+									$('#tabRealms')
+											.resourcePage(
+													{
+														tableUrl : "realms",
+														resourceUrl : "realm",
+														fields : [
+																{
+																	name : "name"
+																},
+																{
+																	name : "resourceCategory",
+																	isResourceKey : true
+																} ],
+														resourceKey : 'realm',
+														canCreate : currentMenu.canCreate,
+														canUpdate : currentMenu.canUpdate,
+														canDelete : currentMenu.canDelete,
+														validate : function() {
+															if ($('#name')
+																	.val() == '') {
+																$(
+																		'#dialogError')
+																		.dialogError(
+																				"A name is required!");
+																return false;
+															}
+															return true;
+														},
+														clearDialog : function() {
+															$('#name').val("");
+															$('#id').val("");
+															$(
+																	'#realmProperties')
+																	.clearProperties();
+														},
+														createResource : function() {
+															realm = new Object();
+															realm.name = $(
+																	'#name')
+																	.val();
+															realm.type = $(
+																	'#type')
+																	.val();
+															realm.id = $('#id')
+																	.val();
+
+															$(
+																	'#realmProperties')
+																	.saveProperties(
+																			true,
+																			function(
+																					items) {
+																				realm.properties = items;
+																			});
+
+															return realm;
+														},
+														showCreate : function() {
+															$('#type').trigger(
+																	'change');
+														},
+														displayResource : function(
+																resource) {
+															$('#id')
+																	.val(
+																			resource.id);
+															$('#name')
+																	.val(
+																			resource.name);
+															$('#type').empty();
+															$('#type')
+																	.append(
+																			'<option id="realm' + resource.resourceCategory + '" value="' + resource.resourceCategory + '\">'
+																					+ getResource("realm."
+																							+ resource.resourceCategory
+																							+ '.label')
+																					+ '</option>');
+															$('#type').attr(
+																	'disabled',
+																	'disabled');
+															$(
+																	'#realmProperties')
+																	.propertyPage(
+																			{
+																				url : 'realm/properties/'
+																						+ resource.id,
+																				showButtons : false,
+																				canUpdate : currentMenu.canUpdate
+																			});
+														},
+														complete : function() {
+															loadComplete();
+														},
+														resourceCreated : function(
+																resource) {
+															reloadRealms();
+														},
+														resourceUpdated : function(
+																resource) {
+															reloadRealms();
+														},
+														resourceDeleted : function(
+																resource) {
+															reloadRealms();
+														}
+													});
+
+								});
+
+					});
+</script>
