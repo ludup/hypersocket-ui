@@ -1,0 +1,98 @@
+<div id="contentGroups">
+	<div id="addGroupForm" class="dialog" dialog-for="contentGroups">
+		<form class="form">
+			<div id="groupDialogError" class="dialogError"></div>
+			<div class="formInputField">
+				 <label for="name"
+					class="formLabel" localize="group.name"></label> <input type="text"
+					name="name" id="groupName"
+					class="formInput text ui-widget-content ui-corner-all" />
+			</div>
+			<div id="groupProperties" class="tabContent">
+				<ul id="groupPropertiesTabs">
+					<li><a href="#tabGroupUsers"><span localize="label.users"></span></a></li>
+				</ul>
+				<div id="tabGroupUsers" class="tabContent"></div>
+			</div>
+			<input type="hidden" name="groupId" id="groupId"/>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		$('#contentGroups').localize();
+		
+		getJSON(
+			'users',
+			null,
+			function(data) {
+				$('#tabGroupUsers').multipleSelect({
+					resourceKey: "users",
+					values : data.resources,
+					nameAttr : 'principalName',
+					isPropertyInput: false,
+					selectedIsObjectList: true
+				});
+		});
+		
+		
+		$('#contentGroups').ajaxResourcePage(
+				{
+				tableUrl : "table/groups",
+				title: getResource('groups.title'),
+				icon: 'fa-users',
+				resourceUrl : "group",
+				fields : [ { name: "name"} ],
+				resourceKey : 'group',
+				canCreate: currentMenu.canCreate,
+				canUpdate: currentMenu.canUpdate,
+				canDelete: currentMenu.canDelete,
+				validate : function() {
+					if ($('#groupName').val() == '') {
+						$('#groupDialogError').dialogError(
+								"error.nameRequired");
+						return false;
+					}
+					return true;
+				},
+				clearDialog : function() {
+					$('#groupName').val('');
+					$('#groupId').val('');
+					$('#tabGroupUsers').multipleSelect();
+				},
+				createResource : function() {
+					group = new Object();
+					group.id = $('#groupId').val();
+					group.name = $('#groupName').val();
+					group.users = $('#tabGroupUsers')
+							.multipleSelectValues();
+					return group;
+				},
+				resourceCreated : function(resource) {
+					$('#tabRoleGroups').multipleSelect( { insert: [ resource ] });
+					$('#tabUserGroups').multipleSelect( { insert: [ resource ] });
+				},
+				deleted : function(resource) {
+					$('#tabRoleGroups').multipleSelect( { remove: [ resource ] });
+					$('#tabUserGroups').multipleSelect( { remove: [ resource ] });
+				},
+				displayResource : function(resource) {
+					$('#groupId').val(resource.id);
+					$('#groupName').val(resource.name);
+					getJSON("users/" + resource.id, null, function(data) {
+						$('#tabGroupUsers').multipleSelect({
+	 						selected : data.resources
+	 					});
+					});
+ 	 			  	
+				},
+				complete: function() {
+					loadComplete();
+				}
+			});
+	});
+	
+
+	
+</script>

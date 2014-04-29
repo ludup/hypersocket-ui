@@ -1,0 +1,150 @@
+<div id="contentRoles">
+	<div id="addRoleForm" class="dialog" dialog-for="contentRoles">
+		<form class="form">
+			<div id="roleDialogError" class="dialogError"></div>
+			<div class="formInputField">
+				<label for="name"
+					class="formLabel" localize="role.name"></label> <input type="text"
+					name="name" id="name"
+					class="formInput text ui-widget-content ui-corner-all" />
+			</div>
+			<div id="roleProperties" class="tabContent">
+				<ul id="rolePropertiesTabs">
+					<li><a href="#tabRoleUsers"><span localize="label.users"></span></a></li>
+					<li><a href="#tabRoleGroups"><span localize="label.groups"></span></a></li>
+					<li><a href="#tabRolePermissions"><span localize="label.permissions"></span></a></li>
+				</ul>
+				<div id="tabRoleUsers"></div>
+				<div id="tabRoleGroups"></div>
+				<div id="tabRolePermissions"></div>
+			</div>
+			<input type="hidden" name="roleId" id="roleId"/>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		$('#contentRoles').localize();
+
+		getJSON('permissions', null, function(data) {
+			$('#tabRolePermissions').multipleSelect({
+				resourceKey: "permissions",
+				values : data.permissions,
+				nameAttrIsResourceKey : true,
+				nameAttr : 'resourceKey',
+				isPropertyInput: false,
+				selectedIsObjectList: true
+			});
+		});
+		
+
+		getJSON('groups',
+			null,
+			function(data) {
+				$('#tabRoleGroups').multipleSelect({
+					resourceKey: "groups",
+					values : data.resources,
+					nameAttr : 'principalName',
+					isPropertyInput: false,
+					selectedIsObjectList: true
+				});
+				$('#tabUserGroups').multipleSelect({
+					resourceKey: "groups",
+					values : data.resources,
+					nameAttr : 'principalName',
+					isPropertyInput: false,
+					selectedIsObjectList: true
+				});
+		});
+
+		getJSON(
+			'users',
+			null,
+			function(data) {
+				
+				$('#tabRoleUsers').multipleSelect({
+					resourceKey: "users",
+					values : data.resources,
+					nameAttr : 'principalName',
+					isPropertyInput: false,
+					selectedIsObjectList: true
+				});
+				$('#tabGroupUsers').multipleSelect({
+					resourceKey: "users",
+					values : data.resources,
+					nameAttr : 'principalName',
+					isPropertyInput: false,
+					selectedIsObjectList: true
+				});
+		});
+		
+		
+		$('#contentRoles').ajaxResourcePage(
+				{
+				tableUrl : "table/roles",
+				title: getResource('roles.title'),
+				icon: 'fa-user-md',
+				resourceUrl : "role",
+				fields : [ { name: "name"} ],
+				resourceKey : 'role',
+				canCreate: currentMenu.canCreate,
+				canUpdate: currentMenu.canUpdate,
+				canDelete: currentMenu.canDelete,
+				validate : function() {
+					if ($('#name').val() == '') {
+						$('#roleDialogError').dialogError(
+								"error.nameRequired");
+						return false;
+					}
+					return true;
+				},
+				clearDialog : function() {
+					$('#name').val('');
+					$('#roleId').val('');
+					$('#tabRoleUsers').multipleSelect();
+					$('#tabRoleGroups').multipleSelect();
+					$('#tabRolePermissions').multipleSelect();
+
+				},
+				createResource : function() {
+					role = new Object();
+					role.id = $('#roleId').val();
+					role.name = $('#name').val();
+					role.users = $('#tabRoleUsers')
+							.multipleSelectValues();
+					role.groups = $('#tabRoleGroups')
+							.multipleSelectValues();
+					role.permissions = $('#tabRolePermissions')
+							.multipleSelectValues();
+					return role;
+				},
+				resourceCreated : function(resource) {
+					
+				},
+				deleted : function(resource) {
+					
+				},
+				displayResource : function(resource) {
+					$('#roleId').val(resource.id);
+					$('#name').val(resource.name);
+ 	 			  	$('#tabRoleUsers').multipleSelect({
+ 						selected : resource.principals
+ 					});
+ 					$('#tabRoleGroups').multipleSelect({
+ 						selected : resource.principals
+ 					});
+ 					$('#tabRolePermissions').multipleSelect({
+ 						selected : resource.permissions
+ 					});
+				},
+				complete: function() {
+					loadComplete();
+				}
+			});
+	
+	});
+	
+
+	
+</script>

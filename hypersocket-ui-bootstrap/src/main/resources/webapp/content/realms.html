@@ -1,12 +1,5 @@
 <div id="realmsContent" class="col-md-12" style="padding-left: 0px;">
-	<div id="tabRealms" class="panel panel-default">
-		<div class="panel-heading">
-			<h2>
-				<i class="fa fa-user"></i><span class="break">Realms</span>
-			</h2>
-		</div>
-	</div>
-	<div id="addRealmForm" class="realmDialog" dialog-for="tabRealms">
+	<div id="addRealmForm" class="realmDialog" dialog-for="realmsContent">
 		<div id="dialogError"></div>
 		<form class="form">
 			<div class="formInputField">
@@ -56,10 +49,12 @@
 														+ '</option>');
 									});
 
-									$('#tabRealms')
-											.resourcePage(
+									$('#realmsContent')
+											.ajaxResourcePage(
 													{
-														tableUrl : "realms",
+														tableUrl : "table/realms",
+														title: getResource('realms.title'),
+														icon: "fa-th",
 														resourceUrl : "realm",
 														fields : [
 																{

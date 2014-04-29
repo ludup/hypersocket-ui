@@ -1,0 +1,171 @@
+<div id="contentUsers" class="col-md-12" style="padding-left: 0px">
+
+	<div id="addUserForm" class="dialog" dialog-for="contentUsers">
+		<form class="form">
+			<div id="userDialogError" class="dialogError"></div>
+			<div class="formInputField">
+				<label for="name"
+					class="formLabel" localize="user.name"></label> <input type="text"
+					name="name" id="userName"
+					class="formInput text ui-widget-content ui-corner-all" />
+			</div>
+			<div id="userProperties" class="tabContent">
+			</div>
+			<div id="tabUserGroups" class="tabContent">
+			</div>
+			<input type="hidden" name="userId" id="userId"/>
+		</form>
+	</div>
+	<div id="setPasswordForm" class="dialog">
+		<form class="form">
+			<div id="setPasswordDialogError" class="dialogError"></div>
+			<div class="formInputField">
+				<label for="password"
+					class="formLabel" localize="label.password"></label> <input type="password"
+					name="password" id="password"
+					class="formInput text ui-widget-content ui-corner-all" />
+			</div>
+			<div class="formInputField">
+				<label for="confirmPassword"
+					class="formLabel" localize="label.confirmPassword"></label> <input type="password"
+					name="confirmPassword" id="confirmPassword"
+					class="formInput text ui-widget-content ui-corner-all" />
+			</div>
+			<div class="formInputField">
+				<label for="name"
+					class="formLabel" localize="label.forceChange"></label> <input type="checkbox"
+					name="forceChange" id="forceChange"
+					class="formInput text ui-widget-content ui-corner-all" />
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		$('#contentUsers').localize();
+		
+		getJSON('groups',
+			null,
+			function(data) {
+				$('#tabUserGroups').multipleSelect({
+					resourceKey: "groups",
+					values : data.resources,
+					nameAttr : 'principalName',
+					isPropertyInput: false,
+					selectedIsObjectList: true
+				});
+		});
+
+		$('#userProperties').propertyPage({ url: 'user/template/local', showButtons: false, useTemplates: true, canUpdate: currentMenu.canUpdate,
+	 		additionalTabs: [{ id: "tabUserGroups", name: getResource("label.groups") }]});
+
+		$('#contentUsers').ajaxResourcePage(
+					{
+					tableUrl : "table/users",
+					title: getResource('users.title'),
+					icon: 'fa-user',
+					resourceUrl : "user",
+					fields : [ { name: "principalName"}, 
+					           { name: "principalDesc"} ],
+					resourceKey : 'user',
+					canCreate: currentMenu.canCreate,
+					canUpdate: currentMenu.canUpdate,
+					canDelete: currentMenu.canDelete,
+					additionalActions : [ { resourceKey: "setPassword",
+						iconClass: "fa-unlock-alt",
+						action : function(resource) {
+							$('#setPasswordForm').data('resource', resource);
+							$('#setPasswordForm').resourceDialog('create');
+						},
+						enabled: currentMenu.canUpdate}],
+					validate : function() {
+						if ($('#userName').val() == '') {
+							$('#userDialogError').dialogError(
+									"error.nameRequired");
+							return false;
+						}
+						return true;
+					},
+					clearDialog : function() {
+						$('#userName').val('');
+						$('#userId').val('');
+						$('#userProperties').clearProperties();
+						$('#tabUserGroups').multipleSelect();
+					},
+					createResource : function() {
+						user = new Object();
+						user.id = $('#userId').val();
+						user.name = $('#userName').val();
+						
+						$('#userProperties').saveProperties(true, function(items) {
+							user.properties = items;
+						});
+						user.groups = $('#tabUserGroups')
+								.multipleSelectValues();
+						return user;
+					},
+					resourceCreated: function(resource) {
+						$('#tabRoleUsers').multipleSelect( { insert: [ resource ] });
+						$('#tabGroupUsers').multipleSelect( { insert: [ resource ] });
+					},
+					deleted : function(resource) {
+						$('#tabRoleUsers').multipleSelect( { remove: [ resource ] });
+						$('#tabGroupUsers').multipleSelect( { remove: [ resource ] });
+					},
+					displayResource : function(resource) {
+						
+						$('#userName').val(resource.name);
+						$('#userId').val(resource.id);
+	 	 			 	$('#userProperties').propertyPage({ url: 'user/properties/' + resource.id, showButtons: false, 
+	 	 			 		canUpdate: currentMenu.canUpdate,
+	 	 			 		additionalTabs: [{ id: "tabUserGroups", name: getResource("label.groups") }]});
+	 	 			 	
+	 	 			  	$('#tabUserGroups').multipleSelect({
+	 						selected : resource.groups
+	 					});
+	 					
+					},
+					complete: function() {
+						loadComplete();
+					}
+				});
+		
+		
+		
+		
+		$('#setPasswordForm').resourceDialog({ resourceKey: 'setPassword',
+			resourceUrl: 'credentials',
+			hasResourceTable: false,
+			createResource: function() {
+				
+				var resource = $('#setPasswordForm').data('resource');
+				
+				creds = new Object();
+				creds.principalId = resource.id;
+				creds.password = $('#password').val();
+				creds.forceChange = $('#forceChange').attr('checked') ? true : false;
+				
+				return creds;
+			},
+			clearDialog: function() {
+				 $('#password').val('');
+				 $('#confirmPassword').val('');
+				 $('#forceChange').val('');
+			},
+			validate: function() {
+				if($('#password').val()=='') {
+					$('#setPasswordDialogError').dialogError("error.passwordEmpty");
+					return false;
+				}
+				if($('#password').val()!=$('#confirmPassword').val()) {
+					$('#setPasswordDialogError').dialogError("error.passwordsNotMatched");
+					return false;
+				}
+				return true;
+			}});
+	});
+	
+
+	
+</script>
