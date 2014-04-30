@@ -84,9 +84,9 @@ function showError(fade, text) {
 	$('#highlight').remove();
 	
 	$('#informationBar').append('<div id="highlight"/>');
-	$('#highlight').addClass('ui-state-error');
-	$('#highlight').addClass('ui-corner-all');
-	$('#highlight').append('<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span><span>' + text + "</span>");
+	$('#highlight').addClass('alert');
+	$('#highlight').addClass('alert-danger');
+	$('#highlight').append('<span>' + text + "</span>");
 	if(fade) {
 		$('#highlight').fadeOut(5000, function() {
 			$('#highlight').remove();
@@ -130,8 +130,8 @@ $.fn.dialogError = function(resourceKey) {
 	$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
 	
 	if(resourceKey!='reset') {
-	 	$(this).append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="ui-widget ui-state-error ui-corner-all"/>');
-			$('#dialogErrorHighlight' + $(this).attr('id')).append('<span class="ui-icon ui-icon-alert"></span><span>' 
+	 	$(this).append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="alert alert-danger"/>');
+			$('#dialogErrorHighlight' + $(this).attr('id')).append('<span>' 
 					+ (getResource(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
 					+ '</span>');
 	}
@@ -141,8 +141,8 @@ $.fn.dialogInformation = function(resourceKey) {
 	$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
 	
 	if(resourceKey!='reset') {
-	 	$(this).append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="ui-widget ui-state-highlight ui-corner-all"/>');
-			$('#dialogErrorHighlight' + $(this).attr('id')).append('<span class="ui-icon ui-icon-info"></span><span>' 
+	 	$(this).append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="alert-alert-info"/>');
+			$('#dialogErrorHighlight' + $(this).attr('id')).append('<span>' 
 					+ (getResource(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
 					+ '</span>');
 	}
@@ -245,7 +245,7 @@ function createMessageDiv(div, resourceKey, icon) {
 	$('#dialogErrorHighlight' + div.attr('id'), div).remove();
 	
 	if(resourceKey!='reset') {
-	 	div.append('<div id="dialogErrorHighlight'  + div.attr('id') + '" class="ui-widget ui-state-error ui-corner-all"/>');
+	 	div.append('<div id="dialogErrorHighlight'  + div.attr('id') + '" class="alert alert-danger"/>');
 			$('#dialogErrorHighlight' + div.attr('id')).append('<span class="ui-icon ' + icon + '\"></span><span>' 
 					+ (getResource(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
 					+ '</span>');

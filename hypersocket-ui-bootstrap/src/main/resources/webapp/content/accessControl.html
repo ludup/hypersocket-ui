@@ -1,13 +1,6 @@
-<div class="col-sm-12">
+<div class="col-sm-12" id="accessControlContent">
 	<div class="row">
 		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h2>
-					<i class="fa fa-unlock-alt"></i><span class="break">Access
-						Control</span>
-				</h2>
-			</div>
-
 			<div class="panel-body">
 				<div class="col-sm-2"></div>
 				<div class="col-sm-2">
@@ -45,7 +38,10 @@
 	</div>
 </div>
 <script type="text/javascript">
-	function loadPage(page) {
+	function loadPage(page, element) {
+		
+		$('#accessControlContent').find('.large-button-active').removeClass('large-button-active');
+		element.addClass('large-button-active');
 		$('#buttonContent').load('content/' + page + '.html', function() {
 			loadWait();
 		});
@@ -55,24 +51,24 @@
 
 		$('#buttonUsers').click(function(e) {
 			e.preventDefault();
-			loadPage('users');
+			loadPage('users', $(this));
 		});
 
 		$('#buttonGroups').click(function(e) {
 			e.preventDefault();
-			loadPage('groups');
+			loadPage('groups', $(this));
 		});
 
 		$('#buttonRoles').click(function(e) {
 			e.preventDefault();
-			loadPage('roles');
+			loadPage('roles', $(this));
 		});
 
 		$('#buttonRealms').click(function(e) {
 			e.preventDefault();
-			loadPage('realms');
+			loadPage('realms', $(this));
 		});
 
-		loadPage('users');
+		loadPage('users', $('#buttonUsers'));
 	});
 </script>

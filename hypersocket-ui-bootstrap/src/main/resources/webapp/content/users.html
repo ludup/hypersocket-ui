@@ -1,6 +1,6 @@
 <div id="contentUsers" class="col-md-12" style="padding-left: 0px">
 	<!-- Modal -->
-	<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog"
+	<div class="modal" id="addUserModal" tabindex="-1" role="dialog"
 		aria-labelledby="addUserModalLabel" aria-hidden="true"
 		dialog-for="contentUsers">
 		<div class="modal-dialog">
@@ -8,7 +8,7 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+					<h4 class="modal-title" id="myModalLabel"></h4>
 				</div>
 				<div class="modal-body">
 
@@ -18,8 +18,7 @@
 						<label class="col-md-3 control-label" localize="user.name"></label>
 						<div class="propertyValue col-md-9">
 							<input type="text" class="form-control propertyInput"
-								placeholder="" id="userName"
-								maxlength="" name="name" value="">
+								placeholder="" id="userName" maxlength="" name="name" value="">
 							<div>
 								<span class="help-block" localize="user.name.info"></span>
 							</div>
@@ -30,45 +29,50 @@
 					<input type="hidden" name="userId" id="userId">
 
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
+				<div class="modal-footer"></div>
 			</div>
 		</div>
 	</div>
-<!-- 	<div id="addUserForm" class="dialog" dialog-for="contentUsers"> -->
-<!-- 		<form class="form"> -->
-<!-- 			<div id="userDialogError" class="dialogError"></div> -->
-<!-- 			<div class="formInputField"> -->
-<!-- 				<label for="name" class="formLabel" localize="user.name"></label> <input -->
-<!-- 					type="text" name="name" id="userName" -->
-<!-- 					class="formInput text ui-widget-content ui-corner-all" /> -->
-<!-- 			</div> -->
-<!-- 			<div id="userProperties" class="tabContent"></div> -->
-<!-- 			<div id="tabUserGroups" class="tabContent"></div> -->
-<!-- 			<input type="hidden" name="userId" id="userId" /> -->
-<!-- 		</form> -->
-<!-- 	</div> -->
-	<div id="setPasswordForm" class="dialog">
-		<form class="form">
-			<div id="setPasswordDialogError" class="dialogError"></div>
-			<div class="formInputField">
-				<label for="password" class="formLabel" localize="label.password"></label>
-				<input type="password" name="password" id="password"
-					class="formInput text ui-widget-content ui-corner-all" />
+	<div class="modal" id="setPasswordForm" tabindex="-1" role="dialog"
+		aria-labelledby="setPasswordModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel"></h4>
+				</div>
+				<div class="modal-body">
+
+					<form class="form">
+						<div id="setPasswordDialogError" class="dialogError"></div>
+						<div class="propertyItem form-group">
+							<label class="col-md-3 control-label" localize="label.password"></label>
+							<div class="propertyValue col-md-9">
+								<input type="password" name="password" id="password"
+									class="form-control" />
+							</div>
+						</div>
+						<div class="propertyItem form-group">
+							<label class="col-md-3 control-label" localize="label.confirmPassword"></label>
+							<div class="propertyValue col-md-9">
+								<input type="password" name="confirmPassword" id="confirmPassword"
+									class="form-control" />
+							</div>
+						</div>
+						<div class="propertyItem form-group">
+							<label class="col-md-3 control-label" localize="label.forceChange"></label>
+							<div class="propertyValue col-md-9">
+								<input type="checkbox" name="forceChange" id="forceChange"
+									class="form-control" />
+							</div>
+						</div>
+					</form>
+
+				</div>
+				<div class="modal-footer"></div>
 			</div>
-			<div class="formInputField">
-				<label for="confirmPassword" class="formLabel"
-					localize="label.confirmPassword"></label> <input type="password"
-					name="confirmPassword" id="confirmPassword"
-					class="formInput text ui-widget-content ui-corner-all" />
-			</div>
-			<div class="formInputField">
-				<label for="name" class="formLabel" localize="label.forceChange"></label>
-				<input type="checkbox" name="forceChange" id="forceChange"
-					class="formInput text ui-widget-content ui-corner-all" />
-			</div>
-		</form>
+		</div>
 	</div>
 </div>
 <script type="text/javascript">
@@ -118,8 +122,8 @@
 								action : function(resource) {
 									$('#setPasswordForm').data('resource',
 											resource);
-									// 									$('#setPasswordForm').resourceDialog(
-									// 											'create');
+									$('#setPasswordForm').resourceDialog(
+											'create');
 								},
 								enabled : currentMenu.canUpdate
 							} ],
@@ -151,20 +155,10 @@
 								return user;
 							},
 							resourceCreated : function(resource) {
-								$('#tabRoleUsers').multipleSelect({
-									insert : [ resource ]
-								});
-								$('#tabGroupUsers').multipleSelect({
-									insert : [ resource ]
-								});
+
 							},
 							deleted : function(resource) {
-								$('#tabRoleUsers').multipleSelect({
-									remove : [ resource ]
-								});
-								$('#tabGroupUsers').multipleSelect({
-									remove : [ resource ]
-								});
+
 							},
 							displayResource : function(resource) {
 
@@ -183,6 +177,8 @@
 								$('#tabUserGroups').multipleSelect({
 									selected : resource.groups
 								});
+
+								$('#addUserModal').modal('show');
 
 							},
 							complete : function() {

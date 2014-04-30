@@ -1,22 +1,54 @@
 <div id="contentGroups">
-	<div id="addGroupForm" class="dialog" dialog-for="contentGroups">
-		<form class="form">
-			<div id="groupDialogError" class="dialogError"></div>
-			<div class="formInputField">
-				 <label for="name"
-					class="formLabel" localize="group.name"></label> <input type="text"
-					name="name" id="groupName"
-					class="formInput text ui-widget-content ui-corner-all" />
+	<!-- Modal -->
+	<div class="modal" id="addGroupForm" tabindex="-1" role="dialog" dialog-for="contentGroups">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+
+					<div id="groupDialogError" class="dialogError"></div>
+
+					<div class="propertyItem form-group">
+						<label class="col-md-3 control-label" localize="group.name"></label>
+						<div class="propertyValue col-md-9">
+							<input type="text" class="form-control propertyInput"
+								placeholder="" id="groupName" maxlength="" name="name" value="">
+							<div>
+								<span class="help-block" localize="group.name.info"></span>
+							</div>
+						</div>
+					</div>
+					<div id="groupProperties" class="tabContent"></div>
+					<div id="tabGroupUsers" class="tabContent"></div>
+					<input type="hidden" name="groupId" id="groupId"/>
+
+				</div>
+				<div class="modal-footer"></div>
 			</div>
-			<div id="groupProperties" class="tabContent">
-				<ul id="groupPropertiesTabs">
-					<li><a href="#tabGroupUsers"><span localize="label.users"></span></a></li>
-				</ul>
-				<div id="tabGroupUsers" class="tabContent"></div>
-			</div>
-			<input type="hidden" name="groupId" id="groupId"/>
-		</form>
+		</div>
 	</div>
+<!-- 	<div id="addGroupForm" class="dialog" dialog-for="contentGroups"> -->
+<!-- 		<form class="form"> -->
+<!-- 			<div id="groupDialogError" class="dialogError"></div> -->
+<!-- 			<div class="formInputField"> -->
+<!-- 				 <label for="name" -->
+<!-- 					class="formLabel" localize="group.name"></label> <input type="text" -->
+<!-- 					name="name" id="groupName" -->
+<!-- 					class="formInput text ui-widget-content ui-corner-all" /> -->
+<!-- 			</div> -->
+<!-- 			<div id="groupProperties" class="tabContent"> -->
+<!-- 				<ul id="groupPropertiesTabs"> -->
+<!-- 					<li><a href="#tabGroupUsers"><span localize="label.users"></span></a></li> -->
+<!-- 				</ul> -->
+<!-- 				<div id="tabGroupUsers" class="tabContent"></div> -->
+<!-- 			</div> -->
+<!-- 			<input type="hidden" name="groupId" id="groupId"/> -->
+<!-- 		</form> -->
+<!-- 	</div> -->
 </div>
 <script type="text/javascript">
 
@@ -36,6 +68,16 @@
 				});
 		});
 		
+		$('#groupProperties').propertyPage({
+			url : 'group/template/local',
+			showButtons : false,
+			useTemplates : true,
+			canUpdate : currentMenu.canUpdate,
+			additionalTabs : [ {
+				id : "tabGroupUsers",
+				name : getResource("label.users")
+			} ]
+		});
 		
 		$('#contentGroups').ajaxResourcePage(
 				{
@@ -70,12 +112,8 @@
 					return group;
 				},
 				resourceCreated : function(resource) {
-					$('#tabRoleGroups').multipleSelect( { insert: [ resource ] });
-					$('#tabUserGroups').multipleSelect( { insert: [ resource ] });
 				},
 				deleted : function(resource) {
-					$('#tabRoleGroups').multipleSelect( { remove: [ resource ] });
-					$('#tabUserGroups').multipleSelect( { remove: [ resource ] });
 				},
 				displayResource : function(resource) {
 					$('#groupId').val(resource.id);
