@@ -154,7 +154,7 @@ $.fn.propertyPage = function(opts) {
 
 				$('#' + propertyDiv)
 						.append(
-								'<div class="col-md-12" style="padding-left: 0px"><div id="'
+								'<div id="'
 										+ propertyDiv
 										+ 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
 										+ options.icon
@@ -164,7 +164,7 @@ $.fn.propertyPage = function(opts) {
 										+ propertyDiv
 										+ 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="'
 										+ propertyDiv
-										+ 'Content" class="tab-content"></div></div></div></div>');
+										+ 'Content" class="tab-content"></div></div></div>');
 
 				if (options.showButtons) {
 					$(panel)
@@ -900,25 +900,26 @@ $.fn.propertyPage = function(opts) {
 
 								});
 
+				if (options.additionalTabs) {
+					$.each(options.additionalTabs, function() {
+						$(contentTabs).append(
+								'<li id="' + this.id + 'Li"><a href="#'
+										+ this.id + '" class="clickableTab"><span>' + this.name
+										+ '</span></a></li>');
+						$('#' + this.id)
+								.appendTo('#' + propertyDiv + 'Content');
+						$('#' + this.id).addClass('tab-pane');
+					});
+				}
+
+				$('#tabTemp').remove();
+
 				$('.clickableTab').click(function(e) {
 					e.preventDefault();
 					$(this).tab('show');
 				});
 
 				$('.clickableTab').first().tab('show');
-
-				if (options.additionalTabs) {
-					$.each(options.additionalTabs, function() {
-						$(contentTabs).append(
-								'<li id="' + this.id + 'Li"><a href="#'
-										+ this.id + '"><span>' + this.name
-										+ '</span></a></li>');
-						$('#' + this.id)
-								.appendTo('#' + propertyDiv + 'Content');
-					});
-				}
-
-				$('#tabTemp').remove();
 
 				// $('#' + propertyDiv + 'Content').tabs();
 
@@ -1906,7 +1907,7 @@ $.fn.ajaxResourcePage = function(params) {
 							+ divName
 							+ 'Actions" class="tabActions panel-footer"/></div>');
 
-	$('div[dialog-for="' + divName + '"]').resourceDialog(options);
+	// $('div[dialog-for="' + divName + '"]').resourceDialog(options);
 
 	var columns = new Array();
 	var columnsDefs = new Array();
@@ -2073,13 +2074,16 @@ $.fn.ajaxResourcePage = function(params) {
 				.append(
 						'<button id="'
 								+ divName
-								+ 'Add" class="btn btn-primary"><i class="fa fa-plus-circle"></i>'
+								+ 'Add" class="btn btn-primary"  data-toggle="modal" data-target="#'
+								+ $('div[dialog-for="' + divName + '"]').attr(
+										'id')
+								+ '"><i class="fa fa-plus-circle"></i>'
 								+ getResource('text.add') + '</button>');
 		$('#' + divName + 'Add').click(function() {
 			if (options.showCreate) {
 				options.showCreate();
 			}
-			$('div[dialog-for="' + divName + '"]').resourceDialog('create');
+			// $('div[dialog-for="' + divName + '"]').resourceDialog('create');
 		});
 	}
 

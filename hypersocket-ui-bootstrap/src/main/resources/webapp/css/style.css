@@ -284,6 +284,22 @@ div.tablePages ul.pagination {
 	margin: 2px;
 }
 
+.pagination>.active>a,.pagination>.active>span,.pagination>.active>a:hover,.pagination>.active>span:hover,.pagination>.active>a:focus,.pagination>.active>span:focus
+	{
+	background-color: #20a8d8;
+	border-color: #20a8d8;
+}
+
+.tabContent {
+	display: block;
+	overflow: auto;
+}
+
+.propertyItem {
+	overflow: auto;
+}
+
+
 select {
 	background: #ffffff url("../img/select.png") no-repeat !important;
 	background-size: 24px 20px !important;
