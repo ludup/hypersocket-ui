@@ -1715,7 +1715,35 @@ function home(data) {
 				}
 			});
 
-			if (showLocales) {
+			$('#navMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-power-off"></i></a></li>');
+			
+			$('#powerMenu')
+			.append(
+				'<ul id="power" class="dropdown-menu dropdown-menu-right" role="menu"></ul>');
+			$('#power')
+				.append(
+					'<li role="presentation"><a class="powerClick" data-value="shutdown" role="menuitem" tabindex="-1" href="#">' + getResource("shutdown.label") + '</li>');
+			$('#power')
+				.append(
+					'<li role="presentation"><a class="powerClick" data-value="restart" role="menuitem" tabindex="-1" href="#">' + getResource("restart.label") + '</li>');
+			
+			$('.powerClick').click(function(e) {
+				var action = $(this).attr('data-value');
+					bootbox.confirm(getResource("power.confirm").format(getResource(action + '.label')), function(result) {
+							if(result) {
+								getJSON(action + '/0', function(data) {
+										if(data.success) {
+											showInformation(getResource("power.completed").format(getResource(action + '.label')));
+										} else {
+												showError(data.error);
+										}
+								});
+							}
+					});
+			});
+	
+		if (showLocales) {
+				
 				$('#navMenu')
 						.append(
 							'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-globe"></i></a></li>');
