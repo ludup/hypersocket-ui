@@ -1174,12 +1174,21 @@ $.fn.ajaxResourcePage = function(params) {
 
 	$('#' + divName + 'TableHeader').append(
 		'<th localize="text.actions" class="col-md-2"></th>');
-	columns
-			.push({ "mData" : null, "fnRender" : renderActions, "bAutoWidth" : false, "sWidth" : "150px", "bSortable" : false });
+	columns.push({ "mData" : null, 
+		"fnRender" : renderActions, 
+		"bAutoWidth" : false, 
+		"sWidth" : "150px", 
+		"bSortable" : false 
+		});
 
 	$('#' + divName + 'Table')
 			.dataTable(
-				{ "bProcessing" : true, "bServerSide" : true, "sAjaxSource" : basePath + "/api/" + options.tableUrl, "aoColumns" : columns, "aoColumnDefs" : columnsDefs });
+				{ "bProcessing" : true, 
+					"bServerSide" : true, 
+					"sAjaxSource" : basePath + "/api/" + options.tableUrl, 
+					"iDisplayLength": 10,
+					"aoColumns" : columns, 
+					"aoColumnDefs" : columnsDefs });
 
 	if (options.canCreate) {
 
@@ -1802,7 +1811,7 @@ function home(data) {
 
 			// Load current page
 			$(contentDiv).append(
-				'<div id="mainContent" class="col-md-10 col-sm-11 main"/>');
+				'<div class="col-md-10 col-sm-11 main"><div id="informationBar"/><div id="mainContent"/></div>');
 
 			// Setup header actions
 			$('#navMenu')
@@ -1937,6 +1946,7 @@ function loadMenu(menu) {
 
 	$('#mainContent').hide();
 	$('#mainContent').empty();
+	
 	$('div[role="dialog"]').remove();
 	$('#mainContent').data('loadComplete', false);
 

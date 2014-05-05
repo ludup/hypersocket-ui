@@ -107,23 +107,21 @@ function showInformation(fade, text) {
 	
 	$('#highlight').remove();
 	
-	$('#informationBar').append('<div id="highlight"/>');
+	$('#informationBar').append('<div id="highlight" class="row"><div class="col-sm-12"><p class="alert alert-info"><i class="fa fa-info"></i>&nbsp;&nbsp;<span>' + text + '</span></p></div></div>');
 	
-	$('#highlight').addClass('ui-state-highlight');
-	$('#highlight').addClass('ui-corner-all');
-	$('#highlight').append('<span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span><span>' + text + "</span>");
 	if(fade) {
 		$('#highlight').fadeOut(5000, function() {
 			$('#highlight').remove();
 		});
-	} else {
-		$('#highlight').append('<a href="#" id="closeHighlight"><span class="ui-icon ui-icon-circle-close" style="float: right; margin-right: .3em;"></span></a>');
-		
-		$('#closeHighlight').click(function(e) {
-			e.preventDefault();
-			$('#highlight').remove();
-		});
-	}
+	} 
+//	else {
+//		$('#highlight').append('<a href="#" id="closeHighlight"><span class="ui-icon ui-icon-circle-close" style="float: right; margin-right: .3em;"></span></a>');
+//		
+//		$('#closeHighlight').click(function(e) {
+//			e.preventDefault();
+//			$('#highlight').remove();
+//		});
+//	}
 }
 
 $.fn.dialogError = function(resourceKey) {

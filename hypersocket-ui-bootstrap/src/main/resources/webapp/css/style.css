@@ -31,7 +31,7 @@ h2 {
 
 @media ( min-width : 768px) {
 	.main {
-		padding: 20px;
+		padding: 0px 20px 20px 20px;
 	}
 }
 
@@ -247,10 +247,6 @@ h2 {
 	border-color: transparent !important;
 }
 
-#contentAccessControl {
-	margin-top: 30px;
-}
-
 table.table {
 	clear: both;
 	margin-top: 6px !important;
@@ -390,6 +386,10 @@ table {
 	margin: auto;
 	vertical-align: middle;
 	position: relative;
+}
+
+#informationBar {
+	margin-top: 20px;
 }
 
 #certInfo .row {
