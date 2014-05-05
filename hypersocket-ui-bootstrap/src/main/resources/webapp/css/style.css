@@ -392,6 +392,9 @@ table {
 	position: relative;
 }
 
+#certInfo .row {
+	margin-bottom: 20px;	
+}
 /* Sidebar
 =================================================================== */
 .sidebar {

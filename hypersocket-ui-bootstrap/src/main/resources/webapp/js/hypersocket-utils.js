@@ -130,9 +130,9 @@ $.fn.dialogError = function(resourceKey) {
 	$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
 	
 	if(resourceKey!='reset') {
-	 	$(this).append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="alert alert-danger"/>');
+	 	$(this).find('.dialogError').append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="alert alert-danger"/>');
 			$('#dialogErrorHighlight' + $(this).attr('id')).append('<span>' 
-					+ (getResource(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
+					+ (getResourceNoDefault(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
 					+ '</span>');
 	}
 };

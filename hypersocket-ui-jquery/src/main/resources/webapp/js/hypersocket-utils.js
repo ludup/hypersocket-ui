@@ -132,7 +132,7 @@ $.fn.dialogError = function(resourceKey) {
 	if(resourceKey!='reset') {
 	 	$(this).append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="ui-widget ui-state-error ui-corner-all"/>');
 			$('#dialogErrorHighlight' + $(this).attr('id')).append('<span class="ui-icon ui-icon-alert"></span><span>' 
-					+ (getResource(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
+					+ (getResourceNoDefault(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
 					+ '</span>');
 	}
 };
