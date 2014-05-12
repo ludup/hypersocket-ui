@@ -22,13 +22,16 @@
 					</div>
 					<div class="propertyItem form-group">
 						<label for="type" class="col-md-3 control-label"
-							localize="realm.resourceCategory.label"></label> <select
-							name="type" id="type" class="">
-						</select>
+							localize="realm.resourceCategory.label"></label> 
+						<div class="propertyValue col-md-9">
+							<div id="typeButton"></div>
+							<div>
+								<span class="help-block" localize="realm.type.info"></span>
+							</div>
+						</div>
 					</div>
 					<div id="realmProperties" class=""></div>
 					<input name="id" id="id" type="hidden" class="formInput" />
-
 				</div>
 				<div class="modal-footer"></div>
 			</div>
@@ -41,75 +44,74 @@
 					function() {
 						$('#realmsContent').localize();
 
-						$('#type')
-								.change(
-									function() {
-										$('#realmProperties')
-												.propertyPage(
-													{ url : 'template/realm/' + $(this).val(), showButtons : false, canUpdate : currentMenu.canUpdate, useTemplates : true });
-									});
+						$('#typeButton').selectButton({
+							id: 'type',
+							url: 'realm/providers',
+							nameAttr: 'module',
+							valueAttr: 'module',
+							nameIsResourceKey: true,
+							resourceKeyTemplate: 'realm.{0}.label',
+							name: 'local',
+							value: 'local',
+							changed: function(selected) {
+								debugger;
+								$('#realmProperties').propertyPage({ 
+									url : 'template/realm/' + selected.module, 
+									showButtons : false, 
+									canUpdate : currentMenu.canUpdate, 
+									useTemplates : true 
+								});
+							}
+						});
 
-						getJSON(
-							'realm/providers',
-							null,
-							function(data) {
-								$
-										.each(
-											data.resources,
-											function() {
-												$('#type')
-														.append(
-															'<option id="realm' + this.module + '" value="' + this.module + '\">' + getResource("realm." + this.module + '.label') + '</option>');
-											});
 
-								$('#realmsContent')
-										.ajaxResourcePage(
-											{ tableUrl : "table/realms", title : getResource('realms.title'), icon : "fa-th", resourceUrl : "realm", fields : [ { name : "name" }, { name : "resourceCategory", isResourceKey : true } ], resourceKey : 'realm', canCreate : currentMenu.canCreate, canUpdate : currentMenu.canUpdate, canDelete : currentMenu.canDelete, validate : function() {
-												if ($('#name').val() == '') {
-													$('#addRealmForm').dialogError("A name is required!");
-													return false;
-												}
-												return true;
-											}, clearDialog : function() {
-												$('#name').val("");
-												$('#id').val("");
-												$('#realmProperties').clearProperties();
-											}, createResource : function() {
-												realm = new Object();
-												realm.name = $('#name').val();
-												realm.type = $('#type').val();
-												realm.id = $('#id').val();
 
-												$('#realmProperties').saveProperties(true,
-													function(items) {
-														realm.properties = items;
-													});
+			$('#realmsContent')
+					.ajaxResourcePage(
+						{ tableUrl : "table/realms", title : getResource('realms.title'), icon : "fa-th", resourceUrl : "realm", fields : [ { name : "name" }, { name : "resourceCategory", isResourceKey : true } ], resourceKey : 'realm', canCreate : currentMenu.canCreate, canUpdate : currentMenu.canUpdate, canDelete : currentMenu.canDelete, validate : function() {
+							if ($('#name').val() == '') {
+								$('#addRealmForm').dialogError("A name is required!");
+								return false;
+							}
+							return true;
+						}, clearDialog : function() {
+							$('#name').val("");
+							$('#id').val("");
+							$('#realmProperties').clearProperties();
+						}, createResource : function() {
+							realm = new Object();
+							realm.name = $('#name').val();
+							realm.type = $('#type').val();
+							realm.id = $('#id').val();
 
-												return realm;
-											}, showCreate : function() {
-												$('#type').trigger('change');
-											}, displayResource : function(resource) {
-												$('#id').val(resource.id);
-												$('#name').val(resource.name);
-												$('#type').empty();
-												$('#type')
-														.append(
-															'<option id="realm' + resource.resourceCategory + '" value="' + resource.resourceCategory + '\">' + getResource("realm." + resource.resourceCategory + '.label') + '</option>');
-												$('#type').attr('disabled', 'disabled');
-												$('#realmProperties')
-														.propertyPage(
-															{ url : 'realm/properties/' + resource.id, showButtons : false, canUpdate : currentMenu.canUpdate });
-											}, complete : function() {
-												loadComplete();
-											}, resourceCreated : function(resource) {
-												reloadRealms();
-											}, resourceUpdated : function(resource) {
-												reloadRealms();
-											}, resourceDeleted : function(resource) {
-												reloadRealms();
-											} });
+							$('#realmProperties').saveProperties(true,
+								function(items) {
+									realm.properties = items;
+								});
 
-							});
+							return realm;
+						}, showCreate : function() {
+							$('#type').trigger('change');
+						}, displayResource : function(resource) {
+							$('#id').val(resource.id);
+							$('#name').val(resource.name);
+							$('#type').empty();
+							$('#type')
+									.append(
+										'<option id="realm' + resource.resourceCategory + '" value="' + resource.resourceCategory + '\">' + getResource("realm." + resource.resourceCategory + '.label') + '</option>');
+							$('#type').attr('disabled', 'disabled');
+							$('#realmProperties')
+									.propertyPage(
+										{ url : 'realm/properties/' + resource.id, showButtons : false, canUpdate : currentMenu.canUpdate });
+						}, complete : function() {
+							loadComplete();
+						}, resourceCreated : function(resource) {
+							reloadRealms();
+						}, resourceUpdated : function(resource) {
+							reloadRealms();
+						}, resourceDeleted : function(resource) {
+							reloadRealms();
+						} });
 
 					});
 	</script>

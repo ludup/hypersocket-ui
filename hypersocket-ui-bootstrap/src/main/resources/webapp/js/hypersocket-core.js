@@ -157,9 +157,9 @@ $.fn.propertyPage = function(opts) {
 			}
 
 			var first = true;
-			$
-					.each(
-						data.resources,
+			
+			if(data.resources) {
+			$.each(	data.resources,
 						function() {
 
 							tab = "tab" + this.id;
@@ -410,7 +410,7 @@ $.fn.propertyPage = function(opts) {
 										});
 
 						});
-
+		}
 			if (options.additionalTabs) {
 				$
 						.each(
@@ -552,6 +552,100 @@ $.fn.multipleSelectValues = function(data) {
 	});
 	return result;
 };
+
+
+$.fn.selectButton = function(data) {
+	
+	var obj = $.extend(
+		{ idAttr: 'id', nameAttr: 'name', valueAttr: 'value', nameAttrIsResourceKey : false, 
+			resourceKeyTemplate: '{0}', disabled : false, value: '' }, data);
+	
+	var id = obj.id;
+	
+	$(this).append('<div class="btn-group"><input id="' 
+			 + id + '" class="propertyInput" type="hidden" name="select_value_' + id + '" value="'
+			 + obj.value + '"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span id="select_button_' 
+			 + id + '">' + (obj.nameIsResourceKey ? getResource(obj.name) : obj.name) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
+			 + 'select_' + id + '" class="dropdown-menu" role="menu"></div>');
+
+	var selected = null;
+	
+	if (obj.options) {
+		for (var i = 0; i < obj.options.length; i++) {
+			if (obj.value == obj.options[i]['valueAttr']) {
+				selected = obj.options[i];
+				$('#select_button_' + id).text(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']);
+				$('#select_' + id).append('<li><a id="data_' + obj.options[i]['nameAttr'] + '" class="selectButton_' + id + '" href="#" data-value="' 
+						+ stripNull(obj.options[i]['valueAttr']) + '" data-label="' 
+						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']) + '">' 
+						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']) + '</a></li>');
+			} else {
+				$('#select_' + id).append('<li><a id="data_' + obj.options[i]['nameAttr'] + '" class="selectButton_' + id + '" href="#" data-value="' 
+						+ stripNull(obj.options[i]['valueAttr']) + '" data-label="'
+						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']) + '">'
+						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']) + '</a></li>');
+			}
+			$('#data_' + obj.options[i]['nameAttr']).data('scheme', obj.options[i]);
+		}
+		
+
+		$('.selectButton_' + id).on(
+			'click',
+			function(evt) {
+				evt.preventDefault();
+				$('#' + id).val(
+					$(this).attr('data-value'));
+				$('#select_button_' + id).text(
+					$(this).attr('data-label'));
+				$('#' + id).markUpdated();
+				if(obj.changed) {
+					obj.changed($(this).data('scheme'));
+				}
+			});
+		
+			if(obj.changed) {
+				obj.changed(selected);
+			}
+
+	} else if (obj.url) {
+		getJSON(obj.url, null,
+			function(data) {
+				$.each(data.resources, function(idx, option) {
+								if (option[obj['valueAttr']] == obj.value) {
+									selected = option;
+									$('#select_button_' + id).text(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]);
+									$('#select_' + id).append('<li><a id="data_' + option[obj['nameAttr']] + '" class="selectButton_' + id + '" href="#" data-value="' 
+											+ stripNull(option[obj['valueAttr']]) + '" data-label="' 
+											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '">' 
+											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '</a></li>');
+								} else {
+									$('#select_' + id).append('<li><a id="data_' + option[obj['nameAttr']] + '" class="selectButton_' + id + '" href="#" data-value="' 
+											+ stripNull(option[obj['valueAttr']]) + '" data-label="' 
+											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '">' 
+											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '</a></li>');
+								}
+								$('#data_' + option[obj['nameAttr']]).data('scheme', option);
+							});
+		
+				$('.selectButton_' + id).on(
+					'click',
+					function(evt) {
+						evt.preventDefault();
+						$('#' + id).val($(this).attr('data-value'));
+						$('#select_button_' + id).text($(this).attr('data-label'));
+						$('#' + id).markUpdated();
+						if(obj.changed) {
+							obj.changed($(this).data('scheme'));
+						}
+					});
+				
+				if(obj.changed) {
+					obj.changed(selected);
+				}
+			});
+	}
+
+}
 
 $.fn.multipleSelect = function(data) {
 

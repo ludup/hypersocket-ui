@@ -315,9 +315,22 @@ div.tablePages ul.pagination {
 }
 
 .propertyItem {
+	display: table;
+	width: 100%;
+}
+
+.propertyValue {
+	display: table-row;
+}
+
+.modal-open {
 	overflow: auto;
 }
 
+.dropdown-menu {
+	z-index: 9999;
+	overflow: visible;
+}
 select {
 	background: #ffffff url("/hypersocket/ui/images/select.png") no-repeat !important;
 	background-size: 24px 20px !important;
@@ -735,8 +748,7 @@ table {
 }
 
 .panel .panel-body {
-  width: 100%;
-  height: 100%;
+	height: auto;
 }
 
 .slider .ui-slider-handle {
