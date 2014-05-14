@@ -83,22 +83,22 @@ function showError(fade, text) {
 	
 	$('#highlight').remove();
 	
-	$('#informationBar').append('<div id="highlight"/>');
-	$('#highlight').addClass('alert');
-	$('#highlight').addClass('alert-danger');
-	$('#highlight').append('<span>' + text + "</span>");
+	$('#informationBar').append('<div id="highlight" class="row"><div class="col-sm-12"><p class="alert alert-danger"><i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' + text + '</span></p></div></div>');
+	
+	
 	if(fade) {
 		$('#highlight').fadeOut(5000, function() {
 			$('#highlight').remove();
 		});
-	} else {
-		$('#highlight').append('<a href="#" id="closeError"><span class="ui-icon ui-icon-circle-close" style="float: right; margin-right: .3em;"></span></a>');
-		
-		$('#closeError').click(function(e) {
-			e.preventDefault();
-			$('#highlight').remove();
-		});
-	}
+	} 
+//	else {
+//		$('#highlight').append('<a href="#" id="closeError"><span class="ui-icon ui-icon-circle-close" style="float: right; margin-right: .3em;"></span></a>');
+//		
+//		$('#closeError').click(function(e) {
+//			e.preventDefault();
+//			$('#highlight').remove();
+//		});
+//	}
 }
 
 function showInformation(fade, text) {

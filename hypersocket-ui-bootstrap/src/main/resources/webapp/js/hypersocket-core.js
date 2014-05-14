@@ -2007,15 +2007,21 @@ function checkNotifications() {
 
 }
 
-function loadComplete() {
+function loadComplete(pageChange) {
 	log("Signaling load complete");
 	$('#mainContent').data('loadComplete', true);
+	$('#mainContent').data('pageChange', pageChange);
 }
 
 function loadWait() {
 
 	log("Waiting for page load");
 
+	if($('#mainContent').data('pageChange')) {
+		$('#mainContent').data('pageChange')();
+		$('#mainContent').data('pageChange', null);
+	}
+	
 	setTimeout(function() {
 		if ($('#mainContent').data('loadComplete')) {
 			log("Page has loaded");
@@ -2039,6 +2045,7 @@ function loadMenu(menu) {
 	currentMenu = menu;
 
 	$('#mainContent').hide();
+	$('#informationBar').empty();
 	$('#mainContent').empty();
 	
 	$('div[role="dialog"]').remove();
