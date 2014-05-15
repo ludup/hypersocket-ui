@@ -561,7 +561,7 @@ $.fn.selectButton = function(data) {
 			resourceKeyTemplate: '{0}', disabled : false, value: '' }, data);
 	
 	var id = obj.id;
-	
+
 	$(this).append('<div class="btn-group"><input id="' 
 			 + id + '" class="propertyInput" type="hidden" name="select_value_' + id + '" value="'
 			 + obj.value + '"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span id="select_button_' 
@@ -571,21 +571,22 @@ $.fn.selectButton = function(data) {
 	var selected = null;
 	
 	if (obj.options) {
+		debugger;
 		for (var i = 0; i < obj.options.length; i++) {
 			if (obj.value == obj.options[i]['valueAttr']) {
 				selected = obj.options[i];
 				$('#select_button_' + id).text(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']);
-				$('#select_' + id).append('<li><a id="data_' + obj.options[i]['nameAttr'] + '" class="selectButton_' + id + '" href="#" data-value="' 
-						+ stripNull(obj.options[i]['valueAttr']) + '" data-label="' 
-						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']) + '">' 
-						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']) + '</a></li>');
+				$('#select_' + id).append('<li><a id="data_' + obj.options[i][obj['nameAttr']] + '" class="selectButton_' + id + '" href="#" data-value="' 
+						+ stripNull(obj.options[i][obj['valueAttr']]) + '" data-label="' 
+						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '">' 
+						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '</a></li>');
 			} else {
-				$('#select_' + id).append('<li><a id="data_' + obj.options[i]['nameAttr'] + '" class="selectButton_' + id + '" href="#" data-value="' 
-						+ stripNull(obj.options[i]['valueAttr']) + '" data-label="'
-						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']) + '">'
-						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']) + '</a></li>');
+				$('#select_' + id).append('<li><a id="data_' + obj.options[i][obj['nameAttr']] + '" class="selectButton_' + id + '" href="#" data-value="' 
+						+ stripNull(obj.options[i][obj['valueAttr']]) + '" data-label="'
+						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '">'
+						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '</a></li>');
 			}
-			$('#data_' + obj.options[i]['nameAttr']).data('scheme', obj.options[i]);
+			$('#data_' + obj.options[i][obj['nameAttr']]).data('scheme', obj.options[i]);
 		}
 		
 
@@ -593,10 +594,8 @@ $.fn.selectButton = function(data) {
 			'click',
 			function(evt) {
 				evt.preventDefault();
-				$('#' + id).val(
-					$(this).attr('data-value'));
-				$('#select_button_' + id).text(
-					$(this).attr('data-label'));
+				$('#' + id).val($(this).attr('data-value'));
+				$('#select_button_' + id).text($(this).attr('data-label'));
 				$('#' + id).markUpdated();
 				if(obj.changed) {
 					obj.changed($(this).data('scheme'));
@@ -1423,7 +1422,7 @@ $.fn.resourceDialog = function(params, params2) {
 						'<div id="dialogErrorHighlight' + $(this).attr('id') + '" class="alert alert-danger"/>');
 			$('#dialogErrorHighlight' + $(this).attr('id'))
 					.append(
-						'<span>' + (getResourceNoDefault(params2) == undefined ? params2 : getResource(params2)) + '</span>');
+						'<i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(params2) == undefined ? params2 : getResource(params2)) + '</span>');
 		}
 	} else {
 		if (!options.resourceKey) {
@@ -1514,7 +1513,7 @@ function processLogon(data, message) {
 	$('#copyright').empty();
 	$('#copyright')
 			.append(
-				"<p>" + getResource("label.version") + " " + data.version + "</p><p>&copy; 2013-14 Hypersocket Limited. All rights reserved.</p>");
+				"<p>" + getResource("label.version") + " " + data.version + "</p><p>&copy; 2013-2014 Hypersocket Limited. All rights reserved.</p>");
 
 	if (!data.success) {
 

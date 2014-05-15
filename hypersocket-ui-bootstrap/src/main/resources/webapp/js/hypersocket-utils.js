@@ -129,7 +129,7 @@ $.fn.dialogError = function(resourceKey) {
 	
 	if(resourceKey!='reset') {
 	 	$(this).find('.dialogError').append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="alert alert-danger"/>');
-			$('#dialogErrorHighlight' + $(this).attr('id')).append('<span>' 
+			$('#dialogErrorHighlight' + $(this).attr('id')).append('<i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' 
 					+ (getResourceNoDefault(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
 					+ '</span>');
 	}
