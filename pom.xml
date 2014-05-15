@@ -13,7 +13,7 @@
 
 	<modules>
 		<module>hypersocket-ui-common</module>
-		<module>hypersocket-ui-jquery</module>
+		<module>hypersocket-ui-bootstrap</module>
 	</modules>
 
 	<dependencies>
