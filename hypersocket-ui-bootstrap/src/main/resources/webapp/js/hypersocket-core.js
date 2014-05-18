@@ -1833,7 +1833,7 @@ function home(data) {
 				var action = $(this).attr('data-value');
 					bootbox.confirm(getResource("power.confirm").format(getResource(action + '.label')), function(result) {
 							if(result) {
-								getJSON(action + '/0', function(data) {
+								getJSON(action + '/5', function(data) {
 										if(data.success) {
 											showInformation(getResource("power.completed").format(getResource(action + '.label')));
 										} else {
