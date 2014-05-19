@@ -1615,7 +1615,7 @@ function processLogon(data, message) {
 						if (this.type == 'select') {
 							$('#logonForm')
 									.append(
-										'<select name="' + this.resourceKey + '" id="' + this.resourceKey + '"/>');
+										'<select class="logonSelect" name="' + this.resourceKey + '" id="' + this.resourceKey + '"/>');
 							currentKey = this.resourceKey;
 							$
 									.each(
@@ -1738,12 +1738,6 @@ function home(data) {
 
 			$('#menu').empty();
 
-			$('#currentRealm').remove();
-			if (data.realms) {
-				$('#navActions').append('<select id="currentRealm"></select>');
-				loadRealms(data.realms);
-			}
-
 			$
 					.each(
 						data.menus,
@@ -1786,6 +1780,12 @@ function home(data) {
 					.append(
 						'<li class="navicon"><a id="main-menu-toggle" class="hidden-sm hidden-md hidden-lg" href="#"><i class="fa fa-bars"></i></a></li>');
 
+			$('#currentRealm').remove();
+			if (data.realms) {
+				$('#navMenu').append('<li id="currentRealm" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a></li>');
+				loadRealms(data.realms);
+			}
+			
 			$(window).resize(function() {
 				if ($(this).width() < 959) {
 					if (!$('#main-menu').data('toggled')) {
@@ -1854,49 +1854,51 @@ function home(data) {
 							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("en") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="en" href="#">' + getResource("en") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("da") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="da" href="#">' + getResource("da") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("nl") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="nl" href="#">' + getResource("nl") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("fi") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="fi" href="#">' + getResource("fi") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("fr") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="fr" href="#">' + getResource("fr") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("de") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="de" href="#">' + getResource("de") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("it") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="it" href="#">' + getResource("it") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("no") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="no" href="#">' + getResource("no") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("pl") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="pl" href="#">' + getResource("pl") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("ru") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="ru" href="#">' + getResource("ru") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("sv") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="sv" href="#">' + getResource("sv") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("es") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="es" href="#">' + getResource("es") + '</li>');
 				$('#lang')
 						.append(
-							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("ja") + '</li>');
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="ja" href="#">' + getResource("ja") + '</li>');
 
-				$('#lang').change(function() {
+				$('.langSelect').click(function(e) {
 
-					log("Switching language to " + this.value);
+					e.preventDefault();
+					
+					log("Switching language to " + $(this).attr('data-value'));
 
-					getJSON('switchLanguage/' + this.value, null, function() {
+					getJSON('switchLanguage/' + $(this).attr('data-value'), null, function() {
 						document.location.reload();
 					});
 				});
@@ -1928,12 +1930,10 @@ function home(data) {
 function loadRealms(realms) {
 
 	var deletedCurrentRealm = true;
-	$('#currentRealm').off('change');
-	$('#currentRealm').empty();
-
+	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 	$.each(realms, function() {
-		$('#currentRealm').append(
-			'<option value="' + this.id + '">' + this.name + '</option>');
+		$('#realm').append(
+			'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
 		if (currentRealm.id === this.id) {
 			deletedCurrentRealm = false;
 		}
@@ -1943,26 +1943,26 @@ function loadRealms(realms) {
 		currentRealm = realms[0];
 	}
 
-	$('#currentRealm option[value="' + currentRealm.id + '"]').attr('selected',
-		true);
-
-	$('#currentRealm').on(
-		'change',
-		function(evt) {
-			getJSON('switchRealm/' + $('#currentRealm option:selected').val(), null,
-				function(data) {
-					if (!data.success) {
-						showError(false, data.errorMsg);
-					} else {
-						currentRealm = data.session.currentRealm;
-						$('#' + currentMenu.id).trigger('click');
-						showInformation(false, data.bannerMsg);
-					}
-				});
-		});
+	var func = function(evt) {
+		evt.preventDefault();
+		getJSON('switchRealm/' + $(this).attr('data-value'), null,
+			function(data) {
+				if (!data.success) {
+					showError(false, data.errorMsg);
+				} else {
+					currentRealm = data.session.currentRealm;
+					loadMenu(currentMenu);
+				}
+			});
+	};
+	
+	$('.realmSelect').on(
+		'click',
+		func
+	);
 
 	if (deletedCurrentRealm) {
-		$('#currentRealm').trigger('change');
+		func();
 	}
 
 }

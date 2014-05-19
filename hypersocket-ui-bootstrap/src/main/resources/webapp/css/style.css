@@ -331,6 +331,7 @@ div.tablePages ul.pagination {
 	z-index: 9999;
 	overflow: visible;
 }
+
 select {
 	background: #ffffff url("/hypersocket/ui/images/select.png") no-repeat !important;
 	background-size: 24px 20px !important;
@@ -808,6 +809,11 @@ table {
 	float: right;
 	overflow: auto;
 	margin-left: 10px;
+}
+
+.logonSelect {
+	width: 100%;
+	padding: 10px;
 }
 
 @media ( min-width : 768px) and (max-width: 991px) {

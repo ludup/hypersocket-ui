@@ -5,25 +5,25 @@
 				<div class="col-sm-2">
 					<a class="large-button" id="buttonUsers"> <i
 						class="fa fa-user"></i>
-						<p>Users</p>
+						<p localize="users.title"></p>
 					</a>
 				</div>
 				<div class="col-sm-2">
 					<a class="large-button" id="buttonGroups"> <i
 						class="fa fa-users"></i>
-						<p>Groups</p>
+						<p localize="groups.title"></p>
 					</a>
 				</div>
 				<div class="col-sm-2">
 					<a class="large-button" id="buttonRoles"> <i
 						class="fa fa-user-md"></i>
-						<p>Roles</p>
+						<p localize="roles.title"></p>
 					</a>
 				</div>
 				<div class="col-sm-2">
 					<a class="large-button" id="buttonRealms"> <i
-						class="fa fa-th"></i>
-						<p>Realms</p>
+						class="fa fa-database"></i>
+						<p localize="realms.title"></p>
 					</a>
 				</div>
 				<div class="col-sm-2"></div>
@@ -38,6 +38,9 @@
 	</div>
 </div>
 <script type="text/javascript">
+
+	$('#accessControlContent').localize();
+
 	function loadPage(page, element) {
 		
 		$('#accessControlContent').find('.large-button-active').removeClass('large-button-active');
