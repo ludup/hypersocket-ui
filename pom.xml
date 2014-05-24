@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.hypersocket</groupId>
 	<artifactId>hypersocket-ui</artifactId>
-	<version>0.0.6</version>
+	<version>0.0.7</version>
 	<packaging>pom</packaging>
 	<name>Hypersocket - User Interface</name>
 
