@@ -1835,7 +1835,7 @@ function home(data) {
 							if(result) {
 								getJSON(action + '/5', function(data) {
 										if(data.success) {
-											showInformation(getResource("power.completed").format(getResource(action + '.label')));
+											showInformation(false, getResource("power.completed").format(getResource(action + '.label')));
 										} else {
 												showError(data.error);
 										}
