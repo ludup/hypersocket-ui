@@ -1238,7 +1238,7 @@ $.fn.ajaxResourcePage = function(params) {
 
 					log("Entering resource delete for id " + id);
 
-					$(document).data('modal', true);
+					//$(document).data('modal', true);
 
 					var row = $(this).closest("tr").get(0);
 					var resource = $('#' + divName + 'Table').dataTable().fnGetData(row);
@@ -1248,6 +1248,7 @@ $.fn.ajaxResourcePage = function(params) {
 						if (confirmed) {
 							deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
 								if (data.success) {
+									debugger;
 									if (options.resourceDeleted) {
 										options.resourceDeleted(resource);
 									}
@@ -1782,8 +1783,9 @@ function home(data) {
 
 			$('#currentRealm').remove();
 			if (data.realms) {
-				$('#navMenu').append('<li id="currentRealm" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a></li>');
-				loadRealms(data.realms);
+				if(data.realms.length > 1) {
+					loadRealms(data.realms);
+				}
 			}
 			
 			$(window).resize(function() {
@@ -1929,11 +1931,10 @@ function home(data) {
 
 function loadRealms(realms) {
 
+	$('#currentRealm').remove();
+	
 	var deletedCurrentRealm = true;
-	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 	$.each(realms, function() {
-		$('#realm').append(
-			'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
 		if (currentRealm.id === this.id) {
 			deletedCurrentRealm = false;
 		}
@@ -1942,10 +1943,9 @@ function loadRealms(realms) {
 	if (deletedCurrentRealm) {
 		currentRealm = realms[0];
 	}
-
-	var func = function(evt) {
-		evt.preventDefault();
-		getJSON('switchRealm/' + $(this).attr('data-value'), null,
+	
+	var func = function(realm) {
+		getJSON('switchRealm/' + realm, null,
 			function(data) {
 				if (!data.success) {
 					showError(false, data.errorMsg);
@@ -1956,20 +1956,36 @@ function loadRealms(realms) {
 			});
 	};
 	
-	$('.realmSelect').on(
-		'click',
-		func
-	);
+	if(realms.length > 1) {
+		$('#main-menu-toggle').parent().after('<li id="currentRealm" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a></li>');
 
-	if (deletedCurrentRealm) {
-		func();
+		$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
+		$.each(realms, function() {
+			$('#realm').append(
+				'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
+		});
+	
+		$('.realmSelect').on(
+			'click', function(evt) {
+				evt.preventDefault();
+				debugger;
+				func($(this).attr('data-value'));
+			}
+		);
 	}
-
+	
+	if (deletedCurrentRealm) {
+		func(currentRealm.id);
+	}
 }
 
 function reloadRealms() {
 	$.getJSON(basePath + "/api/realms", null, function(data) {
 		loadRealms(data.resources);
+		// This should not be needed but some areas reload the page and so the state does not get updated
+		// http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear
+		$('body').removeClass('modal-open');
+		$('.modal-backdrop').remove();
 	});
 }
 
