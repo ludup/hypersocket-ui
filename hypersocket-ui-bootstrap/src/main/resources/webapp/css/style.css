@@ -816,6 +816,10 @@ table {
 	padding: 10px;
 }
 
+.spacer20px {
+	height: 20px;
+}
+
 @media ( min-width : 768px) and (max-width: 991px) {
 	.navbar-form input[type=text] {
 		width: 260px !important;
