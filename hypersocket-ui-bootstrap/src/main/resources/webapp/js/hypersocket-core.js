@@ -571,7 +571,6 @@ $.fn.selectButton = function(data) {
 	var selected = null;
 	
 	if (obj.options) {
-		debugger;
 		for (var i = 0; i < obj.options.length; i++) {
 			if (obj.value == obj.options[i]['valueAttr']) {
 				selected = obj.options[i];
@@ -1248,7 +1247,6 @@ $.fn.ajaxResourcePage = function(params) {
 						if (confirmed) {
 							deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
 								if (data.success) {
-									debugger;
 									if (options.resourceDeleted) {
 										options.resourceDeleted(resource);
 									}
@@ -1739,43 +1737,42 @@ function home(data) {
 
 			$('#menu').empty();
 
-			$
-					.each(
-						data.menus,
-						function() {
+			$.each(
+				data.menus,
+				function() {
+					$('#menu')
+							.append(
+								'<div id="menu_' + this.id + '" class="nav-sidebar title"><span>' + getResource(this.resourceKey + '.label') + '</span></div>');
 
-							$('#menu')
-									.append(
-										'<div id="menu_' + this.id + '" class="nav-sidebar title"><span>' + getResource(this.resourceKey + '.label') + '</span></div>');
+					if (this.menus.length > 0) {
+						var menu = '#sub_' + this.id;
+						$("#menu").append(
+							'<ul id="sub_' + this.id + '" class="nav nav-sidebar"/>');
+						$
+								.each(
+									this.menus,
+									function() {
+										$(menu)
+												.append(
+													'<li><a id="' + this.id + '" href="#" class="sideMenu"><i class="fa ' + this.icon + '"></i><span class="hidden-sm text">' + getResource(this.resourceKey + '.label') + '</span></span></a></li>');
+										$('#' + this.id).data('menu', this);
+										$('#' + this.id).click(function() {
+											$(".sideMenu").removeClass("active");
+											$(this).addClass("active");
+											loadMenu($('#' + $(this).attr('id')).data('menu'));
+										});
+										if (currentMenu == null) {
+											currentMenu = this;
+										}
+									});
+					}
 
-							if (this.menus.length > 0) {
-								var menu = '#sub_' + this.id;
-								$("#menu").append(
-									'<ul id="sub_' + this.id + '" class="nav nav-sidebar"/>');
-								$
-										.each(
-											this.menus,
-											function() {
-												$(menu)
-														.append(
-															'<li><a id="' + this.id + '" href="#"><i class="fa ' + this.icon + '"></i><span class="hidden-sm text">' + getResource(this.resourceKey + '.label') + '</span></span></a></li>');
-												$('#' + this.id).data('menu', this);
-												$('#' + this.id).click(function() {
-													$(this).addClass("active");
-													loadMenu($(this).data('menu'));
-												});
-												if (currentMenu == null) {
-													currentMenu = this;
-												}
-											});
-							}
+					$('#' + this.id).click(function() {
+						$(this).addClass("active");
+						loadMenu($(this).data('menu'));
+					});
 
-							$('#' + this.id).click(function() {
-								$(this).addClass("active");
-								loadMenu($(this).data('menu'));
-							});
-
-						});
+				});
 
 			$('#navMenu')
 					.append(
@@ -1968,7 +1965,6 @@ function loadRealms(realms) {
 		$('.realmSelect').on(
 			'click', function(evt) {
 				evt.preventDefault();
-				debugger;
 				func($(this).attr('data-value'));
 			}
 		);
@@ -2066,12 +2062,57 @@ function loadMenu(menu) {
 	$('div[role="dialog"]').remove();
 	$('#mainContent').data('loadComplete', false);
 
-	if (menu.resourceName == null) {
-		currentMenu = menu = menu.menus[0];
-	}
+	if(menu.menus.length > 0) {
 
-	$('#mainContent').load('content/' + menu.resourceName + '.html', function() {
+		$('#mainContent').append('<div class="col-sm-12" id="subMenuContent">'
+				+ '<div class="row">'
+					+ '<div class="panel panel-default">'
+						+ '<div id="subMenuIconPanel" class="panel-body"></div>'
+					+ '</div>'
+				+ '</div>'
+			+ '</div>'
+			+ '<div id="subMenuPageContent">'
+				+ '<div class="row">'
+					+ '<div class="col-sm-12" id="menuContent"></div>'
+				+ '</div>'
+			+ '</div>');
+						
+		$.each(menu.menus, function() {
+			$('#subMenuIconPanel').append(
+				'<div class="col-sm-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceName + '">'
+						+ '<i class="fa ' + this.icon + '"></i><p>' + getResource(this.resourceName + '.title') + '</p>'
+					+ '</a>'
+				+ '</div>');
+		});
+	
+		for(var i=menu.menus.length;i<6;i++) {
+			$('#subMenuIconPanel').append('<div class="col-sm-2"></div>');
+		}
+		
+		currentMenu = menu.menus[0];
+
+		$('.subMenu').click(function(e) {
+			e.preventDefault();
+			loadSubPage($(this).attr('data-value'), $(this));
+		});
+		
+		$('.subMenu').first().trigger('click');
+		
+	} else {
+	
+	
+		$('#mainContent').load('content/' + menu.resourceName + '.html', function() {
+			loadWait();
+		});
+	}
+}
+
+function loadSubPage(page, element) {
+	
+	$('#subMenuIconPanel').find('.large-button-active').removeClass('large-button-active');
+	element.addClass('large-button-active');
+	$('#menuContent').load('content/' + page + '.html', function() {
 		loadWait();
 	});
-
 }
+
