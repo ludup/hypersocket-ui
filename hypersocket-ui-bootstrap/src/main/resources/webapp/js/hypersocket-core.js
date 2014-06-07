@@ -1294,6 +1294,20 @@ $.fn.ajaxResourcePage = function(params) {
 			$('div[dialog-for="' + divName + '"]').resourceDialog('create');
 		});
 	}
+	
+	if(options.additionalButtons) {
+		
+		$.each(options.additionalButtons, function() {
+			$('#' + divName + 'Actions').append(
+				'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>' + getResource(this.resourceKey + '.label') + '</button>');
+			var button = this;
+			$('#' + this.resourceKey).click(function() {
+				if(button.action) {
+					button.action();
+				}
+			});
+		});
+	}
 
 	if (options.complete) {
 		options.complete();
