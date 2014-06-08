@@ -1648,14 +1648,27 @@ function processLogon(data, message) {
 						} else {
 							$('#logonForm')
 									.append(
-										'<input class="form-control" type="' + this.type + '" name="' + this.resourceKey + '" placeholder="' + getResource(this.resourceKey + ".label") + '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
+										'<input class="form-control" type="' + this.type + '" name="' + this.resourceKey + '" placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
 						}
 
 					});
 
 		$('#logonForm')
 				.append(
-					'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' + getResource("text.logon") + '<i style="float: right; padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
+					'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' + (data.last ? getResource("text.logon") : getResource("text.next")) + '<i style="float: right; padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
+		
+		if(!data.newSession) {
+			$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
+			
+			$('#resetLogon').click(function(e) {
+				e.preventDefault();
+				
+				getJSON('logon/reset', null, function(data) {
+					processLogon(data, null);
+				});
+			});
+		}
+		
 		$('#logonButton')
 				.click(
 					function(evt) {
@@ -2094,7 +2107,7 @@ function loadMenu(menu) {
 		$.each(menu.menus, function() {
 			$('#subMenuIconPanel').append(
 				'<div class="col-sm-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceName + '">'
-						+ '<i class="fa ' + this.icon + '"></i><p>' + getResource(this.resourceName + '.title') + '</p>'
+						+ '<i class="fa ' + this.icon + '"></i><p>' + getResource(this.resourceKey + '.title') + '</p>'
 					+ '</a>'
 				+ '</div>');
 		});
