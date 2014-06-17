@@ -165,7 +165,7 @@ function postJSON(path, params, callback) {
 	    data: JSON.stringify(params),
 	    success: callback
 	}).error(function() {
-		showError(false, url + " JSON request failed.");
+		showError(false, path + " JSON request failed.");
 	});
 	
 };
@@ -182,7 +182,7 @@ function deleteJSON(path, params, callback) {
 	    data: JSON.stringify(params),
 	    success: callback
 	}).error(function() {
-		showError(false, url + " JSON request failed.");
+		showError(false, path + " JSON request failed.");
 	});
 };
 

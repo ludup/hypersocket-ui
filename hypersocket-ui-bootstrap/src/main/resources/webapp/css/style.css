@@ -70,6 +70,11 @@ h2 {
 	margin: 0 auto;
 }
 
+.form-signin a {
+	margin-top: 10px;
+	text-align: center;
+}
+
 .form-signin .form-signin-heading,.form-signin .checkbox {
 	margin-bottom: 10px;
 }
@@ -206,7 +211,7 @@ h2 {
 .large-button {
 	border: 1px solid #e1e6ef;
 	background: #f2f4f8;
-	margin-bottom: -1px;
+	margin-bottom: 10px;
 	padding: 10px 0px 0px 0px;
 	font-size: 14px;
 	display: block;
@@ -814,6 +819,18 @@ table {
 .logonSelect {
 	width: 100%;
 	padding: 10px;
+}
+
+.center {
+	text-align: center;
+}
+
+.logonLink {
+	margin-top: 10px;
+}
+
+.spacer20px {
+	height: 20px;
 }
 
 @media ( min-width : 768px) and (max-width: 991px) {
