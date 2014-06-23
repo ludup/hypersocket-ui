@@ -1751,7 +1751,7 @@ function home(data) {
 	$(contentDiv).empty();
 	$(contentDiv)
 			.append(
-				'<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
+				'<div id="main-menu" class="sidebar col-md-2 col-xs-1"><div id="menu" class="sidebar-collapse"></div></div>');
 
 	currentRealm = data.session.currentRealm;
 	var showLocales = data.showLocales;
@@ -1932,7 +1932,7 @@ function home(data) {
 
 			// Load current page
 			$(contentDiv).append(
-				'<div class="col-md-10 col-sm-11 main"><div id="informationBar"/><div id="mainContent"/></div>');
+				'<div class="col-md-10 col-xs-11 main"><div id="informationBar"/><div id="mainContent"/></div>');
 
 			// Setup header actions
 			$('#navMenu')
@@ -2091,7 +2091,7 @@ function loadMenu(menu) {
 
 	if(menu.menus.length > 0) {
 
-		$('#mainContent').append('<div class="col-sm-12" id="subMenuContent">'
+		$('#mainContent').append('<div class="col-xs-12" id="subMenuContent">'
 				+ '<div class="row">'
 					+ '<div class="panel panel-default">'
 						+ '<div id="subMenuIconPanel" class="panel-body"></div>'
@@ -2100,26 +2100,28 @@ function loadMenu(menu) {
 			+ '</div>'
 			+ '<div id="subMenuPageContent">'
 				+ '<div class="row">'
-					+ '<div class="col-sm-12" id="menuContent"></div>'
+					+ '<div class="col-xs-12" id="menuContent"></div>'
 				+ '</div>'
 			+ '</div>');
 						
 		$.each(menu.menus, function() {
 			$('#subMenuIconPanel').append(
-				'<div class="col-sm-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceName + '">'
+				'<div class="col-xs-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceName + '">'
 						+ '<i class="fa ' + this.icon + '"></i><p>' + getResource(this.resourceKey + '.title') + '</p>'
 					+ '</a>'
 				+ '</div>');
 		});
 	
-		for(var i=menu.menus.length;i<6;i++) {
-			$('#subMenuIconPanel').append('<div class="col-sm-2"></div>');
+		for(var i=0;i<menu.menus.length;i++) {
+			$('#subMenuIconPanel').append('<div class="col-xs-2"></div>');
+			$(document).data(menu.menus[i].resourceName, menu.menus[i]);
 		}
 		
 		currentMenu = menu.menus[0];
 
 		$('.subMenu').click(function(e) {
 			e.preventDefault();
+			currentMenu = $(document).data($(this).attr('data-value'));
 			loadSubPage($(this).attr('data-value'), $(this));
 		});
 		

@@ -1,0 +1,116 @@
+
+<div id="contentTemplates">
+	<div class="modal" id="addTemplateForm" tabindex="-1" role="dialog" dialog-for="contentTemplates">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="dialogError"></div>
+
+					<div class="propertyItem form-group">
+						<label class="col-xs-3 control-label" localize="template.name.label"></label>
+						<div class="propertyValue col-xs-9">
+							<input type="text" class="form-control propertyInput"
+								placeholder="" id="name" maxlength="" name="name" value="">
+							<div>
+								<span class="help-block" localize="template.name.info"></span>
+							</div>
+						</div>
+					</div>
+					<div class="propertyItem form-group">
+							<label class="col-xs-3 control-label" localize="template.type.label"></label>
+							<div class="propertyValue col-xs-9">
+								<div id="templateType"></div>
+								<div>
+									<span class="help-block" localize="template.type.info"></span>
+								</div>
+							</div>
+						</div>
+					<div id="templateProperties"></div>
+					<div id="tabDetails" class="dialogTab">
+						
+					</div>
+					<input type="hidden" id="templateId" name="templateId" value="" />
+				</div>
+				<div class="modal-footer"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+
+
+	$(document).ready(function() {
+
+		$('#contentTemplates').localize();
+
+		$('#templateType').selectButton({
+			id: 'type',
+			url: 'templates/types',
+			value: 'template.email',
+			changed: function(scheme) {
+				
+			}
+		});
+
+		$('#templateProperties').propertyPage({
+			url : 'templates/properties',
+			showButtons : false,
+			useTemplates : true,
+			canUpdate : currentMenu.canUpdate,
+			additionalTabs : [ {
+				id : "tabDetails",
+				name : getResource("template.label")
+			}]
+		});
+		debugger;
+		$('#contentTemplates').ajaxResourcePage(
+				{
+				title: getResource('templates.title'),
+				icon: 'fa-file-code-o',
+				tableUrl : "templates/table",
+				resourceUrl : "templates/template",
+				fields : [ { name: "name" }, { name: "type"}],
+				resourceKey : 'template',
+				canCreate: currentMenu.canCreate,
+				canUpdate: currentMenu.canUpdate,
+				canDelete: currentMenu.canDelete,
+				validate : function() {
+					if ($('#name').val() == '') {
+						$('#addTemplateForm').resourceDialog('error',
+								"error.nameRequired");
+						return false;
+					}
+
+					return true;
+				},
+				clearDialog : function() {
+					$('#name').val('');
+					$('#type').val('template.email');
+					$('#templateId').val('');
+				},
+				createResource : function() {
+					app = new Object();
+					app.id = $('#templateId').val();
+					app.name = $('#name').val();
+					app.type = $('#type').val();
+					
+					return app;
+				},
+				displayResource : function(resource) {
+					$('#name').val(resource.name);
+					$('#type').val(resource.type);
+					$('#templateId').val(resource.id);
+				},
+				complete: function() {
+					loadComplete();
+				}
+			});
+
+		
+	});
+</script>
