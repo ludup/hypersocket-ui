@@ -91,7 +91,7 @@ $.fn.validateProperty = function() {
 
 	log("Validating " + $(this).data('resourceKey'));
 	if (obj.inputType == 'number') {
-		return (obj.minValue <= $(this).val() && obj.maxValue >= $(this).val());
+		return (parseInt(obj.minValue) <= parseInt($(this).val()) && parseInt(obj.maxValue) >= parseInt($(this).val()));
 	} else if (obj.inputType == 'textarea') {
 		return true;
 	} else if (obj.inputType == 'text') {
@@ -1535,7 +1535,7 @@ function processLogon(data, message) {
 		clearContent();
 
 		$(contentDiv).append(
-			'<form id="logonForm" class="form-signin" role="form">');
+			'<form id="logonForm" class="form-signin" role="form"/>');
 
 		$('#currentRealm').remove();
 		$('#lang').remove();
@@ -1610,8 +1610,9 @@ function processLogon(data, message) {
 		}
 
 		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
-		$
-				.each(
+		
+		var links = new Array();
+		$.each(
 					data['formTemplate']['inputFields'],
 					function() {
 
@@ -1621,7 +1622,15 @@ function processLogon(data, message) {
 										'<input type="' + this.type + '" name="' + this.resourceKey + '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
 							return;
 						} else if (this.type == 'p') {
-							$('#logonForm').append('<p>' + this.defaultValue + '</p>');
+							if(this.valueResourceKey) {
+								$('#logonForm').append('<p>' + getResource(this.defaultValue) + '</p>');
+							} else {
+								$('#logonForm').append('<p>' + this.defaultValue + '</p>');
+							}
+							
+							return;
+						} else if(this.type == 'a') {
+							links.push(this);
 							return;
 						}
 
@@ -1663,11 +1672,24 @@ function processLogon(data, message) {
 			$('#resetLogon').click(function(e) {
 				e.preventDefault();
 				
-				getJSON('logon/reset', null, function(data) {
+				getJSON('logon/reset/Default', null, function(data) {
 					processLogon(data, null);
 				});
 			});
 		}
+		
+		$.each(links, function(idx, obj) {
+			
+			$('#logonForm').append('<div class="logonLink center"><a id="' + this.label + '" href="#">' + getResource(this.resourceKey) + '</a></div>');
+		
+			$('#' + obj.label).click(function(e) {
+				e.preventDefault();
+				
+				getJSON(obj.defaultValue, null, function(data) {
+					processLogon(data, null);
+				});
+			});
+		});
 		
 		$('#logonButton')
 				.click(
