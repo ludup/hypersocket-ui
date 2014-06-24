@@ -1151,9 +1151,20 @@ $.fn.ajaxResourcePage = function(params) {
 
 	$(this).data('options', options);
 
-	$(this)
-			.append(
-				'<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' + options.icon + '"></i><span class="break">' + options.title + '</span></h2></div><div id="' + divName + 'Panel" class="panel-body"><table class="table table-striped" id="' + divName + 'Table' + '"><thead><tr id="' + divName + 'TableHeader"></tr></thead></table></div><div id="' + divName + 'Actions" class="tabActions panel-footer"/></div>');
+	var html = '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
+		+ options.icon + '"></i><span class="break">' 
+		+ options.title + '</span></h2></div><div id="'
+		+ divName + 'Panel" class="panel-body"><table class="table' 
+		+ (options.selected ? '' : ' table-striped') + '" id="'
+		+ divName + 'Table' + '"><thead><tr id="' 
+		+ divName + 'TableHeader"></tr></thead></table></div>';
+	
+	if(options.canCreate) {
+		html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"/>';
+	}
+	
+	html += '</div>';
+	$(this).append(html);
 
 	$('div[dialog-for="' + divName + '"]').resourceDialog(options);
 
@@ -1273,7 +1284,7 @@ $.fn.ajaxResourcePage = function(params) {
 		"bSortable" : false 
 		});
 
-	$('#' + divName + 'Table')
+	var oTable = $('#' + divName + 'Table')
 			.dataTable(
 				{ "bProcessing" : true, 
 					"bServerSide" : true, 
@@ -1282,6 +1293,17 @@ $.fn.ajaxResourcePage = function(params) {
 					"aoColumns" : columns, 
 					"aoColumnDefs" : columnsDefs });
 
+	if(options.selected) {
+	    var tableTools = new $.fn.dataTable.TableTools( oTable, {
+	        sRowSelect: "os",
+	        fnRowSelected: function ( nodes ) {
+	        	var full = oTable.fnGetData(nodes[0]);
+	        	options.selected(full);
+	        }
+	    });
+    
+	    //$('#auditTable tbody tr').trigger('click');
+	}
 	if (options.canCreate) {
 
 		$('#' + divName + 'Actions')
@@ -1954,7 +1976,7 @@ function home(data) {
 
 			// Load current page
 			$(contentDiv).append(
-				'<div class="col-md-10 col-xs-11 main"><div id="informationBar"/><div id="mainContent"/></div>');
+				'<div class="col-md-10 col-sm-11 main"><div id="informationBar"/><div id="mainContent"/></div>');
 
 			// Setup header actions
 			$('#navMenu')

@@ -11,16 +11,7 @@
 				<div class="modal-body">
 					<div class="dialogError"></div>
 
-					<div class="propertyItem form-group">
-						<label class="col-xs-3 control-label" localize="template.name.label"></label>
-						<div class="propertyValue col-xs-9">
-							<input type="text" class="form-control propertyInput"
-								placeholder="" id="name" maxlength="" name="name" value="">
-							<div>
-								<span class="help-block" localize="template.name.info"></span>
-							</div>
-						</div>
-					</div>
+					
 					<div class="propertyItem form-group">
 							<label class="col-xs-3 control-label" localize="template.type.label"></label>
 							<div class="propertyValue col-xs-9">
@@ -41,16 +32,70 @@
 			</div>
 		</div>
 	</div>
+<div id="templateContent" class="panel panel-default">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">
+	  	<h2><i class="fa fa-file-code-o"></i><span class="break" id="templateName"></span></h2>
+	  </div>
+	  <div class="panel-body">
+		<div id="subjectContent" class="propertyItem form-group">
+			<label class="col-xs-3 control-label" localize="template.subject.label"></label>
+			<div class="propertyValue col-xs-9">
+				<input type="text" class="form-control propertyInput"
+					placeholder="" id="subject" maxlength="" name="subject" value="">
+				<div>
+					<span class="help-block" localize="template.subject.info"></span>
+				</div>
+			</div>
+		</div>
+		<textarea name="template" id="editor">This is some text.</textarea>
+	  </div>
+	  <div class="panel-footer">
+	  	<button class="btn btn-primary" id="saveTemplate"><i class="fa fa-save"></i>&nbsp<span localize="text.save"></span></button>
+	  </div>
+	</div>
 <script type="text/javascript">
 
 
 	$(document).ready(function() {
 
+		$('#templateContent').hide();
 		$('#contentTemplates').localize();
-
+		$('#templateContent').localize();
+		
+		if($('textarea#editor').tinymce()) {
+			$('textarea#editor').tinymce().remove();	
+		}
+		
+		tinymce.init({
+		    selector: "textarea#editor",
+			width:      '98%',
+			height: '400px',
+		    statusbar:  false,
+		    menubar: true,
+		    theme: "modern",
+		    theme_advanced_resizing : true,
+		    plugins: [
+		        "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+		        "searchreplace wordcount visualblocks visualchars code fullscreen",
+		        "insertdatetime media nonbreaking save table contextmenu directionality",
+		        "emoticons template paste textcolor colorpicker textpattern"
+		    ],
+		    toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+		    toolbar2: "print preview media | forecolor backcolor emoticons",
+		    image_advtab: true,
+		    setup : function(ed) {
+                ed.on('change', function(e) {
+		    		$('#saveTemplate').attr('disabled', false);
+                });
+		    }
+		});
+		
+		
 		$('#templateType').selectButton({
 			id: 'type',
 			url: 'templates/types',
+			nameIsResourceKey: true,
 			value: 'template.email',
 			changed: function(scheme) {
 				
@@ -67,18 +112,18 @@
 				name : getResource("template.label")
 			}]
 		});
-		debugger;
+		
 		$('#contentTemplates').ajaxResourcePage(
 				{
 				title: getResource('templates.title'),
 				icon: 'fa-file-code-o',
 				tableUrl : "templates/table",
 				resourceUrl : "templates/template",
-				fields : [ { name: "name" }, { name: "type"}],
+				fields : [ { name: "name", isResourceKey: true }, { name: "type", isResourceKey: true}],
 				resourceKey : 'template',
-				canCreate: currentMenu.canCreate,
-				canUpdate: currentMenu.canUpdate,
-				canDelete: currentMenu.canDelete,
+				canCreate: false,
+				canUpdate: false,
+				canDelete: false,
 				validate : function() {
 					if ($('#name').val() == '') {
 						$('#addTemplateForm').resourceDialog('error',
@@ -108,9 +153,100 @@
 				},
 				complete: function() {
 					loadComplete();
+				},
+				selected: function(resource) {
+					
+					if($('#templateContent').data('resource') && !$('#saveTemplate').attr('disabled')) {
+						
+						bootbox.dialog({
+							  message: getResource("template.notSaved.info"),
+							  title: getResource("template.notSaved.title"),
+							  buttons: {
+							    success: {
+							      label: getResource("text.yes"),
+							      className: "btn-success",
+							      callback: function() {
+							    	  saveTemplate(function() {
+											changeTemplate(resource);
+										});
+							      }
+							    },
+							    danger: {
+							      label: getResource("text.no"),
+							      className: "btn-danger",
+							      callback: function() {
+							        	changeTemplate(resource);
+							      }
+							    },
+							    main: {
+							      label: getResource("text.cancel"),
+							      className: "btn-primary",
+							      callback: function() {
+							        
+							      }
+							    }
+							  }
+							});
+					} else {
+						changeTemplate(resource);
+					}
 				}
 			});
 
 		
 	});
-</script>
+	
+	$('#saveTemplate').click(function() {
+		saveTemplate();
+	});
+	
+	function saveTemplate(callback) {
+		
+		var resource = $('#templateContent').data('resource');
+		resource.subject = $('#subject').val();
+		resource.template = tinyMCE.activeEditor.getContent({format : 'raw'});
+		
+		postJSON('templates/template', resource, function(data) {
+			if (data.success) {
+				log("Template saved");
+				showInformation(true, data.message);
+				if(callback) {
+					callback();
+				}
+				$('#saveTemplate').attr('disabled',true);
+			} else {
+				log("Resource object creation failed " + data.message);
+				showError(false, data.message);
+			}
+		});
+	}
+	
+	function changeTemplate(resource) {
+		$('#saveTemplate').attr('disabled', 'disabled');
+		if(resource.hasSubject) {
+			$('#subjectContent').show();
+			$('#subject').val(resource.subject);
+		} else {	
+			$('#subjectContent').hide();
+			$('#subject').val('');
+		}
+		if(resource.nameIsResourceKey) {
+			$('#templateName').text(getResource("template." + resource.name + ".label"));
+		} else {
+			$('#templateName').text(resource.name);
+		}
+		tinyMCE.activeEditor.setContent(resource.template);
+
+		$('#templateContent').show();
+		
+		$('#editor').change(function() {
+			$('#saveTemplate').attr('disabled', false);
+		});
+		
+		$('#subject').change(function() {
+			$('#saveTemplate').attr('disabled', false);
+		});
+		
+		$('#templateContent').data('resource', resource);
+	}
+	</script>
