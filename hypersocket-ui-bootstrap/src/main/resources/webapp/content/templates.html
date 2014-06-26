@@ -1,59 +1,35 @@
 
 <div id="contentTemplates">
-	<div class="modal" id="addTemplateForm" tabindex="-1" role="dialog" dialog-for="contentTemplates">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title"></h4>
-				</div>
-				<div class="modal-body">
-					<div class="dialogError"></div>
-
-					
-					<div class="propertyItem form-group">
-							<label class="col-xs-3 control-label" localize="template.type.label"></label>
-							<div class="propertyValue col-xs-9">
-								<div id="templateType"></div>
-								<div>
-									<span class="help-block" localize="template.type.info"></span>
-								</div>
-							</div>
-						</div>
-					<div id="templateProperties"></div>
-					<div id="tabDetails" class="dialogTab">
-						
-					</div>
-					<input type="hidden" id="templateId" name="templateId" value="" />
-				</div>
-				<div class="modal-footer"></div>
-				</div>
+</div>
+<div id="templateContent" class="panel panel-default" page-for="contentTemplates">
+  <!-- Default panel contents -->
+  <div class="panel-heading">
+  	<h2><i class="fa fa-file-code-o"></i><span class="break" localize="template.editing"></span></h2>
+  </div>
+  <div class="panel-body">
+  	<div id="subjectContent" class="propertyItem form-group">
+		<label class="col-xs-3 control-label" localize="template.name.label"></label>
+		<div class="propertyValue col-xs-9">
+			<input type="text" class="form-control propertyInput"
+				placeholder="" id="name" maxlength="" name="name" value="">
+			<div>
+				<span class="help-block" localize="template.nameinfo"></span>
 			</div>
 		</div>
 	</div>
-<div id="templateContent" class="panel panel-default">
-	  <!-- Default panel contents -->
-	  <div class="panel-heading">
-	  	<h2><i class="fa fa-file-code-o"></i><span class="break" id="templateName"></span></h2>
-	  </div>
-	  <div class="panel-body">
-		<div id="subjectContent" class="propertyItem form-group">
-			<label class="col-xs-3 control-label" localize="template.subject.label"></label>
-			<div class="propertyValue col-xs-9">
-				<input type="text" class="form-control propertyInput"
-					placeholder="" id="subject" maxlength="" name="subject" value="">
-				<div>
-					<span class="help-block" localize="template.subject.info"></span>
-				</div>
+	<div id="subjectContent" class="propertyItem form-group">
+		<label class="col-xs-3 control-label" localize="template.subject.label"></label>
+		<div class="propertyValue col-xs-9">
+			<input type="text" class="form-control propertyInput"
+				placeholder="" id="subject" maxlength="" name="subject" value="">
+			<div>
+				<span class="help-block" localize="template.subject.info"></span>
 			</div>
 		</div>
-		<textarea name="template" id="editor">This is some text.</textarea>
-	  </div>
-	  <div class="panel-footer">
-	  	<button class="btn btn-primary" id="saveTemplate"><i class="fa fa-save"></i>&nbsp<span localize="text.save"></span></button>
-	  </div>
 	</div>
+	<textarea name="template" id="editor">This is some text.</textarea>
+  </div>
+</div>
 <script type="text/javascript">
 
 
@@ -113,7 +89,7 @@
 			}]
 		});
 		
-		$('#contentTemplates').ajaxResourcePage(
+		$('#contentTemplates').ajaxResourcePage2(
 				{
 				title: getResource('templates.title'),
 				icon: 'fa-file-code-o',
@@ -121,132 +97,48 @@
 				resourceUrl : "templates/template",
 				fields : [ { name: "name", isResourceKey: true }, { name: "type", isResourceKey: true}],
 				resourceKey : 'template',
-				canCreate: false,
-				canUpdate: false,
-				canDelete: false,
+				canCreate: currentMenu.canCreate,
+				canUpdate: currentMenu.canUpdate,
+				canDelete: currentMenu.canDelete,
 				validate : function() {
 					if ($('#name').val() == '') {
-						$('#addTemplateForm').resourceDialog('error',
-								"error.nameRequired");
+						showError(true, getResource("error.nameRequired"));
 						return false;
 					}
-
 					return true;
 				},
 				clearDialog : function() {
 					$('#name').val('');
-					$('#type').val('template.email');
-					$('#templateId').val('');
+					$('#subject').val('');
+					tinyMCE.activeEditor.setContent('');
 				},
 				createResource : function() {
-					app = new Object();
-					app.id = $('#templateId').val();
-					app.name = $('#name').val();
-					app.type = $('#type').val();
-					
-					return app;
+					var resource = $('#templateContent').data('resource');
+					resource.subject = $('#subject').val();
+					resource.template = tinyMCE.activeEditor.getContent({format : 'raw'});
+					return resource;
 				},
 				displayResource : function(resource) {
-					$('#name').val(resource.name);
-					$('#type').val(resource.type);
-					$('#templateId').val(resource.id);
+					$('#templateContent').data('resource', resource);
+					if(resource.nameIsResourceKey) {
+						$('#name').val(getResource("template." + resource.name + ".label"));
+						$('#name').attr('disabled', true);
+					} else {
+						$('#name').val(resource.name);
+						$('#name').attr('disabled', false);
+					}
+					tinyMCE.activeEditor.setContent(resource.template);
+					if(resource.hasSubject) {
+						$('#subjectContent').show();
+						$('#subject').val(resource.subject);
+					} else {	
+						$('#subjectContent').hide();
+						$('#subject').val('');
+					}
 				},
 				complete: function() {
 					loadComplete();
-				},
-				selected: function(resource) {
-					
-					if($('#templateContent').data('resource') && !$('#saveTemplate').attr('disabled')) {
-						
-						bootbox.dialog({
-							  message: getResource("template.notSaved.info"),
-							  title: getResource("template.notSaved.title"),
-							  buttons: {
-							    success: {
-							      label: getResource("text.yes"),
-							      className: "btn-success",
-							      callback: function() {
-							    	  saveTemplate(function() {
-											changeTemplate(resource);
-										});
-							      }
-							    },
-							    danger: {
-							      label: getResource("text.no"),
-							      className: "btn-danger",
-							      callback: function() {
-							        	changeTemplate(resource);
-							      }
-							    },
-							    main: {
-							      label: getResource("text.cancel"),
-							      className: "btn-primary",
-							      callback: function() {
-							        
-							      }
-							    }
-							  }
-							});
-					} else {
-						changeTemplate(resource);
-					}
 				}
 			});
-
-		
 	});
-	
-	$('#saveTemplate').click(function() {
-		saveTemplate();
-	});
-	
-	function saveTemplate(callback) {
-		
-		var resource = $('#templateContent').data('resource');
-		resource.subject = $('#subject').val();
-		resource.template = tinyMCE.activeEditor.getContent({format : 'raw'});
-		
-		postJSON('templates/template', resource, function(data) {
-			if (data.success) {
-				log("Template saved");
-				showInformation(true, data.message);
-				if(callback) {
-					callback();
-				}
-				$('#saveTemplate').attr('disabled',true);
-			} else {
-				log("Resource object creation failed " + data.message);
-				showError(false, data.message);
-			}
-		});
-	}
-	
-	function changeTemplate(resource) {
-		$('#saveTemplate').attr('disabled', 'disabled');
-		if(resource.hasSubject) {
-			$('#subjectContent').show();
-			$('#subject').val(resource.subject);
-		} else {	
-			$('#subjectContent').hide();
-			$('#subject').val('');
-		}
-		if(resource.nameIsResourceKey) {
-			$('#templateName').text(getResource("template." + resource.name + ".label"));
-		} else {
-			$('#templateName').text(resource.name);
-		}
-		tinyMCE.activeEditor.setContent(resource.template);
-
-		$('#templateContent').show();
-		
-		$('#editor').change(function() {
-			$('#saveTemplate').attr('disabled', false);
-		});
-		
-		$('#subject').change(function() {
-			$('#saveTemplate').attr('disabled', false);
-		});
-		
-		$('#templateContent').data('resource', resource);
-	}
 	</script>

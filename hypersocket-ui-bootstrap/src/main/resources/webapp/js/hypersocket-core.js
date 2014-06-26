@@ -927,58 +927,6 @@ $.fn.multipleTextInput = function(data) {
 			});
 		}
 
-		// if(data && data.insert) {
-		// $.each(data.insert, function(idx, obj) {
-		//				
-		// select.append('<option '
-		// + 'value="' + obj[options.idAttr] + '">' +
-		// (options.nameAttrIsResourceKey ?
-		// (getResource(obj[options.nameAttr])==undefined ?
-		// obj[options.nameAttr] : getResource(obj[options.nameAttr])) :
-		// obj[options.nameAttr]) + "</option>");
-		// });
-		// }
-
-		// if(data && data.remove) {
-		// $.each(data.remove, function(idx, obj) {
-		// if(options.selectedIsObjectList) {
-		// selectedOpt = $('#' + select.attr('id') + ' option[value="' +
-		// obj[options.idAttr] + '"]');
-		// if(!selectedOpt) {
-		// selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' +
-		// obj[options.idAttr] + '"]');
-		// }
-		// } else {
-		// selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj +
-		// '"]');
-		// if(!selectedOpt) {
-		// selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj +
-		// '"]');
-		// }
-		// }
-		// if(selectedOpt) {
-		// $(selectedOpt).remove();
-		// }
-		// });
-		// }
-
-		// if(data && data.selected) {
-		// $.each(data.selected, function(idx, id) {
-		// var selectedOpt;
-		// if(options.selectedIsObjectList) {
-		// selectedOpt = $('#' + select.attr('id') + ' option[value="' +
-		// id[options.idAttr] + '"]');
-		// } else {
-		// selectedOpt = $('#' + select.attr('id') + ' option[value="' + id +
-		// '"]');
-		// }
-		// if(selectedOpt) {
-		// toSelect.append($(selectedOpt).clone());
-		// $(selectedOpt).remove();
-		// }
-		// });
-		// }
-
 		return;
 
 	} else {
@@ -1003,9 +951,7 @@ $.fn.multipleTextInput = function(data) {
 							this).attr('id') + '.tooltip') + '"></span></div>');
 			$('#' + $(this).attr('id') + 'Tooltip').tooltip();
 		}
-		// $(this).append('<div class="excludedList" id="' + $(this).attr('id')
-		// + 'Excluded"><label>' + getResource('text.excluded') +
-		// '</label></div>');
+
 		$(this)
 				.append(
 					'<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"></div>');
@@ -1021,9 +967,7 @@ $.fn.multipleTextInput = function(data) {
 			'<button id="' + $(this).attr('id') + 'AddButton">&gt;</button><br/>');
 		$('#' + $(this).attr('id') + 'Buttons').append(
 			'<button id="' + $(this).attr('id') + 'RemoveButton">&lt;</button>');
-		// $(this).append('<div class="includedList" id="' + $(this).attr('id')
-		// + 'Included"><label>' + getResource('text.included') +
-		// '</label></div>');
+
 		$(this)
 				.append(
 					'<div class="includedList" id="' + $(this).attr('id') + 'Included"></div>');
@@ -1085,57 +1029,7 @@ $.fn.multipleTextInput = function(data) {
 		$.each(options.values, function(idx, obj) {
 			toSelect.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
 		});
-
-		// if(options.selected) {
-		// $.each(options.selected, function(idx, id) {
-		// var selectedOpt;
-		// if(options.selectedIsObjectList) {
-		// selectedOpt = $('#' + select.attr('id') + ' option[value="' +
-		// id[options.idAttr] + '"]');
-		// } else {
-		// selectedOpt = $('#' + select.attr('id') + ' option[value="' + id +
-		// '"]');
-		// }
-		// if(selectedOpt) {
-		// toSelect.append($(selectedOpt).clone());
-		// $(selectedOpt).remove();
-		// }
-		// });
-		// }
-
 	}
-	// else if(options.url) {
-	// getJSON(options.url, null, function(data) {
-	// $.each(data.interfaces, function(idx, obj) {
-	// var selectItem = ((!options.selected || (options.selected &&
-	// options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect :
-	// select);
-	// selectItem.append('<option '
-	// + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey
-	// ?
-	// (getResource(obj[options.nameAttr])==undefined ? obj[options.nameAttr] :
-	// getResource(obj[options.nameAttr])) : obj[options.nameAttr]) +
-	// "</option>");
-	// });
-	//			
-	// if(options.selected) {
-	// $.each(options.selected, function(idx, id) {
-	// var selectedOpt;
-	// if(options.selectedIsObjectList) {
-	// selectedOpt = $('#' + select.attr('id') + ' option[value="' +
-	// id[options.idAttr] + '"]');
-	// } else {
-	// selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
-	// }
-	// if(selectedOpt) {
-	// toSelect.append($(selectedOpt).clone());
-	// $(selectedOpt).remove();
-	// }
-	// });
-	// }
-	// });
-	// }
-
 };
 
 $.fn.ajaxResourcePage = function(params) {
@@ -1313,6 +1207,261 @@ $.fn.ajaxResourcePage = function(params) {
 				options.showCreate();
 			}
 			$('div[dialog-for="' + divName + '"]').resourceDialog('create');
+		});
+	}
+	
+	if(options.additionalButtons) {
+		
+		$.each(options.additionalButtons, function() {
+			$('#' + divName + 'Actions').append(
+				'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>' + getResource(this.resourceKey + '.label') + '</button>');
+			var button = this;
+			$('#' + this.resourceKey).click(function() {
+				if(button.action) {
+					button.action();
+				}
+			});
+		});
+	}
+
+	if (options.complete) {
+		options.complete();
+	}
+
+};
+
+$.fn.ajaxResourcePage2 = function(params) {
+
+	var divName = $(this).attr('id');
+
+	log("Creating ajax resource page 2 for div " + divName);
+
+	var options = $
+			.extend(
+				{ divName : divName, canCreate : false, canUpdate : false, canDelete : false, icon : 'fa-cog' },
+				params);
+
+	$(this).data('options', options);
+
+	var html = '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
+		+ options.icon + '"></i><span class="break">' 
+		+ options.title + '</span></h2></div><div id="'
+		+ divName + 'Panel" class="panel-body"><table class="table' 
+		+ (options.selected ? '' : ' table-striped') + '" id="'
+		+ divName + 'Table' + '"><thead><tr id="' 
+		+ divName + 'TableHeader"></tr></thead></table></div>';
+	
+	if(options.canCreate) {
+		html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"/>';
+	}
+	
+	html += '</div>';
+	$(this).append(html);
+
+	$('div[page-for="' + divName + '"]').hide();
+	$('div[page-for="' + divName + '"]').append('<div class="panel-footer">'
+			+ '<button class="btn btn-primary" id="saveResource"><i class="fa fa-save"></i>&nbsp'
+			+ '<span>' + getResource("text.save") + '</span></button>'
+			+ '<button class="btn btn-danger" id="cancelResource"><i class="fa fa-times"></i>&nbsp'
+			+ '<span>' + getResource("text.cancel") + '</span></button>'
+			+ '</div>');
+	
+	$('#cancelResource').click(function() {
+		
+		options.clearDialog();
+		$('div[page-for="' + divName + '"]').hide();
+		$('#'+divName).show();
+	});
+	
+	$('#saveResource').click(function() {
+		if (options.validate) {
+			if (!options.validate()) {
+				log("Resource validation failed");
+				return;
+			}
+		}
+		var resource = options.createResource();
+
+		log("Created resource object for posting");
+
+		postJSON(options.resourceUrl, resource, function(data) {
+			if (data.success) {
+				log("Resource object created");
+				
+				if (options.hasResourceTable) {
+					if($('#'+divName).data('editing')) {
+						$('#' + dialogOptions.divName + 'Table').dataTable().fnUpdate(data.resource, $('#'+divName).data('row'));
+					} else {
+						$('#' + options.divName + 'Table').dataTable().fnAddData(data.resource);
+					}
+				}
+				if (options.resourceCreated) {
+					options.resourceCreated(data.resource);
+				}
+				
+				$('div[page-for="' + divName + '"]').hide();
+				$('#'+divName).show();
+				
+				showInformation(true, data.message);
+			} else {
+				log("Resource object creation failed " + data.message);
+				showError(false, data.message);
+			}
+		});
+	});
+	
+	var columns = new Array();
+	var columnsDefs = new Array();
+
+	$.each(
+		options.fields,
+		function(idx, obj) {
+			$('#' + divName + 'TableHeader')
+					.append(
+						'<th>' + getResource(options.resourceKey + "." + obj.name + '.label') + '</th>');
+			columns.push({ "mData" : obj.name, });
+			if (obj.isResourceKey) {
+				columnsDefs
+						.push({ "aTargets" : [ idx ], "mData" : null, "mRender" : function(data, type, full) {
+							return getResource(options.resourceKey + "." + data + '.label');
+						} });
+			}
+	});
+
+	var renderActions = function(idCol) {
+		var id = idCol.aData.id;
+		var renderedActions = '';
+
+		if (options.additionalActions) {
+			$
+					.each(
+						options.additionalActions,
+						function(x, act) {
+							if (act.enabled) {
+
+								renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i></a>';
+
+								$(document).off('click',
+									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
+
+								$(document).on(
+									'click',
+									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
+									function() {
+										var curRow = $('#' + divName + 'Table').dataTable()
+												.fnGetPosition($(this).closest("tr").get(0));
+										var resource = $('#' + divName + 'Table').dataTable()
+												.fnGetData(curRow);
+										act.action(resource);
+									});
+							}
+
+						});
+		}
+
+		if (options.canUpdate) {
+			renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa fa-edit"></i></a>';
+
+			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
+
+			$(document).on(
+				'click',
+				'#' + divName + 'Actions' + id + ' .row-edit',
+				function() {
+					var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition(
+						$(this).closest("tr").get(0));
+					var resource = $('#' + divName + 'Table').dataTable().fnGetData(
+						curRow);
+
+					$('#'+divName).data('editing', true);
+					$('#'+divName).data('row', curRow);
+					$('#'+divName).data('creating', false);
+					
+					options.displayResource(resource);
+					
+					$('#'+divName).hide();
+					$('div[page-for="' + divName + '"]').show();
+				});
+		}
+
+		if (options.canDelete) {
+			renderedActions += '<a class="btn btn-danger row-delete" href="#"><i class="fa fa-trash-o"></i></a>';
+
+			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
+
+			$(document).on(
+				'click',
+				'#' + divName + 'Actions' + id + ' .row-delete',
+				function() {
+
+					log("Entering resource delete for id " + id);
+
+					var row = $(this).closest("tr").get(0);
+					var resource = $('#' + divName + 'Table').dataTable().fnGetData(row);
+
+					bootbox.confirm(getResource(options.resourceKey + ".delete.desc")
+							.format(resource.name), function(confirmed) {
+						if (confirmed) {
+							deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
+								if (data.success) {
+									if (options.resourceDeleted) {
+										options.resourceDeleted(resource);
+									}
+									$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
+									showInformation(true, data.message);
+								} else {
+									bootbox.alert(data.message);
+								}
+							});
+						}
+					});
+				});
+		}
+
+		return '<div id="' + divName + 'Actions' + id + '" class="tableActions">' + renderedActions + '</div>';
+	};
+
+	$('#' + divName + 'TableHeader').append(
+		'<th localize="text.actions" class="col-md-2"></th>');
+	columns.push({ "mData" : null, 
+		"fnRender" : renderActions, 
+		"bAutoWidth" : false, 
+		"sWidth" : "150px", 
+		"bSortable" : false 
+		});
+
+	var oTable = $('#' + divName + 'Table')
+			.dataTable(
+				{ "bProcessing" : true, 
+					"bServerSide" : true, 
+					"sAjaxSource" : basePath + "/api/" + options.tableUrl, 
+					"iDisplayLength": 10,
+					"aoColumns" : columns, 
+					"aoColumnDefs" : columnsDefs });
+
+	if(options.selected) {
+	    var tableTools = new $.fn.dataTable.TableTools( oTable, {
+	        sRowSelect: "os",
+	        fnRowSelected: function ( nodes ) {
+	        	var full = oTable.fnGetData(nodes[0]);
+	        	options.selected(full);
+	        }
+	    });
+	}
+	
+	if (options.canCreate) {
+
+		$('#' + divName + 'Actions')
+				.append(
+					'<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa fa-plus-circle"></i>' + getResource('text.add') + '</button>');
+		$('#' + divName + 'Add').click(function() {
+			if (options.showCreate) {
+				options.showCreate();
+			}
+			$('#'+divName).data('editing', false);
+			$('#'+divName).data('creating', true);
+			$('#'+divName).hide();
+			$('div[page-for="' + divName + '"]').show();
 		});
 	}
 	
