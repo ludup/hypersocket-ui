@@ -1301,9 +1301,8 @@ $.fn.ajaxResourcePage = function(params) {
 	        	options.selected(full);
 	        }
 	    });
-    
-	    //$('#auditTable tbody tr').trigger('click');
 	}
+	
 	if (options.canCreate) {
 
 		$('#' + divName + 'Actions')
