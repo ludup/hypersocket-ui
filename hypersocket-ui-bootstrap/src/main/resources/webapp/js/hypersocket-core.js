@@ -420,6 +420,7 @@ $.fn.propertyPage = function(opts) {
 										.append(
 											'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="clickableTab"><span>' + this.name + '</span></a></li>');
 								$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
+								$('#' + this.id).show();
 								$('#' + this.id).addClass('tab-pane');
 							});
 			}
