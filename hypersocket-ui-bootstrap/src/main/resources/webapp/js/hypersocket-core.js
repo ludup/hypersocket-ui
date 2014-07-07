@@ -120,20 +120,22 @@ $.fn.propertyPage = function(opts) {
 
 	log("Creating property page for div " + $(this).attr('id'));
 
+	var propertyDiv = $(this).attr('id');
+	
 	var options = $
 			.extend(
 				{ showButtons : true, canUpdate : false, title : '', icon : 'fa-th' },
 				opts);
 
-	$('body').append('<div id="tabTemp"/>');
-	$('#tabTemp').hide();
+	$('body').append('<div id="tabTemp' + propertyDiv + '"/>');
+	$('#tabTemp' + propertyDiv).hide();
 	if (options.additionalTabs) {
 		$.each(options.additionalTabs, function(idx, obj) {
-			$('#' + obj.id).appendTo('#tabTemp');
+			$('#' + obj.id).appendTo('#tabTemp' + propertyDiv);
 		});
 	}
 	$(this).empty();
-	propertyDiv = $(this).attr('id');
+	
 
 	getJSON(
 		options.url,
@@ -165,7 +167,7 @@ $.fn.propertyPage = function(opts) {
 							tab = "tab" + this.id;
 							$(contentTabs)
 									.append(
-										'<li><a ' + (first ? 'class="active clickableTab"' : 'class="clickableTab"') + ' href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
+										'<li><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"') + ' href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
 							first = false;
 
 							$('#' + propertyDiv + 'Content').append(
@@ -418,23 +420,27 @@ $.fn.propertyPage = function(opts) {
 							function() {
 								$(contentTabs)
 										.append(
-											'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="clickableTab"><span>' + this.name + '</span></a></li>');
+											'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2"><span>' + this.name + '</span></a></li>');
 								$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 								$('#' + this.id).show();
 								$('#' + this.id).addClass('tab-pane');
 							});
 			}
 
-			$('#tabTemp').remove();
+			$('#tabTemp' + propertyDiv).remove();
 
-			$('.clickableTab').click(function(e) {
+			$('.' +  propertyDiv + 'Tab').click(function(e) {
 				e.preventDefault();
+				debugger;
+				if($(this).hasClass(propertyDiv + 'Tab2')) {
+					$('#' + propertyDiv + 'Actions').hide();
+				} else {
+					$('#' + propertyDiv + 'Actions').show();
+				}
 				$(this).tab('show');
 			});
 
-			$('.clickableTab').first().tab('show');
-
-			// $('#' + propertyDiv + 'Content').tabs();
+			$('.' +  propertyDiv + 'Tab').first().tab('show');
 
 			if (options.showButtons) {
 				$(revertButton).attr('disabled', true);
@@ -565,7 +571,7 @@ $.fn.selectButton = function(data) {
 
 	$(this).append('<div class="btn-group"><input id="' 
 			 + id + '" class="propertyInput" type="hidden" name="select_value_' + id + '" value="'
-			 + obj.value + '"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span id="select_button_' 
+			 + obj.value + '"><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span id="select_button_' 
 			 + id + '">' + (obj.nameIsResourceKey ? getResource(obj.name) : obj.name) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
 			 + 'select_' + id + '" class="dropdown-menu" role="menu"></div>');
 
@@ -576,17 +582,17 @@ $.fn.selectButton = function(data) {
 			if (obj.value == obj.options[i]['valueAttr']) {
 				selected = obj.options[i];
 				$('#select_button_' + id).text(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']);
-				$('#select_' + id).append('<li><a id="data_' + obj.options[i][obj['nameAttr']] + '" class="selectButton_' + id + '" href="#" data-value="' 
+				$('#select_' + id).append('<li><a id="data_' + i + '" class="selectButton_' + id + '" href="#" data-value="' 
 						+ stripNull(obj.options[i][obj['valueAttr']]) + '" data-label="' 
 						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '">' 
 						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '</a></li>');
 			} else {
-				$('#select_' + id).append('<li><a id="data_' + obj.options[i][obj['nameAttr']] + '" class="selectButton_' + id + '" href="#" data-value="' 
+				$('#select_' + id).append('<li><a id="data_' + i + '" class="selectButton_' + id + '" href="#" data-value="' 
 						+ stripNull(obj.options[i][obj['valueAttr']]) + '" data-label="'
 						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '">'
 						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '</a></li>');
 			}
-			$('#data_' + obj.options[i][obj['nameAttr']]).data('scheme', obj.options[i]);
+			$('#data_' + i).data(id, obj.options[i]);
 		}
 		
 
@@ -598,12 +604,18 @@ $.fn.selectButton = function(data) {
 				$('#select_button_' + id).text($(this).attr('data-label'));
 				$('#' + id).markUpdated();
 				if(obj.changed) {
-					obj.changed($(this).data('scheme'));
+					obj.changed($(this).data(id));
 				}
 			});
 		
 			if(obj.changed) {
 				obj.changed(selected);
+			}
+			
+			if(selected==null) {
+				var val = $('.selectButton_' + id).first().attr('data-value');
+				$('#' + id).val(val);
+				$('#' + id).trigger('change');
 			}
 
 	} else if (obj.url) {
@@ -613,17 +625,17 @@ $.fn.selectButton = function(data) {
 								if (option[obj['valueAttr']] == obj.value) {
 									selected = option;
 									$('#select_button_' + id).text(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]);
-									$('#select_' + id).append('<li><a id="data_' + option[obj['nameAttr']] + '" class="selectButton_' + id + '" href="#" data-value="' 
+									$('#select_' + id).append('<li><a id="data_' + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
 											+ stripNull(option[obj['valueAttr']]) + '" data-label="' 
 											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '">' 
 											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '</a></li>');
 								} else {
-									$('#select_' + id).append('<li><a id="data_' + option[obj['nameAttr']] + '" class="selectButton_' + id + '" href="#" data-value="' 
+									$('#select_' + id).append('<li><a id="data_' + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
 											+ stripNull(option[obj['valueAttr']]) + '" data-label="' 
 											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '">' 
 											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '</a></li>');
 								}
-								$('#data_' + option[obj['nameAttr']]).data('scheme', option);
+								$('#data_' + idx).data(id, option);
 							});
 		
 				$('.selectButton_' + id).on(
@@ -634,15 +646,54 @@ $.fn.selectButton = function(data) {
 						$('#select_button_' + id).text($(this).attr('data-label'));
 						$('#' + id).markUpdated();
 						if(obj.changed) {
-							obj.changed($(this).data('scheme'));
+							obj.changed($(this).data(id));
 						}
 					});
 				
 				if(obj.changed) {
 					obj.changed(selected);
 				}
+
+				if(selected==null) {
+					var val = $('.selectButton_' + id).first().attr('data-value');
+					$('#' + id).val(val);
+					$('#' + id).trigger('change');
+				}
 			});
 	}
+	
+	$('#' + id).change(function() {
+		var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
+		$('#select_button_' + id).text(selected.attr('data-label'));
+		$('#' + id).markUpdated();
+		if(obj.changed) {
+			obj.changed(selected.data(id));
+		}
+	});
+	
+	return {
+		setValue: function(val) {
+			$('#' + id).val(val);
+			var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
+			$('#select_button_' + id).text(selected.attr('data-label'));
+			$('#' + id).markUpdated();
+		},
+		reset: function() {
+			var val = $('.selectButton_' + id).first().attr('data-value');
+			$('#' + id).val(val);
+			$('#' + id).trigger('change');
+		},
+		disable: function() {
+			$('#button_' + id).removeAttr('data-toggle');
+			$('#button_' + id).removeClass('btn-primary');
+			$('#button_' + id).addClass('btn-disabled-dark');
+		},
+		enable: function() {
+			$('#button_' + id).attr('data-toggle', 'dropdown');
+			$('#button_' + id).removeClass('btn-disabled-dark');
+			$('#button_' + id).addClass('btn-primary');
+		}
+	};
 
 }
 
@@ -917,14 +968,16 @@ $.fn.multipleTextInput = function(data) {
 		if (allIncludedOptions.length > 0) {
 			$(allIncludedOptions).remove();
 		}
-		;
 
 		var toSelect = $('#' + $(this).attr('id') + 'IncludedSelect');
 
+		if(data && data.values) {
+			options.values = data.values;
+		} 
+		
 		if (options.values) {
 			$.each(options.values, function(idx, obj) {
-				toSelect
-						.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
+				toSelect.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
 			});
 		}
 
@@ -964,10 +1017,16 @@ $.fn.multipleTextInput = function(data) {
 		$(this)
 				.append(
 					'<div class="multipleTextInputButtons" id="' + $(this).attr('id') + 'Buttons"/>');
+		
 		$('#' + $(this).attr('id') + 'Buttons').append(
-			'<button id="' + $(this).attr('id') + 'AddButton">&gt;</button><br/>');
+		'<button class="btn-multiple-select btn btn-primary" id="' 
+				+ $(this).attr('id') 
+				+ 'AddButton"><i class="fa fa-chevron-circle-right"></i></button><br/>');
+		
 		$('#' + $(this).attr('id') + 'Buttons').append(
-			'<button id="' + $(this).attr('id') + 'RemoveButton">&lt;</button>');
+				'<button class="btn-multiple-select btn btn-primary" id="' 
+						+ $(this).attr('id') 
+						+ 'RemoveButton"><i class="fa fa-chevron-circle-left"></i></button>');
 
 		$(this)
 				.append(
@@ -977,11 +1036,38 @@ $.fn.multipleTextInput = function(data) {
 					'<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(
 						this).attr('id') + 'IncludedSelect" class="formInput text form-control' + (options.isPropertyInput ? ' propertyInput' : '') + '"/>');
 
-		$('#' + $(this).attr('id') + 'AddButton').button();
-		$('#' + $(this).attr('id') + 'RemoveButton').button();
-
 		var select = $('#' + $(this).attr('id') + 'ExcludedSelect');
 		var toSelect = $('#' + $(this).attr('id') + 'IncludedSelect');
+		
+		if(options.allowOrdering) {
+			$(this).append('<div class="multipleTextInputButtons" id="' + $(this).attr('id') + 'OrderButtons"/>');
+			
+			$('#' + $(this).attr('id') + 'OrderButtons').append(
+					'<button class="btn-multiple-select btn btn-primary" id="' 
+					+ $(this).attr('id') 
+					+ 'UpButton"><i class="fa fa-chevron-circle-up"></i></button><br/>');
+			
+			$('#' + $(this).attr('id') + 'OrderButtons').append(
+					'<button class="btn-multiple-select btn btn-primary" id="' 
+					+ $(this).attr('id') 
+					+ 'DownButton"><i class="fa fa-chevron-circle-down"></i></button>');
+			
+			$('#' + $(this).attr('id') + 'UpButton').click(function(e) {
+					e.preventDefault();
+					$('#' + toSelect.attr('id') + ' option:selected').each(function(){
+						$(this).insertBefore($(this).prev());
+					});
+			});
+			
+			$('#' + $(this).attr('id') + 'DownButton').click(function(e) {
+				e.preventDefault();
+				$('#'  + toSelect.attr('id') + ' option:selected').each(function(){
+					$(this).insertAfter($(this).next());
+				});
+			});
+		}
+
+		
 
 		$('#' + $(this).attr('id') + 'AddButton')
 				.click(
@@ -1041,24 +1127,38 @@ $.fn.ajaxResourcePage = function(params) {
 
 	var options = $
 			.extend(
-				{ divName : divName, canCreate : false, canUpdate : false, canDelete : false, icon : 'fa-cog' },
+				{ divName : divName, canCreate : false, canUpdate : false, canDelete : false,
+					icon : 'fa-cog', disableDecoration: false },
 				params);
 
 	$(this).data('options', options);
 
-	var html = '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
-		+ options.icon + '"></i><span class="break">' 
-		+ options.title + '</span></h2></div><div id="'
-		+ divName + 'Panel" class="panel-body"><table class="table' 
-		+ (options.selected ? '' : ' table-striped') + '" id="'
-		+ divName + 'Table' + '"><thead><tr id="' 
-		+ divName + 'TableHeader"></tr></thead></table></div>';
+	var html = '';
 	
-	if(options.canCreate) {
-		html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"/>';
+	if(!options.disableDecoration) {
+		html += '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
+			+ options.icon + '"></i><span class="break">' 
+			+ options.title + '</span></h2></div><div id="'
+			+ divName + 'Panel" class="panel-body">'
 	}
 	
-	html += '</div>';
+	html +=	'<table class="table' 
+		+ (options.selected ? '' : ' table-striped') + '" id="'
+		+ divName + 'Table' + '"><thead><tr id="' 
+		+ divName + 'TableHeader"></tr></thead></table>';
+	
+	if(!options.disableDecoration) {
+		html +=	'</div>';
+	}
+	
+	if(options.canCreate) {
+		html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"></div>';
+	}
+
+	if(!options.disableDecoration) {
+		html += '</div>';
+	}
+	
 	$(this).append(html);
 
 	$('div[dialog-for="' + divName + '"]').resourceDialog(options);
@@ -1066,38 +1166,38 @@ $.fn.ajaxResourcePage = function(params) {
 	var columns = new Array();
 	var columnsDefs = new Array();
 
-	$
-			.each(
-				options.fields,
-				function(idx, obj) {
-					$('#' + divName + 'TableHeader')
-							.append(
-								'<th>' + getResource(options.resourceKey + "." + obj.name + '.label') + '</th>');
-					columns.push({ "mData" : obj.name, });
-					if (obj.isResourceKey) {
-						columnsDefs
-								.push({ "aTargets" : [ idx ], "mData" : null, "mRender" : function(data, type, full) {
-									return getResource(options.resourceKey + "." + data + '.label');
-								} });
-					}
-				});
+	$.each(options.fields,
+		function(idx, obj) {
+			$('#' + divName + 'TableHeader')
+					.append(
+						'<th>' + getResource(options.resourceKey + "." + obj.name + '.label') + '</th>');
+			columns.push({ "mData" : obj.name, });
+			if (obj.isResourceKey) {
+				columnsDefs
+						.push({ "aTargets" : [ idx ], "mData" : null, "mRender" : function(data, type, full) {
+							return getResource(options.resourceKey + "." + data + '.label');
+						} });
+		}
+	});
 
 	var renderActions = function(idCol) {
 		var id = idCol.aData.id;
 		var renderedActions = '';
 
 		if (options.additionalActions) {
-			$
-					.each(
+
+			if(options.additionalActionsDropdown) {
+				renderedActions += '<div class="btn-group"><a class="btn btn-success row-additional dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
+				renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
+				$.each(
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-
-								renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i></a>';
-
+								renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a></li>';
+			
 								$(document).off('click',
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
-
+			
 								$(document).on(
 									'click',
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
@@ -1109,62 +1209,106 @@ $.fn.ajaxResourcePage = function(params) {
 										act.action(resource);
 									});
 							}
+				});
+				renderedActions += '</ul></div>';
+			} else {
+				$.each(options.additionalActions,
+					function(x, act) {
+						if (act.enabled) {
 
-						});
+							renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i></a>';
+
+							$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
+
+							$(document).on('click',
+								'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
+								function() {
+									var curRow = $('#' + divName + 'Table').dataTable()
+											.fnGetPosition($(this).closest("tr").get(0));
+									var resource = $('#' + divName + 'Table').dataTable()
+											.fnGetData(curRow);
+									act.action(resource);
+							});
+					}
+
+				});
+			}
+
 		}
 
 		if (options.canUpdate) {
-			renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa fa-edit"></i></a>';
-
-			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
-
-			$(document).on(
-				'click',
-				'#' + divName + 'Actions' + id + ' .row-edit',
-				function() {
-					var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition(
-						$(this).closest("tr").get(0));
-					var resource = $('#' + divName + 'Table').dataTable().fnGetData(
-						curRow);
-					$('div[dialog-for="' + divName + '"]').resourceDialog('edit',
-						{ row : curRow, resource : resource });
+			
+			var canUpdate = !idCol.aData.systemResource || currentRealm.system;
+			if(options.checkUpdate) {
+				canUpdate = options.checkUpdate(idCol.aData);
+			}
+			
+			if(canUpdate) {
+				renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa fa-edit"></i></a>';
+	
+				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
+	
+				$(document).on(
+					'click',
+					'#' + divName + 'Actions' + id + ' .row-edit',
+					function() {
+						var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition(
+							$(this).closest("tr").get(0));
+						var resource = $('#' + divName + 'Table').dataTable().fnGetData(
+							curRow);
+						$('div[dialog-for="' + divName + '"]').resourceDialog('edit',
+							{ row : curRow, resource : resource });
 				});
+			} else {
+				renderedActions += '<a class="btn btn-disabled" href="#"><i class="fa fa-edit"></i></a>';
+			}
 		}
 
 		if (options.canDelete) {
-			renderedActions += '<a class="btn btn-danger row-delete" href="#"><i class="fa fa-trash-o"></i></a>';
+			
+			var canDelete = !idCol.aData.systemResource || currentRealm.system;
+			if(options.checkDelete) {
+				canDelete = options.checkDelete(idCol.aData);
+			}
+			
+			if(canDelete) {
+				renderedActions += '<a class="btn btn-danger row-delete" href="#"><i class="fa fa-trash-o"></i></a>';
+	
+				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
+	
+				$(document).on(
+					'click',
+					'#' + divName + 'Actions' + id + ' .row-delete',
+					function() {
 
-			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
-
-			$(document).on(
-				'click',
-				'#' + divName + 'Actions' + id + ' .row-delete',
-				function() {
-
-					log("Entering resource delete for id " + id);
-
-					//$(document).data('modal', true);
-
-					var row = $(this).closest("tr").get(0);
-					var resource = $('#' + divName + 'Table').dataTable().fnGetData(row);
-
-					bootbox.confirm(getResource(options.resourceKey + ".delete.desc")
-							.format(resource.name), function(confirmed) {
-						if (confirmed) {
-							deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
-								if (data.success) {
-									if (options.resourceDeleted) {
-										options.resourceDeleted(resource);
+						log("Entering resource delete for id " + id);
+	
+						//$(document).data('modal', true);
+	
+						var row = $(this).closest("tr").get(0);
+						var resource = $('#' + divName + 'Table').dataTable().fnGetData(row);
+	
+						bootbox.confirm(getResource(options.resourceKey + ".delete.desc")
+								.format(resource.name), function(confirmed) {
+							if (confirmed) {
+								deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
+									if (data.success) {
+										if (options.resourceDeleted) {
+											options.resourceDeleted(resource);
+										}
+										$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
+										showInformation(true, data.message);
+									} else {
+										bootbox.alert(data.message);
 									}
-									$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
-									showInformation(true, data.message);
-								} else {
-									bootbox.alert(data.message);
-								}
-							});
-						}
+								});
+							}
 					});
 				});
+			} else {
+				renderedActions += '<a class="btn btn-disabled" href="#"><i class="fa fa-trash-o"></i></a>';
+			}
+			
 		}
 
 		return '<div id="' + divName + 'Actions' + id + '" class="tableActions">' + renderedActions + '</div>';
@@ -1618,6 +1762,9 @@ $.fn.resourceDialog = function(params, params2) {
 };
 
 function splitFix(value) {
+	if(value==null) {
+		return [];
+	}
 	var result = value.split(']|[');
 	if (result.length == 1) {
 		if (result[0] == "") {
@@ -1625,6 +1772,10 @@ function splitFix(value) {
 		}
 	}
 	return result;
+}
+
+function fixSplit(value) {
+	return value.join(']|[');
 }
 
 function PropertyItem(id, value) {
@@ -1694,10 +1845,7 @@ function showLogon(credentials, message) {
 function processLogon(data, message) {
 	log("Received logon data");
 
-	$('#copyright').empty();
-	$('#copyright')
-			.append(
-				"<p>" + getResource("label.version") + " " + data.version + "</p><p>&copy; 2013-2014 Hypersocket Limited. All rights reserved.</p>");
+	$('#version').text(getResource("label.version") + " " + data.version);
 
 	if (!data.success) {
 
@@ -1944,7 +2092,7 @@ function home(data) {
 	$(contentDiv).empty();
 	$(contentDiv)
 			.append(
-				'<div id="main-menu" class="sidebar col-md-2 col-xs-1"><div id="menu" class="sidebar-collapse"></div></div>');
+				'<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
 
 	currentRealm = data.session.currentRealm;
 	var showLocales = data.showLocales;

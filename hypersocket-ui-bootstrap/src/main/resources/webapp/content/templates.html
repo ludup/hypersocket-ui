@@ -142,7 +142,7 @@
 			  value: "",
 			  mode:  "css"
 		});
-
+		
 		$('#templateProperties').propertyPage({
 			url : 'templates/properties',
 			showButtons : false,
@@ -154,17 +154,19 @@
 			}]
 		});
 		
+		
 		$('#contentTemplates').ajaxResourcePage(
 				{
 				title: getResource('templates.title'),
 				icon: 'fa-file-code-o',
-				tableUrl : "templates/table",
+				tableUrl : "templates/table/" + $(document).data('templateType'),
 				resourceUrl : "templates/template",
-				fields : [ { name: "name", isResourceKey: true }, { name: "type", isResourceKey: true}],
+				disableDecoration: true,
+				fields : [ { name: "name", isResourceKey: true }],
 				resourceKey : 'template',
 				canCreate: false,
 				canUpdate: currentMenu.canUpdate,
-				canDelete: currentMenu.canDelete,
+				canDelete: false,
 				validate : function() {
 					if ($('#name').val() == '') {
 						showError(true, getResource("error.nameRequired"));
@@ -176,11 +178,16 @@
 					$('#name').val('');
 					$('#subject').val('');
 					$('#editor').html('');
+					myCodeMirror.setValue('');
 				},
 				createResource : function() {
 					var resource = $('#templateContent').data('resource');
 					resource.subject = $('#subject').val();
-					resource.template = $('#editor').cleanHtml();
+					if(resource.editor=='CODE_CSS') {
+						resource.template = myCodeMirror.getValue();
+					} else {
+						resource.template = $('#editor').cleanHtml();
+					}
 					return resource;
 				},
 				displayResource : function(resource) {
@@ -192,7 +199,7 @@
 						$('#name').val(resource.name);
 						$('#name').attr('disabled', false);
 					}
-					$('#editor').html(resource.template);
+					
 					if(resource.hasSubject) {
 						$('#subjectContent').show();
 						$('#subject').val(resource.subject);
@@ -200,11 +207,13 @@
 						$('#subjectContent').hide();
 						$('#subject').val('');
 					}
-					debugger;
+					
 					if(resource.editor=='CODE_CSS') {
+						myCodeMirror.setValue(resource.template);
 						$('#wysiwyg').hide();
 						$('#code').show();
 					} else {
+						$('#editor').html(resource.template);
 						$('#wysiwyg').show();
 						$('#code').hide();
 					}

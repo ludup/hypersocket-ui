@@ -166,6 +166,7 @@ h2 {
 	width: 40%;
 	padding-left: 0px;
 	padding-right: 0px;
+	margin-right: 10px;
 }
 
 .includedList label {
@@ -188,6 +189,26 @@ h2 {
 	color: white;
 	background: #20a8d8;
 	border: 1px solid #20a8d8;
+}
+
+.btn-disabled {
+	color: white;
+	background: #eee;
+	border: 1px solid #eee;
+}
+
+.btn-disabled:hover {
+	color: white;
+}
+
+.btn-disabled-dark {
+	color: #374767;
+	background: #eee;
+	border: 1px solid #eee;
+}
+
+.btn-disabled-dark:hover {
+	color: #374767;
 }
 
 .btn-multiple-select {
@@ -284,6 +305,10 @@ div.numRecords label {
 	font-weight: normal;
 	float: left;
 	text-align: left;
+}
+
+.tableActions {
+	text-align: right;
 }
 
 div.numRecords select {
@@ -434,7 +459,7 @@ table {
 
 .sidebar .nav-sidebar.title {
 	text-align: center;
-	margin: 25px 0 15px 0;
+	margin: 15px 0 15px 0;
 	text-transform: uppercase;
 	font-size: 10px;
 	color: #4f5b5e;
