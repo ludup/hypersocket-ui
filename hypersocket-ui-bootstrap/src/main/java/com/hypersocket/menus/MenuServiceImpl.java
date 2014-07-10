@@ -33,7 +33,6 @@ import com.hypersocket.realm.ProfilePermission;
 import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
-import com.hypersocket.template.TemplatePermission;
 
 @Service
 public class MenuServiceImpl extends AuthenticatedServiceImpl implements

@@ -3,7 +3,7 @@
 	<div class="modal" id="addUserModal" tabindex="-1" role="dialog"
 		aria-labelledby="addUserModalLabel" aria-hidden="true"
 		dialog-for="contentUsers">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
@@ -51,7 +51,7 @@
 				});
 
 				$('#userProperties').propertyPage({
-					url : 'template/user/local',
+					url : 'template/user/' + currentRealm.resourceCategory,
 					showButtons : false,
 					useTemplates : true,
 					canUpdate : currentMenu.canUpdate,

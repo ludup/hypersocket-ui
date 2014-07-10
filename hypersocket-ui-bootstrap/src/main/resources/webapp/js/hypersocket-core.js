@@ -192,19 +192,15 @@ $.fn.propertyPage = function(opts) {
 										toSort,
 										function() {
 
-											$('#' + tab)
-													.append(
-														'<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
-											$('#' + tab + '_item' + this.id)
-													.append(
-														'<label class="col-md-3 control-label">' + getResource(this.resourceKey) + '</label>');
-											$('#' + tab + '_item' + this.id)
-													.append(
-														'<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
-
 											x = JSON.parse(this.metaData);
 											var obj = $.extend(
-												{ restart : false, nameIsResourceKey : false }, x);
+												{ restart : false, nameIsResourceKey : false, disabled: false }, x);
+
+											if(obj.inputType!='hidden') {
+												$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
+												$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResource(this.resourceKey) + '</label>');
+												$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
+											}
 											// Following vars are
 											// needed for some
 											// aysnchronous calls
@@ -214,7 +210,7 @@ $.fn.propertyPage = function(opts) {
 											if (obj.inputType == 'textarea') {
 												$('#' + tab + '_value' + this.id)
 														.append(
-															'<textarea ' + (options.canUpdate ? '' : 'disabled ') + 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
+															'<textarea ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
 											} else if (obj.inputType == 'select') {
 
 												$('#' + tab + '_value' + this.id)
@@ -298,7 +294,7 @@ $.fn.propertyPage = function(opts) {
 											} else if (obj.inputType == 'multipleSelect') {
 												$('#' + tab + '_value' + this.id)
 														.multipleSelect(
-															{ metaData : obj, url : obj.url, values : obj.values, disabled : !options.canUpdate, selected : splitFix(this.value), selectAllIfEmpty : obj.selectAllIfEmpty, resourceKey : this.resourceKey, change : function() {
+															{ metaData : obj, url : obj.url, values : obj.values, disabled : !options.canUpdate  || obj.disabled, selected : splitFix(this.value), selectAllIfEmpty : obj.selectAllIfEmpty, resourceKey : this.resourceKey, change : function() {
 																$(this).markUpdated();
 																if (options.showButtons) {
 																	$(revertButton).attr('disabled', false);
@@ -308,7 +304,7 @@ $.fn.propertyPage = function(opts) {
 											} else if (obj.inputType == 'multipleTextInput') {
 												$('#' + tab + '_value' + this.id)
 														.multipleTextInput(
-															{ values : splitFix(this.value), disabled : !options.canUpdate, resourceKey : this.resourceKey, change : function() {
+															{ values : splitFix(this.value), disabled : !options.canUpdate && !obj.disabled, resourceKey : this.resourceKey, change : function() {
 																$(this).markUpdated();
 																if (options.showButtons) {
 																	$(revertButton).attr('disabled', false);
@@ -322,21 +318,21 @@ $.fn.propertyPage = function(opts) {
 											} else if (obj.inputType == 'password') {
 												$('#' + tab + '_value' + this.id)
 														.append(
-															'<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="password" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
+															'<input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="password" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
 											} else if (obj.inputType == 'boolean') {
 												$('#' + tab + '_value' + this.id)
 														.append(
-															'<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
+															'<input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
 											} else if (obj.inputType == 'switch') {
 
 												$('#' + tab + '_value' + this.id)
 														.append(
-															'<label class="switch"><input ' + (options.canUpdate ? '' : 'disabled ') + 'type="checkbox" class="switch-input propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '><span class="switch-label" data-on="' + getResource("text.on") + '" data-off="' + getResource("text.off") + '"></span> <span class="switch-handle"></span></label>');
+															'<label class="switch"><input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="switch-input propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '><span class="switch-label" data-on="' + getResource("text.on") + '" data-off="' + getResource("text.off") + '"></span> <span class="switch-handle"></span></label>');
 
 											} else if (obj.inputType == 'image') {
 												$('#' + tab + '_value' + this.id)
 														.append(
-															'<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="file" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
+															'<input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="file" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
 												$('#' + tab + '_value' + this.id)
 														.append(
 															'<img class="imagePreview" src="' + this.value + '">');
@@ -373,10 +369,10 @@ $.fn.propertyPage = function(opts) {
 																$(revertButton).attr('disabled', false);
 																$(applyButton).attr('disabled', false);
 															} });
-											} else {
+											} else if (obj.inputType != 'hidden') {
 												$('#' + tab + '_value' + this.id)
 														.append(
-															'<input ' + (options.canUpdate ? '' : 'disabled ') + 'type="text" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" size="' + (obj.size ? obj.size : 30) + '" placeholder="' + (obj.placeholder ? obj.placeholder : '') + '" maxlength="' + (obj.maxlength ? obj.maxlength : '') + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
+															'<input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="' + obj.inputType + '" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" size="' + (obj.size ? obj.size : 30) + '" placeholder="' + (obj.placeholder ? obj.placeholder : '') + '" maxlength="' + (obj.maxlength ? obj.maxlength : '') + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
 											}
 
 											$('#' + tab + '_value' + this.id)
@@ -422,7 +418,6 @@ $.fn.propertyPage = function(opts) {
 										.append(
 											'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2"><span>' + this.name + '</span></a></li>');
 								$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
-								$('#' + this.id).show();
 								$('#' + this.id).addClass('tab-pane');
 							});
 			}
@@ -431,7 +426,6 @@ $.fn.propertyPage = function(opts) {
 
 			$('.' +  propertyDiv + 'Tab').click(function(e) {
 				e.preventDefault();
-				debugger;
 				if($(this).hasClass(propertyDiv + 'Tab2')) {
 					$('#' + propertyDiv + 'Actions').hide();
 				} else {
@@ -815,19 +809,13 @@ $.fn.multipleSelect = function(data) {
 		$('#' + $(this).attr('id') + 'Included').remove();
 
 		$(this).addClass('container-fluid');
-		if (getResourceNoDefault(options.resourceKey + '.' + $(this).attr('id') + '.tooltip') != undefined) {
-			$(this)
-					.append(
-						'<div class="multiselectTooltip"><span id="' + $(this).attr('id') + 'Tooltip" class="ui-icon ui-icon-info" title="' + getResource(options.resourceKey + '.' + $(
-							this).attr('id') + '.tooltip') + '"></span></div>');
-			$('#' + $(this).attr('id') + 'Tooltip').tooltip();
-		}
+		
 		$(this)
 				.append(
 					'<div class="excludedList col-md-5" id="' + $(this).attr('id') + 'Excluded"><label>' + getResource('text.excluded') + '</label></div>');
 		$('#' + $(this).attr('id') + 'Excluded')
 				.append(
-					'<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(
+					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' + $(
 						this).attr('id') + 'ExcludedSelect" class="formInput text form-control"/>');
 
 		$(this).append(
@@ -845,7 +833,7 @@ $.fn.multipleSelect = function(data) {
 					'<div class="includedList col-md-5" id="' + $(this).attr('id') + 'Included"><label>' + getResource('text.included') + '</label></div>');
 		$('#' + $(this).attr('id') + 'Included')
 				.append(
-					'<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(
+					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' + $(
 						this).attr('id') + 'IncludedSelect" class="formInput text form-control"/>');
 
 		$('#' + $(this).attr('id') + 'AddButton').button();
@@ -1011,7 +999,7 @@ $.fn.multipleTextInput = function(data) {
 					'<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"></div>');
 		$('#' + $(this).attr('id') + 'Excluded')
 				.append(
-					'<input type="text" ' + (!options.disabled ? '' : 'disabled ') + 'id="' + $(
+					'<input type="text" ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'id="' + $(
 						this).attr('id') + 'ExcludedSelect" class="formInput text form-control" />');
 
 		$(this)
@@ -1033,7 +1021,7 @@ $.fn.multipleTextInput = function(data) {
 					'<div class="includedList" id="' + $(this).attr('id') + 'Included"></div>');
 		$('#' + $(this).attr('id') + 'Included')
 				.append(
-					'<select ' + (!options.disabled ? '' : 'disabled ') + 'multiple="multiple" id="' + $(
+					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' + $(
 						this).attr('id') + 'IncludedSelect" class="formInput text form-control' + (options.isPropertyInput ? ' propertyInput' : '') + '"/>');
 
 		var select = $('#' + $(this).attr('id') + 'ExcludedSelect');
