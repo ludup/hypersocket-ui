@@ -1971,7 +1971,7 @@ function processLogon(data, message) {
 
 		$('#logonForm')
 				.append(
-					'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' + (data.last ? getResource("text.logon") : getResource("text.next")) + '<i style="float: right; padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
+					'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' + (data.last ? getResource("text.logon") : getResource("text.next")) + '&nbsp;<i style="padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
 		
 		if(!data.newSession) {
 			$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
