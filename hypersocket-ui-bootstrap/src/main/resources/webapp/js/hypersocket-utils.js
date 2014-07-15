@@ -24,6 +24,13 @@ if (typeof String.prototype.endsWith != 'function') {
   };
 }
 	
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 function loadResources(callback) {
 	if(!$(document).data('i18n')) {
 		getJSON('i18n', null, function(data) {

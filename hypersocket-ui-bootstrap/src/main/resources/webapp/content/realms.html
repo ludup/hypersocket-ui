@@ -30,7 +30,7 @@
 							</div>
 						</div>
 					</div>
-					<div id="realmProperties" class=""></div>
+					<div id="realmProperties"></div>
 					<input name="id" id="id" type="hidden" class="formInput" />
 				</div>
 				<div class="modal-footer"></div>
@@ -44,7 +44,7 @@
 					function() {
 						$('#realmsContent').localize();
 
-						$('#typeButton').selectButton({
+						var typeButton = $('#typeButton').selectButton({
 							id: 'type',
 							url: 'realm/providers',
 							nameAttr: 'module',
@@ -54,6 +54,7 @@
 							name: 'local',
 							value: 'local',
 							changed: function(selected) {
+								
 								$('#realmProperties').propertyPage({ 
 									url : 'template/realm/' + selected.module, 
 									showButtons : false, 
@@ -86,22 +87,29 @@
 							$('#realmProperties').saveProperties(true,
 								function(items) {
 									realm.properties = items;
-								});
+							});
 
 							return realm;
+						}, checkDelete: function(resource) {
+							return !resource.system;
+						}, checkUpdate: function(resource) {
+							return true;
 						}, showCreate : function() {
-							$('#type').trigger('change');
+							typeButton.enable();
+							typeButton.reset();
 						}, displayResource : function(resource) {
+							debugger;
 							$('#id').val(resource.id);
 							$('#name').val(resource.name);
-							$('#type').empty();
-							$('#type')
-									.append(
-										'<option id="realm' + resource.resourceCategory + '" value="' + resource.resourceCategory + '\">' + getResource("realm." + resource.resourceCategory + '.label') + '</option>');
-							$('#type').attr('disabled', 'disabled');
-							$('#realmProperties')
-									.propertyPage(
-										{ url : 'realm/properties/' + resource.id, showButtons : false, canUpdate : currentMenu.canUpdate });
+							$('#name').attr('disabled', resource.system);
+							typeButton.disable();
+							$('#realmProperties').clearProperties();
+							typeButton.setValue(resource.resourceCategory);
+							$('#realmProperties').propertyPage(
+								{ url : 'realm/properties/' + resource.id, 
+									showButtons : false, 
+									canUpdate : currentMenu.canUpdate 
+							});
 						}, complete : function() {
 							loadComplete();
 						}, resourceCreated : function(resource) {

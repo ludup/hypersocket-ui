@@ -3,7 +3,7 @@
 	<div class="modal" id="addUserModal" tabindex="-1" role="dialog"
 		aria-labelledby="addUserModalLabel" aria-hidden="true"
 		dialog-for="contentUsers">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
@@ -33,47 +33,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="modal" id="setPasswordForm" tabindex="-1" role="dialog"
-		aria-labelledby="setPasswordModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel"></h4>
-				</div>
-				<div class="modal-body">
-
-					<form class="form">
-						<div id="setPasswordDialogError" class="dialogError"></div>
-						<div class="propertyItem form-group">
-							<label class="col-md-3 control-label" localize="label.password"></label>
-							<div class="propertyValue col-md-9">
-								<input type="password" name="password" id="password"
-									class="form-control" />
-							</div>
-						</div>
-						<div class="propertyItem form-group">
-							<label class="col-md-3 control-label" localize="label.confirmPassword"></label>
-							<div class="propertyValue col-md-9">
-								<input type="password" name="confirmPassword" id="confirmPassword"
-									class="form-control" />
-							</div>
-						</div>
-						<div class="propertyItem form-group">
-							<label class="col-md-3 control-label" localize="label.forceChange"></label>
-							<div class="propertyValue col-md-9">
-								<input type="checkbox" name="forceChange" id="forceChange"
-									class="form-control" />
-							</div>
-						</div>
-					</form>
-
-				</div>
-				<div class="modal-footer"></div>
-			</div>
-		</div>
-	</div>
+	<div id="additionalActions"></div>
 </div>
 <script type="text/javascript">
 	$(document).ready(
@@ -91,7 +51,7 @@
 				});
 
 				$('#userProperties').propertyPage({
-					url : 'template/user/local',
+					url : 'template/user/' + currentRealm.resourceCategory,
 					showButtons : false,
 					useTemplates : true,
 					canUpdate : currentMenu.canUpdate,
@@ -101,128 +61,105 @@
 					} ]
 				});
 
-				$('#contentUsers').ajaxResourcePage(
-						{
-							tableUrl : "table/users",
-							title : getResource('users.title'),
-							icon : 'fa-user',
-							resourceUrl : "user",
-							fields : [ {
-								name : "principalName"
-							}, {
-								name : "principalDesc"
-							} ],
-							resourceKey : 'user',
-							canCreate : currentMenu.canCreate,
-							canUpdate : currentMenu.canUpdate,
-							canDelete : currentMenu.canDelete,
-							additionalActions : [ {
-								resourceKey : "setPassword",
-								iconClass : "fa-unlock-alt",
+				getJSON('menus/tableActions/userActions', null, function(data) {
+					
+					var actions = new Array();
+					
+					if(data.resources.length > 0) {
+						$.each(data.resources, function(idx, action) {
+							var div = action.resourceKey + 'Div';
+							$('#additionalActions').append('<div id="' + div + '"></div>');
+							$('#' + div).load('content/' + action.url + '.html');
+							actions.push({
+								resourceKey : action.resourceKey,
+								iconClass : action.iconClass,
 								action : function(resource) {
-									$('#setPasswordForm').data('resource',
-											resource);
-									$('#setPasswordForm').resourceDialog(
-											'create');
+									if($('#' + action.resourceKey).data('action')) {
+										$('#' + action.resourceKey).data('action')(resource);
+									}
 								},
-								enabled : currentMenu.canUpdate
-							} ],
-							validate : function() {
-								if ($('#userName').val() == '') {
-									$('#userDialogError').dialogError(
-											"error.nameRequired");
-									return false;
-								}
-								return true;
-							},
-							clearDialog : function() {
-								$('#userName').val('');
-								$('#userId').val('');
-								$('#userProperties').clearProperties();
-								$('#tabUserGroups').multipleSelect();
-							},
-							createResource : function() {
-								user = new Object();
-								user.id = $('#userId').val();
-								user.name = $('#userName').val();
-
-								$('#userProperties').saveProperties(true,
-										function(items) {
-											user.properties = items;
-										});
-								user.groups = $('#tabUserGroups')
-										.multipleSelectValues();
-								return user;
-							},
-							resourceCreated : function(resource) {
-
-							},
-							deleted : function(resource) {
-
-							},
-							displayResource : function(resource) {
-
-								$('#userName').val(resource.name);
-								$('#userId').val(resource.id);
-								$('#userProperties').propertyPage({
-									url : 'user/properties/' + resource.id,
-									showButtons : false,
-									canUpdate : currentMenu.canUpdate,
-									additionalTabs : [ {
-										id : "tabUserGroups",
-										name : getResource("label.groups")
-									} ]
-								});
-
-								$('#tabUserGroups').multipleSelect({
-									selected : resource.groups
-								});
-
-								$('#addUserModal').modal('show');
-
-							},
-							complete : function() {
-								loadComplete();
-							}
+								enabled : true
+							});
 						});
+					 }
+					
+					$('#contentUsers').ajaxResourcePage(
+							{
+								tableUrl : "table/users",
+								title : getResource('users.title'),
+								icon : 'fa-user',
+								resourceUrl : "user",
+								fields : [ {
+									name : "principalName"
+								}, {
+									name : "principalDesc"
+								} ],
+								resourceKey : 'user',
+								canCreate : currentMenu.canCreate,
+								canUpdate : currentMenu.canUpdate,
+								canDelete : currentMenu.canDelete,
+								additionalActionsDropdown: true,
+								additionalActions : actions,
+								validate : function() {
+									if ($('#userName').val() == '') {
+										$('#userDialogError').dialogError(
+												"error.nameRequired");
+										return false;
+									}
+									return true;
+								},
+								clearDialog : function() {
+									$('#userName').val('');
+									$('#userId').val('');
+									$('#userProperties').clearProperties();
+									$('#tabUserGroups').multipleSelect();
+								},
+								createResource : function() {
+									user = new Object();
+									user.id = $('#userId').val();
+									user.name = $('#userName').val();
 
-				$('#setPasswordForm').resourceDialog(
-						{
-							resourceKey : 'setPassword',
-							resourceUrl : 'credentials',
-							hasResourceTable : false,
-							createResource : function() {
+									$('#userProperties').saveProperties(true,
+											function(items) {
+												user.properties = items;
+											});
+									user.groups = $('#tabUserGroups')
+											.multipleSelectValues();
+									return user;
+								},
+								resourceCreated : function(resource) {
 
-								var resource = $('#setPasswordForm').data(
-										'resource');
+								},
+								deleted : function(resource) {
 
-								creds = new Object();
-								creds.principalId = resource.id;
-								creds.password = $('#password').val();
-								creds.forceChange = $('#forceChange').attr(
-										'checked') ? true : false;
+								},
+								displayResource : function(resource) {
 
-								return creds;
-							},
-							clearDialog : function() {
-								$('#password').val('');
-								$('#confirmPassword').val('');
-								$('#forceChange').val('');
-							},
-							validate : function() {
-								if ($('#password').val() == '') {
-									$('#setPasswordDialogError').dialogError(
-											"error.passwordEmpty");
-									return false;
+									$('#userName').val(resource.name);
+									$('#userId').val(resource.id);
+									$('#userProperties').propertyPage({
+										url : 'user/properties/' + resource.id,
+										showButtons : false,
+										canUpdate : currentMenu.canUpdate,
+										additionalTabs : [ {
+											id : "tabUserGroups",
+											name : getResource("label.groups")
+										} ]
+									});
+
+									$('#tabUserGroups').multipleSelect({
+										selected : resource.groups
+									});
+
+									$('#addUserModal').modal('show');
+
+								},
+								complete : function() {
+									loadComplete();
 								}
-								if ($('#password').val() != $(
-										'#confirmPassword').val()) {
-									$('#setPasswordDialogError').dialogError(
-											"error.passwordsNotMatched");
-									return false;
-								}
-								return true;
-							}
-						});
+							});
+					
+				});
+
 			});
 </script>

@@ -128,6 +128,7 @@ h2 {
 	color: #374767;
 }
 
+
 #logonBanner {
 	text-align: center;
 	margin: 0 auto;
@@ -166,6 +167,7 @@ h2 {
 	width: 40%;
 	padding-left: 0px;
 	padding-right: 0px;
+	margin-right: 10px;
 }
 
 .includedList label {
@@ -188,6 +190,26 @@ h2 {
 	color: white;
 	background: #20a8d8;
 	border: 1px solid #20a8d8;
+}
+
+.btn-disabled {
+	color: white;
+	background: #eee;
+	border: 1px solid #eee;
+}
+
+.btn-disabled:hover {
+	color: white;
+}
+
+.btn-disabled-dark {
+	color: #374767;
+	background: #eee;
+	border: 1px solid #eee;
+}
+
+.btn-disabled-dark:hover {
+	color: #374767;
 }
 
 .btn-multiple-select {
@@ -286,6 +308,10 @@ div.numRecords label {
 	text-align: left;
 }
 
+.tableActions {
+	text-align: right;
+}
+
 div.numRecords select {
 	width: 75px;
 }
@@ -338,7 +364,8 @@ div.tablePages ul.pagination {
 }
 
 select {
-	background: #ffffff url("/hypersocket/ui/images/select.png") no-repeat !important;
+	background: #ffffff url("/hypersocket/ui/images/select.png") no-repeat
+		!important;
 	background-size: 24px 20px !important;
 	background-position: right center !important;
 	-webkit-border-radius: 2px !important;
@@ -412,7 +439,7 @@ table {
 }
 
 #certInfo .row {
-	margin-bottom: 20px;	
+	margin-bottom: 20px;
 }
 /* Sidebar
 =================================================================== */
@@ -433,7 +460,7 @@ table {
 
 .sidebar .nav-sidebar.title {
 	text-align: center;
-	margin: 25px 0 15px 0;
+	margin: 15px 0 15px 0;
 	text-transform: uppercase;
 	font-size: 10px;
 	color: #4f5b5e;
@@ -831,6 +858,24 @@ table {
 
 .spacer20px {
 	height: 20px;
+}
+
+#editor {
+	max-height: 250px;
+	height: 250px;
+	background-color: white;
+	border-collapse: separate;
+	border: 1px solid rgb(204, 204, 204);
+	padding: 4px;
+	box-sizing: content-box;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+	box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	border-top-left-radius: 3px;
+	overflow: scroll;
+	outline: none;
 }
 
 @media ( min-width : 768px) and (max-width: 991px) {

@@ -94,7 +94,7 @@ public class UserInterfaceContentHandler implements ContentHandler, ApplicationL
 		
 		while(t.hasMoreTokens()) {
 			String path = FileUtils.checkEndsWithNoSlash(t.nextToken());
-			if(path.endsWith("/target/classes")) {
+			if(path.endsWith(File.separator + "target" + File.separator + "classes")) {
 				
 				path = path.substring(0, path.length()- 15);
 				
