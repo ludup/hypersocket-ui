@@ -91,9 +91,7 @@
 								resourceUrl : "user",
 								fields : [ {
 									name : "principalName"
-								}, {
-									name : "principalDesc"
-								} ],
+								}],
 								resourceKey : 'user',
 								canCreate : currentMenu.canCreate,
 								canUpdate : currentMenu.canUpdate,
@@ -137,22 +135,27 @@
 
 									$('#userName').val(resource.name);
 									$('#userId').val(resource.id);
-									$('#userProperties').propertyPage({
-										url : 'user/properties/' + resource.id,
-										showButtons : false,
-										canUpdate : currentMenu.canUpdate,
-										additionalTabs : [ {
-											id : "tabUserGroups",
-											name : getResource("label.groups")
-										} ]
+									
+									getJSON('groups/' + resource.id, null, function(data) {
+										
+										$('#userProperties').propertyPage({
+											url : 'user/properties/' + resource.id,
+											showButtons : false,
+											canUpdate : currentMenu.canUpdate,
+											additionalTabs : [ {
+												id : "tabUserGroups",
+												name : getResource("label.groups")
+											} ]
+										});
+
+										$('#tabUserGroups').multipleSelect({
+											selected : data.resources
+										});
+
+										$('#addUserModal').modal('show');
+
 									});
-
-									$('#tabUserGroups').multipleSelect({
-										selected : resource.groups
-									});
-
-									$('#addUserModal').modal('show');
-
+									
 								},
 								complete : function() {
 									loadComplete();
