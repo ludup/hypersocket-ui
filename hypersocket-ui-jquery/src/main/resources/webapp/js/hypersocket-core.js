@@ -1645,7 +1645,7 @@ function reloadRealms() {
 function checkNotifications() {
 	
 	if($(document).data('session')!=null) {
-		$.getJSON(basePath + "/api/getNotifications/core", null, function(data) {
+		$.getJSON(basePath + "/api/notifications/notification/core", null, function(data) {
 			
 			if(data.success) {
 				$.pnotify.defaults.styling = "jqueryui";

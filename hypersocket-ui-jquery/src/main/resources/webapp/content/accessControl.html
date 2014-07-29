@@ -96,7 +96,7 @@
 		$('#contentAccessControl').localize();
 		$('#contentAccessControl').tabs();
 		
-		getJSON('permissions', null, function(data) {
+		getJSON('permissions/list', null, function(data) {
 			$('#tabRolePermissions').multipleSelect({
 				resourceKey: "permissions",
 				values : data.permissions,

@@ -37,7 +37,7 @@
 	$(document).ready(function() {
 		$('#contentRoles').localize();
 
-		getJSON('permissions', null, function(data) {
+		getJSON('permissions/list', null, function(data) {
 			$('#tabRolePermissions').multipleSelect({
 				resourceKey: "permissions",
 				values : data.permissions,
@@ -90,7 +90,7 @@
 		});
 		
 		$('#roleProperties').propertyPage({
-			url : 'template/role',
+			url : 'roles/template',
 			showButtons : false,
 			useTemplates : true,
 			canUpdate : currentMenu.canUpdate,
@@ -108,10 +108,10 @@
 		
 		$('#contentRoles').ajaxResourcePage(
 				{
-				tableUrl : "table/roles",
+				tableUrl : "roles/table",
 				title: getResource('roles.title'),
 				icon: 'fa-user-md',
-				resourceUrl : "role",
+				resourceUrl : "roles/role",
 				fields : [ { name: "name"} ],
 				resourceKey : 'role',
 				canCreate: currentMenu.canCreate,

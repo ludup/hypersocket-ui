@@ -2209,7 +2209,7 @@ function home(data) {
 				var action = $(this).attr('data-value');
 					bootbox.confirm(getResource("power.confirm").format(getResource(action + '.label')), function(result) {
 							if(result) {
-								getJSON(action + '/5', function(data) {
+								getJSON('server/' + action + '/5', function(data) {
 										if(data.success) {
 											showInformation(false, getResource("power.completed").format(getResource(action + '.label')));
 										} else {
@@ -2367,7 +2367,7 @@ function checkNotifications() {
 	if ($(document).data('session') != null) {
 		$
 				.getJSON(
-					basePath + "/api/getNotifications/core",
+					basePath + "/api/notifications/notification/core",
 					null,
 					function(data) {
 
