@@ -31,24 +31,6 @@
 			</div>
 		</div>
 	</div>
-<!-- 	<div id="addGroupForm" class="dialog" dialog-for="contentGroups"> -->
-<!-- 		<form class="form"> -->
-<!-- 			<div id="groupDialogError" class="dialogError"></div> -->
-<!-- 			<div class="formInputField"> -->
-<!-- 				 <label for="name" -->
-<!-- 					class="formLabel" localize="group.name"></label> <input type="text" -->
-<!-- 					name="name" id="groupName" -->
-<!-- 					class="formInput text ui-widget-content ui-corner-all" /> -->
-<!-- 			</div> -->
-<!-- 			<div id="groupProperties" class="tabContent"> -->
-<!-- 				<ul id="groupPropertiesTabs"> -->
-<!-- 					<li><a href="#tabGroupUsers"><span localize="label.users"></span></a></li> -->
-<!-- 				</ul> -->
-<!-- 				<div id="tabGroupUsers" class="tabContent"></div> -->
-<!-- 			</div> -->
-<!-- 			<input type="hidden" name="groupId" id="groupId"/> -->
-<!-- 		</form> -->
-<!-- 	</div> -->
 </div>
 <script type="text/javascript">
 
@@ -56,7 +38,7 @@
 		$('#contentGroups').localize();
 		
 		getJSON(
-			'users',
+			'currentRealm/users/list',
 			null,
 			function(data) {
 				$('#tabGroupUsers').multipleSelect({
@@ -69,7 +51,7 @@
 		});
 		
 		$('#groupProperties').propertyPage({
-			url : 'template/group/local',
+			url : 'currentRealm/group/template/' + currentRealm.resourceCategory,
 			showButtons : false,
 			useTemplates : true,
 			canUpdate : currentMenu.canUpdate,
@@ -81,10 +63,10 @@
 		
 		$('#contentGroups').ajaxResourcePage(
 				{
-				tableUrl : "table/groups",
+				tableUrl : "currentRealm/groups/table",
 				title: getResource('groups.title'),
 				icon: 'fa-users',
-				resourceUrl : "group",
+				resourceUrl : "currentRealm/group",
 				fields : [ { name: "name"} ],
 				resourceKey : 'group',
 				canCreate: currentMenu.canCreate,
@@ -118,7 +100,7 @@
 				displayResource : function(resource) {
 					$('#groupId').val(resource.id);
 					$('#groupName').val(resource.name);
-					getJSON("users/" + resource.id, null, function(data) {
+					getJSON("currentRealm/users/group/" + resource.id, null, function(data) {
 						$('#tabGroupUsers').multipleSelect({
 	 						selected : data.resources
 	 					});

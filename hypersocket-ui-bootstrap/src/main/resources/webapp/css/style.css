@@ -290,7 +290,7 @@ table.table {
 	{
 	padding: 8px;
 	line-height: 1.428571429;
-	vertical-align: top;
+	vertical-align: middle;
 	border-top: 1px solid #e1e6ef;
 }
 
@@ -400,6 +400,7 @@ table {
 	background-color: #212c43;
 	color: #fff;
 	bottom: 0;
+	z-index: 99999;
 }
 
 #copyright {

@@ -49,7 +49,7 @@
 		});
 		
 
-		getJSON('groups',
+		getJSON('currentRealm/groups/list',
 			null,
 			function(data) {
 				$('#tabRoleGroups').multipleSelect({
@@ -69,7 +69,7 @@
 		});
 
 		getJSON(
-			'users',
+			'currentRealm/users/list',
 			null,
 			function(data) {
 				

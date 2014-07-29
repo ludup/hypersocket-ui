@@ -594,6 +594,7 @@ $.fn.selectButton = function(data) {
 			'click',
 			function(evt) {
 				evt.preventDefault();
+				
 				$('#' + id).val($(this).attr('data-value'));
 				$('#select_button_' + id).text($(this).attr('data-label'));
 				$('#' + id).markUpdated();
@@ -1181,7 +1182,7 @@ $.fn.ajaxResourcePage = function(params) {
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-								renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a></li>';
+								renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><span>' + getResource(act.resourceKey + ".label") + '</span>&nbsp;&nbsp;<i class="fa ' + act.iconClass + '"></i></a></li>';
 			
 								$(document).off('click',
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
@@ -1919,14 +1920,15 @@ function processLogon(data, message) {
 		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
 		
 		var links = new Array();
-		$.each(
-					data['formTemplate']['inputFields'],
+		var scripts = new Array();
+		$.each(data.formTemplate.inputFields,
 					function() {
 
 						if (this.type == 'hidden') {
-							$('#logonForm')
-									.append(
-										'<input type="' + this.type + '" name="' + this.resourceKey + '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
+							$('#logonForm').append('<input type="' + this.type + '" name="' 
+										+ this.resourceKey + '" id="' 
+										+ this.resourceKey + '" value="' 
+										+ this.defaultValue + '"/>');
 							return;
 						} else if (this.type == 'p') {
 							if(this.valueResourceKey) {
@@ -1939,39 +1941,46 @@ function processLogon(data, message) {
 						} else if(this.type == 'a') {
 							links.push(this);
 							return;
+						} else if(this.type == 'script') {
+							scripts.push(this);
+							return;
 						}
 
 						if (this.type == 'select') {
-							$('#logonForm')
-									.append(
-										'<select class="logonSelect" name="' + this.resourceKey + '" id="' + this.resourceKey + '"/>');
+							$('#logonForm').append('<select class="logonSelect" name="' 
+									+ this.resourceKey + '" id="' + this.resourceKey + '"/>');
 							currentKey = this.resourceKey;
-							$
-									.each(
-										this.options,
-										function() {
-											option = '<option';
-											if (this.selected) {
-												option += ' selected';
-											}
-											if (this.value) {
-												option += ' value="' + this.value + '"';
-											}
-											option += '>' + (this.isNameResourceKey ? getResource(this.name) : this.name) + '</option>';
-											$('#' + currentKey).append(option);
-										});
+							$.each(
+								this.options,
+								function() {
+									option = '<option';
+									if (this.selected) {
+										option += ' selected';
+									}
+									if (this.value) {
+										option += ' value="' + this.value + '"';
+									}
+									option += '>' + (this.isNameResourceKey ? getResource(this.name) : this.name) + '</option>';
+									$('#' + currentKey).append(option);
+								});
 
 						} else {
 							$('#logonForm')
 									.append(
-										'<input class="form-control" type="' + this.type + '" name="' + this.resourceKey + '" placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
+										'<input class="form-control" type="' + this.type + '" name="' 
+										+ this.resourceKey + '" placeholder="'
+										+ (this.label != null ? this.label : getResource(this.resourceKey + ".label")) 
+										+ '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
 						}
 
 					});
 
-		$('#logonForm')
-				.append(
-					'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' + (data.last ? getResource("text.logon") : getResource("text.next")) + '&nbsp;<i style="padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
+		if(data.formTemplate.showLogonButton) {
+			$('#logonForm').append(
+					'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
+						+ (data.last ? getResource("text.logon") : getResource("text.next")) 
+						+ '&nbsp;<i style="padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
+		}
 		
 		if(!data.newSession) {
 			$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
@@ -1979,7 +1988,7 @@ function processLogon(data, message) {
 			$('#resetLogon').click(function(e) {
 				e.preventDefault();
 				
-				getJSON('logon/reset/Default', null, function(data) {
+				getJSON('logon/reset', null, function(data) {
 					processLogon(data, null);
 				});
 			});
@@ -1987,7 +1996,9 @@ function processLogon(data, message) {
 		
 		$.each(links, function(idx, obj) {
 			
-			$('#logonForm').append('<div class="logonLink center"><a id="' + this.label + '" href="#">' + getResource(this.resourceKey) + '</a></div>');
+			$('#logonForm').append('<div class="logonLink center"><a id="' 
+					+ this.label + '" href="#">' 
+					+ getResource(this.resourceKey) + '</a></div>');
 		
 			$('#' + obj.label).click(function(e) {
 				e.preventDefault();
@@ -1996,6 +2007,11 @@ function processLogon(data, message) {
 					processLogon(data, null);
 				});
 			});
+		});
+		
+		$.each(scripts, function(idx, obj) {
+			log('Executing script ' + obj.resourceKey);
+			eval(obj.defaultValue);
 		});
 		
 		$('#logonButton')
@@ -2030,7 +2046,12 @@ function processLogon(data, message) {
 		$(document).data('session', data.session);
 		// Logging you in...
 		clearContent();
-		home(data);
+		
+		if(data.homePage != '') {
+			window.open(data.homePage, "_self", false);
+		} else {
+			home(data);
+		}
 	}
 
 	hideBusy();
@@ -2253,7 +2274,7 @@ function home(data) {
 					
 					log("Switching language to " + $(this).attr('data-value'));
 
-					getJSON('switchLanguage/' + $(this).attr('data-value'), null, function() {
+					getJSON('session/switchLanguage/' + $(this).attr('data-value'), null, function() {
 						document.location.reload();
 					});
 				});
@@ -2298,11 +2319,11 @@ function loadRealms(realms) {
 	}
 	
 	var func = function(realm) {
-		getJSON('switchRealm/' + realm, null,
+		getJSON('session/switchRealm/' + realm, null,
 			function(data) {
 				if (!data.success) {
 					showError(false, data.errorMsg);
-				} else {
+				} else { 
 					currentRealm = data.session.currentRealm;
 					loadMenu(currentMenu);
 				}
@@ -2332,7 +2353,7 @@ function loadRealms(realms) {
 }
 
 function reloadRealms() {
-	$.getJSON(basePath + "/api/realms", null, function(data) {
+	$.getJSON(basePath + "/api/realms/list", null, function(data) {
 		loadRealms(data.resources);
 		// This should not be needed but some areas reload the page and so the state does not get updated
 		// http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear

@@ -40,7 +40,7 @@
 			function() {
 				$('#contentUsers').localize();
 
-				getJSON('groups', null, function(data) {
+				getJSON('currentRealm/groups/list', null, function(data) {
 					$('#tabUserGroups').multipleSelect({
 						resourceKey : "groups",
 						values : data.resources,
@@ -51,7 +51,7 @@
 				});
 
 				$('#userProperties').propertyPage({
-					url : 'template/user/' + currentRealm.resourceCategory,
+					url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
 					showButtons : false,
 					useTemplates : true,
 					canUpdate : currentMenu.canUpdate,
@@ -85,10 +85,10 @@
 					
 					$('#contentUsers').ajaxResourcePage(
 							{
-								tableUrl : "table/users",
+								tableUrl : "currentRealm/users/table",
 								title : getResource('users.title'),
 								icon : 'fa-user',
-								resourceUrl : "user",
+								resourceUrl : "currentRealm/user",
 								fields : [ {
 									name : "principalName"
 								}],
@@ -136,10 +136,10 @@
 									$('#userName').val(resource.name);
 									$('#userId').val(resource.id);
 									
-									getJSON('groups/' + resource.id, null, function(data) {
+									getJSON('currentRealm/groups/user/' + resource.id, null, function(data) {
 										
 										$('#userProperties').propertyPage({
-											url : 'user/properties/' + resource.id,
+											url : 'currentRealm/user/properties/' + resource.id,
 											showButtons : false,
 											canUpdate : currentMenu.canUpdate,
 											additionalTabs : [ {

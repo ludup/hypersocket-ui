@@ -46,7 +46,7 @@
 
 						var typeButton = $('#typeButton').selectButton({
 							id: 'type',
-							url: 'realm/providers',
+							url: 'realms/providers',
 							nameAttr: 'module',
 							valueAttr: 'module',
 							nameIsResourceKey: true,
@@ -56,7 +56,7 @@
 							changed: function(selected) {
 								
 								$('#realmProperties').propertyPage({ 
-									url : 'template/realm/' + selected.module, 
+									url : 'realms/template/' + selected.module, 
 									showButtons : false, 
 									canUpdate : currentMenu.canUpdate, 
 									useTemplates : true 
@@ -68,7 +68,18 @@
 
 			$('#realmsContent')
 					.ajaxResourcePage(
-						{ tableUrl : "table/realms", title : getResource('realms.title'), icon : "fa-database", resourceUrl : "realm", fields : [ { name : "name" }, { name : "resourceCategory", isResourceKey : true } ], resourceKey : 'realm', canCreate : currentMenu.canCreate, canUpdate : currentMenu.canUpdate, canDelete : currentMenu.canDelete, validate : function() {
+						{ tableUrl : "realms/table", 
+						  title : getResource('realms.title'), 
+						  icon : "fa-database", 
+						  resourceUrl : "realms/realm", 
+						  fields : [ { name : "name" },
+						             { name : "resourceCategory", isResourceKey : true }
+						  ], 
+						  resourceKey : 'realm', 
+						  canCreate : currentMenu.canCreate, 
+						  canUpdate : currentMenu.canUpdate, 
+						  canDelete : currentMenu.canDelete, 
+						  validate : function() {
 							if ($('#name').val() == '') {
 								$('#addRealmForm').dialogError("A name is required!");
 								return false;
@@ -76,6 +87,7 @@
 							return true;
 						}, clearDialog : function() {
 							$('#name').val("");
+							$('#name').attr('disabled', false);
 							$('#id').val("");
 							$('#realmProperties').clearProperties();
 						}, createResource : function() {
@@ -98,7 +110,6 @@
 							typeButton.enable();
 							typeButton.reset();
 						}, displayResource : function(resource) {
-							debugger;
 							$('#id').val(resource.id);
 							$('#name').val(resource.name);
 							$('#name').attr('disabled', resource.system);
@@ -106,7 +117,7 @@
 							$('#realmProperties').clearProperties();
 							typeButton.setValue(resource.resourceCategory);
 							$('#realmProperties').propertyPage(
-								{ url : 'realm/properties/' + resource.id, 
+								{ url : 'realms/realm/properties/' + resource.id, 
 									showButtons : false, 
 									canUpdate : currentMenu.canUpdate 
 							});
