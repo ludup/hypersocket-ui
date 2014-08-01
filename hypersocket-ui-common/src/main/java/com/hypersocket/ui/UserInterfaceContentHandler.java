@@ -78,7 +78,22 @@ public class UserInterfaceContentHandler implements ContentHandler, ApplicationL
 
 		i18nService.registerBundle("ui");
 		
-		actualHandler.setServer(server);		
+		actualHandler.setServer(server);	
+		
+		String basePath = FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath());
+		
+		actualHandler.setBasePath(basePath);
+		actualHandler.addAlias("", "redirect:/");
+		actualHandler.addAlias("/", "/index.html");
+		actualHandler.addAlias("/home", "/index.html");
+
+		actualHandler.addFilter(indexHeaderFilter);
+		
+		// Make sure this is last so that tokens can be used in other filters
+		actualHandler.addFilter(htmlContentFilter);
+		
+		server.addCompressablePath(server.resolvePath(basePath));
+		server.registerHttpHandler(actualHandler);
 	}
 	
 
@@ -174,19 +189,7 @@ public class UserInterfaceContentHandler implements ContentHandler, ApplicationL
 	public void onApplicationEvent(HypersocketServerEvent event) {
 		
 		if(event.getResourceKey().equals(WebappCreatedEvent.EVENT_RESOURCE_KEY)) {
-			String basePath = FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath());
 			
-			actualHandler.setBasePath(basePath);
-			actualHandler.addAlias("", "redirect:/");
-			actualHandler.addAlias("/", "/index.html");
-
-			actualHandler.addFilter(indexHeaderFilter);
-			
-			// Make sure this is last so that tokens can be used in other filters
-			actualHandler.addFilter(htmlContentFilter);
-			
-			server.addCompressablePath(server.resolvePath(basePath));
-			server.registerHttpHandler(actualHandler);
 		}
 	}
 

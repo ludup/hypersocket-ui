@@ -1859,6 +1859,7 @@ function processLogon(data, message) {
 			$('#lang')
 					.append(
 						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("en") + '</li>');
+			/**
 			$('#lang')
 					.append(
 						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("da") + '</li>');
@@ -1895,6 +1896,7 @@ function processLogon(data, message) {
 			$('#lang')
 					.append(
 						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("ja") + '</li>');
+			**/
 
 			$('#lang').change(function() {
 
@@ -2231,6 +2233,7 @@ function home(data) {
 				$('#lang')
 						.append(
 							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="en" href="#">' + getResource("en") + '</li>');
+				/** 
 				$('#lang')
 						.append(
 							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="da" href="#">' + getResource("da") + '</li>');
@@ -2267,7 +2270,7 @@ function home(data) {
 				$('#lang')
 						.append(
 							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="ja" href="#">' + getResource("ja") + '</li>');
-
+				**/
 				$('.langSelect').click(function(e) {
 
 					e.preventDefault();
