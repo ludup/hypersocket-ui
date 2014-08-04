@@ -80,6 +80,11 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				"fa-cog", "settings", 0, ConfigurationPermission.READ, null,
 				ConfigurationPermission.UPDATE, null),
 				MenuService.MENU_CONFIGURATION);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realmSettings",
+				"fa-database", "realmSettings", 0, ConfigurationPermission.READ, null,
+				ConfigurationPermission.UPDATE, null),
+				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "certificates",
 				"fa-certificate", "certificates", 1000,

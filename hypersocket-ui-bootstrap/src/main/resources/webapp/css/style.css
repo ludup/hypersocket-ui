@@ -879,6 +879,19 @@ table {
 	outline: none;
 }
 
+.dialogActions {
+	valign: middle; 
+	text-align: right;
+}
+
+.dialogActions a {
+	margin-right: 5px;
+}
+
+.dialogActions .btn i {
+   margin: 0;
+}
+
 @media ( min-width : 768px) and (max-width: 991px) {
 	.navbar-form input[type=text] {
 		width: 260px !important;

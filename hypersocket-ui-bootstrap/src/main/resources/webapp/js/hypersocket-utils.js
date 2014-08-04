@@ -152,15 +152,22 @@ $.fn.dialogInformation = function(resourceKey) {
 					+ '</span>');
 	}
 };
-function getJSON(url, params, callback) {
+function getJSON(url, params, callback, errorCallback) {
 	log("GET: " + url);
 	
 	$.getJSON(basePath + '/api/' + url, params, callback).error(function() {
+		if(errorCallback) {
+			if(!errorCallback()) {
+				return;
+			}
+		}
+		
 		showError(false, url + " JSON request failed.");
+		
 	});
 };
 
-function postJSON(path, params, callback) {
+function postJSON(path, params, callback, errorCallback) {
 	
 	log("POST: " + path);
 	
@@ -172,12 +179,18 @@ function postJSON(path, params, callback) {
 	    data: JSON.stringify(params),
 	    success: callback
 	}).error(function() {
-		showError(false, path + " JSON request failed.");
+		if(errorCallback) {
+			if(!errorCallback()) {
+				return;
+			}
+		}
+		
+		showError(false, url + " JSON request failed.");
 	});
 	
 };
 
-function deleteJSON(path, params, callback) {
+function deleteJSON(path, params, callback, errorCallback) {
 	
 	log("DELETE: " + path);
 	
@@ -189,7 +202,13 @@ function deleteJSON(path, params, callback) {
 	    data: JSON.stringify(params),
 	    success: callback
 	}).error(function() {
-		showError(false, path + " JSON request failed.");
+		if(errorCallback) {
+			if(!errorCallback()) {
+				return;
+			}
+		}
+		
+		showError(false, url + " JSON request failed.");
 	});
 };
 

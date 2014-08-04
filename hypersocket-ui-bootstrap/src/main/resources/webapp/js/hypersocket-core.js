@@ -294,7 +294,15 @@ $.fn.propertyPage = function(opts) {
 											} else if (obj.inputType == 'multipleSelect') {
 												$('#' + tab + '_value' + this.id)
 														.multipleSelect(
-															{ metaData : obj, url : obj.url, values : obj.values, disabled : !options.canUpdate  || obj.disabled, selected : splitFix(this.value), selectAllIfEmpty : obj.selectAllIfEmpty, resourceKey : this.resourceKey, change : function() {
+															{ metaData : obj, 
+																id: this.id,
+																url : obj.url, 
+																values : obj.values, 
+																disabled : !options.canUpdate  || obj.disabled, 
+																selected : splitFix(this.value), 
+																selectAllIfEmpty : obj.selectAllIfEmpty, 
+																resourceKey : this.resourceKey, 
+																change : function() {
 																$(this).markUpdated();
 																if (options.showButtons) {
 																	$(revertButton).attr('disabled', false);
@@ -304,7 +312,12 @@ $.fn.propertyPage = function(opts) {
 											} else if (obj.inputType == 'multipleTextInput') {
 												$('#' + tab + '_value' + this.id)
 														.multipleTextInput(
-															{ values : splitFix(this.value), disabled : !options.canUpdate && !obj.disabled, resourceKey : this.resourceKey, change : function() {
+															{ metaData : obj, 
+																id: this.id,
+																values : splitFix(this.value), 
+																disabled : !options.canUpdate && !obj.disabled, 
+																resourceKey : this.resourceKey, 
+																change : function() {
 																$(this).markUpdated();
 																if (options.showButtons) {
 																	$(revertButton).attr('disabled', false);
@@ -315,6 +328,16 @@ $.fn.propertyPage = function(opts) {
 												// '_value' +
 												// this.id).addClass("propertyInput");
 
+											} else if (obj.inputType == 'button') {
+												$('#' + tab + '_value' + this.id).append(
+													'<button ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') 
+															+ ' class="btn ' + (obj.buttonClass ? obj.buttonClass : 'btn-primary') 
+															+ '" id="' + tab + '_button' + this.id + '"><i class="fa ' + obj.buttonIcon 
+															+ '"></i>' + getResource(obj.buttonLabel) + '</button>');
+											
+												$('#' + tab + '_button' + this.id).on('click', function(e) {
+													eval(obj.script);
+												});
 											} else if (obj.inputType == 'password') {
 												$('#' + tab + '_value' + this.id)
 														.append(
@@ -366,8 +389,10 @@ $.fn.propertyPage = function(opts) {
 																		.text(ui.value + ' ' + getResource(obj.labelResourceKey));
 																valueInput.val(ui.value);
 																valueInput.data('updated', true);
-																$(revertButton).attr('disabled', false);
-																$(applyButton).attr('disabled', false);
+																if(options.showButtons) {
+																	$(revertButton).attr('disabled', false);
+																	$(applyButton).attr('disabled', false);
+																}
 															} });
 											} else if (obj.inputType != 'hidden') {
 												$('#' + tab + '_value' + this.id)
@@ -489,17 +514,28 @@ $.fn.saveProperties = function(includeAll, callback) {
 	var items = new Array();
 	var files = new Array();
 
-	var restart = false;
+	var invalid = false;
 
 	$('.propertyInput', '#' + $(this).attr('id')).each(
 		function(i, obj) {
 
 			var item = $('#' + obj.id);
-
+			
+			debugger;
+			if(item.data('resourceKey')==undefined) {
+				return;
+			}
+			
+			var meta = item.data('metaData');
+			if(!invalid) {
+				if(!item.validateProperty()) {
+					invalid = true;
+				}
+			}
+			
 			log("Checking property " + item.data('resourceKey'));
 
-			restart |= item.data("restart");
-			if (item.data('isMultipleSelect') || item.data('isMultipleTextInput')) {
+			if (meta.inputType=='multipleSelect' || meta.inputType=='multipleTextInput') {
 				if (includeAll || item.data('updated')) {
 					items.push(new PropertyItem(item.data('resourceKey'), item
 							.multipleSelectValues({ isProperty : true }).join("]|[")));
@@ -522,7 +558,7 @@ $.fn.saveProperties = function(includeAll, callback) {
 
 	callback(items);
 
-	return restart;
+	return invalid;
 
 };
 
@@ -546,7 +582,9 @@ $.fn.multipleSelectValues = function(data) {
 	result = new Array();
 
 	var id = $(this).attr('id');
-	id += 'IncludedSelect';
+	if(!id.endsWith('IncludedSelect')) {
+		id += 'IncludedSelect';
+	}
 
 	$('#' + id + ' option').each(function() {
 		result.push($(this).val());
@@ -943,6 +981,8 @@ $.fn.multipleSelect = function(data) {
 			});
 	}
 
+	toSelect.prepareProperty(options.metaData,
+			options.id, options.values, options.resourceKey);
 };
 
 $.fn.multipleTextInput = function(data) {
@@ -1100,6 +1140,8 @@ $.fn.multipleTextInput = function(data) {
 	toSelect.data('restart', options.restart);
 	toSelect.data('updated', false);
 
+	toSelect.prepareProperty(options.metaData,
+			options.id, options.values, options.resourceKey);
 	if (options.values) {
 
 		$.each(options.values, function(idx, obj) {
