@@ -53,11 +53,11 @@ public class MenuController extends AuthenticatedController {
 			UnauthorizedException, SessionTimeoutException {
 
 		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request), menuService);
+				sessionUtils.getLocale(request));
 		try {
 			return getModuleList(request);
 		} finally {
-			clearAuthenticatedContext(menuService);
+			clearAuthenticatedContext();
 		}
 	}
 
@@ -66,7 +66,7 @@ public class MenuController extends AuthenticatedController {
 			SessionTimeoutException {
 
 		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request), menuService);
+				sessionUtils.getLocale(request));
 		try {
 
 			MenuList list = new MenuList(menuService.getMenus());
@@ -85,7 +85,7 @@ public class MenuController extends AuthenticatedController {
 
 			return list;
 		} finally {
-			clearAuthenticatedContext(menuService);
+			clearAuthenticatedContext();
 		}
 	}
 
@@ -99,13 +99,13 @@ public class MenuController extends AuthenticatedController {
 			SessionTimeoutException {
 
 		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request), menuService);
+				sessionUtils.getLocale(request));
 
 		try {
 			return new ResourceList<AbstractTableAction>(
 					menuService.getTableActions(table));
 		} finally {
-			clearAuthenticatedContext(menuService);
+			clearAuthenticatedContext();
 		}
 	}
 }
