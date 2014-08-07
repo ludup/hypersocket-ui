@@ -1,5 +1,7 @@
 package com.hypersocket.menus;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.hypersocket.permissions.PermissionType;
 
 public class AbstractTableAction {
@@ -13,7 +15,8 @@ public class AbstractTableAction {
 	public AbstractTableAction() {
 	}
 
-	public AbstractTableAction(String resourceKey, String iconClass, String url, PermissionType permission, int weight) {
+	public AbstractTableAction(String resourceKey, String iconClass,
+			String url, PermissionType permission, int weight) {
 		this.resourceKey = resourceKey;
 		this.iconClass = iconClass;
 		this.url = url;
@@ -60,6 +63,9 @@ public class AbstractTableAction {
 	public void setWeight(int weight) {
 		this.weight = weight;
 	}
-	
-	
+
+	@JsonIgnore
+	public boolean isEnabled() {
+		return true;
+	}
 }

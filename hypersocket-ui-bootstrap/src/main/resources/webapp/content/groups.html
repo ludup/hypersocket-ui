@@ -97,12 +97,14 @@
 				},
 				deleted : function(resource) {
 				},
-				displayResource : function(resource) {
+				displayResource : function(resource, readOnly) {
 					$('#groupId').val(resource.id);
 					$('#groupName').val(resource.name);
+					$('#groupName').attr('disabled', readOnly);
 					getJSON("currentRealm/users/group/" + resource.id, null, function(data) {
 						$('#tabGroupUsers').multipleSelect({
-	 						selected : data.resources
+	 						selected : data.resources,
+	 						disabled : readOnly
 	 					});
 					});
  	 			  	

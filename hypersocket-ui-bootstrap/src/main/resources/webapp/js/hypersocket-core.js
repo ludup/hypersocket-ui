@@ -38,7 +38,7 @@ $.fn.prepareProperty = function(opts, id, originalValue, resourceKey) {
 	$(this).data('originalValue', originalValue);
 	$(this).data('metaData', opts);
 	$(this).data('updated', false);
-	$(this).data('restart', opts.restart);
+//	$(this).data('restart', opts.restart);
 };
 
 $.fn.revertProperty = function() {
@@ -824,6 +824,12 @@ $.fn.multipleSelect = function(data) {
 						});
 		}
 
+		if(data) {
+			select.attr('disabled', data.disabled);
+			toSelect.attr('disabled', data.disabled);
+			$('#' + $(this).attr('id') + 'AddButton').attr('disabled', data.disabled);
+			$('#' + $(this).attr('id') + 'RemoveButton').attr('disabled', data.disabled);
+		}
 		return;
 
 	} else {
@@ -1217,7 +1223,7 @@ $.fn.ajaxResourcePage = function(params) {
 
 		if (options.additionalActions) {
 
-			if(options.additionalActionsDropdown) {
+			if(options.additionalActionsDropdown && options.additionalActions.length > 0) {
 				renderedActions += '<div class="btn-group"><a class="btn btn-success row-additional dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
 				renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
@@ -1267,15 +1273,14 @@ $.fn.ajaxResourcePage = function(params) {
 
 		}
 
-		if (options.canUpdate) {
+//		if (options.canUpdate) {
 			
 			var canUpdate = !idCol.aData.systemResource || currentRealm.system;
 			if(options.checkUpdate) {
 				canUpdate = options.checkUpdate(idCol.aData);
 			}
-			
-			if(canUpdate) {
-				renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa fa-edit"></i></a>';
+//			if(canUpdate) {
+				renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
 	
 				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 	
@@ -1287,13 +1292,13 @@ $.fn.ajaxResourcePage = function(params) {
 							$(this).closest("tr").get(0));
 						var resource = $('#' + divName + 'Table').dataTable().fnGetData(
 							curRow);
-						$('div[dialog-for="' + divName + '"]').resourceDialog('edit',
+						$('div[dialog-for="' + divName + '"]').resourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
 							{ row : curRow, resource : resource });
 				});
-			} else {
-				renderedActions += '<a class="btn btn-disabled" href="#"><i class="fa fa-edit"></i></a>';
-			}
-		}
+//			} else {
+//				renderedActions += '<a class="btn btn-disabled" href="#"><i class="fa fa-edit"></i></a>';
+//			}
+//		}
 
 		if (options.canDelete) {
 			
@@ -1426,7 +1431,7 @@ $.fn.ajaxResourcePage2 = function(params) {
 		+ (options.selected ? '' : ' table-striped') + '" id="'
 		+ divName + 'Table' + '"><thead><tr id="' 
 		+ divName + 'TableHeader"></tr></thead></table></div>';
-	
+
 	if(options.canCreate) {
 		html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"/>';
 	}
@@ -1535,7 +1540,7 @@ $.fn.ajaxResourcePage2 = function(params) {
 						});
 		}
 
-		if (options.canUpdate) {
+//		if (options.canUpdate) {
 			renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa fa-edit"></i></a>';
 
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
@@ -1558,7 +1563,7 @@ $.fn.ajaxResourcePage2 = function(params) {
 					$('#'+divName).hide();
 					$('div[page-for="' + divName + '"]').show();
 				});
-		}
+//		}
 
 		if (options.canDelete) {
 			renderedActions += '<a class="btn btn-danger row-delete" href="#"><i class="fa fa-trash-o"></i></a>';
@@ -1682,9 +1687,7 @@ $.fn.resourceDialog = function(params, params2) {
 		$(this).appendTo('body');
 
 		$(this).find('.modal-footer').empty();
-		$(this)
-				.find('.modal-footer')
-				.append(
+		$(this).find('.modal-footer').append(
 					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary">' + getResource("text.create") + '</button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
 		$('#' + $(this).attr('id') + "Action").on(
@@ -1722,24 +1725,29 @@ $.fn.resourceDialog = function(params, params2) {
 			});
 		dialog.modal('show');
 
-	} else if (params === 'edit') {
-
+	} else if (params === 'edit' || params === 'read') {
+		var readOnly = params==='read';
 		dialogOptions.clearDialog();
 		dialog.resourceDialog('error', 'reset');
-		dialogOptions.displayResource(params2.resource);
-		$(this).find('.modal-title').text(
-			getResource(dialogOptions.resourceKey + '.update.title'));
+		dialogOptions.displayResource(params2.resource, readOnly);
+		
+		if(readOnly) {
+			$(this).find('.modal-title').text(
+					getResource(dialogOptions.resourceKey + '.view.title'));
+		} else {
+			$(this).find('.modal-title').text(
+					getResource(dialogOptions.resourceKey + '.update.title'));
+		}
+		
+		
 		$(this).appendTo('body');
 
 		$(this).find('.modal-footer').empty();
-		$(this)
-				.find('.modal-footer')
-				.append(
-					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary">' + getResource("text.update") + '</button>');
-		$('#' + $(this).attr('id') + "Action").off('click');
-		$('#' + $(this).attr('id') + "Action").on(
-			'click',
-			function() {
+		if(!readOnly) {
+			$(this).find('.modal-footer').append(
+						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary">' + getResource("text.update") + '</button>');
+			$('#' + $(this).attr('id') + "Action").off('click');
+			$('#' + $(this).attr('id') + "Action").on('click', function() {
 
 				if (dialogOptions.validate) {
 					if (!dialogOptions.validate()) {
@@ -1765,6 +1773,8 @@ $.fn.resourceDialog = function(params, params2) {
 				});
 
 			});
+		}
+		
 		dialog.modal('show');
 
 	} else if (params === 'close') {
@@ -2369,8 +2379,10 @@ function loadRealms(realms) {
 				if (!data.success) {
 					showError(false, data.errorMsg);
 				} else { 
-					currentRealm = data.session.currentRealm;
-					loadMenu(currentMenu);
+//					currentRealm = data.session.currentRealm;
+//					loadMenu(currentMenu);
+					// TODO reload and load the same page.
+					document.location.reload();
 				}
 			});
 	};

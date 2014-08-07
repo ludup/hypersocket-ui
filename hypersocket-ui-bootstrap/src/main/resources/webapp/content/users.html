@@ -131,9 +131,10 @@
 								deleted : function(resource) {
 
 								},
-								displayResource : function(resource) {
+								displayResource : function(resource, readOnly) {
 
 									$('#userName').val(resource.name);
+									$('#userName').attr('disabled', readOnly);
 									$('#userId').val(resource.id);
 									
 									getJSON('currentRealm/groups/user/' + resource.id, null, function(data) {
@@ -141,7 +142,7 @@
 										$('#userProperties').propertyPage({
 											url : 'currentRealm/user/properties/' + resource.id,
 											showButtons : false,
-											canUpdate : currentMenu.canUpdate,
+											canUpdate : !readOnly,
 											additionalTabs : [ {
 												id : "tabUserGroups",
 												name : getResource("label.groups")
@@ -149,7 +150,8 @@
 										});
 
 										$('#tabUserGroups').multipleSelect({
-											selected : data.resources
+											selected : data.resources,
+											disabled : readOnly
 										});
 
 										$('#addUserModal').modal('show');
