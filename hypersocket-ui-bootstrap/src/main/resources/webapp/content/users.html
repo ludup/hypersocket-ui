@@ -26,6 +26,37 @@
 					</div>
 					<div id="userProperties" class="tabContent"></div>
 					<div id="tabUserGroups" class="tabContent"></div>
+					<div id="tabPassword" class="tabContent">
+						<div class="propertyItem form-group">
+						<label class="col-md-3 control-label" localize="label.password"></label>
+						<div class="propertyValue col-md-9">
+							<input type="password" name="password" id="userPassword"
+								class="form-control" />
+							<div>
+								<span class="help-block" localize="password.info"></span>
+							</div>
+						</div>
+						</div>
+						<div class="propertyItem form-group">
+							<label class="col-md-3 control-label" localize="label.confirmPassword"></label>
+							<div class="propertyValue col-md-9">
+								<input type="password" name="confirmPassword" id="userConfirmPassword"
+									class="form-control" />
+								<div>
+									<span class="help-block" localize="confirmPassword.info"></span>
+								</div>
+							</div>
+						</div>
+						<div class="propertyItem form-group">
+							<label class="col-md-3 control-label" localize="label.forceChange"></label>
+							<div class="propertyValue col-md-9">
+								<input type="checkbox" name="forceChange" id="userForceChange">
+								<div>
+									<span class="help-block" localize="forceChange.info"></span>
+								</div>
+							</div>
+						</div>
+					</div>
 					<input type="hidden" name="userId" id="userId">
 
 				</div>
@@ -50,17 +81,6 @@
 					});
 				});
 
-				$('#userProperties').propertyPage({
-					url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
-					showButtons : false,
-					useTemplates : true,
-					canUpdate : currentMenu.canUpdate,
-					additionalTabs : [ {
-						id : "tabUserGroups",
-						name : getResource("label.groups")
-					} ]
-				});
-
 				getJSON('menus/tableActions/userActions', null, function(data) {
 					
 					var actions = new Array();
@@ -73,15 +93,32 @@
 							actions.push({
 								resourceKey : action.resourceKey,
 								iconClass : action.iconClass,
-								action : function(resource) {
+								action : function(resource, callback) {
 									if($('#' + action.resourceKey).data('action')) {
-										$('#' + action.resourceKey).data('action')(resource);
+										$('#' + action.resourceKey).data('action')(resource, callback);
 									}
 								},
-								enabled : true
+								enabled : true,
+								enableFunction: action.enableFunction,
+								displayFunction: action.displayFunction
 							});
 						});
 					 }
+					
+					$('#userProperties').propertyPage({
+						url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
+						showButtons : false,
+						displayMode: 'create',
+						useTemplates : true,
+						canUpdate : currentMenu.canUpdate,
+						additionalTabs : [ {
+							id : "tabUserGroups",
+							name : getResource("label.groups")
+						},{
+							id : "tabPassword",
+							name : getResource("label.password")
+						} ]
+					});
 					
 					$('#contentUsers').ajaxResourcePage(
 							{
@@ -106,17 +143,40 @@
 									}
 									return true;
 								},
-								clearDialog : function() {
+								clearDialog : function(create) {
 									$('#userName').val('');
+									$('#userName').attr('disabled', !create),
 									$('#userId').val('');
+									$('#password').val('');
+									$('#confirmPassword').val('');
 									$('#userProperties').clearProperties();
 									$('#tabUserGroups').multipleSelect();
+									
+									if(create) {
+										$('#userProperties').propertyPage({
+											url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
+											showButtons : false,
+											displayMode: 'create',
+											useTemplates : true,
+											canUpdate : currentMenu.canUpdate,
+											additionalTabs : [ {
+												id : "tabUserGroups",
+												name : getResource("label.groups")
+											},{
+												id : "tabPassword",
+												name : getResource("label.password")
+											} ]
+										});
+									} 
 								},
 								createResource : function() {
+
 									user = new Object();
 									user.id = $('#userId').val();
 									user.name = $('#userName').val();
-
+									user.password = $('#userPassword').val();
+									user.forceChange = $('#userForceChange').attr('checked') ? true : false;
+									
 									$('#userProperties').saveProperties(true,
 											function(items) {
 												user.properties = items;
@@ -126,7 +186,7 @@
 									return user;
 								},
 								resourceCreated : function(resource) {
-
+									
 								},
 								deleted : function(resource) {
 
@@ -134,14 +194,16 @@
 								displayResource : function(resource, readOnly) {
 
 									$('#userName').val(resource.name);
-									$('#userName').attr('disabled', readOnly);
+									$('#userName').attr('disabled', readOnly || $('#userName').attr('disabled'));
 									$('#userId').val(resource.id);
 									
 									getJSON('currentRealm/groups/user/' + resource.id, null, function(data) {
 										
+										$('#userProperties').empty();
 										$('#userProperties').propertyPage({
 											url : 'currentRealm/user/properties/' + resource.id,
 											showButtons : false,
+											displayMode: 'update',
 											canUpdate : !readOnly,
 											additionalTabs : [ {
 												id : "tabUserGroups",
@@ -149,6 +211,7 @@
 											} ]
 										});
 
+										
 										$('#tabUserGroups').multipleSelect({
 											selected : data.resources,
 											disabled : readOnly

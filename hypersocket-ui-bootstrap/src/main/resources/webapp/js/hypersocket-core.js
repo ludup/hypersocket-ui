@@ -124,7 +124,7 @@ $.fn.propertyPage = function(opts) {
 	
 	var options = $
 			.extend(
-				{ showButtons : true, canUpdate : false, title : '', icon : 'fa-th' },
+				{ showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th' },
 				opts);
 
 	$('body').append('<div id="tabTemp' + propertyDiv + '"/>');
@@ -161,289 +161,238 @@ $.fn.propertyPage = function(opts) {
 			var first = true;
 			
 			if(data.resources) {
-			$.each(	data.resources,
-						function() {
+				$.each(	data.resources,
+							function() {
 
-							tab = "tab" + this.id;
-							$(contentTabs)
-									.append(
-										'<li><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"') + ' href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
-							first = false;
-
-							$('#' + propertyDiv + 'Content').append(
-								'<div id="' + tab + '" class="tab-pane"/>');
-
-							var toSort = [];
-							$.each(this.templates, function() {
-								toSort.push(this);
-							});
-
-							toSort.sort(function(a, b) {
-								if (a.weight < b.weight) {
-									return -1;
-								} else if (a.weight > b.weight) {
-									return 1;
+								if(this.displayMode && this.displayMode != '') {
+									if(this.displayMode != options.displayMode) {
+										return;
+									}
 								}
-								return 0;
-							});
-
-							$
-									.each(
-										toSort,
-										function() {
-
-											x = JSON.parse(this.metaData);
-											var obj = $.extend(
-												{ restart : false, nameIsResourceKey : false, disabled: false }, x);
-
-											if(obj.inputType!='hidden') {
-												$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
-												$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResource(this.resourceKey) + '</label>');
-												$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
-											}
-											// Following vars are
-											// needed for some
-											// aysnchronous calls
-											var inputId = this.id;
-											var inputTab = tab;
-											var inputObj = this;
-											if (obj.inputType == 'textarea') {
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<textarea ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
-											} else if (obj.inputType == 'select') {
-
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<div class="btn-group"><input id="' + tab + '_input' + this.id + '" class="propertyInput" type="hidden" name="select_value_' + this.id + '" value="' + this.value + '"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span id="select_button_' + this.id + '">' + (obj.nameIsResourceKey ? getResource(this.value) : this.value) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="' + inputTab + '_select' + inputId + '" class="dropdown-menu" role="menu"></div>');
-												if (obj.options) {
-													for (var i = 0; i < obj.options.length; i++) {
-														if (this.value == obj.options[i].value) {
-															$('#select_button_' + inputId)
-																	.text(
-																		obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name);
-															$('#' + tab + '_select' + this.id)
-																	.append(
-																		'<li><a class="selectButton_' + this.id + '" href="#" data-value="' + stripNull(obj.options[i].value) + '" data-label="' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</a></li>');
-														} else {
-															$('#' + tab + '_select' + this.id)
-																	.append(
-																		'<li><a class="selectButton_' + this.id + '" href="#" data-value="' + stripNull(obj.options[i].value) + '" data-label="' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '">' + (obj.nameIsResourceKey ? getResource(obj.options[i].name) : obj.options[i].name) + '</a></li>');
-														}
-													}
-													;
-
-													$('.selectButton_' + inputId).on(
-														'click',
-														function(evt) {
-															evt.preventDefault();
-															$('#' + inputTab + '_input' + inputId).val(
-																$(this).attr('data-value'));
-															$('#select_button_' + inputId).text(
-																$(this).attr('data-label'));
-															$('#' + inputTab + '_input' + inputId)
-																	.markUpdated();
+								tab = "tab" + this.id;
+								$(contentTabs)
+										.append(
+											'<li><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"') + ' href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
+								first = false;
+	
+								$('#' + propertyDiv + 'Content').append(
+									'<div id="' + tab + '" class="tab-pane"/>');
+	
+								var toSort = [];
+								$.each(this.templates, function() {
+									toSort.push(this);
+								});
+	
+								toSort.sort(function(a, b) {
+									if (a.weight < b.weight) {
+										return -1;
+									} else if (a.weight > b.weight) {
+										return 1;
+									}
+									return 0;
+								});
+	
+								$
+										.each(
+											toSort,
+											function() {
+	
+												x = JSON.parse(this.metaData);
+												var obj = $.extend(
+													{ restart : false, nameIsResourceKey : false, readOnly: false, disabled: false }, x);
+	
+												if(obj.inputType!='hidden') {
+													$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
+													$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResource(this.resourceKey) + '</label>');
+													$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
+												}
+												// Following vars are
+												// needed for some
+												// aysnchronous calls
+												var inputId = this.id;
+												var inputTab = tab;
+												var inputObj = this;
+												if (obj.inputType == 'textarea') {
+													$('#' + tab + '_value' + this.id)
+															.append(
+																'<textarea ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
+												} else if(obj.inputType == 'typeahead') {
+												
+													
+											    } else if (obj.inputType == 'select') {
+													$('#' + tab + '_value' + this.id).selectButton(
+														{ metaData : obj, 
+															id: this.id,
+															url : obj.url, 
+															value: this.value,
+															options : obj.options, 
+															nameIsResourceKey: obj.nameIsResourceKey,
+															nameAttr: obj.nameAttr,
+															valueAttr: obj.valueAttr,
+															disabled : !options.canUpdate  || this.readOnly, 
+															resourceKey : this.resourceKey, 
+															changed : function() {
+															$(this).markUpdated();
 															if (options.showButtons) {
 																$(revertButton).attr('disabled', false);
 																$(applyButton).attr('disabled', false);
 															}
-														});
-
-												} else if (obj.url) {
-													getJSON(
-														obj.url,
-														null,
-														function(data) {
-															$
-																	.each(
-																		data.resources,
-																		function(idx, option) {
-																			if (option.value == inputObj.value) {
-																				$('#select_button_' + inputId)
-																						.text(
-																							obj.nameIsResourceKey ? getResource(option.name) : option.name);
-																				$('#' + inputTab + '_select' + inputId)
-																						.append(
-																							'<li><a class="selectButton_' + inputId + '" href="#" data-value="' + stripNull(option.value) + '" data-label="' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</a></li>');
-																			} else {
-																				$('#' + inputTab + '_select' + inputId)
-																						.append(
-																							'<li><a class="selectButton_' + inputId + '" href="#" data-value="' + stripNull(option.value) + '" data-label="' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '">' + (obj.nameIsResourceKey ? getResource(option.name) : option.name) + '</a></li>');
-																			}
-																		});
-
-															$('.selectButton_' + inputId).on(
-																'click',
-																function(evt) {
-																	evt.preventDefault();
-																	$('#' + inputTab + '_input' + inputId).val(
-																		$(this).attr('data-value'));
-																	$('#select_button_' + inputId).text(
-																		$(this).attr('data-label'));
-																	$('#' + inputTab + '_input' + inputId)
-																			.markUpdated();
+														} });
+	
+												} else if (obj.inputType == 'multipleSelect') {
+													$('#' + tab + '_value' + this.id)
+															.multipleSelect(
+																{ metaData : obj, 
+																	id: this.id,
+																	url : obj.url, 
+																	values : obj.values, 
+																	disabled : !options.canUpdate  || this.readOnly || this.disabled, 
+																	selected : splitFix(this.value), 
+																	selectAllIfEmpty : obj.selectAllIfEmpty, 
+																	resourceKey : this.resourceKey, 
+																	change : function() {
+																	$(this).markUpdated();
 																	if (options.showButtons) {
 																		$(revertButton).attr('disabled', false);
 																		$(applyButton).attr('disabled', false);
 																	}
-
-																});
-														});
+																} });
+												} else if (obj.inputType == 'multipleTextInput') {
+													$('#' + tab + '_value' + this.id)
+															.multipleTextInput(
+																{ metaData : obj, 
+																	id: this.id,
+																	values : splitFix(this.value), 
+																	disabled : !options.canUpdate || this.readOnly || this.disabled, 
+																	resourceKey : this.resourceKey, 
+																	change : function() {
+																	$(this).markUpdated();
+																	if (options.showButtons) {
+																		$(revertButton).attr('disabled', false);
+																		$(applyButton).attr('disabled', false);
+																	}
+																} });
+	
+												} else if (obj.inputType == 'button') {
+													$('#' + tab + '_value' + this.id).append(
+														'<button ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') 
+																+ ' class="btn ' + (obj.buttonClass ? obj.buttonClass : 'btn-primary') 
+																+ '" id="' + tab + '_button' + this.id + '"><i class="fa ' + obj.buttonIcon 
+																+ '"></i>' + getResource(obj.buttonLabel) + '</button>');
+												
+													$('#' + tab + '_button' + this.id).on('click', function(e) {
+														eval(obj.script);
+													});
+												} else if (obj.inputType == 'password') {
+													$('#' + tab + '_value' + this.id)
+															.append(
+																'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="password" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
+												} else if (obj.inputType == 'boolean') {
+													$('#' + tab + '_value' + this.id)
+															.append(
+																'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
+												} else if (obj.inputType == 'switch') {
+	
+													$('#' + tab + '_value' + this.id)
+															.append(
+																'<label class="switch"><input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="switch-input propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '><span class="switch-label" data-on="' + getResource("text.on") + '" data-off="' + getResource("text.off") + '"></span> <span class="switch-handle"></span></label>');
+	
+												} else if (obj.inputType == 'image') {
+													$('#' + tab + '_value' + this.id)
+															.append(
+																'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="file" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
+													$('#' + tab + '_value' + this.id)
+															.append(
+																'<img class="imagePreview" src="' + this.value + '">');
+													var input = $('#' + tab + '_input' + this.id);
+													input.change(function() {
+														var reader = new FileReader();
+														reader.onload = function(readerEvt) {
+															var binaryString = readerEvt.target.result;
+															var encoded = btoa(binaryString);
+															var fileName = input.val().split('/').pop().split(
+																'\\').pop();
+															input.data('encoded', fileName + ";" + encoded);
+														};
+														reader.readAsBinaryString(input[0].files[0]);
+													});
+	
+												} else if (obj.inputType == 'slider') {
+	
+													$('#' + tab + '_value' + this.id)
+															.append(
+																'<div id="slider_' + this.id + '" class="slider"></div><input class="propertyInput" id="' + tab + '_input' + this.id + '" type="hidden" name="' + tab + '_input' + this.id + '" value="' + this.value + '"/><div class="slider-value"><span id="slider_value_' + this.id + '">' + this.value + ' ' + getResource(obj.labelResourceKey) + '</span></div>');
+													$('#slider_' + this.id)
+															.slider(
+																{ min : obj.minValue, max : obj.maxValue, value : parseInt(this.value), range : 'min' });
+													var valueElement = $('#slider_value_' + this.id);
+													var valueInput = $('#' + tab + '_input' + this.id);
+													$('#slider_' + this.id)
+															.slider(
+																{ change : function(event, ui) {
+																	valueElement
+																			.text(ui.value + ' ' + getResource(obj.labelResourceKey));
+																	valueInput.val(ui.value);
+																	valueInput.data('updated', true);
+																	if(options.showButtons) {
+																		$(revertButton).attr('disabled', false);
+																		$(applyButton).attr('disabled', false);
+																	}
+																} });
+												} else if (obj.inputType != 'hidden') {
+													$('#' + tab + '_value' + this.id)
+															.append(
+																'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="' + obj.inputType + '" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" size="' + (obj.size ? obj.size : 30) + '" placeholder="' + (obj.placeholder ? obj.placeholder : '') + '" maxlength="' + (obj.maxlength ? obj.maxlength : '') + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
 												}
-
-											} else if (obj.inputType == 'multipleSelect') {
+	
 												$('#' + tab + '_value' + this.id)
-														.multipleSelect(
-															{ metaData : obj, 
-																id: this.id,
-																url : obj.url, 
-																values : obj.values, 
-																disabled : !options.canUpdate  || obj.disabled, 
-																selected : splitFix(this.value), 
-																selectAllIfEmpty : obj.selectAllIfEmpty, 
-																resourceKey : this.resourceKey, 
-																change : function() {
-																$(this).markUpdated();
-																if (options.showButtons) {
-																	$(revertButton).attr('disabled', false);
-																	$(applyButton).attr('disabled', false);
+														.append(
+															'<div><span class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
+	
+												$('#' + tab + '_input' + this.id).prepareProperty(obj,
+													this.id, this.value, this.resourceKey);
+	
+												$('#' + tab + '_input' + this.id)
+														.change(
+															function() {
+																$('#' + tab + '_error' + this.id).remove();
+																if ($(this).validateProperty()) {
+																	$(this).markUpdated();
+																	if (options.showButtons) {
+																		$(revertButton).attr('disabled', false);
+																		$(applyButton).attr('disabled', false);
+																	}
+																} else {
+																	if ($('#error' + this.id).length == 0) {
+																		$(this)
+																				.after(
+																					'<span id="' + tab + '_error' + this.id + '" class="ui-icon ui-icon-alert"></span>');
+																	}
+																	if (options.showButtons) {
+																		$(revertButton).attr('disabled', true);
+																		$(applyButton).attr('disabled', true);
+																	}
 																}
-															} });
-											} else if (obj.inputType == 'multipleTextInput') {
-												$('#' + tab + '_value' + this.id)
-														.multipleTextInput(
-															{ metaData : obj, 
-																id: this.id,
-																values : splitFix(this.value), 
-																disabled : !options.canUpdate && !obj.disabled, 
-																resourceKey : this.resourceKey, 
-																change : function() {
-																$(this).markUpdated();
-																if (options.showButtons) {
-																	$(revertButton).attr('disabled', false);
-																	$(applyButton).attr('disabled', false);
-																}
-															} });
-												// $('#' + tab +
-												// '_value' +
-												// this.id).addClass("propertyInput");
-
-											} else if (obj.inputType == 'button') {
-												$('#' + tab + '_value' + this.id).append(
-													'<button ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') 
-															+ ' class="btn ' + (obj.buttonClass ? obj.buttonClass : 'btn-primary') 
-															+ '" id="' + tab + '_button' + this.id + '"><i class="fa ' + obj.buttonIcon 
-															+ '"></i>' + getResource(obj.buttonLabel) + '</button>');
-											
-												$('#' + tab + '_button' + this.id).on('click', function(e) {
-													eval(obj.script);
-												});
-											} else if (obj.inputType == 'password') {
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="password" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
-											} else if (obj.inputType == 'boolean') {
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
-											} else if (obj.inputType == 'switch') {
-
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<label class="switch"><input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="switch-input propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '><span class="switch-label" data-on="' + getResource("text.on") + '" data-off="' + getResource("text.off") + '"></span> <span class="switch-handle"></span></label>');
-
-											} else if (obj.inputType == 'image') {
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="file" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<img class="imagePreview" src="' + this.value + '">');
-												var input = $('#' + tab + '_input' + this.id);
-												input.change(function() {
-													var reader = new FileReader();
-													reader.onload = function(readerEvt) {
-														var binaryString = readerEvt.target.result;
-														var encoded = btoa(binaryString);
-														var fileName = input.val().split('/').pop().split(
-															'\\').pop();
-														input.data('encoded', fileName + ";" + encoded);
-													};
-													reader.readAsBinaryString(input[0].files[0]);
-												});
-
-											} else if (obj.inputType == 'slider') {
-
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<div id="slider_' + this.id + '" class="slider"></div><input class="propertyInput" id="' + tab + '_input' + this.id + '" type="hidden" name="' + tab + '_input' + this.id + '" value="' + this.value + '"/><div class="slider-value"><span id="slider_value_' + this.id + '">' + this.value + ' ' + getResource(obj.labelResourceKey) + '</span></div>');
-												$('#slider_' + this.id)
-														.slider(
-															{ min : obj.minValue, max : obj.maxValue, value : parseInt(this.value), range : 'min' });
-												var valueElement = $('#slider_value_' + this.id);
-												var valueInput = $('#' + tab + '_input' + this.id);
-												$('#slider_' + this.id)
-														.slider(
-															{ change : function(event, ui) {
-																valueElement
-																		.text(ui.value + ' ' + getResource(obj.labelResourceKey));
-																valueInput.val(ui.value);
-																valueInput.data('updated', true);
-																if(options.showButtons) {
-																	$(revertButton).attr('disabled', false);
-																	$(applyButton).attr('disabled', false);
-																}
-															} });
-											} else if (obj.inputType != 'hidden') {
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<input ' + (options.canUpdate && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="' + obj.inputType + '" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" size="' + (obj.size ? obj.size : 30) + '" placeholder="' + (obj.placeholder ? obj.placeholder : '') + '" maxlength="' + (obj.maxlength ? obj.maxlength : '') + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
-											}
-
-											$('#' + tab + '_value' + this.id)
-													.append(
-														'<div><span class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
-
-											$('#' + tab + '_input' + this.id).prepareProperty(obj,
-												this.id, this.value, this.resourceKey);
-
-											$('#' + tab + '_input' + this.id)
-													.change(
-														function() {
-															$('#' + tab + '_error' + this.id).remove();
-															if ($(this).validateProperty()) {
-																$(this).markUpdated();
-																if (options.showButtons) {
-																	$(revertButton).attr('disabled', false);
-																	$(applyButton).attr('disabled', false);
-																}
-															} else {
-																if ($('#error' + this.id).length == 0) {
-																	$(this)
-																			.after(
-																				'<span id="' + tab + '_error' + this.id + '" class="ui-icon ui-icon-alert"></span>');
-																}
-																if (options.showButtons) {
-																	$(revertButton).attr('disabled', true);
-																	$(applyButton).attr('disabled', true);
-																}
-															}
-														});
-
-										});
-
-						});
-		}
+															});
+	
+											});
+	
+							});
+			}
 			if (options.additionalTabs) {
 				$
 						.each(
 							options.additionalTabs,
-							function() {
+							function(idx, o) {
 								$(contentTabs)
 										.append(
 											'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2"><span>' + this.name + '</span></a></li>');
 								$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 								$('#' + this.id).addClass('tab-pane');
+								if((!data.resources || data.resources.length == 0) && idx == 0) {
+									// Make sure we display the first page if there are no properties pages (hack for template not showing).
+									$('#' + this.id).show();
+								}
 							});
 			}
 
@@ -460,7 +409,7 @@ $.fn.propertyPage = function(opts) {
 			});
 
 			$('.' +  propertyDiv + 'Tab').first().tab('show');
-
+			
 			if (options.showButtons) {
 				$(revertButton).attr('disabled', true);
 				$(applyButton).attr('disabled', true);
@@ -520,8 +469,7 @@ $.fn.saveProperties = function(includeAll, callback) {
 		function(i, obj) {
 
 			var item = $('#' + obj.id);
-			
-			debugger;
+
 			if(item.data('resourceKey')==undefined) {
 				return;
 			}
@@ -597,7 +545,7 @@ $.fn.selectButton = function(data) {
 	
 	var obj = $.extend(
 		{ idAttr: 'id', nameAttr: 'name', valueAttr: 'value', nameAttrIsResourceKey : false, 
-			resourceKeyTemplate: '{0}', disabled : false, value: '' }, data);
+			resourceKeyTemplate: '{0}', disabled : false, value: '', nameIsResourceKey: false }, data);
 	
 	var id = obj.id;
 
@@ -611,20 +559,20 @@ $.fn.selectButton = function(data) {
 	
 	if (obj.options) {
 		for (var i = 0; i < obj.options.length; i++) {
-			if (obj.value == obj.options[i]['valueAttr']) {
+			if (obj.value == obj.options[i][obj.valueAttr]) {
 				selected = obj.options[i];
-				$('#select_button_' + id).text(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i]['nameAttr'])) : obj.options[i]['nameAttr']);
-				$('#select_' + id).append('<li><a id="data_' + i + '" class="selectButton_' + id + '" href="#" data-value="' 
+				$('#select_button_' + id).text(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr]);
+				$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
 						+ stripNull(obj.options[i][obj['valueAttr']]) + '" data-label="' 
 						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '">' 
 						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '</a></li>');
 			} else {
-				$('#select_' + id).append('<li><a id="data_' + i + '" class="selectButton_' + id + '" href="#" data-value="' 
+				$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
 						+ stripNull(obj.options[i][obj['valueAttr']]) + '" data-label="'
 						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '">'
 						+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj['nameAttr']])) : obj.options[i][obj['nameAttr']]) + '</a></li>');
 			}
-			$('#data_' + i).data(id, obj.options[i]);
+			$('#data_' + id + "_" + i).data('resource', obj.options[i]);
 		}
 		
 
@@ -637,7 +585,7 @@ $.fn.selectButton = function(data) {
 				$('#select_button_' + id).text($(this).attr('data-label'));
 				$('#' + id).markUpdated();
 				if(obj.changed) {
-					obj.changed($(this).data(id));
+					obj.changed($(this).data('resource'));
 				}
 			});
 		
@@ -658,17 +606,17 @@ $.fn.selectButton = function(data) {
 								if (option[obj['valueAttr']] == obj.value) {
 									selected = option;
 									$('#select_button_' + id).text(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]);
-									$('#select_' + id).append('<li><a id="data_' + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
+									$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
 											+ stripNull(option[obj['valueAttr']]) + '" data-label="' 
 											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '">' 
 											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '</a></li>');
 								} else {
-									$('#select_' + id).append('<li><a id="data_' + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
+									$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
 											+ stripNull(option[obj['valueAttr']]) + '" data-label="' 
 											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '">' 
 											+ (obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']]) + '</a></li>');
 								}
-								$('#data_' + idx).data(id, option);
+								$('#data_' + id + "_" + idx).data('resource', option);
 							});
 		
 				$('.selectButton_' + id).on(
@@ -679,7 +627,7 @@ $.fn.selectButton = function(data) {
 						$('#select_button_' + id).text($(this).attr('data-label'));
 						$('#' + id).markUpdated();
 						if(obj.changed) {
-							obj.changed($(this).data(id));
+							obj.changed($(this).data('resource'));
 						}
 					});
 				
@@ -695,16 +643,18 @@ $.fn.selectButton = function(data) {
 			});
 	}
 	
+	$('#' + obj.id).prepareProperty(obj, obj.id, obj.values, obj.resourceKey);
+	
 	$('#' + id).change(function() {
 		var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
 		$('#select_button_' + id).text(selected.attr('data-label'));
 		$('#' + id).markUpdated();
 		if(obj.changed) {
-			obj.changed(selected.data(id));
+			obj.changed(selected.data('resource'));
 		}
 	});
 	
-	return {
+	var callback = {
 		setValue: function(val) {
 			$('#' + id).val(val);
 			var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
@@ -728,6 +678,11 @@ $.fn.selectButton = function(data) {
 		}
 	};
 
+	if(obj.disabled) {
+		callback.disable();
+	}
+	
+	return callback;
 }
 
 $.fn.multipleSelect = function(data) {
@@ -1224,7 +1179,7 @@ $.fn.ajaxResourcePage = function(params) {
 		if (options.additionalActions) {
 
 			if(options.additionalActionsDropdown && options.additionalActions.length > 0) {
-				renderedActions += '<div class="btn-group"><a class="btn btn-success row-additional dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
+				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
 				renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
 						options.additionalActions,
@@ -1243,11 +1198,42 @@ $.fn.ajaxResourcePage = function(params) {
 												.fnGetPosition($(this).closest("tr").get(0));
 										var resource = $('#' + divName + 'Table').dataTable()
 												.fnGetData(curRow);
-										act.action(resource);
+										act.action(resource, function(resource) {
+											$('#' + divName + 'Table').dataTable().fnUpdate(resource, curRow);
+											$('#' + divName + 'Table').dataTable().fnDraw();
+										});
 									});
 							}
 				});
 				renderedActions += '</ul></div>';
+				
+				$(document).on('show.bs.dropdown', '#' + divName + 'Actions' + id, function () {
+					var dropdown = $(this);
+					var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition($(this).closest("tr").get(0));
+					var resource = $('#' + divName + 'Table').dataTable().fnGetData(curRow);
+					$.each(options.additionalActions, function(x, act) {
+						if(act.enabled) {
+							if(act.displayFunction && act.displayFunction != '') {
+								var display = window[act.displayFunction].apply(null, [resource]);
+								var el = $('.row-' + act.resourceKey, dropdown);   
+								el.empty();
+								el.append('<span>' + getResource(display.resourceKey) 
+										+ '</span>&nbsp;&nbsp;<i class="fa ' 
+										+ display.iconClass + '"></i>');
+							}
+							
+							if(act.enableFunction && act.enableFunction != '') {
+								if(!window[act.enableFunction].apply(null, [resource])) {
+									var el = $('.row-' + act.resourceKey, dropdown);    
+									el.parent().addClass('disabled');
+									el.attr('disabled', true);
+								}
+							} 
+						}
+						
+					});
+				});
+				
 			} else {
 				$.each(options.additionalActions,
 					function(x, act) {
@@ -1679,7 +1665,7 @@ $.fn.resourceDialog = function(params, params2) {
 
 		log("Creating resource dialog");
 
-		dialogOptions.clearDialog();
+		dialogOptions.clearDialog(true);
 		dialog.resourceDialog('error', 'reset');
 
 		$(this).find('.modal-title').text(
@@ -1727,7 +1713,7 @@ $.fn.resourceDialog = function(params, params2) {
 
 	} else if (params === 'edit' || params === 'read') {
 		var readOnly = params==='read';
-		dialogOptions.clearDialog();
+		dialogOptions.clearDialog(false);
 		dialog.resourceDialog('error', 'reset');
 		dialogOptions.displayResource(params2.resource, readOnly);
 		

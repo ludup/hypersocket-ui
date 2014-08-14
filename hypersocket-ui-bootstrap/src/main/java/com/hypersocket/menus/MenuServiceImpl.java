@@ -28,6 +28,7 @@ import com.hypersocket.i18n.I18NService;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionStrategy;
 import com.hypersocket.permissions.PermissionType;
+import com.hypersocket.permissions.SystemPermission;
 import com.hypersocket.realm.GroupPermission;
 import com.hypersocket.realm.Principal;
 import com.hypersocket.realm.ProfilePermission;
@@ -83,8 +84,8 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
-				"fa-hdd-o", "settings", 0, ConfigurationPermission.READ, null,
-				ConfigurationPermission.UPDATE, null),
+				"fa-hdd-o", "settings", 0, SystemPermission.SYSTEM_ADMINISTRATION, null,
+				SystemPermission.SYSTEM_ADMINISTRATION, null),
 				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realmSettings",
@@ -131,11 +132,12 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 		registerExtendableTable(MenuService.ACTIONS_USERS);
 
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
-				"setPassword", "fa-key", "password", UserPermission.UPDATE, 0) {
+				"setPassword", "fa-key", "password", UserPermission.UPDATE, 0, null, null) {
 			public boolean isEnabled() {
 				return !realmService.isReadOnly(getCurrentRealm());
 			}
 		});
+
 	}
 
 	@Override

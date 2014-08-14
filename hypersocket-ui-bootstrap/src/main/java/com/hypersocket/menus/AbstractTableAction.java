@@ -11,19 +11,40 @@ public class AbstractTableAction {
 	String url;
 	PermissionType permission;
 	int weight;
+	String enableFunction;
+	String displayFunction;
 	
 	public AbstractTableAction() {
 	}
 
 	public AbstractTableAction(String resourceKey, String iconClass,
-			String url, PermissionType permission, int weight) {
+			String url, PermissionType permission, int weight, 
+			String enableFunction, String displayFunction) {
 		this.resourceKey = resourceKey;
 		this.iconClass = iconClass;
 		this.url = url;
 		this.permission = permission;
 		this.weight = weight;
+		this.enableFunction = enableFunction;
+		this.displayFunction = displayFunction;
 	}
 
+	public String getEnableFunction() {
+		return enableFunction;
+	}
+	
+	public void setEnableFunction(String enableFunction) {
+		this.enableFunction = enableFunction;
+	}
+	
+	public void setDisplayFunction(String displayFunction) {
+		this.displayFunction = displayFunction;
+	}
+	
+	public String getDisplayFunction() {
+		return displayFunction;
+	}
+	
 	public String getResourceKey() {
 		return resourceKey;
 	}
