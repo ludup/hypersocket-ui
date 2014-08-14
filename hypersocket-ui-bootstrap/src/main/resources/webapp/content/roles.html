@@ -155,13 +155,16 @@
 					$('#roleId').val(resource.id);
 					$('#name').val(resource.name);
  	 			  	$('#tabRoleUsers').multipleSelect({
- 						selected : resource.principals
+ 						selected : resource.principals,
+ 						disabled: resource.allUsers
  					});
  					$('#tabRoleGroups').multipleSelect({
- 						selected : resource.principals
+ 						selected : resource.principals,
+ 						disabled: resource.allUsers
  					});
  					$('#tabRolePermissions').multipleSelect({
- 						selected : resource.permissions
+ 						selected : resource.permissions,
+ 						disabled: resource.allPermissions
  					});
 				},
 				complete: function() {

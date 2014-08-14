@@ -389,10 +389,10 @@ $.fn.propertyPage = function(opts) {
 											'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2"><span>' + this.name + '</span></a></li>');
 								$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 								$('#' + this.id).addClass('tab-pane');
-								if((!data.resources || data.resources.length == 0) && idx == 0) {
+								//if((!data.resources || data.resources.length == 0) && idx == 0) {
 									// Make sure we display the first page if there are no properties pages (hack for template not showing).
-									$('#' + this.id).show();
-								}
+								//	$('#' + this.id).show();
+								//}
 							});
 			}
 
@@ -1221,7 +1221,7 @@ $.fn.ajaxResourcePage = function(params) {
 										+ '</span>&nbsp;&nbsp;<i class="fa ' 
 										+ display.iconClass + '"></i>');
 							}
-							
+							debugger;
 							if(act.enableFunction && act.enableFunction != '') {
 								if(!window[act.enableFunction].apply(null, [resource])) {
 									var el = $('.row-' + act.resourceKey, dropdown);    
@@ -1261,7 +1261,7 @@ $.fn.ajaxResourcePage = function(params) {
 
 //		if (options.canUpdate) {
 			
-			var canUpdate = !idCol.aData.systemResource || currentRealm.system;
+			var canUpdate = options.canUpdate;
 			if(options.checkUpdate) {
 				canUpdate = options.checkUpdate(idCol.aData);
 			}
@@ -1288,9 +1288,9 @@ $.fn.ajaxResourcePage = function(params) {
 
 		if (options.canDelete) {
 			
-			var canDelete = !idCol.aData.systemResource || currentRealm.system;
+			var canDelete = !idCol.aData.system;
 			if(options.checkDelete) {
-				canDelete = options.checkDelete(idCol.aData);
+				canDelete = !idCol.aData.system && options.checkDelete(idCol.aData);
 			}
 			
 			if(canDelete) {

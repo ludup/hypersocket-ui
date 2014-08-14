@@ -37,8 +37,11 @@
 			</div>
 		</div>
 	</div>
+	<div id="additionalActions"></div>
 </div>
 	<script type="text/javascript">
+	
+		
 		$(document)
 				.ready(
 					function() {
@@ -64,7 +67,29 @@
 							}
 						});
 
-
+			getJSON('menus/tableActions/realmActions', null, function(data) {
+				
+				var actions = new Array();
+				
+				if(data.resources.length > 0) {
+					$.each(data.resources, function(idx, action) {
+						var div = action.resourceKey + 'Div';
+						$('#additionalActions').append('<div id="' + div + '"></div>');
+						$('#' + div).load('content/' + action.url + '.html');
+						actions.push({
+							resourceKey : action.resourceKey,
+							iconClass : action.iconClass,
+							action : function(resource, callback) {
+								if($('#' + action.resourceKey).data('action')) {
+									$('#' + action.resourceKey).data('action')(resource, callback);
+								}
+							},
+							enabled : true,
+							enableFunction: action.enableFunction,
+							displayFunction: action.displayFunction
+						});
+					});
+				 }
 
 			$('#realmsContent')
 					.ajaxResourcePage(
@@ -78,7 +103,9 @@
 						  resourceKey : 'realm', 
 						  canCreate : currentMenu.canCreate, 
 						  canUpdate : currentMenu.canUpdate, 
-						  canDelete : currentMenu.canDelete, 
+						  canDelete : currentMenu.canDelete,
+						  additionalActions : actions,
+						  additionalActionsDropdown : true,
 						  validate : function() {
 							if ($('#name').val() == '') {
 								$('#addRealmForm').dialogError("A name is required!");
@@ -132,4 +159,5 @@
 						} });
 
 					});
+			});
 	</script>
