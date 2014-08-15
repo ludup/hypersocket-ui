@@ -913,6 +913,20 @@ table {
   overflow-y: auto;
 }
 
+span.input-group-addon {
+	cursor: pointer;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none; /* Isn't Konquerour dead? */
+    -moz-user-select: -moz-none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 @media ( min-width : 768px) and (max-width: 991px) {
 	.navbar-form input[type=text] {
 		width: 260px !important;
