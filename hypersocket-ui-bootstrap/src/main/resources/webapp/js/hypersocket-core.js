@@ -791,9 +791,11 @@ $.fn.multipleSelect = function(data) {
 
 		var options = $
 				.extend(
-					{ idAttr : 'id', nameAttr : 'name', nameAttrIsResourceKey : false, selectAllIfEmpty : false, selectedIsObjectList : false, isPropertyInput : true, disabled : false },
+					{ idAttr : 'id', nameAttr : 'name', nameAttrIsResourceKey : false, selectAllIfEmpty : false, selectedIsObjectList : false, isPropertyInput : true, disabled : false, resourceKeyTemplate: '{0}' },
 					data);
-
+		if(data.metaData) {
+			options = $.extend(options, data.metaData);
+		}
 		$(this).data('resourceKey', options.resourceKey);
 		$(this).data('created', true);
 		$(this).data('isMultipleSelect', true);
@@ -887,7 +889,7 @@ $.fn.multipleSelect = function(data) {
 
 						var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
 						selectItem
-								.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined ? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
+								.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] : getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
 					});
 
 		if (options.selected) {
@@ -919,7 +921,7 @@ $.fn.multipleSelect = function(data) {
 							function(idx, obj) {
 								var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
 								selectItem
-										.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined ? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
+										.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] : getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
 							});
 
 				if (options.selected) {
