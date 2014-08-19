@@ -294,9 +294,9 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 					}
 
 					Menu childMenu = new Menu(child,
-							hasPermission(m.getCreatePermission()) && child.canCreate(),
-							hasPermission(m.getUpdatePermission()) && child.canUpdate(),
-							hasPermission(m.getDeletePermission()) && child.canDelete(), 
+							hasPermission(child.getCreatePermission()) && child.canCreate(),
+							hasPermission(child.getUpdatePermission()) && child.canUpdate(),
+							hasPermission(child.getDeletePermission()) && child.canDelete(), 
 							child.getIcon());
 
 					for (MenuRegistration leaf : child.getMenus()) {
@@ -333,9 +333,9 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 						}
 						childMenu.getMenus().add(
 								new Menu(leaf, 
-										hasPermission(m.getCreatePermission()) && leaf.canCreate(),
-										hasPermission(m.getUpdatePermission()) && leaf.canUpdate(),
-										hasPermission(m.getDeletePermission()) && leaf.canDelete(), 
+										hasPermission(leaf.getCreatePermission()) && leaf.canCreate(),
+										hasPermission(leaf.getUpdatePermission()) && leaf.canUpdate(),
+										hasPermission(leaf.getDeletePermission()) && leaf.canDelete(), 
 										leaf.getIcon()));
 					}
 

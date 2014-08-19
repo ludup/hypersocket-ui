@@ -791,9 +791,12 @@ $.fn.multipleSelect = function(data) {
 
 		var options = $
 				.extend(
-					{ idAttr : 'id', nameAttr : 'name', nameAttrIsResourceKey : false, selectAllIfEmpty : false, selectedIsObjectList : false, isPropertyInput : true, disabled : false, resourceKeyTemplate: '{0}' },
-					data);
-		if(data.metaData) {
+					{ idAttr : 'id', nameAttr : 'name', nameAttrIsResourceKey : false, 
+						selectAllIfEmpty : false, selectedIsObjectList : false, 
+							isPropertyInput : true, disabled : false, 
+								resourceKeyTemplate: '{0}' }, data);
+		
+		if(data && data.metaData) {
 			options = $.extend(options, data.metaData);
 		}
 		$(this).data('resourceKey', options.resourceKey);
@@ -2367,8 +2370,6 @@ function loadRealms(realms) {
 				if (!data.success) {
 					showError(false, data.errorMsg);
 				} else { 
-//					currentRealm = data.session.currentRealm;
-//					loadMenu(currentMenu);
 					// TODO reload and load the same page.
 					document.location.reload();
 				}

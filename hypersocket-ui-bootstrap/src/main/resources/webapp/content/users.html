@@ -76,6 +76,7 @@
 						resourceKey : "groups",
 						values : data.resources,
 						nameAttr : 'principalName',
+						disabled: !currentMenu.canUpdate,
 						isPropertyInput : false,
 						selectedIsObjectList : true
 					});
@@ -214,7 +215,7 @@
 										
 										$('#tabUserGroups').multipleSelect({
 											selected : data.resources,
-											disabled : readOnly
+											disabled: !currentMenu.canUpdate || readOnly,
 										});
 
 										$('#addUserModal').modal('show');
