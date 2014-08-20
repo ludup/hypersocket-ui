@@ -110,7 +110,19 @@ $.fn.validateProperty = function() {
 		return true;
 	} else if (obj.inputType == 'switch') {
 		return true;
-	}
+	} else if (obj.inputType == 'css') {
+		return true;
+	} else if (obj.inputType == 'java') {
+		return true;
+	} else if (obj.inputType == 'javascript') {
+		return true;
+	} else if (obj.inputType == 'html') {
+		return true;
+	} else if (obj.inputType == 'xml') {
+		return true;
+	} else if (obj.inputType == 'sql') {
+		return true;
+	} 
 
 	log("Validation failed for " + $(this).data('resourceKey'));
 	return false;
@@ -219,6 +231,47 @@ $.fn.propertyPage = function(opts) {
 												} else if(obj.inputType == 'typeahead') {
 												
 													
+											    } else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java') {
+											    	
+											    	$('#' + tab + '_value' + this.id).append('<div class="code form-control propertyInput" id="' + tab + '_input' + this.id + '"></div>');
+											    	var myCodeMirror = CodeMirror(document.getElementById(tab + '_input' + this.id), {
+														  value: this.value,
+														  mode:  obj.inputType=='java' ? 'text/java' : obj.inputType,
+														  lineNumbers: obj.lineNumbers
+													});
+											    	
+											    	myCodeMirror.on("change", function(cm, change) {
+														  $('#' + tab + '_input' + this.id).markUpdated();
+														  if (options.showButtons) {
+																$(revertButton).attr('disabled', false);
+																$(applyButton).attr('disabled', false);
+														  }
+											    	});
+											    	
+											    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
+											    	
+											    	
+											    } else if(obj.inputType == 'xml' || obj.inputType == 'html') {
+											    	
+											    	$('#' + tab + '_value' + this.id).append('<div class="code form-control propertyInput" id="' + tab + '_input' + this.id + '"></div>');
+											    	var myCodeMirror = CodeMirror(document.getElementById(tab + '_input' + this.id), {
+														  value: this.value,
+														  htmlMode: obj.inputType=='html',
+														  mode:  obj.inputType=='html' ? 'text/html' : 'application/xml',
+														  lineNumbers: obj.lineNumbers
+													});
+											    	
+											    	myCodeMirror.on("change", function(cm, change) {
+														  $('#' + tab + '_input' + this.id).markUpdated();
+														  if (options.showButtons) {
+																$(revertButton).attr('disabled', false);
+																$(applyButton).attr('disabled', false);
+														  }
+											    	});
+											    	
+											    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
+											    	
+											    	
 											    } else if (obj.inputType == 'select') {
 													$('#' + tab + '_value' + this.id).selectButton(
 														{ metaData : obj, 
@@ -406,9 +459,15 @@ $.fn.propertyPage = function(opts) {
 					$('#' + propertyDiv + 'Actions').show();
 				}
 				$(this).tab('show');
+				$('.code').each(function() {
+					$(this).data('codeMirror').refresh();
+				});
 			});
 
 			$('.' +  propertyDiv + 'Tab').first().tab('show');
+			$('.code').each(function() {
+				$(this).data('codeMirror').refresh();
+			});
 			
 			if (options.showButtons) {
 				$(revertButton).attr('disabled', true);
@@ -488,7 +547,22 @@ $.fn.saveProperties = function(includeAll, callback) {
 					items.push(new PropertyItem(item.data('resourceKey'), item
 							.multipleSelectValues({ isProperty : true }).join("]|[")));
 				}
+			} else if(meta.inputType=='css' 
+				|| meta.inputType=='java' 
+					|| meta.inputType=='javascript' 
+						|| meta.inputType=='html'
+							|| meta.inputType=='xml'
+								|| meta.inputType=='sql') {
+				
+				var codeMirror = $(this).data('codeMirror');
+				
+				log(codeMirror.getValue());
+				
+				if (includeAll || item.data('updated')) {
+					items.push(new PropertyItem(item.data('resourceKey'), codeMirror.getValue()));
+				}
 			} else {
+			
 				if (includeAll || item.isUpdated()) {
 					log('Updating ' + item.data('resourceKey'));
 					if (item.attr('type') == "checkbox") {
