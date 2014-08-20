@@ -1675,15 +1675,12 @@ $.fn.resourceDialog = function(params, params2) {
 
 		$(this).find('.modal-title').text(
 			getResource(dialogOptions.resourceKey + '.create.title'));
-		$(this).appendTo('body');
 
 		$(this).find('.modal-footer').empty();
 		$(this).find('.modal-footer').append(
 					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.create") + '</button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
-		$('#' + $(this).attr('id') + "Action").on(
-			'click',
-			function() {
+		$('#' + $(this).attr('id') + "Action").on('click', function() {
 				
 				var icon = $(this).find('i');
 				startSpin(icon, 'fa-save');
@@ -1735,9 +1732,6 @@ $.fn.resourceDialog = function(params, params2) {
 			$(this).find('.modal-title').text(
 					getResource(dialogOptions.resourceKey + '.update.title'));
 		}
-		
-		
-		$(this).appendTo('body');
 
 		$(this).find('.modal-footer').empty();
 		if(!readOnly) {
