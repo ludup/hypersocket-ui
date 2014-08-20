@@ -154,6 +154,12 @@
 									$('#tabUserGroups').multipleSelect();
 									
 									if(create) {
+										
+										$('#userProperties').parent().append($('#tabUserGroups').detach());
+										$('#userProperties').parent().append($('#tabPassword').detach());
+										$('#tabPassword').removeAttr("style");
+										$('#userProperties').empty();
+										
 										$('#userProperties').propertyPage({
 											url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
 											showButtons : false,
@@ -200,6 +206,9 @@
 									
 									getJSON('currentRealm/groups/user/' + resource.id, null, function(data) {
 										
+										$('#userProperties').parent().append($('#tabUserGroups').detach());
+										$('#userProperties').parent().append($('#tabPassword').detach());
+										$('#tabPassword').hide();
 										$('#userProperties').empty();
 										$('#userProperties').propertyPage({
 											url : 'currentRealm/user/properties/' + resource.id,
@@ -212,7 +221,6 @@
 											} ]
 										});
 
-										
 										$('#tabUserGroups').multipleSelect({
 											selected : data.resources,
 											disabled: !currentMenu.canUpdate || readOnly,

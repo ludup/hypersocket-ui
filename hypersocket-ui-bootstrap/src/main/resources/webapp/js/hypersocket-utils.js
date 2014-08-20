@@ -167,7 +167,7 @@ function getJSON(url, params, callback, errorCallback) {
 	});
 };
 
-function postJSON(path, params, callback, errorCallback) {
+function postJSON(path, params, callback, errorCallback, alwaysCallback) {
 	
 	log("POST: " + path);
 	
@@ -186,6 +186,10 @@ function postJSON(path, params, callback, errorCallback) {
 		}
 		
 		showError(false, url + " JSON request failed.");
+	}).always(function() {
+		if(alwaysCallback) {
+			alwaysCallback();
+		}
 	});
 	
 };

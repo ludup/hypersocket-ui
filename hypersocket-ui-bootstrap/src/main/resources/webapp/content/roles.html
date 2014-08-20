@@ -44,7 +44,8 @@
 				nameAttrIsResourceKey : true,
 				nameAttr : 'resourceKey',
 				isPropertyInput: false,
-				selectedIsObjectList: true
+				selectedIsObjectList: true,
+				disabled: !currentMenu.canUpdate
 			});
 		});
 		
@@ -57,14 +58,8 @@
 					values : data.resources,
 					nameAttr : 'principalName',
 					isPropertyInput: false,
-					selectedIsObjectList: true
-				});
-				$('#tabUserGroups').multipleSelect({
-					resourceKey: "groups",
-					values : data.resources,
-					nameAttr : 'principalName',
-					isPropertyInput: false,
-					selectedIsObjectList: true
+					selectedIsObjectList: true,
+					disabled: !currentMenu.canUpdate
 				});
 		});
 
@@ -72,20 +67,14 @@
 			'currentRealm/users/list',
 			null,
 			function(data) {
-				
+				debugger;
 				$('#tabRoleUsers').multipleSelect({
 					resourceKey: "users",
 					values : data.resources,
 					nameAttr : 'principalName',
 					isPropertyInput: false,
-					selectedIsObjectList: true
-				});
-				$('#tabGroupUsers').multipleSelect({
-					resourceKey: "users",
-					values : data.resources,
-					nameAttr : 'principalName',
-					isPropertyInput: false,
-					selectedIsObjectList: true
+					selectedIsObjectList: true,
+					disabled: !currentMenu.canUpdate
 				});
 		});
 		
@@ -125,7 +114,7 @@
 					}
 					return true;
 				},
-				clearDialog : function() {
+				clearDialog : function(create) {
 					$('#name').val('');
 					$('#roleId').val('');
 					$('#tabRoleUsers').multipleSelect();
@@ -151,20 +140,21 @@
 				deleted : function(resource) {
 					
 				},
-				displayResource : function(resource) {
+				displayResource : function(resource, readOnly) {
 					$('#roleId').val(resource.id);
 					$('#name').val(resource.name);
+					$('#name').attr('disabled', readOnly);
  	 			  	$('#tabRoleUsers').multipleSelect({
  						selected : resource.principals,
- 						disabled: resource.allUsers
+ 						disabled: resource.allUsers || readOnly
  					});
  					$('#tabRoleGroups').multipleSelect({
  						selected : resource.principals,
- 						disabled: resource.allUsers
+ 						disabled: resource.allUsers || readOnly
  					});
  					$('#tabRolePermissions').multipleSelect({
  						selected : resource.permissions,
- 						disabled: resource.allPermissions
+ 						disabled: resource.allPermissions || readOnly
  					});
 				},
 				complete: function() {

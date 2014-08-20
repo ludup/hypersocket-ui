@@ -1679,19 +1679,25 @@ $.fn.resourceDialog = function(params, params2) {
 
 		$(this).find('.modal-footer').empty();
 		$(this).find('.modal-footer').append(
-					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary">' + getResource("text.create") + '</button>');
+					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.create") + '</button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
 		$('#' + $(this).attr('id') + "Action").on(
 			'click',
 			function() {
+				
+				var icon = $(this).find('i');
+				startSpin(icon, 'fa-save');
+				
 				log("Creating resource");
 
 				if (dialogOptions.validate) {
 					if (!dialogOptions.validate()) {
+						stopSpin(icon, 'fa-save');
 						log("Resource validation failed");
 						return;
 					}
 				}
+				
 				var resource = dialogOptions.createResource();
 
 				log("Created resource object for posting");
@@ -1712,7 +1718,7 @@ $.fn.resourceDialog = function(params, params2) {
 						log("Resource object creation failed " + data.message);
 						dialog.resourceDialog('error', data.message);
 					}
-				});
+				}, null, function() { stopSpin(icon, 'fa-save');});
 			});
 		dialog.modal('show');
 
@@ -1736,15 +1742,22 @@ $.fn.resourceDialog = function(params, params2) {
 		$(this).find('.modal-footer').empty();
 		if(!readOnly) {
 			$(this).find('.modal-footer').append(
-						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary">' + getResource("text.update") + '</button>');
+						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.update") + '</button>');
 			$('#' + $(this).attr('id') + "Action").off('click');
 			$('#' + $(this).attr('id') + "Action").on('click', function() {
 
+				var icon = $(this).find('i');
+				startSpin(icon, 'fa-save');
+				
+				log('Updating resource');
+				
 				if (dialogOptions.validate) {
 					if (!dialogOptions.validate()) {
+						stopSpin(icon, 'fa-save');
 						return;
 					}
 				}
+				
 				var resource = dialogOptions.createResource();
 
 				postJSON(dialogOptions.resourceUrl, resource, function(data) {
@@ -1761,7 +1774,7 @@ $.fn.resourceDialog = function(params, params2) {
 					} else {
 						dialog.resourceDialog('error', data.message);
 					}
-				});
+				}, null, function() { stopSpin(icon, 'fa-save');});
 
 			});
 		}
@@ -1793,6 +1806,17 @@ $.fn.resourceDialog = function(params, params2) {
 	}
 };
 
+function startSpin(element, iconClass) {
+	element.removeClass(iconClass);
+	element.addClass('fa-spin');
+	element.addClass('fa-spinner');
+}
+
+function stopSpin(element, iconClass) {
+	element.removeClass('fa-spin');
+	element.removeClass('fa-spinner');
+	element.addClass(iconClass);
+}
 function splitFix(value) {
 	if(value==null) {
 		return [];

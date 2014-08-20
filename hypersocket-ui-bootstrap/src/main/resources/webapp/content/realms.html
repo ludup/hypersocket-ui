@@ -136,17 +136,17 @@
 						}, showCreate : function() {
 							typeButton.enable();
 							typeButton.reset();
-						}, displayResource : function(resource) {
+						}, displayResource : function(resource, readOnly) {
 							$('#id').val(resource.id);
 							$('#name').val(resource.name);
-							$('#name').attr('disabled', resource.system);
+							$('#name').attr('disabled', resource.system || readOnly);
 							typeButton.disable();
 							$('#realmProperties').clearProperties();
 							typeButton.setValue(resource.resourceCategory);
 							$('#realmProperties').propertyPage(
 								{ url : 'realms/realm/properties/' + resource.id, 
 									showButtons : false, 
-									canUpdate : currentMenu.canUpdate 
+									canUpdate : currentMenu.canUpdate && !readOnly
 							});
 						}, complete : function() {
 							loadComplete();
