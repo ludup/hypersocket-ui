@@ -1885,22 +1885,7 @@ function stopSpin(element, iconClass) {
 	element.removeClass('fa-spinner');
 	element.addClass(iconClass);
 }
-function splitFix(value) {
-	if(value==null) {
-		return [];
-	}
-	var result = value.split(']|[');
-	if (result.length == 1) {
-		if (result[0] == "") {
-			return [];
-		}
-	}
-	return result;
-}
 
-function fixSplit(value) {
-	return value.join(']|[');
-}
 
 function PropertyItem(id, value) {
 	this.id = id;
@@ -1908,20 +1893,20 @@ function PropertyItem(id, value) {
 }
 
 var progressOptions = { lines : 11, // The number of lines to draw
-length : 0, // The length of each line
-width : 3, // The line thickness
-radius : 7, // The radius of the inner circle
-corners : 1, // Corner roundness (0..1)
-rotate : 0, // The rotation offset
-color : '#fff', // #rgb or #rrggbb
-speed : 1, // Rounds per second
-trail : 46, // Afterglow percentage
-shadow : false, // Whether to render a shadow
-hwaccel : false, // Whether to use hardware acceleration
-className : 'spinner', // The CSS class to assign to the spinner
-zIndex : 2e9, // The z-index (defaults to 2000000000)
-top : 'auto', // Top position relative to parent in px
-left : 'auto' // Left position relative to parent in px
+	length : 0, // The length of each line
+	width : 3, // The line thickness
+	radius : 7, // The radius of the inner circle
+	corners : 1, // Corner roundness (0..1)
+	rotate : 0, // The rotation offset
+	color : '#fff', // #rgb or #rrggbb
+	speed : 1, // Rounds per second
+	trail : 46, // Afterglow percentage
+	shadow : false, // Whether to render a shadow
+	hwaccel : false, // Whether to use hardware acceleration
+	className : 'spinner', // The CSS class to assign to the spinner
+	zIndex : 2e9, // The z-index (defaults to 2000000000)
+	top : 'auto', // Top position relative to parent in px
+	left : 'auto' // Left position relative to parent in px
 };
 
 function showBusy() {
@@ -1951,261 +1936,55 @@ function clearContent() {
 	$(contentDiv).empty();
 };
 
-function showLogon(credentials, message) {
 
-	log("Showing logon");
+function startLogon() {
+	logon(null, {
+		showBusy: showBusy,
+		hideBusy: hideBusy,
+		logonStart: function() {
+			$('div[role="dialog"]').remove();
+			$('#actionLogoff').remove();
+			$('#nav').hide();
+			$('#navMenu').empty();
+		},
+		processResponse: function(data) {
+			$('#version').text(getResource("label.version") + " " + data.version);
+			clearContent();
+			$('#currentRealm').remove();
+			$('#lang').remove();
+			$('#navMenu').empty();
+		},
+		displayLogon: function(data) {
+			if (data.showLocales) {
+				$('#navMenu')
+						.append(
+							'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-globe"></i></a></li>');
+				$('#langMenu')
+						.append(
+							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
+				$('#lang')
+						.append(
+							'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("en") + '</li>');
 
-	$('div[role="dialog"]').remove();
-	$('#actionLogoff').remove();
-	$('#nav').hide();
-	$('#navMenu').empty();
-	$.getJSON('../api/logon', credentials, function(data) {
+				$('#lang').change(function() {
 
-		processLogon(data, message);
+					log("Switching language to " + this.value);
 
-	});
-}
-
-function processLogon(data, message) {
-	log("Received logon data");
-
-	$('#version').text(getResource("label.version") + " " + data.version);
-
-	if (!data.success) {
-
-		log("Logon form present");
-
-		clearContent();
-
-		$(contentDiv).append(
-			'<form id="logonForm" class="form-signin" role="form"/>');
-
-		$('#currentRealm').remove();
-		$('#lang').remove();
-		$('#navMenu').empty();
-
-		if (data.showLocales) {
-			$('#navMenu')
-					.append(
-						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-globe"></i></a></li>');
-			$('#langMenu')
-					.append(
-						'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("en") + '</li>');
-			/**
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("da") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("nl") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("fi") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("fr") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("de") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("it") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("no") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("pl") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("ru") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("sv") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("es") + '</li>');
-			$('#lang')
-					.append(
-						'<li role="presentation"><a role="menuitem" tabindex="-1" href="#">' + getResource("ja") + '</li>');
-			**/
-
-			$('#lang').change(function() {
-
-				log("Switching language to " + this.value);
-
-				getJSON('switchLanguage/' + this.value, null, function() {
-					document.location.reload();
-				});
-			});
-		}
-
-		if (data['errorMsg']) {
-			$('#logonForm')
-					.append(
-						'<h2 class="form-signin-heading">' + (data.lastErrorIsResourceKey ? getResource(data['errorMsg']) : data['errorMsg']) + '</h2>');
-		} else if (message) {
-			$('#logonForm').append(
-				'<h2 class="form-signin-heading">' + message + '</h2>');
-		} else {
-			$('#logonForm').append('<h2 class="form-signin-heading"></h2>');
-		}
-
-		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
-		
-		var links = new Array();
-		var scripts = new Array();
-		$.each(data.formTemplate.inputFields,
-					function() {
-
-						if (this.type == 'hidden') {
-							$('#logonForm').append('<input type="' + this.type + '" name="' 
-										+ this.resourceKey + '" id="' 
-										+ this.resourceKey + '" value="' 
-										+ this.defaultValue + '"/>');
-							return;
-						} else if (this.type == 'p') {
-							if(this.valueResourceKey) {
-								$('#logonForm').append('<p>' + getResource(this.defaultValue) + '</p>');
-							} else {
-								$('#logonForm').append('<p>' + this.defaultValue + '</p>');
-							}
-							
-							return;
-						} else if(this.type == 'a') {
-							links.push(this);
-							return;
-						} else if(this.type == 'script') {
-							scripts.push(this);
-							return;
-						}
-
-						if (this.type == 'select') {
-							$('#logonForm').append('<select class="logonSelect" name="' 
-									+ this.resourceKey + '" id="' + this.resourceKey + '"/>');
-							currentKey = this.resourceKey;
-							$.each(
-								this.options,
-								function() {
-									option = '<option';
-									if (this.selected) {
-										option += ' selected';
-									}
-									if (this.value) {
-										option += ' value="' + this.value + '"';
-									}
-									option += '>' + (this.isNameResourceKey ? getResource(this.name) : this.name) + '</option>';
-									$('#' + currentKey).append(option);
-								});
-
-						} else {
-							$('#logonForm')
-									.append(
-										'<input class="form-control" type="' + this.type + '" name="' 
-										+ this.resourceKey + '" placeholder="'
-										+ (this.label != null ? this.label : getResource(this.resourceKey + ".label")) 
-										+ '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
-						}
-
+					getJSON('switchLanguage/' + this.value, null, function() {
+						document.location.reload();
 					});
-
-		if(data.formTemplate.showLogonButton) {
-			$('#logonForm').append(
-					'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
-						+ (data.last ? getResource("text.logon") : getResource("text.next")) 
-						+ '&nbsp;<i style="padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
-		}
-		
-		if(!data.newSession) {
-			$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
-			
-			$('#resetLogon').click(function(e) {
-				e.preventDefault();
-				
-				getJSON('logon/reset', null, function(data) {
-					processLogon(data, null);
 				});
-			});
-		}
-		
-		$.each(links, function(idx, obj) {
-			
-			$('#logonForm').append('<div class="logonLink center"><a id="' 
-					+ this.label + '" href="#">' 
-					+ getResource(this.resourceKey) + '</a></div>');
-		
-			$('#' + obj.label).click(function(e) {
-				e.preventDefault();
-				
-				getJSON(obj.defaultValue, null, function(data) {
-					processLogon(data, null);
-				});
-			});
-		});
-		
-		$.each(scripts, function(idx, obj) {
-			log('Executing script ' + obj.resourceKey);
-			eval(obj.defaultValue);
-		});
-		
-		$('#logonButton')
-				.click(
-					function(evt) {
-
-						log("Submitting logon");
-
-						evt.preventDefault();
-						credentials = 'action=logon';
-						$
-								.each(
-									data['formTemplate']['inputFields'],
-									function() {
-										credentials = credentials + '&' + encodeURIComponent(this.resourceKey) + '=' + encodeURIComponent($(
-											'#' + this.resourceKey).val());
-									});
-
-						logon(credentials);
-					});
-
-		// Logon banner?
-
-		if (data['bannerMsg']) {
-			$(contentDiv)
-					.append(
-						'<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + data['bannerMsg'] + '</p></div><div class="col-md-3"></div>');
-		}
-
-	} else {
-		log("User is logged in");
-		$(document).data('session', data.session);
-		// Logging you in...
-		clearContent();
-		
-		if(data.homePage != '') {
-			window.open(data.homePage, "_self", false);
-		} else {
-			home(data);
-		}
-	}
-
-	hideBusy();
-}
-/**
- * Perform a logon against the REST API and/or show logon form in the specified
- * div id.
- * 
- * @param credentials
- */
-function logon(credentials) {
-
-	log("Logging on");
-
-	loadResources(function() {
-		showBusy();
-		showLogon(credentials);
+			}
+		},
+		logonComplete: function(data) {
+			if(data.homePage != '') {
+				window.open(data.homePage, "_self", false);
+			} else {
+				home(data);
+			}
+		},
+		formContent: $(contentDiv),
+		localeContent: $('#navMenu')
 	});
 }
 
@@ -2218,7 +1997,7 @@ function logoff() {
 	showBusy();
 
 	$.get('../api/logoff', null, function() {
-		showLogon();
+		startLogon();
 	});
 
 }

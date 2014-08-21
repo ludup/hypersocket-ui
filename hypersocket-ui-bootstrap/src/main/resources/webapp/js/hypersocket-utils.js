@@ -300,6 +300,22 @@ function isValidURL(str) {
 	return /((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(str);
 }
 
+function splitFix(value) {
+	if(value==null) {
+		return [];
+	}
+	var result = value.split(']|[');
+	if (result.length == 1) {
+		if (result[0] == "") {
+			return [];
+		}
+	}
+	return result;
+}
+
+function fixSplit(value) {
+	return value.join(']|[');
+}
 
 function log(str) {
 	if(!window.console) {
