@@ -12,7 +12,6 @@ function logon(credentials, opts) {
 		if(opts.showBusy) {
 			opts.showBusy();
 		}
-
 		showLogon(credentials, opts);
 	});
 }
@@ -44,6 +43,8 @@ function processLogon(data, opts, message) {
 
 	if (!data.success) {
 
+		opts.formContent.empty();
+		
 		if(opts.processForm) {
 			opts.processForm(data);
 		}

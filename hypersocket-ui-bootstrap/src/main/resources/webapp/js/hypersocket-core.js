@@ -1992,10 +1992,10 @@ function logoff() {
 	log("Logging off");
 
 	$(document).data('session', null);
-
+	
 	showBusy();
 
-	$.get('../api/logoff', null, function() {
+	$.get(basePath + '/api/logoff', null, function() {
 		startLogon();
 	});
 
