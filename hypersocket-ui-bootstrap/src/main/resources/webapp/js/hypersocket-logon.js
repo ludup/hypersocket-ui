@@ -21,11 +21,16 @@ function showLogon(credentials, opts, message) {
 
 	log("Showing logon");
 
-	if(opts.logonStart) {
-		opts.logonStart();
+	if(opts.logonStarted) {
+		opts.logonStarted();
 	}
 	
-	$.getJSON('../api/logon', credentials, function(data) {
+	var url = basePath + '/api/logon';
+	if(opts.scheme) {
+		url += '/' + opts.scheme;
+	}
+	
+	$.getJSON(url, credentials, function(data) {
 		processLogon(data, opts, message);
 	});
 }
@@ -39,8 +44,8 @@ function processLogon(data, opts, message) {
 
 	if (!data.success) {
 
-		if(opts.displayLogon) {
-			opts.displayLogon(data);
+		if(opts.processForm) {
+			opts.processForm(data);
 		}
 		
 		log("Logon form present");
@@ -178,7 +183,7 @@ function processLogon(data, opts, message) {
 		// Logon banner?
 
 		if (data['bannerMsg']) {
-			opts.bannerContent
+			opts.formContent
 					.append(
 						'<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + data['bannerMsg'] + '</p></div><div class="col-md-3"></div>');
 		}
@@ -187,8 +192,8 @@ function processLogon(data, opts, message) {
 		log("User is logged in");
 		$(document).data('session', data.session);
 		
-		if(opts.logonComplete) {
-			opts.logonComplete(data);
+		if(opts.logonCompleted) {
+			opts.logonCompleted(data);
 		}
 
 	}

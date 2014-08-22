@@ -1941,7 +1941,7 @@ function startLogon() {
 	logon(null, {
 		showBusy: showBusy,
 		hideBusy: hideBusy,
-		logonStart: function() {
+		logonStarted: function() {
 			$('div[role="dialog"]').remove();
 			$('#actionLogoff').remove();
 			$('#nav').hide();
@@ -1954,7 +1954,7 @@ function startLogon() {
 			$('#lang').remove();
 			$('#navMenu').empty();
 		},
-		displayLogon: function(data) {
+		processForm: function(data) {
 			if (data.showLocales) {
 				$('#navMenu')
 						.append(
@@ -1976,15 +1976,14 @@ function startLogon() {
 				});
 			}
 		},
-		logonComplete: function(data) {
+		logonCompleted: function(data) {
 			if(data.homePage != '') {
 				window.open(data.homePage, "_self", false);
 			} else {
 				home(data);
 			}
 		},
-		formContent: $(contentDiv),
-		localeContent: $('#navMenu')
+		formContent: $(contentDiv)
 	});
 }
 
