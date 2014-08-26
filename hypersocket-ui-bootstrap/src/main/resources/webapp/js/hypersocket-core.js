@@ -162,12 +162,18 @@ $.fn.propertyPage = function(opts) {
 
 			$('#' + propertyDiv)
 					.append(
-						'<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' + options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' + propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' + propertyDiv + 'Content" class="tab-content"></div></div></div>');
+						'<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
+						+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
+						+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
+						+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 
 			if (options.showButtons) {
 				$(panel)
 						.append(
-							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' + propertyDiv + 'Revert"><i class="fa fa-ban"></i>' + getResource('text.revert') + '</button><button class="btn btn-small btn-primary" id="' + propertyDiv + 'Apply"><i class="fa fa-check"></i>' + getResource('text.apply') + '</button></div>');
+							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' 
+							+ propertyDiv + 'Revert"><i class="fa fa-ban"></i>' + getResource('text.revert')
+							+ '</button><button class="btn btn-small btn-primary" id="' + propertyDiv 
+							+ 'Apply"><i class="fa fa-check"></i>' + getResource('text.apply') + '</button></div>');
 			}
 
 			var first = true;
@@ -184,17 +190,30 @@ $.fn.propertyPage = function(opts) {
 								tab = "tab" + this.id;
 								$(contentTabs)
 										.append(
-											'<li><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"') + ' href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
+											'<li><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
+											+ ' href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
 								first = false;
 	
 								$('#' + propertyDiv + 'Content').append(
 									'<div id="' + tab + '" class="tab-pane"/>');
-	
+								
+								// Overwrite template values with any items passed in options
+								var values = [];
+								if(options.items) {
+									$.each(options.items, function() {
+										values[this.id] = this.value;
+									});
+								}
+								
 								var toSort = [];
 								$.each(this.templates, function() {
+									if(values[this.resourceKey]) {
+										this.value = values[this.resourceKey];
+									}
 									toSort.push(this);
 								});
 	
+								
 								toSort.sort(function(a, b) {
 									if (a.weight < b.weight) {
 										return -1;
@@ -204,231 +223,263 @@ $.fn.propertyPage = function(opts) {
 									return 0;
 								});
 	
-								$
-										.each(
-											toSort,
-											function() {
-	
-												x = JSON.parse(this.metaData);
-												var obj = $.extend(
-													{ restart : false, nameIsResourceKey : false, readOnly: false, disabled: false }, x);
-	
-												if(obj.inputType!='hidden') {
-													$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
-													$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResource(this.resourceKey) + '</label>');
-													$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
-												}
-												// Following vars are
-												// needed for some
-												// aysnchronous calls
-												var inputId = this.id;
-												var inputTab = tab;
-												var inputObj = this;
-												if (obj.inputType == 'textarea') {
-													$('#' + tab + '_value' + this.id)
-															.append(
-																'<textarea ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) + '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
-												} else if(obj.inputType == 'typeahead') {
-												
-													
-											    } else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java') {
-											    	
-											    	$('#' + tab + '_value' + this.id).append('<div class="code form-control propertyInput" id="' + tab + '_input' + this.id + '"></div>');
-											    	var myCodeMirror = CodeMirror(document.getElementById(tab + '_input' + this.id), {
-														  value: this.value,
-														  mode:  obj.inputType=='java' ? 'text/java' : obj.inputType,
-														  lineNumbers: obj.lineNumbers
-													});
-											    	
-											    	myCodeMirror.on("change", function(cm, change) {
-														  $('#' + tab + '_input' + this.id).markUpdated();
-														  if (options.showButtons) {
-																$(revertButton).attr('disabled', false);
-																$(applyButton).attr('disabled', false);
-														  }
-											    	});
-											    	
-											    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
-											    	
-											    	
-											    } else if(obj.inputType == 'xml' || obj.inputType == 'html') {
-											    	
-											    	$('#' + tab + '_value' + this.id).append('<div class="code form-control propertyInput" id="' + tab + '_input' + this.id + '"></div>');
-											    	var myCodeMirror = CodeMirror(document.getElementById(tab + '_input' + this.id), {
-														  value: this.value,
-														  htmlMode: obj.inputType=='html',
-														  mode:  obj.inputType=='html' ? 'text/html' : 'application/xml',
-														  lineNumbers: obj.lineNumbers
-													});
-											    	
-											    	myCodeMirror.on("change", function(cm, change) {
-														  $('#' + tab + '_input' + this.id).markUpdated();
-														  if (options.showButtons) {
-																$(revertButton).attr('disabled', false);
-																$(applyButton).attr('disabled', false);
-														  }
-											    	});
-											    	
-											    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
-											    	
-											    	
-											    } else if (obj.inputType == 'select') {
-													$('#' + tab + '_value' + this.id).selectButton(
+								$.each(toSort, function() {
+
+										x = JSON.parse(this.metaData);
+										var obj = $.extend(
+											{ restart : false, nameIsResourceKey : false, readOnly: false, disabled: false }, x);
+
+										if(obj.inputType!='hidden') {
+											$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
+											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResource(this.resourceKey) + '</label>');
+											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
+										}
+										// Following vars are
+										// needed for some
+										// aysnchronous calls
+										var inputId = this.id;
+										var inputTab = tab;
+										var inputObj = this;
+										if (obj.inputType == 'textarea') {
+											if(options.variables) {
+												$('#' + tab + '_value' + this.id).textInputWithVariables({
+													id: this.id,
+													type: 'textarea',
+													variables: options.variables,
+													resourceKey: this.resourceKey,
+													value: stripNull(this.value),
+													metaData: obj
+												});
+											} else {
+												$('#' + tab + '_value' + this.id).append(
+														'<textarea ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ')
+														+ 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' 
+														+ this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) 
+														+ '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
+											}
+										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java') {
+									    	
+									    	$('#' + tab + '_value' + this.id).append('<div class="code form-control propertyInput" id="' + tab + '_input' + this.id + '"></div>');
+									    	var myCodeMirror = CodeMirror(document.getElementById(tab + '_input' + this.id), {
+												  value: this.value,
+												  mode:  obj.inputType=='java' ? 'text/java' : obj.inputType,
+												  lineNumbers: obj.lineNumbers
+											});
+									    	
+									    	myCodeMirror.on("change", function(cm, change) {
+												  $('#' + tab + '_input' + this.id).markUpdated();
+												  if (options.showButtons) {
+														$(revertButton).attr('disabled', false);
+														$(applyButton).attr('disabled', false);
+												  }
+									    	});
+									    	
+									    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
+									    	
+									    	
+									    } else if(obj.inputType == 'xml' || obj.inputType == 'html') {
+									    	
+									    	$('#' + tab + '_value' + this.id).append('<div class="code form-control propertyInput" id="' + tab + '_input' + this.id + '"></div>');
+									    	var myCodeMirror = CodeMirror(document.getElementById(tab + '_input' + this.id), {
+												  value: this.value,
+												  htmlMode: obj.inputType=='html',
+												  mode:  obj.inputType=='html' ? 'text/html' : 'application/xml',
+												  lineNumbers: obj.lineNumbers
+											});
+									    	
+									    	myCodeMirror.on("change", function(cm, change) {
+												  $('#' + tab + '_input' + this.id).markUpdated();
+												  if (options.showButtons) {
+														$(revertButton).attr('disabled', false);
+														$(applyButton).attr('disabled', false);
+												  }
+									    	});
+									    	
+									    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
+									    	
+									    	
+									    } else if(obj.inputType == 'editor') {
+									    	
+									    	$('#' + tab + '_value' + this.id).editor({
+									    		isPropertyInput: true
+									    	});
+									    	
+									    } else if (obj.inputType == 'select') {
+											$('#' + tab + '_value' + this.id).selectButton(
+												{ metaData : obj, 
+													id: this.id,
+													url : obj.url, 
+													value: this.value,
+													options : obj.options, 
+													nameIsResourceKey: obj.nameIsResourceKey,
+													nameAttr: obj.nameAttr,
+													valueAttr: obj.valueAttr,
+													disabled : !options.canUpdate  || this.readOnly, 
+													resourceKey : this.resourceKey, 
+													changed : function() {
+													$(this).markUpdated();
+													if (options.showButtons) {
+														$(revertButton).attr('disabled', false);
+														$(applyButton).attr('disabled', false);
+													}
+												} });
+
+										} else if (obj.inputType == 'multipleSelect') {
+											$('#' + tab + '_value' + this.id)
+													.multipleSelect(
 														{ metaData : obj, 
 															id: this.id,
 															url : obj.url, 
-															value: this.value,
-															options : obj.options, 
-															nameIsResourceKey: obj.nameIsResourceKey,
-															nameAttr: obj.nameAttr,
-															valueAttr: obj.valueAttr,
-															disabled : !options.canUpdate  || this.readOnly, 
+															values : obj.values, 
+															disabled : !options.canUpdate  || this.readOnly || this.disabled, 
+															selected : splitFix(this.value), 
+															selectAllIfEmpty : obj.selectAllIfEmpty, 
 															resourceKey : this.resourceKey, 
-															changed : function() {
+															change : function() {
 															$(this).markUpdated();
 															if (options.showButtons) {
 																$(revertButton).attr('disabled', false);
 																$(applyButton).attr('disabled', false);
 															}
 														} });
-	
-												} else if (obj.inputType == 'multipleSelect') {
-													$('#' + tab + '_value' + this.id)
-															.multipleSelect(
-																{ metaData : obj, 
-																	id: this.id,
-																	url : obj.url, 
-																	values : obj.values, 
-																	disabled : !options.canUpdate  || this.readOnly || this.disabled, 
-																	selected : splitFix(this.value), 
-																	selectAllIfEmpty : obj.selectAllIfEmpty, 
-																	resourceKey : this.resourceKey, 
-																	change : function() {
-																	$(this).markUpdated();
-																	if (options.showButtons) {
-																		$(revertButton).attr('disabled', false);
-																		$(applyButton).attr('disabled', false);
-																	}
-																} });
-												} else if (obj.inputType == 'multipleTextInput') {
-													$('#' + tab + '_value' + this.id)
-															.multipleTextInput(
-																{ metaData : obj, 
-																	id: this.id,
-																	values : splitFix(this.value), 
-																	disabled : !options.canUpdate || this.readOnly || this.disabled, 
-																	resourceKey : this.resourceKey, 
-																	change : function() {
-																	$(this).markUpdated();
-																	if (options.showButtons) {
-																		$(revertButton).attr('disabled', false);
-																		$(applyButton).attr('disabled', false);
-																	}
-																} });
-	
-												} else if (obj.inputType == 'button') {
-													$('#' + tab + '_value' + this.id).append(
-														'<button ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') 
-																+ ' class="btn ' + (obj.buttonClass ? obj.buttonClass : 'btn-primary') 
-																+ '" id="' + tab + '_button' + this.id + '"><i class="fa ' + obj.buttonIcon 
-																+ '"></i>' + getResource(obj.buttonLabel) + '</button>');
-												
-													$('#' + tab + '_button' + this.id).on('click', function(e) {
-														eval(obj.script);
-													});
-												} else if (obj.inputType == 'password') {
-													$('#' + tab + '_value' + this.id)
-															.append(
-																'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="password" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
-												} else if (obj.inputType == 'boolean') {
-													$('#' + tab + '_value' + this.id)
-															.append(
-																'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
-												} else if (obj.inputType == 'switch') {
-	
-													$('#' + tab + '_value' + this.id)
-															.append(
-																'<label class="switch"><input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="switch-input propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '><span class="switch-label" data-on="' + getResource("text.on") + '" data-off="' + getResource("text.off") + '"></span> <span class="switch-handle"></span></label>');
-	
-												} else if (obj.inputType == 'image') {
-													$('#' + tab + '_value' + this.id)
-															.append(
-																'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="file" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
-													$('#' + tab + '_value' + this.id)
-															.append(
-																'<img class="imagePreview" src="' + this.value + '">');
-													var input = $('#' + tab + '_input' + this.id);
-													input.change(function() {
-														var reader = new FileReader();
-														reader.onload = function(readerEvt) {
-															var binaryString = readerEvt.target.result;
-															var encoded = btoa(binaryString);
-															var fileName = input.val().split('/').pop().split(
-																'\\').pop();
-															input.data('encoded', fileName + ";" + encoded);
-														};
-														reader.readAsBinaryString(input[0].files[0]);
-													});
-	
-												} else if (obj.inputType == 'slider') {
-	
-													$('#' + tab + '_value' + this.id)
-															.append(
-																'<div id="slider_' + this.id + '" class="slider"></div><input class="propertyInput" id="' + tab + '_input' + this.id + '" type="hidden" name="' + tab + '_input' + this.id + '" value="' + this.value + '"/><div class="slider-value"><span id="slider_value_' + this.id + '">' + this.value + ' ' + getResource(obj.labelResourceKey) + '</span></div>');
-													$('#slider_' + this.id)
-															.slider(
-																{ min : obj.minValue, max : obj.maxValue, value : parseInt(this.value), range : 'min' });
-													var valueElement = $('#slider_value_' + this.id);
-													var valueInput = $('#' + tab + '_input' + this.id);
-													$('#slider_' + this.id)
-															.slider(
-																{ change : function(event, ui) {
-																	valueElement
-																			.text(ui.value + ' ' + getResource(obj.labelResourceKey));
-																	valueInput.val(ui.value);
-																	valueInput.data('updated', true);
-																	if(options.showButtons) {
-																		$(revertButton).attr('disabled', false);
-																		$(applyButton).attr('disabled', false);
-																	}
-																} });
-												} else if (obj.inputType != 'hidden') {
-													$('#' + tab + '_value' + this.id)
-															.append(
-																'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="' + obj.inputType + '" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" size="' + (obj.size ? obj.size : 30) + '" placeholder="' + (obj.placeholder ? obj.placeholder : '') + '" maxlength="' + (obj.maxlength ? obj.maxlength : '') + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
-												}
-	
-												$('#' + tab + '_value' + this.id)
-														.append(
-															'<div><span class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
-	
-												$('#' + tab + '_input' + this.id).prepareProperty(obj,
-													this.id, this.value, this.resourceKey);
-	
-												$('#' + tab + '_input' + this.id)
-														.change(
-															function() {
-																$('#' + tab + '_error' + this.id).remove();
-																if ($(this).validateProperty()) {
-																	$(this).markUpdated();
-																	if (options.showButtons) {
-																		$(revertButton).attr('disabled', false);
-																		$(applyButton).attr('disabled', false);
-																	}
-																} else {
-																	if ($('#error' + this.id).length == 0) {
-																		$(this)
-																				.after(
-																					'<span id="' + tab + '_error' + this.id + '" class="ui-icon ui-icon-alert"></span>');
-																	}
-																	if (options.showButtons) {
-																		$(revertButton).attr('disabled', true);
-																		$(applyButton).attr('disabled', true);
-																	}
-																}
-															});
-	
+										} else if (obj.inputType == 'multipleTextInput') {
+											$('#' + tab + '_value' + this.id)
+													.multipleTextInput(
+														{ metaData : obj, 
+															id: this.id,
+															values : splitFix(this.value), 
+															variables: options.variables,
+															disabled : !options.canUpdate || this.readOnly || this.disabled, 
+															resourceKey : this.resourceKey, 
+															change : function() {
+															$(this).markUpdated();
+															if (options.showButtons) {
+																$(revertButton).attr('disabled', false);
+																$(applyButton).attr('disabled', false);
+															}
+														} });
+
+										} else if (obj.inputType == 'button') {
+											$('#' + tab + '_value' + this.id).append(
+												'<button ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') 
+														+ ' class="btn ' + (obj.buttonClass ? obj.buttonClass : 'btn-primary') 
+														+ '" id="' + tab + '_button' + this.id + '"><i class="fa ' + obj.buttonIcon 
+														+ '"></i>' + getResource(obj.buttonLabel) + '</button>');
+										
+											$('#' + tab + '_button' + this.id).on('click', function(e) {
+												eval(obj.script);
 											});
+										} else if (obj.inputType == 'password') {
+											$('#' + tab + '_value' + this.id)
+													.append(
+														'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="password" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
+										} else if (obj.inputType == 'boolean') {
+											$('#' + tab + '_value' + this.id)
+													.append(
+														'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '/>');
+										} else if (obj.inputType == 'switch') {
+
+											$('#' + tab + '_value' + this.id)
+													.append(
+														'<label class="switch"><input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="checkbox" class="switch-input propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '" value="true"' + (stripNull(this.value) == 'true' ? ' checked' : '') + '><span class="switch-label" data-on="' + getResource("text.on") + '" data-off="' + getResource("text.off") + '"></span> <span class="switch-handle"></span></label>');
+
+										} else if (obj.inputType == 'image') {
+											$('#' + tab + '_value' + this.id)
+													.append(
+														'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') + 'type="file" class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' + this.id + '"/>');
+											$('#' + tab + '_value' + this.id)
+													.append(
+														'<img class="imagePreview" src="' + this.value + '">');
+											var input = $('#' + tab + '_input' + this.id);
+											input.change(function() {
+												var reader = new FileReader();
+												reader.onload = function(readerEvt) {
+													var binaryString = readerEvt.target.result;
+													var encoded = btoa(binaryString);
+													var fileName = input.val().split('/').pop().split(
+														'\\').pop();
+													input.data('encoded', fileName + ";" + encoded);
+												};
+												reader.readAsBinaryString(input[0].files[0]);
+											});
+
+										} else if (obj.inputType == 'slider') {
+
+											$('#' + tab + '_value' + this.id)
+													.append(
+														'<div id="slider_' + this.id + '" class="slider"></div><input class="propertyInput" id="' 
+														+ tab + '_input' + this.id + '" type="hidden" name="' + tab + '_input' + this.id 
+														+ '" value="' + this.value + '"/><div class="slider-value"><span id="slider_value_' 
+														+ this.id + '">' + this.value + ' ' + getResource(obj.labelResourceKey) + '</span></div>');
+											$('#slider_' + this.id)
+													.slider(
+														{ min : obj.minValue, max : obj.maxValue, value : parseInt(this.value), range : 'min' });
+											var valueElement = $('#slider_value_' + this.id);
+											var valueInput = $('#' + tab + '_input' + this.id);
+											$('#slider_' + this.id)
+													.slider(
+														{ change : function(event, ui) {
+															valueElement
+																	.text(ui.value + ' ' + getResource(obj.labelResourceKey));
+															valueInput.val(ui.value);
+															valueInput.data('updated', true);
+															if(options.showButtons) {
+																$(revertButton).attr('disabled', false);
+																$(applyButton).attr('disabled', false);
+															}
+														} });
+										} else if (obj.inputType != 'hidden') {
+										
+											if(options.variables) {
+												$('#' + tab + '_value' + this.id).textInputWithVariables({
+													id: this.id,
+													variables: options.variables,
+													resourceKey: this.resourceKey,
+													value: this.value,
+													metaData: obj
+												});
+											} else {
+												$('#' + tab + '_value' + this.id)
+													.append(
+														'<input ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') 
+														+ 'type="' + obj.inputType + '" class="form-control propertyInput" id="' + tab + '_input' 
+														+ this.id + '" size="' + (obj.size ? obj.size : 30) + '" placeholder="' 
+														+ (obj.placeholder ? obj.placeholder : '') + '" maxlength="' + (obj.maxlength ? obj.maxlength : '') 
+														+ '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
+											}
+										}
+
+										$('#' + tab + '_value' + this.id)
+												.append(
+													'<div><span class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
+
+										$('#' + tab + '_input' + this.id).prepareProperty(obj,
+											this.id, this.value, this.resourceKey);
+
+										$('#' + tab + '_input' + this.id)
+												.change(
+													function() {
+														$('#' + tab + '_error' + this.id).remove();
+														if ($(this).validateProperty()) {
+															$(this).markUpdated();
+															if (options.showButtons) {
+																$(revertButton).attr('disabled', false);
+																$(applyButton).attr('disabled', false);
+															}
+														} else {
+															if ($('#error' + this.id).length == 0) {
+																$(this)
+																		.after(
+																			'<span id="' + tab + '_error' + this.id + '" class="ui-icon ui-icon-alert"></span>');
+															}
+															if (options.showButtons) {
+																$(revertButton).attr('disabled', true);
+																$(applyButton).attr('disabled', true);
+															}
+														}
+													});
+
+									});
 	
 							});
 			}
@@ -549,7 +600,7 @@ $.fn.saveProperties = function(includeAll, callback) {
 				}
 			} else if(meta.inputType=='css' 
 				|| meta.inputType=='java' 
-					|| meta.inputType=='javascript' 
+					|| meta.inputType=='javascript'
 						|| meta.inputType=='html'
 							|| meta.inputType=='xml'
 								|| meta.inputType=='sql') {
@@ -561,6 +612,14 @@ $.fn.saveProperties = function(includeAll, callback) {
 				if (includeAll || item.data('updated')) {
 					items.push(new PropertyItem(item.data('resourceKey'), codeMirror.getValue()));
 				}
+			} else if(meta.inputType=='editor') { 
+				
+				var editor = $(this).data('editor');
+				
+				if(includeAll || item.data('updated')) {
+					items.push(new PropertyItem(item.data('resourceKey'), editor.getValue()));
+				}
+				
 			} else {
 			
 				if (includeAll || item.isUpdated()) {
@@ -735,6 +794,9 @@ $.fn.selectButton = function(data) {
 			$('#select_button_' + id).text(selected.attr('data-label'));
 			$('#' + id).markUpdated();
 		},
+		getValue: function() {
+			return $('#' + id).val();
+		},
 		reset: function() {
 			var val = $('.selectButton_' + id).first().attr('data-value');
 			$('#' + id).val(val);
@@ -758,6 +820,299 @@ $.fn.selectButton = function(data) {
 	
 	return callback;
 }
+
+$.fn.textInputWithVariables = function(data) {
+	
+	var options = $.extend(
+			{  
+				variableTemplate: '$\{{0}\}', disabled : false, isPropertyInput: true, type: 'text',
+				readOnly: false
+			}, data);
+	
+	if(data && data.metaData) {
+		options = $.extend(options, data.metaData);
+	}
+  
+	var id = (options.isPropertyInput ? 'input_' : '' ) + options.id;
+	
+	if(options.type=='textarea') {
+		$(this).append('<div class="input-group"><textarea name="' + id + '" id="' + id + '" class="form-control propertyInput" value="' 
+				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + ' cols="' 
+				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" maxlength="' + options.maxlength + '">' + stripNull(options.value) + '</textarea>'
+			 	  + '<ul id="' + id + 'Dropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
+			 	  + 'data-toggle="dropdown">${}</span></div>');
+	} else {
+		$(this).append('<div class="input-group"><input type="text" name="' + id + '" id="' + id + '" class="form-control propertyInput" value="' 
+				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>'
+			 	  + '<ul id="' + id + 'Dropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
+			 	  + 'data-toggle="dropdown">${}</span></div>');
+	}
+
+	if(options.isPropertyInput) {
+		$('#' + id).prepareProperty(options.metaData,
+			options.id, options.value, options.resourceKey);
+	}
+	
+ 	if(options.variables) {
+ 		$.each(options.variables, function(idx, obj) {
+ 			$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
+ 		});
+ 		
+ 		$('.' + id + 'Class').click(function(e) {
+ 			debugger;
+ 			e.preventDefault();
+ 			var position = $('#' + id).getCursorPosition();
+ 			var content = $('#' + id).val();
+ 	 		var newContent = content.substr(0, position) + $(this).text() + content.substr(position);
+ 	 		$('#' + id).val(newContent);
+ 		});
+ 	} 
+ 	  
+}
+
+$.fn.editor = function(data) {
+
+	var options = $.extend(
+		{ isPropertyInput : true, disabled : false, 
+					value: ''}, data);
+
+	if(data && data.metaData) {
+		options = $.extend(options, data.metaData);
+	}
+	
+	var id = $(this).attr('id') + 'Editor';
+	
+	$(this).data('resourceKey', options.resourceKey);
+	$(this).data('created', true);
+	$(this).data('updated', false);
+	$(this).data('options', options);
+	
+	if (options.isPropertyInput) {
+		$(this).addClass('propertyInput');
+	}
+	
+	$(this).append( '<div class="btn-toolbar" data-role="editor-toolbar" data-target="#' + id + '">'
+  + '  <div class="btn-group">'
+  + '    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>'
+  + '      <ul class="dropdown-menu">'
+  + '       <li><a data-edit="fontName Serif" style="font-family:\'Serif\'">Serif</a>'
+  + '       <li><a data-edit="fontName Sans" style="font-family:\'Sans\'">Sans</a></li>'
+  + '       <li><a data-edit="fontName Arial" style="font-family:\'Arial\'">Arial</a></li>'
+  + '       <li><a data-edit="fontName Arial Black" style="font-family:\'Arial Black\'">Arial Black</a></li>'
+  + '       <li><a data-edit="fontName Courier" style="font-family:\'Courier\'">Courier</a></li>'
+  + '       <li><a data-edit="fontName Courier New" style="font-family:\'Courier New\'">Courier New</a></li>'
+  + '       <li><a data-edit="fontName Comic Sans MS" style="font-family:\'Comic Sans MS\'">Comic Sans MS</a></li>'
+  + '       <li><a data-edit="fontName Helvetica" style="font-family:\'Helvetica\'">Helvetica</a></li>'
+  + '       <li><a data-edit="fontName Impact" style="font-family:\'Impact\'">Impact</a></li>'
+  + '       <li><a data-edit="fontName Lucida Grande" style="font-family:\'Lucida Grande\'">Lucida Grande</a></li>'
+  + '       <li><a data-edit="fontName Lucida Sans" style="font-family:\'Lucida Sans\'">Lucida Sans</a></li>'
+  + '       <li><a data-edit="fontName Tahoma" style="font-family:\'Tahoma\'">Tahoma</a></li>'
+  + '       <li><a data-edit="fontName Times" style="font-family:\'Times\'">Times</a></li>'
+  + '       <li><a data-edit="fontName Times New Roman" style="font-family:\'Times New Roman\'">Times New Roman</a></li>'
+  + '       <li><a data-edit="fontName Verdana" style="font-family:\'Verdana\'">Verdana</a></li>'
+  + '      </ul>'
+  + '    </div>'
+  + '  <div class="btn-group">'
+  + '    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font Size"><i class="fa fa-text-height"></i>&nbsp;<b class="caret"></b></a>'
+  + '      <ul class="dropdown-menu">'
+  + '      <li><a data-edit="fontSize 5"><font size="5" localize="font.huge"></font></a></li>'
+  + '      <li><a data-edit="fontSize 3"><font size="3" localize="font.normal"></font></a></li>'
+  + '      <li><a data-edit="fontSize 1"><font size="1" localize="font.smal"></font></a></li>'
+  + '      </ul>'
+  + '  </div>'
+  + '  <div class="btn-group">'
+  + '    <a class="btn btn-default" data-edit="bold" title="" data-original-title="Bold (Ctrl/Cmd+B)"><i class="fa fa-bold"></i></a>'
+  + '    <a class="btn btn-default" data-edit="italic" title="" data-original-title="Italic (Ctrl/Cmd+I)"><i class="fa fa-italic"></i></a>'
+  + '    <a class="btn btn-default" data-edit="strikethrough" title="" data-original-title="Strikethrough"><i class="fa fa-strikethrough"></i></a>'
+  + '    <a class="btn btn-default" data-edit="underline" title="" data-original-title="Underline (Ctrl/Cmd+U)"><i class="fa fa-underline"></i></a>'
+  + '  </div>'
+  + '  <div class="btn-group">'
+  + '    <a class="btn btn-default" data-edit="insertunorderedlist" title="" data-original-title="Bullet list"><i class="fa fa-list-ul"></i></a>'
+  + '    <a class="btn btn-default" data-edit="insertorderedlist" title="" data-original-title="Number list"><i class="fa fa-list-ol"></i></a>'
+  + '    <a class="btn btn-default" data-edit="outdent" title="" data-original-title="Reduce indent (Shift+Tab)"><i class="fa fa-outdent"></i></a>'
+  + '    <a class="btn btn-default" data-edit="indent" title="" data-original-title="Indent (Tab)"><i class="fa fa-indent"></i></a>'
+  + '  </div>'
+  + '  <div class="btn-group">'
+  + '    <a class="btn btn-default" data-edit="justifyleft" title="" data-original-title="Align Left (Ctrl/Cmd+L)"><i class="fa fa-align-left"></i></a>'
+  + '    <a class="btn btn-default" data-edit="justifycenter" title="" data-original-title="Center (Ctrl/Cmd+E)"><i class="fa fa-align-center"></i></a>'
+  + '    <a class="btn btn-default" data-edit="justifyright" title="" data-original-title="Align Right (Ctrl/Cmd+R)"><i class="fa fa-align-right"></i></a>'
+  + '    <a class="btn btn-default" data-edit="justifyfull" title="" data-original-title="Justify (Ctrl/Cmd+J)"><i class="fa fa-align-justify"></i></a>'
+  + '  </div>'
+  + '  <div class="btn-group">'
+  + '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Hyperlink"><i class="fa fa-link"></i></a>'
+  + '  <div class="dropdown-menu input-append">'
+  + '	    <input class="span2" placeholder="URL" type="text" data-edit="createLink">'
+  + '	    <button class="btn btn-default" type="button">Add</button>'
+  + '    </div>'
+  + '    <a class="btn btn-default" data-edit="unlink" title="" data-original-title="Remove Hyperlink"><i class="fa fa-unlink"></i></a>'
+  + '  </div>'
+  + '  <div class="btn-group">'
+  + '    <a class="btn btn-default" title="" id="pictureBtn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="fa fa-image"></i></a>'
+  + '    <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 41px; height: 30px;">'
+  + '  </div>'
+  + '  <div class="btn-group">'
+  + '    <a class="btn btn-default" data-edit="undo" title="" data-original-title="Undo (Ctrl/Cmd+Z)"><i class="fa fa-undo"></i></a>'
+  + '    <a class="btn btn-default" data-edit="redo" title="" data-original-title="Redo (Ctrl/Cmd+Y)"><i class="fa fa-repeat"></i></a>'
+  + '  </div>'
+  + '  <input type="text" data-edit="inserttext" id="voiceBtn" x-webkit-speech="" style="position: absolute; top: 280px; left: 1287px;">'
+  + '</div>'
+  + '<div id="' + id + '" class="editor" contenteditable="true" style="overflow: scroll; height:300px">'
+  + '</div>');
+
+	$('#' + id).wysiwyg({
+        hotKeys: {
+            'ctrl+b meta+b': 'bold',
+            'ctrl+i meta+i': 'italic',
+            'ctrl+u meta+u': 'underline',
+            'ctrl+z meta+z': 'undo',
+            'ctrl+y meta+y meta+shift+z': 'redo'
+        },
+        dragAndDropImages: true
+    });
+
+	callback = {
+		setValue: function(raw) {
+			$('#' + id).html(raw);
+		}, 
+		getValue: function() {
+			return $('#' + id).cleanHtml();
+		},
+		enable: function() {
+			
+		}, 
+		disable: function() {
+			
+		}
+	}
+	
+	$(this).data('editor', callback);
+	callback.setValue(options.value);
+	return callback;
+}
+
+$.fn.autoComplete = function(data) {
+	
+	var options = $
+	.extend(
+		{ valueAttr : 'value', nameAttr : 'name', nameAttrIsResourceKey : false, 
+			selectAllIfEmpty : false, selectedIsObjectList : false, 
+				isPropertyInput : true, disabled : false, 
+					resourceKeyTemplate: '{0}' }, data);
+
+	if(data && data.metaData) {
+		options = $.extend(options, data.metaData);
+	}
+	
+	var id = options.id;
+	
+	$(this).data('resourceKey', options.resourceKey);
+	$(this).data('created', true);
+	$(this).data('updated', false);
+	$(this).data('options', options);
+
+	$(this).append('<div class="dropdown input-group"><input type="hidden" class="propertyInput" id="actual_' + id 
+			+ '"><input type="text" id="input_' + id + '" class="form-control dropdown-toggle" data-toggle="dropdown" value="">' 
+			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu" role="menu"><li><a tabindex="-1" href="#">' + getResource('search.text') + '</a></li></ul>' 
+			+ '<span class="input-group-addon"><i id="spin_' + id + '" class="fa fa-search"></i></span></div>');
+
+	if (options.url) {
+		getJSON(
+			options.url,
+			null,
+			function(data) {
+				
+				var map = [];
+				$.each(data.resources, function(idx, obj) {
+					map[obj[options.valueAttr]] = obj;
+				});
+				$('#input_' + id).data('values', data.resources);
+				$('#input_' + id).data('map', map);
+			});
+	}
+	
+	$('#input_' + id).keyup(function() {
+		$('#spin_' + id).removeClass('fa-search');
+		$('#spin_' + id).addClass('fa-spin');
+		$('#spin_' + id).addClass('fa-spinner');
+		var text = $(this).val();
+		var selected = new Array();
+		$.each($('#input_' + id).data('values'), function(idx, obj) {
+			var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+			if(name.indexOf(text) > -1) {
+				selected.push(obj);
+			}
+		});
+		$('#auto_' + id).empty();
+		if(selected.length > 0 && $(this).val() != '') {
+			$.each(selected, function(idx, obj) {
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
+						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
+			});
+			$('.optionSelect').off('click');
+			$('.optionSelect').on('click', function() {
+				var value = $(this).data('value');
+				var obj = $('#input_' + id).data('map')[value];
+				$('#actual_' + id).val(value);
+				$('#input_' + id).val($(this).text());
+				$('[data-toggle="dropdown"]').parent().removeClass('open');
+				
+				if(options.changed) {
+					options.changed(obj);
+				}
+			});
+		} else {
+			if($(this).val()=='') {
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+			} else {
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+			}
+		}
+		$('#input_' + id).dropdown();
+		$('[data-toggle="dropdown"]').parent().removeClass('open');
+		$('#input_' + id).dropdown('toggle');
+		$('#spin_' + id).removeClass('fa-spin');
+		$('#spin_' + id).removeClass('fa-spinner');
+		$('#spin_' + id).addClass('fa-search');
+	});
+	
+	var callback = {
+			setValue: function(val) {
+				$.each($('#input_' + id).data('values'), function(idx, obj) {
+					if(obj[options.valueAttr]==val) {
+						$('#actual_' + id).val(val);
+						$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+						$('#actual_' + id).markUpdated();
+						if(options.changed) {
+							options.changed(obj);
+						}
+					}
+				});
+				
+			},
+			getValue: function() {
+				return $('#actual_' + id).val();
+				$('#input_' + id).val();
+			},
+			reset: function() {
+				$('#actual_' + id).val('');
+				$('#input_' + id).val('');
+			},
+			disable: function() {
+				$('#input_' + id).attr('disabled', true);
+			},
+			enable: function() {
+				$('#input_' + id).attr('disabled', false);
+			}
+		};
+
+		if(options.disabled) {
+			callback.disable();
+		}
+		
+		return callback;
+	
+}
+
 
 $.fn.multipleSelect = function(data) {
 
@@ -1067,21 +1422,19 @@ $.fn.multipleTextInput = function(data) {
 		$('#' + $(this).attr('id') + 'Buttons').remove();
 		$('#' + $(this).attr('id') + 'Included').remove();
 
-		if (getResourceNoDefault(options.resourceKey + '.' + $(this).attr('id') + '.tooltip') != undefined) {
-			$(this)
-					.append(
-						'<div class="multisearchTooltip"><span id="' + $(this).attr('id') + 'Tooltip" class="ui-icon ui-icon-info" title="' + getResource(options.resourceKey + '.' + $(
-							this).attr('id') + '.tooltip') + '"></span></div>');
-			$('#' + $(this).attr('id') + 'Tooltip').tooltip();
-		}
+		$(this).append('<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"></div>');
 
-		$(this)
-				.append(
-					'<div class="excludedList" id="' + $(this).attr('id') + 'Excluded"></div>');
-		$('#' + $(this).attr('id') + 'Excluded')
-				.append(
+		if(options.variables) {
+			$('#' + $(this).attr('id') + 'Excluded').textInputWithVariables({
+				id: $(this).attr('id') + 'ExcludedSelect',
+				isPropertyInput: false,
+				variables: options.variables
+			});
+		} else {
+			$('#' + $(this).attr('id') + 'Excluded').append(
 					'<input type="text" ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'id="' + $(
 						this).attr('id') + 'ExcludedSelect" class="formInput text form-control" />');
+		}
 
 		$(this)
 				.append(
@@ -1300,7 +1653,6 @@ $.fn.ajaxResourcePage = function(params) {
 										+ '</span>&nbsp;&nbsp;<i class="fa ' 
 										+ display.iconClass + '"></i>');
 							}
-							debugger;
 							if(act.enableFunction && act.enableFunction != '') {
 								if(!window[act.enableFunction].apply(null, [resource])) {
 									var el = $('.row-' + act.resourceKey, dropdown);    

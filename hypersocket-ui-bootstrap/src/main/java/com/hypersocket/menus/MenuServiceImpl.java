@@ -35,6 +35,8 @@ import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
+import com.hypersocket.triggers.TriggerResourcePermission;
+import com.hypersocket.triggers.TriggerResourceServiceImpl;
 
 @Service
 public class MenuServiceImpl extends AuthenticatedServiceImpl implements
@@ -140,6 +142,13 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 
 		registerTableAction(MenuService.ACTIONS_REALMS, new AbstractTableAction(
 				"defaultRealm", "fa-tag", "defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION, 0, "isDefault", null));
+		
+		registerMenu(new MenuRegistration(TriggerResourceServiceImpl.RESOURCE_BUNDLE,
+				"triggers", "fa-flash", "triggers", 200,
+				TriggerResourcePermission.READ,
+				TriggerResourcePermission.CREATE,
+				TriggerResourcePermission.UPDATE,
+				TriggerResourcePermission.DELETE), MenuService.MENU_RESOURCES);
 	}
 
 	@Override

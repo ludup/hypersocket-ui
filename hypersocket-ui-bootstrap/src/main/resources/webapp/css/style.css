@@ -877,7 +877,7 @@ table {
 	height: 20px;
 }
 
-#editor {
+.editor {
 	max-height: 250px;
 	height: 250px;
 	background-color: white;
