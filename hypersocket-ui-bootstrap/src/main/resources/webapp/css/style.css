@@ -897,8 +897,7 @@ table {
 
 .code {
 	border: 1px solid rgb(204,204,204);
-	height: 200px;
-	overflow: auto;	
+	height: 150px;
 	padding: 0px;
 }
 .dialogActions {

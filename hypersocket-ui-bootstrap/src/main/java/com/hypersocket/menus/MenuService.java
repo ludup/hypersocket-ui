@@ -27,6 +27,8 @@ public interface MenuService extends AuthenticatedService {
 	
 	static final String MENU_RESOURCES = "resources";
 
+	static final String MENU_REPORTING = "reporting";
+	
 	static final String ACTIONS_USERS = "userActions";
 
 	static final String ACTIONS_REALMS = "realmActions";
