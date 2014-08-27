@@ -406,6 +406,27 @@ $.fn.propertyPage = function(opts) {
 										} else if (obj.inputType == 'slider') {
 
 											$('#' + tab + '_value' + this.id)
+											.append('<input class="propertyInput form-control" id="slider_' + this.id + '" data-slider-id="slider_' + this.id + '" type="text">');
+											
+											$('#slider_' + this.id).slider({
+												min: parseInt(obj.minValue),
+												max: parseInt(obj.maxValue),
+												step: parseInt(obj.stepValue ? obj.stepValue : 1),
+												handle: 'square',
+												value: parseInt(this.value),
+												tooltip: 'show',
+												formater: function(value) {
+													return value + ' ' + getResource(obj.labelResourceKey);
+												}
+											}).on('slide', function(ev){
+												   if(options.showButtons) {
+														$(revertButton).attr('disabled', false);
+														$(applyButton).attr('disabled', false);
+													}
+											});;
+											
+											
+											/*$('#' + tab + '_value' + this.id)
 													.append(
 														'<div id="slider_' + this.id + '" class="slider"></div><input class="propertyInput" id="' 
 														+ tab + '_input' + this.id + '" type="hidden" name="' + tab + '_input' + this.id 
@@ -427,7 +448,7 @@ $.fn.propertyPage = function(opts) {
 																$(revertButton).attr('disabled', false);
 																$(applyButton).attr('disabled', false);
 															}
-														} });
+														} });*/
 										} else if (obj.inputType != 'hidden') {
 										
 											if(options.variables) {
@@ -1038,7 +1059,7 @@ $.fn.autoComplete = function(data) {
 		var selected = new Array();
 		$.each($('#input_' + id).data('values'), function(idx, obj) {
 			var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-			if(name.indexOf(text) > -1) {
+			if(name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
 				selected.push(obj);
 			}
 		});

@@ -801,40 +801,8 @@ table {
 	height: auto;
 }
 
-.slider .ui-slider-handle {
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	border-radius: 2px;
-	border: 1px solid #e1e6ef;
-	background: white;
-	-webkit-box-shadow: 0 1px 1px #c0cadd;
-	-moz-box-shadow: 0 1px 1px #c0cadd;
-	box-shadow: 0 1px 1px #c0cadd;
-	-webkit-transition: 0.1s;
-	-moz-transition: 0.1s;
-	-ms-transition: 0.1s;
-	-o-transition: 0.1s;
-	transition: 0.1s;
-}
-
-.slider .ui-slider-range {
-	position: absolute;
-	-webkit-box-sizing: content-box;
-	-moz-box-sizing: content-box;
-	box-sizing: content-box;
-	background: #47a8d8;
-}
-
-.slider {
-	background: #f2f4f8;
-	border: none;
-	position: relative;
-	z-index: 10;
-	margin: 5px 0px !important;
-}
-
-.slider-value {
-	margin-top: 10px;
+.slider.slider-horizontal {
+	width: 100% !important;	
 }
 
 .btn {
