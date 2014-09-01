@@ -436,7 +436,6 @@
 			},
 			validate: function() {
 				
-				debugger;
 				if (!eventAuto.getValue()) {
 					$('#addTriggerForm').resourceDialog('error',
 							"error.eventRequired");
@@ -444,7 +443,6 @@
 				}
 				
 				var count = 0;
-				debugger;
 				$('.editAction').each(function() {
 					var a = $(this).data('action');
 					if(a) {
@@ -460,7 +458,6 @@
 				return true;
 			},
 			createResource: function() {
-				debugger;
 				resource = new Object();
 				resource.id = $('#resourceId').val();
 				resource.name = $('#resourceName').val();

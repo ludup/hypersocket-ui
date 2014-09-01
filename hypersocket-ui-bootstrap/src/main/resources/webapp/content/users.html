@@ -111,6 +111,7 @@
 						showButtons : false,
 						displayMode: 'create',
 						useTemplates : true,
+						propertyTabsLast: false,
 						canUpdate : currentMenu.canUpdate,
 						additionalTabs : [ {
 							id : "tabUserGroups",
@@ -136,11 +137,20 @@
 								canDelete : currentMenu.canDelete,
 								additionalActionsDropdown: true,
 								additionalActions : actions,
-								validate : function() {
+								validate : function(create) {
 									if ($('#userName').val() == '') {
-										$('#userDialogError').dialogError(
-												"error.nameRequired");
+										$('#addUserModal').resourceDialog('error', "error.nameRequired");
 										return false;
+									}
+									if(create) {
+										if($('#password').val() == '') {
+											$('#addUserModal').resourceDialog('error', "error.passwordRequired");
+											return false;
+										}
+										if($('#password').val() != $('#confirmPassword').val()) {
+											$('#addUserModal').resourceDialog('error', "error.passwordsDontMatch");
+											return false;
+										}
 									}
 									return true;
 								},
@@ -165,6 +175,7 @@
 											showButtons : false,
 											displayMode: 'create',
 											useTemplates : true,
+											propertyTabsLast: false,
 											canUpdate : currentMenu.canUpdate,
 											additionalTabs : [ {
 												id : "tabUserGroups",
@@ -215,6 +226,7 @@
 											showButtons : false,
 											displayMode: 'update',
 											canUpdate : !readOnly,
+											propertyTabsLast: false,
 											additionalTabs : [ {
 												id : "tabUserGroups",
 												name : getResource("label.groups")

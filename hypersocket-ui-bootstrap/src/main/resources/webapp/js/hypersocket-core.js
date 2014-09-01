@@ -141,7 +141,7 @@ $.fn.propertyPage = function(opts) {
 	
 	var options = $
 			.extend(
-				{ showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th' },
+				{ showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th', propertyTabsLast: true },
 				opts);
 
 	$('body').append('<div id="tabTemp' + propertyDiv + '"/>');
@@ -183,20 +183,19 @@ $.fn.propertyPage = function(opts) {
 
 			var first = true;
 			
-			if (options.additionalTabs) {
-				$.each(
-					options.additionalTabs,
-					function(idx, o) {
-						$(contentTabs)
-								.append(
-									'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2"><span>' + this.name + '</span></a></li>');
-						$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
-						$('#' + this.id).addClass('tab-pane');
-						//if((!data.resources || data.resources.length == 0) && idx == 0) {
-							// Make sure we display the first page if there are no properties pages (hack for template not showing).
-						//	$('#' + this.id).show();
-						//}
-					});
+			var createAdditionalTabs = function() {
+				$.each(options.additionalTabs,
+						function(idx, o) {
+							$(contentTabs)
+									.append(
+										'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2"><span>' + this.name + '</span></a></li>');
+							$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
+							$('#' + this.id).addClass('tab-pane');
+						});
+			};
+			
+			if (options.additionalTabs && options.propertyTabsLast) {
+				createAdditionalTabs();
 			}
 			
 			if(data.resources) {
@@ -389,6 +388,7 @@ $.fn.propertyPage = function(opts) {
 														+ '"></i>' + getResource(obj.buttonLabel) + '</button>');
 										
 											$('#' + tab + '_button' + this.id).on('click', function(e) {
+												window[act.enableFunction]
 												eval(obj.script);
 											});
 										} else if (obj.inputType == 'password') {
@@ -504,6 +504,10 @@ $.fn.propertyPage = function(opts) {
 									});
 	
 							});
+			}
+			
+			if (options.additionalTabs && !options.propertyTabsLast) {
+				createAdditionalTabs();
 			}
 			
 			$('#tabTemp' + propertyDiv).remove();
@@ -865,7 +869,6 @@ $.fn.textInputWithVariables = function(data) {
  		});
  		
  		$('.' + id + 'Class').click(function(e) {
- 			debugger;
  			e.preventDefault();
  			var position = $('#' + id).getCursorPosition();
  			var content = $('#' + id).val();
@@ -1313,7 +1316,6 @@ $.fn.multipleSelect = function(data) {
 
 		$.each(options.values,
 			function(idx, obj) {
-			debugger;
 				var selectItem = options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0) ? toSelect : select;
 				
 				if(options.valuesIsObjectList) {
@@ -2114,7 +2116,7 @@ $.fn.resourceDialog = function(params, params2) {
 				log("Creating resource");
 
 				if (dialogOptions.validate) {
-					if (!dialogOptions.validate()) {
+					if (!dialogOptions.validate(true)) {
 						stopSpin(icon, 'fa-save');
 						log("Resource validation failed");
 						return;
@@ -2172,7 +2174,7 @@ $.fn.resourceDialog = function(params, params2) {
 				log('Updating resource');
 				
 				if (dialogOptions.validate) {
-					if (!dialogOptions.validate()) {
+					if (!dialogOptions.validate(false)) {
 						stopSpin(icon, 'fa-save');
 						return;
 					}
