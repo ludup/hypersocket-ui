@@ -387,9 +387,9 @@ $.fn.propertyPage = function(opts) {
 														+ '" id="' + tab + '_button' + this.id + '"><i class="fa ' + obj.buttonIcon 
 														+ '"></i>' + getResource(obj.buttonLabel) + '</button>');
 										
+											var el = $('#'+tab + '_button' + this.id);
 											$('#' + tab + '_button' + this.id).on('click', function(e) {
-												window[act.enableFunction]
-												eval(obj.script);
+												window[obj.script].apply(null, [el]);
 											});
 										} else if (obj.inputType == 'password') {
 											$('#' + tab + '_value' + this.id)
