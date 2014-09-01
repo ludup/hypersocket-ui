@@ -1374,6 +1374,8 @@ $.fn.multipleSelect = function(data) {
 	}
 
 	toSelect.data('isMultipleSelect', true);
+	$(this).data('created', true);
+	$(this).data('options', options);
 	toSelect.prepareProperty(options,
 			options.id, options.values, options.resourceKey);
 };
