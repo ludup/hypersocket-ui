@@ -243,7 +243,7 @@
 				$('#createAction').append('<i class="fa fa-save"></i><span>' + getResource("text.update") + '</span>');	
 				$('#addActionTitle').text(getResource("update.action.title"));
 				$('#actionName').val(action.name);
-				if(!action.isNew) {
+				if(!action.newAction) {
 					url = 'triggers/action/properties/' + action.id;
 				}
 			} else {
@@ -263,10 +263,10 @@
 				if(!action) {
 					action = new Object();
 					action.id = new Date().getTime();
-					action.isNew = true;
+					action.newAction = true;
 					action.resourceKey = resourceKey;
 				} else {
-					action.isNew = false;
+					action.newAction = false;
 				}
 				
 				if($('#actionName').val()=='') {
@@ -280,7 +280,7 @@
 				});
 				
 				$('#createAction').off('click');
-				if(action.isNew) {
+				if(action.newAction) {
 					addActionRow(action);
 				} else {
 					updateActionRow(action);
@@ -344,8 +344,22 @@
 			}
 		});
 		
+		$('#tabProperties').propertyPage({
+			url : 'triggers/template',
+			showButtons : false,
+			useTemplates : true,
+			canUpdate : currentMenu.canUpdate,
+			additionalTabs : [ {
+				id : "tabConditions",
+				name : getResource("tabConditions.label")
+			},{
+				id : "tabActions",
+				name : getResource("tabActions.label")
+			}]
+		});
+		
 		$(document).data('triggerModalCallback', {
-			clearDialog: function() {
+			clearDialog: function(create) {
 				$('#rowAll').empty();
 				$('#rowAny').empty();
 				$('#rowActions').empty();
@@ -357,6 +371,27 @@
 				$('.tabPropertiesTab').first().trigger('click');
 				$('#tabProperties').clearProperties();
 				$('.addButton').attr('disabled', true);
+				
+				if(create) {
+					
+					$('#tabProperties').parent().append($('#tabConditions').detach());
+					$('#tabProperties').parent().append($('#tabActions').detach());
+					$('#tabProperties').empty();
+					
+					$('#tabProperties').propertyPage({
+						url : 'triggers/template',
+						showButtons : false,
+						useTemplates : true,
+						canUpdate : currentMenu.canUpdate,
+						additionalTabs : [ {
+							id : "tabConditions",
+							name : getResource("tabConditions.label")
+						},{
+							id : "tabActions",
+							name : getResource("tabActions.label")
+						}]
+					});
+				}
 			},
 			displayResource: function(resource) {
 				
@@ -376,8 +411,26 @@
 				});
 				
 				$.each(resource.actions, function(idx, obj) {
-					obj.isNew = false;
+					obj.newAction = false;
 					addActionRow(obj);
+				});
+				
+				$('#tabProperties').parent().append($('#tabConditions').detach());
+				$('#tabProperties').parent().append($('#tabActions').detach());
+				$('#tabProperties').empty();
+				
+				$('#tabProperties').propertyPage({
+					url : 'triggers/properties/' + resource.id,
+					showButtons : false,
+					useTemplates : true,
+					canUpdate : currentMenu.canUpdate,
+					additionalTabs : [ {
+						id : "tabConditions",
+						name : getResource("tabConditions.label")
+					},{
+						id : "tabActions",
+						name : getResource("tabActions.label")
+					}]
 				});
 				
 			},
@@ -420,6 +473,10 @@
 						log("Adding action " + a.name);
 						resource.actions.push(a);
 					}
+				});
+				
+				$('#tabProperties').saveProperties(true, function(items) {
+					resource.properties = items;	
 				});
 				
 				resource.allConditions = new Array();
@@ -465,20 +522,6 @@
 			$(".dropdown-toggle").dropdown();
 			
 			bindActions();
-		});
-		
-		$('#tabProperties').propertyPage({
-			url : 'triggers/template',
-			showButtons : false,
-			useTemplates : true,
-			canUpdate : currentMenu.canUpdate,
-			additionalTabs : [ {
-				id : "tabConditions",
-				name : getResource("tabConditions.label")
-			},{
-				id : "tabActions",
-				name : getResource("tabActions.label")
-			}]
 		});
 		
 		$('#addAll').click(function(e) {

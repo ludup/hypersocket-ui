@@ -33,12 +33,17 @@ $.ajaxSetup({ error : function(xmlRequest) {
 
 $.fn.prepareProperty = function(opts, id, originalValue, resourceKey) {
 	// Setup the object, merge with defaults
+	$(this).data('created', true);
 	$(this).data('id', id);
 	$(this).data('resourceKey', resourceKey);
 	$(this).data('originalValue', originalValue);
 	$(this).data('metaData', opts);
 	$(this).data('updated', false);
-//	$(this).data('restart', opts.restart);
+	$(this).data('options', opts);
+	if (opts.isPropertyInput && !$(this).hasClass('propertyInput')) {
+		$(this).addClass('propertyInput');
+	}
+
 };
 
 $.fn.revertProperty = function() {
@@ -177,6 +182,22 @@ $.fn.propertyPage = function(opts) {
 			}
 
 			var first = true;
+			
+			if (options.additionalTabs) {
+				$.each(
+					options.additionalTabs,
+					function(idx, o) {
+						$(contentTabs)
+								.append(
+									'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2"><span>' + this.name + '</span></a></li>');
+						$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
+						$('#' + this.id).addClass('tab-pane');
+						//if((!data.resources || data.resources.length == 0) && idx == 0) {
+							// Make sure we display the first page if there are no properties pages (hack for template not showing).
+						//	$('#' + this.id).show();
+						//}
+					});
+			}
 			
 			if(data.resources) {
 				$.each(	data.resources,
@@ -331,6 +352,7 @@ $.fn.propertyPage = function(opts) {
 															id: this.id,
 															url : obj.url, 
 															values : obj.values, 
+															variables: options.variables,
 															disabled : !options.canUpdate  || this.readOnly || this.disabled, 
 															selected : splitFix(this.value), 
 															selectAllIfEmpty : obj.selectAllIfEmpty, 
@@ -406,9 +428,10 @@ $.fn.propertyPage = function(opts) {
 										} else if (obj.inputType == 'slider') {
 
 											$('#' + tab + '_value' + this.id)
-											.append('<input class="propertyInput form-control" id="slider_' + this.id + '" data-slider-id="slider_' + this.id + '" type="text">');
+											.append('<input class="propertyInput form-control" id="' + tab + '_input' 
+													+ this.id + '" data-slider-id="slider_' + this.id + '" value="' + this.value + '" type="text">');
 											
-											$('#slider_' + this.id).slider({
+											$('#' + tab + '_input' + this.id).slider({
 												min: parseInt(obj.minValue),
 												max: parseInt(obj.maxValue),
 												step: parseInt(obj.stepValue ? obj.stepValue : 1),
@@ -423,32 +446,10 @@ $.fn.propertyPage = function(opts) {
 														$(revertButton).attr('disabled', false);
 														$(applyButton).attr('disabled', false);
 													}
-											});;
+											});
 											
-											
-											/*$('#' + tab + '_value' + this.id)
-													.append(
-														'<div id="slider_' + this.id + '" class="slider"></div><input class="propertyInput" id="' 
-														+ tab + '_input' + this.id + '" type="hidden" name="' + tab + '_input' + this.id 
-														+ '" value="' + this.value + '"/><div class="slider-value"><span id="slider_value_' 
-														+ this.id + '">' + this.value + ' ' + getResource(obj.labelResourceKey) + '</span></div>');
-											$('#slider_' + this.id)
-													.slider(
-														{ min : obj.minValue, max : obj.maxValue, value : parseInt(this.value), range : 'min' });
-											var valueElement = $('#slider_value_' + this.id);
-											var valueInput = $('#' + tab + '_input' + this.id);
-											$('#slider_' + this.id)
-													.slider(
-														{ change : function(event, ui) {
-															valueElement
-																	.text(ui.value + ' ' + getResource(obj.labelResourceKey));
-															valueInput.val(ui.value);
-															valueInput.data('updated', true);
-															if(options.showButtons) {
-																$(revertButton).attr('disabled', false);
-																$(applyButton).attr('disabled', false);
-															}
-														} });*/
+											$('#' + tab + '_input' + this.id).slider('setValue', this.value)
+
 										} else if (obj.inputType != 'hidden') {
 										
 											if(options.variables) {
@@ -504,23 +505,7 @@ $.fn.propertyPage = function(opts) {
 	
 							});
 			}
-			if (options.additionalTabs) {
-				$
-						.each(
-							options.additionalTabs,
-							function(idx, o) {
-								$(contentTabs)
-										.append(
-											'<li id="' + this.id + 'Li"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2"><span>' + this.name + '</span></a></li>');
-								$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
-								$('#' + this.id).addClass('tab-pane');
-								//if((!data.resources || data.resources.length == 0) && idx == 0) {
-									// Make sure we display the first page if there are no properties pages (hack for template not showing).
-								//	$('#' + this.id).show();
-								//}
-							});
-			}
-
+			
 			$('#tabTemp' + propertyDiv).remove();
 
 			$('.' +  propertyDiv + 'Tab').click(function(e) {
@@ -1161,21 +1146,20 @@ $.fn.multipleSelect = function(data) {
 		var toSelect = $('#' + $(this).attr('id') + 'IncludedSelect');
 
 		if (options.selected) {
-			$
-					.each(
-						options.selected,
-						function(idx, id) {
-							var selectedOpt;
-							if (options.selectedIsObjectList) {
-								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
-							} else {
-								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
-							}
-							if (selectedOpt) {
-								toSelect.append($(selectedOpt).clone());
-								$(selectedOpt).remove();
-							}
-						});
+			$.each(
+				options.selected,
+				function(idx, id) {
+					var selectedOpt;
+					if (options.selectedIsObjectList) {
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+					} else {
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+					}
+					if (selectedOpt) {
+						toSelect.append($(selectedOpt).clone());
+						$(selectedOpt).remove();
+					}
+				});
 		}
 
 		if (data && data.insert) {
@@ -1243,20 +1227,11 @@ $.fn.multipleSelect = function(data) {
 				.extend(
 					{ idAttr : 'id', nameAttr : 'name', nameAttrIsResourceKey : false, 
 						selectAllIfEmpty : false, selectedIsObjectList : false, 
-							isPropertyInput : true, disabled : false, 
+							isPropertyInput : true, disabled : false, valuesIsObjectList: true,
 								resourceKeyTemplate: '{0}' }, data);
 		
 		if(data && data.metaData) {
 			options = $.extend(options, data.metaData);
-		}
-		$(this).data('resourceKey', options.resourceKey);
-		$(this).data('created', true);
-		$(this).data('isMultipleSelect', true);
-		$(this).data('updated', false);
-		$(this).data('options', options);
-
-		if (options.isPropertyInput) {
-			$(this).addClass('propertyInput');
 		}
 
 		$('#' + $(this).attr('id') + 'Excluded').remove();
@@ -1265,36 +1240,32 @@ $.fn.multipleSelect = function(data) {
 
 		$(this).addClass('container-fluid');
 		
-		$(this)
-				.append(
-					'<div class="excludedList col-md-5" id="' + $(this).attr('id') + 'Excluded"><label>' + getResource('text.excluded') + '</label></div>');
-		$('#' + $(this).attr('id') + 'Excluded')
-				.append(
+		$(this).append('<div class="excludedList col-md-5" id="' + $(this).attr('id') 
+				+ 'Excluded"><label>' + getResource('text.excluded') + '</label></div>');
+		
+		$('#' + $(this).attr('id') + 'Excluded').append(
 					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' + $(
 						this).attr('id') + 'ExcludedSelect" class="formInput text form-control"/>');
 
-		$(this).append(
-			'<div class="listButtons" id="' + $(this).attr('id') + 'Buttons"/>');
-		$('#' + $(this).attr('id') + 'Buttons')
-				.append(
+		$(this).append('<div class="listButtons" id="' + $(this).attr('id') + 'Buttons"/>');
+		
+		$('#' + $(this).attr('id') + 'Buttons').append(
 					'<button class="btn-multiple-select btn btn-primary" id="' + $(this)
 							.attr('id') + 'AddButton"><i class="fa fa-chevron-circle-right"></i></button><br/>');
-		$('#' + $(this).attr('id') + 'Buttons')
-				.append(
+		
+		$('#' + $(this).attr('id') + 'Buttons').append(
 					'<button class="btn-multiple-select btn btn-primary" id="' + $(this)
 							.attr('id') + 'RemoveButton"><i class="fa fa-chevron-circle-left"></i></button>');
-		$(this)
-				.append(
-					'<div class="includedList col-md-5" id="' + $(this).attr('id') + 'Included"><label>' + getResource('text.included') + '</label></div>');
-		$('#' + $(this).attr('id') + 'Included')
-				.append(
-					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' + $(
-						this).attr('id') + 'IncludedSelect" class="formInput text form-control"/>');
+		
+		$(this).append('<div class="includedList col-md-5" id="' + $(this).attr('id') 
+				+ 'Included"><label>' + getResource('text.included') + '</label></div>');
+		
+		$('#' + $(this).attr('id') + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled="disabled" ') 
+				+ 'multiple="multiple" id="' + $(this).attr('id') + 'IncludedSelect" class="formInput text form-control"/>');
 
 		$('#' + $(this).attr('id') + 'AddButton').button();
 		$('#' + $(this).attr('id') + 'RemoveButton').button();
 
-		var property = $(this);
 		var select = $('#' + $(this).attr('id') + 'ExcludedSelect');
 		var toSelect = $('#' + $(this).attr('id') + 'IncludedSelect');
 
@@ -1308,7 +1279,7 @@ $.fn.multipleSelect = function(data) {
 			$(selectedOpts).remove();
 			e.preventDefault();
 
-			property.data('updated', true);
+			toSelect.data('updated', true);
 			if (data.change) {
 				data.change();
 			}
@@ -1324,7 +1295,7 @@ $.fn.multipleSelect = function(data) {
 			$(selectedOpts).remove();
 			e.preventDefault();
 
-			property.data('updated', true);
+			toSelect.data('updated', true);
 
 			if (data.change) {
 				data.change();
@@ -1333,22 +1304,59 @@ $.fn.multipleSelect = function(data) {
 
 	}
 
+	if(options.useVariablesAsValues) {
+		options.values = options.variables;
+		options.valuesIsObjectList = false;
+	}
+	
 	if (options.values) {
 
-		$
-				.each(
-					options.values,
-					function(idx, obj) {
+		$.each(options.values,
+			function(idx, obj) {
+			debugger;
+				var selectItem = options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0) ? toSelect : select;
+				
+				if(options.valuesIsObjectList) {
+					selectItem.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey 
+							? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] 
+								: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
+				} else {
+					selectItem.append('<option ' + 'value="' + obj + '">' + (options.nameAttrIsResourceKey 
+							? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? obj
+								: getResource(options.resourceKeyTemplate.format(obj))) : obj) + "</option>");
+				}
+		});
 
+		if (options.selected) {
+			$.each(options.selected,
+				function(idx, id) {
+					var selectedOpt;
+					if (options.selectedIsObjectList) {
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+					} else {
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+					}
+					if (selectedOpt) {
+						toSelect.append($(selectedOpt).clone());
+						$(selectedOpt).remove();
+					}
+				});
+		}
+
+	} else if (options.url) {
+		getJSON(
+			options.url,
+			null,
+			function(data) {
+				$.each(data.resources,
+					function(idx, obj) {
 						var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
 						selectItem
 								.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] : getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
-					});
+				});
 
-		if (options.selected) {
-			$
-					.each(
-						options.selected,
+				if (options.selected) {
+					$.each(options.selected,
 						function(idx, id) {
 							var selectedOpt;
 							if (options.selectedIsObjectList) {
@@ -1361,43 +1369,12 @@ $.fn.multipleSelect = function(data) {
 								$(selectedOpt).remove();
 							}
 						});
-		}
-
-	} else if (options.url) {
-		getJSON(
-			options.url,
-			null,
-			function(data) {
-				$
-						.each(
-							data.resources,
-							function(idx, obj) {
-								var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
-								selectItem
-										.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] : getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
-							});
-
-				if (options.selected) {
-					$
-							.each(
-								options.selected,
-								function(idx, id) {
-									var selectedOpt;
-									if (options.selectedIsObjectList) {
-										selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
-									} else {
-										selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
-									}
-									if (selectedOpt) {
-										toSelect.append($(selectedOpt).clone());
-										$(selectedOpt).remove();
-									}
-								});
 				}
 			});
 	}
 
-	toSelect.prepareProperty(options.metaData,
+	toSelect.data('isMultipleSelect', true);
+	toSelect.prepareProperty(options,
 			options.id, options.values, options.resourceKey);
 };
 
