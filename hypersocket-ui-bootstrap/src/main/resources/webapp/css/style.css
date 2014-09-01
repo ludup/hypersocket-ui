@@ -865,9 +865,19 @@ table {
 
 .code {
 	border: 1px solid rgb(204,204,204);
-	height: 150px;
+	height: 300px;
 	padding: 0px;
 }
+
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
+.CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
 .dialogActions {
 	valign: middle; 
 	text-align: right;
