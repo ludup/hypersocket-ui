@@ -480,6 +480,7 @@
 	$('#generateCSRDialog').localize();
 
 	$('#generateCSR').click(function(e) {
+		resetFields();
 		$('#generateCSRDialog').appendTo('body');
 		$('#resetCSRButton').hide();
 		$('#csrText').val("");
@@ -491,6 +492,15 @@
 	});
 	
 
+	function resetFields(){
+		$('#cn').val("");
+		$('#ou').val("");
+		$('#o').val("");
+		$('#l').val("");
+		$('#s').val("");
+		$('#c').val("");
+	}
+	
 	getJSON('certificates', null, function(data) {
 		updateStatus(data);
 		loadComplete();
@@ -631,6 +641,7 @@
 						if (data.success) {
 							$('#csrText').val(data.message);
 							$('#csr').show();
+							$('#generateCSRDialog').dialogError('reset');
 							$('#generateCSRForm').hide();
 							$('#generateCSRButton').hide();
 							$('#resetCSRButton').show();
