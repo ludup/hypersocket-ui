@@ -66,6 +66,26 @@ $.fn.revertProperty = function() {
 		$(this).attr('checked', val ? 'checked' : '');
 		$(this).data('updated', false);
 	}
+	
+	var meta = $(this).data('options');
+	
+	if(meta.inputType=='slider') {
+		$(this).first('.propertyInput').slider('setValue', $(this).data('originalValue'));
+	} else if(meta.inputType=='css' 
+		|| meta.inputType=='java' 
+			|| meta.inputType=='javascript'
+				|| meta.inputType=='html'
+					|| meta.inputType=='xml'
+						|| meta.inputType=='sql') {
+		
+		var codeMirror = $(this).data('codeMirror');
+		
+		codeMirror.setValue($(this).data('originalValue'));
+		
+		setTimeout(function() {
+			codeMirror.refresh();
+    	},1);
+	} 
 };
 
 $.fn.clearProperty = function() {
@@ -287,6 +307,7 @@ $.fn.propertyPage = function(opts) {
 											});
 									    	
 									    	myCodeMirror.on("change", function(cm, change) {
+									    		
 												  $('#' + tab + '_input' + this.id).markUpdated();
 												  if (options.showButtons) {
 														$(revertButton).attr('disabled', false);
@@ -311,6 +332,7 @@ $.fn.propertyPage = function(opts) {
 											});
 									    	
 									    	myCodeMirror.on("change", function(cm, change) {
+									    		debugger;
 												  $('#' + tab + '_input' + this.id).markUpdated();
 												  if (options.showButtons) {
 														$(revertButton).attr('disabled', false);
@@ -319,7 +341,11 @@ $.fn.propertyPage = function(opts) {
 									    	});
 									    	
 									    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
+									    	$('#' + tab + '_input' + this.id).show();
 									    	
+									    	setTimeout(function() {
+									    	    myCodeMirror.refresh();
+									    	},1);
 									    	
 									    } else if(obj.inputType == 'editor') {
 									    	
@@ -451,7 +477,7 @@ $.fn.propertyPage = function(opts) {
 													}
 											});
 											
-											$('#' + tab + '_input' + this.id).slider('setValue', this.value)
+											$('#' + tab + '_input' + this.id).slider('setValue', this.value);
 
 										} else if (obj.inputType != 'hidden') {
 										
@@ -735,9 +761,13 @@ $.fn.selectButton = function(data) {
 				}
 			});
 		
-			if(obj.changed) {
-				obj.changed(selected);
-			}
+			/**
+			 * This is causing property page to show apply/revert buttons as enabled
+			 * on first load.
+			 */
+//			if(obj.changed) {
+//				obj.changed(selected);
+//			}
 			
 			if(selected==null) {
 				var val = $('.selectButton_' + id).first().attr('data-value');
@@ -777,9 +807,13 @@ $.fn.selectButton = function(data) {
 						}
 					});
 				
-				if(obj.changed) {
-					obj.changed(selected);
-				}
+				/**
+				 * This is causing property page to show apply/revert buttons as enabled
+				 * on first load.
+				 */
+//				if(obj.changed) {
+//					obj.changed(selected);
+//				}
 
 				if(selected==null) {
 					var val = $('.selectButton_' + id).first().attr('data-value');
