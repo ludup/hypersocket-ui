@@ -295,8 +295,11 @@ $.fn.propertyPage = function(opts) {
 									    	});
 									    	
 									    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
+									    	$('#' + tab + '_input' + this.id).show();
 									    	
-									    	
+									    	setTimeout(function() {
+									    	    myCodeMirror.refresh();
+									    	},1);
 									    } else if(obj.inputType == 'xml' || obj.inputType == 'html') {
 									    	
 									    	$('#' + tab + '_value' + this.id).append('<div class="code form-control propertyInput" id="' + tab + '_input' + this.id + '"></div>');
