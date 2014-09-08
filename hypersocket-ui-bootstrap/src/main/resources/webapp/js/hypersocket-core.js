@@ -373,7 +373,27 @@ $.fn.propertyPage = function(opts) {
 													}
 												} });
 
-										} else if (obj.inputType == 'multipleSelect') {
+										} else if (obj.inputType == 'autoComplete') {
+											$('#' + tab + '_value' + this.id).autoComplete(
+													{ metaData : obj, 
+														id: this.id,
+														url : obj.url, 
+														value: this.value,
+														options : obj.options, 
+														nameIsResourceKey: obj.nameIsResourceKey,
+														nameAttr: obj.nameAttr,
+														valueAttr: obj.valueAttr,
+														disabled : !options.canUpdate  || this.readOnly, 
+														resourceKey : this.resourceKey, 
+														changed : function() {
+														$(this).markUpdated();
+														if (options.showButtons) {
+															$(revertButton).attr('disabled', false);
+															$(applyButton).attr('disabled', false);
+														}
+													} });
+
+											} else if (obj.inputType == 'multipleSelect') {
 											$('#' + tab + '_value' + this.id)
 													.multipleSelect(
 														{ metaData : obj, 
@@ -1042,7 +1062,7 @@ $.fn.autoComplete = function(data) {
 	.extend(
 		{ valueAttr : 'value', nameAttr : 'name', nameAttrIsResourceKey : false, 
 			selectAllIfEmpty : false, selectedIsObjectList : false, 
-				isPropertyInput : true, disabled : false, 
+				isPropertyInput : true, disabled : false, remoteSearch: false,
 					resourceKeyTemplate: '{0}' }, data);
 
 	if(data && data.metaData) {
@@ -1061,7 +1081,7 @@ $.fn.autoComplete = function(data) {
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu" role="menu"><li><a tabindex="-1" href="#">' + getResource('search.text') + '</a></li></ul>' 
 			+ '<span class="input-group-addon"><i id="spin_' + id + '" class="fa fa-search"></i></span></div>');
 
-	if (options.url) {
+	if (options.url && !options.remoteSearch) {
 		getJSON(
 			options.url,
 			null,
@@ -1070,6 +1090,11 @@ $.fn.autoComplete = function(data) {
 				var map = [];
 				$.each(data.resources, function(idx, obj) {
 					map[obj[options.valueAttr]] = obj;
+					debugger;
+					if(obj[options.valueAttr]==options.value) {
+						$('#actual_' + id).val(options.value);
+						$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+					}
 				});
 				$('#input_' + id).data('values', data.resources);
 				$('#input_' + id).data('map', map);
@@ -1081,44 +1106,71 @@ $.fn.autoComplete = function(data) {
 		$('#spin_' + id).addClass('fa-spin');
 		$('#spin_' + id).addClass('fa-spinner');
 		var text = $(this).val();
-		var selected = new Array();
-		$.each($('#input_' + id).data('values'), function(idx, obj) {
-			var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-			if(name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
-				selected.push(obj);
-			}
-		});
-		$('#auto_' + id).empty();
-		if(selected.length > 0 && $(this).val() != '') {
-			$.each(selected, function(idx, obj) {
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
-						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
-			});
-			$('.optionSelect').off('click');
-			$('.optionSelect').on('click', function() {
-				var value = $(this).data('value');
-				var obj = $('#input_' + id).data('map')[value];
-				$('#actual_' + id).val(value);
-				$('#input_' + id).val($(this).text());
-				$('[data-toggle="dropdown"]').parent().removeClass('open');
-				
-				if(options.changed) {
-					options.changed(obj);
+		
+		var createDropdown = function() {
+			
+			var selected = new Array();
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+				if(name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
+					selected.push(obj);
 				}
 			});
-		} else {
-			if($(this).val()=='') {
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+			$('#auto_' + id).empty();
+			if(selected.length > 0 && $(this).val() != '') {
+				$.each(selected, function(idx, obj) {
+					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
+							+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
+				});
+				$('.optionSelect').off('click');
+				$('.optionSelect').on('click', function() {
+					var value = $(this).data('value');
+					var obj = $('#input_' + id).data('map')[value];
+					$('#actual_' + id).val(value);
+					$('#input_' + id).val($(this).text());
+					$('[data-toggle="dropdown"]').parent().removeClass('open');
+					
+					if(options.changed) {
+						options.changed(obj);
+					}
+				});
 			} else {
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+				if($(this).val()=='') {
+					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+				} else {
+					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+				}
 			}
+			$('#input_' + id).dropdown();
+			$('[data-toggle="dropdown"]').parent().removeClass('open');
+			$('#input_' + id).dropdown('toggle');
+			$('#spin_' + id).removeClass('fa-spin');
+			$('#spin_' + id).removeClass('fa-spinner');
+			$('#spin_' + id).addClass('fa-search');
 		}
-		$('#input_' + id).dropdown();
-		$('[data-toggle="dropdown"]').parent().removeClass('open');
-		$('#input_' + id).dropdown('toggle');
-		$('#spin_' + id).removeClass('fa-spin');
-		$('#spin_' + id).removeClass('fa-spinner');
-		$('#spin_' + id).addClass('fa-search');
+		if(!options.remoteSearch) {
+			createDropdown();
+		} else {
+			getJSON(
+					options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text,
+					null,
+					function(data) {
+						
+						var map = [];
+						$.each(data.aaData, function(idx, obj) {
+							map[obj[options.valueAttr]] = obj;
+							if(obj[options.valueAttr]==options.value) {
+								$('#actual_' + id).val(options.value);
+								$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+							}
+						});
+						$('#input_' + id).data('values', data.resources);
+						$('#input_' + id).data('map', map);
+						
+						createDropdown();
+					});
+			
+		}
 	});
 	
 	var callback = {
