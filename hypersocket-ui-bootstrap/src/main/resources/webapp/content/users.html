@@ -143,11 +143,11 @@
 										return false;
 									}
 									if(create) {
-										if($('#password').val() == '') {
+										if($('#userPassword').val() == '') {
 											$('#addUserModal').resourceDialog('error', "error.passwordRequired");
 											return false;
 										}
-										if($('#password').val() != $('#confirmPassword').val()) {
+										if($('#userPassword').val() != $('#userConfirmPassword').val()) {
 											$('#addUserModal').resourceDialog('error', "error.passwordsDontMatch");
 											return false;
 										}
@@ -158,8 +158,8 @@
 									$('#userName').val('');
 									$('#userName').attr('disabled', !create),
 									$('#userId').val('');
-									$('#password').val('');
-									$('#confirmPassword').val('');
+									$('#userPassword').val('');
+									$('#userConfirmPassword').val('');
 									$('#userProperties').clearProperties();
 									$('#tabUserGroups').multipleSelect();
 									
