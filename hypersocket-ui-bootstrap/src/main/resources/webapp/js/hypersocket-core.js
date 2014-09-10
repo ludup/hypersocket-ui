@@ -332,7 +332,6 @@ $.fn.propertyPage = function(opts) {
 											});
 									    	
 									    	myCodeMirror.on("change", function(cm, change) {
-									    		debugger;
 												  $('#' + tab + '_input' + this.id).markUpdated();
 												  if (options.showButtons) {
 														$(revertButton).attr('disabled', false);
@@ -1090,7 +1089,6 @@ $.fn.autoComplete = function(data) {
 				var map = [];
 				$.each(data.resources, function(idx, obj) {
 					map[obj[options.valueAttr]] = obj;
-					debugger;
 					if(obj[options.valueAttr]==options.value) {
 						$('#actual_' + id).val(options.value);
 						$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
@@ -1117,7 +1115,7 @@ $.fn.autoComplete = function(data) {
 				}
 			});
 			$('#auto_' + id).empty();
-			if(selected.length > 0 && $(this).val() != '') {
+			if(selected.length > 0 && text != '') {
 				$.each(selected, function(idx, obj) {
 					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
 							+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
@@ -1135,7 +1133,7 @@ $.fn.autoComplete = function(data) {
 					}
 				});
 			} else {
-				if($(this).val()=='') {
+				if(text=='') {
 					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 				} else {
 					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
