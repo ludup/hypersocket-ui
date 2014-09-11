@@ -144,11 +144,11 @@
 									}
 									if(create) {
 										if($('#userPassword').val() == '') {
-											$('#addUserModal').resourceDialog('error', "error.passwordRequired");
+											$('#addUserModal').resourceDialog('error', "error.passwordEmpty");
 											return false;
 										}
 										if($('#userPassword').val() != $('#userConfirmPassword').val()) {
-											$('#addUserModal').resourceDialog('error', "error.passwordsDontMatch");
+											$('#addUserModal').resourceDialog('error', "error.passwordsNotMatched");
 											return false;
 										}
 									}
