@@ -490,6 +490,7 @@ $.fn.propertyPage = function(opts) {
 													return value + ' ' + getResource(obj.labelResourceKey);
 												}
 											}).on('slide', function(ev){
+												   $(this).data('updated', true);
 												   if(options.showButtons) {
 														$(revertButton).attr('disabled', false);
 														$(applyButton).attr('disabled', false);
