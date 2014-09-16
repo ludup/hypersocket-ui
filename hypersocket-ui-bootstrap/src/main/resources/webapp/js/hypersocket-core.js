@@ -1642,7 +1642,7 @@ $.fn.ajaxResourcePage = function(params) {
 	var options = $
 			.extend(
 				{ divName : divName, canCreate : false, canUpdate : false, canDelete : false,
-					icon : 'fa-cog', disableDecoration: false },
+					icon : 'fa-cog', disableDecoration: false, createButtonText: "text.add" },
 				params);
 
 	$(this).data('options', options);
@@ -1887,9 +1887,10 @@ $.fn.ajaxResourcePage = function(params) {
 	
 	if (options.canCreate) {
 
+		if(options)
 		$('#' + divName + 'Actions')
 				.append(
-					'<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa fa-plus-circle"></i>' + getResource('text.add') + '</button>');
+					'<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa fa-plus-circle"></i>' + getResource(options.createButtonText) + '</button>');
 		$('#' + divName + 'Add').click(function() {
 			if (options.showCreate) {
 				options.showCreate();
