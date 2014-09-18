@@ -2577,12 +2577,6 @@ function home(data) {
 										'<span>' + getResource("restart.label") + '</span>' +
 									'</div>' +
 								'</div>' +
-								'<div class="modal-footer">' +
-									'<button class="btn btn-small btn-danger" id="buttonDeclineShutdown" data-dismiss="modal">' +
-										'<i class="fa fa-ban"></i>' +
-										'<span>' + getResource("power.decline") + '</span>' +
-									'</button>' +
-								'</div>' +
 							'</div>' +
 						'</div>' +
 					'</div>';
@@ -2680,21 +2674,13 @@ function home(data) {
 }
 
 function shutdown(option){
-	$('#shutdownServer').modal('hide');
-	$('#shutdownServer').remove();
 	
-	var shutdownAnimation = '<div class="modal" id="shutdownAnimation" tabindex="-1" role="dialog">' +
-		'<div class="modal-dialog modal-sm">' +
-			'<div class="modal-content">' +
-				'<div class="modal-body" style="text-align: center">' +
-					'<span style="margin-bottom: 15px">' + getResource("power.wait.shutdown") + '</span>' +
-					'</br>' +
-					'<img src="./images/loading_anim.gif" style="width: 30px; height: auto"/>' +
-				'</div>' +
-			'</div>' +
-		'</div>' +
-	'</div>';
-	$(shutdownAnimation).modal('show');
+	$('#shutdownServer').find('.modal-body').empty();
+	$('#shutdownServer').find('.modal-body').append(
+			'<span style="margin-bottom: 15px">' + getResource("power.wait.shutdown") + '</span>' +
+			'</br>' +
+			'<i class="fa fa-spinner fa-spin" style="font-size: 40px; width: 100%; text-align: center"></i>')
+	
 	getJSON('server/' + option + '/5', function(data) {
 	
 		if(data.success) {
@@ -2702,11 +2688,11 @@ function shutdown(option){
 			
 			var serverRunning = true;
 			var restarted = false;
-			while(serverRunning || (!serverRunning && !restarted && option == 'restart')){
+				
+			var timer = setTimeout(function() {
 				$.ajax({
 					url: basePath + '/api/server/networkInterfaces',
 					dataType: 'json',
-					async: false,
 					success: function(data){
 						if(!serverRunning){
 							restarted = true;
@@ -2714,20 +2700,24 @@ function shutdown(option){
 					},
 					error: function(data) {
 						if(option == 'restart' && serverRunning){
-							$('#shutdownAnimation').find('span').text(getResource("power.wait.restart"));
+							$('#shutdownServer').find('span').text(getResource("power.wait.restart"));
 						}
 						serverRunning = false;
 					}
 				});
-			}
-			$('#shutdownAnimation').modal('hide');
-			$('#shutdownAnimation').remove();
-			bootbox.alert(getResource('power.finished.' + option));
-			if(option == 'restart'){
-				setTimeout(function(){
-					location.reload();
-				}, 2000);
-			}
+				if(serverRunning || (!serverRunning && !restarted && option == 'restart')){
+					timer = setTimeout(arguments.callee, 1000);
+				}else{
+					$('#shutdownServer').find('span').text(getResource('power.finished.' + option));
+					$('#shutdownServer').find('i').remove();
+					if(option == 'restart'){
+						setTimeout(function(){
+							location.reload();
+						}, 2000);
+					}
+				}
+			}, 1000);
+			
 		} else {
 			showError(data.error);
 		}
