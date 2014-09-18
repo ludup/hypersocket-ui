@@ -2677,8 +2677,7 @@ function shutdown(option){
 	
 	$('#shutdownServer').find('.modal-body').empty();
 	$('#shutdownServer').find('.modal-body').append(
-			'<span style="margin-bottom: 15px">' + getResource("power.wait.shutdown") + '</span>' +
-			'</br>' +
+			'<p style="width: 100%; text-align: center;">' + getResource("power.wait.shutdown") + '</p>' +
 			'<i class="fa fa-spinner fa-spin" style="font-size: 40px; width: 100%; text-align: center"></i>')
 	
 	getJSON('server/' + option + '/5', function(data) {
@@ -2687,6 +2686,7 @@ function shutdown(option){
 			//showInformation(false, getResource("power.completed").format(getResource(action + '.label')));
 			
 			var serverRunning = true;
+			var hasStopped = false;
 			var restarted = false;
 				
 			var timer = setTimeout(function() {
@@ -2699,21 +2699,27 @@ function shutdown(option){
 						}
 					},
 					error: function(data) {
-						if(option == 'restart' && serverRunning){
-							$('#shutdownServer').find('span').text(getResource("power.wait.restart"));
-						}
 						serverRunning = false;
+						if(!hasStopped) {
+							hasStopped = true;
+							$('#shutdownServer').find('p').text(getResource("power.finished.shutdown"));
+							setTimeout(function(){
+								if(option == 'restart'){
+									$('#shutdownServer').find('p').text(getResource("power.wait.restart"));
+								}
+							}, 2000);
+						}
 					}
 				});
 				if(serverRunning || (!serverRunning && !restarted && option == 'restart')){
 					timer = setTimeout(arguments.callee, 1000);
 				}else{
-					$('#shutdownServer').find('span').text(getResource('power.finished.' + option));
-					$('#shutdownServer').find('i').remove();
+					$('#shutdownServer').find('p').text(getResource('power.finished.' + option));
+					$('#shutdownServer').find('i').removeClass('fa-spin fa-spinner').addClass('fa-check');
 					if(option == 'restart'){
 						setTimeout(function(){
 							location.reload();
-						}, 2000);
+						}, 5000);
 					}
 				}
 			}, 1000);
