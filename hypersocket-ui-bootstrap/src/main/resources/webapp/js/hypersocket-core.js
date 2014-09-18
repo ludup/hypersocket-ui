@@ -2,6 +2,15 @@
 var contentDiv = '#content';
 var currentMenu = null;
 var currentRealm = null;
+var countries = null;
+
+$.ajax({
+    url: basePath + '/ui/json/countries.json',
+    dataType: "text",
+    success: function(data) {
+    	countries = $.parseJSON(data);
+    }
+});
 
 // jQuery plugin for Spinner control
 $.fn.spin = function(opts) {
@@ -94,6 +103,7 @@ $.fn.clearProperty = function() {
 };
 
 $.fn.markUpdated = function() {
+	$(this).find('.propertyInput').first().data('updated', true);
 	$(this).data('updated', true);
 };
 
@@ -365,11 +375,11 @@ $.fn.propertyPage = function(opts) {
 													disabled : !options.canUpdate  || this.readOnly, 
 													resourceKey : this.resourceKey, 
 													changed : function() {
-													$(this).markUpdated();
-													if (options.showButtons) {
-														$(revertButton).attr('disabled', false);
-														$(applyButton).attr('disabled', false);
-													}
+														$(this).markUpdated();
+														if (options.showButtons) {
+															$(revertButton).attr('disabled', false);
+															$(applyButton).attr('disabled', false);
+														}
 												} });
 
 										} else if (obj.inputType == 'autoComplete') {
@@ -385,15 +395,35 @@ $.fn.propertyPage = function(opts) {
 														disabled : !options.canUpdate  || this.readOnly, 
 														resourceKey : this.resourceKey, 
 														changed : function() {
-														$(this).markUpdated();
-														if (options.showButtons) {
-															$(revertButton).attr('disabled', false);
-															$(applyButton).attr('disabled', false);
-														}
+															$(this).markUpdated();
+															if (options.showButtons) {
+																$(revertButton).attr('disabled', false);
+																$(applyButton).attr('disabled', false);
+															}
 													} });
 
-											} else if (obj.inputType == 'multipleSelect') {
-											$('#' + tab + '_value' + this.id)
+										} else if (obj.inputType == 'countries') { 
+											$('#' + tab + '_value' + this.id).autoComplete(
+													{ metaData : obj, 
+														id: this.id,
+														values : countries, 
+														value: this.value,
+														options : obj.options, 
+														nameIsResourceKey: false,
+														nameAttr: 'name',
+														valueAttr: 'code',
+														disabled : !options.canUpdate  || this.readOnly, 
+														resourceKey : this.resourceKey, 
+														changed : function() {
+															$(this).markUpdated();
+															if (options.showButtons) {
+																$(revertButton).attr('disabled', false);
+																$(applyButton).attr('disabled', false);
+															}
+													} 
+											});
+										} else if (obj.inputType == 'multipleSelect') {
+												$('#' + tab + '_value' + this.id)
 													.multipleSelect(
 														{ metaData : obj, 
 															id: this.id,
@@ -639,11 +669,13 @@ $.fn.saveProperties = function(includeAll, callback) {
 
 			var item = $('#' + obj.id);
 
+			debugger;
 			if(item.data('resourceKey')==undefined) {
 				return;
 			}
 			
 			var meta = item.data('metaData');
+
 			if(!invalid) {
 				if(!item.validateProperty()) {
 					invalid = true;
@@ -1061,7 +1093,7 @@ $.fn.autoComplete = function(data) {
 	var options = $
 	.extend(
 		{ valueAttr : 'value', nameAttr : 'name', nameAttrIsResourceKey : false, 
-			selectAllIfEmpty : false, selectedIsObjectList : false, 
+			selectAllIfEmpty : false, selectedIsObjectList : false, isResourceList: true,
 				isPropertyInput : true, disabled : false, remoteSearch: false,
 					resourceKeyTemplate: '{0}' }, data);
 
@@ -1071,33 +1103,39 @@ $.fn.autoComplete = function(data) {
 	
 	var id = options.id;
 	
-	$(this).data('resourceKey', options.resourceKey);
-	$(this).data('created', true);
-	$(this).data('updated', false);
-	$(this).data('options', options);
-
 	$(this).append('<div class="dropdown input-group"><input type="hidden" class="propertyInput" id="actual_' + id 
 			+ '"><input type="text" id="input_' + id + '" class="form-control dropdown-toggle" data-toggle="dropdown" value="">' 
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu" role="menu"><li><a tabindex="-1" href="#">' + getResource('search.text') + '</a></li></ul>' 
 			+ '<span class="input-group-addon"><i id="spin_' + id + '" class="fa fa-search"></i></span></div>');
 
+	$('#actual_' + id).data('resourceKey', options.resourceKey);
+	$('#actual_' + id).data('created', true);
+	$('#actual_' + id).data('updated', false);
+	$('#actual_' + id).data('options', options);
+	$('#actual_' + id).data('metaData', options);
+	
+	var buildData = function(values) {
+		var map = [];
+		$.each(values, function(idx, obj) {
+			map[obj[options.valueAttr]] = obj;
+			if(obj[options.valueAttr]==options.value) {
+				$('#actual_' + id).val(options.value);
+				$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+			}
+		});
+		$('#input_' + id).data('values', values);
+		$('#input_' + id).data('map', map);
+	};
+	
 	if (options.url && !options.remoteSearch) {
 		getJSON(
 			options.url,
 			null,
 			function(data) {
-				
-				var map = [];
-				$.each(data.resources, function(idx, obj) {
-					map[obj[options.valueAttr]] = obj;
-					if(obj[options.valueAttr]==options.value) {
-						$('#actual_' + id).val(options.value);
-						$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-					}
-				});
-				$('#input_' + id).data('values', data.resources);
-				$('#input_' + id).data('map', map);
+				buildData(options.isResourceList ? data.resources : data);
 			});
+	} else if(options.values) {
+		buildData(options.values);
 	}
 	
 	$('#input_' + id).keyup(function() {
@@ -1170,6 +1208,25 @@ $.fn.autoComplete = function(data) {
 					});
 			
 		}
+		
+		callback = {
+				setValue: function(raw) {
+					$('#actual_' + id).val(raw);
+					var text = $('#input_' + id).data('map')[raw];
+					$('#input_' + id).val(text);
+				}, 
+				getValue: function() {
+					return $('#actual_' + id).val();
+				},
+				enable: function() {
+					$('#input_' + id).attr('disabled', true);
+				}, 
+				disable: function() {
+					$('#input_' + id).attr('disabled', false);
+				}
+			}
+		
+		return callback;
 	});
 	
 	var callback = {
