@@ -2610,29 +2610,46 @@ function home(data) {
 
 			$('#navMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-power-off"></i></a></li>');
 			
-			$('#powerMenu')
-			.append(
-				'<ul id="power" class="dropdown-menu dropdown-menu-right" role="menu"></ul>');
-			$('#power')
-				.append(
-					'<li role="presentation"><a class="powerClick" data-value="shutdown" role="menuitem" tabindex="-1" href="#">' + getResource("shutdown.label") + '</li>');
-			$('#power')
-				.append(
-					'<li role="presentation"><a class="powerClick" data-value="restart" role="menuitem" tabindex="-1" href="#">' + getResource("restart.label") + '</li>');
-			
-			$('.powerClick').click(function(e) {
-				var action = $(this).attr('data-value');
-					bootbox.confirm(getResource("power.confirm").format(getResource(action + '.label')), function(result) {
-							if(result) {
-								getJSON('server/' + action + '/5', function(data) {
-										if(data.success) {
-											showInformation(false, getResource("power.completed").format(getResource(action + '.label')));
-										} else {
-												showError(data.error);
-										}
-								});
-							}
-					});
+			$('#powerMenu').click(function(e) {
+				var shutdownModal = '<div class="modal" id="shutdownServer" tabindex="-1" role="dialog">' +
+						'<div class="modal-dialog modal-sm">' +
+							'<div class="modal-content">' +
+								'<div class="modal-header">' +
+									'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+									'<h4 class="modal-title" id="myModalLabel">' + getResource('power.shutdownServer') + '</h4>' +
+								'</div>' +
+								'<div class="modal-body row">' +
+									'<div class="col-xs-6" style="text-align: center">' +
+										'<button class="btn btn-small btn-primary" id="buttonShutdown" style="margin-bottom: 15px" data-dismiss="modal">' +
+											'<i class="fa fa-power-off" style="font-size: 40px"></i>' +
+										'</button>' +
+										'</br>' +
+										'<span>' + getResource("shutdown.label") + '</span>' +
+									'</div>' +
+									'<div class="col-xs-6" style="text-align: center">' +
+										'<button class="btn btn-small btn-primary" id="buttonRestart" style="margin-bottom: 15px" data-dismiss="modal">' +
+											'<i class="fa fa-repeat" style="font-size: 40px"></i>' +
+										'</button>' +
+										'</br>' +
+										'<span>' + getResource("restart.label") + '</span>' +
+									'</div>' +
+								'</div>' +
+								'<div class="modal-footer">' +
+									'<button class="btn btn-small btn-danger" id="buttonDeclineShutdown" data-dismiss="modal">' +
+										'<i class="fa fa-ban"></i>' +
+										'<span>' + getResource("power.decline") + '</span>' +
+									'</button>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>';
+				$(shutdownModal).modal('show');
+				$('#buttonShutdown').click(function(){
+					shutdown('shutdown');
+				});
+				$('#buttonRestart').click(function(){
+					shutdown('restart');
+				});
 			});
 	
 		if (showLocales) {
@@ -2717,6 +2734,61 @@ function home(data) {
 
 	// checkNotifications();
 
+}
+
+function shutdown(option){
+	$('#shutdownServer').modal('hide');
+	$('#shutdownServer').remove();
+	
+	var shutdownAnimation = '<div class="modal" id="shutdownAnimation" tabindex="-1" role="dialog">' +
+		'<div class="modal-dialog modal-sm">' +
+			'<div class="modal-content">' +
+				'<div class="modal-body" style="text-align: center">' +
+					'<span style="margin-bottom: 15px">' + getResource("power.wait.shutdown") + '</span>' +
+					'</br>' +
+					'<img src="./images/loading_anim.gif" style="width: 30px; height: auto"/>' +
+				'</div>' +
+			'</div>' +
+		'</div>' +
+	'</div>';
+	$(shutdownAnimation).modal('show');
+	getJSON('server/' + option + '/5', function(data) {
+	
+		if(data.success) {
+			//showInformation(false, getResource("power.completed").format(getResource(action + '.label')));
+			
+			var serverRunning = true;
+			var restarted = false;
+			while(serverRunning || (!serverRunning && !restarted && option == 'restart')){
+				$.ajax({
+					url: basePath + '/api/server/networkInterfaces',
+					dataType: 'json',
+					async: false,
+					success: function(data){
+						if(!serverRunning){
+							restarted = true;
+						}
+					},
+					error: function(data) {
+						if(option == 'restart' && serverRunning){
+							$('#shutdownAnimation').find('span').text(getResource("power.wait.restart"));
+						}
+						serverRunning = false;
+					}
+				});
+			}
+			$('#shutdownAnimation').modal('hide');
+			$('#shutdownAnimation').remove();
+			bootbox.alert(getResource('power.finished.' + option));
+			if(option == 'restart'){
+				setTimeout(function(){
+					location.reload();
+				}, 2000);
+			}
+		} else {
+			showError(data.error);
+		}
+	});
 }
 
 function loadRealms(realms) {
