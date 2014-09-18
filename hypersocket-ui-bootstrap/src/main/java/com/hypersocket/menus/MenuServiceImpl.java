@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hypersocket.auth.AuthenticatedServiceImpl;
+import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certs.CertificatePermission;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.i18n.I18NService;
@@ -102,6 +103,24 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				CertificatePermission.CERTIFICATE_ADMINISTRATION),
 				MenuService.MENU_CONFIGURATION);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "certificates",
+				"fa-certificate", "certificateResources", 99999,
+				CertificateResourcePermission.READ,
+				CertificateResourcePermission.CREATE,
+				CertificateResourcePermission.UPDATE,
+				CertificateResourcePermission.DELETE),
+				MenuService.MENU_CONFIGURATION);
+		
+		registerExtendableTable(MenuService.ACTIONS_CERTIFICATES);
+		
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
+				"downloadCSR", "fa-download", "downloadCSR", CertificateResourcePermission.UPDATE, 0,
+				null, null));
+		
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
+				"certificateUpload", "fa-upload", "certificateUpload", CertificateResourcePermission.UPDATE, 0,
+				null, null));
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "accessControl",
 				"fa-unlock-alt", null, 200, null, null, null, null),
 				MenuService.MENU_SYSTEM);
