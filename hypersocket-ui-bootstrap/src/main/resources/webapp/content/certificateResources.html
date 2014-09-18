@@ -83,7 +83,7 @@
 						buttonClass: 'btn-success',
 						action: function() {
 							$('#pemUpload').data('action')(function() {
-								// callback
+// 								$('#' + dialogOptions.divName + 'Table').dataTable().fnDraw();
 							});
 						}
 					});
@@ -97,7 +97,7 @@
 						buttonClass: 'btn-success',
 						action: function() {
 							$('#pfxUpload').data('action')(function() {
-								// callback
+// 								$('#' + dialogOptions.divName + 'Table').dataTable().fnDraw();
 							});
 						}
 					});
@@ -142,7 +142,8 @@
 										url : 'certificates/template/', 
 										showButtons : false, 
 										canUpdate : currentMenu.canUpdate, 
-										useTemplates : true 
+										useTemplates : true,
+										displayMode: 'create'
 									});
 								}
 
@@ -164,11 +165,13 @@
 								
 								$('#resourceId').val(resource.id);
 								$('#resourceName').val(resource.name);
+								$('#resourceName').attr('disabled', resource.system);
 								
 								$('#certificateProperties').propertyPage(
 										{ url : 'certificates/properties/' + resource.id, 
 											showButtons : false, 
-											canUpdate : currentMenu.canUpdate && !readOnly
+											canUpdate : currentMenu.canUpdate && !readOnly,
+											displayMode: 'update'
 								});
 							
 							},

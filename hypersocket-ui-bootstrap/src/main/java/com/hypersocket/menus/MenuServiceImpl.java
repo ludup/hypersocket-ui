@@ -96,14 +96,6 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "certificates",
-				"fa-certificate", "certificates", 1000,
-				CertificatePermission.CERTIFICATE_ADMINISTRATION,
-				CertificatePermission.CERTIFICATE_ADMINISTRATION,
-				CertificatePermission.CERTIFICATE_ADMINISTRATION,
-				CertificatePermission.CERTIFICATE_ADMINISTRATION),
-				MenuService.MENU_CONFIGURATION);
-
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "certificates",
 				"fa-certificate", "certificateResources", 99999,
 				CertificateResourcePermission.READ,
 				CertificateResourcePermission.CREATE,

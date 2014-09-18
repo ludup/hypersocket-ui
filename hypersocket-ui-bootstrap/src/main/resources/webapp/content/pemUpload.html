@@ -106,9 +106,9 @@
 				success : function(data) {
 
 					if (data.success) {
-						showInformation(false,data.message);
-						updateStatus(data);
 						$('#pemUpload').modal('hide');
+						$('#pemUpload').data('callback')();
+						showInformation(false,data.message);
 					} else {
 						$('#pemUpload').dialogError(data.message);
 					}
