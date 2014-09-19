@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import com.hypersocket.auth.AuthenticatedServiceImpl;
 import com.hypersocket.certificates.CertificateResourcePermission;
-import com.hypersocket.certs.CertificatePermission;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.permissions.AccessDeniedException;
@@ -110,6 +109,10 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				null, null));
 		
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
+				"downloadCertificate", "fa-certificate", "downloadCertificate", CertificateResourcePermission.READ, 0,
+				null, null));
+		
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
 				"certificateUpload", "fa-upload", "certificateUpload", CertificateResourcePermission.UPDATE, 0,
 				null, null));
 		
@@ -158,12 +161,15 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 						"defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION,
 						0, "isDefault", null));
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_BUSINESS_RULES, "",
+				null, 8888, null, null, null, null, null));
+		
 		registerMenu(new MenuRegistration(
 				TriggerResourceServiceImpl.RESOURCE_BUNDLE, "triggers",
 				"fa-flash", "triggers", 200, TriggerResourcePermission.READ,
 				TriggerResourcePermission.CREATE,
 				TriggerResourcePermission.UPDATE,
-				TriggerResourcePermission.DELETE), MenuService.MENU_RESOURCES);
+				TriggerResourcePermission.DELETE), MenuService.MENU_BUSINESS_RULES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));
