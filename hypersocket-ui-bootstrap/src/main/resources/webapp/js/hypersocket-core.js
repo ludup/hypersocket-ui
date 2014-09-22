@@ -303,9 +303,10 @@ $.fn.propertyPage = function(opts) {
 											} else {
 												$('#' + tab + '_value' + this.id).append(
 														'<textarea ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ')
-														+ 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input' 
-														+ this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5) 
-														+ '" maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
+														+ 'class="form-control propertyInput" id="' + tab + '_input' + this.id + '" name="input'
+														+ this.id + '" cols="' + (obj.cols ? obj.cols : 30) + '" rows="' + (obj.rows ? obj.rows : 5)  + '" '
+														+ (obj.font ? 'style="font-family: ' + obj.font + '" ' : ' ') 
+														+ 'maxlength="' + obj.maxlength + '">' + stripNull(this.value) + '</textarea>');
 											}
 										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java') {
 									    	
@@ -669,7 +670,6 @@ $.fn.saveProperties = function(includeAll, callback) {
 
 			var item = $('#' + obj.id);
 
-			debugger;
 			if(item.data('resourceKey')==undefined) {
 				return;
 			}
@@ -1722,9 +1722,9 @@ $.fn.ajaxResourcePage = function(params) {
 		html +=	'</div>';
 	}
 	
-	if(options.canCreate) {
-		html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"></div>';
-	}
+
+	html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"></div>';
+	
 
 	if(!options.disableDecoration) {
 		html += '</div>';
