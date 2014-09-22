@@ -35,7 +35,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="uploadPEM" type="button" class="btn btn-primary"><i class="fa fa-upload"></i><span localize="uploadPfx.label"></span></button>
+				<button id="uploadPfxButton" type="button" class="btn btn-primary"><i id="uploadPfxIcon" class="fa fa-upload"></i><span localize="uploadPfx.label"></span></button>
 			</div>
 		</div>
 	</div>
@@ -47,19 +47,26 @@
 		$('#pfxUpload').localize();
 		
 		$('#pfxUpload').data('action', function(callback) {
+			
+			$('#pfxPassphrase').val('');
+			$('#pfxKey').val('');
+			
 			$('#pfxUpload').data('callback', callback);
 			$('#pfxUpload').modal('show');
 		});
 		
-		$('#uploadPEM').click(function(e) {
+		$('#uploadPfxButton').click(function(e) {
 			if (!$('#pfxKey')[0].files[0]) {
-				$('#pfxUpload').dialogError(getResource("error.selectKey"));
+				$('#pfxUpload').resourceDialog('error', getResource("error.selectKey"));
 				return;
 			}
 			var formData = new FormData();
 			
 			formData.append('passphrase', $('#pfxPassphrase').val());
 			formData.append('key', $('#pfxKey')[0].files[0]);
+			
+			$('#uploadPfxIcon').removeClass('fa-upload');
+			$('#uploadPfxIcon').addClass('fa-spinner fa-spin');
 			
 			$.ajax({
 				type : 'POST',
@@ -76,12 +83,16 @@
 						$('#pfxUpload').data('callback')();
 						showInformation(false,data.message);
 					} else {
-						$('#pfxUpload').dialogError(data.message);
+						$('#pfxUpload').resourceDialog('error', data.message);
 					}
 
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					$('#pfxUpload').dialogError(errorThrown);
+					$('#pfxUpload').resourceDialog('error', errorThrown);
+				},
+				complete: function() {
+					$('#uploadPfxIcon').removeClass('fa-spinner fa-spin');
+					$('#uploadPfxIcon').addClass('fa-upload');
 				}
 			});
 		});

@@ -81,9 +81,9 @@
 						resourceKey: 'pemUpload',
 						icon: 'fa-upload',
 						buttonClass: 'btn-success',
-						action: function() {
+						action: function(callback) {
 							$('#pemUpload').data('action')(function() {
-// 								$('#' + dialogOptions.divName + 'Table').dataTable().fnDraw();
+								callback();
 							});
 						}
 					});
@@ -95,9 +95,9 @@
 						resourceKey: 'pfxUpload',
 						icon: 'fa-upload',
 						buttonClass: 'btn-success',
-						action: function() {
+						action: function(callback) {
 							$('#pfxUpload').data('action')(function() {
-// 								$('#' + dialogOptions.divName + 'Table').dataTable().fnDraw();
+								callback();
 							});
 						}
 					});
@@ -113,6 +113,8 @@
 								name : "name"
 							}],
 							resourceKey : "certificate",
+							createButtonText: 'text.createCertificate',
+							createButtonIcon: 'fa-certificate',
 							additionalActionsDropdown: true,
 							additionalActions: actions,
 							additionalButtons: additionalButtons,

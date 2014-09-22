@@ -109,11 +109,19 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				null, null));
 		
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"downloadCertificate", "fa-certificate", "downloadCertificate", CertificateResourcePermission.READ, 0,
+				"downloadCertificate", "fa-certificate", "downloadCertificate", CertificateResourcePermission.READ, 100,
 				null, null));
 		
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"certificateUpload", "fa-upload", "certificateUpload", CertificateResourcePermission.UPDATE, 0,
+				"certificateUpload", "fa-upload", "certificateUpload", CertificateResourcePermission.UPDATE, 200,
+				null, null));
+		
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
+				"pemExport", "fa-download", "pemExport", CertificateResourcePermission.READ, 300,
+				null, null));
+		
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
+				"pfxExport", "fa-download", "pfxExport", CertificateResourcePermission.READ, 400,
 				null, null));
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "accessControl",

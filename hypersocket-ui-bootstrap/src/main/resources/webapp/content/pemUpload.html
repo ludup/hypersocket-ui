@@ -57,7 +57,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="uploadPEM" type="button" class="btn btn-primary"><i class="fa fa-upload"></i><span localize="title.uploadPem"></span></button>
+				<button id="uploadPemButton" type="button" class="btn btn-primary"><i id="uploadPemIcon" class="fa fa-upload"></i><span localize="title.uploadPem"></span></button>
 			</div>
 		</div>
 	</div>
@@ -69,22 +69,28 @@
 		$('#pemUpload').localize();
 		
 		$('#pemUpload').data('action', function(callback) {
+			
+			$('#pemPassphrase').val('');
+			$('#pemFile').val('');
+			$('#pemBundle').val('');
+			$('#pemFile').val('');
+			
 			$('#pemUpload').data('callback', callback);
 			$('#pemUpload').modal('show');
 		});
 		
-		$('#uploadPEM').click(function(e) {
+		$('#uploadPemButton').click(function(e) {
 			
 			if (!$('#pemFile')[0].files[0]) {
-				$('#pemUpload').dialogError(getResource("error.selectFile"));
+				$('#pemUpload').resourceDialog('error', getResource("error.selectFile"));
 				return;
 			}
 			if (!$('#pemBundle')[0].files[0]) {
-				$('#pemUpload').dialogError(getResource("error.selectBundle"));
+				$('#pemUpload').resourceDialog('error', getResource("error.selectBundle"));
 				return;
 			}
 			if (!$('#pemKey')[0].files[0]) {
-				$('#pemUpload').dialogError(getResource("error.selectKey"));
+				$('#pemUpload').resourceDialog('error', getResource("error.selectKey"));
 				return;
 			}
 			var formData = new FormData();
@@ -94,6 +100,9 @@
 			formData.append('file', $('#pemFile')[0].files[0]);
 			formData.append('bundle', $('#pemBundle')[0].files[0]);
 			formData.append('key', $('#pemKey')[0].files[0]);
+			
+			$('#uploadPemIcon').removeClass('fa-upload');
+			$('#uploadPemIcon').addClass('fa-spinner fa-spin');
 			
 			$.ajax({
 				type : 'POST',
@@ -110,12 +119,16 @@
 						$('#pemUpload').data('callback')();
 						showInformation(false,data.message);
 					} else {
-						$('#pemUpload').dialogError(data.message);
+						$('#pemUpload').resourceDialog('error', data.message);
 					}
 
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					$('#pemUpload').dialogError(errorThrown);
+					$('#pemUpload').resourceDialog('error', errorThrown);
+				},
+				complete: function() {
+					$('#uploadPemIcon').removeClass('fa-spinner fa-spin');
+					$('#uploadPemIcon').addClass('fa-upload');
 				}
 			});
 		});

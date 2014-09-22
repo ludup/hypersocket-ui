@@ -1699,7 +1699,7 @@ $.fn.ajaxResourcePage = function(params) {
 	var options = $
 			.extend(
 				{ divName : divName, canCreate : false, canUpdate : false, canDelete : false,
-					icon : 'fa-cog', disableDecoration: false, createButtonText: "text.add" },
+					icon : 'fa-cog', disableDecoration: false, createButtonText: "text.add", createButtonIcon: "fa-plus-circle" },
 				params);
 
 	$(this).data('options', options);
@@ -1947,7 +1947,7 @@ $.fn.ajaxResourcePage = function(params) {
 		if(options)
 		$('#' + divName + 'Actions')
 				.append(
-					'<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa fa-plus-circle"></i>' + getResource(options.createButtonText) + '</button>');
+					'<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa ' + options.createButtonIcon + '"></i>' + getResource(options.createButtonText) + '</button>');
 		$('#' + divName + 'Add').click(function() {
 			if (options.showCreate) {
 				options.showCreate();
@@ -1964,7 +1964,9 @@ $.fn.ajaxResourcePage = function(params) {
 			var button = this;
 			$('#' + this.resourceKey).click(function() {
 				if(button.action) {
-					button.action();
+					button.action(function() {
+						$('#' + divName + 'Table').dataTable().fnDraw();
+					});
 				}
 			});
 		});
