@@ -6,7 +6,6 @@
 				<h4 class="modal-title" localize="title.uploadCert"></h4>
 			</div>
 			<div class="modal-body">
-				<div class="dialogError"></div>
 				<div class="propertyItem form-group">
 					<p id="certificateUploadInfo"></p>
 				</div>
@@ -52,11 +51,11 @@
 		
 		$('#uploadButton').click(function(e) {
 			if (!$('#file')[0].files[0]) {
-				$('#certificateUpload').dialogError(getResource("error.selectFile"));
+				$('#certificateUpload').resourceDialog('error', getResource("error.selectFile"));
 				return;
 			}
 			if (!$('#bundle')[0].files[0]) {
-				$('#certificateUpload').dialogError(getResource("error.selectBundle"));
+				$('#certificateUpload').resourceDialog('error', getResource("error.selectBundle"));
 				return;
 			}
 			
@@ -79,12 +78,12 @@
 						updateStatus(data);
 						$('#certificateUpload').modal('hide');
 					} else {
-						$('#certificateUpload').dialogError(data.message);
+						$('#certificateUpload').resourceDialog('error', data.message);
 					}
 
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					$('#certificateUpload').dialogError(errorThrown);
+					$('#certificateUpload').resourceDialog('error', errorThrown);
 				}
 			});
 		});

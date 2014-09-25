@@ -9,9 +9,6 @@
 					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
-
-					<div id="groupDialogError" class="dialogError"></div>
-
 					<div class="propertyItem form-group">
 						<label class="col-md-3 control-label" localize="group.name"></label>
 						<div class="propertyValue col-md-9">
@@ -74,7 +71,7 @@
 				canDelete: currentMenu.canDelete,
 				validate : function() {
 					if ($('#groupName').val() == '') {
-						$('#groupDialogError').dialogError(
+						$('#contentGroups').resourceDialog('error', 
 								"error.nameRequired");
 						return false;
 					}

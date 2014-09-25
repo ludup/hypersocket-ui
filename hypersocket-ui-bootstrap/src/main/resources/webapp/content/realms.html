@@ -9,7 +9,6 @@
 					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
-					<div class="dialogError"></div>
 					<div class="propertyItem form-group">
 						<label class="col-md-3 control-label" localize="realm.name.label"></label>
 						<div class="propertyValue col-md-9">
@@ -108,7 +107,7 @@
 						  additionalActionsDropdown : true,
 						  validate : function() {
 							if ($('#name').val() == '') {
-								$('#addRealmForm').dialogError("A name is required!");
+								$('#realmsContent').resourceDialog('error', "A name is required!");
 								return false;
 							}
 							return true;
