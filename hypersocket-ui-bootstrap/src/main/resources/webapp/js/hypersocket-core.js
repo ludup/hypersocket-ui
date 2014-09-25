@@ -277,7 +277,8 @@ $.fn.propertyPage = function(opts) {
 
 										x = JSON.parse(this.metaData);
 										var obj = $.extend(
-											{ restart : false, nameIsResourceKey : false, readOnly: false, disabled: false }, x);
+											{ restart : false, nameIsResourceKey : false, readOnly: false, disabled: false,
+												isPropertyInput: true }, x);
 
 										if(obj.inputType!='hidden') {
 											$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
@@ -769,7 +770,8 @@ $.fn.selectButton = function(data) {
 	
 	var obj = $.extend(
 		{ idAttr: 'id', nameAttr: 'name', valueAttr: 'value', nameAttrIsResourceKey : false, 
-			resourceKeyTemplate: '{0}', disabled : false, value: '', nameIsResourceKey: false }, data);
+			resourceKeyTemplate: '{0}', disabled : false, value: '', nameIsResourceKey: false,
+			     isPropertyInput: false }, data);
 	
 	var id = obj.id;
 
@@ -1558,7 +1560,8 @@ $.fn.multipleTextInput = function(data) {
 
 		var options = $
 				.extend(
-					{ idAttr : 'id', nameAttr : 'name', nameAttrIsResourceKey : false, selectAllIfEmpty : false, selectedIsObjectList : false, isPropertyInput : true, disabled : false },
+					{ idAttr : 'id', nameAttr : 'name', nameAttrIsResourceKey : false, selectAllIfEmpty : false, 
+						selectedIsObjectList : false, isPropertyInput : true, disabled : false },
 					data);
 
 		$(this).data('created', true);
@@ -1680,7 +1683,7 @@ $.fn.multipleTextInput = function(data) {
 	toSelect.data('restart', options.restart);
 	toSelect.data('updated', false);
 
-	toSelect.prepareProperty(options.metaData,
+	toSelect.prepareProperty(options,
 			options.id, options.values, options.resourceKey);
 	if (options.values) {
 
@@ -2355,17 +2358,13 @@ $.fn.resourceDialog = function(params, params2) {
 		dialog.modal('hide');
 	} else if (params === 'error') {
 
-		$(this).find('.dialogError')
-
 		$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
 
 		if (params2 != 'reset') {
-			$(this)
-					.prepend(
+			$(this).prepend(
 						'<div id="dialogErrorHighlight' + $(this).attr('id') + '" class="alert alert-danger"/>');
-			$('#dialogErrorHighlight' + $(this).attr('id'))
-					.append(
-						'<i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(params2) == undefined ? params2 : getResource(params2)) + '</span>');
+			$('#dialogErrorHighlight' + $(this).attr('id')).append('<i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' 
+					+ (getResourceNoDefault(params2) == undefined ? params2 : getResource(params2)) + '</span>');
 		}
 	} else {
 		if (!options.resourceKey) {
