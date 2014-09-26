@@ -100,69 +100,30 @@ function clearError() {
 }
 
 function showError(fade, text) {
-	
-	log("ERROR: " + text);
-	
-	$('#highlight').remove();
-	
-	$('#informationBar').append('<div id="highlight" class="row"><div class="col-sm-12"><p class="alert alert-danger"><i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' + text + '</span></p></div></div>');
-	
-	
-	if(fade) {
-		$('#highlight').fadeOut(5000, function() {
-			$('#highlight').remove();
-		});
-	} 
-//	else {
-//		$('#highlight').append('<a href="#" id="closeError"><span class="ui-icon ui-icon-circle-close" style="float: right; margin-right: .3em;"></span></a>');
-//		
-//		$('#closeError').click(function(e) {
-//			e.preventDefault();
-//			$('#highlight').remove();
-//		});
-//	}
+	showMessage(text, 'fa-warning', 'alert-danger');
 }
 
 function showInformation(fade, text) {
-	
-	log("INFO: " + text);
-	
-	$('#systemMessage').remove();
-	
-	$('body').prepend('<div id="systemMessage" class="alert alert-info" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
-	$('#systemMessage').append('<i class="fa fa-info"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span>');
-	
-	if(fade) {
-		setTimeout(function() {
-			$('#systemMessage').fadeOut(1000, function() {
-				$('#systemMessage').remove();
-			});
-		}, 5000);
-	}
-
+	showMessage(text, 'fa-info', 'alert-info');
 }
 
-//$.fn.dialogError = function(resourceKey) {
-//	$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
-//	
-//	if(resourceKey!='reset') {
-//	 	$(this).find('.dialogError').append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="alert alert-danger"/>');
-//			$('#dialogErrorHighlight' + $(this).attr('id')).append('<i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' 
-//					+ (getResourceNoDefault(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
-//					+ '</span>');
-//	}
-//};
+function showMessage(text, icon, alertClass) {
+	log("MESSAGE: " + text);
 
-//$.fn.dialogInformation = function(resourceKey) {
-//	$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
-//	
-//	if(resourceKey!='reset') {
-//	 	$(this).append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="alert-alert-info"/>');
-//			$('#dialogErrorHighlight' + $(this).attr('id')).append('<span>' 
-//					+ (getResource(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
-//					+ '</span>');
-//	}
-//};
+	/**
+	 * This method always fades now because of the location of the message.
+	 */
+	$('#systemMessage').remove();
+	
+	$('body').prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
+	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span>');
+	
+	setTimeout(function() {
+		$('#systemMessage').fadeOut(1000, function() {
+			$('#systemMessage').remove();
+		});
+	}, 5000);
+}
 
 function getJSON(url, params, callback, errorCallback) {
 	log("GET: " + url);
