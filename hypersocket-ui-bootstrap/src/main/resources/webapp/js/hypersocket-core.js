@@ -1155,6 +1155,20 @@ $.fn.autoComplete = function(data) {
 					selected.push(obj);
 				}
 			});
+			
+			selected.sort(function(a, b) {
+				var nameA = options.nameIsResourceKey ? getResource(a[options.nameAttr]) : a[options.nameAttr];
+				var nameB = options.nameIsResourceKey ? getResource(b[options.nameAttr]) : b[options.nameAttr];
+				
+				if(nameA > nameB) {
+					return 1;
+				}
+				if(nameB > nameA) {
+					return -1;
+				}
+				return 0;
+			});
+			
 			$('#auto_' + id).empty();
 			if(selected.length > 0 && text != '') {
 				$.each(selected, function(idx, obj) {

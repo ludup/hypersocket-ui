@@ -176,8 +176,17 @@
     			 + '    <div class="propertyValue col-xs-4">'
     			 + '        <input type="hidden" class="conditionId" name="conditionId" value="' + (condition ? condition.id : '') + '">'
     			 + '        <select ' + conditionId.format('attribute') + ' class="form-control propertyInput attributeKey">';
+    	
+    	var tmp = new Array();
+    	var tmp2 = new Array();
     	$.each(event.attributeNames, function(idx, obj) {
-    		html += '<option value="' + obj + '">' + getResource(obj) + '</option>';
+    		var resource = getResource(obj);
+    		tmp[resource] = obj;
+    		tmp2.push(resource);
+    	});
+    	
+    	$.each(tmp2.sort(), function(idx, obj) {
+    		html += '<option value="' + tmp[obj] + '">' + obj + '</option>';
     	});
     	
    		html += '        </select>'
