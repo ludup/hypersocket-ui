@@ -23,6 +23,9 @@ public interface MenuService extends AuthenticatedService {
 	static final String MENU_ACCESS_CONTROL = "accessControl";
 	
 	static final String MENU_SYSTEM = "system";
+	
+	static final String MENU_SERVER = "server";
+	
 	static final String MENU_CONFIGURATION = "configuration";
 	
 	static final String MENU_RESOURCES = "resources";

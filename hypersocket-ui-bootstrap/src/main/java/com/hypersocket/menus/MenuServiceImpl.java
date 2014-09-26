@@ -79,15 +79,20 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_SYSTEM, "", null, 100, null, null, null, null));
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "configuration",
-				"fa-cog", null, 100, null, null, null, null),
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_SERVER,
+				"fa-hdd-o", null, 0, null, null, null, null),
 				MenuService.MENU_SYSTEM);
-
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
-				"fa-hdd-o", "settings", 0,
+				"fa-cog", "settings", 0,
 				SystemPermission.SYSTEM_ADMINISTRATION, null,
 				SystemPermission.SYSTEM_ADMINISTRATION, null),
-				MenuService.MENU_CONFIGURATION);
+				MenuService.MENU_SERVER);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_CONFIGURATION,
+				"fa-cog", null, 100, null, null, null, null),
+				MenuService.MENU_SYSTEM);
+		
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realmSettings",
 				"fa-cogs", "realmSettings", 0, ConfigurationPermission.READ,
