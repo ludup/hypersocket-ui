@@ -404,7 +404,7 @@ $.fn.propertyPage = function(opts) {
 														nameIsResourceKey: obj.nameIsResourceKey,
 														nameAttr: obj.nameAttr,
 														valueAttr: obj.valueAttr,
-														disabled : !options.canUpdate  || this.readOnly, 
+														disabled : !options.canUpdate  || this.readOnly || this.disabled, 
 														resourceKey : this.resourceKey, 
 														changed : function() {
 															$(this).markUpdated();
@@ -424,7 +424,7 @@ $.fn.propertyPage = function(opts) {
 														nameIsResourceKey: false,
 														nameAttr: 'name',
 														valueAttr: 'code',
-														disabled : !options.canUpdate  || this.readOnly, 
+														disabled : !options.canUpdate  || this.readOnly || this.disabled, 
 														resourceKey : this.resourceKey, 
 														changed : function() {
 															$(this).markUpdated();
@@ -1119,7 +1119,7 @@ $.fn.autoComplete = function(data) {
 	var id = options.id;
 	
 	$(this).append('<div class="dropdown input-group"><input type="hidden" class="propertyInput" id="actual_' + id 
-			+ '"><input type="text" id="input_' + id + '" class="form-control dropdown-toggle" data-toggle="dropdown" value="">' 
+			+ '"><input type="text" id="input_' + id + '" class="form-control dropdown-toggle" data-toggle="dropdown" value=""' + (options.disabled ? 'disabled=\"disabled\"' : '') + '>' 
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu" role="menu"><li><a tabindex="-1" href="#">' + getResource('search.text') + '</a></li></ul>' 
 			+ '<span class="input-group-addon"><i id="spin_' + id + '" class="fa fa-search"></i></span></div>');
 
