@@ -238,15 +238,7 @@ $.fn.propertyPage = function(opts) {
 									}
 								}
 								tab = "tab" + this.id;
-								$(contentTabs)
-										.append(
-											'<li><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
-											+ ' href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
-								first = false;
-	
-								$('#' + propertyDiv + 'Content').append(
-									'<div id="' + tab + '" class="tab-pane"/>');
-								
+
 								// Overwrite template values with any items passed in options
 								var values = [];
 								if(options.items) {
@@ -272,12 +264,30 @@ $.fn.propertyPage = function(opts) {
 									}
 									return 0;
 								});
+								
+								if(toSort.length  == 0) {
+									// Do not display this category because there are no properties to show.
+									log(this.categoryKey + " will not be displayed because there are no properties to show");
+									return;
+								}
+								
+								$(contentTabs)
+										.append(
+											'<li><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
+											+ ' href="#' + tab + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
+								first = false;
+	
+								$('#' + propertyDiv + 'Content').append(
+									'<div id="' + tab + '" class="tab-pane"/>');
+								
 	
 								$.each(toSort, function() {
 
 										x = JSON.parse(this.metaData);
 										var obj = $.extend(
-											{ restart : false, nameIsResourceKey : false, readOnly: false, disabled: false,
+											{ restart : false, nameIsResourceKey : false, 
+												readOnly: this.readOnly, 
+												disabled: false,
 												isPropertyInput: true }, x);
 
 										if(obj.inputType!='hidden') {
@@ -434,8 +444,11 @@ $.fn.propertyPage = function(opts) {
 															variables: options.variables,
 															disabled : !options.canUpdate  || this.readOnly || this.disabled, 
 															selected : splitFix(this.value), 
-															selectAllIfEmpty : obj.selectAllIfEmpty, 
+															selectAllIfEmpty : obj.selectAllIfEmpty == 'true', 
 															resourceKey : this.resourceKey, 
+															nameAttrIsResourceKey: this.nameAttrIsResourceKey == 'true',
+															valuesIsObjectList: this.valuesIsObjectList == 'true',
+															selectedIsObjectList: this.valuesIsObjectList == 'true',
 															change : function() {
 															$(this).markUpdated();
 															if (options.showButtons) {
@@ -1513,16 +1526,24 @@ $.fn.multipleSelect = function(data) {
 			function(data) {
 				$.each(data.resources,
 					function(idx, obj) {
-						var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
-						selectItem
-								.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] : getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
+					
+					var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
+					if(options.valuesIsObjectList == 'true') {
+						selectItem.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey 
+								? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] 
+									: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
+					} else {
+						selectItem.append('<option ' + 'value="' + obj + '">' + (options.nameAttrIsResourceKey 
+								? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? obj
+									: getResource(options.resourceKeyTemplate.format(obj))) : obj) + "</option>");
+					}
 				});
 
 				if (options.selected) {
 					$.each(options.selected,
 						function(idx, id) {
 							var selectedOpt;
-							if (options.selectedIsObjectList) {
+							if (options.selectedIsObjectList == 'true') {
 								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
 							} else {
 								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
