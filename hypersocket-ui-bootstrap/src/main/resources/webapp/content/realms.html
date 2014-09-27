@@ -60,6 +60,7 @@
 								$('#realmProperties').propertyPage({ 
 									url : 'realms/template/' + selected.module, 
 									showButtons : false, 
+									resource: selected.module,
 									canUpdate : currentMenu.canUpdate, 
 									useTemplates : true 
 								});
@@ -145,6 +146,7 @@
 							$('#realmProperties').propertyPage(
 								{ url : 'realms/realm/properties/' + resource.id, 
 									showButtons : false, 
+									resource: resource.id,
 									canUpdate : currentMenu.canUpdate && !readOnly
 							});
 						}, complete : function() {

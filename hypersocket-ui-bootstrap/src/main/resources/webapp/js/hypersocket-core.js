@@ -378,7 +378,7 @@ $.fn.propertyPage = function(opts) {
 											$('#' + tab + '_value' + this.id).selectButton(
 												{ metaData : obj, 
 													id: this.id,
-													url : obj.url, 
+													url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
 													value: this.value,
 													options : obj.options, 
 													nameIsResourceKey: obj.nameIsResourceKey,
@@ -398,7 +398,7 @@ $.fn.propertyPage = function(opts) {
 											$('#' + tab + '_value' + this.id).autoComplete(
 													{ metaData : obj, 
 														id: this.id,
-														url : obj.url, 
+														url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
 														value: this.value,
 														options : obj.options, 
 														nameIsResourceKey: obj.nameIsResourceKey,
@@ -435,20 +435,26 @@ $.fn.propertyPage = function(opts) {
 													} 
 											});
 										} else if (obj.inputType == 'multipleSelect') {
+												var url;
+												if(obj.url && options.resource) {
+													url = obj.url.replace('{id}', options.resource);
+												} else { 
+													url = obj.url;
+												}
 												$('#' + tab + '_value' + this.id)
 													.multipleSelect(
 														{ metaData : obj, 
 															id: this.id,
-															url : obj.url, 
+															url : url,
 															values : obj.values, 
 															variables: options.variables,
 															disabled : !options.canUpdate  || this.readOnly || this.disabled, 
 															selected : splitFix(this.value), 
 															selectAllIfEmpty : obj.selectAllIfEmpty == 'true', 
 															resourceKey : this.resourceKey, 
-															nameAttrIsResourceKey: this.nameAttrIsResourceKey == 'true',
-															valuesIsObjectList: this.valuesIsObjectList == 'true',
-															selectedIsObjectList: this.valuesIsObjectList == 'true',
+															nameAttrIsResourceKey: obj.nameAttrIsResourceKey == 'true',
+															valuesIsObjectList: obj.valuesIsObjectList == 'true',
+															selectedIsObjectList: obj.valuesIsObjectList == 'true',
 															change : function() {
 															$(this).markUpdated();
 															if (options.showButtons) {
@@ -1407,9 +1413,9 @@ $.fn.multipleSelect = function(data) {
 							isPropertyInput : true, disabled : false, valuesIsObjectList: true,
 								resourceKeyTemplate: '{0}' }, data);
 		
-		if(data && data.metaData) {
-			options = $.extend(options, data.metaData);
-		}
+//		if(data && data.metaData) {
+//			options = $.extend(data.metaData, options);
+//		}
 
 		$('#' + $(this).attr('id') + 'Excluded').remove();
 		$('#' + $(this).attr('id') + 'Buttons').remove();
