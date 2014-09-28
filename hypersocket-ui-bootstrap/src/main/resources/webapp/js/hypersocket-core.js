@@ -384,6 +384,8 @@ $.fn.propertyPage = function(opts) {
 													url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
 													value: this.value,
 													options : obj.options, 
+													emptySelectionAllowed: obj.emptySelectionAllowed,
+													emptySelectionText: getResource(obj.emptySelectionResourceKey),
 													nameIsResourceKey: obj.nameIsResourceKey,
 													nameAttr: obj.nameAttr,
 													valueAttr: obj.valueAttr,
@@ -407,8 +409,9 @@ $.fn.propertyPage = function(opts) {
 														nameIsResourceKey: obj.nameIsResourceKey,
 														nameAttr: obj.nameAttr,
 														valueAttr: obj.valueAttr,
-														disabled : !options.canUpdate  || this.readOnly || this.disabled, 
+														disabled : !options.canUpdate  || this.readOnly, 
 														resourceKey : this.resourceKey, 
+														remoteSearch: obj.remoteSearch,
 														changed : function() {
 															$(this).markUpdated();
 															if (options.showButtons) {
@@ -427,7 +430,7 @@ $.fn.propertyPage = function(opts) {
 														nameIsResourceKey: false,
 														nameAttr: 'name',
 														valueAttr: 'code',
-														disabled : !options.canUpdate  || this.readOnly || this.disabled, 
+														disabled : !options.canUpdate  || this.readOnly, 
 														resourceKey : this.resourceKey, 
 														changed : function() {
 															$(this).markUpdated();
@@ -805,7 +808,23 @@ $.fn.selectButton = function(data) {
 
 	var selected = null;
 	
+	$('#' + id).change(function() {
+		var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
+		$('#select_button_' + id).text(selected.attr('data-label'));
+		$('#' + id).markUpdated();
+		if(obj.changed) {
+			obj.changed(selected.data('resource'));
+		}
+	});
+	
+	if(obj.emptySelectionAllowed == 'true') {
+		$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_'
+				+ id + '" href="#" data-value="" data-label="' + obj.emptySelectionText + '">' 
+				+ obj.emptySelectionText + '</a></li>');
+	}
+	
 	if (obj.options) {
+		
 		for (var i = 0; i < obj.options.length; i++) {
 			if (obj.value == obj.options[i][obj.valueAttr]) {
 				selected = obj.options[i];
@@ -900,15 +919,6 @@ $.fn.selectButton = function(data) {
 	}
 	
 	$('#' + obj.id).prepareProperty(obj, obj.id, obj.values, obj.resourceKey);
-	
-	$('#' + id).change(function() {
-		var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
-		$('#select_button_' + id).text(selected.attr('data-label'));
-		$('#' + id).markUpdated();
-		if(obj.changed) {
-			obj.changed(selected.data('resource'));
-		}
-	});
 	
 	var callback = {
 		setValue: function(val) {
@@ -1121,9 +1131,9 @@ $.fn.autoComplete = function(data) {
 				isPropertyInput : true, disabled : false, remoteSearch: false,
 					resourceKeyTemplate: '{0}' }, data);
 
-	if(data && data.metaData) {
-		options = $.extend(options, data.metaData);
-	}
+//	if(data && data.metaData) {
+//		options = $.extend(options, data.metaData);
+//	}
 	
 	var id = options.id;
 	
@@ -1151,15 +1161,60 @@ $.fn.autoComplete = function(data) {
 		$('#input_' + id).data('map', map);
 	};
 	
-	if (options.url && !options.remoteSearch) {
-		getJSON(
-			options.url,
-			null,
-			function(data) {
-				buildData(options.isResourceList ? data.resources : data);
+	var createDropdown = function(text) {
+		
+		var selected = new Array();
+		$.each($('#input_' + id).data('values'), function(idx, obj) {
+			var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+			if(name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
+				selected.push(obj);
+			}
+		});
+		
+		selected.sort(function(a, b) {
+			var nameA = options.nameIsResourceKey ? getResource(a[options.nameAttr]) : a[options.nameAttr];
+			var nameB = options.nameIsResourceKey ? getResource(b[options.nameAttr]) : b[options.nameAttr];
+			
+			if(nameA > nameB) {
+				return 1;
+			}
+			if(nameB > nameA) {
+				return -1;
+			}
+			return 0;
+		});
+		
+		$('#auto_' + id).empty();
+		if(selected.length > 0 && text != '') {
+			$.each(selected, function(idx, obj) {
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
+						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
 			});
-	} else if(options.values) {
-		buildData(options.values);
+			$('.optionSelect').off('click');
+			$('.optionSelect').on('click', function() {
+				var value = $(this).data('value');
+				var obj = $('#input_' + id).data('map')[value];
+				$('#actual_' + id).val(value);
+				$('#input_' + id).val($(this).text());
+				$('[data-toggle="dropdown"]').parent().removeClass('open');
+				
+				if(options.changed) {
+					options.changed(obj);
+				}
+			});
+		} else {
+			if(text=='') {
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+			} else {
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+			}
+		}
+		$('#input_' + id).dropdown();
+		$('[data-toggle="dropdown"]').parent().removeClass('open');
+		$('#input_' + id).dropdown('toggle');
+		$('#spin_' + id).removeClass('fa-spin');
+		$('#spin_' + id).removeClass('fa-spinner');
+		$('#spin_' + id).addClass('fa-search');
 	}
 	
 	$('#input_' + id).keyup(function() {
@@ -1168,63 +1223,9 @@ $.fn.autoComplete = function(data) {
 		$('#spin_' + id).addClass('fa-spinner');
 		var text = $(this).val();
 		
-		var createDropdown = function() {
-			
-			var selected = new Array();
-			$.each($('#input_' + id).data('values'), function(idx, obj) {
-				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-				if(name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
-					selected.push(obj);
-				}
-			});
-			
-			selected.sort(function(a, b) {
-				var nameA = options.nameIsResourceKey ? getResource(a[options.nameAttr]) : a[options.nameAttr];
-				var nameB = options.nameIsResourceKey ? getResource(b[options.nameAttr]) : b[options.nameAttr];
-				
-				if(nameA > nameB) {
-					return 1;
-				}
-				if(nameB > nameA) {
-					return -1;
-				}
-				return 0;
-			});
-			
-			$('#auto_' + id).empty();
-			if(selected.length > 0 && text != '') {
-				$.each(selected, function(idx, obj) {
-					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
-							+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
-				});
-				$('.optionSelect').off('click');
-				$('.optionSelect').on('click', function() {
-					var value = $(this).data('value');
-					var obj = $('#input_' + id).data('map')[value];
-					$('#actual_' + id).val(value);
-					$('#input_' + id).val($(this).text());
-					$('[data-toggle="dropdown"]').parent().removeClass('open');
-					
-					if(options.changed) {
-						options.changed(obj);
-					}
-				});
-			} else {
-				if(text=='') {
-					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
-				} else {
-					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
-				}
-			}
-			$('#input_' + id).dropdown();
-			$('[data-toggle="dropdown"]').parent().removeClass('open');
-			$('#input_' + id).dropdown('toggle');
-			$('#spin_' + id).removeClass('fa-spin');
-			$('#spin_' + id).removeClass('fa-spinner');
-			$('#spin_' + id).addClass('fa-search');
-		}
+		
 		if(!options.remoteSearch) {
-			createDropdown();
+			createDropdown(text);
 		} else {
 			getJSON(
 					options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text,
@@ -1233,38 +1234,20 @@ $.fn.autoComplete = function(data) {
 						
 						var map = [];
 						$.each(data.aaData, function(idx, obj) {
-							map[obj[options.valueAttr]] = obj;
+							map[obj[options.valueAttr]] = obj[options.nameAttr];
 							if(obj[options.valueAttr]==options.value) {
 								$('#actual_' + id).val(options.value);
 								$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
 							}
 						});
-						$('#input_' + id).data('values', data.resources);
+						$('#input_' + id).data('values', data.aaData);
 						$('#input_' + id).data('map', map);
 						
-						createDropdown();
+						createDropdown(text);
 					});
 			
 		}
 		
-		callback = {
-				setValue: function(raw) {
-					$('#actual_' + id).val(raw);
-					var text = $('#input_' + id).data('map')[raw];
-					$('#input_' + id).val(text);
-				}, 
-				getValue: function() {
-					return $('#actual_' + id).val();
-				},
-				enable: function() {
-					$('#input_' + id).attr('disabled', true);
-				}, 
-				disable: function() {
-					$('#input_' + id).attr('disabled', false);
-				}
-			}
-		
-		return callback;
 	});
 	
 	var callback = {
@@ -1295,13 +1278,25 @@ $.fn.autoComplete = function(data) {
 			enable: function() {
 				$('#input_' + id).attr('disabled', false);
 			}
-		};
+	};
 
-		if(options.disabled) {
-			callback.disable();
-		}
+	if(options.disabled) {
+		callback.disable();
+	}
+	
+	if (options.url && !options.remoteSearch) {
+		getJSON(
+			options.url,
+			null,
+			function(data) {
+				buildData(options.isResourceList ? data.resources : data);
+			});
+	} else if(options.values && !options.remoteSearch) {
+		buildData(options.values);
+	} else {
 		
-		return callback;
+	}
+	return callback;
 	
 }
 

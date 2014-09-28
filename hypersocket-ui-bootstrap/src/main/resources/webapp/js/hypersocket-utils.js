@@ -133,17 +133,19 @@ function showMessage(text, icon, alertClass, fade) {
 function getJSON(url, params, callback, errorCallback) {
 	log("GET: " + url);
 	
-	$.getJSON(basePath + '/api/' + url, params, callback).error(function(xmlRequest) {
+	$.getJSON(basePath + '/api/' + url, params, callback).fail(function(xmlRequest) {
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
 			}
 		}
-		
 		if (xmlRequest.status != 401) {
-			showError(url + " JSON request failed.");
+			if(xmlRequest.status == 0) {
+				showError(getResource("error.cannotContactServer"));
+			} else {
+				showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+			}
 		}
-		
 	});
 };
 
@@ -158,15 +160,18 @@ function postJSON(path, params, callback, errorCallback, alwaysCallback) {
 	    contentType: 'application/json',
 	    data: JSON.stringify(params),
 	    success: callback
-	}).error(function(xmlRequest) {
+	}).fail(function(xmlRequest) {
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
 			}
 		}
-		
 		if (xmlRequest.status != 401) {
-			showError(url + " JSON request failed.");
+			if(xmlRequest.status == 0) {
+				showError(getResource("error.cannotContactServer"));
+			} else {
+				showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+			}
 		}
 	}).always(function() {
 		if(alwaysCallback) {
@@ -187,15 +192,18 @@ function deleteJSON(path, params, callback, errorCallback) {
 	    contentType: 'application/json',
 	    data: JSON.stringify(params),
 	    success: callback
-	}).error(function(xmlRequest) {
+	}).fail(function(xmlRequest) {
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
 			}
 		}
-		
 		if (xmlRequest.status != 401) {
-			showError(url + " JSON request failed.");
+			if(xmlRequest.status == 0) {
+				showError(getResource("error.cannotContactServer"));
+			} else {
+				showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+			}
 		}
 	});
 };
