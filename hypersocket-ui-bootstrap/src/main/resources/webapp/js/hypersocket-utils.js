@@ -99,20 +99,12 @@ function clearError() {
 	$('#highlight').remove();
 }
 
-function showError(text) {
-	showMessage(text, 'fa-warning', 'alert-danger', false);
-}
-
 function showError(text, fade) {
-	showMessage(text, 'fa-warning', 'alert-danger', fade);
-}
-
-function showInformation(text) {
-	showMessage(text, 'fa-info', 'alert-info', true);
+	showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? false : fade);
 }
 
 function showInformation(text, fade) {
-	showMessage(text, 'fa-info', 'alert-info', fade);
+	showMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade);
 }
 
 function showMessage(text, icon, alertClass, fade) {
@@ -134,7 +126,7 @@ function showMessage(text, icon, alertClass, fade) {
 	});
 	
 	if(fade) {
-		setTimeout(doFade, 5000);
+		setTimeout(doFade, 4000);
 	}
 }
 
