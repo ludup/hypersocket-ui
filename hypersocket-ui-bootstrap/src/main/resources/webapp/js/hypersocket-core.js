@@ -35,9 +35,11 @@ $.ajaxSetup({ error : function(xmlRequest) {
 	log("AJAX ERROR: " + xmlRequest.status);
 
 	if (xmlRequest.status == 401) {
-		$(document).data('session', null);
-		startLogon();
-		showError(getResource("error.sessionTimeout"), false);
+		var session = $(document).data('session');
+		if(session) {
+			startLogon();
+			showError(getResource("error.sessionTimeout"), false);
+		}
 	} 
 }, cache : false });
 
@@ -2525,8 +2527,8 @@ function startLogon() {
 		},
 		logonCompleted: function(data) {
 			$('#userInf').empty();
-			var session = $(document).data('session');
-			$('#userInf').append(getResource('text.loggedIn').format(session.principal.name, session.currentRealm.name));
+			$('#userInf').append(getResource('text.loggedIn').format(
+					data.session.principal.name, data.session.currentRealm.name));
 			
 			
 			if(data.homePage != '') {
@@ -2572,6 +2574,7 @@ function home(data) {
 				'<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
 
 	currentRealm = data.session.currentRealm;
+	currentMenu = null;
 	var showLocales = data.showLocales;
 	getJSON(
 		'menus',
@@ -2593,32 +2596,30 @@ function home(data) {
 						var menu = '#sub_' + this.id;
 						$("#menu").append(
 							'<ul id="sub_' + this.id + '" class="nav nav-sidebar"/>');
-						$
-								.each(
-									this.menus,
-									function() {
-										$(menu)
-												.append(
-													'<li><a id="' + this.id + '" href="#" class="sideMenu"><i class="fa ' + this.icon + '"></i><span class="hidden-sm text">' + getResource(this.resourceKey + '.label') + '</span></span></a></li>');
-										$('#' + this.id).data('menu', this);
-										$('#' + this.id).click(function() {
-											$(".sideMenu").removeClass("active");
-											$(this).addClass("active");
-											loadMenu($('#' + $(this).attr('id')).data('menu'));
-										});
-										if (currentMenu == null) {
-											currentMenu = this;
-										}
-									});
+						$.each(this.menus, function() {
+							$(menu).append('<li><a id="' + this.id + '" href="#" class="sideMenu"><i class="fa ' 
+									+ this.icon + '"></i><span class="hidden-sm text">' 
+									+ getResource(this.resourceKey + '.label') + '</span></span></a></li>');
+							$('#' + this.id).data('menu', this);
+							$('#' + this.id).click(function() {
+								$(".sideMenu").removeClass("active");
+								$(this).addClass("active");
+								loadMenu($('#' + $(this).attr('id')).data('menu'));
+							});
+							if (currentMenu == null) {
+								currentMenu = this;
+							}
+						});
 					}
 
 					$('#' + this.id).click(function() {
 						$(this).addClass("active");
 						loadMenu($(this).data('menu'));
 					});
+					
+			});
 
-				});
-
+			
 			$('#navMenu')
 					.append(
 						'<li class="navicon"><a id="main-menu-toggle" class="hidden-sm hidden-md hidden-lg" href="#"><i class="fa fa-bars"></i></a></li>');
@@ -2774,7 +2775,8 @@ function home(data) {
 				logoff();
 			});
 
-			$('#' + currentMenu.id).trigger('click');
+//			$('#' + currentMenu.id).trigger('click');
+			loadMenu(currentMenu);
 
 			hideBusy();
 		});
@@ -3022,6 +3024,7 @@ function loadMenu(menu) {
 		});
 		
 		$('.subMenu').first().trigger('click');
+//		loadSubPage(currentMenu);
 		
 	} else {
 	
