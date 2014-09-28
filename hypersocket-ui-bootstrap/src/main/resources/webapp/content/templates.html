@@ -166,7 +166,7 @@
 				canDelete: false,
 				validate : function() {
 					if ($('#name').val() == '') {
-						showError(true, getResource("error.nameRequired"));
+						showError(getResource("error.nameRequired"));
 						return false;
 					}
 					return true;

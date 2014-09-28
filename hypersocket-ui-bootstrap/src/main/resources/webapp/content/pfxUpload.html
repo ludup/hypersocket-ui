@@ -80,7 +80,7 @@
 					if (data.success) {
 						$('#pfxUpload').modal('hide');
 						$('#pfxUpload').data('callback')();
-						showInformation(false,data.message);
+						showInformation(data.message);
 					} else {
 						$('#pfxUpload').resourceDialog('error', data.message);
 					}

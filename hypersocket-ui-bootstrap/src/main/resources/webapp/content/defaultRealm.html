@@ -16,11 +16,11 @@
 						function(confirmed) {
 					getJSON('realms/default/' + resource.id, null, function(data) {
 						if(data.success) {
-							showInformation(true, data.message);
+							showInformation(data.message);
 							currentDefault = data.resource;
 							callback(data.resource);
 						} else {
-							showError(false, data.message);
+							showError(data.message);
 						}
 					});
 				});

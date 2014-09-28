@@ -74,7 +74,7 @@
 				success : function(data) {
 
 					if (data.success) {
-						showInformation(false,data.message);
+						showInformation(data.message);
 						updateStatus(data);
 						$('#certificateUpload').modal('hide');
 					} else {

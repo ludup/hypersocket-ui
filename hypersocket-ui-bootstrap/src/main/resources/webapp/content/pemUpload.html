@@ -116,7 +116,7 @@
 					if (data.success) {
 						$('#pemUpload').modal('hide');
 						$('#pemUpload').data('callback')();
-						showInformation(false,data.message);
+						showInformation(data.message);
 					} else {
 						$('#pemUpload').resourceDialog('error', data.message);
 					}

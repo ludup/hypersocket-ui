@@ -99,43 +99,58 @@ function clearError() {
 	$('#highlight').remove();
 }
 
-function showError(fade, text) {
-	showMessage(text, 'fa-warning', 'alert-danger');
+function showError(text) {
+	showMessage(text, 'fa-warning', 'alert-danger', false);
 }
 
-function showInformation(fade, text) {
-	showMessage(text, 'fa-info', 'alert-info');
+function showError(text, fade) {
+	showMessage(text, 'fa-warning', 'alert-danger', fade);
 }
 
-function showMessage(text, icon, alertClass) {
+function showInformation(text) {
+	showMessage(text, 'fa-info', 'alert-info', true);
+}
+
+function showInformation(text, fade) {
+	showMessage(text, 'fa-info', 'alert-info', fade);
+}
+
+function showMessage(text, icon, alertClass, fade) {
 	log("MESSAGE: " + text);
 
-	/**
-	 * This method always fades now because of the location of the message.
-	 */
 	$('#systemMessage').remove();
 	
-	$('body').prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
-	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span>');
-	
-	setTimeout(function() {
-		$('#systemMessage').fadeOut(1000, function() {
+	var doFade = function() {
+		$('#systemMessage').fadeOut(2000, function() {
 			$('#systemMessage').remove();
 		});
-	}, 5000);
+	};
+	
+	$('body').prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
+	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span><i id="messageDismiss" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
+	
+	$('#messageDismiss').click(function() {
+		doFade();
+	});
+	
+	if(fade) {
+		setTimeout(doFade, 5000);
+	}
 }
 
 function getJSON(url, params, callback, errorCallback) {
 	log("GET: " + url);
 	
-	$.getJSON(basePath + '/api/' + url, params, callback).error(function() {
+	$.getJSON(basePath + '/api/' + url, params, callback).error(function(xmlRequest) {
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
 			}
 		}
 		
-		showError(false, url + " JSON request failed.");
+		if (xmlRequest.status != 401) {
+			showError(url + " JSON request failed.");
+		}
 		
 	});
 };
@@ -151,14 +166,16 @@ function postJSON(path, params, callback, errorCallback, alwaysCallback) {
 	    contentType: 'application/json',
 	    data: JSON.stringify(params),
 	    success: callback
-	}).error(function() {
+	}).error(function(xmlRequest) {
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
 			}
 		}
 		
-		showError(false, url + " JSON request failed.");
+		if (xmlRequest.status != 401) {
+			showError(url + " JSON request failed.");
+		}
 	}).always(function() {
 		if(alwaysCallback) {
 			alwaysCallback();
@@ -178,14 +195,16 @@ function deleteJSON(path, params, callback, errorCallback) {
 	    contentType: 'application/json',
 	    data: JSON.stringify(params),
 	    success: callback
-	}).error(function() {
+	}).error(function(xmlRequest) {
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
 			}
 		}
 		
-		showError(false, url + " JSON request failed.");
+		if (xmlRequest.status != 401) {
+			showError(url + " JSON request failed.");
+		}
 	});
 };
 

@@ -36,8 +36,9 @@ $.ajaxSetup({ error : function(xmlRequest) {
 
 	if (xmlRequest.status == 401) {
 		$(document).data('session', null);
-		showLogon(null, getResource("error.sessionTimeout"));
-	}
+		startLogon();
+		showError(getResource("error.sessionTimeout"), false);
+	} 
 }, cache : false });
 
 $.fn.prepareProperty = function(opts, id, originalValue, resourceKey) {
@@ -567,7 +568,7 @@ $.fn.propertyPage = function(opts) {
 														+ 'type="' + obj.inputType + '" class="form-control propertyInput" id="' + tab + '_input' 
 														+ this.id + '" size="' + (obj.size ? obj.size : 30) + '" placeholder="' 
 														+ (obj.placeholder ? obj.placeholder : '') + '" maxlength="' + (obj.maxlength ? obj.maxlength : '') 
-														+ '" name="input' + this.id + '" value="' + stripNull(this.value) + '"/>');
+														+ '" name="input' + this.id + '" value="' + (obj.valueIsResourceKey? getResource(stripNull(this.value)) : stripNull(this.value)) + '"/>');
 											}
 										}
 
@@ -647,10 +648,10 @@ $.fn.propertyPage = function(opts) {
 						postJSON(options.url, items, function(data) {
 
 							if (data.success) {
-								showInformation(false, data.message);
+								showInformation(data.message);
 								$('#' + propertyDiv).saveCompleted();
 							} else {
-								showError(false, data.message);
+								showError(data.message);
 							}
 							$(revertButton).attr('disabled', true);
 							$(applyButton).attr('disabled', true);
@@ -1941,7 +1942,7 @@ $.fn.ajaxResourcePage = function(params) {
 											options.resourceDeleted(resource);
 										}
 										$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
-										showInformation(true, data.message);
+										showInformation(data.message);
 									} else {
 										bootbox.alert(data.message);
 									}
@@ -2094,10 +2095,10 @@ $.fn.ajaxResourcePage2 = function(params) {
 				$('div[page-for="' + divName + '"]').hide();
 				$('#'+divName).show();
 				
-				showInformation(true, data.message);
+				showInformation(data.message);
 			} else {
 				log("Resource object creation failed " + data.message);
-				showError(false, data.message);
+				showError(data.message);
 			}
 		});
 	});
@@ -2200,7 +2201,7 @@ $.fn.ajaxResourcePage2 = function(params) {
 										options.resourceDeleted(resource);
 									}
 									$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
-									showInformation(true, data.message);
+									showInformation(data.message);
 								} else {
 									bootbox.alert(data.message);
 								}
@@ -2330,7 +2331,7 @@ $.fn.resourceDialog = function(params, params2) {
 						if (dialogOptions.resourceCreated) {
 							dialogOptions.resourceCreated(data.resource);
 						}
-						showInformation(true, data.message);
+						showInformation(data.message);
 					} else {
 						log("Resource object creation failed " + data.message);
 						dialog.resourceDialog('error', data.message);
@@ -2384,7 +2385,7 @@ $.fn.resourceDialog = function(params, params2) {
 						if (dialogOptions.resourceUpdated) {
 							dialogOptions.resourceUpdated(data.resource);
 						}
-						showInformation(true, data.message);
+						showInformation(data.message);
 					} else {
 						dialog.resourceDialog('error', data.message);
 					}
@@ -2490,7 +2491,11 @@ function startLogon() {
 			$('#navMenu').empty();
 		},
 		processResponse: function(data) {
+			$('#userInf').empty();
+			$('#userInf').append(getResource("text.notLoggedIn"));
+			
 			$('#version').text(getResource("label.version") + " " + data.version);
+			
 			clearContent();
 			$('#currentRealm').remove();
 			$('#lang').remove();
@@ -2519,11 +2524,17 @@ function startLogon() {
 			}
 		},
 		logonCompleted: function(data) {
+			$('#userInf').empty();
+			var session = $(document).data('session');
+			$('#userInf').append(getResource('text.loggedIn').format(session.principal.name, session.currentRealm.name));
+			
+			
 			if(data.homePage != '') {
 				window.open(data.homePage, "_self", false);
 			} else {
 				home(data);
 			}
+			
 		},
 		formContent: $(contentDiv)
 	});
@@ -2768,7 +2779,16 @@ function home(data) {
 			hideBusy();
 		});
 
-	// checkNotifications();
+		var checkTimeout = function() {
+			
+			log("Checking session timeout");
+			
+			getJSON('session/peek', null, function(data) {
+				setTimeout(checkTimeout, 30000);
+			});
+		};
+		
+		checkTimeout();
 
 }
 
@@ -2848,7 +2868,7 @@ function loadRealms(realms) {
 		getJSON('session/switchRealm/' + realm, null,
 			function(data) {
 				if (!data.success) {
-					showError(false, data.errorMsg);
+					showError(data.errorMsg);
 				} else { 
 					// TODO reload and load the same page.
 					document.location.reload();
