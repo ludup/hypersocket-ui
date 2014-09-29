@@ -1164,11 +1164,14 @@ $.fn.autoComplete = function(data) {
 	var createDropdown = function(text) {
 		
 		var selected = new Array();
+		var tooManyResults = false;
 		$.each($('#input_' + id).data('values'), function(idx, obj) {
 			var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
 			if(name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
 				selected.push(obj);
+				tooManyResults = selected.length > 10;
 			}
+			return !tooManyResults;
 		});
 		
 		selected.sort(function(a, b) {
@@ -1185,7 +1188,7 @@ $.fn.autoComplete = function(data) {
 		});
 		
 		$('#auto_' + id).empty();
-		if(selected.length > 0 && text != '') {
+		if(!tooManyResults && selected.length > 0 && text != '') {
 			$.each(selected, function(idx, obj) {
 				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
 						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
@@ -1202,11 +1205,16 @@ $.fn.autoComplete = function(data) {
 					options.changed(obj);
 				}
 			});
+
 		} else {
-			if(text=='') {
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+			if(tooManyResults) {
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("tooManyResults.text") + '</a></li>');
 			} else {
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+				if(text=='') {
+					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+				} else {
+					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+				}
 			}
 		}
 		$('#input_' + id).dropdown();
@@ -1284,7 +1292,7 @@ $.fn.autoComplete = function(data) {
 		callback.disable();
 	}
 	
-	if (options.url && !options.remoteSearch) {
+	if(options.url && !options.remoteSearch) {
 		getJSON(
 			options.url,
 			null,
