@@ -2796,7 +2796,7 @@ function home(data) {
 			});
 		};
 		
-		checkTimeout();
+		setTimeout(checkTimeout, 30000);
 
 }
 
@@ -2918,38 +2918,6 @@ function reloadRealms() {
 	});
 }
 
-function checkNotifications() {
-
-	if ($(document).data('session') != null) {
-		$
-				.getJSON(
-					basePath + "/api/notifications/notification/core",
-					null,
-					function(data) {
-
-						if (data.success) {
-							$.pnotify.defaults.styling = "jqueryui";
-
-							$
-									.each(
-										data.resource,
-										function(idx, obj) {
-											$
-													.pnotify({ title : obj.titleIsResourceKey ? getResource(obj.title) : obj.title, text : obj.textIsResourceKey ? getResource(obj.text) : obj.text });
-										});
-
-						}
-					}).always(function() {
-					if ($(document).data('session') != null) {
-						log("Posting next notification check in 60 secs");
-						setTimeout(function() {
-							checkNotifications();
-						}, 60000);
-					}
-				});
-	}
-
-}
 
 function loadComplete(pageChange) {
 	log("Signaling load complete");
