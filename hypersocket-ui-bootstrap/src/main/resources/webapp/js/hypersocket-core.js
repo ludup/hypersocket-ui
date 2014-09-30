@@ -456,11 +456,11 @@ $.fn.propertyPage = function(opts) {
 															variables: options.variables,
 															disabled : !options.canUpdate  || this.readOnly || this.disabled, 
 															selected : splitFix(this.value), 
-															selectAllIfEmpty : obj.selectAllIfEmpty == 'true', 
+															selectAllIfEmpty : obj.selectAllIfEmpty, 
 															resourceKey : this.resourceKey, 
-															nameAttrIsResourceKey: obj.nameAttrIsResourceKey == 'true',
-															valuesIsObjectList: obj.valuesIsObjectList == 'true',
-															selectedIsObjectList: obj.valuesIsObjectList == 'true',
+															nameAttrIsResourceKey: obj.nameAttrIsResourceKey,
+															valuesIsObjectList: obj.valuesIsObjectList,
+															selectedIsObjectList: obj.selectedIsObjectList,
 															change : function() {
 															$(this).markUpdated();
 															if (options.showButtons) {
@@ -1420,7 +1420,7 @@ $.fn.multipleSelect = function(data) {
 								resourceKeyTemplate: '{0}' }, data);
 		
 		if(data && data.metaData) {
-			options = $.extend(data.metaData, options);
+			options = $.extend(options, data.metaData);
 		}
 
 		$('#' + $(this).attr('id') + 'Excluded').remove();
@@ -1540,7 +1540,7 @@ $.fn.multipleSelect = function(data) {
 					function(idx, obj) {
 					
 					var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
-					if(options.valuesIsObjectList == 'true') {
+					if(options.valuesIsObjectList) {
 						selectItem.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey 
 								? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] 
 									: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
@@ -1555,7 +1555,7 @@ $.fn.multipleSelect = function(data) {
 					$.each(options.selected,
 						function(idx, id) {
 							var selectedOpt;
-							if (options.selectedIsObjectList == 'true') {
+							if (options.selectedIsObjectList) {
 								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
 							} else {
 								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
