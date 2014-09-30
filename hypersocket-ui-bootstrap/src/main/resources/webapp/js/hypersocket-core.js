@@ -1949,7 +1949,7 @@ $.fn.ajaxResourcePage = function(params) {
 										$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
 										showInformation(data.message);
 									} else {
-										bootbox.alert(data.message);
+										showError(data.message);
 									}
 								});
 							}
