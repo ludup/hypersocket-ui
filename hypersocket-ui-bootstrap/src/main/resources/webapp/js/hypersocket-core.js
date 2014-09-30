@@ -3,6 +3,7 @@ var contentDiv = '#content';
 var currentMenu = null;
 var currentRealm = null;
 var countries = null;
+var hasShutdown = false;
 
 $.ajax({
     url: basePath + '/ui/json/countries.json',
@@ -2790,6 +2791,8 @@ function home(data) {
 			
 			getJSON('session/peek', null, function(data) {
 				setTimeout(checkTimeout, 30000);
+			}, function() {
+				return !hasShutdown;
 			});
 		};
 		
@@ -2809,6 +2812,7 @@ function shutdown(option){
 		if(data.success) {
 			//showInformation(false, getResource("power.completed").format(getResource(action + '.label')));
 			
+			hasShutdown = true;
 			var serverRunning = true;
 			var hasStopped = false;
 			var restarted = false;
@@ -2819,6 +2823,7 @@ function shutdown(option){
 					dataType: 'json',
 					success: function(data){
 						if(!serverRunning){
+							hasShutdown = false;
 							restarted = true;
 						}
 					},
