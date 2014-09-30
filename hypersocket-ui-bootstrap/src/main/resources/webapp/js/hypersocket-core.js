@@ -1419,9 +1419,9 @@ $.fn.multipleSelect = function(data) {
 							isPropertyInput : true, disabled : false, valuesIsObjectList: true,
 								resourceKeyTemplate: '{0}' }, data);
 		
-//		if(data && data.metaData) {
-//			options = $.extend(data.metaData, options);
-//		}
+		if(data && data.metaData) {
+			options = $.extend(data.metaData, options);
+		}
 
 		$('#' + $(this).attr('id') + 'Excluded').remove();
 		$('#' + $(this).attr('id') + 'Buttons').remove();
