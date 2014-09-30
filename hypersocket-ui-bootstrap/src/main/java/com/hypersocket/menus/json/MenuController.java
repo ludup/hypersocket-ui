@@ -78,7 +78,7 @@ public class MenuController extends AuthenticatedController {
 			try {
 				permissionService.verifyPermission(
 						sessionUtils.getPrincipal(request),
-						PermissionStrategy.REQUIRE_ANY, RealmPermission.READ);
+						PermissionStrategy.INCLUDE_IMPLIED, RealmPermission.READ);
 				list.setRealms(realmService.allRealms());
 			} catch (AccessDeniedException e) {
 			}

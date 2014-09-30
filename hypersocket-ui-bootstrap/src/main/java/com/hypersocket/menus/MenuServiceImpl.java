@@ -304,7 +304,7 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 					continue;
 
 				} else if (m.getReadPermission() != null) {
-					assertPermission(m.getReadPermission());
+					assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED, m.getReadPermission());
 				}
 
 				Menu rootMenu = new Menu(
@@ -326,7 +326,7 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 						continue;
 					} else if (child.getReadPermission() != null) {
 						try {
-							assertPermission(child.getReadPermission());
+							assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED, child.getReadPermission());
 						} catch (Exception e) {
 							// User does not have access to this menu
 							if (log.isDebugEnabled()) {
@@ -365,7 +365,7 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 
 						} else if (leaf.getReadPermission() != null) {
 							try {
-								assertPermission(leaf.getReadPermission());
+								assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED, leaf.getReadPermission());
 
 							} catch (Exception e) {
 								// User does not have access to this menu
@@ -462,7 +462,7 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 			}
 
 			verifyPermission(getCurrentPrincipal(),
-					PermissionStrategy.REQUIRE_ALL_PERMISSIONS, permission);
+					PermissionStrategy.EXCLUDE_IMPLIED, permission);
 			return true;
 		} catch (AccessDeniedException ex) {
 			return false;

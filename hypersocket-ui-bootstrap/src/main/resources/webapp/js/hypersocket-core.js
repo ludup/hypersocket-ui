@@ -866,9 +866,9 @@ $.fn.selectButton = function(data) {
 //			}
 			
 			if(selected==null) {
-				var val = $('.selectButton_' + id).first().attr('data-value');
-				$('#' + id).val(val);
-				$('#' + id).trigger('change');
+				var val = $('.selectButton_' + id).first().trigger('click');
+//				$('#' + id).val(val);
+//				$('#' + id).trigger('change');
 			}
 
 	} else if (obj.url) {
@@ -912,9 +912,9 @@ $.fn.selectButton = function(data) {
 //				}
 
 				if(selected==null) {
-					var val = $('.selectButton_' + id).first().attr('data-value');
-					$('#' + id).val(val);
-					$('#' + id).trigger('change');
+					var val = $('.selectButton_' + id).first().trigger('click');
+//					$('#' + id).val(val);
+//					$('#' + id).trigger('change');
 				}
 			});
 	}
