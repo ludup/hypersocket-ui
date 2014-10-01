@@ -275,6 +275,12 @@ h2 {
 	color: #ba0000;
 }
 
+.alert-warning {
+	background-color: #fcf8e3;
+    border: 1px solid #fbeed5;
+	color: #c09853;
+}
+
 .alert {
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;

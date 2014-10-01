@@ -32,6 +32,7 @@
 						</div>
 					</div>
 				</div>
+				<input type="hidden" id="pfxResourceId" name="resourceId" value=""/>
 			</div>
 			<div class="modal-footer">
 				<button id="uploadPfxButton" type="button" class="btn btn-primary"><i id="uploadPfxIcon" class="fa fa-upload"></i><span localize="uploadPfx.label"></span></button>
@@ -45,12 +46,19 @@
 		
 		$('#pfxUpload').localize();
 		
-		$('#pfxUpload').data('action', function(callback) {
+		$('#pfxUpload').data('action', function(resource, callback) {
+			
+			if(resource==null) {
+				$('#pfxResourceId').val('');
+			} else {
+				$('#pfxResourceId').val(resource.id);
+			}
+			$('#pfxUpload').data('callback', callback);
 			
 			$('#pfxPassphrase').val('');
 			$('#pfxKey').val('');
 			
-			$('#pfxUpload').data('callback', callback);
+			
 			$('#pfxUpload').modal('show');
 		});
 		
@@ -69,7 +77,7 @@
 			
 			$.ajax({
 				type : 'POST',
-				url : basePath + '/api/certificates/pfx/',
+				url : basePath + '/api/certificates/pfx/' + $('#pfxResourceId').val(),
 				dataType : 'json',
 				cache : false,
 				contentType : false,
@@ -79,7 +87,7 @@
 
 					if (data.success) {
 						$('#pfxUpload').modal('hide');
-						$('#pfxUpload').data('callback')();
+						$('#pfxUpload').data('callback')(data.resource);
 						showInformation(data.message);
 					} else {
 						$('#pfxUpload').resourceDialog('error', data.message);

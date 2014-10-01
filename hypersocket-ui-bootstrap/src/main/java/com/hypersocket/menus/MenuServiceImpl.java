@@ -110,23 +110,31 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 		registerExtendableTable(MenuService.ACTIONS_CERTIFICATES);
 		
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"downloadCSR", "fa-download", "downloadCSR", CertificateResourcePermission.UPDATE, 0,
+				"downloadCSR", "fa-certificate", "downloadCSR", CertificateResourcePermission.UPDATE, 0,
 				null, null));
 		
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"downloadCertificate", "fa-certificate", "downloadCertificate", CertificateResourcePermission.READ, 100,
+				"certificateUpload", "fa-upload", "certificateUpload", CertificateResourcePermission.UPDATE, 100,
+				null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
+				"pemUpload", "fa-upload", "pemUpload", CertificateResourcePermission.UPDATE, 200,
 				null, null));
 		
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"certificateUpload", "fa-upload", "certificateUpload", CertificateResourcePermission.UPDATE, 200,
+				"pfxUpload", "fa-upload", "pfxUpload", CertificateResourcePermission.UPDATE, 300,
 				null, null));
 		
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"pemExport", "fa-download", "pemExport", CertificateResourcePermission.READ, 300,
+				"downloadCertificate", "fa-download", "downloadCertificate", CertificateResourcePermission.READ, 400,
 				null, null));
 		
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"pfxExport", "fa-download", "pfxExport", CertificateResourcePermission.READ, 400,
+				"pemExport", "fa-download", "pemExport", CertificateResourcePermission.READ, 500,
+				null, null));
+		
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
+				"pfxExport", "fa-download", "pfxExport", CertificateResourcePermission.READ, 600,
 				null, null));
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "accessControl",
