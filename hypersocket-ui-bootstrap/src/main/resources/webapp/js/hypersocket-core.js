@@ -2577,6 +2577,7 @@ function home(data) {
 			.append(
 				'<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
 
+	removeMessage();
 	currentRealm = data.session.currentRealm;
 	currentMenu = null;
 	var showLocales = data.showLocales;

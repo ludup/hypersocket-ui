@@ -107,10 +107,14 @@ function showInformation(text, fade) {
 	showMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade);
 }
 
+function removeMessage() {
+	$('#systemMessage').remove();
+}
+
 function showMessage(text, icon, alertClass, fade) {
 	log("MESSAGE: " + text);
 
-	$('#systemMessage').remove();
+	removeMessage();
 	
 	var doFade = function() {
 		$('#systemMessage').fadeOut(2000, function() {
