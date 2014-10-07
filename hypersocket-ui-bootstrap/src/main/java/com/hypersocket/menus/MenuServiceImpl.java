@@ -79,20 +79,19 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_SYSTEM, "", null, 100, null, null, null, null));
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_SERVER,
-				"fa-hdd-o", null, 0, null, null, null, null),
-				MenuService.MENU_SYSTEM);
-		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				MenuService.MENU_SERVER, "fa-hdd-o", null, 0, null, null, null,
+				null), MenuService.MENU_SYSTEM);
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
 				"fa-cog", "settings", 0,
 				SystemPermission.SYSTEM_ADMINISTRATION, null,
 				SystemPermission.SYSTEM_ADMINISTRATION, null),
 				MenuService.MENU_SERVER);
-		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_CONFIGURATION,
-				"fa-cog", null, 100, null, null, null, null),
-				MenuService.MENU_SYSTEM);
-		
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
+				null, null, null), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realmSettings",
 				"fa-cogs", "realmSettings", 0, ConfigurationPermission.READ,
@@ -106,37 +105,42 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				CertificateResourcePermission.UPDATE,
 				CertificateResourcePermission.DELETE),
 				MenuService.MENU_CONFIGURATION);
-		
-		registerExtendableTable(MenuService.ACTIONS_CERTIFICATES);
-		
-		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"downloadCSR", "fa-certificate", "downloadCSR", CertificateResourcePermission.UPDATE, 0,
-				null, null));
-		
-		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"certificateUpload", "fa-upload", "certificateUpload", CertificateResourcePermission.UPDATE, 100,
-				null, null));
 
-		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"pemUpload", "fa-upload", "pemUpload", CertificateResourcePermission.UPDATE, 200,
-				null, null));
-		
-		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"pfxUpload", "fa-upload", "pfxUpload", CertificateResourcePermission.UPDATE, 300,
-				null, null));
-		
-		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"downloadCertificate", "fa-download", "downloadCertificate", CertificateResourcePermission.READ, 400,
-				null, null));
-		
-		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"pemExport", "fa-download", "pemExport", CertificateResourcePermission.READ, 500,
-				null, null));
-		
-		registerTableAction(MenuService.ACTIONS_CERTIFICATES, new AbstractTableAction(
-				"pfxExport", "fa-download", "pfxExport", CertificateResourcePermission.READ, 600,
-				null, null));
-		
+		registerExtendableTable(MenuService.ACTIONS_CERTIFICATES);
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("downloadCSR", "fa-certificate",
+						"downloadCSR", CertificateResourcePermission.UPDATE, 0,
+						null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("certificateUpload", "fa-upload",
+						"certificateUpload",
+						CertificateResourcePermission.UPDATE, 100, null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("pemUpload", "fa-upload", "pemUpload",
+						CertificateResourcePermission.UPDATE, 200, null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("pfxUpload", "fa-upload", "pfxUpload",
+						CertificateResourcePermission.UPDATE, 300, null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("downloadCertificate", "fa-download",
+						"downloadCertificate",
+						CertificateResourcePermission.READ, 400, null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("pemExport", "fa-download",
+						"pemExport", CertificateResourcePermission.READ, 500,
+						null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("pfxExport", "fa-download",
+						"pfxExport", CertificateResourcePermission.READ, 600,
+						null, null));
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "accessControl",
 				"fa-unlock-alt", null, 200, null, null, null, null),
 				MenuService.MENU_SYSTEM);
@@ -182,18 +186,23 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 						"defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION,
 						0, "isDefault", null));
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_BUSINESS_RULES, "",
-				null, 8888, null, null, null, null, null));
-		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_BUSINESS_RULES,
+				"", null, 8888, null, null, null, null, null));
+
 		registerMenu(new MenuRegistration(
 				TriggerResourceServiceImpl.RESOURCE_BUNDLE, "triggers",
 				"fa-flash", "triggers", 200, TriggerResourcePermission.READ,
 				TriggerResourcePermission.CREATE,
 				TriggerResourcePermission.UPDATE,
-				TriggerResourcePermission.DELETE), MenuService.MENU_BUSINESS_RULES);
+				TriggerResourcePermission.DELETE),
+				MenuService.MENU_BUSINESS_RULES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));
+
+		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
+				"user.changePassword", "fa-user", "changePassword", 1000, null,
+				null, null, null), MenuService.MENU_MY_PROFILE);
 
 	}
 
@@ -312,7 +321,8 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 					continue;
 
 				} else if (m.getReadPermission() != null) {
-					assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED, m.getReadPermission());
+					assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
+							m.getReadPermission());
 				}
 
 				Menu rootMenu = new Menu(
@@ -334,7 +344,9 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 						continue;
 					} else if (child.getReadPermission() != null) {
 						try {
-							assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED, child.getReadPermission());
+							assertAnyPermission(
+									PermissionStrategy.EXCLUDE_IMPLIED,
+									child.getReadPermission());
 						} catch (Exception e) {
 							// User does not have access to this menu
 							if (log.isDebugEnabled()) {
@@ -373,7 +385,9 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 
 						} else if (leaf.getReadPermission() != null) {
 							try {
-								assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED, leaf.getReadPermission());
+								assertAnyPermission(
+										PermissionStrategy.EXCLUDE_IMPLIED,
+										leaf.getReadPermission());
 
 							} catch (Exception e) {
 								// User does not have access to this menu
