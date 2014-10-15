@@ -30,6 +30,7 @@ import com.hypersocket.permissions.PermissionStrategy;
 import com.hypersocket.permissions.PermissionType;
 import com.hypersocket.permissions.SystemPermission;
 import com.hypersocket.realm.GroupPermission;
+import com.hypersocket.realm.PasswordPermission;
 import com.hypersocket.realm.ProfilePermission;
 import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
@@ -201,8 +202,10 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				null, 9999, null, null, null, null, null));
 
 		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
-				"user.changePassword", "fa-lock", "changePassword", 1000, null,
-				null, null, null), MenuService.MENU_MY_PROFILE);
+				"user.changePassword", "fa-lock", "changePassword", 1000,
+				PasswordPermission.UPDATE, null,
+				PasswordPermission.UPDATE, null),
+				MenuService.MENU_MY_PROFILE);
 
 	}
 
