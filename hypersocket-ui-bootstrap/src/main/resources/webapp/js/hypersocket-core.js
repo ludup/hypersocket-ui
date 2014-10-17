@@ -5,6 +5,21 @@ var currentRealm = null;
 var countries = null;
 var hasShutdown = false;
 
+function makeBooleanSafe(options) {
+	for(var property in options) {
+		log(property);
+		if(options.hasOwnProperty(property)) {
+			if(typeof options[property] == 'string') {
+				if(options[property] == 'true') {
+					options[property] = true;
+				} else if(options[property] == 'false') {
+					options[property] = false;
+				}
+			}
+		}
+	}
+};
+
 $.ajax({
     url: basePath + '/ui/json/countries.json',
     dataType: "text",
@@ -177,7 +192,9 @@ $.fn.propertyPage = function(opts) {
 			.extend(
 				{ showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th', propertyTabsLast: true },
 				opts);
-
+	
+	makeBooleanSafe(options);
+	
 	$('body').append('<div id="tabTemp' + propertyDiv + '"/>');
 	$('#tabTemp' + propertyDiv).hide();
 	if (options.additionalTabs) {
@@ -288,8 +305,10 @@ $.fn.propertyPage = function(opts) {
 								$.each(toSort, function() {
 
 										x = JSON.parse(this.metaData);
+										makeBooleanSafe(x);
+										
 										var obj = $.extend(
-											{ restart : false, nameIsResourceKey : false, 
+											{ restart : false, 
 												readOnly: this.readOnly, 
 												disabled: false,
 												isPropertyInput: true }, x);
@@ -964,7 +983,7 @@ $.fn.textInputWithVariables = function(data) {
 			}, data);
 	
 	if(data && data.metaData) {
-		options = $.extend(options, data.metaData);
+		options = $.extend(data.metaData, options);
 	}
   
 	var id = (options.isPropertyInput ? 'input_' : '' ) + options.id;
@@ -983,7 +1002,7 @@ $.fn.textInputWithVariables = function(data) {
 	}
 
 	if(options.isPropertyInput) {
-		$('#' + id).prepareProperty(options.metaData,
+		$('#' + id).prepareProperty(options,
 			options.id, options.value, options.resourceKey);
 	}
 	
@@ -1010,7 +1029,7 @@ $.fn.editor = function(data) {
 					value: ''}, data);
 
 	if(data && data.metaData) {
-		options = $.extend(options, data.metaData);
+		options = $.extend(data.metaData. options);
 	}
 	
 	var id = $(this).attr('id') + 'Editor';
@@ -1132,9 +1151,9 @@ $.fn.autoComplete = function(data) {
 				isPropertyInput : true, disabled : false, remoteSearch: false,
 					resourceKeyTemplate: '{0}' }, data);
 
-//	if(data && data.metaData) {
-//		options = $.extend(options, data.metaData);
-//	}
+	if(data && data.metaData) {
+		options = $.extend(data.metaData, options);
+	}
 	
 	var id = options.id;
 	
@@ -1353,54 +1372,51 @@ $.fn.multipleSelect = function(data) {
 		}
 
 		if (data && data.insert) {
-			$
-					.each(
-						data.insert,
-						function(idx, obj) {
-
-							select
-									.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameAttrIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined ? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
-						});
+			$.each(
+				data.insert,
+				function(idx, obj) {
+					select.append('<option ' + 'value="' + obj[options.idAttr] + '">' 
+							+ (options.nameAttrIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined 
+									? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
+				});
 		}
 
 		if (data && data.remove) {
-			$
-					.each(
-						data.remove,
-						function(idx, obj) {
-							if (options.selectedIsObjectList) {
-								selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
-								if (!selectedOpt) {
-									selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
-								}
-							} else {
-								selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj + '"]');
-								if (!selectedOpt) {
-									selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj + '"]');
-								}
-							}
-							if (selectedOpt) {
-								$(selectedOpt).remove();
-							}
-						});
+			$.each(
+				data.remove,
+				function(idx, obj) {
+					if (options.selectedIsObjectList) {
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
+						if (!selectedOpt) {
+							selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
+						}
+					} else {
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj + '"]');
+						if (!selectedOpt) {
+							selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj + '"]');
+						}
+					}
+					if (selectedOpt) {
+						$(selectedOpt).remove();
+					}
+				});
 		}
 
 		if (data && data.selected) {
-			$
-					.each(
-						data.selected,
-						function(idx, id) {
-							var selectedOpt;
-							if (options.selectedIsObjectList) {
-								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
-							} else {
-								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
-							}
-							if (selectedOpt) {
-								toSelect.append($(selectedOpt).clone());
-								$(selectedOpt).remove();
-							}
-						});
+			$.each(
+				data.selected,
+				function(idx, id) {
+					var selectedOpt;
+					if (options.selectedIsObjectList) {
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+					} else {
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+					}
+					if (selectedOpt) {
+						toSelect.append($(selectedOpt).clone());
+						$(selectedOpt).remove();
+					}
+				});
 		}
 
 		if(data) {
@@ -1421,7 +1437,7 @@ $.fn.multipleSelect = function(data) {
 								resourceKeyTemplate: '{0}' }, data);
 		
 		if(data && data.metaData) {
-			options = $.extend(options, data.metaData);
+			options = $.extend(data.metaData, options);
 		}
 
 		$('#' + $(this).attr('id') + 'Excluded').remove();
@@ -1613,7 +1629,7 @@ $.fn.multipleTextInput = function(data) {
 					data);
 
 		if(data && data.metaData) {
-			options = $.extend(options, data.metaData);
+			options = $.extend(data.metaData, options);
 		}
 		
 		$(this).data('created', true);
