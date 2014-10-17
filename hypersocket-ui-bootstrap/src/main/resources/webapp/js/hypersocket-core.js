@@ -1612,6 +1612,10 @@ $.fn.multipleTextInput = function(data) {
 						selectedIsObjectList : false, isPropertyInput : true, disabled : false },
 					data);
 
+		if(data && data.metaData) {
+			options = $.extend(options, data.metaData);
+		}
+		
 		$(this).data('created', true);
 		$(this).data('isMultipleTextInput', true);
 		$(this).data('options', options);
