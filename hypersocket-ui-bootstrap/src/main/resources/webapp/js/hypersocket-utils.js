@@ -99,19 +99,19 @@ function clearError() {
 	$('#highlight').remove();
 }
 
-function showError(text, fade) {
-	showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? false : fade);
+function showError(text, fade, fadeCallback) {
+	showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? false : fade, fadeCallback);
 }
 
-function showInformation(text, fade) {
-	showMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade);
+function showInformation(text, fade, fadeCallback) {
+	showMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade, fadeCallback);
 }
 
 function removeMessage() {
 	$('#systemMessage').remove();
 }
 
-function showMessage(text, icon, alertClass, fade) {
+function showMessage(text, icon, alertClass, fade, fadeCallback) {
 	log("MESSAGE: " + text);
 
 	removeMessage();
@@ -119,6 +119,9 @@ function showMessage(text, icon, alertClass, fade) {
 	var doFade = function() {
 		$('#systemMessage').fadeOut(2000, function() {
 			$('#systemMessage').remove();
+			if(fadeCallback) {
+				fadeCallback();
+			}
 		});
 	};
 	
@@ -146,6 +149,7 @@ function getJSON(url, params, callback, errorCallback) {
 		if (xmlRequest.status != 401) {
 			if(xmlRequest.status == 0) {
 				showError(getResource("error.cannotContactServer"));
+				pollForServerContact();
 			} else {
 				showError(url + " JSON request failed. [" + xmlRequest.status + "]");
 			}
@@ -173,6 +177,7 @@ function postJSON(path, params, callback, errorCallback, alwaysCallback) {
 		if (xmlRequest.status != 401) {
 			if(xmlRequest.status == 0) {
 				showError(getResource("error.cannotContactServer"));
+				pollForServerContact();
 			} else {
 				showError(url + " JSON request failed. [" + xmlRequest.status + "]");
 			}
@@ -205,6 +210,7 @@ function deleteJSON(path, params, callback, errorCallback) {
 		if (xmlRequest.status != 401) {
 			if(xmlRequest.status == 0) {
 				showError(getResource("error.cannotContactServer"));
+				pollForServerContact();
 			} else {
 				showError(url + " JSON request failed. [" + xmlRequest.status + "]");
 			}
@@ -212,7 +218,24 @@ function deleteJSON(path, params, callback, errorCallback) {
 	});
 };
 
-
+function pollForServerContact() {
+	
+	$.ajax({
+		type: "GET",
+	    url:  basePath + '/api/session/peek',
+	    dataType: 'json',
+	    contentType: 'application/json',
+	    success: function() {
+	    	showInformation(getResource('info.serverIsBack'), true, function() {
+	    		window.location.reload();	
+	    	});
+	    	
+	    }
+	}).fail(function(xmlRequest) {
+		setTimeout(pollForServerContact, 1000);
+	});
+	
+}
 function msgBox(data) {
 	
 	var $msgbox = $('<div id=\"msgbox\" title=\"' + data.title + '\"><p>' + data.message + '</p></div>');
