@@ -35,6 +35,10 @@ h2 {
 	}
 }
 
+#content {
+	margin-right: 0px;
+}
+
 .main .page-header {
 	margin-top: 0;
 }
@@ -958,5 +962,8 @@ span.input-group-addon {
 	.sidebar .nav-sidebar.title {
 		padding-top: 15px;
 		margin: 0px 0 15px 0;
+	}
+	#footer {
+		display: none
 	}
 }

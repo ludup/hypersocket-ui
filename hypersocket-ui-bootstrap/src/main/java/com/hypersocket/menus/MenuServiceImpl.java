@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javassist.bytecode.Mnemonic;
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -200,6 +202,12 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_TOOLS, "",
+				null, 99999, null, null, null, null, null));
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS, "fa-wrench",
+				null, 99999, null, null, null, null, null), MENU_TOOLS);
 
 		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
 				"user.changePassword", "fa-lock", "changePassword", 1000,

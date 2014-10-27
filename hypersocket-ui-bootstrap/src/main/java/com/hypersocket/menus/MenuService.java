@@ -39,6 +39,10 @@ public interface MenuService extends AuthenticatedService {
 	static final String ACTIONS_USERS = "userActions";
 
 	static final String ACTIONS_REALMS = "realmActions";
+
+	static final String MENU_TOOLS = "tools";
+	
+	static final String MENU_DIAGNOSTICS = "diagnostics";
 	
 	List<Menu> getMenus();
 

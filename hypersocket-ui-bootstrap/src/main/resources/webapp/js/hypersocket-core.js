@@ -347,7 +347,7 @@ $.fn.propertyPage = function(opts) {
 									    	$('#' + tab + '_value' + this.id).append('<div class="code form-control propertyInput" id="' + tab + '_input' + this.id + '"></div>');
 									    	var myCodeMirror = CodeMirror(document.getElementById(tab + '_input' + this.id), {
 												  value: this.value,
-												  mode:  obj.inputType=='java' ? 'text/java' : obj.inputType,
+												  mode:  obj.inputType=='java' ? 'text/x-java' : obj.inputType,
 												  lineNumbers: obj.lineNumbers
 											});
 									    	
