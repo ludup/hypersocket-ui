@@ -351,17 +351,18 @@ $.fn.propertyPage = function(opts) {
 												  lineNumbers: obj.lineNumbers
 											});
 									    	
+									    	var ident = $('#' + tab + '_input' + this.id);
 									    	myCodeMirror.on("change", function(cm, change) {
 									    		
-												  $('#' + tab + '_input' + this.id).markUpdated();
+												  ident.markUpdated();
 												  if (options.showButtons) {
 														$(revertButton).attr('disabled', false);
 														$(applyButton).attr('disabled', false);
 												  }
 									    	});
 									    	
-									    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
-									    	$('#' + tab + '_input' + this.id).show();
+									    	ident.data('codeMirror', myCodeMirror);
+									    	ident.show();
 									    	
 									    	setTimeout(function() {
 									    	    myCodeMirror.refresh();
@@ -369,6 +370,9 @@ $.fn.propertyPage = function(opts) {
 									    } else if(obj.inputType == 'xml' || obj.inputType == 'html') {
 									    	
 									    	$('#' + tab + '_value' + this.id).append('<div class="code form-control propertyInput" id="' + tab + '_input' + this.id + '"></div>');
+									    	
+									    	var ident = $('#' + tab + '_input' + this.id);
+									    	
 									    	var myCodeMirror = CodeMirror(document.getElementById(tab + '_input' + this.id), {
 												  value: this.value,
 												  htmlMode: obj.inputType=='html',
@@ -377,15 +381,15 @@ $.fn.propertyPage = function(opts) {
 											});
 									    	
 									    	myCodeMirror.on("change", function(cm, change) {
-												  $('#' + tab + '_input' + this.id).markUpdated();
+												  ident.markUpdated();
 												  if (options.showButtons) {
 														$(revertButton).attr('disabled', false);
 														$(applyButton).attr('disabled', false);
 												  }
 									    	});
 									    	
-									    	$('#' + tab + '_input' + this.id).data('codeMirror', myCodeMirror);
-									    	$('#' + tab + '_input' + this.id).show();
+									    	ident.data('codeMirror', myCodeMirror);
+									    	ident.show();
 									    	
 									    	setTimeout(function() {
 									    	    myCodeMirror.refresh();
