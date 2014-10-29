@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javassist.bytecode.Mnemonic;
-
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
