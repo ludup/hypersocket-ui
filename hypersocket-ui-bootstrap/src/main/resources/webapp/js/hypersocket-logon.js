@@ -123,6 +123,13 @@ function processLogon(data, opts, message) {
 
 					});
 
+		$.each(scripts, function(idx, script) {
+			log('Executing script ' + script.resourceKey);
+			if(window[script.resourceKey]) {
+				window[script.resourceKey](script.defaultValue);
+			}
+		});
+		
 		if(data.formTemplate.showLogonButton) {
 			$('#logonForm').append(
 					'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
@@ -157,10 +164,7 @@ function processLogon(data, opts, message) {
 			});
 		});
 		
-		$.each(scripts, function(idx, obj) {
-			log('Executing script ' + obj.resourceKey);
-			eval(obj.defaultValue);
-		});
+
 		
 		$('#logonButton')
 				.click(
