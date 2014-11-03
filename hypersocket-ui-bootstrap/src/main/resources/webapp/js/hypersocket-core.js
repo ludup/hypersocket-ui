@@ -258,7 +258,7 @@ $.fn.propertyPage = function(opts) {
 										return;
 									}
 								}
-								tab = "tab" + this.id;
+								var tab = "tab" + this.id;
 
 								// Overwrite template values with any items passed in options
 								var values = [];
@@ -509,6 +509,30 @@ $.fn.propertyPage = function(opts) {
 															}
 														} });
 
+										} else if (obj.inputType == 'date') {
+											$('#' + tab + '_value' + this.id).append('<div id="' + tab + '_date' + this.id + '" class="input-group date">'
+													+ '<input id="' + tab + '_input' + this.id + '" type="text" class="form-control propertyInput">'
+													+ '<span class="input-group-addon"><i class="fa fa-calendar"></i></span></div>');
+											
+											debugger;
+											$('#' + tab + '_date' + inputId).datepicker({
+											    format: "yyyy-mm-dd",
+											    startView: 1,
+											    orientation: "bottom auto",
+											    multidate: false,
+											    forceParse: false,
+											    autoclose: true
+											}).on('show', function() {
+														debugger;
+														var modal = $('#' + tab + '_date' + inputId).closest('.modal');
+														var datePicker = $('body').find('.datepicker');
+														if(!modal.length) {
+															$(datePicker).css('z-index', 'auto');
+															return;
+														}
+														var zIndexModal = $(modal).css('z-index');
+															$(datePicker).css('z-index', zIndexModal + 1);
+														});
 										} else if (obj.inputType == 'button') {
 											$('#' + tab + '_value' + this.id).append(
 												'<button ' + (options.canUpdate && !obj.readOnly && !obj.disabled ? '' : 'disabled="disabled" ') 
@@ -2449,6 +2473,11 @@ function home(data) {
 
 			$('#menu').empty();
 
+			var menuResourceKey = null;
+			if(window.location.hash.startsWith('#menu=')) {
+				menuResourceKey = window.location.hash.substring(6);
+			}
+			
 			$.each(
 				data.menus,
 				function() {
@@ -2470,11 +2499,24 @@ function home(data) {
 								$(this).addClass("active");
 								loadMenu($('#' + $(this).attr('id')).data('menu'));
 							});
-							if (currentMenu == null) {
+
+							var parent = this;
+							$.each(this.menus, function() {
+								this.parent = parent;
+								if(this.resourceKey == menuResourceKey) {
+									currentMenu = this;
+								} 
+							});
+
+							if (currentMenu == null && menuResourceKey==null) {
 								currentMenu = this;
+							} else {
+								if(this.resourceKey == menuResourceKey) {
+									currentMenu = this;
+								} 
 							}
 						});
-					}
+					} 
 
 					$('#' + this.id).click(function() {
 						$(this).addClass("active");
@@ -2814,8 +2856,15 @@ function loadMenu(menu) {
 	if (currentMenu) {
 		$('#' + currentMenu.id).removeClass('active');
 	}
-	currentMenu = menu;
 
+	var subPage = null;
+	if(menu.parent) {
+		subPage = menu.resourceKey;
+		menu = menu.parent;
+	}
+	
+	currentMenu = menu;
+	
 	$('#mainContent').hide();
 	$('#informationBar').empty();
 	$('#mainContent').empty();
@@ -2840,7 +2889,7 @@ function loadMenu(menu) {
 						
 		$.each(menu.menus, function() {
 			$('#subMenuIconPanel').append(
-				'<div class="col-xs-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceName + '">'
+				'<div class="col-xs-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
 						+ '<i class="fa ' + this.icon + '"></i><p>' + getResource(this.resourceKey + '.title') + '</p>'
 					+ '</a>'
 				+ '</div>');
@@ -2851,32 +2900,36 @@ function loadMenu(menu) {
 			$(document).data(menu.menus[i].resourceName, menu.menus[i]);
 		}
 		
-		currentMenu = menu.menus[0];
-
 		$('.subMenu').click(function(e) {
 			e.preventDefault();
 			currentMenu = $(document).data($(this).attr('data-value'));
-			loadSubPage($(this).attr('data-value'), $(this));
+			loadSubPage(currentMenu, $(this));
 		});
 		
-		$('.subMenu').first().trigger('click');
+		if(subPage==null) {
+			$('.subMenu').first().trigger('click');
+		} else {
+			$('#button_' + subPage).trigger('click');
+		}
+		
 //		loadSubPage(currentMenu);
 		
 	} else {
 	
-	
+		loadWait();
 		$('#mainContent').load('content/' + menu.resourceName + '.html', function() {
-			loadWait();
+			window.location.hash = "menu=" + menu.resourceKey;
 		});
 	}
 }
 
-function loadSubPage(page, element) {
+function loadSubPage(menu, element) {
 	
 	$('#subMenuIconPanel').find('.large-button-active').removeClass('large-button-active');
 	element.addClass('large-button-active');
-	$('#menuContent').load('content/' + page + '.html', function() {
-		loadWait();
+	loadWait();
+	$('#menuContent').load('content/' + menu.resourceName + '.html', function() {
+		window.location.hash = "menu=" + menu.resourceKey;
 	});
 }
 
