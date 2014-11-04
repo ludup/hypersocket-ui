@@ -40,14 +40,21 @@ $.fn.textInputWithVariables = function(data) {
  		});
  		
  		$('.' + id + 'Class').click(function(e) {
- 			e.preventDefault();
- 			var position = $('#' + id).getCursorPosition();
- 			var content = $('#' + id).val();
- 	 		var newContent = content.substr(0, position) + $(this).text() + content.substr(position);
- 	 		$('#' + id).val(newContent);
+			e.preventDefault();
+			var position = $('#' + id).getCursorPosition();
+			var content = $('#' + id).val();
+	 		var newContent = content.substr(0, position) + $(this).text() + content.substr(position);
+	 		$('#' + id).val(newContent);
+		});
+	
+ 	} else if(options.url) {
+ 		getJSON(options.url, null, function(data) {
+ 			$.each(data.resources, function(idx, obj) {
+ 	 			$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
+ 	 		});
  		});
- 	} 
- 	  
+ 	}
+ 	
 }
 
 
