@@ -2577,45 +2577,47 @@ function home(data) {
 				}
 			});
 
-			$('#navMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-power-off"></i></a></li>');
-			
-			$('#powerMenu').click(function(e) {
-				var shutdownModal = '<div class="modal" id="shutdownServer" tabindex="-1" role="dialog">' +
-						'<div class="modal-dialog modal-sm">' +
-							'<div class="modal-content">' +
-								'<div class="modal-header">' +
-									'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-									'<h4 class="modal-title" id="myModalLabel">' + getResource('power.shutdownServer') + '</h4>' +
-								'</div>' +
-								'<div class="modal-body row">' +
-									'<div class="col-xs-6" style="text-align: center">' +
-										'<button class="btn btn-small btn-primary" id="buttonShutdown" style="margin-bottom: 15px" data-dismiss="modal">' +
-											'<i class="fa fa-power-off" style="font-size: 40px"></i>' +
-										'</button>' +
-										'</br>' +
-										'<span>' + getResource("shutdown.label") + '</span>' +
+			if(data.systemAdmin) {
+				$('#navMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-power-off"></i></a></li>');
+				
+				$('#powerMenu').click(function(e) {
+					var shutdownModal = '<div class="modal" id="shutdownServer" tabindex="-1" role="dialog">' +
+							'<div class="modal-dialog modal-sm">' +
+								'<div class="modal-content">' +
+									'<div class="modal-header">' +
+										'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+										'<h4 class="modal-title" id="myModalLabel">' + getResource('power.shutdownServer') + '</h4>' +
 									'</div>' +
-									'<div class="col-xs-6" style="text-align: center">' +
-										'<button class="btn btn-small btn-primary" id="buttonRestart" style="margin-bottom: 15px" data-dismiss="modal">' +
-											'<i class="fa fa-repeat" style="font-size: 40px"></i>' +
-										'</button>' +
-										'</br>' +
-										'<span>' + getResource("restart.label") + '</span>' +
+									'<div class="modal-body row">' +
+										'<div class="col-xs-6" style="text-align: center">' +
+											'<button class="btn btn-small btn-primary" id="buttonShutdown" style="margin-bottom: 15px" data-dismiss="modal">' +
+												'<i class="fa fa-power-off" style="font-size: 40px"></i>' +
+											'</button>' +
+											'</br>' +
+											'<span>' + getResource("shutdown.label") + '</span>' +
+										'</div>' +
+										'<div class="col-xs-6" style="text-align: center">' +
+											'<button class="btn btn-small btn-primary" id="buttonRestart" style="margin-bottom: 15px" data-dismiss="modal">' +
+												'<i class="fa fa-repeat" style="font-size: 40px"></i>' +
+											'</button>' +
+											'</br>' +
+											'<span>' + getResource("restart.label") + '</span>' +
+										'</div>' +
 									'</div>' +
 								'</div>' +
 							'</div>' +
-						'</div>' +
-					'</div>';
-				$(shutdownModal).modal('show');
-				$('#buttonShutdown').click(function(){
-					shutdown('shutdown');
+						'</div>';
+					$(shutdownModal).modal('show');
+					$('#buttonShutdown').click(function(){
+						shutdown('shutdown');
+					});
+					$('#buttonRestart').click(function(){
+						shutdown('restart');
+					});
 				});
-				$('#buttonRestart').click(function(){
-					shutdown('restart');
-				});
-			});
-	
-		if (showLocales) {
+			}
+			
+			if (showLocales) {
 				
 				$('#navMenu')
 						.append(
