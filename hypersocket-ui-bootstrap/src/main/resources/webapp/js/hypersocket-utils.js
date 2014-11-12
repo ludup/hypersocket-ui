@@ -1,3 +1,7 @@
+/**
+ * Change this to indicate server has shutdown and is expected to be out of contact. 
+ */
+var hasShutdown = false;
 var regex = new RegExp(/(.[^\:]+)(\:\/\/)(.[^\/]+)(.[^\/]+)(.[^\/]+)(.*)/);
 
 var url = regex.exec(document.URL);
@@ -147,11 +151,13 @@ function getJSON(url, params, callback, errorCallback) {
 			}
 		}
 		if (xmlRequest.status != 401) {
-			if(xmlRequest.status == 0) {
-				showError(getResource("error.cannotContactServer"));
-				pollForServerContact();
-			} else {
-				showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+			if(!hasShutdown) {
+				if(xmlRequest.status == 0) {
+					showError(getResource("error.cannotContactServer"));
+					pollForServerContact();
+				} else {
+					showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+				}
 			}
 		}
 	});
@@ -175,11 +181,13 @@ function postJSON(path, params, callback, errorCallback, alwaysCallback) {
 			}
 		}
 		if (xmlRequest.status != 401) {
-			if(xmlRequest.status == 0) {
-				showError(getResource("error.cannotContactServer"));
-				pollForServerContact();
-			} else {
-				showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+			if(!hasShutdown) {
+				if(xmlRequest.status == 0) {
+					showError(getResource("error.cannotContactServer"));
+					pollForServerContact();
+				} else {
+					showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+				}
 			}
 		}
 	}).always(function() {
@@ -208,11 +216,13 @@ function deleteJSON(path, params, callback, errorCallback) {
 			}
 		}
 		if (xmlRequest.status != 401) {
-			if(xmlRequest.status == 0) {
-				showError(getResource("error.cannotContactServer"));
-				pollForServerContact();
-			} else {
-				showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+			if(hasShutdown) {
+				if(xmlRequest.status == 0) {
+					showError(getResource("error.cannotContactServer"));
+					pollForServerContact();
+				} else {
+					showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+				}
 			}
 		}
 	});

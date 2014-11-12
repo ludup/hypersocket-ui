@@ -3,7 +3,6 @@ var contentDiv = '#content';
 var currentMenu = null;
 var currentRealm = null;
 var countries = null;
-var hasShutdown = false;
 
 function makeBooleanSafe(options) {
 	for(var property in options) {
@@ -143,16 +142,26 @@ $.fn.validateProperty = function() {
 
 	obj = $(this).data('metaData');
 
+	obj = $.extend({ allowEmpty: true }, obj);
 	log("Validating " + $(this).data('resourceKey'));
 	if (obj.inputType == 'number') {
 		return (parseInt(obj.minValue) <= parseInt($(this).val()) && parseInt(obj.maxValue) >= parseInt($(this).val()));
 	} else if (obj.inputType == 'textarea') {
+		if(!obj.allowEmpty && $(this).val()=='') {
+			return false;
+		}
 		return true;
 	} else if (obj.inputType == 'text') {
+		if(!obj.allowEmpty && $(this).val()=='') {
+			return false;
+		}
 		return true;
 	} else if (obj.inputType == 'select') {
 		return true;
 	} else if (obj.inputType == 'password') {
+		if(!obj.allowEmpty && $(this).val()=='') {
+			return false;
+		}
 		return true;
 	} else if (obj.inputType == 'multipleSelect') {
 		return true;
@@ -2712,7 +2721,6 @@ function shutdown(option){
 	getJSON('server/' + option + '/5', function(data) {
 	
 		if(data.success) {
-			//showInformation(false, getResource("power.completed").format(getResource(action + '.label')));
 			
 			hasShutdown = true;
 			var serverRunning = true;
@@ -2782,7 +2790,6 @@ function loadRealms(realms) {
 				if (!data.success) {
 					showError(data.errorMsg);
 				} else { 
-					// TODO reload and load the same page.
 					document.location.reload();
 				}
 			});
@@ -2911,8 +2918,6 @@ function loadMenu(menu) {
 		} else {
 			$('#button_' + subPage).trigger('click');
 		}
-		
-//		loadSubPage(currentMenu);
 		
 	} else {
 	
