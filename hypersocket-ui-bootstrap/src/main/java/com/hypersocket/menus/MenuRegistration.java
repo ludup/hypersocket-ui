@@ -29,6 +29,7 @@ public class MenuRegistration {
 	PermissionType deletePermission;
 	String resourceName;
 	String icon;
+	boolean hidden;
 	Map<String,PermissionType> additionalPermissions;
 	
 	List<MenuRegistration> modules = new ArrayList<MenuRegistration>();
@@ -133,6 +134,18 @@ public class MenuRegistration {
 	@JsonIgnore
 	public boolean canCreate() {
 		return true;
+	}
+	
+	public String getData() {
+		return "";
+	}
+	
+	public boolean isHidden() {
+		return hidden;
+	}
+	
+	public void setHidden(boolean hidden) {
+		this.hidden=  hidden;
 	}
 
 }

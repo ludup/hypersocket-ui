@@ -3,6 +3,7 @@ var contentDiv = '#content';
 var currentMenu = null;
 var currentRealm = null;
 var countries = null;
+var allMenus = new Array();
 
 function makeBooleanSafe(options) {
 	for(var property in options) {
@@ -523,7 +524,6 @@ $.fn.propertyPage = function(opts) {
 													+ '<input id="' + tab + '_input' + this.id + '" type="text" class="form-control propertyInput">'
 													+ '<span class="input-group-addon"><i class="fa fa-calendar"></i></span></div>');
 											
-											debugger;
 											$('#' + tab + '_date' + inputId).datepicker({
 											    format: "yyyy-mm-dd",
 											    startView: 1,
@@ -532,7 +532,6 @@ $.fn.propertyPage = function(opts) {
 											    forceParse: false,
 											    autoclose: true
 											}).on('show', function() {
-														debugger;
 														var modal = $('#' + tab + '_date' + inputId).closest('.modal');
 														var datePicker = $('body').find('.datepicker');
 														if(!modal.length) {
@@ -710,7 +709,7 @@ $.fn.propertyPage = function(opts) {
 						postJSON(options.url, items, function(data) {
 
 							if (data.success) {
-								showInformation(data.message);
+								showSuccess(data.message);
 								$('#' + propertyDiv).saveCompleted();
 							} else {
 								showError(data.message);
@@ -1840,7 +1839,7 @@ $.fn.ajaxResourcePage = function(params) {
 											options.resourceDeleted(resource);
 										}
 										$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
-										showInformation(data.message);
+										showSuccess(data.message);
 									} else {
 										showError(data.message);
 									}
@@ -1993,7 +1992,7 @@ $.fn.ajaxResourcePage2 = function(params) {
 				$('div[page-for="' + divName + '"]').hide();
 				$('#'+divName).show();
 				
-				showInformation(data.message);
+				showSuccess(data.message);
 			} else {
 				log("Resource object creation failed " + data.message);
 				showError(data.message);
@@ -2099,7 +2098,7 @@ $.fn.ajaxResourcePage2 = function(params) {
 										options.resourceDeleted(resource);
 									}
 									$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
-									showInformation(data.message);
+									showSuccess(data.message);
 								} else {
 									bootbox.alert(data.message);
 								}
@@ -2229,7 +2228,7 @@ $.fn.resourceDialog = function(params, params2) {
 						if (dialogOptions.resourceCreated) {
 							dialogOptions.resourceCreated(data.resource);
 						}
-						showInformation(data.message);
+						showSuccess(data.message);
 					} else {
 						log("Resource object creation failed " + data.message);
 						dialog.resourceDialog('error', data.message);
@@ -2283,7 +2282,7 @@ $.fn.resourceDialog = function(params, params2) {
 						if (dialogOptions.resourceUpdated) {
 							dialogOptions.resourceUpdated(data.resource);
 						}
-						showInformation(data.message);
+						showSuccess(data.message);
 					} else {
 						dialog.resourceDialog('error', data.message);
 					}
@@ -2482,17 +2481,16 @@ function home(data) {
 
 			$('#menu').empty();
 
-			var menuResourceKey = null;
-			if(window.location.hash.startsWith('#menu=')) {
-				menuResourceKey = window.location.hash.substring(6);
-			}
-			
 			$.each(
 				data.menus,
 				function() {
+					
+					allMenus[this.resourceKey] = this;
+					
+					debugger;
 					$('#menu')
 							.append(
-								'<div id="menu_' + this.id + '" class="nav-sidebar title"><span>' + getResource(this.resourceKey + '.label') + '</span></div>');
+								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') + '><span>' + getResource(this.resourceKey + '.label') + '</span></div>');
 
 					if (this.menus.length > 0) {
 						var menu = '#sub_' + this.id;
@@ -2512,18 +2510,12 @@ function home(data) {
 							var parent = this;
 							$.each(this.menus, function() {
 								this.parent = parent;
-								if(this.resourceKey == menuResourceKey) {
-									currentMenu = this;
-								} 
 							});
 
-							if (currentMenu == null && menuResourceKey==null) {
+							if(currentMenu==null) {
 								currentMenu = this;
-							} else {
-								if(this.resourceKey == menuResourceKey) {
-									currentMenu = this;
-								} 
-							}
+							}	
+
 						});
 					} 
 
@@ -2692,6 +2684,12 @@ function home(data) {
 				logoff();
 			});
 
+			if(window.location.hash.startsWith('#menu=')) {
+				var loadThisMenu = allMenus[window.location.hash.substring(6)];
+				if(loadThisMenu!=null) {
+					currentMenu = loadThisMenu;
+				}
+			}
 //			$('#' + currentMenu.id).trigger('click');
 			loadMenu(currentMenu);
 
@@ -2883,6 +2881,8 @@ function loadMenu(menu) {
 
 	if(menu.menus.length > 0) {
 
+		allMenus[this.resourceKey] = this;
+		
 		$('#mainContent').append('<div class="col-xs-12" id="subMenuContent">'
 				+ '<div class="row">'
 					+ '<div class="panel panel-default">'
@@ -2897,11 +2897,15 @@ function loadMenu(menu) {
 			+ '</div>');
 						
 		$.each(menu.menus, function() {
-			$('#subMenuIconPanel').append(
-				'<div class="col-xs-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+			
+			allMenus[this.resourceKey] = this;
+			if(!this.hidden) {
+				$('#subMenuIconPanel').append(
+						'<div class="col-xs-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
 						+ '<i class="fa ' + this.icon + '"></i><p>' + getResource(this.resourceKey + '.title') + '</p>'
 					+ '</a>'
 				+ '</div>');
+			}
 		});
 	
 		for(var i=0;i<menu.menus.length;i++) {

@@ -339,7 +339,10 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 						hasPermission(m.getCreatePermission()) && m.canCreate(),
 						hasPermission(m.getUpdatePermission()) && m.canUpdate(),
 						hasPermission(m.getDeletePermission()) && m.canDelete(),
-						m.getIcon());
+						m.getIcon(),
+						m.getData(),
+						m.isHidden());
+				
 				for (MenuRegistration child : m.getMenus()) {
 					if (!child.canRead()) {
 						// User does not have access to this menu
@@ -376,7 +379,7 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 							hasPermission(child.getUpdatePermission())
 									&& child.canUpdate(),
 							hasPermission(child.getDeletePermission())
-									&& child.canDelete(), child.getIcon());
+									&& child.canDelete(), child.getIcon(), child.getData(), child.isHidden());
 
 					for (MenuRegistration leaf : child.getMenus()) {
 
@@ -419,7 +422,7 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 										.getUpdatePermission())
 										&& leaf.canUpdate(), hasPermission(leaf
 										.getDeletePermission())
-										&& leaf.canDelete(), leaf.getIcon()));
+										&& leaf.canDelete(), leaf.getIcon(), leaf.getData(), leaf.isHidden()));
 					}
 
 					if (childMenu.getResourceName() == null

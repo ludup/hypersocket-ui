@@ -125,7 +125,7 @@
 					if (data.success) {
 						$('#pemUpload').modal('hide');
 						$('#pemUpload').data('callback')(data.resource);
-						showInformation(data.message);
+						showSuccess(data.message);
 					} else {
 						$('#pemUpload').resourceDialog('error', data.message);
 					}
