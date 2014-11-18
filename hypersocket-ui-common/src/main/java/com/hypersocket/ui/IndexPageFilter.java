@@ -86,4 +86,8 @@ public class IndexPageFilter implements ContentFilter {
 	public void setIndexPage(String indexPage) {
 		this.indexPage = indexPage;
 	}
+
+	public void removeExtender(FilterExtender extender) {
+		extenders.remove(extender);
+	}
 }

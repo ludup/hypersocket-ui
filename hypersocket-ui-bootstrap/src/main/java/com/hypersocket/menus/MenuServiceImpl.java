@@ -208,7 +208,7 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				null, 99999, null, null, null, null, null), MENU_TOOLS);
 
 		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
-				"user.changePassword", "fa-lock", "changePassword", 1000,
+				"changePassword", "fa-lock", "changePassword", 1000,
 				PasswordPermission.CHANGE, null,
 				PasswordPermission.CHANGE, null),
 				MenuService.MENU_MY_PROFILE);

@@ -112,7 +112,7 @@ function showWarning(text, fade, fadeCallback) {
 }
 
 function showSuccess(text, fade, fadeCallback) {
-	showMessage(text, 'fa-warning', 'success', typeof fade == 'undefined' ? false : fade, fadeCallback);
+	showMessage(text, 'fa-warning', 'success', typeof fade == 'undefined' ? true : fade, fadeCallback);
 }
 
 function showInformation(text, fade, fadeCallback) {

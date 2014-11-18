@@ -1836,7 +1836,7 @@ $.fn.ajaxResourcePage = function(params) {
 								deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
 									if (data.success) {
 										if (options.resourceDeleted) {
-											options.resourceDeleted(resource);
+											options.resourceDeleted(resource, data.message);
 										}
 										$('#' + divName + 'Table').dataTable().fnDeleteRow(row);
 										showSuccess(data.message);
@@ -2471,6 +2471,7 @@ function home(data) {
 	removeMessage();
 	currentRealm = data.session.currentRealm;
 	currentMenu = null;
+	var message = data.bannerMsg;
 	var showLocales = data.showLocales;
 	getJSON(
 		'menus',
@@ -2486,8 +2487,7 @@ function home(data) {
 				function() {
 					
 					allMenus[this.resourceKey] = this;
-					
-					debugger;
+
 					$('#menu')
 							.append(
 								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') + '><span>' + getResource(this.resourceKey + '.label') + '</span></div>');
@@ -2497,6 +2497,9 @@ function home(data) {
 						$("#menu").append(
 							'<ul id="sub_' + this.id + '" class="nav nav-sidebar"/>');
 						$.each(this.menus, function() {
+							
+							allMenus[this.resourceKey] = this;
+							
 							$(menu).append('<li><a id="' + this.id + '" href="#" class="sideMenu"><i class="fa ' 
 									+ this.icon + '"></i><span class="hidden-sm text">' 
 									+ getResource(this.resourceKey + '.label') + '</span></span></a></li>');
@@ -2510,6 +2513,7 @@ function home(data) {
 							var parent = this;
 							$.each(this.menus, function() {
 								this.parent = parent;
+								allMenus[this.resourceKey] = this;
 							});
 
 							if(currentMenu==null) {
@@ -2690,9 +2694,24 @@ function home(data) {
 					currentMenu = loadThisMenu;
 				}
 			}
+			
+			debugger;
 //			$('#' + currentMenu.id).trigger('click');
 			loadMenu(currentMenu);
 
+			debugger;
+			
+			if(message != null && message.length > 0) {
+				if(message.startsWith('info=')) {
+					showInformation(message.substring(5));
+				} else if(message.startsWith('success=')) {
+					showSuccess(message.substring(8));
+				} else if(message.startsWith('warning=')) {
+					showWarning(message.substring(8));
+				} else if(message.startsWith('error=')) {
+					showError(message.substring(6));
+				} 
+			}
 			hideBusy();
 		});
 
@@ -2880,8 +2899,6 @@ function loadMenu(menu) {
 	$('#mainContent').data('loadComplete', false);
 
 	if(menu.menus.length > 0) {
-
-		allMenus[this.resourceKey] = this;
 		
 		$('#mainContent').append('<div class="col-xs-12" id="subMenuContent">'
 				+ '<div class="row">'
@@ -2898,7 +2915,6 @@ function loadMenu(menu) {
 						
 		$.each(menu.menus, function() {
 			
-			allMenus[this.resourceKey] = this;
 			if(!this.hidden) {
 				$('#subMenuIconPanel').append(
 						'<div class="col-xs-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'

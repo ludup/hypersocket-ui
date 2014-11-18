@@ -838,6 +838,11 @@ table {
 	margin-left: 10px;
 }
 
+.footer-info {
+	float: left;
+	text-align: left;
+}
+
 .logonSelect {
 	width: 100%;
 	padding: 10px;
