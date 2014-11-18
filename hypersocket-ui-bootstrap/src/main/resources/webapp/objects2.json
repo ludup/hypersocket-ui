@@ -1,0 +1,4 @@
+{ "resources": [ { "name":"resource1", "value":"1"}, 
+{ "name":"resource2", "value":"2"},
+{ "name":"resource3", "value":"3"},
+{ "name":"resource4", "value":"4"} ]}

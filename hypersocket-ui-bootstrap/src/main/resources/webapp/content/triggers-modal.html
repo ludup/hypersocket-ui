@@ -323,6 +323,9 @@
 			resourceKeyTemplate: '{0}.label',
 			name: 'result',
 			value: 'event_success',
+			getUrlData: function(data) {
+				return data.resources;
+			},
 			changed: function(result) {
 				
 			}

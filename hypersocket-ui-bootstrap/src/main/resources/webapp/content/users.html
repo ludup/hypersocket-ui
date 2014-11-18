@@ -68,16 +68,16 @@
 			function() {
 				$('#contentUsers').localize();
 
-				getJSON('currentRealm/groups/list', null, function(data) {
-					$('#tabUserGroups').multipleSelect({
-						resourceKey : "groups",
-						values : data.resources,
-						nameAttr : 'principalName',
-						disabled: !currentMenu.canUpdate,
-						isPropertyInput : false,
-						selectedIsObjectList : true
-					});
+				$('#tabUserGroups').multipleSelect({
+					nameAttr : 'principalName',
+					disabled: !currentMenu.canUpdate,
+					selectedIsObjectList : true,
+					url: "currentRealm/groups/list",
+					getUrlData: function(data) {
+						return data.resources;
+					}
 				});
+		
 
 				getJSON('menus/tableActions/userActions', null, function(data) {
 					
@@ -158,6 +158,7 @@
 									$('#userPassword').val('');
 									$('#userConfirmPassword').val('');
 									$('#userProperties').clearProperties();
+									debugger;
 									$('#tabUserGroups').multipleSelect();
 									
 									if(create) {
@@ -196,8 +197,7 @@
 											function(items) {
 												user.properties = items;
 											});
-									user.groups = $('#tabUserGroups')
-											.multipleSelectValues();
+									user.groups = $('#tabUserGroups').widget().getValue();
 									return user;
 								},
 								resourceCreated : function(resource) {
