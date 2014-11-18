@@ -6,13 +6,14 @@
 <script type="text/javascript">
 
       $('#profileContent').propertyPage({
-	   url : 'currentRealm/user/profile',
-	   title: getResource('profile.title'),
-	   icon: 'fa-tags',
-	   canUpdate: currentMenu.canUpdate,
-	   complete: function() {
-		   loadComplete();
-	   }});
+		   url : 'currentRealm/user/profile',
+		   title: getResource('profile.title'),
+		   icon: 'fa-tags',
+		   canUpdate: currentMenu.canUpdate,
+		   complete: function() {
+			   loadComplete();
+		   }
+      });
    
       
 </script>

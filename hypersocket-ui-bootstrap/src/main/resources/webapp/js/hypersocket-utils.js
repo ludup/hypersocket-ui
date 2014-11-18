@@ -28,6 +28,21 @@ if (typeof String.prototype.endsWith != 'function') {
   };
 }
 
+function makeBooleanSafe(options) {
+	for(var property in options) {
+		log(property);
+		if(options.hasOwnProperty(property)) {
+			if(typeof options[property] == 'string') {
+				if(options[property] == 'true') {
+					options[property] = true;
+				} else if(options[property] == 'false') {
+					options[property] = false;
+				} 
+			}
+		}
+	}
+};
+
 $.fn.getCursorPosition = function () {
     var el = $(this).get(0);
     var pos = 0;

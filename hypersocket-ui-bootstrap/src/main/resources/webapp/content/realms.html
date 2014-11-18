@@ -41,31 +41,31 @@
 	<script type="text/javascript">
 	
 		
-		$(document)
-				.ready(
-					function() {
-						$('#realmsContent').localize();
+		$(document).ready(function() {
+			$('#realmsContent').localize();
 
-						var typeButton = $('#typeButton').selectButton({
-							id: 'type',
-							url: 'realms/providers',
-							nameAttr: 'module',
-							valueAttr: 'module',
-							nameIsResourceKey: true,
-							resourceKeyTemplate: 'realm.{0}.label',
-							name: 'local',
-							value: 'local',
-							changed: function(selected) {
-								
-								$('#realmProperties').propertyPage({ 
-									url : 'realms/template/' + selected.module, 
-									showButtons : false, 
-									resource: selected.module,
-									canUpdate : currentMenu.canUpdate, 
-									useTemplates : true 
-								});
-							}
-						});
+			var typeButton = $('#typeButton').selectButton({
+				id: 'type',
+				url: 'realms/providers',
+				nameAttr: 'module',
+				valueAttr: 'module',
+				nameIsResourceKey: true,
+				resourceKeyTemplate: 'realm.{0}.label',
+				name: 'local',
+				value: 'local',
+				getUrlData: function(data) {
+					return data.resources;
+				},
+				changed: function(widget) {
+					$('#realmProperties').propertyPage({ 
+						url : 'realms/template/' + widget.getSelectedObject().module, 
+						showButtons : false, 
+						resource: widget.getSelectedObject().module,
+						canUpdate : currentMenu.canUpdate, 
+						useTemplates : true 
+					});
+				}
+			});
 
 			getJSON('menus/tableActions/realmActions', null, function(data) {
 				
@@ -136,12 +136,18 @@
 						}, showCreate : function() {
 							typeButton.enable();
 							typeButton.reset();
+							$('#realmProperties').propertyPage({ 
+								url : 'realms/template/' + typeButton.getSelectedObject().module, 
+								showButtons : false, 
+								resource: typeButton.getSelectedObject().module,
+								canUpdate : currentMenu.canUpdate, 
+								useTemplates : true 
+							});
 						}, displayResource : function(resource, readOnly) {
 							$('#id').val(resource.id);
 							$('#name').val(resource.name);
 							$('#name').attr('disabled', resource.system || readOnly);
 							typeButton.disable();
-							$('#realmProperties').clearProperties();
 							typeButton.setValue(resource.resourceCategory);
 							$('#realmProperties').propertyPage(
 								{ url : 'realms/realm/properties/' + resource.id, 

@@ -33,19 +33,16 @@
 
 	$(document).ready(function() {
 		$('#contentGroups').localize();
-		
-		getJSON(
-			'currentRealm/users/list',
-			null,
-			function(data) {
-				$('#tabGroupUsers').multipleSelect({
-					resourceKey: "users",
-					values : data.resources,
-					nameAttr : 'principalName',
-					isPropertyInput: false,
-					selectedIsObjectList: true
-				});
+
+		$('#tabGroupUsers').multipleSelect({
+			nameAttr : 'principalName',
+			selectedIsObjectList: true,
+			url: 'currentRealm/users/list',
+			getUrlData: function(data) {
+				return data.resources;
+			}
 		});
+	
 		
 		$('#groupProperties').propertyPage({
 			url : 'currentRealm/group/template/' + currentRealm.resourceCategory,
@@ -86,8 +83,7 @@
 					group = new Object();
 					group.id = $('#groupId').val();
 					group.name = $('#groupName').val();
-					group.users = $('#tabGroupUsers')
-							.multipleSelectValues();
+					group.users = $('#tabGroupUsers').widget().getValue();
 					return group;
 				},
 				resourceCreated : function(resource) {

@@ -36,45 +36,40 @@
 	$(document).ready(function() {
 		$('#contentRoles').localize();
 
-		getJSON('permissions/list', null, function(data) {
-			$('#tabRolePermissions').multipleSelect({
-				resourceKey: "permissions",
-				values : data.permissions,
-				nameAttrIsResourceKey : true,
-				nameAttr : 'resourceKey',
-				isPropertyInput: false,
-				selectedIsObjectList: true,
-				disabled: !currentMenu.canUpdate
-			});
-		});
-		
-
-		getJSON('currentRealm/groups/list',
-			null,
-			function(data) {
-				$('#tabRoleGroups').multipleSelect({
-					resourceKey: "groups",
-					values : data.resources,
-					nameAttr : 'principalName',
-					isPropertyInput: false,
-					selectedIsObjectList: true,
-					disabled: !currentMenu.canUpdate
-				});
+	debugger;
+		$('#tabRolePermissions').multipleSelect({
+			nameIsResourceKey : true,
+			nameAttr : 'resourceKey',
+			selectedIsObjectList: true,
+			disabled: !currentMenu.canUpdate,
+			url: 'permissions/list',
+			getUrlData: function(data) {
+				return data.permissions;
+			}
 		});
 
-		getJSON(
-			'currentRealm/users/list',
-			null,
-			function(data) {
-				$('#tabRoleUsers').multipleSelect({
-					resourceKey: "users",
-					values : data.resources,
-					nameAttr : 'principalName',
-					isPropertyInput: false,
-					selectedIsObjectList: true,
-					disabled: !currentMenu.canUpdate
-				});
+
+		$('#tabRoleGroups').multipleSelect({
+			nameAttr : 'principalName',
+			selectedIsObjectList: true,
+			disabled: !currentMenu.canUpdate,
+			url: 'currentRealm/groups/list',
+			getUrlData: function(data) {
+				return data.resources;
+			}
 		});
+
+
+		$('#tabRoleUsers').multipleSelect({
+			nameAttr : 'principalName',
+			selectedIsObjectList: true,
+			disabled: !currentMenu.canUpdate,
+			url: 'currentRealm/users/list',
+			getUrlData: function(data) {
+				return data.resources;
+			}
+		});
+	
 		
 		$('#roleProperties').propertyPage({
 			url : 'roles/template',
@@ -124,12 +119,9 @@
 					role = new Object();
 					role.id = $('#roleId').val();
 					role.name = $('#name').val();
-					role.users = $('#tabRoleUsers')
-							.multipleSelectValues();
-					role.groups = $('#tabRoleGroups')
-							.multipleSelectValues();
-					role.permissions = $('#tabRolePermissions')
-							.multipleSelectValues();
+					role.users = $('#tabRoleUsers').widget().getValue();
+					role.groups = $('#tabRoleGroups').widget().getValue();
+					role.permissions = $('#tabRolePermissions').widget().getValue();
 					return role;
 				},
 				resourceCreated : function(resource) {
