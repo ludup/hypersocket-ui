@@ -12,7 +12,7 @@
 						<div class="propertyItem form-group">
 						<label class="col-md-3 control-label" localize="name.label"></label>
 						<div class="propertyValue col-md-9">
-							<input type="text" class="form-control propertyInput"
+							<input type="text" class="form-control"
 								placeholder="" id="resourceName" maxlength="" name="resourceName" value="">
 							<div>
 								<span class="help-block" localize="name.info"></span>
@@ -116,7 +116,7 @@
 				<div class="propertyItem form-group">
 					<label class="col-md-3 control-label" localize="action.name.label"></label>
 					<div class="propertyValue col-md-9">
-						<input type="text" class="form-control propertyInput"
+						<input type="text" class="form-control"
 							placeholder="" id="actionName" maxlength="" name="actionName" value="">
 						<div>
 							<span class="help-block" localize="action.name.info"></span>
@@ -142,7 +142,7 @@
 	function addActionRow(action) {
 		$('#rowActions').append('<div class="propertyItem form-group">' +
 		                              '<div class="propertyValue col-xs-10">' + 
-		                              '<input type="text" disabled="disabled" class="form-control propertyInput conditionValue ' 
+		                              '<input type="text" disabled="disabled" class="form-control conditionValue ' 
 		                              		+ '" size="30"' +  'id="actionName' + action.id
 		                              			+ '" name="actionName" value="' + action.name + '">' + 
 	   			 				 	  '</div>' +
@@ -175,7 +175,7 @@
     	var html = '<div class="propertyItem form-group ' + conditionClass + ' ' + divId + ' condition">'
     			 + '    <div class="propertyValue col-xs-4">'
     			 + '        <input type="hidden" class="conditionId" name="conditionId" value="' + (condition ? condition.id : '') + '">'
-    			 + '        <select ' + conditionId.format('attribute') + ' class="form-control propertyInput attributeKey">';
+    			 + '        <select ' + conditionId.format('attribute') + ' class="form-control attributeKey">';
     	
     	var tmp = new Array();
     	var tmp2 = new Array();
@@ -192,7 +192,7 @@
    		html += '        </select>'
    			 + '    </div>'
    			 + '    <div class="propertyValue col-xs-3">'
-   			 + '        <select ' + conditionId.format('condition') + ' class="form-control propertyInput conditionKey">';
+   			 + '        <select ' + conditionId.format('condition') + ' class="form-control conditionKey">';
    		
 		$.each(conditions, function(idx, obj) {
     		html += '<option value="' + obj + '">' + getResource(obj) + '</option>';
@@ -201,7 +201,7 @@
    		html += '</select>'
    			 + '    </div>'
    			 + '    <div class="propertyValue col-xs-4" style="display: inline-block">'
-   			 + '        <input type="text" class="form-control propertyInput conditionValue" size="30"'
+   			 + '        <input type="text" class="form-control conditionValue" size="30"'
    			 + '            ' + conditionId.format('conditionValue') + ' name="conditionValue" value="">'
    			 + '    </div>'
    			 + '    <div class="propertyValue col-xs-1 dialogActions">'
@@ -323,7 +323,7 @@
 			nameIsResourceKey: true,
 			resourceKeyTemplate: '{0}.label',
 			name: 'result',
-			value: 'event_success',
+			value: 'EVENT_SUCCESS',
 			getUrlData: function(data) {
 				return data.resources;
 			},

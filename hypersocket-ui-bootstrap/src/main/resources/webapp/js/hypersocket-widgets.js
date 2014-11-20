@@ -1154,7 +1154,7 @@ $.fn.multipleTextInput = function(data) {
 		$(this).append('<div class="includedList" id="' + id + 'Included"></div>');
 		$('#' + id + 'Included').append(
 					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
-							+ id + 'IncludedSelect" class="formInput text form-control' + (options.isPropertyInput ? ' propertyInput' : '') + '"/>');
+							+ id + 'IncludedSelect" class="formInput text form-control"/>');
 
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
