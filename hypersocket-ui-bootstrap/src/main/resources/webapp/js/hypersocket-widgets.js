@@ -40,7 +40,7 @@ $.fn.textInput = function(data) {
 			html += '<div class="input-group">';
 		}
 		
-		var html ='<div class="input-group"><textarea name="' + id + '" id="' + id + '" class="form-control" value="' 
+		var html ='<textarea name="' + id + '" id="' + id + '" class="form-control" value="' 
 				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + ' cols="' 
 				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" ' 
 				+ (options.maxlength > -1 ? 'maxlength="' + options.maxlength  + '"' : '' ) + '>' 

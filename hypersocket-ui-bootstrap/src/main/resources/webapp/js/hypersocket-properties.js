@@ -197,7 +197,8 @@ $.fn.propertyPage = function(opts) {
 											getUrlData: function(data) {
 												return data.resources;
 											},
-											disabled : !options.canUpdate  || obj.readOnly || obj.disabled
+											disabled : !options.canUpdate  || obj.readOnly || obj.disabled,
+											variables: options.variables
 										}, obj);
 										
 										makeBooleanSafe(obj);
