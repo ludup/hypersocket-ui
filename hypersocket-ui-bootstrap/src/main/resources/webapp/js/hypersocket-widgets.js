@@ -1080,7 +1080,7 @@ $.fn.multipleSelect = function(data) {
  */
 $.fn.multipleTextInput = function(data) {
 
-	var id = (data.id ? data.id : $(this).attr('id') + "MultipleInput");
+	var id = $(this).attr('id');
 	
 	if ($(this).data('created')) {
 
