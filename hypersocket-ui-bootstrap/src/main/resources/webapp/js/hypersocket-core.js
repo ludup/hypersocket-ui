@@ -837,7 +837,7 @@ function startLogon() {
 		logonCompleted: function(data) {
 			$('#userInf').empty();
 			$('#userInf').append(getResource('text.loggedIn').format(
-					data.session.principal.name, data.session.currentRealm.name));
+					data.session.currentPrincipal.name, data.session.currentRealm.name));
 			
 			
 			if(data.homePage != '') {
