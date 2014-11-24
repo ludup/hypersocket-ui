@@ -179,6 +179,10 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				return !realmService.isReadOnly(getCurrentRealm());
 			}
 		});
+		
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
+				"impersonateUser", "fa-male", "impersonateUser", SystemPermission.SYSTEM_ADMINISTRATION, 0,
+				null, null));
 
 		registerExtendableTable(MenuService.ACTIONS_REALMS);
 

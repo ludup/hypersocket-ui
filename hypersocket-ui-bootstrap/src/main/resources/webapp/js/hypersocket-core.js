@@ -883,6 +883,7 @@ function home(data) {
 				'<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
 
 	removeMessage();
+	
 	currentRealm = data.session.currentRealm;
 	currentMenu = null;
 	var message = data.bannerMsg;
@@ -944,11 +945,26 @@ function home(data) {
 					
 			});
 
-			
 			$('#navMenu')
 					.append(
 						'<li class="navicon"><a id="main-menu-toggle" class="hidden-sm hidden-md hidden-lg" href="#"><i class="fa fa-bars"></i></a></li>');
 
+			var session = $(document).data('session');
+			if(session.impersonating) {
+				$('#navMenu').append(
+					'<li class="navicon"><a id="impersonateMenu" href="#"><i class="fa fa-male"></i></a></li>');
+				$('#impersonateMenu').click(function(e) {
+					e.preventDefault();
+					getJSON('session/revert', null, function(data) {
+						if(data.success) {
+							window.location.reload();
+						} else {
+							showError(data.message);
+						}
+					});
+				});
+			}
+			
 			$('#currentRealm').remove();
 			if (data.realms) {
 				if(data.realms.length > 1) {
@@ -1092,6 +1108,7 @@ function home(data) {
 			$(contentDiv).append(
 				'<div class="col-md-10 col-sm-11 main"><div id="informationBar"/><div id="mainContent"/></div>');
 
+			
 			// Setup header actions
 			$('#navMenu')
 					.append(
@@ -1109,11 +1126,11 @@ function home(data) {
 				}
 			}
 			
-			debugger;
+			
 //			$('#' + currentMenu.id).trigger('click');
 			loadMenu(currentMenu);
 
-			debugger;
+			
 			
 			if(message != null && message.length > 0) {
 				if(message.startsWith('info=')) {
