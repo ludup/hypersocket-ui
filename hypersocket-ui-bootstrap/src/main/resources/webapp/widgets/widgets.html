@@ -291,11 +291,11 @@ ${stylesheets}
 					variables : [ "username", "password" ]
 				});
 				$('#example2').textInput({
-					url : "../ui/variables.json"
+					url : "../ui/widgets/variables.json"
 				});
 				
 				$('#example3').textInput({
-					url : "../ui/variables2.json",
+					url : "../ui/widgets/variables2.json",
 					getUrlData: function(data) {
 						return data.resources;
 					}
@@ -315,13 +315,13 @@ ${stylesheets}
 					value: "This is a <b>html</b> text editor"
 				});
 				$('#example8').selectButton({
-					url : "../ui/objects.json",
+					url : "../ui/widgets/objects.json",
 					idAttr: "value",
 					nameIsResourceKey: false
 				});
 				
 				$('#example9').selectButton({
-					url : "../ui/objects2.json",
+					url : "../ui/widgets/objects2.json",
 					idAttr: "value",
 					nameIsResourceKey: false,
 					getUrlData: function(data) {
@@ -330,7 +330,7 @@ ${stylesheets}
 				});
 				
 				$('#example10').autoComplete({
-					url : "../ui/objects2.json",
+					url : "../ui/widgets/objects2.json",
 					idAttr: "value",
 					nameIsResourceKey: false
 				});
@@ -345,7 +345,7 @@ ${stylesheets}
 				});
 				
 				$('#example13').multipleSelect({
-					url: "../ui/objects2.json",
+					url: "../ui/widgets/objects2.json",
 					selected: splitFix("1]|[3"),
 					idAttr: "value",
 					nameIsResourceKey: false

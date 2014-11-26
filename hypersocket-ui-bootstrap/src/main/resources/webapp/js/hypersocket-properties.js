@@ -1,30 +1,31 @@
 
-// jQuery validate plugin for metaData input tags
-$.fn.validateProperty = function() {
-
-	var widget = $(this).data('widget');
+function validate(widget) {
 	obj = widget.options();
 	
 	obj = $.extend({ allowEmpty: true }, obj);
 	
-	log("Validating " + obj.resourceKey);
+	var value = widget.getValue();
+	
+	log("Validating " + obj.resourceKey + ' value ' + value);
 	
 	if (obj.inputType == 'number') {
-		return (parseInt(obj.minValue) <= parseInt($(this).val()) && parseInt(obj.maxValue) >= parseInt($(this).val()));
+		if(parseInt(value) == value) {
+			return (parseInt(obj.minValue) <= parseInt(value) && parseInt(obj.maxValue) >= parseInt(value));
+		}
 	} else if (obj.inputType == 'textarea') {
-		if(!obj.allowEmpty && $(this).val()=='') {
+		if(!obj.allowEmpty && value == '') {
 			return false;
 		}
 		return true;
 	} else if (obj.inputType == 'text') {
-		if(!obj.allowEmpty && $(this).val()=='') {
+		if(!obj.allowEmpty && value == '') {
 			return false;
 		}
 		return true;
 	} else if (obj.inputType == 'select') {
 		return true;
 	} else if (obj.inputType == 'password') {
-		if(!obj.allowEmpty && $(this).val()=='') {
+		if(!obj.allowEmpty && value == '') {
 			return false;
 		}
 		return true;
@@ -54,7 +55,7 @@ $.fn.validateProperty = function() {
 
 	log("Validation failed for " + obj.resourceKey);
 	return false;
-};
+}
 
 $.fn.propertyPage = function(opts) {
 
@@ -185,13 +186,27 @@ $.fn.propertyPage = function(opts) {
 										makeBooleanSafe(obj);
 										
 										var widget; 
+										var inputId = this.id;
+										var inputTab = tab;
+										var inputObj = this;
 										
 										obj = $.extend({
 											changed : function(widget) {
-												widget.getInput().data('updated', true);
-												if (options.showButtons) {
-													$(revertButton).attr('disabled', false);
-													$(applyButton).attr('disabled', false);
+												if(!validate(widget)) {
+													$('#' + tab + '_helpspan' + inputId).addClass('error');
+													$('#' + tab + '_helpspan' + inputId).text(getResource("text.invalid"));
+													if (options.showButtons) {
+														$(revertButton).attr('disabled', true);
+														$(applyButton).attr('disabled', true);
+													}
+												} else {
+													$('#' + tab + '_helpspan' + inputId).removeClass('error');
+													$('#' + tab + '_helpspan' + inputId).text(getResource(widget.options().resourceKey + '.info'));
+													widget.getInput().data('updated', true);
+													if (options.showButtons) {
+														$(revertButton).attr('disabled', false);
+														$(applyButton).attr('disabled', false);
+													}
 												}
 											},
 											getUrlData: function(data) {
@@ -209,9 +224,7 @@ $.fn.propertyPage = function(opts) {
 											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
 										}
 
-										var inputId = this.id;
-										var inputTab = tab;
-										var inputObj = this;
+										
 										
 										if (obj.inputType == 'textarea' || obj.inputType == 'text' || obj.inputType == 'password' || obj.inputType == 'number') {
 											widget = $('#' + tab + '_value' + this.id).textInput(obj);
@@ -317,7 +330,7 @@ $.fn.propertyPage = function(opts) {
 										widget.getInput().data('widget', widget);
 										
 										$('#' + tab + '_value' + this.id).append(
-												'<div><span class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
+												'<div><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
 
 									});
 	
@@ -417,7 +430,7 @@ $.fn.saveProperties = function(includeAll, callback) {
 
 			var invalid = false;
 			
-			if(!$(this).validateProperty()) {
+			if(!validate(widget)) {
 				invalid = true;
 			}
 
@@ -433,8 +446,9 @@ $.fn.saveProperties = function(includeAll, callback) {
 			}
 		});
 
-	callback(items);
-
+	if(!invalid) {
+		callback(items);
+	}
 	return invalid;
 
 };
