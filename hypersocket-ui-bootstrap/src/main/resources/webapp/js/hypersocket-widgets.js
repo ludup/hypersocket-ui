@@ -31,7 +31,7 @@ $.fn.textInput = function(data) {
 			}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "TextInput");
-	
+	var hasVariables = (options.variables && options.variables.length > 0);
 	var html = '';
 	
 	if(options.inputType=='textarea') {
@@ -55,7 +55,7 @@ $.fn.textInput = function(data) {
 	} else {
 		
 		var html = '';
-		if(options.variables || options.url) {
+		if(hasVariables || options.url) {
 			html += '<div class="input-group">';
 		}
 		
@@ -63,7 +63,7 @@ $.fn.textInput = function(data) {
 		html += '<input type="' + type + '" name="' + id + '" id="' + id + '" class="form-control" value="' 
 				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
 		
-		if(options.variables || options.url) {
+		if(hasVariables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
 		 	  + 'data-toggle="dropdown">${}</span></div>';
 		}
@@ -72,7 +72,7 @@ $.fn.textInput = function(data) {
 	
 	$(this).append(html);
 	
- 	if(options.variables) {
+ 	if(hasVariables) {
  		$.each(options.variables, function(idx, obj) {
  			$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
  		});
