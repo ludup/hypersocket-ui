@@ -224,9 +224,15 @@ $.fn.propertyPage = function(opts) {
 											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
 										}
 
-										
-										
-										if (obj.inputType == 'textarea' || obj.inputType == 'text' || obj.inputType == 'password' || obj.inputType == 'number') {
+										if (obj.inputType == 'namePairs') {
+											
+											var widgetOptions = $.extend(obj, {
+												values : splitFix(obj.value)
+											});
+											
+											widget = $('#' + tab + '_value' + this.id).namePairInput(obj);
+			
+										} else if (obj.inputType == 'textarea' || obj.inputType == 'text' || obj.inputType == 'password' || obj.inputType == 'number') {
 											widget = $('#' + tab + '_value' + this.id).textInput(obj);
 			
 										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java') {
