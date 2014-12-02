@@ -449,6 +449,9 @@ $.fn.selectButton = function(data) {
 				$('#' + id).val(val);
 				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
 				$('#select_button_' + id).text(selected.attr('data-label'));
+				if(obj.changed) {
+					obj.changed(callback);
+				}
 			},
 			getValue: function() {
 				return $('#' + id).val();

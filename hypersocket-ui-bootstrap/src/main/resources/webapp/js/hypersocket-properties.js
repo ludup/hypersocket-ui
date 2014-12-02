@@ -60,7 +60,7 @@ function validate(widget) {
 $.fn.propertyPage = function(opts) {
 
 	log("Creating property page for div " + $(this).attr('id'));
-	debugger;
+
 	var propertyDiv = $(this).attr('id');
 	
 	var options = $
