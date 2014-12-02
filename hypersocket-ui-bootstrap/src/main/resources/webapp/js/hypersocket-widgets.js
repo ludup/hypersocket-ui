@@ -1076,6 +1076,14 @@ $.fn.multipleSelect = function(data) {
 };
 
 /**
+ * Helper to support older resources that still use this
+ * method of getting the values.
+ */
+$.fn.multipleSelectValues = function() {
+	return $(this).data('widget').getValue();
+};
+
+/**
  * Shows a text box and list box with the ability to insert the text into the list.
  */
 $.fn.multipleTextInput = function(data) {
