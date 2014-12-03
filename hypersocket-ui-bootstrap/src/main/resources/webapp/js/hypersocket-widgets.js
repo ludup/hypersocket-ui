@@ -1659,6 +1659,7 @@ $.fn.namePairInput = function(data) {
 				maxRows : 0,
 				disabled : false, 
 				readOnly: false,
+				disableName: false,
 				columnWeight: 'equal',
 				valueVariables: [],
 				nameVariables: [],
@@ -1680,6 +1681,9 @@ $.fn.namePairInput = function(data) {
 	}else if(options.columnWeight=='valueHeavy'){
 		nameWeight = 'col-xs-3';
 		valueWeight = 'col-xs-8';
+	}else if(options.columnWeight=='separateLines'){
+		nameWeight = 'col-xs-11';
+		valueWeight = 'col-xs-11';
 	}
 	
 	var nameVariables = options.nameVariables.concat(options.variables);
@@ -1751,9 +1755,9 @@ $.fn.namePairInput = function(data) {
  				for (i = 0; i < val; i++) {
  					rowNum++;
  					html = '';
- 	 				html =	'<div class="row namePairInput form-group">'
- 	 					+	'	<div id="' + id + 'NamePairName' + rowNum + '" class="propertyValue ' + nameWeight + ' namePairName"></div>'
- 	 					+	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="propertyValue ' + valueWeight + ' namePairValue"></div>'
+ 	 				html =	'<div class="row namePairInput">'
+ 	 					+	'	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
+ 	 					+	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'
  	 					+	'	<div class="propertyValue col-xs-1 dialogActions">'
  	 					+ 	'		<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>'
  	 					+ 	'	</div>'
@@ -1761,7 +1765,7 @@ $.fn.namePairInput = function(data) {
  	 				$('#' + id + 'NamePairs').append(html);
  	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
  	 					variables: nameVariables,
- 	 					disabled: options.disabled
+ 	 					disabled: options.disabled || options.disableName
  	 				});
  	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
  	 					variables: valueVariables,
