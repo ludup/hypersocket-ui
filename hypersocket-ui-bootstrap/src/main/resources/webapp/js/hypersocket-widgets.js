@@ -25,6 +25,7 @@ $.fn.textInput = function(data) {
 				inputType: 'text',
 				readOnly: false, 
 				maxlength: -1, 
+				valueIsResourceKey: false,
 				getUrlData: function(data) {
 					return data;
 				}
@@ -44,7 +45,7 @@ $.fn.textInput = function(data) {
 				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + ' cols="' 
 				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" ' 
 				+ (options.maxlength > -1 ? 'maxlength="' + options.maxlength  + '"' : '' ) + '>' 
-				+ stripNull(options.value) + '</textarea>';
+				+ stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value) + '</textarea>';
 		
 		if(options.variables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
@@ -61,7 +62,7 @@ $.fn.textInput = function(data) {
 		
 		var type = options.inputType != 'text' && options.inputType != 'password' ? 'text' : options.inputType;
 		html += '<input type="' + type + '" name="' + id + '" id="' + id + '" class="form-control" value="' 
-				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
+				+ stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
 		
 		if(hasVariables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
@@ -882,6 +883,8 @@ $.fn.multipleSelect = function(data) {
 						disabled : false, 
 						valuesIsObjectList: true,
 						resourceKeyTemplate: '{0}',
+						excludedLabelResourceKey: 'text.excluded',
+						includedLabelResourceKey: 'text.included',
 						isArrayValue: true,
 						getUrlData: function(data) {
 							return data;
@@ -934,7 +937,7 @@ $.fn.multipleSelect = function(data) {
 		$(this).addClass('container-fluid');
 		
 		$(this).append('<div class="excludedList col-md-5" id="' + id 
-				+ 'Excluded"><label>' + getResource('text.excluded') + '</label></div>');
+				+ 'Excluded"><label>' + getResource(options.excludedLabelResourceKey) + '</label></div>');
 		
 		$('#' + id + 'Excluded').append(
 					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' + id
@@ -949,7 +952,7 @@ $.fn.multipleSelect = function(data) {
 					'<button class="btn-multiple-select btn btn-primary" id="' + id + 'RemoveButton"><i class="fa fa-chevron-circle-left"></i></button>');
 		
 		$(this).append('<div class="includedList col-md-5" id="' + id 
-				+ 'Included"><label>' + getResource('text.included') + '</label></div>');
+				+ 'Included"><label>' + getResource(options.includedLabelResourceKey) + '</label></div>');
 		
 		$('#' + id + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled="disabled" ') 
 				+ 'multiple="multiple" id="' + id + 'IncludedSelect" class="formInput text form-control"/>');

@@ -222,7 +222,9 @@ $.fn.propertyPage = function(opts) {
 											$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
 											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResource(this.resourceKey) + '</label>');
 											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
-										}
+											
+										} 
+
 
 										if (obj.inputType == 'namePairs') {
 											
@@ -330,14 +332,17 @@ $.fn.propertyPage = function(opts) {
 
 											widget = $('#' + tab + '_value' + this.id).sliderInput(obj);
 
-										} 
-
-										widget.getInput().addClass('propertyInput');
-										widget.getInput().data('widget', widget);
+										}
 										
-										$('#' + tab + '_value' + this.id).append(
-												'<div><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
-
+										if(obj.inputType != 'hidden') {
+											
+											widget.getInput().addClass('propertyInput');
+											widget.getInput().data('widget', widget);
+											
+											$('#' + tab + '_value' + this.id).append(
+													'<div><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
+										}
+										
 									});
 	
 							});
