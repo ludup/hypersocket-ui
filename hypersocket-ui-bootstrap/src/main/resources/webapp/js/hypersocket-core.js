@@ -1351,11 +1351,18 @@ function loadMenu(menu) {
 			allMenus[this.resourceKey] = this;
 			if(!this.hidden) {
 				$('#subMenuIconPanel').append(
-						'<div class="col-xs-2"><a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
-						+ '<i class="fa ' + this.icon + '"></i><p>' + getResource(this.resourceKey + '.title') + '</p>'
+						'<div class="col-xs-2"><a class="hidden-xs large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+						+ '<i class="fa ' + this.icon + '"></i><p class="visible-lg visible-md">' + getResource(this.resourceKey + '.title') + '</p>'
 					+ '</a>'
-				+ '</div>');
+				+ '</div>')
+				.append(
+						'<div class="col-xs-2"><a class="visible-xs subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+						+ '<i class="fa ' + this.icon + '"></i>'
+					+ '</a>'
+				+ '</div>')
+				;
 			}
+
 		});
 	
 		for(var i=0;i<menu.menus.length;i++) {
