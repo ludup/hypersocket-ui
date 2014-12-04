@@ -453,7 +453,7 @@ $.fn.selectButton = function(data) {
 			},
 			changed: function() {
 				if(obj.changed) {
-					obj.changed();
+					obj.changed(callback);
 				}
 			},
 			getValue: function() {
