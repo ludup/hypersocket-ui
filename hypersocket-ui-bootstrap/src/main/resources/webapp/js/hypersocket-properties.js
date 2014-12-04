@@ -305,7 +305,7 @@ $.fn.propertyPage = function(opts) {
 											var widgetOptions = $.extend(obj, {
 												values : splitFix(obj.value)
 											});
-											
+	
 											widget = $('#' + tab + '_value' + this.id).multipleTextInput(widgetOptions);
 
 										} else if (obj.inputType == 'date') {
@@ -335,7 +335,6 @@ $.fn.propertyPage = function(opts) {
 										}
 										
 										if(obj.inputType != 'hidden') {
-											
 											widget.getInput().addClass('propertyInput');
 											widget.getInput().data('widget', widget);
 											
