@@ -1351,16 +1351,14 @@ function loadMenu(menu) {
 			allMenus[this.resourceKey] = this;
 			if(!this.hidden) {
 				$('#subMenuIconPanel').append(
-						'<div class="col-xs-2"><a class="hidden-xs large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
-						+ '<i class="fa ' + this.icon + '"></i><p class="visible-lg visible-md">' + getResource(this.resourceKey + '.title') + '</p>'
-					+ '</a>'
-				+ '</div>')
-				.append(
-						'<div class="col-xs-2"><a class="visible-xs subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
-						+ '<i class="fa ' + this.icon + '"></i>'
-					+ '</a>'
-				+ '</div>')
-				;
+					'<div class="col-xs-2">'
+					+	'<a class="hidden-xs large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+					+		'<i class="fa ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
+					+	'</a>'
+					+	'<a class="visible-xs small-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+					+		'<i class="fa ' + this.icon + '"></i>'
+					+	'</a>'
+				+ '</div>');
 			}
 
 		});
@@ -1392,9 +1390,10 @@ function loadMenu(menu) {
 }
 
 function loadSubPage(menu, element) {
-	
 	$('#subMenuIconPanel').find('.large-button-active').removeClass('large-button-active');
-	element.addClass('large-button-active');
+	$('#subMenuIconPanel').find('.small-button-active').removeClass('small-button-active');
+	element.parent().find('.large-button').addClass('large-button-active');
+	element.parent().find('.small-button').addClass('small-button-active');
 	loadWait();
 	$('#menuContent').load('content/' + menu.resourceName + '.html', function() {
 		window.location.hash = "menu=" + menu.resourceKey;
