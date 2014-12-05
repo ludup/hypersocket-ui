@@ -91,7 +91,7 @@
 					});
 				 }
 
-			$('#realmsContent')
+				$('#realmsContent')
 					.ajaxResourcePage(
 						{ tableUrl : "realms/table", 
 						  title : getResource('realms.title'), 
@@ -108,7 +108,8 @@
 						  additionalActionsDropdown : true,
 						  validate : function() {
 							if ($('#name').val() == '') {
-								$('#realmsContent').resourceDialog('error', "A name is required!");
+								$('#addRealmForm').resourceDialog('error', "A name is required!");
+								//showError(getResource("text.nameRequired"));
 								return false;
 							}
 							return true;
