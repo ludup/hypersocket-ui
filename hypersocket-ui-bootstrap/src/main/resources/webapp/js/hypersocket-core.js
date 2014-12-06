@@ -300,7 +300,6 @@ $.fn.ajaxResourcePage = function(params) {
 	
 	if (options.canCreate) {
 
-		if(options)
 		$('#' + divName + 'Actions')
 				.append(
 					'<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa ' + options.createButtonIcon + '"></i>' + getResource(options.createButtonText) + '</button>');
