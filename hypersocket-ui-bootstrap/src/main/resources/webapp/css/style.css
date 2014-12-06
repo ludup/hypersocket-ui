@@ -976,3 +976,21 @@ span.input-group-addon {
 		display: none
 	}
 }
+
+.small-button{
+	text-align: center;
+	color: #c0cadd;
+}
+
+.small-button i{
+	font-size: 32px;
+	cursor: pointer;
+}
+
+.small-button:hover{
+	color: #9faecb;
+}
+
+.small-button-active.small-button-active:hover{
+	color: #20a8d8;
+}
