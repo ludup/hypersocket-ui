@@ -139,7 +139,7 @@ function showInformation(text, fade, fadeCallback) {
 //}
 
 function removeMessage() {
-	$('.notifyjs-corner').remove();
+//	$('.notifyjs-corner').remove();
 }
 
 function showMessage(text, icon, alertClass, fade, fadeCallback) {
