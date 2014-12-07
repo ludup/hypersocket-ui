@@ -51,6 +51,8 @@ function validate(widget) {
 		return true;
 	} else if (obj.inputType == 'sql') {
 		return true;
+	} else if (obj.inputType == 'slider') {
+		return true;
 	} 
 
 	log("Validation failed for " + obj.resourceKey);
