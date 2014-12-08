@@ -1680,7 +1680,7 @@ $.fn.namePairInput = function(data) {
 	}
 	
 	var nameWeight = 'col-xs-5';
-	var valueWeight = 'col-xs-5';
+	var valueWeight = 'col-xs-6';
 	if(options.columnWeight=='nameHeavy') {
 		nameWeight = 'col-xs-8';
 		valueWeight = 'col-xs-3';
@@ -1694,11 +1694,10 @@ $.fn.namePairInput = function(data) {
 	
 	var nameVariables = options.nameVariables.concat(options.variables);
 	var valueVariables = options.valueVariables.concat(options.variables);
-	
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 			+	'	<div id="' + id + 'NamePairs" ></div>'
-			+	'	<div class="row">'
-			+	'		<div class="propertyValue col-xs-10">'
+			+	'	<div id="' + id + 'NewRow" class="row">'
+			+	'		<div class="propertyValue col-xs-11">'
 			+	'			<span class="help-block">' + options.text + '</span>'
 			+	'		</div>'
 			+	'		<div class="propertyValue col-xs-1 dialogActions">'
@@ -1747,7 +1746,9 @@ $.fn.namePairInput = function(data) {
  			},
  			enable: function() {
  				$('#' + id).find('input').parent().each(function(){
- 					$(this).data('widget').enable();
+ 					if (!this.id.startsWith(id + 'NamePairName') || (this.id.startsWith(id + 'NamePairName') && !options.disableName)) {
+ 						$(this).data('widget').enable();
+ 					}
  				});
  				$('#' + id).find('.removePair').each(function(){
  					$(this).removeAttr('disabled');
@@ -1779,10 +1780,10 @@ $.fn.namePairInput = function(data) {
  	 				});
  	 				$('.removePair').click(function(){
  	 					$(this).closest('.namePairInput').remove();
- 	 					$('#' + id + 'AddPair').removeAttr('disabled');
+ 	 					$('#' + id + 'NewRow').show();
  	 				});
  	 				if(options.maxRows != 0 && $('#' + id + 'NamePairs').children().length == options.maxRows){
- 	 					$('#' + id + 'AddPair').attr('disabled', 'disabled');
+ 	 					$('#' + id + 'NewRow').hide();
  	 				}
  				}
  			},
