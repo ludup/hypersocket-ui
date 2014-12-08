@@ -150,19 +150,19 @@
         rowStyle: function (row, index) {return {};},
 
         formatLoadingMessage: function () {
-            return getResource('dashboard.onlineUsersTableLoading');
+            return 'Loading, please wait…';
         },
         formatRecordsPerPage: function (pageNumber) {
-            
+            return sprintf('%s records per page', pageNumber);
         },
         formatShowingRows: function (pageFrom, pageTo, totalRows) {
-            return sprintf(getResource("dashboard.onlineUsersTablePagination"), pageFrom, pageTo, totalRows);
+            return sprintf('Showing %s to %s of %s rows', pageFrom, pageTo, totalRows);
         },
         formatSearch: function () {
             return 'Search';
         },
         formatNoMatches: function () {
-            return getResource('dashboard.onlineUsersTableEmpty');
+            return 'No matching records found';
         },
 
         onAll: function (name, args) {return false;},
