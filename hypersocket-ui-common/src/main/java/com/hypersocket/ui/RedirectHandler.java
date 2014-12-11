@@ -24,9 +24,9 @@ import com.hypersocket.server.handlers.HttpResponseProcessor;
 
 @Component
 public class RedirectHandler extends HttpRequestHandler {
-
+	
 	@Autowired
-	HypersocketServer server;
+	HypersocketServer server; 
 	
 	public RedirectHandler() {
 		super("redirect", Integer.MAX_VALUE);
