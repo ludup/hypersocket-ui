@@ -69,59 +69,61 @@ function processLogon(data, opts, message) {
 		
 		var links = new Array();
 		var scripts = new Array();
-		$.each(data.formTemplate.inputFields,
-					function() {
-
-						if (this.type == 'hidden') {
-							$('#logonForm').append('<input type="' + this.type + '" name="' 
-										+ this.resourceKey + '" id="' 
-										+ this.resourceKey + '" value="' 
-										+ this.defaultValue + '"/>');
-							return;
-						} else if (this.type == 'p') {
-							if(this.valueResourceKey) {
-								$('#logonForm').append('<p>' + getResource(this.defaultValue) + '</p>');
-							} else {
-								$('#logonForm').append('<p>' + this.defaultValue + '</p>');
+		
+		if(data.formTemplate) {
+			$.each(data.formTemplate.inputFields, function() {
+	
+				if (this.type == 'hidden') {
+					$('#logonForm').append('<input type="' + this.type + '" name="' 
+								+ this.resourceKey + '" id="' 
+								+ this.resourceKey + '" value="' 
+								+ this.defaultValue + '"/>');
+					return;
+				} else if (this.type == 'p') {
+					if(this.valueResourceKey) {
+						$('#logonForm').append('<p>' + getResource(this.defaultValue) + '</p>');
+					} else {
+						$('#logonForm').append('<p>' + this.defaultValue + '</p>');
+					}
+					
+					return;
+				} else if(this.type == 'a') {
+					links.push(this);
+					return;
+				} else if(this.type == 'script') {
+					scripts.push(this);
+					return;
+				}
+	
+				if (this.type == 'select') {
+					$('#logonForm').append('<select class="logonSelect" name="' 
+							+ this.resourceKey + '" id="' + this.resourceKey + '"/>');
+					currentKey = this.resourceKey;
+					$.each(
+						this.options,
+						function() {
+							option = '<option';
+							if (this.selected) {
+								option += ' selected';
 							}
-							
-							return;
-						} else if(this.type == 'a') {
-							links.push(this);
-							return;
-						} else if(this.type == 'script') {
-							scripts.push(this);
-							return;
-						}
-
-						if (this.type == 'select') {
-							$('#logonForm').append('<select class="logonSelect" name="' 
-									+ this.resourceKey + '" id="' + this.resourceKey + '"/>');
-							currentKey = this.resourceKey;
-							$.each(
-								this.options,
-								function() {
-									option = '<option';
-									if (this.selected) {
-										option += ' selected';
-									}
-									if (this.value) {
-										option += ' value="' + this.value + '"';
-									}
-									option += '>' + (this.isNameResourceKey ? getResource(this.name) : this.name) + '</option>';
-									$('#' + currentKey).append(option);
-								});
-
-						} else {
-							$('#logonForm')
-									.append(
-										'<input class="form-control" type="' + this.type + '" name="' 
-										+ this.resourceKey + '" placeholder="'
-										+ (this.label != null ? this.label : getResource(this.resourceKey + ".label")) 
-										+ '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
-						}
-
-					});
+							if (this.value) {
+								option += ' value="' + this.value + '"';
+							}
+							option += '>' + (this.isNameResourceKey ? getResource(this.name) : this.name) + '</option>';
+							$('#' + currentKey).append(option);
+						});
+	
+				} else {
+					$('#logonForm')
+							.append(
+								'<input class="form-control" type="' + this.type + '" name="' 
+								+ this.resourceKey + '" placeholder="'
+								+ (this.label != null ? this.label : getResource(this.resourceKey + ".label")) 
+								+ '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
+				}
+	
+			});
+		}
 
 		$.each(scripts, function(idx, script) {
 			log('Executing script ' + script.resourceKey);
@@ -130,11 +132,13 @@ function processLogon(data, opts, message) {
 			}
 		});
 		
-		if(data.formTemplate.showLogonButton) {
-			$('#logonForm').append(
-					'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
-						+ (data.last ? getResource("text.logon") : getResource("text.next")) 
-						+ '&nbsp;<i style="padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
+		if(data.formTemplate) {
+			if(data.formTemplate.showLogonButton) {
+				$('#logonForm').append(
+						'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
+							+ (data.last ? getResource("text.logon") : getResource("text.next")) 
+							+ '&nbsp;<i style="padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
+			}
 		}
 		
 		if(!data.newSession) {

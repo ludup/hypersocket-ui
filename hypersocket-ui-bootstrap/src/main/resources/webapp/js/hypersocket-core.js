@@ -37,7 +37,7 @@ $.ajaxSetup({ error : function(xmlRequest) {
 
 	if (xmlRequest.status == 401) {
 		var session = $(document).data('session');
-		if(session) {
+		if(session && !polling) {
 			startLogon();
 			showError(getResource("error.sessionTimeout"), false);
 		}

@@ -2,6 +2,7 @@
  * Change this to indicate server has shutdown and is expected to be out of contact. 
  */
 var hasShutdown = false;
+var polling = false;
 var regex = new RegExp(/(.[^\:]+)(\:\/\/)(.[^\/]+)(.[^\/]+)(.[^\/]+)(.*)/);
 
 var url = regex.exec(document.URL);
@@ -271,6 +272,7 @@ function deleteJSON(path, params, callback, errorCallback) {
 
 function pollForServerContact() {
 	
+	polling = true;
 	$.ajax({
 		type: "GET",
 	    url:  basePath + '/api/session/peek',
@@ -278,6 +280,7 @@ function pollForServerContact() {
 	    contentType: 'application/json',
 	    success: function() {
 	    	showInformation(getResource('info.serverIsBack'), true, function() {
+	    		polling = false;
 	    		window.location.reload();	
 	    	});
 	    	

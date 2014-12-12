@@ -21,7 +21,6 @@ import com.hypersocket.menus.MenuRegistration;
 import com.hypersocket.menus.MenuService;
 import com.hypersocket.permissions.PermissionCategory;
 import com.hypersocket.permissions.PermissionService;
-import com.hypersocket.permissions.SystemPermission;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.FileContentHandler;
 
