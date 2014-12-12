@@ -22,7 +22,7 @@
 		<div id="content" class="row">
 			<div class="propertyItem form-group credsDiv">
 				<div class="propertyValue col-md-9">
-					<div id="fileUploadInputExample"></div>
+					<div id="example"></div>
 				</div>
 			</div>
 		</div>
@@ -56,7 +56,7 @@
 
 			loadResources(function() {
 
-				$('#fileUploadInputExample').fileUploadInput({
+				$('#example').fileUploadInput({
 					disabled: false,
 					url: 'fileUpload/file'
 				});
@@ -64,15 +64,15 @@
 		});
 		
 		$('#buttonDisable').click(function(){
-			$('#fileUploadInputExample').data('widget').disable();
+			$('#example').data('widget').disable();
 		});
 		
 		$('#buttonEnable').click(function(){
-			$('#fileUploadInputExample').data('widget').enable();
+			$('#example').data('widget').enable();
 		});
 		
 		$('#buttonGetValue').click(function(){
-			alert($('#fileUploadInputExample').data('widget').getValue());
+			bootbox.alert($('#example').data('widget').getValue());
 		});
 		
 	</script>
