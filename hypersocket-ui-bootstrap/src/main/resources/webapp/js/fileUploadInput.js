@@ -3,7 +3,7 @@ $.fn.fileUploadInput = function(data) {
 	var options = $.extend(
 			{  
 				disabled : false,
-				showChooseFile: true,
+				showUploadButton: true,
 				getUrlData: function(data) {
 					return data;
 				}
@@ -26,7 +26,7 @@ $.fn.fileUploadInput = function(data) {
 	$('#' + id + 'UpdateProgressHolder').css('height', '12px');
 	$('#' + id + 'UpdateProgressHolder').hide();
 	
-	if(!options.showChooseFile){
+	if(!options.showUploadButton){
 		$('#' + id + 'UploadButton').parent().hide();
 		$('#' + id + 'File').parent().removeClass('col-xs-11').addClass('col-xs-12');
 	}
@@ -41,8 +41,7 @@ $.fn.fileUploadInput = function(data) {
 	var callback = {
  			getValue: function() {
  				if(!$('#' + id + 'Info').length){
- 					bootbox.alert(getResource("fileUpload.noExistingFile.text"));
- 					return;
+ 					return '';
  				}
  				return $('#' + id + 'Info').data('uuid');
  			},
@@ -85,7 +84,6 @@ $.fn.fileUploadInput = function(data) {
  			},
  			upload: function() {
  				if($('#' + id + 'File').val() == ''){
- 					bootbox.alert(getResource("fileUpload.emptyFileUploadInput.text"));
  					return;
  				}
  				$('#' + id + 'UpdateProgressHolder').show();
@@ -118,7 +116,6 @@ $.fn.fileUploadInput = function(data) {
  			},
  			remove: function() {
  				if(!$('#' + id + 'Info').length){
- 					bootbox.alert(getResource("fileUpload.noExistingFile.text"));
  					return;
  				}
  				$('#' + id + 'UpdateProgressHolder').hide();
