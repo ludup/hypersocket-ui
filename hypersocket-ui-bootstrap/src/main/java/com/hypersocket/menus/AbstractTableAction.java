@@ -1,7 +1,6 @@
 package com.hypersocket.menus;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hypersocket.permissions.PermissionType;
 
 public class AbstractTableAction {
