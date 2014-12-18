@@ -888,6 +888,7 @@ $.fn.multipleSelect = function(data) {
 						excludedLabelResourceKey: 'text.excluded',
 						includedLabelResourceKey: 'text.included',
 						isArrayValue: true,
+						allowOrdering: false,
 						getUrlData: function(data) {
 							return data;
 						}
@@ -965,6 +966,40 @@ $.fn.multipleSelect = function(data) {
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
 
+		if(options.allowOrdering) {
+			$(this).append('<div class="listButtons" id="' + id + 'OrderButtons"/>');
+			
+			$('#' + id + 'OrderButtons').append(
+					'<button class="btn-multiple-select btn btn-primary" id="' 
+					+ id 
+					+ 'UpButton"><i class="fa fa-chevron-circle-up"></i></button><br/>');
+			
+			$('#' + id + 'OrderButtons').append(
+					'<button class="btn-multiple-select btn btn-primary" id="' 
+					+ id 
+					+ 'DownButton"><i class="fa fa-chevron-circle-down"></i></button>');
+			
+			$('#' + id + 'UpButton').click(function(e) {
+					e.preventDefault();
+					$('#' + toSelect.attr('id') + ' option:selected').each(function(){
+						$(this).insertBefore($(this).prev());
+						if (options.changed) {
+							options.changed(callback);
+						}
+					});
+			});
+			
+			$('#' + id + 'DownButton').click(function(e) {
+				e.preventDefault();
+				$('#'  + toSelect.attr('id') + ' option:selected').each(function(){
+					$(this).insertAfter($(this).next());
+					if (options.changed) {
+						options.changed(callback);
+					}
+				});
+			});
+		}
+		
 		$('#' + id + 'AddButton').click(function(e) {
 			var selectedOpts = $('#' + select.attr('id') + ' option:selected');
 			if (selectedOpts.length == 0) {
