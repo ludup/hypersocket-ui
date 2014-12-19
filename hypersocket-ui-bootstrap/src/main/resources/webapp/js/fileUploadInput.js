@@ -16,7 +16,7 @@ $.fn.fileUploadInput = function(data) {
 			+	'<div class="propertyValue col-xs-2 dialogActions">'
 			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
 			+	'</div>'
-			+	'<div class="col-xs-12">'
+			+	'<div class="col-xs-10">'
 			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
 			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
 			+	'	</div>'
