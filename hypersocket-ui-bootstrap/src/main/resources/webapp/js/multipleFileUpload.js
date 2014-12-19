@@ -7,6 +7,7 @@ $.fn.multipleFileUpload = function(data) {
 				disabled : false, 
 				values: [],
 				showUploadButton: true,
+				showDownloadButton: true,
 				showRemoveLine: true
 			}, data);
 	
@@ -87,6 +88,7 @@ $.fn.multipleFileUpload = function(data) {
  	 				$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').fileUploadInput({
  	 					url: options.url,
  	 					disabled: options.disabled,
+ 	 					showDownloadButton: options.showDownloadButton,
  	 					showUploadButton: options.showUploadButton
  	 				});
  	 				if(options.showRemoveLine){
