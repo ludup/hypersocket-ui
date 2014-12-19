@@ -994,3 +994,10 @@ span.input-group-addon {
 .small-button-active.small-button-active:hover{
 	color: #20a8d8;
 }
+
+.file-upload-info{
+	font-size: 10px;
+	padding-left: 0px;
+	padding-right: 10px;
+	float: left;
+}
