@@ -1714,6 +1714,10 @@ $.fn.namePairInput = function(data) {
 		var rowNum = 0;
 	}
 	
+	if(getResourceNoDefault(options.text)) {
+		options.text = getResourceNoDefault(options.text);
+	}
+	
 	var nameWeight = 'col-xs-5';
 	var valueWeight = 'col-xs-6';
 	if(options.columnWeight=='nameHeavy') {
