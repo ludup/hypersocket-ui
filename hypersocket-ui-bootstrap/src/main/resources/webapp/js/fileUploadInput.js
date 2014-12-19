@@ -4,6 +4,7 @@ $.fn.fileUploadInput = function(data) {
 			{  
 				disabled : false,
 				showUploadButton: true,
+				showDownloadButton: true,
 				getUrlData: function(data) {
 					return data;
 				}
@@ -74,7 +75,9 @@ $.fn.fileUploadInput = function(data) {
 				'<div id="' + id + 'Info">' + showInfoFormat(data) + '</div>');
 		$('#' + id + 'File').remove();
 		$('#' + id + 'UploadButton').parent().append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-close"></i></a>');
-		$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
+		if(options.showDownloadButton){
+			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
+		}
 		$('#' + id + 'UploadButton').remove();
 		$('#' + id + 'Info').data('uuid', data.name);
 		$('#' + id + 'RemoveButton').click(function(){
