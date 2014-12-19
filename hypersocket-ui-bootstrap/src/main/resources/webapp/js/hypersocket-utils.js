@@ -101,6 +101,14 @@ function getResourceNoDefault(key) {
 	return result;
 };
 
+function getResourceWithNamespace(namespace, key) {
+	if(namespace=='') {
+		return getResource(key);
+	} else {
+		return getResource(namespace + '.' + key);
+	}
+}
+
 $.fn.localizeTooltip = function() {
 	$(this).prop('title', getResource($(this).prop('title')));
 	$(this).tooltip();
