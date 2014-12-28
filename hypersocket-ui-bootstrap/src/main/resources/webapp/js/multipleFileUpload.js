@@ -7,6 +7,7 @@ $.fn.multipleFileUpload = function(data) {
 				disabled : false, 
 				values: [],
 				showUploadButton: true,
+				showDownloadButton: true,
 				showRemoveLine: true
 			}, data);
 	
@@ -87,14 +88,11 @@ $.fn.multipleFileUpload = function(data) {
  	 				$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').fileUploadInput({
  	 					url: options.url,
  	 					disabled: options.disabled,
+ 	 					showDownloadButton: options.showDownloadButton,
  	 					showUploadButton: options.showUploadButton
  	 				});
  	 				if(options.showRemoveLine){
- 	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').parent().removeClass('col-xs-1');
- 	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').parent().addClass('col-xs-2');
- 	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('input').parent().removeClass('col-xs-11');
- 	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('input').parent().addClass('col-xs-10');
- 	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').after('<a href="#" class="btn btn-danger" id="' + id + 'RemoveButton' + rowNum + '"><i class="fa fa-trash-o"></i></a>');
+ 	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').before('<a href="#" class="btn btn-danger" id="' + id + 'RemoveButton' + rowNum + '"><i class="fa fa-minus"></i></a>');
  	 					$('#' + id + 'RemoveButton' + rowNum).click(function(){
  	 						$(this).closest('.fileUpload').remove();
  	 						$('#' + id + 'NewRow').show();
@@ -116,7 +114,9 @@ $.fn.multipleFileUpload = function(data) {
  			},
  			upload: function(){
  				$('#' + id).find('.fileUploadInput').each(function(){
- 					$(this).data('widget').upload();
+ 					if($(this).find('input').length){
+ 						$(this).data('widget').upload();
+ 					}
  				});
  			},
  			options: function() {
