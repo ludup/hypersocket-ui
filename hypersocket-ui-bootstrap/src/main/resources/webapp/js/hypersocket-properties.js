@@ -55,6 +55,10 @@ function validate(widget) {
 		return true;
 	} else if (obj.inputType == 'namePairs') {
 		return true;
+	} else if (obj.inputType == 'date') {
+		return true;
+	} else if (obj.inputType == 'time') {
+		return true;
 	} 
 
 	log("Validation failed for " + obj.resourceKey);
@@ -205,7 +209,7 @@ $.fn.propertyPage = function(opts) {
 													}
 												} else {
 													$('#' + tab + '_helpspan' + inputId).removeClass('error');
-													$('#' + tab + '_helpspan' + inputId).text(getResource(widget.options().resourceKey + '.info'));
+													$('#' + tab + '_helpspan' + inputId).text(getResourceWithNamespace(options.i18nNamespace, widget.options().resourceKey + '.info'));
 													widget.getInput().data('updated', true);
 													if (options.showButtons) {
 														$(revertButton).attr('disabled', false);
@@ -315,6 +319,10 @@ $.fn.propertyPage = function(opts) {
 										} else if (obj.inputType == 'date') {
 											
 											widget = $('#' + tab + '_value' + this.id).dateInput(obj);
+											
+										} else if (obj.inputType == 'time') {
+											
+											widget = $('#' + tab + '_value' + this.id).timeInput(obj);
 											
 										} else if (obj.inputType == 'button') {
 											

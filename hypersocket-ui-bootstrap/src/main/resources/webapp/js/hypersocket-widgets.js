@@ -1342,8 +1342,8 @@ $.fn.dateInput = function(options) {
 	
 	var options = $.extend(
 			{   format: "yyyy-mm-dd",
-			    startView: 1,
-			    orientation: "bottom auto",
+			    startView: 0,
+			    orientation: "top auto",
 			    multidate: false,
 			    forceParse: false,
 			    autoclose: true
@@ -1355,7 +1355,7 @@ $.fn.dateInput = function(options) {
 	
 	$('#' + id).datepicker(options).on('show', function() {
 		// Fix for being in a modal
-		var modal = $('#' + tab + '_date' + inputId).closest('.modal');
+		var modal = $('#' + id).closest('.modal');
 		var datePicker = $('body').find('.datepicker');
 		if(!modal.length) {
 			$(datePicker).css('z-index', 'auto');
@@ -1400,6 +1400,78 @@ $.fn.dateInput = function(options) {
 	return callback;
 };
 
+/**
+ * Time input
+ */
+$.fn.timeInput = function(options) {
+	
+	var id = (options.id ? options.id : $(this).attr('id') + "TimeInput");
+	
+	var options = $.extend(
+			{   template: 'dropdown',
+				minuteStep: 15,
+				showSeconds: false,
+				secondStep: 15,
+				defaultTime: (options.value ? options.value : 'current'),
+				showMeridian: false,
+				showInputs: true,
+				disableFocus: false,
+				disableMouseWheel: false,
+				modalBackdrop: false,
+				showWidgetOnAddonClick: true
+			},  options);
+	
+	$(this).append('<div class="input-group bootstrap-timepicker">'
+			+ '<input id="' + id + '" type="text" class="input-small form-control">'
+			+ '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span></div>');
+	
+	$('#'+ id).timepicker(options);
+	
+	$('#' + id).click(function(e) {
+		$('#' + id).timepicker('showWidget');
+	});
+	
+	var callback = {
+			setValue: function(val) {
+				$('#' + id).timepicker('setTime', val);
+			},
+			getValue: function() {
+				return $('#' + id).val();
+			},
+			reset: function() {
+				$('#' + id).timepicker('setTime', (options.value ? options.value : 'current'));
+			},
+			disable: function() {
+				$('#' + id).attr('disabled', true);
+			},
+			enable: function() {
+				$('#' + id).attr('disabled', false);
+			},
+			options: function() {
+				return options;
+			},
+			getInput: function() {
+				return $('#' + id);
+			},
+ 			clear: function() {
+ 				$('#' + id).timepicker('setTime', false);
+ 			}
+	};
+	
+	$('#'+ id).timepicker().on('changeTime.timepicker', function(e) {
+	    if(options.changed) {
+	    	options.changed(callback);
+	    }
+	});
+
+	if(options.disabled) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	return callback;
+	
+};
 
 $.fn.buttonAction = function(options) {
 	
