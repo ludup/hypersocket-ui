@@ -39,11 +39,13 @@
 		<button class="btn btn-small btn-primary" id="buttonDisableMulti">Disable</button>
 		<button class="btn btn-small btn-primary" id="buttonEnableMulti">Enable</button>
 		<button class="btn btn-small btn-primary" id="buttonGetValueMulti">GetValue</button>
-		<button class="btn btn-small btn-primary" id="buttonUploadAll">Upload all</button>
-		<button class="btn btn-small btn-primary" id="buttonRemoveAllFiles">Remove all files</button>
-		
+		<button class="btn btn-small btn-primary" id="buttonUploadAll">Upload
+			all</button>
+		<button class="btn btn-small btn-primary" id="buttonRemoveAllFiles">Remove
+			all files</button>
+
 	</div>
-	
+
 	<script src="${uiPath}/js/jquery.min.js"></script>
 	<script src="${uiPath}/js/jquery-ui.min.js"></script>
 	<script src="${uiPath}/js/bootstrap.min.js"></script>
@@ -61,9 +63,6 @@
 	<script src="${uiPath}/js/notify.min.js"></script>
 	<script src="${uiPath}/js/hypersocket-utils.js"></script>
 	<script src="${uiPath}/js/hypersocket-widgets.js"></script>
-	<script src="${uiPath}/js/hypersocket-properties.js"></script>
-	<script src="${uiPath}/js/fileUploadInput.js"></script>
-	<script src="${uiPath}/js/multipleFileUpload.js"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -71,52 +70,51 @@
 			loadResources(function() {
 
 				$('#example1').fileUploadInput({
-					disabled: false,
-					showDownloadButton: true,
-					url: 'fileUpload/file'
+					disabled : false,
+					showDownloadButton : true,
+					url : 'fileUpload/file'
 				});
-				
+
 				$('#example2').multipleFileUpload({
-					disabled: false,
-					showRemoveLine: true,
-					showDownloadButton: true,
-					url: 'fileUpload/file'
+					disabled : false,
+					showRemoveLine : true,
+					showDownloadButton : true,
+					url : 'fileUpload/file'
 				});
 			});
 		});
-		
-		$('#buttonDisable').click(function(){
+
+		$('#buttonDisable').click(function() {
 			$('#example1').data('widget').disable();
 		});
-		
-		$('#buttonEnable').click(function(){
+
+		$('#buttonEnable').click(function() {
 			$('#example1').data('widget').enable();
 		});
-		
-		$('#buttonGetValue').click(function(){
+
+		$('#buttonGetValue').click(function() {
 			bootbox.alert($('#example1').data('widget').getValue());
 		});
-		
-		$('#buttonDisableMulti').click(function(){
+
+		$('#buttonDisableMulti').click(function() {
 			$('#example2').data('widget').disable();
 		});
-		
-		$('#buttonEnableMulti').click(function(){
+
+		$('#buttonEnableMulti').click(function() {
 			$('#example2').data('widget').enable();
 		});
-		
-		$('#buttonGetValueMulti').click(function(){
+
+		$('#buttonGetValueMulti').click(function() {
 			alert($('#example2').data('widget').getValue());
 		});
-		
-		$('#buttonUploadAll').click(function(){
+
+		$('#buttonUploadAll').click(function() {
 			$('#example2').data('widget').upload();
 		});
-		
-		$('#buttonRemoveAllFiles').click(function(){
+
+		$('#buttonRemoveAllFiles').click(function() {
 			$('#example2').data('widget').removeFiles();
 		});
-		
 	</script>
 </body>
 </html>
