@@ -435,7 +435,7 @@ $.fn.selectButton = function(data) {
 			 + id + '" type="hidden" name="select_value_' + id + '" value="'
 			 + obj.value + '"><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span id="select_button_' 
 			 + id + '">' + (obj.nameIsResourceKey ? getResource(obj.name) : obj.name) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
-			 + 'select_' + id + '" class="dropdown-menu" role="menu"></div>');
+			 + 'select_' + id + '" class="dropdown-menu' + (obj.dropdownPosition ? ' ' + obj.dropdownPosition : '') + '" role="menu"></div>');
 
 	var selected = null;
 	
