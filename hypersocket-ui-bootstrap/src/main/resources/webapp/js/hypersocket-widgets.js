@@ -1933,7 +1933,7 @@ $.fn.namePairInput = function(data) {
 
 $.fn.fileUploadInput = function(data) {
 	
-	debugger;
+	
 	var options = $.extend(
 			{  
 				disabled : false,
@@ -1957,6 +1957,7 @@ $.fn.fileUploadInput = function(data) {
 			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
 			+	'	</div>'
 			+	'</div>';
+	
 	
 	$(this).append(html);
 	$('#' + id + 'UpdateProgressHolder').css('height', '12px');
@@ -2074,7 +2075,7 @@ $.fn.fileUploadInput = function(data) {
  				options.disabled = false;
  			},
  			upload: function() {
- 				debugger;
+ 				
  				if($('#' + id + 'File').val() == ''){
  					return;
  				}
@@ -2125,7 +2126,7 @@ $.fn.fileUploadInput = function(data) {
 // 				Commented until I fix the download issue
  				
 // 				getJSON('fileUpload/download/' + uuid, null, function(data){
-// 					debugger;
+// 					
 // 				});
 // 				$.ajax({
 // 			        type : 'GET',
@@ -2133,12 +2134,12 @@ $.fn.fileUploadInput = function(data) {
 // 			        dataType : 'text',
 // 			        contentType : 'application/json;charset=UTF-8',
 // 			        success : function(data) {
-// 			        	debugger;
+// 			        	
 // 			            window.open(data);
 // 			        },
 // 			        error : function(xhr, ajaxOptions, thrownError) {
 // 			            // error handling
-// 			        	debugger;
+// 			        	
 // 			        }
 // 			    });
 // 				window.location.href =  basePath + '/api/fileUpload/download/' + uuid;
@@ -2153,7 +2154,7 @@ $.fn.fileUploadInput = function(data) {
  		};
 	
 	$('#' + id + 'UploadButton').click(function(){
-		debugger;
+		
 		callback.upload();
 	});
 
