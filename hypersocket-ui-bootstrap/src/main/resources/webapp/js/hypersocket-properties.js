@@ -53,6 +53,12 @@ function validate(widget) {
 		return true;
 	} else if (obj.inputType == 'slider') {
 		return true;
+	} else if (obj.inputType == 'namePairs') {
+		return true;
+	} else if (obj.inputType == 'date') {
+		return true;
+	} else if (obj.inputType == 'time') {
+		return true;
 	} 
 
 	log("Validation failed for " + obj.resourceKey);
@@ -67,7 +73,7 @@ $.fn.propertyPage = function(opts) {
 	
 	var options = $
 			.extend(
-				{ showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th', propertyTabsLast: true },
+				{ showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th', propertyTabsLast: true, i18nNamespace: '' },
 				opts);
 	
 	makeBooleanSafe(options);
@@ -203,7 +209,7 @@ $.fn.propertyPage = function(opts) {
 													}
 												} else {
 													$('#' + tab + '_helpspan' + inputId).removeClass('error');
-													$('#' + tab + '_helpspan' + inputId).text(getResource(widget.options().resourceKey + '.info'));
+													$('#' + tab + '_helpspan' + inputId).text(getResourceWithNamespace(options.i18nNamespace, widget.options().resourceKey + '.info'));
 													widget.getInput().data('updated', true);
 													if (options.showButtons) {
 														$(revertButton).attr('disabled', false);
@@ -222,7 +228,7 @@ $.fn.propertyPage = function(opts) {
 										
 										if(obj.inputType!='hidden') {
 											$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
-											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResource(this.resourceKey) + '</label>');
+											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResourceWithNamespace(options.i18nNamespace, this.resourceKey) + '</label>');
 											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
 											
 										} 
@@ -314,6 +320,10 @@ $.fn.propertyPage = function(opts) {
 											
 											widget = $('#' + tab + '_value' + this.id).dateInput(obj);
 											
+										} else if (obj.inputType == 'time') {
+											
+											widget = $('#' + tab + '_value' + this.id).timeInput(obj);
+											
 										} else if (obj.inputType == 'button') {
 											
 											widget = $('#' + tab + '_value' + this.id).buttonAction(obj);
@@ -341,7 +351,9 @@ $.fn.propertyPage = function(opts) {
 											widget.getInput().data('widget', widget);
 											
 											$('#' + tab + '_value' + this.id).append(
-													'<div><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' + getResource(this.resourceKey + '.info') + '</span></div>');
+													'<div><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
+													+  getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') 
+													+ '</span></div>');
 										}
 										
 									});

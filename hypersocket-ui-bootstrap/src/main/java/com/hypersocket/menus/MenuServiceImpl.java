@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hypersocket.auth.AuthenticatedServiceImpl;
+import com.hypersocket.automation.AutomationResourcePermission;
+import com.hypersocket.automation.AutomationResourceServiceImpl;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.i18n.I18NService;
@@ -201,6 +203,13 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				TriggerResourcePermission.UPDATE,
 				TriggerResourcePermission.DELETE),
 				MenuService.MENU_BUSINESS_RULES);
+		
+		registerMenu(new MenuRegistration(AutomationResourceServiceImpl.RESOURCE_BUNDLE,
+				"automations", "fa-clock-o", "automations", 100,
+				AutomationResourcePermission.READ,
+				AutomationResourcePermission.CREATE,
+				AutomationResourcePermission.UPDATE,
+				AutomationResourcePermission.DELETE), MenuService.MENU_BUSINESS_RULES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));

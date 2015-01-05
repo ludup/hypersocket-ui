@@ -435,7 +435,7 @@ $.fn.selectButton = function(data) {
 			 + id + '" type="hidden" name="select_value_' + id + '" value="'
 			 + obj.value + '"><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span id="select_button_' 
 			 + id + '">' + (obj.nameIsResourceKey ? getResource(obj.name) : obj.name) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
-			 + 'select_' + id + '" class="dropdown-menu" role="menu"></div>');
+			 + 'select_' + id + '" class="dropdown-menu' + (obj.dropdownPosition ? ' ' + obj.dropdownPosition : '') + '" role="menu"></div>');
 
 	var selected = null;
 	
@@ -1342,8 +1342,8 @@ $.fn.dateInput = function(options) {
 	
 	var options = $.extend(
 			{   format: "yyyy-mm-dd",
-			    startView: 1,
-			    orientation: "bottom auto",
+			    startView: 0,
+			    orientation: "top auto",
 			    multidate: false,
 			    forceParse: false,
 			    autoclose: true
@@ -1355,7 +1355,7 @@ $.fn.dateInput = function(options) {
 	
 	$('#' + id).datepicker(options).on('show', function() {
 		// Fix for being in a modal
-		var modal = $('#' + tab + '_date' + inputId).closest('.modal');
+		var modal = $('#' + id).closest('.modal');
 		var datePicker = $('body').find('.datepicker');
 		if(!modal.length) {
 			$(datePicker).css('z-index', 'auto');
@@ -1400,6 +1400,78 @@ $.fn.dateInput = function(options) {
 	return callback;
 };
 
+/**
+ * Time input
+ */
+$.fn.timeInput = function(options) {
+	
+	var id = (options.id ? options.id : $(this).attr('id') + "TimeInput");
+	
+	var options = $.extend(
+			{   template: 'dropdown',
+				minuteStep: 15,
+				showSeconds: false,
+				secondStep: 15,
+				defaultTime: (options.value ? options.value : 'current'),
+				showMeridian: false,
+				showInputs: true,
+				disableFocus: false,
+				disableMouseWheel: false,
+				modalBackdrop: false,
+				showWidgetOnAddonClick: true
+			},  options);
+	
+	$(this).append('<div class="input-group bootstrap-timepicker">'
+			+ '<input id="' + id + '" type="text" class="input-small form-control">'
+			+ '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span></div>');
+	
+	$('#'+ id).timepicker(options);
+	
+	$('#' + id).click(function(e) {
+		$('#' + id).timepicker('showWidget');
+	});
+	
+	var callback = {
+			setValue: function(val) {
+				$('#' + id).timepicker('setTime', val);
+			},
+			getValue: function() {
+				return $('#' + id).val();
+			},
+			reset: function() {
+				$('#' + id).timepicker('setTime', (options.value ? options.value : 'current'));
+			},
+			disable: function() {
+				$('#' + id).attr('disabled', true);
+			},
+			enable: function() {
+				$('#' + id).attr('disabled', false);
+			},
+			options: function() {
+				return options;
+			},
+			getInput: function() {
+				return $('#' + id);
+			},
+ 			clear: function() {
+ 				$('#' + id).timepicker('setTime', false);
+ 			}
+	};
+	
+	$('#'+ id).timepicker().on('changeTime.timepicker', function(e) {
+	    if(options.changed) {
+	    	options.changed(callback);
+	    }
+	});
+
+	if(options.disabled) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	return callback;
+	
+};
 
 $.fn.buttonAction = function(options) {
 	
@@ -1714,6 +1786,10 @@ $.fn.namePairInput = function(data) {
 		var rowNum = 0;
 	}
 	
+	if(getResourceNoDefault(options.text)) {
+		options.text = getResourceNoDefault(options.text);
+	}
+	
 	var nameWeight = 'col-xs-5';
 	var valueWeight = 'col-xs-6';
 	if(options.columnWeight=='nameHeavy') {
@@ -1830,6 +1906,400 @@ $.fn.namePairInput = function(data) {
  			},
  			clear: function() {
  				$('#' + id).find('input').val('');
+ 			},
+ 			getInput: function() {
+ 				return $('#' + id);
+ 			}
+ 		};
+
+ 	$('#' + id).change(function(e) {
+ 		if(options.changed) {
+ 			options.changed(callback);
+ 		}
+ 	});
+ 	
+ 	if(options.values) {
+ 		callback.setValue(options.values);
+ 	}
+ 	
+	if(options.disabled || options.readOnly) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	
+	return callback;
+}
+
+$.fn.fileUploadInput = function(data) {
+	
+	debugger;
+	var options = $.extend(
+			{  
+				disabled : false,
+				showUploadButton: true,
+				showDownloadButton: true,
+				url: basePath + '/api/fileUpload/file',
+				getUrlData: function(data) {
+					return data;
+				}
+			}, data);
+	
+	var id = (options.id ? options.id : $(this).attr('id') + "FileUpload");
+	var html =	'<div class="col-xs-10">'
+			+	'	<input type="file" id="' + id + 'File"/>'
+			+	'</div>'
+			+	'<div class="propertyValue col-xs-2 dialogActions">'
+			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
+			+	'</div>'
+			+	'<div class="col-xs-10">'
+			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
+			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
+			+	'	</div>'
+			+	'</div>';
+	
+	$(this).append(html);
+	$('#' + id + 'UpdateProgressHolder').css('height', '12px');
+	$('#' + id + 'UpdateProgressHolder').hide();
+	
+	if(!options.showUploadButton){
+		$('#' + id + 'UploadButton').parent().hide();
+		$('#' + id + 'File').parent().removeClass('col-xs-11').addClass('col-xs-12');
+	}
+	
+	var uploadProgress = function(evt){
+		if (evt.lengthComputable) {
+			var width = Math.round(evt.loaded * 100 / evt.total);
+			$('#' + id + 'UpdateProgress').css("width", width + "%");
+		}
+	}
+	
+	var showInfoFormat = function(data){
+		fileSize = data.fileSize + ' Bytes';
+		if(data.fileSize > 1024 * 1024){
+			fileSize = (Math.round((data.fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
+		}
+		formattedHtml = '<div class="file-upload-info">'
+					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>'
+					+	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
+					+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>'
+					+	'</div>'
+					+	'<div class="file-upload-info">'
+					+	'	<span>' + data.fileName + '</span></br>'
+					+	'	<span>' + fileSize + '</span></br>'
+					+	'	<span>' + data.md5Sum + '</span>'
+					+	'</div>';
+		
+//					This code shows the delete button next to file's info
+		
+//					+	'<div class="propertyValue dialogActions">'
+//					+	'<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash-o"></i></a>';
+//		$('#' + id + 'RemoveButton').click(function(){
+//			callback.remove();
+//		});
+			
+		return formattedHtml;
+	}
+	
+	var showInfo = function(data){
+		fileSize = data.fileSize + ' KB';
+		if(data.fileSize > 1024 * 1024){
+			fileSize = (Math.round((data.fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
+		}
+		$('#' + id + 'File').parent().append(
+				'<div id="' + id + 'Info">' + showInfoFormat(data) + '</div>');
+		$('#' + id + 'File').remove();
+		$('#' + id + 'UploadButton').parent().append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-close"></i></a>');
+		if(options.showDownloadButton){
+			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
+		}
+		$('#' + id + 'UploadButton').remove();
+		$('#' + id + 'Info').data('uuid', data.name);
+		$('#' + id + 'RemoveButton').click(function(){
+			bootbox.confirm(getResource('fileUpload.confirmRemoveFile'),
+			function(confirmed) {
+				if(confirmed){
+					callback.remove();
+				}
+			});
+		});
+		$('#' + id + 'DownloadButton').click(function(){
+			callback.download();
+		});
+	}
+	
+	var callback = {
+ 			getValue: function() {
+ 				if(!$('#' + id + 'Info').length){
+ 					return '';
+ 				}
+ 				return $('#' + id + 'Info').data('uuid');
+ 			},
+ 			setValue: function(uuid) {
+ 				getJSON(options.url + '/' + uuid, null, function(data){
+ 					if($('#' + id + 'Info').length){
+ 						$('#' + id + 'Info').empty();
+ 						$('#' + id + 'Info').append(showInfoFormat(data));
+ 						$('#' + id + 'Info').data('uuid', data.name);
+ 						$('#' + id + 'RemoveButton').unbind('click');
+ 						$('#' + id + 'RemoveButton').click(function(){
+ 							callback.remove();
+ 						});
+ 						$('#' + id + 'DownloadButton').unbind('click');
+ 						$('#' + id + 'DownloadButton').click(function(){
+ 							callback.download();
+ 						});
+ 	 				}else{
+ 	 					showInfo(data);
+ 	 				}
+ 					
+ 					if(options.disabled) {
+ 						callback.disable();
+ 					}
+ 					$('#' + id + 'UpdateProgressHolder').hide();
+ 				});
+ 			},
+ 			disable: function() {
+ 				$('#' + id + 'File').attr('disabled', 'disabled');
+ 				$('#' + id + 'UploadButton').attr('disabled', 'disabled');
+ 				$('#' + id + 'RemoveButton').attr('disabled', 'disabled');
+ 				$('#' + id + 'DownloadButton').attr('disabled', 'disabled');
+ 				options.disabled = true;
+ 			},
+ 			enable: function() {
+ 				$('#' + id + 'File').removeAttr('disabled');
+ 				$('#' + id + 'UploadButton').removeAttr('disabled');
+ 				$('#' + id + 'RemoveButton').removeAttr('disabled');
+ 				$('#' + id + 'DownloadButton').removeAttr('disabled');
+ 				options.disabled = false;
+ 			},
+ 			upload: function() {
+ 				debugger;
+ 				if($('#' + id + 'File').val() == ''){
+ 					return;
+ 				}
+ 				$('#' + id + 'UpdateProgressHolder').show();
+ 				$('#' + id + 'UpdateProgress').css("width",  "0%");
+ 				var formData = new FormData();
+ 				formData.append('file', $('#' + id + 'File')[0].files[0]);
+ 				
+ 		        var xhr = new XMLHttpRequest();
+ 		        xhr.upload.addEventListener("progress", uploadProgress, false);
+ 		        xhr.onreadystatechange=function()
+ 		        {
+ 		        	if (xhr.readyState==4 && xhr.status==200)
+ 		        	{
+ 		        		data = jQuery.parseJSON(xhr.response).resource;
+ 		        		showInfo(data);
+ 						if(options.disabled) {
+ 							callback.disable();
+ 						}
+ 		        	}
+ 		        }
+ 		        xhr.open("POST", options.url);
+ 		        xhr.send(formData);
+ 			},
+ 			remove: function() {
+ 				if(!$('#' + id + 'Info').length){
+ 					return;
+ 				}
+ 				$('#' + id + 'UpdateProgressHolder').hide();
+ 				deleteJSON(options.url + '/' + $('#' + id + 'Info').data('uuid'), null, function(data){
+ 					$('#' + id + 'Info').parent().append('<input type="file" id="' + id + 'File"/>');
+					$('#' + id + 'Info').remove();
+					$('#' + id + 'RemoveButton').parent().append('<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>');
+					$('#' + id + 'RemoveButton').remove();
+					$('#' + id + 'DownloadButton').remove();
+					$('#' + id + 'UploadButton').click(function(){
+						callback.upload();
+					});
+					if(options.disabled) {
+						callback.disable();
+					}
+ 				});
+ 				
+ 			},
+ 			download: function(){
+ 				uuid = $('#' + id + 'Info').data('uuid');
+ 				
+// 				Commented until I fix the download issue
+ 				
+// 				getJSON('fileUpload/download/' + uuid, null, function(data){
+// 					debugger;
+// 				});
+// 				$.ajax({
+// 			        type : 'GET',
+// 			        url : basePath + '/api/fileUpload/download/' + uuid,
+// 			        dataType : 'text',
+// 			        contentType : 'application/json;charset=UTF-8',
+// 			        success : function(data) {
+// 			        	debugger;
+// 			            window.open(data);
+// 			        },
+// 			        error : function(xhr, ajaxOptions, thrownError) {
+// 			            // error handling
+// 			        	debugger;
+// 			        }
+// 			    });
+// 				window.location.href =  basePath + '/api/fileUpload/download/' + uuid;
+ 				window.open(basePath + '/api/fileUpload/download/' + uuid);
+ 			},
+ 			options: function() {
+ 				return options;
+ 			},
+ 			getInput: function() {
+ 				return $('#' + id);
+ 			}
+ 		};
+	
+	$('#' + id + 'UploadButton').click(function(){
+		debugger;
+		callback.upload();
+	});
+
+ 	$('#' + id).change(function(e) {
+ 		if(options.changed) {
+ 			options.changed(callback);
+ 		}
+ 	});
+ 	
+ 	if(options.value) {
+ 		callback.setValue(options.values);
+ 	}
+ 	
+	if(options.disabled) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	
+	return callback;
+}
+
+$.fn.multipleFileUpload = function(data) {
+	
+	var options = $.extend(
+			{  
+				text: "Add file to upload",
+				maxRows : 0,
+				disabled : false, 
+				values: [],
+				showUploadButton: true,
+				showDownloadButton: true,
+				showRemoveLine: true,
+				url: basePath + '/api/fileUpload/file'
+			}, data);
+	
+	var id = (options.id ? options.id : $(this).attr('id') + "MultipleFileUpload");
+	
+	if(!rowNum){
+		var rowNum = 0;
+	}
+	maxRows = options.maxRows;
+	if(options.maxRows > 10 || options.maxRows <= 0){
+		maxRows = 10;
+	}
+	
+	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
+			+	'	<div id="' + id + 'FileUploads" ></div>'
+			+	'	<div id="' + id + 'NewRow">'
+			+	'		<div class"row">'
+			+	'			<div class="propertyValue col-xs-11">'
+			+	'				<span class="help-block">' + options.text + '</span>'
+			+	'			</div>'
+			+	'			<div class="propertyValue col-xs-1 dialogActions">'
+			+	'				<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
+			+	'					<i class="fa fa-plus"></i>'
+			+	'				</a>'
+			+	'			</div>'
+			+	'		</div>'
+			+	'	</div>'
+			+	'</div>';
+	
+	
+	$(this).append(html);
+	
+	$('#' + id + 'AddRow').click(function() {
+		$('#' + id).parent().data('widget').addRows(1);
+	});
+	
+	var callback = {
+ 			getValue: function() {
+ 				values = [];
+ 				$('#' + id).find('.fileUploadInput').each(function(){
+ 					values.push($(this).data('widget').getValue());
+ 				});
+ 				return values;
+ 			},
+ 			setValue: function(val) {
+ 				callback.removeRows();
+ 				$.each(val, function(index, value){
+ 					callback.addRows(1);
+ 					$('#' + id + 'FileUpload' + rowNum).data('widget').setValue(value);
+ 				});
+ 			},
+ 			disable: function() {
+ 				$('#' + id).find('.fileUploadInput').each(function(){
+ 					$(this).data('widget').disable();
+ 				});
+ 				$('#' + id + 'AddRow').attr('disabled', 'disabled');
+ 				options.disabled = true;
+ 			},
+ 			enable: function() {
+ 				$('#' + id).find('.fileUploadInput').each(function(){
+ 					$(this).data('widget').enable();
+ 				});
+ 				$('#' + id + 'AddRow').attr('disabled', 'disabled');
+ 				options.disabled = true;
+ 				if(maxRows == 0 || (maxRows != 0 && $('#' + id + 'FileUploads').children().length < maxRows)){
+ 					$('#' + id + 'AddRow').removeAttr('disabled');
+ 				}
+ 				options.disabled = false;
+ 			},
+ 			addRows: function(val){
+ 				for (i = 0; i < val; i++) {
+ 					rowNum++;
+ 					html = '';
+ 	 				html =	'<div class="row fileUpload">'
+ 	 					+	'	<div id="' + id + 'FileUpload' + rowNum + '" class="form-group propertyValue col-xs-12 fileUploadInput"></div>'
+ 	 					+	'</div>';
+ 	 				$('#' + id + 'FileUploads').append(html);
+ 	 				$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').fileUploadInput({
+ 	 					url: options.url,
+ 	 					disabled: options.disabled,
+ 	 					showDownloadButton: options.showDownloadButton,
+ 	 					showUploadButton: options.showUploadButton
+ 	 				});
+ 	 				if(options.showRemoveLine){
+ 	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').before('<a href="#" class="btn btn-danger" id="' + id + 'RemoveButton' + rowNum + '"><i class="fa fa-minus"></i></a>');
+ 	 					$('#' + id + 'RemoveButton' + rowNum).click(function(){
+ 	 						$(this).closest('.fileUpload').remove();
+ 	 						$('#' + id + 'NewRow').show();
+ 	 					});
+ 	 				}
+ 	 				
+ 	 				if(maxRows != 0 && $('#' + id + 'FileUploads').children().length == maxRows){
+ 	 					$('#' + id + 'NewRow').hide();
+ 	 				}
+ 				}
+ 			},
+ 			removeRows: function(){
+ 				$('#' + id + 'FileUploads').empty();
+ 			},
+ 			removeFiles: function() {
+ 				$('#' + id).find('.fileUploadInput').each(function(){
+ 					$(this).data('widget').remove();
+ 				});
+ 			},
+ 			upload: function(){
+ 				$('#' + id).find('.fileUploadInput').each(function(){
+ 					if($(this).find('input').length){
+ 						$(this).data('widget').upload();
+ 					}
+ 				});
+ 			},
+ 			options: function() {
+ 				return options;
  			},
  			getInput: function() {
  				return $('#' + id);
