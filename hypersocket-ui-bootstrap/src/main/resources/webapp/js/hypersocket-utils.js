@@ -102,10 +102,16 @@ function getResourceNoDefault(key) {
 };
 
 function getResourceWithNamespace(namespace, key) {
-	if(namespace=='') {
+	
+	var withNamespace = getResourceNoDefault(namespace + '.' + key);
+	var withoutNamespace = getResourceNoDefault(key);
+	
+	if(withNamespace == undefined && withoutNamespace == undefined) {
 		return getResource(key);
+	} else if(withNamespace != undefined) {
+		return withNamespace;
 	} else {
-		return getResource(namespace + '.' + key);
+		return withoutNamespace;
 	}
 }
 
