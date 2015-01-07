@@ -84,7 +84,8 @@ function validateInputType(type){
 		case 'slider' :
 		case 'namePairs' :
 		case 'date' :
-		case 'time' : return true;	
+		case 'time' : 
+		case 'checkbox' : return true;	
 		default : return false;
 	}
 }
