@@ -7,62 +7,102 @@ function validate(widget) {
 	var value = widget.getValue();
 	
 	log("Validating " + obj.resourceKey + ' value ' + value);
-	
+	if(!validateInputType(obj.inputType)){
+		log("Validation failed for " + obj.resourceKey);
+		return false;
+	}
 	if (obj.inputType == 'number') {
-		if(parseInt(value) == value) {
-			return (parseInt(obj.minValue) <= parseInt(value) && parseInt(obj.maxValue) >= parseInt(value));
+		//Validate for integer
+		if(!validateRegex('^[0-9]+$',value)){
+			log("Validation failed for " + obj.resourceKey);
+			return false;
+		}
+		if(parseInt(obj.minValue) > parseInt(value) || parseInt(obj.maxValue) < parseInt(value)){
+			log("Validation failed for " + obj.resourceKey);
+			return false;
 		}
 	} else if (obj.inputType == 'textarea') {
 		if(!obj.allowEmpty && value == '') {
+			log("Validation failed for " + obj.resourceKey);
 			return false;
 		}
-		return true;
 	} else if (obj.inputType == 'text') {
 		if(!obj.allowEmpty && value == '') {
+			log("Validation failed for " + obj.resourceKey);
 			return false;
 		}
-		return true;
-	} else if (obj.inputType == 'select') {
-		return true;
 	} else if (obj.inputType == 'password') {
 		if(!obj.allowEmpty && value == '') {
+			log("Validation failed for " + obj.resourceKey);
 			return false;
 		}
-		return true;
-	} else if (obj.inputType == 'multipleSelect') {
-		return true;
-	} else if (obj.inputType == 'multipleTextInput') {
-		return true;
-	} else if (obj.inputType == 'boolean') {
-		return true;
-	} else if (obj.inputType == 'image') {
-		return true;
-	} else if (obj.inputType == 'switch') {
-		return true;
-	} else if (obj.inputType == 'css') {
-		return true;
-	} else if (obj.inputType == 'java') {
-		return true;
-	} else if (obj.inputType == 'javascript') {
-		return true;
-	} else if (obj.inputType == 'html') {
-		return true;
-	} else if (obj.inputType == 'xml') {
-		return true;
-	} else if (obj.inputType == 'sql') {
-		return true;
-	} else if (obj.inputType == 'slider') {
-		return true;
-	} else if (obj.inputType == 'namePairs') {
-		return true;
-	} else if (obj.inputType == 'date') {
-		return true;
-	} else if (obj.inputType == 'time') {
-		return true;
-	} 
+	}
+	if(obj.maxLength){
+	   if(parseInt(obj.maxLength) < value.length){
+		 log("Validation failed for " + obj.resourceKey);  
+		 return false;
+	   }
+    }
+	if(obj.allowedCharacters && !validateAllowedCharacters(obj,value)){
+		log("Validation failed for " + obj.resourceKey);  
+		return false ;
+	}
+	if(obj.regex && !validateRegex(obj.regex,value)){
+		log("Validation failed for " + obj.resourceKey);
+		return false ;
+	}
+	if(obj.alphaNumericOnly && !validateRegex('^[a-zA-Z0-9]+$',value)){
+		log("Validation failed for " + obj.resourceKey);
+		return false ;
+	}
+	if(obj.alphaNumericSpacesOnly && !validateRegex('^[ a-zA-Z0-9]+$',value)){
+		log("Validation failed for " + obj.resourceKey);
+		return false ;
+	}
+	if(obj.alphaOnly && !validateRegex('^[a-zA-Z]+$',value)){
+		log("Validation failed for " + obj.resourceKey);
+		return false ;
+	}
+	log("Validation success for " + obj.resourceKey);
+	return true;
+}
 
-	log("Validation failed for " + obj.resourceKey);
-	return false;
+
+function validateInputType(type){
+	switch(type){
+		case 'number' :
+		case 'textarea' :
+		case 'text' :
+		case 'select' :
+		case 'password' :
+		case 'multipleSelect' :
+		case 'multipleTextInput' :
+		case 'boolean' :
+		case 'image' :
+		case 'switch' :
+		case 'css' :
+		case 'java' :
+		case 'javascript' :
+		case 'html' :
+		case 'xml' :
+		case 'sql' :
+		case 'slider' :
+		case 'namePairs' :
+		case 'date' :
+		case 'time' : 
+		case 'checkbox' : return true;	
+		default : return false;
+	}
+}
+
+function validateAllowedCharacters(option,value){
+	var patt = new RegExp('[^' + obj.allowedCharacters + ']') ;
+	return !value.match(patt);	
+}
+
+function validateRegex(regex,value){
+	var patt = new RegExp(regex) ;
+	return value.match(patt);	
 }
 
 $.fn.propertyPage = function(opts) {
