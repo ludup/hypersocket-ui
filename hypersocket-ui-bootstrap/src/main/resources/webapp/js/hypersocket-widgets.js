@@ -1001,7 +1001,6 @@ $.fn.multipleSelect = function(data) {
 		}
 		
 		$('#' + id + 'AddButton').click(function(e) {
-			debugger;
 			var selectedOpts = $('#' + select.attr('id') + ' option:selected');
 			if (selectedOpts.length == 0) {
 				e.preventDefault();
