@@ -1001,6 +1001,7 @@ $.fn.multipleSelect = function(data) {
 		}
 		
 		$('#' + id + 'AddButton').click(function(e) {
+			debugger;
 			var selectedOpts = $('#' + select.attr('id') + ' option:selected');
 			if (selectedOpts.length == 0) {
 				e.preventDefault();
@@ -1010,7 +1011,7 @@ $.fn.multipleSelect = function(data) {
 			$(selectedOpts).remove();
 			e.preventDefault();
 
-			if (options.changed) {
+			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
 		});
@@ -1025,7 +1026,7 @@ $.fn.multipleSelect = function(data) {
 			$(selectedOpts).remove();
 			e.preventDefault();
 
-			if (options.changed) {
+			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
 		});
