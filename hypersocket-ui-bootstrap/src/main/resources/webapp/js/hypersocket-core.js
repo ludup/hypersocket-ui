@@ -810,6 +810,7 @@ function startLogon() {
 			$('#currentRealm').remove();
 			$('#lang').remove();
 			$('#navMenu').empty();
+			$('div.modal-backdrop.in').remove();
 		},
 		processForm: function(data) {
 			if (data.showLocales) {
