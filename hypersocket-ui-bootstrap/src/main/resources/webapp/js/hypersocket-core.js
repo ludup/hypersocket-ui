@@ -113,7 +113,7 @@ $.fn.ajaxResourcePage = function(params) {
 
 		if (options.additionalActions) {
 
-			if(options.additionalActionsDropdown && options.additionalActions.length > 0) {
+			if(options.additionalActions.length > 0) {
 				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
 				renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
@@ -168,57 +168,31 @@ $.fn.ajaxResourcePage = function(params) {
 					});
 				});
 				
-			} else {
-				$.each(options.additionalActions,
-					function(x, act) {
-						if (act.enabled) {
-
-							renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i></a>';
-
-							$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
-
-							$(document).on('click',
-								'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
-								function() {
-									var curRow = $('#' + divName + 'Table').dataTable()
-											.fnGetPosition($(this).closest("tr").get(0));
-									var resource = $('#' + divName + 'Table').dataTable()
-											.fnGetData(curRow);
-									act.action(resource);
-							});
-					}
-
-				});
 			}
 
 		}
 
-//		if (options.canUpdate) {
 			
-			var canUpdate = options.canUpdate;
-			if(options.checkUpdate) {
-				canUpdate = options.checkUpdate(idCol.aData);
-			}
-//			if(canUpdate) {
-				renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
-	
-				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
-	
-				$(document).on(
-					'click',
-					'#' + divName + 'Actions' + id + ' .row-edit',
-					function() {
-						var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition(
-							$(this).closest("tr").get(0));
-						var resource = $('#' + divName + 'Table').dataTable().fnGetData(
-							curRow);
-						$('div[dialog-for="' + divName + '"]').resourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
-							{ row : curRow, resource : resource });
-				});
-//			} else {
-//				renderedActions += '<a class="btn btn-disabled" href="#"><i class="fa fa-edit"></i></a>';
-//			}
-//		}
+		var canUpdate = options.canUpdate;
+		if(options.checkUpdate) {
+			canUpdate = options.checkUpdate(idCol.aData);
+		}
+
+		renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
+
+		$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
+
+		$(document).on(
+			'click',
+			'#' + divName + 'Actions' + id + ' .row-edit',
+			function() {
+				var curRow = $('#' + divName + 'Table').dataTable().fnGetPosition(
+					$(this).closest("tr").get(0));
+				var resource = $('#' + divName + 'Table').dataTable().fnGetData(
+					curRow);
+				$('div[dialog-for="' + divName + '"]').resourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
+					{ row : curRow, resource : resource });
+		});
 
 		if (options.canDelete) {
 			
