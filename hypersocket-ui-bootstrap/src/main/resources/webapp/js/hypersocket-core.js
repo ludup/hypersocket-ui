@@ -113,7 +113,7 @@ $.fn.ajaxResourcePage = function(params) {
 
 		if (options.additionalActions) {
 
-			if(options.additionalActions.length > 0) {
+			if(options.additionalActionsDropdown && options.additionalActions.length > 0) {
 				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
 				renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
@@ -168,7 +168,28 @@ $.fn.ajaxResourcePage = function(params) {
 					});
 				});
 				
-			}
+			}  else {
+				$.each(options.additionalActions,
+						function(x, act) {
+							if (act.enabled) {
+
+								renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i></a>';
+
+								$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
+
+								$(document).on('click',
+									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
+									function() {
+										var curRow = $('#' + divName + 'Table').dataTable()
+												.fnGetPosition($(this).closest("tr").get(0));
+										var resource = $('#' + divName + 'Table').dataTable()
+												.fnGetData(curRow);
+										act.action(resource);
+								});
+						}
+
+					});
+				}
 
 		}
 
