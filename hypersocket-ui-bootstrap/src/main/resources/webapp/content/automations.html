@@ -55,7 +55,8 @@
 							showButtons : false, 
 							i18nNamespace: 'automations',
 							canUpdate : currentMenu.canUpdate, 
-							useTemplates : true 
+							useTemplates : true,
+							propertyTabsLast: false
 						});
 					}
 				});
@@ -91,18 +92,6 @@
 								
 								$('#resourceId').val('');
 								$('#resourceName').val('');
-								
-// 								$('#automationProperties').clearProperties();
-// 								if(create) {
-// 									$('#automationProperties').propertyPage({ 
-// 										url : 'automations/template/', 
-// 										showButtons : false, 
-// 										i18nNamespace: 'automations',
-// 										canUpdate : currentMenu.canUpdate, 
-// 										useTemplates : true 
-// 									});
-// 								}
-
 								$('.tabPropertiesTab').first().trigger('click');
 							},
 							createResource : function() {
@@ -129,7 +118,8 @@
 										{ url : 'automations/properties/' + resource.id, 
 											showButtons : false, 
 											i18nNamespace: 'automations',
-											canUpdate : currentMenu.canUpdate && !readOnly
+											canUpdate : currentMenu.canUpdate && !readOnly,
+											propertyTabsLast: false
 								});
 							
 							},

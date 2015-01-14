@@ -151,10 +151,11 @@ $.fn.ajaxResourcePage = function(params) {
 							if(act.displayFunction && act.displayFunction != '') {
 								var display = window[act.displayFunction].apply(null, [resource]);
 								var el = $('.row-' + act.resourceKey, dropdown);   
-								el.empty();
-								el.append('<span>' + getResource(display.resourceKey) 
-										+ '</span>&nbsp;&nbsp;<i class="fa ' 
-										+ display.iconClass + '"></i>');
+								if(display) {
+									el.show();
+								} else {
+									el.hide();
+								}
 							}
 							if(act.enableFunction && act.enableFunction != '') {
 								if(!window[act.enableFunction].apply(null, [resource])) {
