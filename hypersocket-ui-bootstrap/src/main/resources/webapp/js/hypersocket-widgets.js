@@ -740,7 +740,7 @@ $.fn.autoComplete = function(data) {
 				$('#input_' + id).attr('disabled', false);
 			},
 			options: function() {
-				return obj;
+				return options;
 			},
 			getInput: function() {
 				return $('#' + id);
@@ -1512,7 +1512,7 @@ $.fn.buttonAction = function(options) {
 				$('#' + id).attr('disabled', false);
 			},
 			options: function() {
-				return options;
+				return obj;
 			},
 			getInput: function() {
 				return $('#' + id);
@@ -1559,7 +1559,7 @@ $.fn.booleanInput = function(options) {
 				$('#' + id).attr('disabled', false);
 			},
 			options: function() {
-				return options;
+				return obj;
 			},
 			getInput: function() {
 				return $('#' + id);
@@ -1614,7 +1614,7 @@ $.fn.switchInput = function(options) {
 				$('#' + id).attr('disabled', false);
 			},
 			options: function() {
-				return options;
+				return obj;
 			},
 			getInput: function() {
 				return $('#' + id);
@@ -1684,7 +1684,7 @@ $.fn.imageInput = function(options) {
 				$('#' + id).attr('disabled', false);
 			},
 			options: function() {
-				return options;
+				return obj;
 			},
 			getInput: function() {
 				return $('#' + id);
@@ -1740,7 +1740,7 @@ $.fn.sliderInput = function(options) {
 				$('#' + id).attr('disabled', false);
 			},
 			options: function() {
-				return options;
+				return obj;
 			},
 			getInput: function() {
 				return $('#' + id);
