@@ -71,6 +71,7 @@ function validate(widget) {
 function validateInputType(type){
 	switch(type){
 		case 'number' :
+		case 'autoComplete' :
 		case 'textarea' :
 		case 'text' :
 		case 'select' :
