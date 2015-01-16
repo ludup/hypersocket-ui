@@ -1,0 +1,16 @@
+<div id="resumeUser">
+
+</div>
+<script type="text/javascript">
+
+$('#resumeUser').data('action', function(resource) {
+	$('#resumeUser').data('resource', resource);
+	debugger;
+	getJSON('currentRealm/resumeUser/' + resource.id, null, function(data) {;
+		if(!data.success) {
+			showError(data.message);
+		}
+	});
+
+});
+</script>

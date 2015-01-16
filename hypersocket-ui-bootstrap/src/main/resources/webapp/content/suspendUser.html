@@ -1,0 +1,99 @@
+<div class="modal" id="suspendUser" tabindex="-1" role="dialog"
+	aria-labelledby="suspendUserModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel"></h4>
+			</div>
+			<div class="modal-body">
+				<form class="form">
+					<div class="propertyItem form-group">
+						<label class="col-md-3 control-label" localize="suspendUser.startDate"></label>
+						<div class="propertyValue col-md-9">
+							<div id="startDate"></div>
+							<div>
+								<span class="help-block" localize="suspendUser.startDate.info"></span>
+							</div>
+						</div>
+					</div>
+					<div class="propertyItem form-group">
+						<label class="col-md-3 control-label" localize="suspendUser.startTime"></label>
+						<div class="propertyValue col-md-9">
+							<div id="startTime"></div>
+							<div>
+								<span class="help-block" localize="suspendUser.startTime.info"></span>
+							</div>
+						</div>
+					</div>
+					<div class="propertyItem form-group">
+						<label class="col-md-3 control-label" localize="suspendUser.duration"></label>
+						<div class="propertyValue col-md-9">
+							<div id="duration"></div>
+							<div>
+								<span class="help-block" localize="suspendUser.duration.info"></span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#suspendUser').localize();
+		var date = new Date();
+		
+		$('#startDate').dateInput({ value: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() });
+		$('#startTime').timeInput({ value: date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() });
+		$('#duration').sliderInput({ value: 0,
+			min: 0,
+			max: 900,
+			labelResourceKey: "suspendUser.minutes"
+		});
+
+		$('#suspendUser').data('action', function(resource) {
+			$('#suspendUser').data('resource', resource);
+			$('#suspendUser').resourceDialog('create');
+		});
+		
+		$('#suspendUser').resourceDialog({
+			resourceKey : 'suspendUser',
+			resourceUrl : 'currentRealm/suspendUser',
+			hasResourceTable : false,
+			createResource : function() {
+				var user = $('#suspendUser').data('resource');
+
+				resource = new Object();
+				resource.principalId = user.id;
+				resource.name = user.name;
+				resource.duration = $('#duration').data('widget').getValue();
+				resource.startDate = new Date($('#startDate').data('widget').getValue() + " " + $('#startTime').data('widget').getValue()); 
+
+				return resource;
+			},
+			clearDialog : function() {
+				$('#startDate').data('widget').reset();
+				$('#startTime').data('widget').reset();
+				$('#duration').data('widget').setValue(0);
+			},
+			validate : function() {
+				// 				if ($('#password').val() == '') {
+				// 					$('#setPassword').resourceDialog('error',
+				// 							"error.passwordEmpty");
+				// 					return false;
+				// 				}
+				// 				if ($('#password').val() != $(
+				// 						'#confirmPassword').val()) {
+				// 					$('#setPassword').resourceDialog('error',
+				// 							"error.passwordsNotMatched");
+				// 					return false;
+				// 				}
+				return true;
+			}
+		});
+	});
+</script>
