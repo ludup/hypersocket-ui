@@ -1339,7 +1339,7 @@ $.fn.multipleTextInput = function(data) {
 $.fn.dateInput = function(options) {
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "DateInput");
-	
+
 	var options = $.extend(
 			{   format: "yyyy-mm-dd",
 			    startView: 0,
@@ -1350,7 +1350,7 @@ $.fn.dateInput = function(options) {
 			},  options);
 	
 	$(this).append('<div id="' + id + '" class="input-group date">'
-			+ '<input id="' + id + 'Field" type="text" class="form-control">'
+			+ '<input id="' + id + 'Field" type="text" class="form-control" value="' + options.value + '">' 
 			+ '<span class="input-group-addon"><i class="fa fa-calendar"></i></span></div>');
 	
 	$('#' + id).datepicker(options).on('show', function() {
@@ -1412,7 +1412,7 @@ $.fn.timeInput = function(options) {
 				minuteStep: 15,
 				showSeconds: false,
 				secondStep: 15,
-				defaultTime: (options.value ? options.value : 'current'),
+				defaultTime: (options.value ? (options.value=='' ? false : options.value) : false),
 				showMeridian: false,
 				showInputs: true,
 				disableFocus: false,
