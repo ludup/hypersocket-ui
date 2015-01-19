@@ -715,9 +715,6 @@ $.fn.autoComplete = function(data) {
 					if(obj[options.valueAttr]==val) {
 						$('#' + id).val(val);
 						$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-						if(options.changed) {
-							options.changed(obj);
-						}
 					}
 				});
 				
