@@ -50,14 +50,17 @@
 						return data.resources;
 					},
 					changed: function(widget) {
-						$('#automationProperties').propertyPage({ 
-							url : 'automations/template/' + widget.name, 
-							showButtons : false, 
-							i18nNamespace: 'automations',
-							canUpdate : currentMenu.canUpdate, 
-							useTemplates : true,
-							propertyTabsLast: false
-						});
+						$('#automationProperties').empty();
+						if(widget.value != '') {
+							$('#automationProperties').propertyPage({ 
+								url : 'automations/template/' + widget.name, 
+								showButtons : false, 
+								i18nNamespace: 'automations',
+								canUpdate : currentMenu.canUpdate, 
+								useTemplates : true,
+								propertyTabsLast: false
+							});
+						}
 					}
 				});
 			
@@ -92,8 +95,8 @@
 								
 								$('#resourceId').val('');
 								$('#resourceName').val('');
-								
-								$('#automationProperties').clearProperties();
+								typeButton.clear();			
+								$('#automationProperties').empty();
 								$('.tabPropertiesTab').first().trigger('click');
 							},
 							createResource : function() {
@@ -105,8 +108,7 @@
 										function(items) {
 											resource.properties = items;
 								});
-								
-								
+		
 								resource.properties.push(new PropertyItem('resourceKey', typeButton.getValue()));
 								
 								return resource;
@@ -115,7 +117,8 @@
 								
 								$('#resourceId').val(resource.id);
 								$('#resourceName').val(resource.name);
-								
+								typeButton.setValue(resource.resourceKey);
+								$('#automationProperties').empty();
 								$('#automationProperties').propertyPage(
 										{ url : 'automations/properties/' + resource.id, 
 											showButtons : false, 

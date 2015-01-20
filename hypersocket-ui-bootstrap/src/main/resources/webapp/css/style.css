@@ -267,6 +267,12 @@ h2 {
  pointer-events: none;
 }
 
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
 .large-button:hover {
 	color: #9faecb;
 	text-decoration: none;
@@ -382,7 +388,6 @@ div.tablePages ul.pagination {
 
 .dropdown-menu {
 	z-index: 9999;
-	overflow: visible;
 }
 
 a.disabled-link,
