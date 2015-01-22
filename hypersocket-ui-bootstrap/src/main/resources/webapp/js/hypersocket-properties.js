@@ -159,7 +159,6 @@ function validateAny(option,value){
 }
 
 function validateAll(option,value){
-	debugger;
 	var conditions = option.validateAll;
 	var arr = conditions.split(',');
 	var matched = false;
