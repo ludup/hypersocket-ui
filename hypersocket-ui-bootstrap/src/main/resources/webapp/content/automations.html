@@ -41,7 +41,7 @@
 	$(document).ready(function() {
 				$('#contentAutomations').localize();
 				
-				
+				var displaying = false;
 				var typeButton = $('#typeButton').autoComplete({
 					url: 'automations/tasks',
 					nameIsResourceKey: true,
@@ -52,14 +52,16 @@
 					changed: function(widget) {
 						$('#automationProperties').empty();
 						if(widget.value != '') {
-							$('#automationProperties').propertyPage({ 
-								url : 'automations/template/' + widget.name, 
-								showButtons : false, 
-								i18nNamespace: 'automations',
-								canUpdate : currentMenu.canUpdate, 
-								useTemplates : true,
-								propertyTabsLast: false
-							});
+							if(!displaying) {
+								$('#automationProperties').propertyPage({ 
+									url : 'automations/template/' + widget.name, 
+									showButtons : false, 
+									i18nNamespace: 'automations',
+									canUpdate : currentMenu.canUpdate, 
+									useTemplates : true,
+									propertyTabsLast: false
+								});
+							}
 						}
 					}
 				});
@@ -117,7 +119,8 @@
 								
 								$('#resourceId').val(resource.id);
 								$('#resourceName').val(resource.name);
-								typeButton.setValue(resource.resourceKey);
+								displaying = true;
+								typeButton.setValue(resource.resourceKey, false);
 								$('#automationProperties').empty();
 								$('#automationProperties').propertyPage(
 										{ url : 'automations/properties/' + resource.id, 
@@ -126,6 +129,7 @@
 											canUpdate : currentMenu.canUpdate && !readOnly,
 											propertyTabsLast: false
 								});
+								displaying = false;
 							
 							},
 							complete : function() {
