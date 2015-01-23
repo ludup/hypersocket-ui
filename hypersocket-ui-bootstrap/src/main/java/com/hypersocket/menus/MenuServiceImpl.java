@@ -173,6 +173,8 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				null));
 
 		registerExtendableTable(MenuService.ACTIONS_USERS);
+		
+		
 
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"setPassword", "fa-key", "password", UserPermission.UPDATE, 0,
