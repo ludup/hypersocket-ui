@@ -24,6 +24,7 @@ public class HtmlContentFilter implements ContentFilter {
 	List<MapTokenResolver> additionalResolvers = new ArrayList<MapTokenResolver>();
 	
 	String brandCompany = "Hypersocket Limited";
+	String companyUrl = "https://www.hypersocket.com/";
 	String brandIcon = "/images/favicon.ico";
 	String brandImage = "/images/hypersocket.png";
 	String supportContact = "support@hypersocket.com";
@@ -44,6 +45,7 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("brandImage", brandImage);
 		resolver.addToken("brandIcon", brandIcon);
 		resolver.addToken("brandCompany", brandCompany);
+		resolver.addToken("companyUrl", companyUrl);
 		resolver.addToken("supportContact", supportContact);
 		resolver.addToken("supportName", supportName);
 		resolver.addToken("supportUrl", supportUrl);
@@ -67,6 +69,10 @@ public class HtmlContentFilter implements ContentFilter {
 
 	public void setCompany(String brandCompany) {
 		this.brandCompany = brandCompany;
+	}
+	
+	public void setCompanyUrl(String companyUrl) {
+		this.companyUrl = companyUrl;
 	}
 	
 	public void setIcon(String brandIcon) {
