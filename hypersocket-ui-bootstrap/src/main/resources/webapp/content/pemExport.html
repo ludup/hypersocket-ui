@@ -1,0 +1,11 @@
+<div id="pemExport"></div>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		
+		$('#pemExport').data('action', function(resource) {
+			window.location = basePath + '/api/certificates/exportPem/' + resource.id;
+		});
+		
+	});
+</script>

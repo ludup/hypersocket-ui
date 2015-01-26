@@ -16,9 +16,11 @@ public class Menu {
 	boolean canCreate;
 	boolean canUpdate;
 	boolean canDelete;
+	boolean hidden;
+	String data;
 	List<Menu> menus = new ArrayList<Menu>();
 	
-	public Menu(MenuRegistration m, boolean canCreate, boolean canUpdate, boolean canDelete, String icon) {
+	public Menu(MenuRegistration m, boolean canCreate, boolean canUpdate, boolean canDelete, String icon, String data, boolean hidden) {
 		this.bundle = m.bundle;
 		this.resourceKey = m.getResourceKey();
 		this.weight = m.getWeight();
@@ -27,6 +29,8 @@ public class Menu {
 		this.canUpdate = canUpdate;
 		this.canDelete = canDelete;
 		this.icon = icon;
+		this.data = data;
+		this.hidden = hidden;
 	}
 	
 	public String getId() {
@@ -103,6 +107,18 @@ public class Menu {
 	
 	public void setIcon(String icon) {
 		this.icon = icon;
+	}
+	
+	public void setData(String data) {
+		this.data = data;
+	}
+	
+	public String getData() {
+		return data;
+	}
+	
+	public boolean isHidden() {
+		return hidden;
 	}
 	
 }

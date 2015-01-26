@@ -1,0 +1,58 @@
+<!-- 
+	Replace any Trigger or Triggers with Capitalized name of your resources e.g. Application or Applications
+	Replace any trigger or triggers with lower case name of your resources e.g. application or applications
+ -->
+
+<div id="contentTriggers">
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+				$('#contentTriggers').localize();
+				
+				$('#triggerProperties').propertyPage({
+					url : 'triggers/template',
+					showButtons : false,
+					useTemplates : true,
+					canUpdate : currentMenu.canUpdate,
+					additionalTabs : [ {
+						id : "tabDetails",
+						name : getResource("trigger.details.label")
+					}]
+				});
+
+				$('#contentTriggers').load('content/triggers-modal.html', function() {
+						
+					$('#contentTriggers').ajaxResourcePage(
+							{
+								id : "Trigger",
+								tableUrl : "triggers/table",
+								title: getResource("triggers.label"),
+								icon: 'fa-globe',
+								resourceUrl : "triggers/trigger",
+								fields : [ {
+									name : "name"
+								}],
+								resourceKey : "trigger",
+								canCreate: currentMenu.canCreate,
+								canUpdate: currentMenu.canUpdate,
+								canDelete: currentMenu.canDelete,
+								validate : function() {
+									return $(document).data('triggerModalCallback').validate();
+								},
+								clearDialog : function() {
+									$(document).data('triggerModalCallback').clearDialog();
+								},
+								createResource : function() {
+									return $(document).data('triggerModalCallback').createResource();
+								},
+								displayResource : function(resource) {
+									$(document).data('triggerModalCallback').displayResource(resource);
+								},
+								complete : function() {
+									loadComplete();
+								}
+							});
+				});
+
+			});
+</script>

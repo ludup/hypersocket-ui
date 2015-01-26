@@ -1,0 +1,141 @@
+<!-- 
+	Replace any Automation or Automations with Capitalized name of your resources e.g. Application or Applications
+	Replace any automation or automations with lower case name of your resources e.g. application or applications
+ -->
+
+<div id="contentAutomations">
+	<div class="modal" id="addAutomationForm" tabindex="-1" role="dialog" dialog-for="contentAutomations">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="propertyItem form-group">
+						<label class="col-xs-3 control-label" localize="automation.name.label"></label>
+						<div class="propertyValue col-xs-9">
+							<input type="text" class="form-control"
+								placeholder="" id="resourceName" maxlength="" name="resourceName" value="">
+							<div>
+								<span class="help-block" localize="automation.name.info"></span>
+							</div>
+						</div>
+					</div>
+					<div class="propertyItem form-group">
+						<label class="col-xs-3 control-label" localize="automation.task.label"></label>
+						<div id="typeButton" class="propertyValue col-xs-9"></div>
+					</div>
+					<div id="automationProperties"></div>
+					<input type="hidden" id="resourceId" name="resourceId" value="" />
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+				$('#contentAutomations').localize();
+				
+				var displaying = false;
+				var typeButton = $('#typeButton').autoComplete({
+					url: 'automations/tasks',
+					nameIsResourceKey: true,
+					resourceKeyTemplate: '{0}.label',
+					getUrlData: function(data) {
+						return data.resources;
+					},
+					changed: function(widget) {
+						$('#automationProperties').empty();
+						if(widget.value != '') {
+							if(!displaying) {
+								$('#automationProperties').propertyPage({ 
+									url : 'automations/template/' + widget.name, 
+									showButtons : false, 
+									i18nNamespace: 'automations',
+									canUpdate : currentMenu.canUpdate, 
+									useTemplates : true,
+									propertyTabsLast: false
+								});
+							}
+						}
+					}
+				});
+			
+
+				$('#contentAutomations').ajaxResourcePage(
+						{
+							id : "Automation",
+							tableUrl : "automations/table",
+							title: getResource("automations.label"),
+							icon: 'fa-clock-o',
+							resourceUrl : "automations/automation",
+							fields : [ {
+								name : "name"
+							}],
+							resourceKey : "automation",
+							canCreate: currentMenu.canCreate,
+							canUpdate: currentMenu.canUpdate,
+							canDelete: currentMenu.canDelete,
+							validate : function() {
+
+								if ($('#resourceName').val() == '') {
+									$('#addAutomationForm').resourceDialog(
+											'error', "error.nameRequired");
+									return false;
+								}
+
+								// TODO validate any of your other fields
+								
+								return true;
+							},
+							clearDialog : function(create) {
+								
+								$('#resourceId').val('');
+								$('#resourceName').val('');
+								typeButton.clear();			
+								$('#automationProperties').empty();
+								$('.tabPropertiesTab').first().trigger('click');
+							},
+							createResource : function() {
+								resource = new Object();
+								resource.id = $('#resourceId').val();
+								resource.name = $('#resourceName').val();
+								
+								$('#automationProperties').saveProperties(true,
+										function(items) {
+											resource.properties = items;
+								});
+		
+								resource.properties.push(new PropertyItem('resourceKey', typeButton.getValue()));
+								
+								return resource;
+							},
+							displayResource : function(resource, readOnly) {
+								
+								$('#resourceId').val(resource.id);
+								$('#resourceName').val(resource.name);
+								displaying = true;
+								typeButton.setValue(resource.resourceKey, false);
+								$('#automationProperties').empty();
+								$('#automationProperties').propertyPage(
+										{ url : 'automations/properties/' + resource.id, 
+											showButtons : false, 
+											i18nNamespace: 'automations',
+											canUpdate : currentMenu.canUpdate && !readOnly,
+											propertyTabsLast: false
+								});
+								displaying = false;
+							
+							},
+							complete : function() {
+								loadComplete();
+							}
+						});
+
+			});
+</script>

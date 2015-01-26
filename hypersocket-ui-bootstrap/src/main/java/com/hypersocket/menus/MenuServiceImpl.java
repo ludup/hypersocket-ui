@@ -22,17 +22,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hypersocket.auth.AuthenticatedServiceImpl;
-import com.hypersocket.certs.CertificatePermission;
+import com.hypersocket.automation.AutomationResourcePermission;
+import com.hypersocket.automation.AutomationResourceServiceImpl;
+import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionStrategy;
 import com.hypersocket.permissions.PermissionType;
+import com.hypersocket.permissions.SystemPermission;
 import com.hypersocket.realm.GroupPermission;
+import com.hypersocket.realm.PasswordPermission;
 import com.hypersocket.realm.ProfilePermission;
 import com.hypersocket.realm.RealmPermission;
+import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
+import com.hypersocket.triggers.TriggerResourcePermission;
+import com.hypersocket.triggers.TriggerResourceServiceImpl;
 
 @Service
 public class MenuServiceImpl extends AuthenticatedServiceImpl implements
@@ -48,6 +55,9 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 
 	@Autowired
 	I18NService i18nService;
+
+	@Autowired
+	RealmService realmService;
 
 	@PostConstruct
 	private void postConstruct() {
@@ -72,33 +82,78 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_SYSTEM, "", null, 100, null, null, null, null));
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "configuration",
-				"fa-cog", null, 100, null, null, null, null),
-				MenuService.MENU_SYSTEM);
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				MenuService.MENU_SERVER, "fa-hdd-o", null, 0, null, null, null,
+				null), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
-				"fa-cog", "settings", 0, ConfigurationPermission.READ, null,
-				ConfigurationPermission.UPDATE, null),
+				"fa-cog", "settings", 0,
+				SystemPermission.SYSTEM_ADMINISTRATION, null,
+				SystemPermission.SYSTEM_ADMINISTRATION, null),
+				MenuService.MENU_SERVER);
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
+				null, null, null), MenuService.MENU_SYSTEM);
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realmSettings",
+				"fa-cogs", "realmSettings", 0, ConfigurationPermission.READ,
+				null, ConfigurationPermission.UPDATE, null),
 				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "certificates",
-				"fa-certificate", "certificates", 1000,
-				CertificatePermission.CERTIFICATE_ADMINISTRATION,
-				CertificatePermission.CERTIFICATE_ADMINISTRATION,
-				CertificatePermission.CERTIFICATE_ADMINISTRATION,
-				CertificatePermission.CERTIFICATE_ADMINISTRATION),
+				"fa-certificate", "certificateResources", 99999,
+				CertificateResourcePermission.READ,
+				CertificateResourcePermission.CREATE,
+				CertificateResourcePermission.UPDATE,
+				CertificateResourcePermission.DELETE),
 				MenuService.MENU_CONFIGURATION);
+
+		registerExtendableTable(MenuService.ACTIONS_CERTIFICATES);
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("downloadCSR", "fa-certificate",
+						"downloadCSR", CertificateResourcePermission.UPDATE, 0,
+						null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("certificateUpload", "fa-upload",
+						"certificateUpload",
+						CertificateResourcePermission.UPDATE, 100, null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("pemUpload", "fa-upload", "pemUpload",
+						CertificateResourcePermission.UPDATE, 200, null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("pfxUpload", "fa-upload", "pfxUpload",
+						CertificateResourcePermission.UPDATE, 300, null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("downloadCertificate", "fa-download",
+						"downloadCertificate",
+						CertificateResourcePermission.READ, 400, null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("pemExport", "fa-download",
+						"pemExport", CertificateResourcePermission.READ, 500,
+						null, null));
+
+		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
+				new AbstractTableAction("pfxExport", "fa-download",
+						"pfxExport", CertificateResourcePermission.READ, 600,
+						null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "accessControl",
 				"fa-unlock-alt", null, 200, null, null, null, null),
 				MenuService.MENU_SYSTEM);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "users", "fa-user",
-				"users", 1000, UserPermission.READ, UserPermission.CREATE,
-				UserPermission.UPDATE, UserPermission.DELETE),
-				MenuService.MENU_ACCESS_CONTROL);
+		registerMenu(new RealmMenuRegistration(RESOURCE_BUNDLE, "users",
+				"fa-user", "users", 1000, UserPermission.READ,
+				UserPermission.CREATE, UserPermission.UPDATE,
+				UserPermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "groups",
+		registerMenu(new RealmMenuRegistration(RESOURCE_BUNDLE, "groups",
 				"fa-users", "groups", 2000, GroupPermission.READ,
 				GroupPermission.CREATE, GroupPermission.UPDATE,
 				GroupPermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
@@ -120,7 +175,57 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 		registerExtendableTable(MenuService.ACTIONS_USERS);
 
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
-				"setPassword", "fa-key", "password", UserPermission.UPDATE, 0));
+				"setPassword", "fa-key", "password", UserPermission.UPDATE, 0,
+				null, null) {
+			public boolean isEnabled() {
+				return !realmService.isReadOnly(getCurrentRealm());
+			}
+		});
+		
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
+				"impersonateUser", "fa-male", "impersonateUser", SystemPermission.SYSTEM_ADMINISTRATION, 0,
+				null, null));
+
+		registerExtendableTable(MenuService.ACTIONS_REALMS);
+
+		registerTableAction(MenuService.ACTIONS_REALMS,
+				new AbstractTableAction("defaultRealm", "fa-tag",
+						"defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION,
+						0, "isDefault", null));
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_BUSINESS_RULES,
+				"", null, 8888, null, null, null, null, null));
+
+		registerMenu(new MenuRegistration(
+				TriggerResourceServiceImpl.RESOURCE_BUNDLE, "triggers",
+				"fa-flash", "triggers", 200, TriggerResourcePermission.READ,
+				TriggerResourcePermission.CREATE,
+				TriggerResourcePermission.UPDATE,
+				TriggerResourcePermission.DELETE),
+				MenuService.MENU_BUSINESS_RULES);
+		
+		registerMenu(new MenuRegistration(AutomationResourceServiceImpl.RESOURCE_BUNDLE,
+				"automations", "fa-clock-o", "automations", 100,
+				AutomationResourcePermission.READ,
+				AutomationResourcePermission.CREATE,
+				AutomationResourcePermission.UPDATE,
+				AutomationResourcePermission.DELETE), MenuService.MENU_BUSINESS_RULES);
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
+				null, 9999, null, null, null, null, null));
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_TOOLS, "",
+				null, 99999, null, null, null, null, null));
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS, "fa-wrench",
+				null, 99999, null, null, null, null, null), MENU_TOOLS);
+
+		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
+				"changePassword", "fa-lock", "changePassword", 1000,
+				PasswordPermission.CHANGE, null,
+				PasswordPermission.CHANGE, null),
+				MenuService.MENU_MY_PROFILE);
+
 	}
 
 	@Override
@@ -196,12 +301,18 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 		List<AbstractTableAction> results = new ArrayList<AbstractTableAction>();
 
 		for (AbstractTableAction action : registeredActions.get(table)) {
+
 			if (action.getPermission() != null) {
 				if (!hasPermission(action.getPermission())) {
 					continue;
 				}
 			}
+
+			if (!action.isEnabled()) {
+				continue;
+			}
 			results.add(action);
+
 		}
 
 		Collections.sort(results, new Comparator<AbstractTableAction>() {
@@ -221,43 +332,46 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 
 		for (MenuRegistration m : rootMenus.values()) {
 			try {
-				if (m.hasEnablerService()) {
-					if (!m.getEnablerService().enableMenu(m.getResourceName(),
-							getCurrentPrincipal())) {
+				if (!m.canRead()) {
+					if (log.isDebugEnabled()) {
+						log.debug(getCurrentPrincipal().getRealm() + "/"
+								+ getCurrentPrincipal().getName()
+								+ " does not have access to "
+								+ m.getResourceKey()
+								+ " menu due to canRead returning false");
+					}
+					continue;
+
+				} else if (m.getReadPermission() != null) {
+					assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
+							m.getReadPermission());
+				}
+
+				Menu rootMenu = new Menu(
+						m,
+						hasPermission(m.getCreatePermission()) && m.canCreate(),
+						hasPermission(m.getUpdatePermission()) && m.canUpdate(),
+						hasPermission(m.getDeletePermission()) && m.canDelete(),
+						m.getIcon(),
+						m.getData(),
+						m.isHidden());
+				
+				for (MenuRegistration child : m.getMenus()) {
+					if (!child.canRead()) {
+						// User does not have access to this menu
 						if (log.isDebugEnabled()) {
 							log.debug(getCurrentPrincipal().getRealm() + "/"
 									+ getCurrentPrincipal().getName()
 									+ " does not have access to "
-									+ m.getResourceKey()
-									+ " menu due to enabler service denial");
+									+ child.getResourceKey()
+									+ " menu due to canRead returning false");
 						}
 						continue;
-					}
-				} else if (m.getReadPermission() != null) {
-					assertPermission(m.getReadPermission());
-				}
-
-				Menu rootMenu = new Menu(m,
-						hasPermission(m.getCreatePermission()),
-						hasPermission(m.getUpdatePermission()),
-						hasPermission(m.getDeletePermission()), m.getIcon());
-				for (MenuRegistration child : m.getMenus()) {
-					if (child.hasEnablerService()) {
-						if (!child.getEnablerService().enableMenu(
-								child.getResourceName(), getCurrentPrincipal())) {
-							// User does not have access to this menu
-							if (log.isDebugEnabled()) {
-								log.debug(getCurrentPrincipal().getRealm()
-										+ "/" + getCurrentPrincipal().getName()
-										+ " does not have access to "
-										+ child.getResourceKey()
-										+ " menu due to enabler service denial");
-							}
-							continue;
-						}
 					} else if (child.getReadPermission() != null) {
 						try {
-							assertPermission(child.getReadPermission());
+							assertAnyPermission(
+									PermissionStrategy.EXCLUDE_IMPLIED,
+									child.getReadPermission());
 						} catch (Exception e) {
 							// User does not have access to this menu
 							if (log.isDebugEnabled()) {
@@ -273,31 +387,32 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 					}
 
 					Menu childMenu = new Menu(child,
-							hasPermission(child.getCreatePermission()),
-							hasPermission(child.getUpdatePermission()),
-							hasPermission(child.getDeletePermission()),
-							child.getIcon());
+							hasPermission(child.getCreatePermission())
+									&& child.canCreate(),
+							hasPermission(child.getUpdatePermission())
+									&& child.canUpdate(),
+							hasPermission(child.getDeletePermission())
+									&& child.canDelete(), child.getIcon(), child.getData(), child.isHidden());
 
 					for (MenuRegistration leaf : child.getMenus()) {
 
-						if (leaf.hasEnablerService()) {
-							if (!leaf.getEnablerService().enableMenu(
-									leaf.getResourceName(),
-									getCurrentPrincipal())) {
-								// User does not have access to this menu
-								if (log.isDebugEnabled()) {
-									log.debug(getCurrentPrincipal().getRealm()
-											+ "/"
-											+ getCurrentPrincipal().getName()
-											+ " does not have access to "
-											+ leaf.getResourceKey()
-											+ " menu due to enabler service denial");
-								}
-								continue;
+						if (!leaf.canRead()) {
+							// User does not have access to this menu
+							if (log.isDebugEnabled()) {
+								log.debug(getCurrentPrincipal().getRealm()
+										+ "/"
+										+ getCurrentPrincipal().getName()
+										+ " does not have access to "
+										+ leaf.getResourceKey()
+										+ " menu due to canRead returning false");
 							}
+							continue;
+
 						} else if (leaf.getReadPermission() != null) {
 							try {
-								assertPermission(leaf.getReadPermission());
+								assertAnyPermission(
+										PermissionStrategy.EXCLUDE_IMPLIED,
+										leaf.getReadPermission());
 
 							} catch (Exception e) {
 								// User does not have access to this menu
@@ -315,12 +430,12 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 						}
 						childMenu.getMenus().add(
 								new Menu(leaf, hasPermission(leaf
-										.getCreatePermission()),
-										hasPermission(leaf
-												.getUpdatePermission()),
-										hasPermission(leaf
-												.getDeletePermission()), leaf
-												.getIcon()));
+										.getCreatePermission())
+										&& leaf.canCreate(), hasPermission(leaf
+										.getUpdatePermission())
+										&& leaf.canUpdate(), hasPermission(leaf
+										.getDeletePermission())
+										&& leaf.canDelete(), leaf.getIcon(), leaf.getData(), leaf.isHidden()));
 					}
 
 					if (childMenu.getResourceName() == null
@@ -390,14 +505,44 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 	protected boolean hasPermission(PermissionType permission) {
 		try {
 			if (permission == null) {
-				return false;
+				return true;
 			}
 
 			verifyPermission(getCurrentPrincipal(),
-					PermissionStrategy.REQUIRE_ALL_PERMISSIONS, permission);
+					PermissionStrategy.EXCLUDE_IMPLIED, permission);
 			return true;
 		} catch (AccessDeniedException ex) {
 			return false;
+		}
+	}
+
+	class RealmMenuRegistration extends MenuRegistration {
+
+		public RealmMenuRegistration() {
+			super();
+		}
+
+		public RealmMenuRegistration(String bundle, String resourceKey,
+				String icon, String url, Integer weight,
+				PermissionType readPermision, PermissionType createPermission,
+				PermissionType updatePermission, PermissionType deletePermission) {
+			super(bundle, resourceKey, icon, url, weight, readPermision,
+					createPermission, updatePermission, deletePermission);
+		}
+
+		@Override
+		public boolean canUpdate() {
+			return !realmService.isReadOnly(getCurrentRealm());
+		}
+
+		@Override
+		public boolean canDelete() {
+			return !realmService.isReadOnly(getCurrentRealm());
+		}
+
+		@Override
+		public boolean canCreate() {
+			return !realmService.isReadOnly(getCurrentRealm());
 		}
 	}
 

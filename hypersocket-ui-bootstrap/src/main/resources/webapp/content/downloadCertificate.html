@@ -1,0 +1,11 @@
+<div id="downloadCertificate"></div>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		
+		$('#downloadCertificate').data('action', function(resource) {
+			window.location = basePath + '/api/certificates/downloadCertificate/' + resource.id;
+		});
+		
+	});
+</script>

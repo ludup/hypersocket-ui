@@ -1,0 +1,185 @@
+<!-- 
+	Replace any Certificate or Certificates with Capitalized name of your resources e.g. Application or Applications
+	Replace any certificate or certificates with lower case name of your resources e.g. application or applications
+ -->
+
+<div id="contentCertificates">
+	<div class="modal" id="addCertificateForm" tabindex="-1" role="dialog" dialog-for="contentCertificates">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="propertyItem form-group">
+						<label class="col-xs-3 control-label" localize="certificate.name.label"></label>
+						<div class="propertyValue col-xs-9">
+							<input type="text" class="form-control"
+								placeholder="" id="resourceName" maxlength="" name="resourceName" value="">
+							<div>
+								<span class="help-block" localize="certificate.name.info"></span>
+							</div>
+						</div>
+					</div>
+					
+					<div id="certificateProperties"></div>
+					<input type="hidden" id="resourceId" name="resourceId" value="" />
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+	<div id="additionalActions"></div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+				$('#contentCertificates').localize();
+				
+				
+				getJSON('menus/tableActions/certificateActions', null, function(data) {
+					
+					var actions = new Array();
+					
+					if(data.resources.length > 0) {
+						$.each(data.resources, function(idx, action) {
+							var div = action.resourceKey + 'Div';
+							$('#additionalActions').append('<div id="' + div + '"></div>');
+							$('#' + div).load('content/' + action.url + '.html');
+							actions.push({
+								resourceKey : action.resourceKey,
+								iconClass : action.iconClass,
+								action : function(resource, callback) {
+									if($('#' + action.resourceKey).data('action')) {
+										$('#' + action.resourceKey).data('action')(resource, callback);
+									}
+								},
+								enabled : true,
+								enableFunction: action.enableFunction,
+								displayFunction: action.displayFunction
+							});
+						});
+					 }
+					
+					$('#certificateProperties').propertyPage({
+						url : 'certificates/template',
+						showButtons : false,
+						useTemplates : true,
+						canUpdate : currentMenu.canUpdate
+					});
+
+					var additionalButtons = new Array();
+					
+// 					$('#additionalActions').append('<div id="pemUploadDiv"></div>');
+// 					$('#pemUploadDiv').load('content/pemUpload.html');
+					
+// 					additionalButtons.push({
+// 						resourceKey: 'pemImport',
+// 						icon: 'fa-upload',
+// 						buttonClass: 'btn-success',
+// 						action: function(callback) {
+// 							$('#pemUpload').data('action')(null, function() {
+// 								callback();
+// 							});
+// 						}
+// 					});
+					
+// 					$('#additionalActions').append('<div id="pfxUploadDiv"></div>');
+// 					$('#pfxUploadDiv').load('content/pfxUpload.html');
+					
+// 					additionalButtons.push({
+// 						resourceKey: 'pfxImport',
+// 						icon: 'fa-upload',
+// 						buttonClass: 'btn-success',
+// 						action: function(callback) {
+// 							$('#pfxUpload').data('action')(function() {
+// 								callback();
+// 							});
+// 						}
+// 					});
+					
+					$('#contentCertificates').ajaxResourcePage(
+						{
+							id : "Certificate",
+							tableUrl : "certificates/table",
+							title: getResource("certificates.label"),
+							icon: 'fa-globe',
+							resourceUrl : "certificates/certificate",
+							fields : [ {
+								name : "name"
+							}],
+							resourceKey : "certificate",
+							createButtonText: 'text.createCertificate',
+							createButtonIcon: 'fa-certificate',
+							additionalActionsDropdown: true,
+							additionalActions: actions,
+							additionalButtons: additionalButtons,
+							canCreate: false, //currentMenu.canCreate,
+							canUpdate: currentMenu.canUpdate,
+							canDelete: currentMenu.canDelete,
+							validate : function() {
+
+								if ($('#resourceName').val() == '') {
+									$('#addCertificateForm').resourceDialog(
+											'error', "error.nameRequired");
+									return false;
+								}
+
+								// TODO validate any of your other fields
+								
+								return true;
+							},
+							clearDialog : function(create) {
+								
+								$('#resourceId').val('');
+								$('#resourceName').val('');
+								
+								$('#certificateProperties').clearProperties();
+								if(create) {
+									$('#certificateProperties').propertyPage({ 
+										url : 'certificates/template/', 
+										showButtons : false, 
+										canUpdate : currentMenu.canUpdate, 
+										useTemplates : true,
+										displayMode: 'create'
+									});
+								}
+
+								$('.tabPropertiesTab').first().trigger('click');
+							},
+							createResource : function() {
+								resource = new Object();
+								resource.id = $('#resourceId').val();
+								resource.name = $('#resourceName').val();
+								
+								$('#certificateProperties').saveProperties(true,
+										function(items) {
+											resource.properties = items;
+								});
+								
+								return resource;
+							},
+							displayResource : function(resource, readOnly) {
+								
+								$('#resourceId').val(resource.id);
+								$('#resourceName').val(resource.name);
+								$('#resourceName').attr('disabled', resource.system);
+								
+								$('#certificateProperties').propertyPage(
+										{ url : 'certificates/properties/' + resource.id, 
+											showButtons : false, 
+											canUpdate : currentMenu.canUpdate && !readOnly,
+											displayMode: 'update'
+								});
+							
+							},
+							complete : function() {
+								loadComplete();
+							}
+						});
+				});
+
+			});
+</script>

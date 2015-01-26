@@ -1,0 +1,18 @@
+<div id="impersonateUser">
+
+</div>
+<script type="text/javascript">
+
+$('#impersonateUser').data('action', function(resource) {
+	$('#impersonateUser').data('resource', resource);
+	
+	getJSON('session/impersonate/' + resource.id, null, function(data) {;
+		if(data.success) {
+			window.location.reload();
+		} else {
+			showError(data.message);
+		}
+	});
+
+});
+</script>

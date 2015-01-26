@@ -2,18 +2,17 @@
 
 	<div class="modal" id="addRealmForm" tabindex="-1" role="dialog"
 		dialog-for="realmsContent">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
-					<div class="dialogError"></div>
 					<div class="propertyItem form-group">
 						<label class="col-md-3 control-label" localize="realm.name.label"></label>
 						<div class="propertyValue col-md-9">
-							<input type="text" class="form-control propertyInput"
+							<input type="text" class="form-control"
 								placeholder="" id="name" maxlength="" name="name" value="">
 							<div>
 								<span class="help-block" localize="realm.name.info"></span>
@@ -37,45 +36,86 @@
 			</div>
 		</div>
 	</div>
+	<div id="additionalActions"></div>
 </div>
 	<script type="text/javascript">
-		$(document)
-				.ready(
-					function() {
-						$('#realmsContent').localize();
+	
+		
+		$(document).ready(function() {
+			$('#realmsContent').localize();
 
-						var typeButton = $('#typeButton').selectButton({
-							id: 'type',
-							url: 'realm/providers',
-							nameAttr: 'module',
-							valueAttr: 'module',
-							nameIsResourceKey: true,
-							resourceKeyTemplate: 'realm.{0}.label',
-							name: 'local',
-							value: 'local',
-							changed: function(selected) {
-								
-								$('#realmProperties').propertyPage({ 
-									url : 'template/realm/' + selected.module, 
-									showButtons : false, 
-									canUpdate : currentMenu.canUpdate, 
-									useTemplates : true 
-								});
-							}
+			var typeButton = $('#typeButton').selectButton({
+				id: 'type',
+				url: 'realms/providers',
+				nameAttr: 'module',
+				valueAttr: 'module',
+				nameIsResourceKey: true,
+				resourceKeyTemplate: 'realm.{0}.label',
+				name: 'local',
+				value: 'local',
+				getUrlData: function(data) {
+					return data.resources;
+				},
+				changed: function(widget) {
+					$('#realmProperties').propertyPage({ 
+						url : 'realms/template/' + widget.getSelectedObject().module, 
+						showButtons : false, 
+						resource: widget.getSelectedObject().module,
+						canUpdate : currentMenu.canUpdate, 
+						useTemplates : true 
+					});
+				}
+			});
+
+			getJSON('menus/tableActions/realmActions', null, function(data) {
+				
+				var actions = new Array();
+				
+				if(data.resources.length > 0) {
+					$.each(data.resources, function(idx, action) {
+						var div = action.resourceKey + 'Div';
+						$('#additionalActions').append('<div id="' + div + '"></div>');
+						$('#' + div).load('content/' + action.url + '.html');
+						actions.push({
+							resourceKey : action.resourceKey,
+							iconClass : action.iconClass,
+							action : function(resource, callback) {
+								if($('#' + action.resourceKey).data('action')) {
+									$('#' + action.resourceKey).data('action')(resource, callback);
+								}
+							},
+							enabled : true,
+							enableFunction: action.enableFunction,
+							displayFunction: action.displayFunction
 						});
+					});
+				 }
 
-
-
-			$('#realmsContent')
+				$('#realmsContent')
 					.ajaxResourcePage(
-						{ tableUrl : "table/realms", title : getResource('realms.title'), icon : "fa-database", resourceUrl : "realm", fields : [ { name : "name" }, { name : "resourceCategory", isResourceKey : true } ], resourceKey : 'realm', canCreate : currentMenu.canCreate, canUpdate : currentMenu.canUpdate, canDelete : currentMenu.canDelete, validate : function() {
+						{ tableUrl : "realms/table", 
+						  title : getResource('realms.title'), 
+						  icon : "fa-database", 
+						  resourceUrl : "realms/realm", 
+						  fields : [ { name : "name" },
+						             { name : "resourceCategory", isResourceKey : true }
+						  ], 
+						  resourceKey : 'realm', 
+						  canCreate : currentMenu.canCreate, 
+						  canUpdate : currentMenu.canUpdate, 
+						  canDelete : currentMenu.canDelete,
+						  additionalActions : actions,
+						  additionalActionsDropdown : true,
+						  validate : function() {
 							if ($('#name').val() == '') {
-								$('#addRealmForm').dialogError("A name is required!");
+								$('#addRealmForm').resourceDialog('error', "A name is required!");
+								//showError(getResource("text.nameRequired"));
 								return false;
 							}
 							return true;
 						}, clearDialog : function() {
 							$('#name').val("");
+							$('#name').attr('disabled', false);
 							$('#id').val("");
 							$('#realmProperties').clearProperties();
 						}, createResource : function() {
@@ -97,18 +137,24 @@
 						}, showCreate : function() {
 							typeButton.enable();
 							typeButton.reset();
-						}, displayResource : function(resource) {
-							debugger;
+							$('#realmProperties').propertyPage({ 
+								url : 'realms/template/' + typeButton.getSelectedObject().module, 
+								showButtons : false, 
+								resource: typeButton.getSelectedObject().module,
+								canUpdate : currentMenu.canUpdate, 
+								useTemplates : true 
+							});
+						}, displayResource : function(resource, readOnly) {
 							$('#id').val(resource.id);
 							$('#name').val(resource.name);
-							$('#name').attr('disabled', resource.system);
+							$('#name').attr('disabled', resource.system || readOnly);
 							typeButton.disable();
-							$('#realmProperties').clearProperties();
 							typeButton.setValue(resource.resourceCategory);
 							$('#realmProperties').propertyPage(
-								{ url : 'realm/properties/' + resource.id, 
+								{ url : 'realms/realm/properties/' + resource.id, 
 									showButtons : false, 
-									canUpdate : currentMenu.canUpdate 
+									resource: resource.id,
+									canUpdate : currentMenu.canUpdate && !readOnly
 							});
 						}, complete : function() {
 							loadComplete();
@@ -121,4 +167,5 @@
 						} });
 
 					});
+			});
 	</script>

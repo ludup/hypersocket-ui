@@ -1,3 +1,8 @@
+/**
+ * Change this to indicate server has shutdown and is expected to be out of contact. 
+ */
+var hasShutdown = false;
+var polling = false;
 var regex = new RegExp(/(.[^\:]+)(\:\/\/)(.[^\/]+)(.[^\/]+)(.[^\/]+)(.*)/);
 
 var url = regex.exec(document.URL);
@@ -23,7 +28,37 @@ if (typeof String.prototype.endsWith != 'function') {
     return this.slice(-str.length) == str;
   };
 }
-	
+
+function makeBooleanSafe(options) {
+	for(var property in options) {
+		log(property);
+		if(options.hasOwnProperty(property)) {
+			if(typeof options[property] == 'string') {
+				if(options[property] == 'true') {
+					options[property] = true;
+				} else if(options[property] == 'false') {
+					options[property] = false;
+				} 
+			}
+		}
+	}
+};
+
+$.fn.getCursorPosition = function () {
+    var el = $(this).get(0);
+    var pos = 0;
+    if ('selectionStart' in el) {
+        pos = el.selectionStart;
+    } else if ('selection' in document) {
+        el.focus();
+        var Sel = document.selection.createRange();
+        var SelLength = document.selection.createRange().text.length;
+        Sel.moveStart('character', -el.value.length);
+        pos = Sel.text.length - SelLength;
+    }
+    return pos;
+}
+
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -66,6 +101,20 @@ function getResourceNoDefault(key) {
 	return result;
 };
 
+function getResourceWithNamespace(namespace, key) {
+	
+	var withNamespace = getResourceNoDefault(namespace + '.' + key);
+	var withoutNamespace = getResourceNoDefault(key);
+	
+	if(withNamespace == undefined && withoutNamespace == undefined) {
+		return getResource(key);
+	} else if(withNamespace != undefined) {
+		return withNamespace;
+	} else {
+		return withoutNamespace;
+	}
+}
+
 $.fn.localizeTooltip = function() {
 	$(this).prop('title', getResource($(this).prop('title')));
 	$(this).tooltip();
@@ -84,83 +133,93 @@ function clearError() {
 	$('#highlight').remove();
 }
 
-function showError(fade, text) {
-	
-	log("ERROR: " + text);
-	
-	$('#highlight').remove();
-	
-	$('#informationBar').append('<div id="highlight" class="row"><div class="col-sm-12"><p class="alert alert-danger"><i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' + text + '</span></p></div></div>');
-	
-	
-	if(fade) {
-		$('#highlight').fadeOut(5000, function() {
-			$('#highlight').remove();
-		});
-	} 
-//	else {
-//		$('#highlight').append('<a href="#" id="closeError"><span class="ui-icon ui-icon-circle-close" style="float: right; margin-right: .3em;"></span></a>');
-//		
-//		$('#closeError').click(function(e) {
-//			e.preventDefault();
-//			$('#highlight').remove();
-//		});
-//	}
+function showError(text, fade, fadeCallback) {
+	showMessage(text, 'fa-warning', 'error', typeof fade == 'undefined' ? false : fade, fadeCallback);
 }
 
-function showInformation(fade, text) {
-	
-	log("INFO: " + text);
-	
-	$('#highlight').remove();
-	
-	$('#informationBar').append('<div id="highlight" class="row"><div class="col-sm-12"><p class="alert alert-info"><i class="fa fa-info"></i>&nbsp;&nbsp;<span>' + text + '</span></p></div></div>');
-	
-	if(fade) {
-		$('#highlight').fadeOut(5000, function() {
-			$('#highlight').remove();
-		});
-	} 
-//	else {
-//		$('#highlight').append('<a href="#" id="closeHighlight"><span class="ui-icon ui-icon-circle-close" style="float: right; margin-right: .3em;"></span></a>');
-//		
-//		$('#closeHighlight').click(function(e) {
-//			e.preventDefault();
-//			$('#highlight').remove();
-//		});
-//	}
+function showWarning(text, fade, fadeCallback) {
+	showMessage(text, 'fa-warning', 'warn', typeof fade == 'undefined' ? false : fade, fadeCallback);
 }
 
-$.fn.dialogError = function(resourceKey) {
-	$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
-	
-	if(resourceKey!='reset') {
-	 	$(this).find('.dialogError').append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="alert alert-danger"/>');
-			$('#dialogErrorHighlight' + $(this).attr('id')).append('<i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' 
-					+ (getResourceNoDefault(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
-					+ '</span>');
-	}
-};
+function showSuccess(text, fade, fadeCallback) {
+	showMessage(text, 'fa-warning', 'success', typeof fade == 'undefined' ? true : fade, fadeCallback);
+}
 
-$.fn.dialogInformation = function(resourceKey) {
-	$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
+function showInformation(text, fade, fadeCallback) {
+	showMessage(text, 'fa-info', 'info', typeof fade == 'undefined' ? true : fade, fadeCallback);
+}
+
+//function removeMessage() {
+//	$('#systemMessage').remove();
+//}
+
+function removeMessage() {
+//	$('.notifyjs-corner').remove();
+}
+
+function showMessage(text, icon, alertClass, fade, fadeCallback) {
 	
-	if(resourceKey!='reset') {
-	 	$(this).append('<div id="dialogErrorHighlight'  + $(this).attr('id') + '" class="alert-alert-info"/>');
-			$('#dialogErrorHighlight' + $(this).attr('id')).append('<span>' 
-					+ (getResource(resourceKey)==undefined ? resourceKey : getResource(resourceKey))
-					+ '</span>');
+	removeMessage();
+	
+	$.notify(text, { className: alertClass,
+		autoHide: fade,
+		autoHideDelay: 2000 });
+	
+	if(fade) {
+		setTimeout(fadeCallback, 2500);
 	}
-};
-function getJSON(url, params, callback) {
+
+}
+
+//function showMessage(text, icon, alertClass, fade, fadeCallback) {
+//	log("MESSAGE: " + text);
+//
+//	removeMessage();
+//	
+//	var doFade = function() {
+//		$('#systemMessage').fadeOut(2000, function() {
+//			$('#systemMessage').remove();
+//			if(fadeCallback) {
+//				fadeCallback();
+//			}
+//		});
+//	};
+//	
+//	$('body').prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
+//	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span><i id="messageDismiss" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
+//	
+//	$('#messageDismiss').click(function() {
+//		doFade();
+//	});
+//	
+//	if(fade) {
+//		setTimeout(doFade, 4000);
+//	}
+//}
+
+function getJSON(url, params, callback, errorCallback) {
 	log("GET: " + url);
 	
-	$.getJSON(basePath + '/api/' + url, params, callback).error(function() {
-		showError(false, url + " JSON request failed.");
+	$.getJSON(basePath + '/api/' + url, params, callback).fail(function(xmlRequest) {
+		if(errorCallback) {
+			if(!errorCallback()) {
+				return;
+			}
+		}
+		if (xmlRequest.status != 401) {
+			if(!hasShutdown) {
+				if(xmlRequest.status == 0) {
+					showError(getResource("error.cannotContactServer"));
+					pollForServerContact();
+				} else {
+					showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+				}
+			}
+		}
 	});
 };
 
-function postJSON(path, params, callback) {
+function postJSON(path, params, callback, errorCallback, alwaysCallback) {
 	
 	log("POST: " + path);
 	
@@ -171,13 +230,31 @@ function postJSON(path, params, callback) {
 	    contentType: 'application/json',
 	    data: JSON.stringify(params),
 	    success: callback
-	}).error(function() {
-		showError(false, path + " JSON request failed.");
+	}).fail(function(xmlRequest) {
+		if(errorCallback) {
+			if(!errorCallback()) {
+				return;
+			}
+		}
+		if (xmlRequest.status != 401) {
+			if(!hasShutdown) {
+				if(xmlRequest.status == 0) {
+					showError(getResource("error.cannotContactServer"));
+					pollForServerContact();
+				} else {
+					showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+				}
+			}
+		}
+	}).always(function() {
+		if(alwaysCallback) {
+			alwaysCallback();
+		}
 	});
 	
 };
 
-function deleteJSON(path, params, callback) {
+function deleteJSON(path, params, callback, errorCallback) {
 	
 	log("DELETE: " + path);
 	
@@ -188,12 +265,45 @@ function deleteJSON(path, params, callback) {
 	    contentType: 'application/json',
 	    data: JSON.stringify(params),
 	    success: callback
-	}).error(function() {
-		showError(false, path + " JSON request failed.");
+	}).fail(function(xmlRequest) {
+		if(errorCallback) {
+			if(!errorCallback()) {
+				return;
+			}
+		}
+		if (xmlRequest.status != 401) {
+			if(hasShutdown) {
+				if(xmlRequest.status == 0) {
+					showError(getResource("error.cannotContactServer"));
+					pollForServerContact();
+				} else {
+					showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+				}
+			}
+		}
 	});
 };
 
-
+function pollForServerContact() {
+	
+	polling = true;
+	$.ajax({
+		type: "GET",
+	    url:  basePath + '/api/session/peek',
+	    dataType: 'json',
+	    contentType: 'application/json',
+	    success: function() {
+	    	showInformation(getResource('info.serverIsBack'), true, function() {
+	    		polling = false;
+	    		window.location.reload();	
+	    	});
+	    	
+	    }
+	}).fail(function(xmlRequest) {
+		setTimeout(pollForServerContact, 1000);
+	});
+	
+}
 function msgBox(data) {
 	
 	var $msgbox = $('<div id=\"msgbox\" title=\"' + data.title + '\"><p>' + data.message + '</p></div>');
@@ -277,6 +387,28 @@ function isValidURL(str) {
 	return /((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(str);
 }
 
+function looksLikeMail(str) {
+    var lastAtPos = str.lastIndexOf('@');
+    var lastDotPos = str.lastIndexOf('.');
+    return (lastAtPos < lastDotPos && lastAtPos > 0 && str.indexOf('@@') == -1 && lastDotPos > 2 && (str.length - lastDotPos) > 2);
+}
+
+function splitFix(value) {
+	if(value==null) {
+		return [];
+	}
+	var result = value.split(']|[');
+	if (result.length == 1) {
+		if (result[0] == "") {
+			return [];
+		}
+	}
+	return result;
+}
+
+function fixSplit(value) {
+	return value.join(']|[');
+}
 
 function log(str) {
 	if(!window.console) {

@@ -1,0 +1,108 @@
+<div class="modal" id="pfxUpload" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title" localize="uploadPfx.label"></h4>
+			</div>
+			<div class="modal-body">
+				<div class="propertyItem form-group">
+					<p id="pfxUploadInfo"></p>
+				</div>
+				<div id="keyDiv" class="propertyItem form-group">
+					<label id="fileLabel" class="col-md-3 control-label"
+						localize="label.keyFile"></label>
+					<div class="propertyValue col-md-9">
+						<input type="file" class="form-control"
+							placeholder="" id="pfxKey" maxlength="" name="key" value="">
+						<div>
+							<span class="help-block" localize="privateKey.info"></span>
+						</div>
+					</div>
+				</div>
+				<div id="passphraseDiv" class="propertyItem form-group">
+					<label id="fileLabel" class="col-md-3 control-label"
+						localize="label.passphrase"></label>
+					<div class="propertyValue col-md-9">
+						<input type="password" class="form-control"
+							placeholder="" id="pfxPassphrase" maxlength="" name="passphrase"
+							value="">
+						<div>
+							<span class="help-block" localize="passphrase.info"></span>
+						</div>
+					</div>
+				</div>
+				<input type="hidden" id="pfxResourceId" name="resourceId" value=""/>
+			</div>
+			<div class="modal-footer">
+				<button id="uploadPfxButton" type="button" class="btn btn-primary"><i id="uploadPfxIcon" class="fa fa-upload"></i><span localize="uploadPfx.label"></span></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		
+		$('#pfxUpload').localize();
+		
+		$('#pfxUpload').data('action', function(resource, callback) {
+			
+			if(resource==null) {
+				$('#pfxResourceId').val('');
+			} else {
+				$('#pfxResourceId').val(resource.id);
+			}
+			$('#pfxUpload').data('callback', callback);
+			
+			$('#pfxPassphrase').val('');
+			$('#pfxKey').val('');
+			
+			
+			$('#pfxUpload').modal('show');
+		});
+		
+		$('#uploadPfxButton').click(function(e) {
+			if (!$('#pfxKey')[0].files[0]) {
+				$('#pfxUpload').resourceDialog('error', getResource("error.selectKey"));
+				return;
+			}
+			var formData = new FormData();
+			
+			formData.append('passphrase', $('#pfxPassphrase').val());
+			formData.append('key', $('#pfxKey')[0].files[0]);
+			
+			$('#uploadPfxIcon').removeClass('fa-upload');
+			$('#uploadPfxIcon').addClass('fa-spinner fa-spin');
+			
+			$.ajax({
+				type : 'POST',
+				url : basePath + '/api/certificates/pfx/' + $('#pfxResourceId').val(),
+				dataType : 'json',
+				cache : false,
+				contentType : false,
+				processData : false,
+				data : formData,
+				success : function(data) {
+
+					if (data.success) {
+						$('#pfxUpload').modal('hide');
+						$('#pfxUpload').data('callback')(data.resource);
+						showSuccess(data.message);
+					} else {
+						$('#pfxUpload').resourceDialog('error', data.message);
+					}
+
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$('#pfxUpload').resourceDialog('error', errorThrown);
+				},
+				complete: function() {
+					$('#uploadPfxIcon').removeClass('fa-spinner fa-spin');
+					$('#uploadPfxIcon').addClass('fa-upload');
+				}
+			});
+		});
+		
+	});
+</script>

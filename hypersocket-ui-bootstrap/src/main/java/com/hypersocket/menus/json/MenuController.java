@@ -53,11 +53,11 @@ public class MenuController extends AuthenticatedController {
 			UnauthorizedException, SessionTimeoutException {
 
 		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request), menuService);
+				sessionUtils.getLocale(request));
 		try {
 			return getModuleList(request);
 		} finally {
-			clearAuthenticatedContext(menuService);
+			clearAuthenticatedContext();
 		}
 	}
 
@@ -66,7 +66,7 @@ public class MenuController extends AuthenticatedController {
 			SessionTimeoutException {
 
 		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request), menuService);
+				sessionUtils.getLocale(request));
 		try {
 
 			MenuList list = new MenuList(menuService.getMenus());
@@ -78,14 +78,14 @@ public class MenuController extends AuthenticatedController {
 			try {
 				permissionService.verifyPermission(
 						sessionUtils.getPrincipal(request),
-						PermissionStrategy.REQUIRE_ANY, RealmPermission.READ);
+						PermissionStrategy.EXCLUDE_IMPLIED, RealmPermission.READ);
 				list.setRealms(realmService.allRealms());
 			} catch (AccessDeniedException e) {
 			}
 
 			return list;
 		} finally {
-			clearAuthenticatedContext(menuService);
+			clearAuthenticatedContext();
 		}
 	}
 
@@ -99,13 +99,13 @@ public class MenuController extends AuthenticatedController {
 			SessionTimeoutException {
 
 		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request), menuService);
+				sessionUtils.getLocale(request));
 
 		try {
 			return new ResourceList<AbstractTableAction>(
 					menuService.getTableActions(table));
 		} finally {
-			clearAuthenticatedContext(menuService);
+			clearAuthenticatedContext();
 		}
 	}
 }

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<link href="${uiPath}/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="${uiPath}/css/dataTables.bootstrap.css" rel="stylesheet">
+<link href="${uiPath}/css/dataTables.tableTools.css" rel="stylesheet">
+<link href="${uiPath}/css/font-awesome.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="${uiPath}/css/style.css" rel="stylesheet">
+<link href="${uiPath}/css/switch.css" rel="stylesheet">
+<link href="${uiPath}/css/codemirror.css" rel="stylesheet">
+<link href="${uiPath}/css/bootstrap-slider.min.css" rel="stylesheet">
+<link href="${uiPath}/css/datepicker3.css" rel="stylesheet">
+<style id="holderjs-style" type="text/css"></style>
+</head>
+
+<body style="overflow: auto">
+
+	<div class="container-fluid content" style="height: 5000px;">
+		<div id="content" class="row">
+			<div class="propertyItem form-group credsDiv">
+				<div class="propertyValue col-md-9">
+					<div id="example1"></div>
+				</div>
+			</div>
+		</div>
+		<button class="btn btn-small btn-primary" id="buttonDisable">Disable</button>
+		<button class="btn btn-small btn-primary" id="buttonEnable">Enable</button>
+		<button class="btn btn-small btn-primary" id="buttonGetValue">GetValue</button>
+		<div id="content" class="row" style="padding-top: 50px;">
+			<div class="propertyItem form-group credsDiv">
+				<div class="propertyValue col-md-9">
+					<div id="example2"></div>
+				</div>
+			</div>
+		</div>
+		<button class="btn btn-small btn-primary" id="buttonDisableMulti">Disable</button>
+		<button class="btn btn-small btn-primary" id="buttonEnableMulti">Enable</button>
+		<button class="btn btn-small btn-primary" id="buttonGetValueMulti">GetValue</button>
+		<button class="btn btn-small btn-primary" id="buttonUploadAll">Upload
+			all</button>
+		<button class="btn btn-small btn-primary" id="buttonRemoveAllFiles">Remove
+			all files</button>
+
+	</div>
+
+	<script src="${uiPath}/js/jquery.min.js"></script>
+	<script src="${uiPath}/js/jquery-ui.min.js"></script>
+	<script src="${uiPath}/js/bootstrap.min.js"></script>
+	<script src="${uiPath}/js/bootbox.min.js"></script>
+	<script src="${uiPath}/js/jquery.bootpag.min.js"></script>
+	<script src="${uiPath}/js/jquery.dataTables.min.js"></script>
+	<script src="${uiPath}/js/dataTables.bootstrap.js"></script>
+	<script src="${uiPath}/js/dataTables.tableTools.js"></script>
+	<script src="${uiPath}/js/spin-min.js"></script>
+	<script src="${uiPath}/js/jquery.hotkeys.js"></script>
+	<script src="${uiPath}/js/bootstrap-wysiwyg.js"></script>
+	<script src="${uiPath}/js/codemirror.js"></script>
+	<script src="${uiPath}/js/bootstrap-slider.min.js"></script>
+	<script src="${uiPath}/js/bootstrap-datepicker.js"></script>
+	<script src="${uiPath}/js/notify.min.js"></script>
+	<script src="${uiPath}/js/hypersocket-utils.js"></script>
+	<script src="${uiPath}/js/hypersocket-widgets.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			loadResources(function() {
+
+				$('#example1').fileUploadInput({
+					disabled : false,
+					showDownloadButton : true,
+					url : 'fileUpload/file'
+				});
+
+				$('#example2').multipleFileUpload({
+					disabled : false,
+					showRemoveLine : true,
+					showDownloadButton : true,
+					url : 'fileUpload/file'
+				});
+			});
+		});
+
+		$('#buttonDisable').click(function() {
+			$('#example1').data('widget').disable();
+		});
+
+		$('#buttonEnable').click(function() {
+			$('#example1').data('widget').enable();
+		});
+
+		$('#buttonGetValue').click(function() {
+			bootbox.alert($('#example1').data('widget').getValue());
+		});
+
+		$('#buttonDisableMulti').click(function() {
+			$('#example2').data('widget').disable();
+		});
+
+		$('#buttonEnableMulti').click(function() {
+			$('#example2').data('widget').enable();
+		});
+
+		$('#buttonGetValueMulti').click(function() {
+			alert($('#example2').data('widget').getValue());
+		});
+
+		$('#buttonUploadAll').click(function() {
+			$('#example2').data('widget').upload();
+		});
+
+		$('#buttonRemoveAllFiles').click(function() {
+			$('#example2').data('widget').removeFiles();
+		});
+	</script>
+</body>
+</html>

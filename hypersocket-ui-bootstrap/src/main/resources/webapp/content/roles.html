@@ -7,11 +7,10 @@
 					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
-					<div class="dialogError"></div>
 					<div class="propertyItem form-group">
 						<label class="col-md-3 control-label" localize="role.name"></label>
 						<div class="propertyValue col-md-9">
-							<input type="text" class="form-control propertyInput"
+							<input type="text" class="form-control"
 								placeholder="" id="name" maxlength="" name="name" value="">
 							<div>
 								<span class="help-block" localize="role.name.info"></span>
@@ -37,60 +36,42 @@
 	$(document).ready(function() {
 		$('#contentRoles').localize();
 
-		getJSON('permissions', null, function(data) {
-			$('#tabRolePermissions').multipleSelect({
-				resourceKey: "permissions",
-				values : data.permissions,
-				nameAttrIsResourceKey : true,
-				nameAttr : 'resourceKey',
-				isPropertyInput: false,
-				selectedIsObjectList: true
-			});
-		});
-		
-
-		getJSON('groups',
-			null,
-			function(data) {
-				$('#tabRoleGroups').multipleSelect({
-					resourceKey: "groups",
-					values : data.resources,
-					nameAttr : 'principalName',
-					isPropertyInput: false,
-					selectedIsObjectList: true
-				});
-				$('#tabUserGroups').multipleSelect({
-					resourceKey: "groups",
-					values : data.resources,
-					nameAttr : 'principalName',
-					isPropertyInput: false,
-					selectedIsObjectList: true
-				});
+		$('#tabRolePermissions').multipleSelect({
+			nameIsResourceKey : true,
+			nameAttr : 'resourceKey',
+			selectedIsObjectList: true,
+			disabled: !currentMenu.canUpdate,
+			url: 'permissions/list',
+			getUrlData: function(data) {
+				return data.permissions;
+			}
 		});
 
-		getJSON(
-			'users',
-			null,
-			function(data) {
-				
-				$('#tabRoleUsers').multipleSelect({
-					resourceKey: "users",
-					values : data.resources,
-					nameAttr : 'principalName',
-					isPropertyInput: false,
-					selectedIsObjectList: true
-				});
-				$('#tabGroupUsers').multipleSelect({
-					resourceKey: "users",
-					values : data.resources,
-					nameAttr : 'principalName',
-					isPropertyInput: false,
-					selectedIsObjectList: true
-				});
+
+		$('#tabRoleGroups').multipleSelect({
+			nameAttr : 'principalName',
+			selectedIsObjectList: true,
+			disabled: !currentMenu.canUpdate,
+			url: 'currentRealm/groups/list',
+			getUrlData: function(data) {
+				return data.resources;
+			}
 		});
+
+
+		$('#tabRoleUsers').multipleSelect({
+			nameAttr : 'principalName',
+			selectedIsObjectList: true,
+			disabled: !currentMenu.canUpdate,
+			url: 'currentRealm/users/list',
+			getUrlData: function(data) {
+				return data.resources;
+			}
+		});
+	
 		
 		$('#roleProperties').propertyPage({
-			url : 'template/role',
+			url : 'roles/template',
 			showButtons : false,
 			useTemplates : true,
 			canUpdate : currentMenu.canUpdate,
@@ -108,10 +89,10 @@
 		
 		$('#contentRoles').ajaxResourcePage(
 				{
-				tableUrl : "table/roles",
+				tableUrl : "roles/table",
 				title: getResource('roles.title'),
 				icon: 'fa-user-md',
-				resourceUrl : "role",
+				resourceUrl : "roles/role",
 				fields : [ { name: "name"} ],
 				resourceKey : 'role',
 				canCreate: currentMenu.canCreate,
@@ -119,13 +100,13 @@
 				canDelete: currentMenu.canDelete,
 				validate : function() {
 					if ($('#name').val() == '') {
-						$('#roleDialogError').dialogError(
+						$('#contentRoles').resourceDialog('error',
 								"error.nameRequired");
 						return false;
 					}
 					return true;
 				},
-				clearDialog : function() {
+				clearDialog : function(create) {
 					$('#name').val('');
 					$('#roleId').val('');
 					$('#tabRoleUsers').multipleSelect();
@@ -137,12 +118,9 @@
 					role = new Object();
 					role.id = $('#roleId').val();
 					role.name = $('#name').val();
-					role.users = $('#tabRoleUsers')
-							.multipleSelectValues();
-					role.groups = $('#tabRoleGroups')
-							.multipleSelectValues();
-					role.permissions = $('#tabRolePermissions')
-							.multipleSelectValues();
+					role.users = $('#tabRoleUsers').widget().getValue();
+					role.groups = $('#tabRoleGroups').widget().getValue();
+					role.permissions = $('#tabRolePermissions').widget().getValue();
 					return role;
 				},
 				resourceCreated : function(resource) {
@@ -151,17 +129,21 @@
 				deleted : function(resource) {
 					
 				},
-				displayResource : function(resource) {
+				displayResource : function(resource, readOnly) {
 					$('#roleId').val(resource.id);
 					$('#name').val(resource.name);
+					$('#name').attr('disabled', readOnly);
  	 			  	$('#tabRoleUsers').multipleSelect({
- 						selected : resource.principals
+ 						selected : resource.principals,
+ 						disabled: resource.allUsers || readOnly
  					});
  					$('#tabRoleGroups').multipleSelect({
- 						selected : resource.principals
+ 						selected : resource.principals,
+ 						disabled: resource.allUsers || readOnly
  					});
  					$('#tabRolePermissions').multipleSelect({
- 						selected : resource.permissions
+ 						selected : resource.permissions,
+ 						disabled: resource.allPermissions || readOnly
  					});
 				},
 				complete: function() {

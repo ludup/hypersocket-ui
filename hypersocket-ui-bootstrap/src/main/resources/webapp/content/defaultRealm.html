@@ -1,0 +1,29 @@
+<div id="defaultRealm"></div>
+<script type="text/javascript">
+	var currentDefault = null;
+	
+	function isDefault(resource) {
+		if(currentDefault==null) {
+			return !resource.defaultRealm;
+		} else {
+			return resource.id != currentDefault.id;
+		}
+	}
+	$(document).ready(function() {
+		
+		$('#defaultRealm').data('action', function(resource, callback) {
+				bootbox.confirm(getResource("confirm.defaultRealm"),
+						function(confirmed) {
+					getJSON('realms/default/' + resource.id, null, function(data) {
+						if(data.success) {
+							showInformation(data.message);
+							currentDefault = data.resource;
+							callback(data.resource);
+						} else {
+							showError(data.message);
+						}
+					});
+				});
+		});
+	});
+</script>
