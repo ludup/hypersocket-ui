@@ -63,6 +63,14 @@ function validate(widget) {
 		log("Validation failed for " + obj.resourceKey);
 		return false ;
 	}
+	if(obj.validateAny && !validateAny(obj,value)){
+		log("Validation failed for " + obj.resourceKey);
+		return false ;
+	}
+	if(obj.validateAll && !validateAll(obj,value)){
+		log("Validation failed for " + obj.resourceKey);
+		return false ;
+	}
 	log("Validation success for " + obj.resourceKey);
 	return true;
 }
@@ -97,8 +105,136 @@ function validateInputType(type){
 }
 
 function validateAllowedCharacters(option,value){
-	var patt = new RegExp('[^' + obj.allowedCharacters + ']') ;
+	var patt = new RegExp('[^' + option.allowedCharacters + ']') ;
 	return !value.match(patt);	
+}
+
+function validateAny(option,value){
+	var conditions = option.validateAny;
+	var arr = conditions.split(',');
+	var matched = false;
+	for (i = 0; i < arr.length; ++i) {
+		switch(arr[i]){
+			case 'ipv4' :
+				if(isValidIpv4Address(value)){
+					matched = true;
+				}
+				break;
+			case 'ipv6' :
+				if(isValidIpv6Address(value)){
+					matched = true;
+			    }
+			    break;
+			case 'hostname' :
+				if(isValidHostname(value)){
+					matched = true;
+			    }
+			    break;
+			case 'url' :
+				if(isValidURL(value)){
+					matched = true;
+			    }
+			    break;
+			case 'email' :
+				if(isValidEmail(value)){
+					matched = true;
+			    }
+			    break;
+			case 'cidr' :
+				if(isValidCIDR(value)){
+					matched = true;
+			    }
+			    break;    
+			default : matched = false;
+		}
+		if(matched){
+			break;
+		}	
+	}
+	if(matched){
+         return true;
+    }else{
+         return false;
+    }
+}
+
+function validateAll(option,value){
+	var conditions = option.validateAll;
+	var arr = conditions.split(',');
+	var matched = false;
+	for (i = 0; i < arr.length; ++i) {
+		switch(arr[i]){
+			case 'ipv4' :
+				if(isValidIpv4Address(value)){
+					matched = true;
+				}else{
+					matched = false;
+				}
+				break;
+			case 'ipv6' :
+				if(isValidIpv6Address(value)){
+					matched = true;
+			    }else{
+					matched = false;
+				}
+			    break;
+			case 'hostname' :
+				if(isValidHostname(value)){
+					matched = true;
+			    }else{
+					matched = false;
+				}
+			    break;
+			case 'url' :
+				if(isValidURL(value)){
+					matched = true;
+			    }else{
+					matched = false;
+				}
+			    break;
+			case 'email' :
+				if(isValidEmail(value)){
+					matched = true;
+			    }else{
+					matched = false;
+				}
+			    break;
+			case 'cidr' :
+				if(isValidCIDR(value)){
+					matched = true;
+			    }else{
+					matched = false;
+				}
+			case 'notGmail' :
+				if(isNotGmail(value)){
+					matched = true;
+			    }else{
+					matched = false;
+				}	
+			    break;    
+			default : matched = false;
+		}
+		if(!matched){
+			break;
+		}	
+	}
+	if(matched){
+         return true;
+    }else{
+         return false;
+    }
+}
+
+function isValidEmail(email){
+	return validateRegex("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",email);
+}
+
+function isValidCIDR(cdir){
+	return validateRegex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$",cdir);
+}
+
+function isNotGmail(email){
+	return validateRegex("^(.(?!@gmail\.com))*$",email);
 }
 
 function validateRegex(regex,value){
