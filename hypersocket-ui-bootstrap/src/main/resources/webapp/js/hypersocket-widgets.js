@@ -1005,7 +1005,7 @@ $.fn.multipleSelect = function(data) {
 			$(selectedOpts).remove();
 			e.preventDefault();
 
-			if (options.changed) {
+			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
 		});
@@ -1020,7 +1020,7 @@ $.fn.multipleSelect = function(data) {
 			$(selectedOpts).remove();
 			e.preventDefault();
 
-			if (options.changed) {
+			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
 		});
