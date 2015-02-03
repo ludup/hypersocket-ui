@@ -996,7 +996,7 @@ $.fn.multipleSelect = function(data) {
 			$(selectedOpts).remove();
 			e.preventDefault();
 
-			if (options.changed) {
+			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
 		});
@@ -1011,7 +1011,7 @@ $.fn.multipleSelect = function(data) {
 			$(selectedOpts).remove();
 			e.preventDefault();
 
-			if (options.changed) {
+			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
 		});
@@ -2022,7 +2022,7 @@ $.fn.fileUploadInput = function(data) {
  				return $('#' + id + 'Info').data('uuid');
  			},
  			setValue: function(uuid) {
- 				getJSON(options.url + '/' + uuid, null, function(data){
+ 				getJSON(basePath + '/api/fileUpload/metainfo/' + uuid, null, function(data){
  					if($('#' + id + 'Info').length){
  						$('#' + id + 'Info').empty();
  						$('#' + id + 'Info').append(showInfoFormat(data));
@@ -2128,7 +2128,7 @@ $.fn.fileUploadInput = function(data) {
 // 			        }
 // 			    });
 // 				window.location.href =  basePath + '/api/fileUpload/download/' + uuid;
- 				window.open(basePath + '/api/fileUpload/download/' + uuid);
+ 				window.open(basePath + '/api/fileUpload/file/' + uuid);
  			},
  			options: function() {
  				return options;
