@@ -92,6 +92,12 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				SystemPermission.SYSTEM_ADMINISTRATION, null),
 				MenuService.MENU_SERVER);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "attributes",
+				"fa-list-ul", "attributes", 100,
+				SystemPermission.SYSTEM_ADMINISTRATION, null,
+				SystemPermission.SYSTEM_ADMINISTRATION, null),
+				MenuService.MENU_SERVER);
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
@@ -181,10 +187,10 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				return !realmService.isReadOnly(getCurrentRealm());
 			}
 		});
-		
+
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
-				"impersonateUser", "fa-male", "impersonateUser", SystemPermission.SYSTEM_ADMINISTRATION, 0,
-				null, null));
+				"impersonateUser", "fa-male", "impersonateUser",
+				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, null));
 
 		registerExtendableTable(MenuService.ACTIONS_REALMS);
 
@@ -203,28 +209,30 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				TriggerResourcePermission.UPDATE,
 				TriggerResourcePermission.DELETE),
 				MenuService.MENU_BUSINESS_RULES);
-		
-		registerMenu(new MenuRegistration(AutomationResourceServiceImpl.RESOURCE_BUNDLE,
-				"automations", "fa-clock-o", "automations", 100,
+
+		registerMenu(new MenuRegistration(
+				AutomationResourceServiceImpl.RESOURCE_BUNDLE, "automations",
+				"fa-clock-o", "automations", 100,
 				AutomationResourcePermission.READ,
 				AutomationResourcePermission.CREATE,
 				AutomationResourcePermission.UPDATE,
-				AutomationResourcePermission.DELETE), MenuService.MENU_BUSINESS_RULES);
+				AutomationResourcePermission.DELETE),
+				MenuService.MENU_BUSINESS_RULES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_TOOLS, "",
 				null, 99999, null, null, null, null, null));
-		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS, "fa-wrench",
-				null, 99999, null, null, null, null, null), MENU_TOOLS);
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS,
+				"fa-wrench", null, 99999, null, null, null, null, null),
+				MENU_TOOLS);
 
 		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
 				"changePassword", "fa-lock", "changePassword", 1000,
-				PasswordPermission.CHANGE, null,
-				PasswordPermission.CHANGE, null),
-				MenuService.MENU_MY_PROFILE);
+				PasswordPermission.CHANGE, null, PasswordPermission.CHANGE,
+				null), MenuService.MENU_MY_PROFILE);
 
 	}
 
@@ -352,10 +360,8 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 						hasPermission(m.getCreatePermission()) && m.canCreate(),
 						hasPermission(m.getUpdatePermission()) && m.canUpdate(),
 						hasPermission(m.getDeletePermission()) && m.canDelete(),
-						m.getIcon(),
-						m.getData(),
-						m.isHidden());
-				
+						m.getIcon(), m.getData(), m.isHidden());
+
 				for (MenuRegistration child : m.getMenus()) {
 					if (!child.canRead()) {
 						// User does not have access to this menu
@@ -392,7 +398,8 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 							hasPermission(child.getUpdatePermission())
 									&& child.canUpdate(),
 							hasPermission(child.getDeletePermission())
-									&& child.canDelete(), child.getIcon(), child.getData(), child.isHidden());
+									&& child.canDelete(), child.getIcon(),
+							child.getData(), child.isHidden());
 
 					for (MenuRegistration leaf : child.getMenus()) {
 
@@ -435,7 +442,8 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 										.getUpdatePermission())
 										&& leaf.canUpdate(), hasPermission(leaf
 										.getDeletePermission())
-										&& leaf.canDelete(), leaf.getIcon(), leaf.getData(), leaf.isHidden()));
+										&& leaf.canDelete(), leaf.getIcon(),
+										leaf.getData(), leaf.isHidden()));
 					}
 
 					if (childMenu.getResourceName() == null
