@@ -299,7 +299,7 @@ $.fn.propertyPage = function(opts) {
 						function(idx, o) {
 							$(contentTabs)
 									.append(
-										'<li id="' + this.id + 'Li" name="tab_'+this.name+'"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_'+this.name+'"><span>' + this.name + '</span></a></li>');
+										'<li id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
 							$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 							$('#' + this.id).addClass('tab-pane');
 						});
@@ -355,7 +355,7 @@ $.fn.propertyPage = function(opts) {
 								$(contentTabs)
 										.append(
 											'<li name="tab_'+getResource(this.categoryKey + '.label')+'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
-											+ ' href="#' + tab + '"  name="link_'+getResource(this.categoryKey + '.label')+'"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
+											+ ' href="#' + tab + '"  name="link_' + getResource(this.categoryKey + '.label') + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
 								first = false;
 	
 								$('#' + propertyDiv + 'Content').append(
