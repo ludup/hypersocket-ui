@@ -601,6 +601,9 @@ $.fn.autoComplete = function(data) {
 		});
 		$('#input_' + id).data('values', values);
 		$('#input_' + id).data('map', map);
+		if(options.selectedValue){
+			$('#' + id).parent().parent().data('widget').setValue(options.selectedValue);
+		}
 	};
 	
 	var createDropdown = function(text) {
@@ -734,6 +737,21 @@ $.fn.autoComplete = function(data) {
  			clear: function() {
  				$('#' + id).val('');
 				$('#input_' + id).val('');
+ 			},
+ 			addItem: function(item, select){
+ 				exists = false;
+ 				$.each($('#input_' + id).data('values'), function(idx, obj) {
+ 					if(item.value==obj.value && item.name==obj.name){
+ 						exists = true;
+ 						return false;
+ 					}
+ 				});
+ 				if(!exists){
+ 					$('#input_' + id).data('values').push(item);
+ 				}
+ 				if(select){
+ 					$('#' + id).parent().parent().data('widget').setValue(item.value);
+ 				}
  			}
 	};
 

@@ -198,15 +198,11 @@ $(document).ready(function() {
 	$('#attributeContent').localize();
 	$('#attributeCategoryContent').localize();
 	
-	function createAutocomplete(){
+	function createAutocomplete(selectedValue){
 		$('#attributeCategoryAutocomplete').autoComplete({
 			url: 'attributeCategories/categories',
-			nameIsResourceKey: false
-// 			changed: function(widget) {
-// 				if(widget.value != '') {
-// 					$('#attributeCategory').val(widget.value);
-// 				}
-// 			},
+			nameIsResourceKey: false,
+			selectedValue: selectedValue
 		});
 	}
 	createAutocomplete();
@@ -261,8 +257,7 @@ $(document).ready(function() {
 			if(data.success){
 				$('#attributeCategoryContent').modal('hide');
 				$('#attributeCategoryAutocomplete').empty();
-				createAutocomplete();
-// 				$('#attributeCategoryAutocomplete').data('widget').setValue(data.resource.id);
+				createAutocomplete(data.resource.id);
 			}else{
 				$('#attributeCategoryContent').resourceDialog('error', data.message);
 			}
@@ -352,7 +347,6 @@ $(document).ready(function() {
 				displayResource : function(resource) {
 					$('#attributeId').val(resource.id);
 					$('#attributeName').val(resource.name);
-// 					debugger;
 					$('#attributeCategoryAutocomplete').data('widget').setValue(resource.category.id);
 					$('#attributeDescription').val(resource.description);
 					$('#attributeDefaultValue').val(resource.defaultValue);
