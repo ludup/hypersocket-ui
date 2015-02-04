@@ -1175,7 +1175,7 @@ function shutdown(option){
 				
 			var timer = setTimeout(function() {
 				$.ajax({
-					url: basePath + '/api/server/networkInterfaces',
+					url: basePath + '/api/server/ping',
 					dataType: 'json',
 					success: function(data){
 						if(!serverRunning){
