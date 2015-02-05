@@ -1815,9 +1815,9 @@ $.fn.namePairInput = function(data) {
  			getValue: function() {
  				var values = [];
  				$('#' + id + 'NamePairs').find('.namePairInput').each(function(){
- 					name = $(this).find('.namePairName input').val();
- 					value = $(this).find('.namePairValue input').val();
- 					values.push(name + '~' + value);
+ 					name = encodeURIComponent($(this).find('.namePairName input').val());
+ 					value = encodeURIComponent($(this).find('.namePairValue input').val());
+ 					values.push(name + '=' + value);
  				});
  				return values;
  			},
@@ -1825,9 +1825,9 @@ $.fn.namePairInput = function(data) {
  				callback.removeRows();
  				$.each(val, function(index, value){
  					callback.addRows(1);
- 					valuePair = value.split('~');
- 					$('#' + id + 'NamePairName' + rowNum).data('widget').setValue(valuePair[0]);
- 					$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(valuePair[1]);
+ 					valuePair = value.split('=');
+ 					$('#' + id + 'NamePairName' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[0]));
+ 					$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[1]));
  				});
  			},
  			disable: function() {
