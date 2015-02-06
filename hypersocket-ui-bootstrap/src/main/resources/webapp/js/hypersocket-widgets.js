@@ -1224,7 +1224,41 @@ $.fn.multipleTextInput = function(data) {
 			});
 		}
 
-		
+		var callback = {
+				setValue: function(val) {
+					// Cannot be done yet.
+				},
+				getValue: function() {
+					result = new Array();
+
+					$('#' + id + 'IncludedSelect option').each(function() {
+						result.push($(this).val());
+					});
+					return result;
+				},
+				reset: function() {
+					$('#' + id).multipleTextInput();
+				},
+				disable: function() {
+					$('#' + id + 'AddButton').attr('disabled', true);
+					$('#' + id + 'RemoveButton').attr('disabled', true);
+					$('#' + id + 'IncludedSelect').attr('disabled', true);
+				},
+				enable: function() {
+					$('#' + id + 'AddButton').attr('disabled', false);
+					$('#' + id + 'RemoveButton').attr('disabled', false);
+					$('#' + id + 'IncludedSelect').attr('disabled', false);
+				},
+				options: function() {
+					return options;
+				},
+				getInput: function() {
+					return $('#' + id);
+				},
+	 			clear: function() {
+	 				$('#' + id).multipleTextInput();
+	 			}
+		};
 
 		$('#' + id + 'AddButton')
 				.click(
@@ -1240,8 +1274,8 @@ $.fn.multipleTextInput = function(data) {
 								.append('<option ' + 'value="' + selectedText + '">' + selectedText + "</option>");
 						select.val('');
 						toSelect.data('updated', true);
-						if (data.change) {
-							data.change();
+						if (options.changed) {
+							options.changed(callback);
 						}
 					});
 
@@ -1257,8 +1291,8 @@ $.fn.multipleTextInput = function(data) {
 
 			toSelect.data('updated', true);
 
-			if (data.change) {
-				data.change();
+			if (options.changed) {
+				options.changed(callback);
 			}
 		});
 
@@ -1270,41 +1304,7 @@ $.fn.multipleTextInput = function(data) {
 		});
 	}
 	
-	var callback = {
-			setValue: function(val) {
-				// Cannot be done yet.
-			},
-			getValue: function() {
-				result = new Array();
-
-				$('#' + id + 'IncludedSelect option').each(function() {
-					result.push($(this).val());
-				});
-				return result;
-			},
-			reset: function() {
-				$('#' + id).multipleTextInput();
-			},
-			disable: function() {
-				$('#' + id + 'AddButton').attr('disabled', true);
-				$('#' + id + 'RemoveButton').attr('disabled', true);
-				$('#' + id + 'IncludedSelect').attr('disabled', true);
-			},
-			enable: function() {
-				$('#' + id + 'AddButton').attr('disabled', false);
-				$('#' + id + 'RemoveButton').attr('disabled', false);
-				$('#' + id + 'IncludedSelect').attr('disabled', false);
-			},
-			options: function() {
-				return options;
-			},
-			getInput: function() {
-				return $('#' + id);
-			},
- 			clear: function() {
- 				$('#' + id).multipleTextInput();
- 			}
-	};
+	
 
 	if(options.disabled) {
 		callback.disable();
