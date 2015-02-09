@@ -1201,11 +1201,14 @@ function shutdown(option){
 				}else{
 					$('#shutdownServer').find('p').text(getResource('power.finished.' + option));
 					$('#shutdownServer').find('i').removeClass('fa-spin fa-spinner').addClass('fa-check');
-					if(option == 'restart'){
-						setTimeout(function(){
-							location.reload();
-						}, 5000);
-					}
+					getJSON('logoff', null, function() {
+						if(option == 'restart'){
+							setTimeout(function(){
+								location.reload();
+							}, 5000);
+						}
+					})
+					
 				}
 			}, 1000);
 			
