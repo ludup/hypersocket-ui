@@ -606,6 +606,9 @@ $.fn.autoComplete = function(data) {
 		});
 		$('#input_' + id).data('values', values);
 		$('#input_' + id).data('map', map);
+		if(options.selectedValue){
+			$('#' + id).parent().parent().data('widget').setValue(options.selectedValue);
+		}
 	};
 	
 	var createDropdown = function(text) {
@@ -739,6 +742,21 @@ $.fn.autoComplete = function(data) {
  			clear: function() {
  				$('#' + id).val('');
 				$('#input_' + id).val('');
+ 			},
+ 			addItem: function(item, select){
+ 				exists = false;
+ 				$.each($('#input_' + id).data('values'), function(idx, obj) {
+ 					if(item.value==obj.value && item.name==obj.name){
+ 						exists = true;
+ 						return false;
+ 					}
+ 				});
+ 				if(!exists){
+ 					$('#input_' + id).data('values').push(item);
+ 				}
+ 				if(select){
+ 					$('#' + id).parent().parent().data('widget').setValue(item.value);
+ 				}
  			}
 	};
 
@@ -1231,7 +1249,41 @@ $.fn.multipleTextInput = function(data) {
 			});
 		}
 
-		
+		var callback = {
+				setValue: function(val) {
+					// Cannot be done yet.
+				},
+				getValue: function() {
+					result = new Array();
+
+					$('#' + id + 'IncludedSelect option').each(function() {
+						result.push($(this).val());
+					});
+					return result;
+				},
+				reset: function() {
+					$('#' + id).multipleTextInput();
+				},
+				disable: function() {
+					$('#' + id + 'AddButton').attr('disabled', true);
+					$('#' + id + 'RemoveButton').attr('disabled', true);
+					$('#' + id + 'IncludedSelect').attr('disabled', true);
+				},
+				enable: function() {
+					$('#' + id + 'AddButton').attr('disabled', false);
+					$('#' + id + 'RemoveButton').attr('disabled', false);
+					$('#' + id + 'IncludedSelect').attr('disabled', false);
+				},
+				options: function() {
+					return options;
+				},
+				getInput: function() {
+					return $('#' + id);
+				},
+	 			clear: function() {
+	 				$('#' + id).multipleTextInput();
+	 			}
+		};
 
 		$('#' + id + 'AddButton')
 				.click(
@@ -1247,8 +1299,8 @@ $.fn.multipleTextInput = function(data) {
 								.append('<option ' + 'value="' + selectedText + '">' + selectedText + "</option>");
 						select.val('');
 						toSelect.data('updated', true);
-						if (data.change) {
-							data.change();
+						if (options.changed) {
+							options.changed(callback);
 						}
 					});
 
@@ -1264,8 +1316,8 @@ $.fn.multipleTextInput = function(data) {
 
 			toSelect.data('updated', true);
 
-			if (data.change) {
-				data.change();
+			if (options.changed) {
+				options.changed(callback);
 			}
 		});
 
@@ -1277,41 +1329,7 @@ $.fn.multipleTextInput = function(data) {
 		});
 	}
 	
-	var callback = {
-			setValue: function(val) {
-				// Cannot be done yet.
-			},
-			getValue: function() {
-				result = new Array();
-
-				$('#' + id + 'IncludedSelect option').each(function() {
-					result.push($(this).val());
-				});
-				return result;
-			},
-			reset: function() {
-				$('#' + id).multipleTextInput();
-			},
-			disable: function() {
-				$('#' + id + 'AddButton').attr('disabled', true);
-				$('#' + id + 'RemoveButton').attr('disabled', true);
-				$('#' + id + 'IncludedSelect').attr('disabled', true);
-			},
-			enable: function() {
-				$('#' + id + 'AddButton').attr('disabled', false);
-				$('#' + id + 'RemoveButton').attr('disabled', false);
-				$('#' + id + 'IncludedSelect').attr('disabled', false);
-			},
-			options: function() {
-				return options;
-			},
-			getInput: function() {
-				return $('#' + id);
-			},
- 			clear: function() {
- 				$('#' + id).multipleTextInput();
- 			}
-	};
+	
 
 	if(options.disabled) {
 		callback.disable();
@@ -1826,8 +1844,8 @@ $.fn.namePairInput = function(data) {
  			getValue: function() {
  				var values = [];
  				$('#' + id + 'NamePairs').find('.namePairInput').each(function(){
- 					name = $(this).find('.namePairName input').val();
- 					value = $(this).find('.namePairValue input').val();
+ 					name = encodeURIComponent($(this).find('.namePairName input').val());
+ 					value = encodeURIComponent($(this).find('.namePairValue input').val());
  					values.push(name + '=' + value);
  				});
  				return values;
@@ -1837,8 +1855,8 @@ $.fn.namePairInput = function(data) {
  				$.each(val, function(index, value){
  					callback.addRows(1);
  					valuePair = value.split('=');
- 					$('#' + id + 'NamePairName' + rowNum).data('widget').setValue(valuePair[0]);
- 					$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(valuePair[1]);
+ 					$('#' + id + 'NamePairName' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[0]));
+ 					$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[1]));
  				});
  			},
  			disable: function() {

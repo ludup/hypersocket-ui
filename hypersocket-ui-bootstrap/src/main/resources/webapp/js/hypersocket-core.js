@@ -1175,7 +1175,7 @@ function shutdown(option){
 				
 			var timer = setTimeout(function() {
 				$.ajax({
-					url: basePath + '/api/server/networkInterfaces',
+					url: basePath + '/api/server/ping',
 					dataType: 'json',
 					success: function(data){
 						if(!serverRunning){
@@ -1201,11 +1201,14 @@ function shutdown(option){
 				}else{
 					$('#shutdownServer').find('p').text(getResource('power.finished.' + option));
 					$('#shutdownServer').find('i').removeClass('fa-spin fa-spinner').addClass('fa-check');
-					if(option == 'restart'){
-						setTimeout(function(){
-							location.reload();
-						}, 5000);
-					}
+					getJSON('logoff', null, function() {
+						if(option == 'restart'){
+							setTimeout(function(){
+								location.reload();
+							}, 5000);
+						}
+					})
+					
 				}
 			}, 1000);
 			
