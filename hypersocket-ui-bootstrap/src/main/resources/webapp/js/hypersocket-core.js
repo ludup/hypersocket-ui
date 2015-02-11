@@ -263,7 +263,7 @@ $.fn.ajaxResourcePage = function(params) {
 			
 		}
 
-		return '<div id="' + divName + 'Actions' + id + '" class="tableActions">' + renderedActions + '</div>';
+		return '<div id="' + divName + 'Actions' + id + '" class="tableActions" name="' + divName + 'Actions">' + renderedActions + '</div>';
 	};
 
 	$('#' + divName + 'TableHeader').append(
