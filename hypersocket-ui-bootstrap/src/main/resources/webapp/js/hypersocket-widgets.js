@@ -1780,6 +1780,7 @@ $.fn.namePairInput = function(data) {
 				valueVariables: [],
 				nameVariables: [],
 				variables: [],
+				onlyName: false,
 				isArrayValue: true
 			}, data);
 	
@@ -1834,8 +1835,13 @@ $.fn.namePairInput = function(data) {
  				var values = [];
  				$('#' + id + 'NamePairs').find('.namePairInput').each(function(){
  					name = encodeURIComponent($(this).find('.namePairName input').val());
- 					value = encodeURIComponent($(this).find('.namePairValue input').val());
- 					values.push(name + '=' + value);
+ 					if(options.onlyName){
+ 	 					values.push(name);
+ 					}else{
+ 						value = encodeURIComponent($(this).find('.namePairValue input').val());
+ 	 					values.push(name + '=' + value);
+ 					}
+ 					
  				});
  				return values;
  			},
@@ -1845,7 +1851,10 @@ $.fn.namePairInput = function(data) {
  					callback.addRows(1);
  					valuePair = value.split('=');
  					$('#' + id + 'NamePairName' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[0]));
- 					$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[1]));
+ 					if(!options.onlyName){
+ 						$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[1]));
+ 					}
+ 					
  				});
  			},
  			disable: function() {
@@ -1876,22 +1885,29 @@ $.fn.namePairInput = function(data) {
  				for (i = 0; i < val; i++) {
  					rowNum++;
  					html = '';
- 	 				html =	'<div class="row namePairInput">'
- 	 					+	'	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
- 	 					+	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'
- 	 					+	'	<div class="propertyValue col-xs-1 dialogActions">'
- 	 					+ 	'		<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>'
- 	 					+ 	'	</div>'
- 	 					+	'</div>';
+ 	 				html =	'<div class="row namePairInput">';
+ 	 				if(options.onlyName){
+ 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue col-xs-11 namePairName"></div>' 
+ 	 				}else{
+ 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
+ 	 						 +	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'; 
+ 	 				}
+ 	 					
+ 	 				html += '	<div class="propertyValue col-xs-1 dialogActions">'
+ 	 					 + 	'		<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>'
+ 	 					 + 	'	</div>'
+ 	 					 +	'</div>';
  	 				$('#' + id + 'NamePairs').append(html);
  	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
  	 					variables: nameVariables,
  	 					disabled: options.disabled || options.disableName
  	 				});
- 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
- 	 					variables: valueVariables,
- 	 					disabled: options.disabled
- 	 				});
+ 	 				if(options.onlyName){
+ 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
+ 	 	 					variables: valueVariables,
+ 	 	 					disabled: options.disabled
+ 	 	 				});
+ 	 				}
  	 				$('.removePair').click(function(){
  	 					$(this).closest('.namePairInput').remove();
  	 					$('#' + id + 'NewRow').show();
