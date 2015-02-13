@@ -1902,7 +1902,7 @@ $.fn.namePairInput = function(data) {
  	 					variables: nameVariables,
  	 					disabled: options.disabled || options.disableName
  	 				});
- 	 				if(options.onlyName){
+ 	 				if(!options.onlyName){
  	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
  	 	 					variables: valueVariables,
  	 	 					disabled: options.disabled
