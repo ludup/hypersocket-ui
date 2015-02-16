@@ -3,6 +3,7 @@ var contentDiv = '#content';
 var currentMenu = null;
 var currentRealm = null;
 var countries = null;
+var restartAutoLogoff = false;
 var allMenus = new Array();
 
 $.ajax({
@@ -1213,7 +1214,7 @@ function shutdown(option, autoLogoff){
 					$('#shutdownServer').find('i').removeClass('fa-spin fa-spinner').addClass('fa-check');
 					
 					setTimeout(function() {
-						if(autoLogoff) {
+						if(autoLogoff || (option == 'restart' && restartAutoLogoff)) {
 							log('Logging off user');
 							$('#shutdownServer').modal('hide');
 							logoff();
