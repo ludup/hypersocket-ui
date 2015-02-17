@@ -30,6 +30,7 @@ public class HtmlContentFilter implements ContentFilter {
 	String supportContact = "support@hypersocket.com";
 	String supportName = "Hypersocket Software";
 	String supportUrl = "https://helpdesk.hypersocket.com";
+	String license = null;
 	
 	public HtmlContentFilter() {
 	}
@@ -49,6 +50,9 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("supportContact", supportContact);
 		resolver.addToken("supportName", supportName);
 		resolver.addToken("supportUrl", supportUrl);
+		if(license!=null) {
+			resolver.addToken("license", license);
+		}
 		
 		for(MapTokenResolver t : additionalResolvers) {
 			resolver.addAll(t);
@@ -93,5 +97,9 @@ public class HtmlContentFilter implements ContentFilter {
 	
 	public void setSupportUrl(String supportUrl) {
 		this.supportUrl = supportUrl;
+	}
+
+	public void setLicense(String license) {
+		this.license = license;
 	}
 }
