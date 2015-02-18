@@ -388,6 +388,10 @@ function isValidURL(url) {
 	return url.search(urlRegex) == 0;
 }
 
+function isReplacementVariable(value) {
+	return value.trim().startsWith('${') && value.trim().endsWith('}');
+}
+
 function looksLikeMail(str) {
     var lastAtPos = str.lastIndexOf('@');
     var lastDotPos = str.lastIndexOf('.');
