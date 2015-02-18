@@ -83,7 +83,7 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 				MenuService.MENU_SYSTEM, "", null, 100, null, null, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_SERVER, "fa-hdd-o", null, 0, null, null, null,
+				MenuService.MENU_SERVER, "fa-server", null, 0, null, null, null,
 				null), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
