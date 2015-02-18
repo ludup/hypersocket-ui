@@ -239,7 +239,8 @@ $(document).ready(function() {
 	    offResourceKey: 'text.no'
 	});
 	
-	$('#createCategory').click(function(){
+	$('#createCategory').click(function(e){
+		e.preventDefault();
 		$('#attributeCategoryContent').modal('show');
 		$('#attributeCategoryName').val('');
 		$('#attributeCategoryWeight').val('0');
