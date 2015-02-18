@@ -383,8 +383,13 @@ function isValidIpv6Address(address) {
 	return address.search(ipv6AddressRegex)==0;
 }
 
-function isValidURL(str) {
-	return /((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(str);
+function isValidURL(url) {
+	var urlRegex = "^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$";
+	return url.search(urlRegex) == 0;
+}
+
+function isReplacementVariable(value) {
+	return value.trim().startsWith('${') && value.trim().endsWith('}');
 }
 
 function looksLikeMail(str) {
@@ -424,4 +429,8 @@ function stripNull(str) {
 function isIE () {
 	  var myNav = navigator.userAgent.toLowerCase();
 	  return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
-	}
+}
+
+function formatResourceKey(resourceKey){
+	return resourceKey; //resourceKey.replace('.','_');
+}

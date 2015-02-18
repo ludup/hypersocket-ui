@@ -3,6 +3,7 @@ var contentDiv = '#content';
 var currentMenu = null;
 var currentRealm = null;
 var countries = null;
+var restartAutoLogoff = false;
 var allMenus = new Array();
 
 $.ajax({
@@ -806,6 +807,7 @@ function startLogon() {
 			$('#currentRealm').remove();
 			$('#lang').remove();
 			$('#navMenu').empty();
+			$('div.modal-backdrop.in').remove();
 		},
 		processForm: function(data) {
 			if (data.showLocales) {
@@ -1002,39 +1004,7 @@ function home(data) {
 				$('#navMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function(e) {
-					var shutdownModal = '<div class="modal" id="shutdownServer" tabindex="-1" role="dialog">' +
-							'<div class="modal-dialog modal-sm">' +
-								'<div class="modal-content">' +
-									'<div class="modal-header">' +
-										'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-										'<h4 class="modal-title" id="myModalLabel">' + getResource('power.shutdownServer') + '</h4>' +
-									'</div>' +
-									'<div class="modal-body row">' +
-										'<div class="col-xs-6" style="text-align: center">' +
-											'<button class="btn btn-small btn-primary" id="buttonShutdown" style="margin-bottom: 15px" data-dismiss="modal">' +
-												'<i class="fa fa-power-off" style="font-size: 40px"></i>' +
-											'</button>' +
-											'</br>' +
-											'<span>' + getResource("shutdown.label") + '</span>' +
-										'</div>' +
-										'<div class="col-xs-6" style="text-align: center">' +
-											'<button class="btn btn-small btn-primary" id="buttonRestart" style="margin-bottom: 15px" data-dismiss="modal">' +
-												'<i class="fa fa-repeat" style="font-size: 40px"></i>' +
-											'</button>' +
-											'</br>' +
-											'<span>' + getResource("restart.label") + '</span>' +
-										'</div>' +
-									'</div>' +
-								'</div>' +
-							'</div>' +
-						'</div>';
-					$(shutdownModal).modal('show');
-					$('#buttonShutdown').click(function(){
-						shutdown('shutdown');
-					});
-					$('#buttonRestart').click(function(){
-						shutdown('restart');
-					});
+					showShutdownDialog();
 				});
 			}
 			
@@ -1156,7 +1126,49 @@ function home(data) {
 
 }
 
-function shutdown(option){
+function showShutdownDialog(option, logoff) {
+	
+	var shutdownModal = '<div class="modal" id="shutdownServer" tabindex="-1" role="dialog">' +
+	'<div class="modal-dialog modal-sm">' +
+		'<div class="modal-content">' +
+			'<div class="modal-header">' +
+				'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+				'<h4 class="modal-title" id="myModalLabel">' + getResource('power.shutdownServer') + '</h4>' +
+			'</div>' +
+			'<div class="modal-body row">' +
+				'<div class="col-xs-6" style="text-align: center">' +
+					'<button class="btn btn-small btn-primary" id="buttonShutdown" style="margin-bottom: 15px" data-dismiss="modal">' +
+						'<i class="fa fa-power-off" style="font-size: 40px"></i>' +
+					'</button>' +
+					'</br>' +
+					'<span>' + getResource("shutdown.label") + '</span>' +
+				'</div>' +
+				'<div class="col-xs-6" style="text-align: center">' +
+					'<button class="btn btn-small btn-primary" id="buttonRestart" style="margin-bottom: 15px" data-dismiss="modal">' +
+						'<i class="fa fa-repeat" style="font-size: 40px"></i>' +
+					'</button>' +
+					'</br>' +
+					'<span>' + getResource("restart.label") + '</span>' +
+				'</div>' +
+			'</div>' +
+		'</div>' +
+	'</div>' +
+'</div>';
+	$(shutdownModal).modal('show');
+
+	$('#buttonShutdown').click(function(){
+		shutdown('shutdown');
+	});
+	$('#buttonRestart').click(function(){
+		shutdown('restart');
+	});
+
+	if(option) {
+		shutdown(option, logoff);
+	}
+}
+
+function shutdown(option, autoLogoff){
 	
 	$('#shutdownServer').find('.modal-body').empty();
 	$('#shutdownServer').find('.modal-body').append(
@@ -1174,7 +1186,7 @@ function shutdown(option){
 				
 			var timer = setTimeout(function() {
 				$.ajax({
-					url: basePath + '/api/server/networkInterfaces',
+					url: basePath + '/api/server/ping',
 					dataType: 'json',
 					success: function(data){
 						if(!serverRunning){
@@ -1200,11 +1212,20 @@ function shutdown(option){
 				}else{
 					$('#shutdownServer').find('p').text(getResource('power.finished.' + option));
 					$('#shutdownServer').find('i').removeClass('fa-spin fa-spinner').addClass('fa-check');
-					if(option == 'restart'){
-						setTimeout(function(){
-							location.reload();
-						}, 5000);
-					}
+					
+					setTimeout(function() {
+						if(autoLogoff || (option == 'restart' && restartAutoLogoff)) {
+							log('Logging off user');
+							$('#shutdownServer').modal('hide');
+							logoff();
+						} else {
+							if(option == 'restart'){
+								setTimeout(function(){
+									location.reload();
+								}, 2000);
+							}					
+						}
+					}, 2000);
 				}
 			}, 1000);
 			
