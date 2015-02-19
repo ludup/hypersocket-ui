@@ -142,6 +142,7 @@ $.fn.textInput = function(data) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 }
 
@@ -210,6 +211,7 @@ $.fn.htmlInput = function(data) {
 	},1);
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 }
 
@@ -277,6 +279,7 @@ $.fn.codeInput = function(data) {
 	},1);
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 }
 
@@ -408,6 +411,7 @@ $.fn.editor = function(data) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 }
 
@@ -568,6 +572,7 @@ $.fn.selectButton = function(data) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 }
 
@@ -776,6 +781,7 @@ $.fn.autoComplete = function(data) {
 	} 
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 	
 }
@@ -1125,6 +1131,7 @@ $.fn.multipleSelect = function(data) {
 	
 	$(this).data('created', true);
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 
 };
@@ -1337,7 +1344,7 @@ $.fn.multipleTextInput = function(data) {
 	
 	$(this).data('created', true);
 	$(this).data('widget', callback);
-	
+	$(this).addClass('widget');
 	return callback;
 };
 
@@ -1408,6 +1415,7 @@ $.fn.dateInput = function(options) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 };
 
@@ -1480,6 +1488,7 @@ $.fn.timeInput = function(options) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 	
 };
@@ -1538,6 +1547,7 @@ $.fn.buttonAction = function(options) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 };
 
@@ -1585,6 +1595,7 @@ $.fn.booleanInput = function(options) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 };
 
@@ -1648,6 +1659,7 @@ $.fn.switchInput = function(options) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 };
 
@@ -1712,6 +1724,7 @@ $.fn.imageInput = function(options) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 };
 
@@ -1775,6 +1788,7 @@ $.fn.sliderInput = function(options) {
 	}
 	
 	$(this).data('widget', callback);
+	$(this).addClass('widget');
 	return callback;
 };
 
@@ -1791,6 +1805,7 @@ $.fn.namePairInput = function(data) {
 				valueVariables: [],
 				nameVariables: [],
 				variables: [],
+				onlyName: false,
 				isArrayValue: true
 			}, data);
 	
@@ -1837,16 +1852,21 @@ $.fn.namePairInput = function(data) {
 	$(this).append(html);
 	
 	$('#' + id + 'AddPair').click(function() {
-		$('#' + id).parent().data('widget').addRows(1);
+		$('#' + id).parent().widget().addRows(1);
 	});
 	
 	var callback = {
  			getValue: function() {
  				var values = [];
  				$('#' + id + 'NamePairs').find('.namePairInput').each(function(){
- 					name = encodeURIComponent($(this).find('.namePairName input').val());
- 					value = encodeURIComponent($(this).find('.namePairValue input').val());
- 					values.push(name + '=' + value);
+ 					name = encodeURIComponent($(this).find('.namePairName').widget().getValue());
+ 					if(options.onlyName){
+ 	 					values.push(name);
+ 					}else{
+ 						value = encodeURIComponent($(this).find('.namePairValue').widget().getValue());
+ 	 					values.push(name + '=' + value);
+ 					}
+ 					
  				});
  				return values;
  			},
@@ -1856,12 +1876,15 @@ $.fn.namePairInput = function(data) {
  					callback.addRows(1);
  					valuePair = value.split('=');
  					$('#' + id + 'NamePairName' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[0]));
- 					$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[1]));
+ 					if(!options.onlyName){
+ 						$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[1]));
+ 					}
+ 					
  				});
  			},
  			disable: function() {
- 				$('#' + id).find('input').parent().each(function(){
- 					$(this).data('widget').disable();
+ 				$('#' + id).find('.widget').each(function(){
+ 					$(this).widget().disable();
  				});
  				$('#' + id).find('.removePair').each(function(){
  					$(this).attr('disabled', 'disabled');
@@ -1870,9 +1893,9 @@ $.fn.namePairInput = function(data) {
  				options.disabled = true;
  			},
  			enable: function() {
- 				$('#' + id).find('input').parent().each(function(){
+ 				$('#' + id).find('.widget').each(function(){
  					if (!this.id.startsWith(id + 'NamePairName') || (this.id.startsWith(id + 'NamePairName') && !options.disableName)) {
- 						$(this).data('widget').enable();
+ 						$(this).widget().enable();
  					}
  				});
  				$('#' + id).find('.removePair').each(function(){
@@ -1887,22 +1910,37 @@ $.fn.namePairInput = function(data) {
  				for (i = 0; i < val; i++) {
  					rowNum++;
  					html = '';
- 	 				html =	'<div class="row namePairInput">'
- 	 					+	'	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
- 	 					+	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'
- 	 					+	'	<div class="propertyValue col-xs-1 dialogActions">'
- 	 					+ 	'		<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>'
- 	 					+ 	'	</div>'
- 	 					+	'</div>';
- 	 				$('#' + id + 'NamePairs').append(html);
- 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
- 	 					variables: nameVariables,
- 	 					disabled: options.disabled || options.disableName
- 	 				});
- 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
- 	 					variables: valueVariables,
- 	 					disabled: options.disabled
- 	 				});
+ 	 				html =	'<div class="row namePairInput">';
+ 	 				if(options.onlyName){
+ 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue col-xs-11 namePairName"></div>' 
+ 	 				}else{
+ 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
+ 	 						 +	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'; 
+ 	 				}
+ 	 				
+ 	 				if(options.renderNameFunc) {
+ 	 					options.renderNameFunc($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'));
+ 	 				} else {
+	 	 				html += '	<div class="propertyValue col-xs-1 dialogActions">'
+	 	 					 + 	'		<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>'
+	 	 					 + 	'	</div>'
+	 	 					 +	'</div>';
+	 	 				$('#' + id + 'NamePairs').append(html);
+	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
+	 	 					variables: nameVariables,
+	 	 					disabled: options.disabled || options.disableName
+	 	 				});
+ 	 				}
+ 	 				if(!options.onlyName){
+ 	 					if(options.renderValueFunc) {
+ 	 						options.renderValueFunc($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'));
+ 	 					} else {
+	 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
+	 	 	 					variables: valueVariables,
+	 	 	 					disabled: options.disabled
+	 	 	 				});
+ 	 					}
+ 	 				}
  	 				$('.removePair').click(function(){
  	 					$(this).closest('.namePairInput').remove();
  	 					$('#' + id + 'NewRow').show();
@@ -1919,7 +1957,11 @@ $.fn.namePairInput = function(data) {
  				return options;
  			},
  			clear: function() {
- 				$('#' + id).find('input').val('');
+ 				if($('#' + id).find('.widget').length) {
+ 					$('#' + id).find('.widget').each(function() {
+ 						$(this).widget().setValue('');
+ 					});
+ 				}
  			},
  			getInput: function() {
  				return $('#' + id);
@@ -1941,7 +1983,7 @@ $.fn.namePairInput = function(data) {
 	}
 	
 	$(this).data('widget', callback);
-	
+	$(this).addClass('widget');
 	return callback;
 }
 
@@ -2136,27 +2178,6 @@ $.fn.fileUploadInput = function(data) {
  			},
  			download: function(){
  				uuid = $('#' + id + 'Info').data('uuid');
- 				
-// 				Commented until I fix the download issue
- 				
-// 				getJSON('fileUpload/download/' + uuid, null, function(data){
-// 					
-// 				});
-// 				$.ajax({
-// 			        type : 'GET',
-// 			        url : basePath + '/api/fileUpload/download/' + uuid,
-// 			        dataType : 'text',
-// 			        contentType : 'application/json;charset=UTF-8',
-// 			        success : function(data) {
-// 			        	
-// 			            window.open(data);
-// 			        },
-// 			        error : function(xhr, ajaxOptions, thrownError) {
-// 			            // error handling
-// 			        	
-// 			        }
-// 			    });
-// 				window.location.href =  basePath + '/api/fileUpload/download/' + uuid;
  				window.open(basePath + '/api/fileUpload/file/' + uuid);
  			},
  			options: function() {
@@ -2187,7 +2208,7 @@ $.fn.fileUploadInput = function(data) {
 	}
 	
 	$(this).data('widget', callback);
-	
+	$(this).addClass('widget');
 	return callback;
 }
 
@@ -2335,8 +2356,8 @@ $.fn.multipleFileUpload = function(data) {
 		callback.disable();
 	}
 	
-	$(this).data('widget', callback);
-	
+	$(this).data('widget', callba1ck);
+	$(this).addClass('widget');
 	return callback;
 }
 

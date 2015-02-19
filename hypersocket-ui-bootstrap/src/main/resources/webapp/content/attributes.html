@@ -221,9 +221,9 @@ $(document).ready(function() {
 	$('#attributeType').selectButton({
 		id: 'attributeType',
 		name: 'Password',
-		value: 'Password',
-		options: [{ id: 'Password', name: 'Password', value: 'Password' },
-		          { id: 'Text', name: 'Text', value: 'Text'}],
+		value: 'PASSWORD',
+		options: [{ id: 'PASSWORD', name: 'Password', value: 'PASSWORD' },
+		          { id: 'TEXT', name: 'Text', value: 'TEXT'}],
 		nameIsResourceKey: false
 	});
 	
@@ -239,7 +239,8 @@ $(document).ready(function() {
 	    offResourceKey: 'text.no'
 	});
 	
-	$('#createCategory').click(function(){
+	$('#createCategory').click(function(e){
+		e.preventDefault();
 		$('#attributeCategoryContent').modal('show');
 		$('#attributeCategoryName').val('');
 		$('#attributeCategoryWeight').val('0');
