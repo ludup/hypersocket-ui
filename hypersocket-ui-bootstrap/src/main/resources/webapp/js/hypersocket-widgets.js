@@ -1151,6 +1151,8 @@ $.fn.multipleTextInput = function(data) {
 
 	var id = $(this).attr('id');
 	
+	var name = ((data.resourceKey != null ) ? formatResourceKey(data.resourceKey) : id) ;
+	
 	if ($(this).data('created')) {
 
 		options = $(this).widget().options();
@@ -1205,7 +1207,7 @@ $.fn.multipleTextInput = function(data) {
 		} else {
 			$('#' + id + 'Excluded').append(
 					'<input type="text" ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'id="' 
-							+ id + 'ExcludedSelect" class="formInput text form-control" />');
+							+ id + 'ExcludedSelect" class="formInput text form-control" name="Excluded_' + name + '"/>');
 		}
 
 		$(this).append('<div class="multipleTextInputButtons" id="' + id + 'Buttons"/>');
@@ -1213,17 +1215,17 @@ $.fn.multipleTextInput = function(data) {
 		$('#' + id + 'Buttons').append(
 		'<button class="btn-multiple-select btn btn-primary" id="' 
 				+ id 
-				+ 'AddButton"><i class="fa fa-chevron-circle-right"></i></button><br/>');
+				+ 'AddButton" name="AddButton_' + name + '"><i class="fa fa-chevron-circle-right"></i></button><br/>');
 		
 		$('#' + id + 'Buttons').append(
 				'<button class="btn-multiple-select btn btn-primary" id="' 
 						+ id 
-						+ 'RemoveButton"><i class="fa fa-chevron-circle-left"></i></button>');
+						+ 'RemoveButton" name="RemoveButton_' + name + '"><i class="fa fa-chevron-circle-left"></i></button>');
 
 		$(this).append('<div class="includedList" id="' + id + 'Included"></div>');
 		$('#' + id + 'Included').append(
 					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
-							+ id + 'IncludedSelect" class="formInput text form-control"/>');
+							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '" class="formInput text form-control"/>');
 
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
@@ -1234,12 +1236,12 @@ $.fn.multipleTextInput = function(data) {
 			$('#' + id + 'OrderButtons').append(
 					'<button class="btn-multiple-select btn btn-primary" id="' 
 					+ id 
-					+ 'UpButton"><i class="fa fa-chevron-circle-up"></i></button><br/>');
+					+ 'UpButton" name="UpButton_' + name + '"><i class="fa fa-chevron-circle-up"></i></button><br/>');
 			
 			$('#' + id + 'OrderButtons').append(
 					'<button class="btn-multiple-select btn btn-primary" id="' 
 					+ id 
-					+ 'DownButton"><i class="fa fa-chevron-circle-down"></i></button>');
+					+ 'DownButton" name="DownButton_' + name +'"><i class="fa fa-chevron-circle-down"></i></button>');
 			
 			$('#' + id + 'UpButton').click(function(e) {
 					e.preventDefault();
