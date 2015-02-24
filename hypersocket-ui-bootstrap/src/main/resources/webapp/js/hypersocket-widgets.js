@@ -1357,7 +1357,9 @@ $.fn.multipleTextInput = function(data) {
 $.fn.dateInput = function(options) {
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "DateInput");
-
+ 
+    var name = ((options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
+    
 	var options = $.extend(
 			{   format: "yyyy-mm-dd",
 			    startView: 0,
@@ -1368,7 +1370,7 @@ $.fn.dateInput = function(options) {
 			},  options);
 	
 	$(this).append('<div id="' + id + '" class="input-group date">'
-			+ '<input id="' + id + 'Field" type="text" class="form-control" value="' + options.value + '">' 
+			+ '<input id="' + id + 'Field" type="text" name="date_' + name + '" class="form-control" value="' + options.value + '">' 
 			+ '<span class="input-group-addon"><i class="fa fa-calendar"></i></span></div>');
 	
 	$('#' + id).datepicker(options).on('show', function() {
@@ -1426,6 +1428,8 @@ $.fn.timeInput = function(options) {
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "TimeInput");
 	
+	var name = ((options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
+	
 	var options = $.extend(
 			{   template: 'dropdown',
 				minuteStep: 15,
@@ -1441,7 +1445,7 @@ $.fn.timeInput = function(options) {
 			},  options);
 	
 	$(this).append('<div class="input-group bootstrap-timepicker">'
-			+ '<input id="' + id + '" type="text" class="input-small form-control">'
+			+ '<input id="' + id + '" type="text" name="time_' + name + '" class="input-small form-control">'
 			+ '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span></div>');
 	
 	$('#'+ id).timepicker(options);
