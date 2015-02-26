@@ -1906,15 +1906,15 @@ $.fn.namePairInput = function(data) {
  	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
  	 						 +	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'; 
  	 				}
- 	 				
+ 	 				html += '	<div class="propertyValue col-xs-1 dialogActions">'
+	 					 + 	'		<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>'
+	 					 + 	'	</div>'
+	 					 +	'</div>';
+ 	 				$('#' + id + 'NamePairs').append(html);
  	 				if(options.renderNameFunc) {
- 	 					options.renderNameFunc($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'));
+ 	 					var renderField = new Function('div', options.renderNameFunc);
+ 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'));
  	 				} else {
-	 	 				html += '	<div class="propertyValue col-xs-1 dialogActions">'
-	 	 					 + 	'		<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>'
-	 	 					 + 	'	</div>'
-	 	 					 +	'</div>';
-	 	 				$('#' + id + 'NamePairs').append(html);
 	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
 	 	 					variables: nameVariables,
 	 	 					disabled: options.disabled || options.disableName
