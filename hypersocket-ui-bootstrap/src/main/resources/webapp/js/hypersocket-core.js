@@ -213,6 +213,9 @@ $.fn.ajaxResourcePage = function(params) {
 					$(this).closest("tr").get(0));
 				var resource = $('#' + divName + 'Table').dataTable().fnGetData(
 					curRow);
+				if (options.showUpdate) {
+					options.showUpdate();
+				}
 				$('div[dialog-for="' + divName + '"]').resourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
 					{ row : curRow, resource : resource });
 		});

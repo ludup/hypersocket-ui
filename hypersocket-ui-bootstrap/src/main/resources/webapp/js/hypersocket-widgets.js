@@ -580,7 +580,6 @@ $.fn.autoComplete = function(data) {
 		{ valueAttr : 'value', 
 			nameAttr : 'name', 
 			nameIsResourceKey : false, 
-			selectAllIfEmpty : false, 
 			selectedIsObjectList : false, 
 			isResourceList: true,
 			disabled : false, 
