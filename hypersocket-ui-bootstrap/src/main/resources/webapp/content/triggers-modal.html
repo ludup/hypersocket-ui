@@ -515,7 +515,9 @@
 				resource.name = $('#resourceName').val();
 				resource.event = eventAuto.getValue();
 				resource.result = eventResult.getValue();
-				resource.parentId = $('#triggerModal').data('parentResource').id;
+				if($('#triggerModal').data('parentResource')) {
+					resource.parentId = $('#triggerModal').data('parentResource').id;
+				}
 				resource.actions = new Array();
 				$('.editAction').each(function() {
 					var a = $(this).data('action');

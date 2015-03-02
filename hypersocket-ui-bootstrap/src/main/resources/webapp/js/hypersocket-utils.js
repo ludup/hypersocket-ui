@@ -134,19 +134,19 @@ function clearError() {
 }
 
 function showError(text, fade, fadeCallback) {
-	showMessage(text, 'fa-warning', 'error', typeof fade == 'undefined' ? false : fade, fadeCallback);
+	showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? false : fade, fadeCallback);
 }
 
 function showWarning(text, fade, fadeCallback) {
-	showMessage(text, 'fa-warning', 'warn', typeof fade == 'undefined' ? false : fade, fadeCallback);
+	showMessage(text, 'fa-warning', 'alert-warning', typeof fade == 'undefined' ? false : fade, fadeCallback);
 }
 
 function showSuccess(text, fade, fadeCallback) {
-	showMessage(text, 'fa-warning', 'success', typeof fade == 'undefined' ? true : fade, fadeCallback);
+	showMessage(text, 'fa-warning', 'alert-success', typeof fade == 'undefined' ? true : fade, fadeCallback);
 }
 
 function showInformation(text, fade, fadeCallback) {
-	showMessage(text, 'fa-info', 'info', typeof fade == 'undefined' ? true : fade, fadeCallback);
+	showMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade, fadeCallback);
 }
 
 //function removeMessage() {
@@ -157,45 +157,45 @@ function removeMessage() {
 //	$('.notifyjs-corner').remove();
 }
 
-function showMessage(text, icon, alertClass, fade, fadeCallback) {
-	
-	removeMessage();
-	
-	$.notify(text, { className: alertClass,
-		autoHide: fade,
-		autoHideDelay: 2000 });
-	
-	if(fade) {
-		setTimeout(fadeCallback, 2500);
-	}
-
-}
-
 //function showMessage(text, icon, alertClass, fade, fadeCallback) {
-//	log("MESSAGE: " + text);
-//
+//	
 //	removeMessage();
 //	
-//	var doFade = function() {
-//		$('#systemMessage').fadeOut(2000, function() {
-//			$('#systemMessage').remove();
-//			if(fadeCallback) {
-//				fadeCallback();
-//			}
-//		});
-//	};
-//	
-//	$('body').prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
-//	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span><i id="messageDismiss" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
-//	
-//	$('#messageDismiss').click(function() {
-//		doFade();
-//	});
+//	$.notify(text, { className: alertClass,
+//		autoHide: fade,
+//		autoHideDelay: 2000 });
 //	
 //	if(fade) {
-//		setTimeout(doFade, 4000);
+//		setTimeout(fadeCallback, 2500);
 //	}
+//
 //}
+
+function showMessage(text, icon, alertClass, fade, fadeCallback) {
+	log("MESSAGE: " + text);
+
+	removeMessage();
+	
+	var doFade = function() {
+		$('#systemMessage').fadeOut(2000, function() {
+			$('#systemMessage').remove();
+			if(fadeCallback) {
+				fadeCallback();
+			}
+		});
+	};
+	
+	$('body').prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
+	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span><i id="messageDismiss" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
+	
+	$('#messageDismiss').click(function() {
+		doFade();
+	});
+	
+	if(fade) {
+		setTimeout(doFade, 4000);
+	}
+}
 
 function getJSON(url, params, callback, errorCallback) {
 	log("GET: " + url);

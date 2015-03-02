@@ -25,18 +25,18 @@
 								canCreate: currentMenu.canCreate,
 								canUpdate: currentMenu.canUpdate,
 								canDelete: currentMenu.canDelete,
-// 								additionalActionsDropdown: true,
-// 								additionalActions: [{
-// 										resourceKey : "chainTrigger",
-// 										iconClass : "fa-chain",
-// 										action : function(resource, callback) {				
-// 											getJSON('triggers/parentEvents/' + resource.actions[0].id, null, function(data) {
-// 												$(document).data('triggerModalCallback').loadParent(resource.actions[0], data.resources);
-// 												$('div[dialog-for="contentTriggers"]').resourceDialog('create');
-// 											});
-// 										},
-// 										enabled : true
-// 								}],
+								additionalActionsDropdown: true,
+								additionalActions: [{
+										resourceKey : "chainTrigger",
+										iconClass : "fa-chain",
+										action : function(resource, callback) {				
+											getJSON('triggers/parentEvents/' + resource.actions[0].id, null, function(data) {
+												$(document).data('triggerModalCallback').loadParent(resource.actions[0], data.resources);
+												$('div[dialog-for="contentTriggers"]').resourceDialog('create');
+											});
+										},
+										enabled : true
+								}],
 								showCreate: function() {
 									$(document).data('triggerModalCallback').loadParent(null, null);
 								},
