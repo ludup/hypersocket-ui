@@ -1,0 +1,37 @@
+<div id="browserLaunchable">
+
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+				$('#browserLaunchable').localize();
+
+				$('#browserLaunchable').ajaxResourcePage(
+						{
+							id : "BrowserLaunchable",
+							tableUrl : "browser/personal",
+							title: getResource("browserLaunchable.title"),
+							icon: 'fa-globe',
+							resourceUrl : "browser",
+							fields : [ {
+								name : "name"
+							}],
+							resourceKey : "browserLaunchable",
+							canCreate: false,
+							canUpdate: false,
+							canDelete: false,
+							additionalActions : [{ 
+								resourceKey: "launchBrowserLaunchable",
+								iconClass: "fa-rocket",
+								enabled: true,
+								action : function(resource) {
+									window.open(resource.launchUrl.replace('${basePath}', basePath));
+								}
+							}],
+							complete : function() {
+								loadComplete();
+							}
+						});
+
+			});
+</script>

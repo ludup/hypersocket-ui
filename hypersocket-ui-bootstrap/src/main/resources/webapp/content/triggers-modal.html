@@ -161,6 +161,8 @@
     function addConditionRow(divId, condition) {
     	
     	var event = $('#triggerModal').data('selectedEvent');
+    	var parentEvents = $('#triggerModal').data('parentEvents');
+    	
     	var conditions = $('#triggerModal').data('conditions');
     	
     	var conditionId;
@@ -184,6 +186,16 @@
     		tmp[resource] = obj;
     		tmp2.push(resource);
     	});
+
+    	if(parentEvents) {
+    		$.each(parentEvents, function(i, parentEvent) {
+		    	$.each(parentEvent.attributeNames, function(idx, obj) {
+		    		var resource = getResource(obj);
+		    		tmp[resource] = obj;
+		    		tmp2.push(resource);
+		    	});
+    		});
+    	}
     	
     	$.each(tmp2.sort(), function(idx, obj) {
     		html += '<option value="' + tmp[obj] + '">' + obj + '</option>';
@@ -302,13 +314,26 @@
 				showButtons : false,
 				useTemplates : true,
 				canUpdate : currentMenu.canUpdate,
-				variables: $('#triggerModal').data('selectedEvent').attributeNames,
+				variables: getAttributeNames(),
 				items: (action ? action.properties : null),
 				complete : function() {
 					$('#actionForm').modal('show');
 				}
 			});
 		});
+    }
+    
+    function getAttributeNames() {
+    	
+    	var variables = $('#triggerModal').data('selectedEvent').attributeNames;
+    	
+    	if($('#triggerModal').data('parentEvents')) {
+    		$.each($('#triggerModal').data('parentEvents'), function(idx, obj) {
+    			variables = variables.concat(obj.attributeNames);
+    		});
+    	}
+    	
+    	return variables;
     }
     
 	$(document).ready(function() {
@@ -377,8 +402,18 @@
 				$('#rowActions').empty();
 				$('#resourceName').val('');
 				$('#resourceId').val('');
-				eventAuto.reset();
+				
+				eventAuto.clear();
 				eventAuto.enable();
+				
+				var parentResource = $('#triggerModal').data('parentResource');
+				if(parentResource) {
+					getJSON('triggers/actionResults/' + parentResource.id, null, function(data) {
+						eventAuto.setValue(data.resources[0].resourceKey);
+						eventAuto.disable();	
+					});
+				} 
+				
 				eventResult.reset();
 				$('.tabPropertiesTab').first().trigger('click');
 				$('#tabProperties').clearProperties();
@@ -404,6 +439,11 @@
 						}]
 					});
 				}
+			},
+			loadParent: function(parentResource, parentEvents) {
+				debugger;
+				$('#triggerModal').data('parentEvents', parentEvents);
+				$('#triggerModal').data('parentResource', parentResource);
 			},
 			displayResource: function(resource) {
 				
@@ -475,6 +515,7 @@
 				resource.name = $('#resourceName').val();
 				resource.event = eventAuto.getValue();
 				resource.result = eventResult.getValue();
+				resource.parentId = $('#triggerModal').data('parentResource').id;
 				resource.actions = new Array();
 				$('.editAction').each(function() {
 					var a = $(this).data('action');
