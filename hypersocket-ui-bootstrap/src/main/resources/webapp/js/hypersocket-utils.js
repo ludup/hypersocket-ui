@@ -420,5 +420,5 @@ function isIE () {
 }
 
 function formatResourceKey(resourceKey){
-	return resourceKey; //resourceKey.replace('.','_');
+	return resourceKey.split('.').join('_') ;
 }
