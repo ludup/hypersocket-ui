@@ -149,27 +149,9 @@ function showInformation(text, fade, fadeCallback) {
 	showMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade, fadeCallback);
 }
 
-//function removeMessage() {
-//	$('#systemMessage').remove();
-//}
-
 function removeMessage() {
-//	$('.notifyjs-corner').remove();
+	$('#systemMessage').remove();
 }
-
-//function showMessage(text, icon, alertClass, fade, fadeCallback) {
-//	
-//	removeMessage();
-//	
-//	$.notify(text, { className: alertClass,
-//		autoHide: fade,
-//		autoHideDelay: 2000 });
-//	
-//	if(fade) {
-//		setTimeout(fadeCallback, 2500);
-//	}
-//
-//}
 
 function showMessage(text, icon, alertClass, fade, fadeCallback) {
 	log("MESSAGE: " + text);
