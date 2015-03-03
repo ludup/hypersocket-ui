@@ -1315,6 +1315,7 @@ function loadWait() {
 	setTimeout(function() {
 		if ($('#mainContent').data('loadComplete')) {
 			log("Page has loaded");
+			fadeMessage();
 			$('#mainContent').show();
 			hideBusy();
 		} else {

@@ -153,6 +153,12 @@ function removeMessage() {
 	$('#systemMessage').remove();
 }
 
+function fadeMessage() {
+	$('#systemMessage').fadeOut(2000, function() {
+		$('#systemMessage').remove();
+	});
+}
+
 function showMessage(text, icon, alertClass, fade, fadeCallback) {
 	log("MESSAGE: " + text);
 
