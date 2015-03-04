@@ -31,11 +31,11 @@ $.fn.textInput = function(data) {
 				}
 			}, data);
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "TextInput");
+	var id = (options && options.id ? options.id : $(this).attr('id') + "TextInput");
 	var hasVariables = (options.variables && options.variables.length > 0);
 	var html = '';
 
-	var name = (options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
+	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
 	
 	if(options.inputType=='textarea') {
 	
@@ -435,9 +435,9 @@ $.fn.selectButton = function(data) {
 			}
 		}, data);
 	
-	var id = (obj.id ? obj.id : $(this).attr('id') + "SelectButton");
+	var id = (obj && obj.id ? obj.id : $(this).attr('id') + "SelectButton");
 	
-	var name = (obj.resourceKey != null ) ? formatResourceKey(obj.resourceKey) : $(this).attr('id') ;
+	var name = (obj && obj.resourceKey != null ) ? formatResourceKey(obj.resourceKey) : $(this).attr('id') ;
 
 	$(this).append('<div class="btn-group"><input id="' 
 			 + id + '" type="hidden" name="select_value_' + id + '" value="'
@@ -951,7 +951,7 @@ $.fn.multipleSelect = function(data) {
 		$('#' + id + 'Buttons').remove();
 		$('#' + id + 'Included').remove();
 		
-		var name = (options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id ;
+		var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id ;
 
 		$(this).addClass('container-fluid');
 		
@@ -1150,8 +1150,6 @@ $.fn.multipleTextInput = function(data) {
 
 	var id = $(this).attr('id');
 	
-	var name = ((data.resourceKey != null ) ? formatResourceKey(data.resourceKey) : id) ;
-	
 	if ($(this).data('created')) {
 
 		options = $(this).widget().options();
@@ -1190,7 +1188,8 @@ $.fn.multipleTextInput = function(data) {
 						isArrayValue: true },
 					data);
 
-
+		var name = ((data && data.resourceKey != null ) ? formatResourceKey(data.resourceKey) : id) ;
+		
 		$('#' + id + 'Excluded').remove();
 		$('#' + id + 'Buttons').remove();
 		$('#' + id + 'Included').remove();
@@ -1357,9 +1356,9 @@ $.fn.multipleTextInput = function(data) {
 
 $.fn.dateInput = function(options) {
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "DateInput");
+	var id = (options && options.id ? options.id : $(this).attr('id') + "DateInput");
  
-    var name = ((options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
+    var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
     
 	var options = $.extend(
 			{   format: "yyyy-mm-dd",
@@ -1427,9 +1426,9 @@ $.fn.dateInput = function(options) {
  */
 $.fn.timeInput = function(options) {
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "TimeInput");
+	var id = (options && options.id ? options.id : $(this).attr('id') + "TimeInput");
 	
-	var name = ((options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
+	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 	
 	var options = $.extend(
 			{   template: 'dropdown',
@@ -1607,7 +1606,7 @@ $.fn.booleanInput = function(options) {
 
 $.fn.switchInput = function(options) {
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "BooleanInput");
+	var id = (options && options.id ? options.id : $(this).attr('id') + "BooleanInput");
 	
 	var obj = $.extend(
 			{   readOnly: false,
@@ -1616,7 +1615,7 @@ $.fn.switchInput = function(options) {
 			    offResourceKey: 'text.off'
 			},  options);
 
-	var name = ((options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
+	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 	
 	$(this).append('<label class="switch"><input type="checkbox" class="switch-input" id="'
 						+ id + '" name="chk_' + name + '" value="true"' 
@@ -1736,7 +1735,7 @@ $.fn.imageInput = function(options) {
 
 $.fn.sliderInput = function(options) {
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "SliderInput");
+	var id = (options && options.id ? options.id : $(this).attr('id') + "SliderInput");
 	var obj = $.extend(options,
 			{   min: parseInt(options.min),
 			    max: parseInt(options.max),
@@ -1749,7 +1748,7 @@ $.fn.sliderInput = function(options) {
 			    }
 			});
 	
-	var name = ((options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
+	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 	
 	$(this).append('<input class="form-control" id="' + id + '" data-slider-id="slider_' + id + '" name="slider_' + name + '" value="' + obj.value + '" type="text">');
 
