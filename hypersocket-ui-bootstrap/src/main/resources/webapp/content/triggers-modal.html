@@ -182,7 +182,7 @@
     	var tmp = new Array();
     	var tmp2 = new Array();
     	$.each(event.attributeNames, function(idx, obj) {
-    		var resource = getResource(obj);
+    		var resource = event.i18nNamespace != '' && !obj.startsWith('attr.') && !obj.startsWith('currentUser.') ? getResource(event.i18nNamespace + '.' + obj) : getResource(obj);
     		tmp[resource] = obj;
     		tmp2.push(resource);
     	});
@@ -190,7 +190,7 @@
     	if(parentEvents) {
     		$.each(parentEvents, function(i, parentEvent) {
 		    	$.each(parentEvent.attributeNames, function(idx, obj) {
-		    		var resource = getResource(obj);
+		    		var resource = parentEvent.i18nNamespace != '' && !obj.startsWith('attr.') && !obj.startsWith('currentUser.') ? getResource(parentEvent.i18nNamespace + '.' + obj) : getResource(obj);
 		    		tmp[resource] = obj;
 		    		tmp2.push(resource);
 		    	});
