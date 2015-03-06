@@ -597,6 +597,10 @@ $.fn.resourceDialog = function(params, params2) {
 		params);
 	var dialogOptions = $(this).data('options');
 
+	dialog.on('hidden.bs.modal', function () {
+		 removeMessage();
+	});
+	
 	if (params === 'create') {
 
 		log("Creating resource dialog");
@@ -648,6 +652,8 @@ $.fn.resourceDialog = function(params, params2) {
 					}
 				}, null, function() { stopSpin(icon, 'fa-save');});
 			});
+	
+		removeMessage();
 		dialog.modal('show');
 
 	} else if (params === 'edit' || params === 'read') {
@@ -704,19 +710,17 @@ $.fn.resourceDialog = function(params, params2) {
 			});
 		}
 		
+		removeMessage();
 		dialog.modal('show');
 
 	} else if (params === 'close') {
+		removeMessage();
 		dialog.modal('hide');
 	} else if (params === 'error') {
 
-		$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
-
+		removeMessage();
 		if (params2 != 'reset') {
-			$(this).prepend(
-						'<div id="dialogErrorHighlight' + $(this).attr('id') + '" class="alert alert-danger"/>');
-			$('#dialogErrorHighlight' + $(this).attr('id')).append('<i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' 
-					+ (getResourceNoDefault(params2) == undefined ? params2 : getResource(params2)) + '</span>');
+			showError(getResourceNoDefault(params2) == undefined ? params2 : getResource(params2));
 		}
 	} else {
 		if (!options.resourceKey) {
