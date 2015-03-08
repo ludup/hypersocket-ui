@@ -968,13 +968,11 @@ span.input-group-addon {
 
 .modal-dialog {
   position: relative;
-  width: auto;
   margin: 60px 10px;
 }
 
 @media (min-width: 767px) {
 	.modal-dialog {
-		width: 600px;
   		margin: 60px auto;
 	}
 }
