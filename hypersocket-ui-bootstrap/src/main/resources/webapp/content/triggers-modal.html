@@ -441,7 +441,6 @@
 				}
 			},
 			loadParent: function(parentResource, parentEvents) {
-				debugger;
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 			},
@@ -487,7 +486,11 @@
 				
 			},
 			validate: function() {
-				
+				if ($('#resourceName').val().trim() == '') {
+					$('#addTriggerForm').resourceDialog(
+							'error', "error.nameRequired");
+					return false;
+				}
 				if (!eventAuto.getValue()) {
 					$('#addTriggerForm').resourceDialog('error',
 							"error.eventRequired");
