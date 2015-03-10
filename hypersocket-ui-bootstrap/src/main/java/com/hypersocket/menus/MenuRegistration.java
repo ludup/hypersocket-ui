@@ -7,14 +7,19 @@
  ******************************************************************************/
 package com.hypersocket.menus;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hypersocket.permissions.PermissionType;
+import com.hypersocket.repository.AbstractEntity;
 
 @XmlRootElement(name = "menu")
 public class MenuRegistration {
@@ -31,7 +36,7 @@ public class MenuRegistration {
 	boolean hidden;
 	Map<String,PermissionType> additionalPermissions;
 	
-	List<MenuRegistration> modules = new ArrayList<MenuRegistration>();
+	Set<MenuRegistration> modules = new HashSet<MenuRegistration>();
 
 	public MenuRegistration() {
 	}
@@ -84,10 +89,13 @@ public class MenuRegistration {
 	}
 
 	public void addMenu(MenuRegistration module) {
+		if(modules.contains(module)) {
+			modules.remove(module);
+		}
 		modules.add(module);
 	}
 
-	public List<MenuRegistration> getMenus() {
+	public Collection<MenuRegistration> getMenus() {
 		return modules;
 	}
 
@@ -145,6 +153,29 @@ public class MenuRegistration {
 	
 	public void setHidden(boolean hidden) {
 		this.hidden=  hidden;
+	}
+	
+	@Override
+	public int hashCode() {
+		HashCodeBuilder builder = new HashCodeBuilder(31, 17);
+		builder.append(getId());
+		return builder.build();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!getClass().isAssignableFrom(obj.getClass()) && !obj.getClass().isAssignableFrom(getClass()))
+			return false;
+
+		MenuRegistration other = (MenuRegistration) obj;
+		EqualsBuilder builder = new EqualsBuilder();
+		builder.append(getId(), other.getId());
+		return builder.build();
 	}
 
 }
