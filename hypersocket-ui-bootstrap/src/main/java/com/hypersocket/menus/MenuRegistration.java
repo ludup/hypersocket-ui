@@ -19,7 +19,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hypersocket.permissions.PermissionType;
-import com.hypersocket.repository.AbstractEntity;
 
 @XmlRootElement(name = "menu")
 public class MenuRegistration {
