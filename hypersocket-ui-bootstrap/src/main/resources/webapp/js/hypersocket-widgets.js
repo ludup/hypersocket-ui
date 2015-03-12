@@ -589,7 +589,8 @@ $.fn.autoComplete = function(data) {
 			isResourceList: true,
 			disabled : false, 
 			remoteSearch: false,
-			resourceKeyTemplate: '{0}' 
+			resourceKeyTemplate: '{0}',
+			icon: 'fa-search'
 		}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "AutoComplete");
@@ -597,7 +598,7 @@ $.fn.autoComplete = function(data) {
 	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
 			+ '"><input type="text" id="input_' + id + '" class="form-control dropdown-toggle" data-toggle="dropdown" value=""' + (options.disabled ? 'disabled=\"disabled\"' : '') + '>' 
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"><li><a tabindex="-1" href="#">' + getResource('search.text') + '</a></li></ul>' 
-			+ '<span class="input-group-addon"><i id="spin_' + id + '" class="fa fa-search"></i></span></div>');
+			+ '<span class="input-group-addon"><a href="#" id="click_' + id + '"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
 	
 	var buildData = function(values) {
 		var map = [];
@@ -723,6 +724,9 @@ $.fn.autoComplete = function(data) {
 			getValue: function() {
 				return $('#' + id).val();
 			},
+			getObject: function() {
+				return $('#input_' + id).data('map')[$('#' + id).val()];
+			},
 			reset: function() {
 				$.each($('#input_' + id).data('values'), function(idx, obj) {
 					if(obj[options.valueAttr]==options.val) {
@@ -764,6 +768,12 @@ $.fn.autoComplete = function(data) {
  			}
 	};
 
+	$('#click_' + id).click(function(e){
+		if(options.clicked) {
+			options.clicked(callback);
+		}
+	});
+	
 	if(options.disabled) {
 		callback.disable();
 	}
