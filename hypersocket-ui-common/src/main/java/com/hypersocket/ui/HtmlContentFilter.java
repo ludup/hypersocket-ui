@@ -46,6 +46,7 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("brandImage", brandImage);
 		resolver.addToken("brandIcon", brandIcon);
 		resolver.addToken("brandCompany", brandCompany);
+		resolver.addToken("brandLicense", license);
 		resolver.addToken("companyUrl", companyUrl);
 		resolver.addToken("supportContact", supportContact);
 		resolver.addToken("supportName", supportName);

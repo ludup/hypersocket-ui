@@ -12,7 +12,7 @@
 	$(document).ready(function() {
 		
 		$('#defaultRealm').data('action', function(resource, callback) {
-				bootbox.confirm(getResource("confirm.defaultRealm"),
+				bootbox.confirm(getResource("confirm.defaultRealm").format(resource.name),
 						function(confirmed) {
 					getJSON('realms/default/' + resource.id, null, function(data) {
 						if(data.success) {

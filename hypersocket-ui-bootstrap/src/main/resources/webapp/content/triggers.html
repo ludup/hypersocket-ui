@@ -8,17 +8,6 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 				$('#contentTriggers').localize();
-				
-				$('#triggerProperties').propertyPage({
-					url : 'triggers/template',
-					showButtons : false,
-					useTemplates : true,
-					canUpdate : currentMenu.canUpdate,
-					additionalTabs : [ {
-						id : "tabDetails",
-						name : getResource("trigger.details.label")
-					}]
-				});
 
 				$('#contentTriggers').load('content/triggers-modal.html', function() {
 						
@@ -36,16 +25,35 @@
 								canCreate: currentMenu.canCreate,
 								canUpdate: currentMenu.canUpdate,
 								canDelete: currentMenu.canDelete,
+								additionalActionsDropdown: true,
+								additionalActions: [{
+										resourceKey : "chainTrigger",
+										iconClass : "fa-chain",
+										action : function(resource, callback) {				
+											getJSON('triggers/parentEvents/' + resource.actions[0].id, null, function(data) {
+												$(document).data('triggerModalCallback').loadParent(resource.actions[0], data.resources);
+												$('div[dialog-for="contentTriggers"]').resourceDialog('create');
+											});
+										},
+										enabled : true
+								}],
+								showCreate: function() {
+									$(document).data('triggerModalCallback').loadParent(null, null);
+								},
+								showUpdate: function() {
+									$(document).data('triggerModalCallback').loadParent(null, null);
+								},
 								validate : function() {
 									return $(document).data('triggerModalCallback').validate();
 								},
-								clearDialog : function() {
-									$(document).data('triggerModalCallback').clearDialog();
+								clearDialog : function(create) {
+									$(document).data('triggerModalCallback').clearDialog(create);
 								},
 								createResource : function() {
 									return $(document).data('triggerModalCallback').createResource();
 								},
 								displayResource : function(resource) {
+									$(document).data('triggerModalCallback').loadParent(null, null);
 									$(document).data('triggerModalCallback').displayResource(resource);
 								},
 								complete : function() {

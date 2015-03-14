@@ -213,6 +213,9 @@ $.fn.ajaxResourcePage = function(params) {
 					$(this).closest("tr").get(0));
 				var resource = $('#' + divName + 'Table').dataTable().fnGetData(
 					curRow);
+				if (options.showUpdate) {
+					options.showUpdate();
+				}
 				$('div[dialog-for="' + divName + '"]').resourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
 					{ row : curRow, resource : resource });
 		});
@@ -264,7 +267,7 @@ $.fn.ajaxResourcePage = function(params) {
 			
 		}
 
-		return '<div id="' + divName + 'Actions' + id + '" class="tableActions">' + renderedActions + '</div>';
+		return '<div id="' + divName + 'Actions' + id + '" class="tableActions" name="' + divName + 'Actions">' + renderedActions + '</div>';
 	};
 
 	$('#' + divName + 'TableHeader').append(
@@ -594,6 +597,10 @@ $.fn.resourceDialog = function(params, params2) {
 		params);
 	var dialogOptions = $(this).data('options');
 
+	dialog.on('hidden.bs.modal', function () {
+		 removeMessage();
+	});
+	
 	if (params === 'create') {
 
 		log("Creating resource dialog");
@@ -645,6 +652,8 @@ $.fn.resourceDialog = function(params, params2) {
 					}
 				}, null, function() { stopSpin(icon, 'fa-save');});
 			});
+	
+		removeMessage();
 		dialog.modal('show');
 
 	} else if (params === 'edit' || params === 'read') {
@@ -701,19 +710,17 @@ $.fn.resourceDialog = function(params, params2) {
 			});
 		}
 		
+		removeMessage();
 		dialog.modal('show');
 
 	} else if (params === 'close') {
+		removeMessage();
 		dialog.modal('hide');
 	} else if (params === 'error') {
 
-		$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
-
+		removeMessage();
 		if (params2 != 'reset') {
-			$(this).prepend(
-						'<div id="dialogErrorHighlight' + $(this).attr('id') + '" class="alert alert-danger"/>');
-			$('#dialogErrorHighlight' + $(this).attr('id')).append('<i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' 
-					+ (getResourceNoDefault(params2) == undefined ? params2 : getResource(params2)) + '</span>');
+			showError(getResourceNoDefault(params2) == undefined ? params2 : getResource(params2));
 		}
 	} else {
 		if (!options.resourceKey) {
@@ -1312,6 +1319,7 @@ function loadWait() {
 	setTimeout(function() {
 		if ($('#mainContent').data('loadComplete')) {
 			log("Page has loaded");
+			fadeMessage();
 			$('#mainContent').show();
 			hideBusy();
 		} else {

@@ -78,6 +78,10 @@ public class MenuServiceImpl extends AuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_MY_RESOURCES, "fa-share-alt", null, 300, null,
 				null, null, null), MenuService.MENU_PERSONAL);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				"browserLaunchable", "fa-globe", "browserLaunchable", 300, null,
+				null, null, null),MenuService.MENU_MY_RESOURCES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_SYSTEM, "", null, 100, null, null, null, null));
