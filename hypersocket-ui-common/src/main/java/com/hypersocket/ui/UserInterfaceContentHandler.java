@@ -33,7 +33,7 @@ import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.server.handlers.impl.ContentHandler;
 import com.hypersocket.server.handlers.impl.ContentHandlerImpl;
 import com.hypersocket.server.handlers.impl.FileContentHandler;
-import com.hypersocket.util.FileUtils;
+import com.hypersocket.utils.FileUtils;
 
 @Service
 public class UserInterfaceContentHandler implements ContentHandler, ApplicationListener<HypersocketServerEvent> {
