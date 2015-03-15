@@ -2009,20 +2009,20 @@ $.fn.fileUploadInput = function(data) {
 				disabled : false,
 				showUploadButton: true,
 				showDownloadButton: true,
-				url: basePath + '/api/fileUpload/file',
+				url: 'fileUpload/file',
 				getUrlData: function(data) {
 					return data;
 				}
 			}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "FileUpload");
-	var html =	'<div class="col-xs-10">'
+	var html =	'<div class="col-xs-8">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
-			+	'<div class="propertyValue col-xs-2 dialogActions">'
+			+	'<div class="propertyValue col-xs-4 dialogActions">'
 			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
 			+	'</div>'
-			+	'<div class="col-xs-10">'
+			+	'<div class="col-xs-8">'
 			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
 			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
 			+	'	</div>'
@@ -2080,7 +2080,7 @@ $.fn.fileUploadInput = function(data) {
 		$('#' + id + 'File').parent().append(
 				'<div id="' + id + 'Info">' + showInfoFormat(data) + '</div>');
 		$('#' + id + 'File').remove();
-		$('#' + id + 'UploadButton').parent().append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-close"></i></a>');
+		$('#' + id + 'UploadButton').parent().append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
 		if(options.showDownloadButton){
 			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
 		}
@@ -2107,7 +2107,7 @@ $.fn.fileUploadInput = function(data) {
  				return $('#' + id + 'Info').data('uuid');
  			},
  			setValue: function(uuid) {
- 				getJSON(basePath + '/api/fileUpload/metainfo/' + uuid, null, function(data){
+ 				getJSON('fileUpload/metainfo/' + uuid, null, function(data){
  					if($('#' + id + 'Info').length){
  						$('#' + id + 'Info').empty();
  						$('#' + id + 'Info').append(showInfoFormat(data));
@@ -2167,7 +2167,7 @@ $.fn.fileUploadInput = function(data) {
  						}
  		        	}
  		        }
- 		        xhr.open("POST", options.url);
+ 		        xhr.open("POST", basepath + '/api/' + options.url);
  		        xhr.send(formData);
  			},
  			remove: function() {
@@ -2192,7 +2192,7 @@ $.fn.fileUploadInput = function(data) {
  			},
  			download: function(){
  				uuid = $('#' + id + 'Info').data('uuid');
- 				window.open(basePath + '/api/fileUpload/file/' + uuid);
+ 				window.location = basePath + '/api/fileUpload/file/' + uuid;
  			},
  			options: function() {
  				return options;
@@ -2237,7 +2237,7 @@ $.fn.multipleFileUpload = function(data) {
 				showUploadButton: true,
 				showDownloadButton: true,
 				showRemoveLine: true,
-				url: basePath + '/api/fileUpload/file'
+				url: 'fileUpload/file'
 			}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "MultipleFileUpload");
@@ -2336,6 +2336,9 @@ $.fn.multipleFileUpload = function(data) {
  			removeRows: function(){
  				$('#' + id + 'FileUploads').empty();
  			},
+ 			clear: function() {
+ 				$('#' + id + 'FileUploads').empty();
+ 			},
  			removeFiles: function() {
  				$('#' + id).find('.fileUploadInput').each(function(){
  					$(this).data('widget').remove();
@@ -2370,7 +2373,7 @@ $.fn.multipleFileUpload = function(data) {
 		callback.disable();
 	}
 	
-	$(this).data('widget', callba1ck);
+	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
 }

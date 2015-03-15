@@ -80,6 +80,8 @@ function validateInputType(type){
 	switch(type){
 		case 'number' :
 		case 'autoComplete' :
+		case 'fileInput' :
+		case 'multipleFileInput' :
 		case 'textarea' :
 		case 'text' :
 		case 'select' :
@@ -468,6 +470,19 @@ $.fn.propertyPage = function(opts) {
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).autoComplete(widgetOptions);
+
+										} else if (obj.inputType == 'fileInput') { 
+											
+											widget = $('#' + tab + '_value' + this.id).fileUploadInput(obj);
+
+										} else if (obj.inputType == 'multipleFileInput') { 
+											
+											var widgetOptions = $.extend(obj, {
+												isArrayValue: true,
+												values: splitFix(obj.value)
+											});
+											
+											widget = $('#' + tab + '_value' + this.id).multipleFileUpload(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSelect') {
 
