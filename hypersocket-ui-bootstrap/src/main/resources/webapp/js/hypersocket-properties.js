@@ -25,16 +25,22 @@ function validate(widget) {
 		if(!obj.allowEmpty && value == '') {
 			log("Validation failed for " + obj.resourceKey);
 			return false;
+		} else if(obj.allowEmpty && value == '') {
+			return true;
 		}
 	} else if (obj.inputType == 'text') {
 		if(!obj.allowEmpty && value == '') {
 			log("Validation failed for " + obj.resourceKey);
 			return false;
+		} else if(obj.allowEmpty && value == '') {
+			return true;
 		}
 	} else if (obj.inputType == 'password') {
 		if(!obj.allowEmpty && value == '') {
 			log("Validation failed for " + obj.resourceKey);
 			return false;
+		} else if(obj.allowEmpty && value == '') {
+			return true;
 		}
 	}
 	if(obj.maxLength){
@@ -80,6 +86,7 @@ function validateInputType(type){
 	switch(type){
 		case 'number' :
 		case 'autoComplete' :
+		case 'countries' :
 		case 'fileInput' :
 		case 'multipleFileInput' :
 		case 'textarea' :
@@ -632,6 +639,27 @@ $.fn.clearProperties = function() {
 	});
 };
 
+$.fn.validateProperties = function() {
+
+	var items = new Array();
+	var files = new Array();
+
+	var invalid = false;
+
+	$(this).find('.propertyInput').each(
+		function(i, obj) {
+
+			var widget = $(this).data('widget');
+
+			if(!validate(widget)) {
+				invalid = true;
+			}
+		});
+
+	return !invalid;
+
+};
+
 $.fn.saveProperties = function(includeAll, callback) {
 
 	var items = new Array();
@@ -644,8 +672,6 @@ $.fn.saveProperties = function(includeAll, callback) {
 
 			var widget = $(this).data('widget');
 
-			var invalid = false;
-			
 			if(!validate(widget)) {
 				invalid = true;
 			}
