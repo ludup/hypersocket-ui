@@ -44,7 +44,6 @@
 	$(document).ready(function() {
 		
 		$('#pfxExport').localize();
-		debugger;
 		$('#pfxExport').data('action', function(resource) {
 			$('#download_passphrase').val('');
 			$('#download_confirmPassphrase').val('');
@@ -70,8 +69,8 @@
 				processData : false,
 				data : formData,
 				success : function(data) {
-					$('#downloadPrivateKey').modal('hide');
-					 window.location = basePath + '/api/certificates/downloadPfx/' + $('#pfxExport').data('resource');
+					$('#pfxExport').modal('hide');
+					window.location = basePath + '/api/certificates/downloadPfx/' + $('#pfxExport').data('resource');
 				},
 				error : function(jqXHR,textStatus,errorThrown) {
 				      $('#pfxExport').resourceDialog('error',errorThrown);
