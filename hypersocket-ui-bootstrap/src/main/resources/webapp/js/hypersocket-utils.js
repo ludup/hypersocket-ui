@@ -248,7 +248,7 @@ function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 	
 };
 
-function deleteJSON(path, params, callback, errorCallback) {
+function deleteJSON(url, params, callback, errorCallback) {
 	
 	log("DELETE: " + url);
 	
