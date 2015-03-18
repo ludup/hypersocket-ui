@@ -2167,7 +2167,7 @@ $.fn.fileUploadInput = function(data) {
  						}
  		        	}
  		        }
- 		        xhr.open("POST", basePath + '/api/' + options.url);
+ 		        xhr.open("POST", options.url);
  		        xhr.send(formData);
  			},
  			remove: function() {
