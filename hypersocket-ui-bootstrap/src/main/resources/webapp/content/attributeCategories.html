@@ -47,7 +47,7 @@
 										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attributeCategory.context.label"></label>
 											<div class="propertyValue col-md-9">
-												<div name="attributeCategoryContext" id="attributeCategoryContextInput"></div>
+												<div id="attributeCategoryContext"></div>
 												<div>
 													<span class="help-block" localize="attributeCategory.context.info"></span>
 												</div>
@@ -75,92 +75,67 @@
 
 						$('#attributeCategoryContent').localize();
 						
-						$('#attributeCategoryContextInput').selectButton({
+						$('#attributeCategoryContext').selectButton({
 							id: 'attributeCategoryContext',
-							options: [{ id: 'Password', name: 'Password', value: 'Password' }, 
-							          { id: 'Text', name: 'Text', value: 'Text'}],
-							nameIsResourceKey: false
+							value: 'user',
+							options: [{ id: 'user', name: 'attributeCategory.userContext', value: 'user' }],
+							nameIsResourceKey: true
 						});
 						
-						getJSON('menus/tableActions/attributeActions', null, function(data) {
-							var actions = new Array();
-							
-							if(data.resources.length > 0) {
-								$.each(data.resources, function(idx, action) {
-									var div = action.resourceKey + 'Div';
-									$('#additionalActions').append('<div id="' + div + '"></div>');
-									$('#' + div).load('content/' + action.url + '.html');
-									actions.push({
-										resourceKey : action.resourceKey,
-										iconClass : action.iconClass,
-										action : function(resource, callback) {
-											if($('#' + action.resourceKey).data('action')) {
-												$('#' + action.resourceKey).data('action')(resource, callback);
-											}
-										},
-										enabled : true,
-										enableFunction: action.enableFunction,
-										displayFunction: action.displayFunction
-									});
-								});
+						$('#attributeCategoryContent').ajaxResourcePage(
+						{
+							id : "attributeCategory",
+							title : getResource('attributeCategory.title'),
+							icon : 'fa-list-ul',
+							tableUrl : "attributeCategories/table",
+							resourceUrl : "attributeCategories/attributeCategory",
+							fields : [
+								{name : "name"}
+								],
+							resourceKey : "attributeCategory",
+							canCreate : true,
+							canDelete : true,
+							canUpdate : true,
+							additionalActionsDropdown: false,
+							validate : function() {
+								if ($('#attributeCategoryNameInput').val() == '') {
+									$('#addResourceForm').resourceDialog('error', 'attributeCategory.nameRequired.error');
+									return false;
+								}
+								if ($('#attributeCategoryWeightInput').val() == '') {
+									$('#addResourceForm').resourceDialog('error', 'attributeCategory.weightRequired.error');
+									return false;
+								}
+								if ($('#attributeCategoryContext').data('widget').getValue() == '') {
+									$('#addResourceForm').resourceDialog('error', 'attributeCategory.contextRequired.error');
+									return false;
+								}
+								return true;
+							},
+							clearDialog : function() {
+								$('#attributeCategoryNameInput').val('');
+								$('#attributeCategoryWeightInput').val('0');
+								$('#attributeCategoryContext').data('widget').reset();
+								$('#attributeCategoryIdInput').val('');
+							},
+							createResource : function() {
+								resource = new Object();
+								resource.name = $('#attributeCategoryNameInput').val();
+								resource.weight = $('#attributeCategoryWeightInput').val();
+								resource.context = $('#attributeCategoryContext').data('widget').getValue();
+								resource.id = $('#attributeCategoryIdInput').val();
+								return resource;
+							},
+							displayResource : function(
+									resource) {
+								$('#attributeCategoryNameInput').val(resource.name);
+								$('#attributeCategoryWeightInput').val(resource.weight);
+								$('#attributeCategoryContext').data('widget').setValue(resource.context);
+								$('#attributeCategoryIdInput').val(resource.id);
+							},
+							complete : function() {
+								loadComplete();
 							}
-
-							$('#attributeCategoryContent').ajaxResourcePage(
-										{
-											id : "attributeCategory",
-											title : getResource('attributeCategory.title'),
-											icon : 'fa-list-ul',
-											tableUrl : "attributeCategories/table",
-											resourceUrl : "attributeCategories/attributeCategory",
-											fields : [
-												{name : "name"}
-												],
-											resourceKey : "attributeCategory",
-											canCreate : true,
-											canDelete : true,
-											canUpdate : true,
-											additionalActionsDropdown: true,
-											additionalActions : actions,
-											validate : function() {
-												if ($('#attributeCategoryNameInput').val() == '') {
-													$('#addResourceForm').resourceDialog('error', 'attributeCategory.nameRequired.error');
-													return false;
-												}
-												if ($('#attributeCategoryWeightInput').val() == '') {
-													$('#addResourceForm').resourceDialog('error', 'attributeCategory.weightRequired.error');
-													return false;
-												}
-												if ($('#attributeCategoryContextInput').data('widget').getValue() == '') {
-													$('#addResourceForm').resourceDialog('error', 'attributeCategory.contextRequired.error');
-													return false;
-												}
-												return true;
-											},
-											clearDialog : function() {
-												$('#attributeCategoryNameInput').val('');
-												$('#attributeCategoryWeightInput').val('');
-												$('#attributeCategoryContextInput').data('widget').reset();
-												$('#attributeCategoryIdInput').val('');
-											},
-											createResource : function() {
-												resource = new Object();
-												resource.name = $('#attributeCategoryNameInput').val();
-												resource.weight = $('#attributeCategoryWeightInput').val();
-												resource.context = $('#attributeCategoryContextInput').data('widget').getValue();
-												resource.id = $('#attributeCategoryIdInput').val();
-												return resource;
-											},
-											displayResource : function(
-													resource) {
-												$('#attributeCategoryNameInput').val(resource.name);
-												$('#attributeCategoryWeightInput').val(resource.weight);
-												$('#attributeCategoryContextInput').data('widget').setValue(resource.context);
-												$('#attributeCategoryIdInput').val(resource.id);
-											},
-											complete : function() {
-												loadComplete();
-											}
-							});
 						});
 					});
 </script>
