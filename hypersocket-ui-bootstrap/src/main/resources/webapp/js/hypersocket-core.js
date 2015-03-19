@@ -601,10 +601,23 @@ $.fn.resourceDialog = function(params, params2) {
 		 removeMessage();
 	});
 	
+	dialog.on('hide.bs.modal.prevent', function (e) {
+		 if(options.closeHandler) {
+			 if(!options.closeHandler()) {
+				 e.preventDefault();
+			 }
+		 } 
+	});
+	
 	if (params === 'create') {
 
 		log("Creating resource dialog");
 
+		dialog.modal({
+			  backdrop: 'static',
+			  keyboard: false
+			});
+		
 		dialogOptions.clearDialog(true);
 		dialog.resourceDialog('error', 'reset');
 
@@ -658,6 +671,12 @@ $.fn.resourceDialog = function(params, params2) {
 
 	} else if (params === 'edit' || params === 'read') {
 		var readOnly = params==='read';
+		
+		dialog.modal({
+			  backdrop: 'static',
+			  keyboard: false
+			});
+		
 		dialogOptions.clearDialog(false);
 		dialog.resourceDialog('error', 'reset');
 		dialogOptions.displayResource(params2.resource, readOnly);

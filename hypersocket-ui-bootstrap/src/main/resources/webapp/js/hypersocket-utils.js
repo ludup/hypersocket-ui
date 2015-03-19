@@ -188,7 +188,10 @@ function showMessage(text, icon, alertClass, fade, fadeCallback) {
 function getJSON(url, params, callback, errorCallback) {
 	log("GET: " + url);
 	
-	$.getJSON(basePath + '/api/' + url, params, callback).fail(function(xmlRequest) {
+	if(!url.startsWith('/')) {
+		url = basePath + '/api/' + url;
+	}
+	$.getJSON(url, params, callback).fail(function(xmlRequest) {
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
@@ -207,13 +210,16 @@ function getJSON(url, params, callback, errorCallback) {
 	});
 };
 
-function postJSON(path, params, callback, errorCallback, alwaysCallback) {
+function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 	
-	log("POST: " + path);
+	log("POST: " + url);
 	
+	if(!url.startsWith('/')) {
+		url = basePath + '/api/' + url;
+	}
 	$.ajax({
 		type: "POST",
-	    url:  basePath + '/api/' + path,
+	    url:  url,
 	    dataType: 'json',
 	    contentType: 'application/json',
 	    data: JSON.stringify(params),
@@ -242,13 +248,17 @@ function postJSON(path, params, callback, errorCallback, alwaysCallback) {
 	
 };
 
-function deleteJSON(path, params, callback, errorCallback) {
+function deleteJSON(url, params, callback, errorCallback) {
 	
-	log("DELETE: " + path);
+	log("DELETE: " + url);
+	
+	if(!url.startsWith('/')) {
+		url = basePath + '/api/' + url;
+	}
 	
 	$.ajax({
 		type: "DELETE",
-	    url:  basePath + '/api/' + path,
+	    url:  url,
 	    dataType: 'json',
 	    contentType: 'application/json',
 	    data: JSON.stringify(params),

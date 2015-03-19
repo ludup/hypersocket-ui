@@ -37,8 +37,6 @@ public interface MenuService extends AuthenticatedService {
 	static final String ACTIONS_CERTIFICATES = "certificateActions";
 	
 	static final String ACTIONS_USERS = "userActions";
-	
-	static final String ACTIONS_ATTRIBUTES = "attributeActions";
 
 	static final String ACTIONS_REALMS = "realmActions";
 
