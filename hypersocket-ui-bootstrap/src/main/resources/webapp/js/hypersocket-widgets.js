@@ -2016,7 +2016,7 @@ $.fn.fileUploadInput = function(data) {
 			}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "FileUpload");
-	var html =	'<div class="col-xs-8">'
+	var html =	'<div id="' + id + '" class="col-xs-8">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
 			+	'<div class="propertyValue col-xs-4 dialogActions">'
@@ -2130,6 +2130,9 @@ $.fn.fileUploadInput = function(data) {
  					$('#' + id + 'UpdateProgressHolder').hide();
  				});
  			},
+ 			clear: function() {
+ 				 // How to clear file input?
+ 			},
  			disable: function() {
  				$('#' + id + 'File').attr('disabled', 'disabled');
  				$('#' + id + 'UploadButton').attr('disabled', 'disabled');
@@ -2144,10 +2147,19 @@ $.fn.fileUploadInput = function(data) {
  				$('#' + id + 'DownloadButton').removeAttr('disabled');
  				options.disabled = false;
  			},
- 			upload: function() {
+ 			hasFile: function() {
+ 				if($('#' + id + 'File').val() == ''){
+ 					return false;
+ 				}
+ 				return true;
+ 			},
+ 			needsUpload: function() {
+ 				return $(this).data('needsUpload');
+ 			},
+ 			upload: function(notify) {
  				
  				if($('#' + id + 'File').val() == ''){
- 					return;
+ 					return false;
  				}
  				$('#' + id + 'UpdateProgressHolder').show();
  				$('#' + id + 'UpdateProgress').css("width",  "0%");
@@ -2158,17 +2170,28 @@ $.fn.fileUploadInput = function(data) {
  		        xhr.upload.addEventListener("progress", uploadProgress, false);
  		        xhr.onreadystatechange=function()
  		        {
- 		        	if (xhr.readyState==4 && xhr.status==200)
+ 		        	if (xhr.readyState==4 && xhr.status!=0)
  		        	{
- 		        		data = jQuery.parseJSON(xhr.response).resource;
- 		        		showInfo(data);
- 						if(options.disabled) {
- 							callback.disable();
- 						}
- 		        	}
+ 		        		if(xhr.status==200) {
+ 		        			data = jQuery.parseJSON(xhr.response);
+	 		        		if(data.success) {
+		 		        		showInfo(data.resource);
+		 						if(options.disabled) {
+		 							callback.disable();
+		 						}
+		 						 $(this).data('needsUpload', false);
+		 						if(options.changed) {
+		 							options.changed(callback);
+		 						}
+		 						
+	 		        		} 
+ 		        		} 
+ 		        	} 
  		        }
  		        xhr.open("POST", options.url);
  		        xhr.send(formData);
+ 		        
+ 		        return true;
  			},
  			remove: function() {
  				if(!$('#' + id + 'Info').length){
@@ -2207,14 +2230,16 @@ $.fn.fileUploadInput = function(data) {
 		callback.upload();
 	});
 
- 	$('#' + id).change(function(e) {
- 		if(options.changed) {
- 			options.changed(callback);
- 		}
- 	});
- 	
+	$('#' + id + 'File').change(function() {
+		debugger;
+		$(this).data('needsUpload', true);
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
+	
  	if(options.value) {
- 		callback.setValue(options.values);
+ 		callback.setValue(options.value);
  	}
  	
 	if(options.disabled) {

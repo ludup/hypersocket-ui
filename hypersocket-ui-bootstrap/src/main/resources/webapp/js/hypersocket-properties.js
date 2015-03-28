@@ -12,7 +12,7 @@ function validate(widget) {
 		return false;
 	}
 	if (obj.inputType == 'number') {
-		//Validate for integer
+		// Validate for integer
 		if(!validateRegex('^[0-9]+$',value)){
 			log("Validation failed for " + obj.resourceKey);
 			return false;
@@ -41,6 +41,17 @@ function validate(widget) {
 			return false;
 		} else if(obj.allowEmpty && value == '') {
 			return true;
+		}
+	} else if(obj.inputType == 'fileInput') {
+		if(!obj.allowEmpty && value == '') {
+			log("validation failed for " + obj.resourceKey);
+			return false;
+		} else if(obj.allowEmpty && value == '') {
+			return true;
+		} 
+		else if(widget.needsUpload()) {
+			log("File upload widget needs upload");
+			return false;
 		}
 	}
 	if(obj.maxLength){
@@ -253,6 +264,8 @@ function validateRegex(regex,value){
 
 $.fn.propertyPage = function(opts) {
 
+	 
+	
 	log("Creating property page for div " + $(this).attr('id'));
 
 	var propertyDiv = $(this).attr('id');
@@ -329,7 +342,8 @@ $.fn.propertyPage = function(opts) {
 								}
 								var tab = "tab" + this.id;
 
-								// Overwrite template values with any items passed in options
+								// Overwrite template values with any items
+								// passed in options
 								var values = [];
 								if(options.items) {
 									$.each(options.items, function() {
@@ -356,7 +370,8 @@ $.fn.propertyPage = function(opts) {
 								});
 								
 								if(toSort.length  == 0) {
-									// Do not display this category because there are no properties to show.
+									// Do not display this category because
+									// there are no properties to show.
 									log(this.categoryKey + " will not be displayed because there are no properties to show");
 									return;
 								}
@@ -388,7 +403,7 @@ $.fn.propertyPage = function(opts) {
 											changed : function(widget) {
 												if(!validate(widget)) {
 													$('#' + tab + '_helpspan' + inputId).addClass('error');
-													$('#' + tab + '_helpspan' + inputId).text(getResource("text.invalid"));
+													$('#' + tab + '_helpspan' + inputId).text(getResource(obj.invalidResourceKey ? obj.invalidResourceKey : "text.invalid"));
 													if (options.showButtons) {
 														$(revertButton).attr('disabled', true);
 														$(applyButton).attr('disabled', true);
@@ -479,6 +494,10 @@ $.fn.propertyPage = function(opts) {
 											widget = $('#' + tab + '_value' + this.id).autoComplete(widgetOptions);
 
 										} else if (obj.inputType == 'fileInput') { 
+											
+											var widgetOptions = $.extend(obj, {
+												url : basePath + '/api/fileUpload/file'
+											});
 											
 											widget = $('#' + tab + '_value' + this.id).fileUploadInput(obj);
 
@@ -671,12 +690,14 @@ $.fn.saveProperties = function(includeAll, callback) {
 		function(i, obj) {
 
 			var widget = $(this).data('widget');
-
+			
+			
 			if(!validate(widget)) {
 				invalid = true;
-			}
-
+			} 
+			
 			var meta = widget.options();
+			
 			log("Checking property " + meta.resourceKey);
 
 			if (includeAll || $(this).data('updated')) {
