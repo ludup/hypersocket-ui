@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hypersocket.auth.AuthenticatedServiceImpl;
+import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.automation.AutomationResourcePermission;
 import com.hypersocket.automation.AutomationResourceServiceImpl;
 import com.hypersocket.certificates.CertificateResourcePermission;
@@ -42,7 +42,7 @@ import com.hypersocket.triggers.TriggerResourcePermission;
 import com.hypersocket.triggers.TriggerResourceServiceImpl;
 
 @Service
-public class MenuServiceImpl extends AuthenticatedServiceImpl implements
+public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		MenuService {
 
 	static Logger log = LoggerFactory.getLogger(MenuServiceImpl.class);

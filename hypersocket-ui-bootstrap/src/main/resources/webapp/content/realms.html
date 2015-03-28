@@ -112,6 +112,12 @@
 								//showError(getResource("text.nameRequired"));
 								return false;
 							}
+							
+							if(!$('#realmProperties').validateProperties()) {
+								showError("error.correctValidationErrors");
+								return false;
+							}
+							
 							return true;
 						}, clearDialog : function() {
 							$('#name').val("");
@@ -119,6 +125,7 @@
 							$('#id').val("");
 							$('#realmProperties').clearProperties();
 						}, createResource : function() {
+							debugger;
 							realm = new Object();
 							realm.name = $('#name').val();
 							realm.type = $('#type').val();
