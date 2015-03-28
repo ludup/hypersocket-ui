@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.automation.AutomationResourcePermission;
 import com.hypersocket.automation.AutomationResourceServiceImpl;
+import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.i18n.I18NService;
@@ -59,6 +60,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Autowired
 	RealmService realmService;
 
+	@Autowired
+	BrowserLaunchableService browserService;
+	
 	@PostConstruct
 	private void postConstruct() {
 
@@ -81,7 +85,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				"browserLaunchable", "fa-globe", "browserLaunchable", 300, null,
-				null, null, null),MenuService.MENU_MY_RESOURCES);
+				null, null, null) {
+
+					@Override
+					public boolean isHidden() {
+						return browserService.getPersonalResourceCount(getCurrentPrincipal(), "") == 0;
+					}
+			
+		},MenuService.MENU_MY_RESOURCES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_SYSTEM, "", null, 100, null, null, null, null));
