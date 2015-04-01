@@ -617,15 +617,29 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	var createDropdown = function(text) {
-		
+		debugger;
 		var selected = new Array();
-		$.each($('#input_' + id).data('values'), function(idx, obj) {
-			var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-			if(name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
+		if((text == '*') || (text == ' ')){
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
 				selected.push(obj);
-			}
-		});
-		
+			});
+		}else if(text.length > 2 && (text.charAt(0) == '*') && (text.charAt(text.length - 1) == '*')){
+			var searchText = text.substring(1, text.length - 1);
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+				if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
+					selected.push(obj);
+				}
+			});
+		}else{
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+				if(name.toLowerCase().indexOf(text.toLowerCase()) == 0) {
+					selected.push(obj);
+				}
+			});
+		}
 		selected.sort(function(a, b) {
 			var nameA = options.nameIsResourceKey ? getResource(a[options.nameAttr]) : a[options.nameAttr];
 			var nameB = options.nameIsResourceKey ? getResource(b[options.nameAttr]) : b[options.nameAttr];
