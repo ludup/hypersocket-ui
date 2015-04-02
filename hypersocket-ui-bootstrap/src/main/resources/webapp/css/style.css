@@ -362,6 +362,9 @@ div.tablePages ul.pagination {
 	margin: 2px;
 }
 
+.searchDialog {
+	height: 400px;
+}
 .pagination>.active>a,.pagination>.active>span,.pagination>.active>a:hover,.pagination>.active>span:hover,.pagination>.active>a:focus,.pagination>.active>span:focus
 	{
 	background-color: #20a8d8;
@@ -932,6 +935,19 @@ span.input-group-addon {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.selectedTemplate {
+	background-color: grey;
+}
+
+.template {
+	text-align: center;
+	border: 1px solid;
+	height: 150px;
+	width: 150px;
+	padding: 25px;
+	margin-right: 25px;
 }
 
 @media ( min-width : 768px) and (max-width: 991px) {
