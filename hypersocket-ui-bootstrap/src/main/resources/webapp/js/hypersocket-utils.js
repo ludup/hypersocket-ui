@@ -8,6 +8,7 @@ var regex = new RegExp(/(.[^\:]+)(\:\/\/)(.[^\/]+)(.[^\/]+)(.[^\/]+)(.*)/);
 var url = regex.exec(document.URL);
 var baseURL = url[1] + url[2] + url[3] + url[4];
 var basePath = url[4];
+var uiPath = basePath + '/ui/';
 
 String.prototype.format = function() {
     var args = arguments;
@@ -43,6 +44,14 @@ function makeBooleanSafe(options) {
 		}
 	}
 };
+
+function escapeRegExp(string) {
+    return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(string, find, replace) {
+  return string.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
 
 $.fn.getCursorPosition = function () {
     var el = $(this).get(0);
@@ -128,7 +137,6 @@ $.fn.localize = function() {
 	});
 };
 
-
 function clearError() {
 	$('#highlight').remove();
 }
@@ -193,7 +201,7 @@ function getJSON(url, params, callback, errorCallback) {
 	}
 	$.getJSON(url, params, callback).fail(function(xmlRequest) {
 		if(errorCallback) {
-			if(!errorCallback()) {
+			if(!errorCallback(xmlRequest)) {
 				return;
 			}
 		}

@@ -238,6 +238,7 @@ $.fn.codeInput = function(data) {
 	var callback = {
  			setValue: function(val) {
  				myCodeMirror.setValue(val);
+ 				myCodeMirror.refresh();
  				if(options.changed) {
  					options.changed(val);
  				}

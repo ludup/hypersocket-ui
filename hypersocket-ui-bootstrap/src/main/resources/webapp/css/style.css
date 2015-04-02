@@ -938,16 +938,21 @@ span.input-group-addon {
 }
 
 .selectedTemplate {
-	background-color: grey;
+	background-color: #ddd;
 }
 
 .template {
 	text-align: center;
-	border: 1px solid;
 	height: 150px;
 	width: 150px;
-	padding: 25px;
-	margin-right: 25px;
+	padding: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.template a {
+	text-decoration: none;
+	color: black;
 }
 
 @media ( min-width : 768px) and (max-width: 991px) {
