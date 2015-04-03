@@ -945,7 +945,7 @@ span.input-group-addon {
 	text-align: center;
 	height: 150px;
 	width: 150px;
-	padding: 10px;
+	padding-top: 10px;
 	margin-left: 10px;
 	margin-right: 10px;
 }
