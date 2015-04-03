@@ -2232,7 +2232,6 @@ $.fn.fileUploadInput = function(data) {
 	});
 
 	$('#' + id + 'File').change(function() {
-		debugger;
 		$(this).data('needsUpload', true);
 		if(options.changed) {
 			options.changed(callback);
