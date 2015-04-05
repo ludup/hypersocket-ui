@@ -76,8 +76,12 @@ function getParameterByName(name) {
 }
 
 function loadResources(callback) {
+	loadResourcesUrl('i18n', callback);
+}
+
+function loadResourcesUrl(url, callback) {
 	if(!$(document).data('i18n')) {
-		getJSON('i18n', null, function(data) {
+		getJSON(url, null, function(data) {
 			$(document).data('i18n', data);
 			if(callback) {
 				callback();
