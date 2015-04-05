@@ -88,9 +88,10 @@
 											'error', "error.nameRequired");
 									return false;
 								}
-
-								// TODO validate any of your other fields
-								
+								if(!$('#automationProperties').validateProperties()) {
+									showError("error.correctValidationErrors");
+									return false;
+								}
 								return true;
 							},
 							clearDialog : function(create) {
@@ -121,6 +122,7 @@
 								$('#resourceName').val(resource.name);
 								displaying = true;
 								typeButton.setValue(resource.resourceKey, false);
+								
 								$('#automationProperties').empty();
 								$('#automationProperties').propertyPage(
 										{ url : 'automations/properties/' + resource.id, 
