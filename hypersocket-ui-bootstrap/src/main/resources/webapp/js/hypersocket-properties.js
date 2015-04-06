@@ -436,7 +436,6 @@ $.fn.propertyPage = function(opts) {
 
 
 										if (obj.inputType == 'namePairs') {
-											
 											var widgetOptions = $.extend(obj, {
 												values : splitFix(obj.value)
 											});

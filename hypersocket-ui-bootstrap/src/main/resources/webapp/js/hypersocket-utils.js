@@ -80,18 +80,14 @@ function loadResources(callback) {
 }
 
 function loadResourcesUrl(url, callback) {
-	if(!$(document).data('i18n')) {
-		getJSON(url, null, function(data) {
-			$(document).data('i18n', data);
-			if(callback) {
-				callback();
-			}
-		});
-	} else {
+
+	getJSON(url, null, function(data) {
+		$(document).data('i18n', data);
 		if(callback) {
 			callback();
 		}
-	}
+	});
+
 };
 
 function getResource(key) {
@@ -203,7 +199,13 @@ function getJSON(url, params, callback, errorCallback) {
 	if(!url.startsWith('/')) {
 		url = basePath + '/api/' + url;
 	}
-	$.getJSON(url, params, callback).fail(function(xmlRequest) {
+	$.ajax({
+		type: "GET",
+	    url:  url + (params ? $.param(params) : ''),
+	    cache: false,
+	    dataType: 'json',
+	    success: callback
+	}).fail(function(xmlRequest) {
 		if(errorCallback) {
 			if(!errorCallback(xmlRequest)) {
 				return;
