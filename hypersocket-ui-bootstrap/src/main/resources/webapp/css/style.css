@@ -955,6 +955,21 @@ span.input-group-addon {
 	color: black;
 }
 
+#searchHeader {
+	margin-bottom: 25px;
+}
+
+#pages {
+	width: 100%;
+	text-align: center;
+}
+
+#searchPages {
+	display: inline-block;
+}
+
+
+
 @media ( min-width : 768px) and (max-width: 991px) {
 	.navbar-form input[type=text] {
 		width: 260px !important;
