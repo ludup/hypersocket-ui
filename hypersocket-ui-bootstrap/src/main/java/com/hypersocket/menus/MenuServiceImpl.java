@@ -81,17 +81,28 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_MY_RESOURCES, "fa-share-alt", null, 300, null,
-				null, null, null), MenuService.MENU_PERSONAL);
+				null, null, null){
+				@Override
+				public boolean isHidden() {
+					if(modules.size()==0) {
+						return true;
+					}
+					for(MenuRegistration m : modules) {
+						if(!m.isHidden()) {
+							return false;
+						}
+					}
+					return true;
+				}
+		}, MenuService.MENU_PERSONAL);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				"browserLaunchable", "fa-globe", "browserLaunchable", 300, null,
 				null, null, null) {
-
 					@Override
 					public boolean isHidden() {
 						return browserService.getPersonalResourceCount(getCurrentPrincipal(), "") == 0;
 					}
-			
 		},MenuService.MENU_MY_RESOURCES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
