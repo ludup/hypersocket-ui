@@ -46,6 +46,9 @@ $.ajaxSetup({ error : function(xmlRequest) {
 }, cache : false });
 
 
+$.fn.ajaxResourcePageInsert = function(resource) {
+	$(this).data('dataTable').fnAddData(resource);
+};
 
 $.fn.ajaxResourcePage = function(params) {
 
@@ -287,7 +290,9 @@ $.fn.ajaxResourcePage = function(params) {
 					"iDisplayLength": 10,
 					"aoColumns" : columns, 
 					"aoColumnDefs" : columnsDefs });
-
+	
+	$(this).data('dataTable', oTable);
+	
 	if(options.selected) {
 	    var tableTools = new $.fn.dataTable.TableTools( oTable, {
 	        sRowSelect: "os",
