@@ -653,7 +653,7 @@ $.fn.resourceDialog = function(params, params2) {
                 if(resource.name.trim() == "" ) {
                 	stopSpin(icon, 'fa-save');
                 	log("Resource name is incorrect");
-                	dialog.resourceDialog('error', getResource("error.IncorrectName"));
+                	dialog.resourceDialog('error', getResource("error.incorrectName"));
 					return;
                 }
                 
@@ -725,7 +725,7 @@ $.fn.resourceDialog = function(params, params2) {
 				if(resource.name.trim() == "" ) {
                 	stopSpin(icon, 'fa-save');
                 	log("Resource name is incorrect");
-                	dialog.resourceDialog('error', getResource("error.IncorrectName"));
+                	dialog.resourceDialog('error', getResource("error.incorrectName"));
 					return;
                 }
 				
