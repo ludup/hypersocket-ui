@@ -46,6 +46,9 @@ $.ajaxSetup({ error : function(xmlRequest) {
 }, cache : false });
 
 
+$.fn.ajaxResourcePageInsert = function(resource) {
+	$(this).data('dataTable').fnAddData(resource);
+};
 
 $.fn.ajaxResourcePage = function(params) {
 
@@ -287,7 +290,9 @@ $.fn.ajaxResourcePage = function(params) {
 					"iDisplayLength": 10,
 					"aoColumns" : columns, 
 					"aoColumnDefs" : columnsDefs });
-
+	
+	$(this).data('dataTable', oTable);
+	
 	if(options.selected) {
 	    var tableTools = new $.fn.dataTable.TableTools( oTable, {
 	        sRowSelect: "os",
@@ -644,7 +649,14 @@ $.fn.resourceDialog = function(params, params2) {
 				}
 				
 				var resource = dialogOptions.createResource();
-
+				
+                if(resource.name.trim() == "" ) {
+                	stopSpin(icon, 'fa-save');
+                	log("Resource name is incorrect");
+                	dialog.resourceDialog('error', getResource("error.incorrectName"));
+					return;
+                }
+                
 				log("Created resource object for posting");
 
 				postJSON(dialogOptions.resourceUrl, resource, function(data) {
@@ -709,7 +721,14 @@ $.fn.resourceDialog = function(params, params2) {
 				}
 				
 				var resource = dialogOptions.createResource();
-
+                
+				if(resource.name.trim() == "" ) {
+                	stopSpin(icon, 'fa-save');
+                	log("Resource name is incorrect");
+                	dialog.resourceDialog('error', getResource("error.incorrectName"));
+					return;
+                }
+				
 				postJSON(dialogOptions.resourceUrl, resource, function(data) {
 					if (data.success) {
 						dialog.resourceDialog('close');

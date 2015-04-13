@@ -8,6 +8,7 @@ var regex = new RegExp(/(.[^\:]+)(\:\/\/)(.[^\/]+)(.[^\/]+)(.[^\/]+)(.*)/);
 var url = regex.exec(document.URL);
 var baseURL = url[1] + url[2] + url[3] + url[4];
 var basePath = url[4];
+var uiPath = basePath + '/ui/';
 
 String.prototype.format = function() {
     var args = arguments;
@@ -44,6 +45,14 @@ function makeBooleanSafe(options) {
 	}
 };
 
+function escapeRegExp(string) {
+    return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(string, find, replace) {
+  return string.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
 $.fn.getCursorPosition = function () {
     var el = $(this).get(0);
     var pos = 0;
@@ -67,18 +76,18 @@ function getParameterByName(name) {
 }
 
 function loadResources(callback) {
-	if(!$(document).data('i18n')) {
-		getJSON('i18n', null, function(data) {
-			$(document).data('i18n', data);
-			if(callback) {
-				callback();
-			}
-		});
-	} else {
+	loadResourcesUrl('i18n', callback);
+}
+
+function loadResourcesUrl(url, callback) {
+
+	getJSON(url, null, function(data) {
+		$(document).data('i18n', data);
 		if(callback) {
 			callback();
 		}
-	}
+	});
+
 };
 
 function getResource(key) {
@@ -127,7 +136,6 @@ $.fn.localize = function() {
 		$(obj).text(text);
 	});
 };
-
 
 function clearError() {
 	$('#highlight').remove();
@@ -191,9 +199,15 @@ function getJSON(url, params, callback, errorCallback) {
 	if(!url.startsWith('/')) {
 		url = basePath + '/api/' + url;
 	}
-	$.getJSON(url, params, callback).fail(function(xmlRequest) {
+	$.ajax({
+		type: "GET",
+	    url:  url + (params ? $.param(params) : ''),
+	    cache: false,
+	    dataType: 'json',
+	    success: callback
+	}).fail(function(xmlRequest) {
 		if(errorCallback) {
-			if(!errorCallback()) {
+			if(!errorCallback(xmlRequest)) {
 				return;
 			}
 		}
