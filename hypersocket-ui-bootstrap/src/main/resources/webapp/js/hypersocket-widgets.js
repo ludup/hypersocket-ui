@@ -1694,19 +1694,7 @@ $.fn.imageInput = function(options) {
 	$(this).append('<img class="imagePreview" src="' + obj.value + '">');
 	
 	var input = $('#' + id);
-	
-	input.change(function() {
-		var reader = new FileReader();
-		reader.onload = function(readerEvt) {
-			var binaryString = readerEvt.target.result;
-			var encoded = btoa(binaryString);
-			var fileName = input.val().split('/').pop().split('\\').pop();
-			input.data('encoded', fileName + ";" + encoded);
-		};
-	
-		reader.readAsBinaryString(input[0].files[0]);
-	});
-	
+
 	var callback = {
 			setValue: function(val) {
 				input.val('');
@@ -1733,7 +1721,23 @@ $.fn.imageInput = function(options) {
  				input.val('');
  			}
 	};
-
+	
+	input.change(function() {
+		var reader = new FileReader();
+		reader.onload = function(readerEvt) {
+			var binaryString = readerEvt.target.result;
+			var encoded = btoa(binaryString);
+			var fileName = input.val().split('/').pop().split('\\').pop();
+			input.data('encoded', fileName + ";" + encoded);
+		};
+	
+		reader.readAsBinaryString(input[0].files[0]);
+		
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
+	
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
