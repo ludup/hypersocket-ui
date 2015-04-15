@@ -46,7 +46,9 @@ $.fn.textInput = function(data) {
 		var html ='<textarea name="' + name + '" id="' + id + '" class="form-control" value="' 
 				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + ' cols="' 
 				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" ' 
-				+ (options.maxlength > -1 ? 'maxlength="' + options.maxlength  + '"' : '' ) + '>' 
+				+ (options.maxlength > -1 ? 'maxlength="' + options.maxlength  + '"' : '' )
+				+ (options.font ? 'style="font-family: ' + options.font + '"' : '')
+				+ '>' 
 				+ stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value) + '</textarea>';
 		
 		if(options.variables || options.url) {
