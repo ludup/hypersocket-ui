@@ -11,7 +11,7 @@
 							localize="pfxExport.passphrase.label"></label>
 						<div class="propertyValue col-md-9">
 							<input type="password" name="passphrase"
-									id="download_passphrase" class="form-control" />
+									id="pfx_passphrase" class="form-control" />
 							<div>
 								<span class="help-block" localize="pfxExport.passphrase.info"></span>
 							</div>
@@ -22,7 +22,7 @@
 							localize="pfxExport.confirmPassphrase.label"></label>
 						<div class="propertyValue col-md-9">
 							<input type="password" name="confirmPassphrase"
-									id="download_confirmPassphrase" class="form-control" />
+									id="pfx_confirmPassphrase" class="form-control" />
 							<div>
 								<span class="help-block" localize="pfxExport.confirmPassphrase.info"></span>
 							</div>
@@ -45,22 +45,23 @@
 		
 		$('#pfxExport').localize();
 		$('#pfxExport').data('action', function(resource) {
-			$('#download_passphrase').val('');
-			$('#download_confirmPassphrase').val('');
+			$('#pfx_passphrase').val('');
+			$('#pfx_confirmPassphrase').val('');
 			$('#pfxExport').data('resource',resource.id);
 			$('#pfxExport').modal('show');
 		});
 		
 		$('#downloadPFXButton').click(function(e) {
 			$('#pfxExport').resourceDialog('error','reset');
-			if($('#download_passphrase').val() != $('#download_confirmPassphrase').val()){
+			if($('#pfx_passphrase').val() != $('#pfx_confirmPassphrase').val()){
 				$('#pfxExport').resourceDialog('error',getResource("pfxExport.passphraseConfimation.error"));
 				return;
 			}
 			$('#downloadIcon').removeClass('fa-download');
 			$('#downloadIcon').addClass('fa-spinner fa-spin');
 			var formData = new FormData();
-			formData.append('passphrase', $('#download_passphrase').val());
+			formData.append('passphrase', $('#pfx_passphrase').val());
+			debugger;
 			$.ajax({
 				type : 'POST',
 				url : basePath + '/api/certificates/exportPfx/' + $('#pfxExport').data('resource'),  
