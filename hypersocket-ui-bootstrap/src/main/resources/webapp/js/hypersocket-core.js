@@ -636,6 +636,7 @@ $.fn.resourceDialog = function(params, params2) {
 		$('#' + $(this).attr('id') + "Action").on('click', function() {
 				
 				var icon = $(this).find('i');
+				removeMessage();
 				startSpin(icon, 'fa-save');
 				
 				log("Creating resource");
@@ -709,6 +710,7 @@ $.fn.resourceDialog = function(params, params2) {
 			$('#' + $(this).attr('id') + "Action").on('click', function() {
 
 				var icon = $(this).find('i');
+				removeMessage();
 				startSpin(icon, 'fa-save');
 				
 				log('Updating resource');
