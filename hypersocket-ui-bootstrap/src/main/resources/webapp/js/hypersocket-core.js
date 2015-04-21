@@ -651,11 +651,13 @@ $.fn.resourceDialog = function(params, params2) {
 				
 				var resource = dialogOptions.createResource();
 				
-                if(resource.name != null && resource.name.trim() == "" ) {
-                	stopSpin(icon, 'fa-save');
-                	log("Resource name is incorrect");
-                	dialog.resourceDialog('error', getResource("error.incorrectName"));
-					return;
+                if(resource.name) { 
+                	if(resource.name.trim() == "" ) {
+                    	stopSpin(icon, 'fa-save');
+	                	log("Resource name is incorrect");
+	                	dialog.resourceDialog('error', getResource("error.incorrectName"));
+						return;
+                	}
                 }
                 
 				log("Created resource object for posting");
@@ -724,11 +726,13 @@ $.fn.resourceDialog = function(params, params2) {
 				
 				var resource = dialogOptions.createResource();
                 
-				if(resource.name != null && resource.name.trim() == "" ) {
-                	stopSpin(icon, 'fa-save');
-                	log("Resource name is incorrect");
-                	dialog.resourceDialog('error', getResource("error.incorrectName"));
-					return;
+				 if(resource.name) { 
+                	if(resource.name.trim() == "" ) {
+	                	stopSpin(icon, 'fa-save');
+	                	log("Resource name is incorrect");
+	                	dialog.resourceDialog('error', getResource("error.incorrectName"));
+						return;
+                	}
                 }
 				
 				postJSON(dialogOptions.resourceUrl, resource, function(data) {
