@@ -443,6 +443,15 @@ function isIE () {
 	  return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 }
 
+function stripFragment(url) {
+	
+	var idx = url.indexOf('#');
+	if(idx > -1) {
+		return url.substring(0, idx);
+	}
+	return url;
+}
+
 function formatResourceKey(resourceKey){
 	return resourceKey.split('.').join('_') ;
 }
