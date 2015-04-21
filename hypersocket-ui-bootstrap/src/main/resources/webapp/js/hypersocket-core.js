@@ -651,7 +651,7 @@ $.fn.resourceDialog = function(params, params2) {
 				
 				var resource = dialogOptions.createResource();
 				
-                if(resource.name.trim() == "" ) {
+                if(resource.name != null && resource.name.trim() == "" ) {
                 	stopSpin(icon, 'fa-save');
                 	log("Resource name is incorrect");
                 	dialog.resourceDialog('error', getResource("error.incorrectName"));
@@ -724,7 +724,7 @@ $.fn.resourceDialog = function(params, params2) {
 				
 				var resource = dialogOptions.createResource();
                 
-				if(resource.name.trim() == "" ) {
+				if(resource.name != null && resource.name.trim() == "" ) {
                 	stopSpin(icon, 'fa-save');
                 	log("Resource name is incorrect");
                 	dialog.resourceDialog('error', getResource("error.incorrectName"));
