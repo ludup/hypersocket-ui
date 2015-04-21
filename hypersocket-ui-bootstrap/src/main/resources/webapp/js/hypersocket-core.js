@@ -441,30 +441,28 @@ $.fn.ajaxResourcePage2 = function(params) {
 		var renderedActions = '';
 
 		if (options.additionalActions) {
-			$
-					.each(
-						options.additionalActions,
-						function(x, act) {
-							if (act.enabled) {
-
-								renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i></a>';
-
-								$(document).off('click',
-									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
-
-								$(document).on(
-									'click',
-									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
-									function() {
-										var curRow = $('#' + divName + 'Table').dataTable()
-												.fnGetPosition($(this).closest("tr").get(0));
-										var resource = $('#' + divName + 'Table').dataTable()
-												.fnGetData(curRow);
-										act.action(resource);
-									});
-							}
-
-						});
+			$.each(options.additionalActions,
+				function(x, act) {
+					if (act.enabled) {
+	
+						renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i></a>';
+	
+						$(document).off('click',
+							'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
+	
+						$(document).on(
+							'click',
+							'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
+							function() {
+								var curRow = $('#' + divName + 'Table').dataTable()
+										.fnGetPosition($(this).closest("tr").get(0));
+								var resource = $('#' + divName + 'Table').dataTable()
+										.fnGetData(curRow);
+								act.action(resource);
+							});
+					}
+	
+				});
 		}
 
 //		if (options.canUpdate) {
