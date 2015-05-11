@@ -269,7 +269,7 @@ $.fn.codeInput = function(data) {
  		};
 	
 	myCodeMirror.on("change", function(cm, change) {
-		  if(options.change) {
+		  if(options.changed) {
 			  options.changed(callback);
 		  }
 	});
