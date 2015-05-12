@@ -265,6 +265,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"changePassword", "fa-lock", "changePassword", 1000,
 				PasswordPermission.CHANGE, null, PasswordPermission.CHANGE,
 				null), MenuService.MENU_MY_PROFILE);
+		
+		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
+				"jobs", "fa-bar-chart", "jobStatus", 1000,
+				PasswordPermission.CHANGE, null, PasswordPermission.CHANGE,
+				null), MENU_DIAGNOSTICS);
+		
+		
+		
 
 	}
 
