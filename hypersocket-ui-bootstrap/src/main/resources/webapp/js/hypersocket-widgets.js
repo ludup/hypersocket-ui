@@ -620,14 +620,13 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	var createDropdown = function(text) {
-		debugger;
 		var selected = new Array();
 		if((text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
 				selected.push(obj);
 			});
-		}else if(text.length > 2 && (text.charAt(0) == '*') && (text.charAt(text.length - 1) == '*')){
+		} else if(text.startsWith('*')){
 			var searchText = text.substring(1, text.length - 1);
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
@@ -635,7 +634,15 @@ $.fn.autoComplete = function(data) {
 					selected.push(obj);
 				}
 			});
-		}else{
+		} else if(text.endsWith('*')){
+			var searchText = text.substring(0, text.length - 1);
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+				if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
+					selected.push(obj);
+				}
+			});
+		} else{
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
 				if(name.toLowerCase().indexOf(text.toLowerCase()) == 0) {
