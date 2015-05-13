@@ -83,6 +83,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_MY_RESOURCES, "fa-share-alt", null, 300, null,
 				null, null, null){
 				@Override
+					public boolean canRead() {
+						return !isHidden();
+					}
+
+				@Override
 				public boolean isHidden() {
 					if(modules.size()==0) {
 						return true;
