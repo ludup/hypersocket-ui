@@ -39,6 +39,7 @@ import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
+import com.hypersocket.scheduler.SchedulerService;
 import com.hypersocket.triggers.TriggerResourcePermission;
 import com.hypersocket.triggers.TriggerResourceServiceImpl;
 
@@ -271,8 +272,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				PasswordPermission.CHANGE, null, PasswordPermission.CHANGE,
 				null), MenuService.MENU_MY_PROFILE);
 		
-		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
-				"jobs", "fa-bar-chart", "jobStatus", 1000,
+		registerMenu(new MenuRegistration(SchedulerService.RESOURCE_BUNDLE,
+				"jobs", "fa-bar-chart", "schedulers", 1000,
 				PasswordPermission.CHANGE, null, PasswordPermission.CHANGE,
 				null), MENU_DIAGNOSTICS);
 		

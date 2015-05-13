@@ -1,0 +1,26 @@
+<div id="contentSchedulers">
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#contentSchedulers').ajaxResourcePage(
+				{
+					id : "Scheduler",
+					tableUrl : "schedulers/table",
+					title: getResource("schedulers.label"),
+					icon: 'fa-bar-chart',
+					resourceUrl : "schedulers/scheduler",
+					fields : [ {
+						name : "name",
+						nameIsResourceKey: true
+					}],
+					resourceKey : "scheduler",
+					canCreate: false,
+					canUpdate: false,
+					canDelete: false,
+					complete : function() {
+						loadComplete();
+					}
+				});
+
+	});
+</script>
