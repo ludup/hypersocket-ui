@@ -258,8 +258,13 @@ function isNotGmail(email){
 }
 
 function validateRegex(regex,value){
-	var patt = new RegExp(regex) ;
-	return value.match(patt);	
+	if(value && value.length > 0) {
+		var patt = new RegExp(regex) ;
+		return value.match(patt);	
+	} else {
+		return false;
+	}
+	
 }
 
 $.fn.propertyPage = function(opts) {

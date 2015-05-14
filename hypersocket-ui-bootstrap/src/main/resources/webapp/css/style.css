@@ -1053,3 +1053,28 @@ span.input-group-addon {
 	padding-right: 10px;
 	float: left;
 }
+
+.trigger-failure {
+	color: #a94442;
+}
+
+.trigger-success {
+	color: #3c763d;
+}
+
+.trigger-any {
+	color: #31708f;
+}
+
+.trigger-warning {
+	color: #8a6d3b;
+}
+
+.emptyFlow {
+  width: 120px;
+  height: 80px;
+  position: relative;
+  margin: 10px;
+  text-align: center;
+  vertical-align: middle;
+}

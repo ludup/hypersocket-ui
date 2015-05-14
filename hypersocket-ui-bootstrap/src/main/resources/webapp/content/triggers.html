@@ -5,10 +5,30 @@
 
 <div id="contentTriggers">
 </div>
+<div id="contentTrigger" class="panel panel-default">
+
+		<div class="spacer20px"></div>
+		<div class="row">
+			<div class="col-md-9" id="schemeArea">
+				<div id="triggerTasks">
+					<div class="moduleShape same-row">
+						<span id="triggerEvent" class="moduleText"></span>
+					</div>
+					<div id="triggerView" class="same-row"></div>
+				</div>
+				<div class="spacer20px"></div>
+			</div>
+			<div class="col-md-3" id="moduleArea">
+				<div id="moduleIcons"></div>
+			</div>
+		</div>
+</div>
+<!-- <div id="drawing" style="height: 1000px"></div> -->
 <script type="text/javascript">
 	$(document).ready(function() {
 				$('#contentTriggers').localize();
-
+				$('#contentTrigger').localize();
+				$('#saveTriggerbutton').attr('disabled', true);
 				$('#contentTriggers').load('content/triggers-modal.html', function() {
 						
 					$('#contentTriggers').ajaxResourcePage(
@@ -30,8 +50,8 @@
 										resourceKey : "chainTrigger",
 										iconClass : "fa-chain",
 										action : function(resource, callback) {				
-											getJSON('triggers/parentEvents/' + resource.actions[0].id, null, function(data) {
-												$(document).data('triggerModalCallback').loadParent(resource.actions[0], data.resources);
+											getJSON('triggers/parentEvents/' + resource.id, null, function(data) {
+												$(document).data('triggerModalCallback').loadParent(resource, data.resources);
 												$('div[dialog-for="contentTriggers"]').resourceDialog('create');
 											});
 										},
@@ -58,9 +78,147 @@
 								},
 								complete : function() {
 									loadComplete();
+								},
+								selected: function(row) {
+// 									$('#drawing').empty();
+// 									buildFlowChart(row);
+									$('#triggerView').empty();
+									if(row) {
+										$('#triggerEvent').text(getResource(row.event));
+										$('#triggerName').text(row.name);
+										
+// 										$('#triggerName').prepend('<span class="label ' + getStateLabelClass(row) + '">' + getResource(getStateLabelText(row)) + '</span>&nbsp;&nbsp;&nbsp;');
+
+					                	var trigger = row;
+					                	addTask(trigger);
+					                											
+										if(trigger.childTriggers.length > 0) {
+											trigger = trigger.childTriggers[0];
+											do {
+												addTask(trigger);
+												if(trigger.childTriggers.length > 0) {
+													trigger = trigger.childTriggers[0];
+													action = trigger.childTriggers[0];
+												} else {
+													trigger = null;
+												}
+											} while(trigger);
+										}
+										$('#contentTrigger').show();
+									} else {
+										$('#contentTrigger').hide();
+									}
 								}
 							});
 				});
 
 			});
+	
+	function getStateLabelClass(trigger) {
+		var moduleClass = "label-info";
+		if(trigger.result == 'EVENT_FAILURE') {
+			moduleClass = "label-danger";
+		}else if(trigger.result == 'EVENT_WARNING') {
+			moduleClass = "label-warning";
+		} else if(trigger.result == 'EVENT_SUCCESS') {
+			moduleClass = "label-success";
+		}
+		
+		return moduleClass;
+	}
+	
+	function getStateLabelText(trigger) {
+		var moduleClass = "text.any";
+		if(trigger.result == 'EVENT_FAILURE') {
+			moduleClass = "text.failure";
+		}else if(trigger.result == 'EVENT_WARNING') {
+			moduleClass = "text.warning";
+		} else if(trigger.result == 'EVENT_SUCCESS') {
+			moduleClass = "text.success";
+		}
+		
+		return moduleClass;
+	}
+	
+	function getStateClass(trigger) {
+		
+		var moduleClass = "trigger-any";
+		if(trigger.result == 'EVENT_FAILURE') {
+			moduleClass = "trigger-failure";
+		}else if(trigger.result == 'EVENT_WARNING') {
+			moduleClass = "trigger-warning";
+		} else if(trigger.result == 'EVENT_SUCCESS') {
+			moduleClass = "trigger-success";
+		}
+		
+		return moduleClass;
+	}
+	
+	function addTask(trigger) {
+		
+		var moduleClass = "blueModule";
+		if(trigger.result == 'EVENT_FAILURE') {
+			moduleClass = "redModule";
+		}else if(trigger.result == 'EVENT_WARNING') {
+			moduleClass = "yellowModule";
+		} else if(trigger.result == 'EVENT_SUCCESS') {
+			moduleClass = "greenModule";
+		}
+		$('#triggerView').append("<div class='same-row'><i id='output_" + trigger.id + "' class='fa fa-2x fa-arrow-right " + getStateClass(trigger) + "'></i><div class='moduleShape same-row' id='action" + trigger.id + "'><span class='moduleText'>"
+			+ getResource(trigger.resourceKey) + "</span><i id='action" + trigger.id + "DeleteTask' class='fa fa-trash-o deleteIcon'></i></div></div>");
+	}
+	
+// 	function buildFlowChart(row) {
+
+// 	    flowSVG.config({
+// 	        interactive: false,
+// 	        showButtons: false,
+// 	        connectorLength: 60,
+// 	        scrollto: true,
+// 	        shapeHeight: 50,
+// 	        shapeWidth: 50,
+// 	        defaultFontSize: 16,
+// 	        decisionFill: '#abcdef',
+// 	        decisionHeight: 100,
+// 	        processHeight: 75,
+// 	        arrowHeadHeight: 10,
+// 	        connectorLength: 125,
+// 	        startText: getResource(row.event)
+// 	    });
+	    
+// 	    flowSVG.draw(SVG('drawing'));
+
+	    
+// 	    var shapes = new Array();
+	    
+
+// 	var task = {
+// 			label: 'task' + row.id,
+// 			type: 'process',
+// 			text: [getResource(row.resourceKey)],
+// 	        orient: {
+// 				yes: 'r'
+// 			}
+// 		};
+	
+// 	shapes.push(task);
+// 	debugger
+// 		$.each(row.childTriggers, function(idx, trigger) {
+// 			var s = new Object();
+// 			s.label = 'task' + trigger.id;
+// 			s.type = 'process';
+// 			s.text = [getResource(trigger.event)];
+// 			if(trigger.result == 'EVENT_FAILURE' || trigger.result == 'EVENT_WARNING') {
+// 				task.no = 'task' + trigger.id;
+// 			} else if(trigger.result == 'EVENT_SUCCESS') {
+// 				task.yes = 'task' + trigger.id;
+// 			} else {
+// 				task.next = 'task' + trigger.id;
+// 			}
+// 			shapes.push(s);
+// 		});
+// 	    flowSVG.shapes(shapes);
+
+// 	}
+
 </script>

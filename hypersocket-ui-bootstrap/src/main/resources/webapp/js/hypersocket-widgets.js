@@ -597,7 +597,7 @@ $.fn.autoComplete = function(data) {
 		}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "AutoComplete");
-	
+
 	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
 			+ '"><input type="text" id="input_' + id + '" class="form-control dropdown-toggle" data-toggle="dropdown" value=""' + (options.disabled ? 'disabled=\"disabled\"' : '') + '>' 
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"><li><a tabindex="-1" href="#">' + getResource('search.text') + '</a></li></ul>' 
