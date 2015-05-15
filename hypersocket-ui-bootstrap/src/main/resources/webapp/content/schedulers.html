@@ -11,8 +11,17 @@
 					resourceUrl : "schedulers/scheduler",
 					fields : [ {
 						name : "name",
-						nameIsResourceKey: true
-					}],
+						},
+						 {
+							name : "started",
+						 },
+						 {
+							name : "lastExecuted",
+						 },
+						 {
+							name : "nextExecute",
+						}
+						],
 					resourceKey : "scheduler",
 					canCreate: false,
 					canUpdate: false,
@@ -20,7 +29,6 @@
 					complete : function() {
 						loadComplete();
 					}
-				});
-
+		});
 	});
 </script>
