@@ -189,7 +189,10 @@ $.fn.ajaxResourcePage = function(params) {
 												.fnGetPosition($(this).closest("tr").get(0));
 										var resource = $('#' + divName + 'Table').dataTable()
 												.fnGetData(curRow);
-										act.action(resource);
+										act.action(resource, function(resource) {
+											$('#' + divName + 'Table').dataTable().fnUpdate(resource, curRow);
+											$('#' + divName + 'Table').dataTable().fnDraw();
+										});
 								});
 						}
 

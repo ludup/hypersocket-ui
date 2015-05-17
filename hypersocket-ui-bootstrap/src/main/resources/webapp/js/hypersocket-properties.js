@@ -331,7 +331,10 @@ $.fn.propertyPage = function(opts) {
 				createAdditionalTabs();
 			}
 			
+			
 			if(data.resources) {
+				
+				var widgets = new Array();
 				$.each(	data.resources,
 							function() {
 
@@ -415,6 +418,10 @@ $.fn.propertyPage = function(opts) {
 													if (options.showButtons) {
 														$(revertButton).attr('disabled', false);
 														$(applyButton).attr('disabled', false);
+													}
+													if(widget.options().visibilityCallback) {
+														debugger;
+														widget.options().visibilityCallback();
 													}
 												}
 											},
@@ -567,6 +574,9 @@ $.fn.propertyPage = function(opts) {
 											widget.getInput().addClass('propertyInput');
 											widget.getInput().data('widget', widget);
 											
+											$(document).data(this.resourceKey, widget);
+											widgets.push(widget);
+											
 											$('#' + tab + '_value' + this.id).append(
 													'<div><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
 													+  getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') 
@@ -576,6 +586,27 @@ $.fn.propertyPage = function(opts) {
 									});
 	
 							});
+				
+				$.each(widgets, function(idx, w) {
+					if(w.options().visibilityDependsOn) {
+						debugger;
+						var w2 = $(document).data(w.options().visibilityDependsOn);
+						if(!w2) {
+							log("WARNING: " + w.options().resourceKey + " visibility depends on " + w.options().visibilityDependsOn + " but a property with that resource key does not exist");
+						} else {
+							w2.options().visibilityCallback = function() {
+								if(w2.getValue() == w.options().visibilityDependsValue) {
+									w.enable();
+								} else {
+									if(w.options().clearOnVisibilityChange) {
+										w.clear();
+									}
+									w.disable();
+								}
+							}
+						}
+					}
+				});
 			}
 			
 			if (options.additionalTabs && !options.propertyTabsLast) {
