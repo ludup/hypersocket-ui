@@ -420,7 +420,6 @@ $.fn.propertyPage = function(opts) {
 														$(applyButton).attr('disabled', false);
 													}
 													if(widget.options().visibilityCallback) {
-														debugger;
 														widget.options().visibilityCallback();
 													}
 												}
@@ -589,7 +588,6 @@ $.fn.propertyPage = function(opts) {
 				
 				$.each(widgets, function(idx, w) {
 					if(w.options().visibilityDependsOn) {
-						debugger;
 						var w2 = $(document).data(w.options().visibilityDependsOn);
 						if(!w2) {
 							log("WARNING: " + w.options().resourceKey + " visibility depends on " + w.options().visibilityDependsOn + " but a property with that resource key does not exist");
