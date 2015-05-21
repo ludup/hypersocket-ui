@@ -1421,10 +1421,10 @@ function loadMenu(menu) {
 			if(!this.hidden) {
 				$('#subMenuIconPanel').append(
 					'<div class="col-xs-2">'
-					+	'<a class="hidden-xs large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+					+	'<a class="hidden-xs hidden-sm large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
 					+		'<i class="fa ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
 					+	'</a>'
-					+	'<a class="visible-xs small-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+					+	'<a class="visible-xs visible-sm small-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
 					+		'<i class="fa ' + this.icon + '"></i>'
 					+	'</a>'
 				+ '</div>');
