@@ -254,6 +254,10 @@ h2 {
 	background-color: #555;
 }
 
+.btn-action {
+	padding: 6px;
+}
+
 .large-button-active {
 	border: 2px solid #555 !important;
 	color: #555 !important;
@@ -323,6 +327,7 @@ h2 {
 	border-color: transparent !important;
 }
 
+
 table.table {
 	clear: both;
 	margin-top: 6px !important;
@@ -349,6 +354,19 @@ table.table a {
 
 table.table .btn i {
 	margin: 0;
+}
+
+.fixed-table-container {
+	border: 0px;
+	margin: 10px;
+}
+
+.fixed-table-body {
+	overflow: visible;	
+}
+
+.pagination-info {
+	margin-left: 10px;
 }
 
 div.numRecords label {

@@ -1,50 +1,90 @@
+function validateWidget(widget) {
+	var meta = widget.options();
+	
+	var invalid = false;
+	
+	if(meta.isArrayValue) {
+		
+		var values = widget.getValue();
+		if(values.length > 0) {
+			$.each(values, function(idx, v) {
+				if(!validate(widget, v)) {
+					invalid = true;
+				}
+			});
+		} else {
+			// Attempt an empty validation
+			invalid = validate(widget, '');
+		}
+		
+	} else {
+		if(!validate(widget, widget.getValue())) {
+			invalid = true;
+		}
+	}
+	
+	return !invalid;
+}
 
-function validate(widget) {
+function validate(widget, value) {
+	
+	var options = widget.options();
+	if(!internalValidate(widget, value)) {
+		$(options.errorElementId).addClass('error');
+		$(options.errorElementId).text(getResource(options.invalidResourceKey ? options.invalidResourceKey : "text.invalid"));
+		return false;
+	} else {
+		$(options.errorElementId).removeClass('error');
+		$(options.errorElementId).text(getResourceWithNamespace(options.i18nNamespace, options.resourceKey + '.info'));
+		return true;
+	}
+}
+
+function internalValidate(widget, value) {
 	obj = widget.options();
 	
 	obj = $.extend({ allowEmpty: true }, obj);
 	
-	var value = widget.getValue();
-	
 	log("Validating " + obj.resourceKey + ' value ' + value);
+	
 	if(!validateInputType(obj.inputType)){
-		log("Validation failed for " + obj.resourceKey);
+		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false;
 	}
 	if (obj.inputType == 'number') {
 		// Validate for integer
 		if(!validateRegex('^[0-9]+$',value)){
-			log("Validation failed for " + obj.resourceKey);
+			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
 		if(parseInt(obj.minValue) > parseInt(value) || parseInt(obj.maxValue) < parseInt(value)){
-			log("Validation failed for " + obj.resourceKey);
+			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
 	} else if (obj.inputType == 'textarea') {
 		if(!obj.allowEmpty && value == '') {
-			log("Validation failed for " + obj.resourceKey);
+			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
 			return true;
 		}
-	} else if (obj.inputType == 'text') {
+	} else if (obj.inputType == 'text' || obj.inputType == 'multipleTextInput') {
 		if(!obj.allowEmpty && value == '') {
-			log("Validation failed for " + obj.resourceKey);
+			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
 			return true;
 		}
 	} else if (obj.inputType == 'password') {
 		if(!obj.allowEmpty && value == '') {
-			log("Validation failed for " + obj.resourceKey);
+			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
 			return true;
 		}
-	} else if(obj.inputType == 'fileInput') {
+	} else if(obj.inputType == 'fileInput' || obj.inputType == 'multipleFileInput') {
 		if(!obj.allowEmpty && value == '') {
-			log("validation failed for " + obj.resourceKey);
+			log("validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
 			return true;
@@ -55,40 +95,42 @@ function validate(widget) {
 		}
 	}
 	if(obj.maxLength){
-	   if(parseInt(obj.maxLength) < value.length){
-		 log("Validation failed for " + obj.resourceKey);  
-		 return false;
-	   }
+	   if(value) {
+		   if(parseInt(obj.maxLength) < value.length){
+			 log("Validation failed for " + obj.resourceKey + " and value " + value);  
+			 return false;
+		   }
+	   } 
     }
 	if(obj.allowedCharacters && !validateAllowedCharacters(obj,value)){
-		log("Validation failed for " + obj.resourceKey);  
+		log("Validation failed for " + obj.resourceKey + " and value " + value);  
 		return false ;
 	}
 	if(obj.regex && !validateRegex(obj.regex,value)){
-		log("Validation failed for " + obj.resourceKey);
+		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
 	if(obj.alphaNumericOnly && !validateRegex('^[a-zA-Z0-9]+$',value)){
-		log("Validation failed for " + obj.resourceKey);
+		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
 	if(obj.alphaNumericSpacesOnly && !validateRegex('^[ a-zA-Z0-9]+$',value)){
-		log("Validation failed for " + obj.resourceKey);
+		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
 	if(obj.alphaOnly && !validateRegex('^[a-zA-Z]+$',value)){
-		log("Validation failed for " + obj.resourceKey);
+		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
 	if(obj.validateAny && !validateAny(obj,value)){
-		log("Validation failed for " + obj.resourceKey);
+		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
 	if(obj.validateAll && !validateAll(obj,value)){
-		log("Validation failed for " + obj.resourceKey);
+		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
-	log("Validation success for " + obj.resourceKey);
+	log("Validation success for " + obj.resourceKey + " and value " + value);
 	return true;
 }
 
@@ -258,8 +300,12 @@ function isNotGmail(email){
 }
 
 function validateRegex(regex,value){
-	var patt = new RegExp(regex) ;
-	return value.match(patt);	
+	if(value) {
+		var patt = new RegExp(regex) ;
+		return value.match(patt);
+	} else {
+		return false;
+	}
 }
 
 $.fn.propertyPage = function(opts) {
@@ -404,16 +450,12 @@ $.fn.propertyPage = function(opts) {
 										
 										obj = $.extend({
 											changed : function(widget) {
-												if(!validate(widget)) {
-													$('#' + tab + '_helpspan' + inputId).addClass('error');
-													$('#' + tab + '_helpspan' + inputId).text(getResource(obj.invalidResourceKey ? obj.invalidResourceKey : "text.invalid"));
+												if(!validateWidget(widget)) {
 													if (options.showButtons) {
 														$(revertButton).attr('disabled', true);
 														$(applyButton).attr('disabled', true);
 													}
 												} else {
-													$('#' + tab + '_helpspan' + inputId).removeClass('error');
-													$('#' + tab + '_helpspan' + inputId).text(getResourceWithNamespace(options.i18nNamespace, widget.options().resourceKey + '.info'));
 													widget.getInput().data('updated', true);
 													if (options.showButtons) {
 														$(revertButton).attr('disabled', false);
@@ -428,7 +470,9 @@ $.fn.propertyPage = function(opts) {
 												return data.resources;
 											},
 											disabled : !options.canUpdate  || obj.readOnly || obj.disabled,
-											variables: options.variables
+											variables: options.variables,
+											errorElementId: '#' + tab + '_helpspan' + inputId,
+											i18nNamespace: options.i18nNamespace
 										}, obj);
 										
 										makeBooleanSafe(obj);
@@ -443,7 +487,8 @@ $.fn.propertyPage = function(opts) {
 
 										if (obj.inputType == 'namePairs') {
 											var widgetOptions = $.extend(obj, {
-												values : splitFix(obj.value)
+												values : splitFix(obj.value),
+												isArrayValue: true
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).namePairInput(obj);
@@ -526,6 +571,7 @@ $.fn.propertyPage = function(opts) {
 											
 											var widgetOptions = $.extend(obj, {
 												selected : splitFix(obj.value), 
+												isArrayValue: true,
 												url: url
 											});
 											
@@ -534,7 +580,8 @@ $.fn.propertyPage = function(opts) {
 										} else if (obj.inputType == 'multipleTextInput') {
 											
 											var widgetOptions = $.extend(obj, {
-												values : splitFix(obj.value)
+												values : splitFix(obj.value),
+												isArrayValue: true
 											});
 	
 											widget = $('#' + tab + '_value' + this.id).multipleTextInput(widgetOptions);
@@ -697,10 +744,9 @@ $.fn.validateProperties = function() {
 		function(i, obj) {
 
 			var widget = $(this).data('widget');
-
-			if(!validate(widget)) {
-				invalid = true;
-			}
+			
+			invalid = validateWidget(widget);
+			
 		});
 
 	return !invalid;
@@ -712,17 +758,10 @@ $.fn.saveProperties = function(includeAll, callback) {
 	var items = new Array();
 	var files = new Array();
 
-	var invalid = false;
-
 	$(this).find('.propertyInput').each(
 		function(i, obj) {
 
 			var widget = $(this).data('widget');
-			
-			
-			if(!validate(widget)) {
-				invalid = true;
-			} 
 			
 			var meta = widget.options();
 			
@@ -737,10 +776,7 @@ $.fn.saveProperties = function(includeAll, callback) {
 			}
 		});
 
-	if(!invalid) {
-		callback(items);
-	}
-	return invalid;
+	callback(items);
 
 };
 

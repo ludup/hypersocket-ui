@@ -2289,6 +2289,7 @@ $.fn.multipleFileUpload = function(data) {
 				showUploadButton: true,
 				showDownloadButton: true,
 				showRemoveLine: true,
+				isArrayValue: true,
 				url: 'fileUpload/file'
 			}, data);
 	
