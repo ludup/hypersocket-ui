@@ -495,6 +495,8 @@ $.fn.resourceTable = function(params) {
 	log("Creating resource table for div " + divName);
 
 	var options = $.extend({
+		checkbox: false,
+		radio: false,
 		divName : divName,
 		striped	: true,
 		method : 'get',
@@ -722,25 +724,12 @@ $.fn.resourceTable = function(params) {
 			$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog('create');
 		});
 	}
-	
-	if(options.additionalButtons) {
-		
-		$.each(options.additionalButtons, function() {
-			$('#' + divName + 'Actions').append(
-				'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>' + getResource(this.resourceKey + '.label') + '</button>');
-			var button = this;
-			$('#' + this.resourceKey).click(function() {
-				if(button.action) {
-					button.action(function() {
-						$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-					});
-				}
-			});
-		});
-	}
+
 	
 	$('#' + divName + 'Placeholder').bootstrapTable({
 	    pagination: options.pagination,
+	    checkbox: options.checkbox,
+	    radio: options.radio,
 	    showHeader: true,
 	    page : options.page,
 	    pageSize: options.pageSize,
@@ -770,6 +759,23 @@ $.fn.resourceTable = function(params) {
 	    
 	});
 
+	if(options.additionalButtons) {
+		$.each(options.additionalButtons, function(idx, action) {
+			$('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
+					+ action.resourceKey + 'TableAction" class="btn btn-default" title="' 
+					+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
+					+ action.icon + '"></i></button>');
+			
+			$('#' + action.resourceKey + 'TableAction').on('click', function(e) {
+				if(action.action) {
+					action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
+						$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+					});
+				}
+			});
+		});
+	}
+	
 	if (options.complete) {
 		options.complete();
 	}
