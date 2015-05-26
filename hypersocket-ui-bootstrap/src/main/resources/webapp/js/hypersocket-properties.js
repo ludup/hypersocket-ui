@@ -14,7 +14,9 @@ function validateWidget(widget) {
 			});
 		} else {
 			// Attempt an empty validation
-			invalid = validate(widget, '');
+			if(!validate(widget, '')) {
+				invalid = true;
+			}
 		}
 		
 	} else {
@@ -745,7 +747,9 @@ $.fn.validateProperties = function() {
 
 			var widget = $(this).data('widget');
 			
-			invalid = validateWidget(widget);
+			if(!validateWidget(widget)) {
+				invalid = true;
+			}
 			
 		});
 
