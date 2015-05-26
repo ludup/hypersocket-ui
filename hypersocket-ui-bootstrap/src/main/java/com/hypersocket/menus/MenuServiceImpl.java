@@ -124,17 +124,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_SERVER);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "attributes",
-				"fa-list-ul", "attributes", 100,
+				"fa-list-ul", "attributeTabs", 100,
 				SystemPermission.SYSTEM_ADMINISTRATION, null,
 				SystemPermission.SYSTEM_ADMINISTRATION, null),
 				MenuService.MENU_SERVER);
 		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "attributeCategories",
-				"fa-list-ul", "attributeCategories", 200,
-				SystemPermission.SYSTEM_ADMINISTRATION, null,
-				SystemPermission.SYSTEM_ADMINISTRATION, null),
-				MenuService.MENU_SERVER);
-
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
