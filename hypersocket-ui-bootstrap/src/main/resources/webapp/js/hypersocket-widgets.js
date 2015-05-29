@@ -1624,7 +1624,7 @@ $.fn.booleanInput = function(options) {
 				return $('#' + id);
 			},
  			clear: function() {
- 				$('#' + id).prop('checked', options.value);
+ 				$('#' + id).prop('checked', false);
  			}
 	};
 
@@ -1682,7 +1682,7 @@ $.fn.switchInput = function(options) {
 				return $('#' + id);
 			},
  			clear: function() {
- 				$('#' + id).prop('checked', obj.value ? 'checked' : '');
+ 				$('#' + id).prop('checked', false);
  			}
 	};
 
@@ -2289,6 +2289,7 @@ $.fn.multipleFileUpload = function(data) {
 				showUploadButton: true,
 				showDownloadButton: true,
 				showRemoveLine: true,
+				isArrayValue: true,
 				url: 'fileUpload/file'
 			}, data);
 	
