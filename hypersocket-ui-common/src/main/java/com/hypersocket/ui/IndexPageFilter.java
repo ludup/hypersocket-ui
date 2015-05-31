@@ -5,8 +5,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
@@ -19,8 +22,13 @@ public class IndexPageFilter implements ContentFilter {
 	List<String> stylesheets = new ArrayList<String>();
 	List<String> scripts = new ArrayList<String>();
 	List<MapTokenResolver> additionalResolvers = new ArrayList<MapTokenResolver>();
-	String indexPage = "index.html";
 	List<FilterExtender> extenders = new ArrayList<FilterExtender>();
+	Set<String> filterPages = new HashSet<String>();
+	
+	@PostConstruct
+	private void postConstruct() {
+		filterPages.add("index.html");
+	}
 	
 	@Override
 	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) {
@@ -64,7 +72,7 @@ public class IndexPageFilter implements ContentFilter {
 
 	@Override
 	public boolean filtersPath(String path) {
-		return path.equals(indexPage);
+		return filterPages.contains(path);
 	}
 
 	public void addStyleSheet(String stylesheet) {
@@ -83,8 +91,8 @@ public class IndexPageFilter implements ContentFilter {
 		extenders.add(extender);
 	}
 	
-	public void setIndexPage(String indexPage) {
-		this.indexPage = indexPage;
+	public void addPage(String page) {
+		filterPages.add(page);
 	}
 
 	public void removeExtender(FilterExtender extender) {

@@ -161,12 +161,6 @@ function removeMessage() {
 	$('#systemMessage').remove();
 }
 
-function fadeMessage() {
-	$('#systemMessage').fadeOut(2000, function() {
-		$('#systemMessage').remove();
-	});
-}
-
 function showMessage(text, icon, alertClass, fade, fadeCallback) {
 	log("MESSAGE: " + text);
 
@@ -201,7 +195,7 @@ function getJSON(url, params, callback, errorCallback) {
 	}
 	$.ajax({
 		type: "GET",
-	    url:  url + (params ? $.param(params) : ''),
+	    url:  url + (params ? (url.endsWith('?') ? '' : '?') + $.param(params) : ''),
 	    cache: false,
 	    dataType: 'json',
 	    success: callback
@@ -454,4 +448,62 @@ function stripFragment(url) {
 
 function formatResourceKey(resourceKey){
 	return resourceKey.split('.').join('_') ;
+}
+
+function isDashboardVisible() {
+	return $('#dynamicDashboardMessages').length > 0;
+}
+
+function showDashboardMessage(text, icon, alertClass, fade, fadeCallback) {
+	log("DASHBOARD: " + text);
+
+	removeMessage();
+	
+	var messageNum = $('#dynamicDashboardMessages').length;
+	var messageDiv = '#dashboardMessage' + messageNum;
+	
+	var doFade = function() {
+		$(messageDiv).fadeOut(2000, function() {
+			$(messageDiv).remove();
+			if(fadeCallback) {
+				fadeCallback();
+			}
+		});
+	};
+	
+	$('#dynamicDashboardMessages').prepend('<div id="dashboardMessage' + messageNum + '" class="alert ' + alertClass + '"/>');
+	$(messageDiv).append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span><i id="messageDismiss' + messageNum + '" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
+	
+	$('#messageDismiss' + messageNum).click(function() {
+		doFade();
+	});
+	
+	if(fade) {
+		setTimeout(doFade, 4000);
+	}
+}
+
+function showDashboardError(text, fade, fadeCallback) {
+	showDashboardMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? false : fade, fadeCallback);
+}
+
+function showDashboardWarning(text, fade, fadeCallback) {
+	showDashboardMessage(text, 'fa-warning', 'alert-warning', typeof fade == 'undefined' ? false : fade, fadeCallback);
+}
+
+function showDashboardSuccess(text, fade, fadeCallback) {
+	showDashboardMessage(text, 'fa-warning', 'alert-success', typeof fade == 'undefined' ? true : fade, fadeCallback);
+}
+
+function showDashboardInformation(text, fade, fadeCallback) {
+	showDashboardMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade, fadeCallback);
+}
+
+function fadeMessage() {
+	$('#systemMessage').fadeOut(2000, function() {
+		$('#systemMessage').remove();
+		if(fadeCallback) {
+			fadeCallback();
+		}
+	});
 }
