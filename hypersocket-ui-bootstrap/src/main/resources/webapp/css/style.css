@@ -1096,7 +1096,7 @@ span.input-group-addon {
 	overflow: auto;
 }
 
-#licenseDetails {
+.small-overview-widget {
   background-color: #fcfcfc;
   display: inline-block;
   width: 100%;
