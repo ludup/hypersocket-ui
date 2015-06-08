@@ -250,15 +250,15 @@ $(document).ready(function() {
 	$('#createCategoryDialogButton').click(function(){
 		
 		if ($('#attributeCategoryName').val() == '') {
-			$('#attributeCategoryContent').resourceDialog('error', 'attribute.nameRequired.error');
+			showError('attribute.nameRequired.error');
 			return false;
 		}
 		if ($('#attributeCategoryWeight').val() == '') {
-			$('#attributeCategoryContent').resourceDialog('error', 'attribute.weightRequired.error');
+			showError('attribute.weightRequired.error');
 			return false;
 		}
 		if ($('#attributeCategoryContext').val() == '') {
-			$('#attributeCategoryContent').resourceDialog('error', 'attribute.contextRequired.error');
+			showError('attribute.contextRequired.error');
 			return false;
 		}
 		resource = new Object();
@@ -271,7 +271,7 @@ $(document).ready(function() {
 				$('#attributeCategoryAutocomplete').empty();
 				createAutocomplete(data.resource.id);
 			}else{
-				$('#attributeCategoryContent').resourceDialog('error', data.message);
+				showError(data.message);
 			}
 			
 		});
@@ -302,27 +302,27 @@ $(document).ready(function() {
 				canUpdate : true,
 				validate : function() {
 						if ($('#attributeName').val() == '') {
-							$('#addResourceForm').resourceDialog('error', 'attribute.nameRequired.error');
+							showError('attribute.nameRequired.error');
 							return false;
 						}
 						if ($('#attributeCategoryAutocomplete').data('widget').getValue() == '') {
-							$('#addResourceForm').resourceDialog('error', 'attribute.categoryRequired.error');
+							showError('attribute.categoryRequired.error');
 							return false;
 						}
 						if ($('#attributeDescription').val() == '') {
-							$('#addResourceForm').resourceDialog('error', 'attribute.descriptionRequired.error');
+							showError('attribute.descriptionRequired.error');
 							return false;
 						}
 						if ($('#attributeWeight').val() == '') {
-							$('#addResourceForm').resourceDialog('error', 'attribute.weightRequired.error');
+							showError('attribute.weightRequired.error');
 							return false;
 						}
 						if ($('#attributeType').data('widget').getValue() == '') {
-							$('#addResourceForm').resourceDialog('error', 'attribute.typeRequired.error');
+							showError('attribute.typeRequired.error');
 							return false;
 						}
 						if ($('#attributeVariableName').val() == '') {
-							$('#addResourceForm').resourceDialog('error', 'attribute.variableNameRequired.error');
+							showError('attribute.variableNameRequired.error');
 							return false;
 						}
 					return true;

@@ -162,6 +162,9 @@ function removeMessage() {
 }
 
 function showMessage(text, icon, alertClass, fade, fadeCallback) {
+	
+	text = (getResourceNoDefault(text) == undefined ? text : getResource(text));
+	
 	log("MESSAGE: " + text);
 
 	removeMessage();
@@ -176,7 +179,7 @@ function showMessage(text, icon, alertClass, fade, fadeCallback) {
 	};
 	
 	$('body').prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
-	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span><i id="messageDismiss" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
+	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + text + '</span><i id="messageDismiss" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
 	
 	$('#messageDismiss').click(function() {
 		doFade();
@@ -499,7 +502,7 @@ function showDashboardInformation(text, fade, fadeCallback) {
 	showDashboardMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade, fadeCallback);
 }
 
-function fadeMessage() {
+function fadeMessage(fadeCallback) {
 	$('#systemMessage').fadeOut(2000, function() {
 		$('#systemMessage').remove();
 		if(fadeCallback) {

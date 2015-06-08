@@ -492,8 +492,7 @@
 					return false;
 				}
 				if (!eventAuto.getValue()) {
-					$('#addTriggerForm').resourceDialog('error',
-							"error.eventRequired");
+					showError("error.eventRequired");
 					return false;
 				}
 				
@@ -506,8 +505,7 @@
 				});
 				
 				if(count==0) {
-					$('#addTriggerForm').resourceDialog('error',
-						"error.atLeastOneActionRequired");
+					showError("error.atLeastOneActionRequired");
 					return false;
 				}
 				return true;

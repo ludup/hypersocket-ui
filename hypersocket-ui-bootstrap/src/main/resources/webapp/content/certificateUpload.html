@@ -53,11 +53,11 @@
 		
 		$('#uploadButton').click(function(e) {
 			if (!$('#file')[0].files[0]) {
-				$('#certificateUpload').resourceDialog('error', getResource("certificate.error.selectFile"));
+				showError(getResource("certificate.error.selectFile"));
 				return;
 			}
 			if (!$('#bundle')[0].files[0]) {
-				$('#certificateUpload').resourceDialog('error', getResource("certificate.error.selectBundle"));
+				showError(getResource("certificate.error.selectBundle"));
 				return;
 			}
 			
@@ -78,12 +78,12 @@
 						$('#certificateUpload').modal('hide');
 						showSuccess(data.message);
 					} else {
-						$('#certificateUpload').resourceDialog('error', data.message);
+						showError(data.message);
 					}
 
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					$('#certificateUpload').resourceDialog('error', errorThrown);
+					showError(errorThrown);
 				}
 			});
 		});

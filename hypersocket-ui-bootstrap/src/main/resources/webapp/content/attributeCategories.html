@@ -100,15 +100,15 @@
 							additionalActionsDropdown: false,
 							validate : function() {
 								if ($('#attributeCategoryNameInput').val() == '') {
-									$('#addResourceForm').resourceDialog('error', 'attributeCategory.nameRequired.error');
+									showError('attributeCategory.nameRequired.error');
 									return false;
 								}
 								if ($('#attributeCategoryWeightInput').val() == '') {
-									$('#addResourceForm').resourceDialog('error', 'attributeCategory.weightRequired.error');
+									showError('attributeCategory.weightRequired.error');
 									return false;
 								}
 								if ($('#attributeCategoryContext').data('widget').getValue() == '') {
-									$('#addResourceForm').resourceDialog('error', 'attributeCategory.contextRequired.error');
+									showError('attributeCategory.contextRequired.error');
 									return false;
 								}
 								return true;

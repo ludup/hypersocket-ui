@@ -699,7 +699,24 @@ $.fn.autoComplete = function(data) {
 		$('#spin_' + id).addClass('fa-search');
 	}
 	
+	var updateValue = function(val) {
+		$.each($('#input_' + id).data('values'), function(idx, obj) {
+			if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
+				$('#' + id).val(obj[options.valueAttr]);
+				$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+				if(options.changed) {
+					options.changed(obj);
+				}
+			}
+		});
+	};
+	
+	$('#input_' + id).change(function() {
+		updateValue($(this).val());
+	});
+	
 	$('#input_' + id).keyup(function() {
+		debugger;
 		$('#spin_' + id).removeClass('fa-search');
 		$('#spin_' + id).addClass('fa-spin');
 		$('#spin_' + id).addClass('fa-spinner');
@@ -734,16 +751,7 @@ $.fn.autoComplete = function(data) {
 	
 	var callback = {
 			setValue: function(val) {
-				$.each($('#input_' + id).data('values'), function(idx, obj) {
-					if(obj[options.valueAttr]==val) {
-						$('#' + id).val(val);
-						$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-						if(options.changed) {
-							options.changed(obj);
-						}
-					}
-				});
-				
+				updateValue(val);
 			},
 			getValue: function() {
 				return $('#' + id).val();
@@ -2038,13 +2046,14 @@ $.fn.fileUploadInput = function(data) {
 				showUploadButton: true,
 				showDownloadButton: true,
 				url: 'fileUpload/file',
+				detailedView: true,
 				getUrlData: function(data) {
 					return data;
 				}
 			}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "FileUpload");
-	var html =	'<div id="' + id + '" class="col-xs-8">'
+	var html =	'<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
 			+	'<div class="propertyValue col-xs-4 dialogActions">'
@@ -2079,24 +2088,23 @@ $.fn.fileUploadInput = function(data) {
 			fileSize = (Math.round((data.fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
 		}
 		formattedHtml = '<div class="file-upload-info">'
-					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>'
-					+	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
-					+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>'
-					+	'</div>'
+					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>';
+		if(options.detailedView) {
+			formattedHtml +=	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
+			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>';			
+		}
+
+		formattedHtml +=	'</div>'
 					+	'<div class="file-upload-info">'
-					+	'	<span>' + data.fileName + '</span></br>'
-					+	'	<span>' + fileSize + '</span></br>'
-					+	'	<span>' + data.md5Sum + '</span>'
-					+	'</div>';
+					+	'	<span>' + data.fileName + '</span></br>';
 		
-//					This code shows the delete button next to file's info
+		if(options.detailedView) {
+			formattedHtml +=	'	<span>' + fileSize + '</span></br>'
+						+	'	<span>' + data.md5Sum + '</span>';			
+		}
+					
+		formattedHtml +=	'</div>';
 		
-//					+	'<div class="propertyValue dialogActions">'
-//					+	'<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash-o"></i></a>';
-//		$('#' + id + 'RemoveButton').click(function(){
-//			callback.remove();
-//		});
-			
 		return formattedHtml;
 	}
 	
@@ -2136,26 +2144,30 @@ $.fn.fileUploadInput = function(data) {
  			},
  			setValue: function(uuid) {
  				getJSON('fileUpload/metainfo/' + uuid, null, function(data){
- 					if($('#' + id + 'Info').length){
- 						$('#' + id + 'Info').empty();
- 						$('#' + id + 'Info').append(showInfoFormat(data));
- 						$('#' + id + 'Info').data('uuid', data.name);
- 						$('#' + id + 'RemoveButton').unbind('click');
- 						$('#' + id + 'RemoveButton').click(function(){
- 							callback.remove();
- 						});
- 						$('#' + id + 'DownloadButton').unbind('click');
- 						$('#' + id + 'DownloadButton').click(function(){
- 							callback.download();
- 						});
- 	 				}else{
- 	 					showInfo(data);
- 	 				}
  					
- 					if(options.disabled) {
- 						callback.disable();
+ 					if(data.success) {
+	 					if($('#' + id + 'Info').length){
+	 						$('#' + id + 'Info').empty();
+	 						$('#' + id + 'Info').append(showInfoFormat(data.resource));
+	 						$('#' + id + 'Info').data('uuid', data.resource.name);
+	 						$('#' + id + 'RemoveButton').unbind('click');
+	 						$('#' + id + 'RemoveButton').click(function(){
+	 							callback.remove();
+	 						});
+	 						$('#' + id + 'DownloadButton').unbind('click');
+	 						$('#' + id + 'DownloadButton').click(function(){
+	 							callback.download();
+	 						});
+	 	 				}else{
+	 	 					showInfo(data.resource);
+	 	 				}
+	 					
+	 					if(options.disabled) {
+	 						callback.disable();
+	 					}
+	 					$('#' + id + 'UpdateProgressHolder').hide();
+
  					}
- 					$('#' + id + 'UpdateProgressHolder').hide();
  				});
  			},
  			clear: function() {
@@ -2211,7 +2223,13 @@ $.fn.fileUploadInput = function(data) {
 		 						if(options.changed) {
 		 							options.changed(callback);
 		 						}
-		 						
+		 						if(notify) {
+		 							notify(true);
+		 						}
+	 		        		} else {
+	 		        			if(notify) {
+	 		        				notify(false);
+	 		        			}
 	 		        		} 
  		        		} 
  		        	} 
@@ -2282,7 +2300,7 @@ $.fn.multipleFileUpload = function(data) {
 	
 	var options = $.extend(
 			{  
-				text: "Add file to upload",
+				text: "",
 				maxRows : 0,
 				disabled : false, 
 				values: [],
@@ -2306,11 +2324,11 @@ $.fn.multipleFileUpload = function(data) {
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 			+	'	<div id="' + id + 'FileUploads" ></div>'
 			+	'	<div id="' + id + 'NewRow">'
-			+	'		<div class"row">'
-			+	'			<div class="propertyValue col-xs-11">'
+			+	'		<div class="col-xs-12" style="padding-left: 0px; padding-right: 0px;">'
+			+	'			<div class="propertyValue col-xs-10" style="padding-left: 0px;">'
 			+	'				<span class="help-block">' + options.text + '</span>'
 			+	'			</div>'
-			+	'			<div class="propertyValue col-xs-1 dialogActions">'
+			+	'			<div class="propertyValue col-xs-2 dialogActions">'
 			+	'				<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
 			+	'					<i class="fa fa-plus"></i>'
 			+	'				</a>'
