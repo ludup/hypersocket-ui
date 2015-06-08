@@ -1,3 +1,13 @@
-<p>
-	<a href=""><i class="fa fa-life-saver"></i> Hypersocket Helpdesk</a>.
-</p>
+<div id="usefulLinksContent">
+
+</div>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+	   getJSON('overview/articles', null, function(data) {
+	      $.each(data.resources, function(idx, obj) {
+	           $('#usefulLinksContent').append('<p><a href="' + obj.url + '"><i class="fa ' + obj.icon + '"></i> ' + obj.name + '</a></p>');
+	      });
+	   });
+	});
+</script>
