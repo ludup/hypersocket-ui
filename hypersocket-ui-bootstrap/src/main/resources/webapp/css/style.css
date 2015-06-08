@@ -1102,7 +1102,7 @@ span.input-group-addon {
 	overflow: auto;
 }
 
-#licenseDetails {
+.small-overview-widget {
   background-color: #fcfcfc;
   display: inline-block;
   width: 100%;
@@ -1110,14 +1110,6 @@ span.input-group-addon {
   border: 1px solid #e8e8e8;
   border-radius: 3px;
   margin-bottom: 20px;
-}
-
-.licenseInfo {
-	padding: 0px;
-}
-
-.licenseWarning {
-	color: orange;
 }
 
 @media ( min-width : 768px) and (max-width: 991px) {
