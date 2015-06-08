@@ -5,13 +5,13 @@
 
 <div id="contentTriggers">
 </div>
-<div id="contentTrigger" class="panel panel-default">
+<div id="contentTrigger" class="panel panel-default" style="display: none;">
 
 		<div class="spacer20px"></div>
 		<div class="row">
 			<div class="col-md-9" id="schemeArea">
-				<div id="triggerTasks">
-					<div class="moduleShape same-row">
+				<div id="triggerTasks" style="overflow: auto; height: 800px">
+					<div id="rootTrigger" class="moduleShape same-row">
 						<span id="triggerEvent" class="moduleText"></span>
 					</div>
 					<div id="triggerView" class="same-row"></div>
@@ -80,31 +80,67 @@
 									loadComplete();
 								},
 								selected: function(row) {
-// 									$('#drawing').empty();
-// 									buildFlowChart(row);
+
 									$('#triggerView').empty();
 									if(row) {
+										$('#contentTrigger').show();
 										$('#triggerEvent').text(getResource(row.event));
 										$('#triggerName').text(row.name);
 										
-// 										$('#triggerName').prepend('<span class="label ' + getStateLabelClass(row) + '">' + getResource(getStateLabelText(row)) + '</span>&nbsp;&nbsp;&nbsp;');
+ 										$('#triggerName').prepend('<span class="label ' + getStateLabelClass(row) + '">' + getResource(getStateLabelText(row)) + '</span>&nbsp;&nbsp;&nbsp;');
 
 					                	var trigger = row;
-					                	addTask(trigger);
-					                											
-										if(trigger.childTriggers.length > 0) {
-											trigger = trigger.childTriggers[0];
-											do {
-												addTask(trigger);
-												if(trigger.childTriggers.length > 0) {
-													trigger = trigger.childTriggers[0];
-													action = trigger.childTriggers[0];
-												} else {
-													trigger = null;
-												}
-											} while(trigger);
-										}
-										$('#contentTrigger').show();
+					                	var top = 25;
+					                	var left = 200;
+					                	
+					                	addTask(trigger, null, top+50, left+50);
+					                	
+					                	jsPlumb.connect({
+					        	            source: 'rootTrigger',
+					        	            target:"trigger" + trigger.id,
+					        	            connector: 'Straight',
+					        	            anchor: "AutoDefault",
+					        	            endpoint:"Blank",
+					        	            detachable:false,
+					        	            overlays:["PlainArrow"]
+					        	        });	
+					                
+
+										jsPlumb.draggable($('.moduleShape'));
+										
+										$('.addIcon').off('click');
+										$('.addIcon').on('click', function(e) {
+											e.preventDefault();
+											var trigger = $(this).closest('.moduleShape').data('trigger');
+											
+											getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
+												$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
+												$('div[dialog-for="contentTriggers"]').resourceDialog('create');
+											});
+										});
+										
+										$('.editIcon').off('click');
+										$('.editIcon').on('click', function(e) {
+											e.preventDefault();
+											var trigger = $(this).closest('.moduleShape').data('trigger');
+											
+// 											getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
+// 												$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
+												$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { resource: trigger});
+// 												$(document).data('triggerModalCallback').displayResource(trigger);
+// 											});
+											
+										});
+										
+										$('.deleteIcon').off('click');
+										$('.deleteIcon').on('click', function(e) {
+											e.preventDefault();
+											var trigger = $(this).closest('.moduleShape').data('trigger');
+											
+										});
+										
+										
+										
 									} else {
 										$('#contentTrigger').hide();
 									}
@@ -154,7 +190,7 @@
 		return moduleClass;
 	}
 	
-	function addTask(trigger) {
+	function addTask(trigger, parent, top, left) {
 		
 		var moduleClass = "blueModule";
 		if(trigger.result == 'EVENT_FAILURE') {
@@ -164,61 +200,34 @@
 		} else if(trigger.result == 'EVENT_SUCCESS') {
 			moduleClass = "greenModule";
 		}
-		$('#triggerView').append("<div class='same-row'><i id='output_" + trigger.id + "' class='fa fa-2x fa-arrow-right " + getStateClass(trigger) + "'></i><div class='moduleShape same-row' id='action" + trigger.id + "'><span class='moduleText'>"
-			+ getResource(trigger.resourceKey) + "</span><i id='action" + trigger.id + "DeleteTask' class='fa fa-trash-o deleteIcon'></i></div></div>");
+		
+		$('#triggerView').append("<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='moduleShape " 
+				+ moduleClass + " same-row' id='trigger" + trigger.id + "'><div><a data-trigger='"
+				+ trigger.id + "' class='addIcon' href=''><i class='fa fa-plus-circle'></i></a><a data-trigger='" 
+				+ trigger.id + "' class='editIcon' href=''><i class='fa fa-edit'></i></a><a data-trigger='" 
+				+ trigger.id + "' class='deleteIcon' href=''><i class='fa fa-trash-o'></i></a></div><span class='moduleText'>"
+				+ trigger.name + "</span></div>");
+		
+		$('#trigger' + trigger.id).data('trigger', trigger);
+		
+		if(parent) {
+			jsPlumb.connect({
+	            source:"trigger" + parent.id,
+	            target:"trigger" + trigger.id,
+	            connector: 'Straight',
+	            anchor: "AutoDefault",
+	            endpoint:"Blank",
+	            detachable:false,
+	            overlays:["Arrow"],
+	        });	
+		}
+		
+		top+= 50;
+		$.each(trigger.childTriggers, function(idx, childTrigger) {
+			left+=175;
+			addTask(childTrigger, trigger, top, left);
+		});
+        
+        
 	}
-	
-// 	function buildFlowChart(row) {
-
-// 	    flowSVG.config({
-// 	        interactive: false,
-// 	        showButtons: false,
-// 	        connectorLength: 60,
-// 	        scrollto: true,
-// 	        shapeHeight: 50,
-// 	        shapeWidth: 50,
-// 	        defaultFontSize: 16,
-// 	        decisionFill: '#abcdef',
-// 	        decisionHeight: 100,
-// 	        processHeight: 75,
-// 	        arrowHeadHeight: 10,
-// 	        connectorLength: 125,
-// 	        startText: getResource(row.event)
-// 	    });
-	    
-// 	    flowSVG.draw(SVG('drawing'));
-
-	    
-// 	    var shapes = new Array();
-	    
-
-// 	var task = {
-// 			label: 'task' + row.id,
-// 			type: 'process',
-// 			text: [getResource(row.resourceKey)],
-// 	        orient: {
-// 				yes: 'r'
-// 			}
-// 		};
-	
-// 	shapes.push(task);
-// 	debugger
-// 		$.each(row.childTriggers, function(idx, trigger) {
-// 			var s = new Object();
-// 			s.label = 'task' + trigger.id;
-// 			s.type = 'process';
-// 			s.text = [getResource(trigger.event)];
-// 			if(trigger.result == 'EVENT_FAILURE' || trigger.result == 'EVENT_WARNING') {
-// 				task.no = 'task' + trigger.id;
-// 			} else if(trigger.result == 'EVENT_SUCCESS') {
-// 				task.yes = 'task' + trigger.id;
-// 			} else {
-// 				task.next = 'task' + trigger.id;
-// 			}
-// 			shapes.push(s);
-// 		});
-// 	    flowSVG.shapes(shapes);
-
-// 	}
-
 </script>

@@ -190,6 +190,7 @@
 		
 		$('#triggerModal').localize();
 		$('#allTabs').hide();
+		
 		$('.requiresEvent').hide();
 		
 		$('.addButton').attr('disabled', true);
@@ -219,16 +220,17 @@
 				if(event) {
 					$('.requiresEvent').show();
 					$('.addButton').attr('disabled', false);
-					if(!$('#rowAll').is(':empty') || !$('#rowAny').is(':empty')) {
-						bootbox.confirm(getResource("confirmConditionsDeletion.text"),
-								function(confirmed) {
-									if (confirmed) {
-										$('#rowAll').empty();
-										$('#rowAny').empty();
-									} 
-								});
+					if(!displaying) {
+						if(!$('#rowAll').is(':empty') || !$('#rowAny').is(':empty')) {
+							bootbox.confirm(getResource("confirmConditionsDeletion.text"),
+									function(confirmed) {
+										if (confirmed) {
+											$('#rowAll').empty();
+											$('#rowAny').empty();
+										} 
+									});
+						}
 					}
-					
 					$('#triggerModal').data('selectedEvent', event);
 				} else {
 					$('.requiresEvent').hide();
@@ -248,7 +250,7 @@
 				$('#tabProperties').parent().append($('#tabConditions').detach());
 				$('#tabProperties').empty();
 				if(widget.value != '') {
-					if(!displaying) {
+// 					if(!displaying) {
 						$('#tabProperties').propertyPage({ 
 							url : 'triggers/task/' + widget.name, 
 							showButtons : false, 
@@ -265,18 +267,21 @@
 								$('#allTabs').show();
 							}
 						});
-					}
+// 					}
+				} else {
+					$('.requiresEvent').hide();
 				}
 			}
 		});
 		
 		$(document).data('triggerModalCallback', {
 			clearDialog: function(create) {
+				$('.requiresEvent').hide();
 				$('#rowAll').empty();
 				$('#rowAny').empty();
 				$('#resourceName').val('');
 				$('#resourceId').val('');
-				
+
 				eventAuto.clear();
 				eventAuto.enable();
 				taskAuto.clear();
@@ -293,11 +298,10 @@
 				$('.tabPropertiesTab').first().trigger('click');
 				$('.addButton').attr('disabled', true);
 				
-				if(create) {
-					
+// 				if(create) {
 					$('#tabProperties').parent().append($('#tabConditions').detach());
 					$('#tabProperties').empty();
-				}
+// 				}
 			},
 			loadParent: function(parentResource, parentEvents) {
 				$('#triggerModal').data('parentEvents', parentEvents);
@@ -310,6 +314,7 @@
 				$('#resourceName').val(resource.name);
 				eventAuto.setValue(resource.event);
 				eventAuto.disable();
+
 				eventResult.setValue(resource.result);
 
 				$.each(resource.allConditions, function(idx, obj) {
@@ -321,22 +326,11 @@
 				});
 				
 				displaying = true;
-				$('#tabProperties').parent().append($('#tabConditions').detach());
-				$('#tabProperties').empty();
 				
-				$('#tabProperties').propertyPage({
-					url : 'triggers/properties/' + resource.id,
-					showButtons : false,
-					useTemplates : true,
-					canUpdate : currentMenu.canUpdate,
-					additionalTabs : [ {
-						id : "tabConditions",
-						name : getResource("tabConditions.label")
-					}],
-					complete: function() {
-						displaying = false;
-					}
-				});
+				taskAuto.clear();
+				taskAuto.setValue(resource.resourceKey);
+				
+				displaying = false;
 				
 			},
 			validate: function() {
