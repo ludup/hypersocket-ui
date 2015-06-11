@@ -1,37 +1,126 @@
-<ul>
-	<li><a
-		href="https://support.zendesk.com/hc/en-us/articles/206238607"
-		class="messageLink" target="_blank">
-			<p class="messageTitle">
-				<i class="fa fa-envelope-o"></i> New Version Available
-			</p> <span class="messageAuthor"> Hypersocket Support - <time
-					class="live" datetime="2015-05-22T23:34:27+02:00"
-					title="May 22, 2015 23:34">Friday 23:34</time>
-		</span>
-	</a></li>
-	<li><a
-		href="https://support.zendesk.com/hc/en-us/articles/206238607"
-		class="messageLink" target="_blank">
-			<p class="messageTitle">
-				<i class="fa fa-envelope-o"></i> Hypersocket VPN Release Notes
-			</p> <span class="messageAuthor"> Lee David Painter - <time
-					class="live" datetime="2015-05-22T23:34:27+02:00"
-					title="May 22, 2015 23:34">Friday 23:34</time>
-		</span>
-	</a></li>
-	<li><a
-		href="https://support.zendesk.com/hc/en-us/articles/206238607"
-		class="messageLink" target="_blank">
-			<p class="messageTitle">
-				<i class="fa fa-envelope-o"></i> Important Announcement Regarding
-				Logjam
-			</p> <span class="messageAuthor"> Majid Latif - <time class="live"
-					datetime="2015-05-22T23:34:27+02:00" title="May 22, 2015 23:34">Friday
-					23:34</time>
-		</span>
-	</a></li>
-</ul>
-<div class="controls">
-	<a class="messageControl"><i class="fa fa-angle-left"></i></a> <a
-		class="messageControl"><i class="fa fa-angle-right"></i></a>
+<ul id="messageList"></ul>
+<div class="controls" id="messageControls">
+	<ul class="pagination">
+		<li class="page-first" id="prevPage"><a class="messageControl"
+			><i class="fa fa-angle-left"></i></a></li>
+		<li class="page-last" id="nextPage"><a class="messageControl"
+			><i class="fa fa-angle-right"></i></a></li>
+	</ul>
 </div>
+<script type="text/javascript">
+	var pageNum = 0;
+	var days = [getResource('systemMessages.dayOfWeek.sun'),
+		        getResource('systemMessages.dayOfWeek.mon'),
+		        getResource('systemMessages.dayOfWeek.tue'),
+		        getResource('systemMessages.dayOfWeek.wed'),
+		        getResource('systemMessages.dayOfWeek.thu'),
+		        getResource('systemMessages.dayOfWeek.fri'),
+		        getResource('systemMessages.dayOfWeek.sat')];
+	$(document).ready(function() {
+		getMessages();
+	});
+	function getMessages(){
+		$('#messageList').empty();
+		getJSON('dashboardMessage/messageCount', null, function(data) {
+			if(data.resource == 0){
+				$('#messageList').after('<div ><h5><p style="text-align: center; padding: 15px">' + getResource('systemMessages.emptyList') + '</p></h5></div>');
+				$('#messageControls').remove();
+			}else if(data.resource <= 3){
+				$('#messageControls').remove();
+			}else if(pageNum == 0){
+				$('#prevPage').addClass('disabled');
+				$('#nextPage').removeClass('disabled');
+			}else if((pageNum + 1) == Math.ceil(data.resource / 3)){
+				$('#nextPage').addClass('disabled');
+				$('#prevPage').removeClass('disabled');
+			}
+		});
+		getJSON('dashboardMessage/messages/' + pageNum, null, function(data) {
+			$.each(data.resources, function(index, value){
+				
+				date = new Date(value.createDate);
+				hours = date.getHours();
+				minutes = date.getMinutes();
+				if(minutes < 10) {
+					minutes = '0' + minutes;
+				}
+				if(hours < 10) {
+					hours = '0' + hours;
+				}
+				time = hours + ':' + minutes;
+				
+				author = '';
+				subject = '';
+				messageBody = '';
+				if(value.system){
+					author = getResource('systemMessages.system');
+				}else{
+					author = value.author;
+				}
+				if(value.nameResourceKey){
+					subject = getResource(value.name);
+				}else{
+					subject = value.name;
+				}
+				if(value.bodyResourceKey){
+					messageBody = getResource(value.body);
+				}else{
+					messageBody = value.body;
+				}
+				if(value.bodyHyperlink){
+					$('#messageList').append(
+							'<li>'
+						+	'	<a href="' + messageBody + '" class="messageLink" target="_blank">'
+						+	'		<p class="messageTitle">'
+						+	'			<i class="fa fa-envelope-o"></i> ' + subject
+						+	'		</p>'
+						+	'		<span class="messageAuthor">' + author + ' - ' + days[date.getDay()] + ' ' + time + '</span>'
+						+	'	</a>'
+						+	'</li>');
+				}else{
+					$('#messageList').append(
+							'<li>'
+						+	'	<a href="#" class="messageLink" id="message_' + value.messageId + '">'
+						+	'		<p class="messageTitle">'
+						+	'			<i class="fa fa-envelope-o"></i> ' + subject
+						+	'		</p>'
+						+	'		<span class="messageAuthor">' + author + ' - ' + days[date.getDay()] + ' ' + time + '</span>'
+						+	'	</a>'
+						+	'</li>');
+					$('#message_' + value.messageId).data('messageData', {'messageId': value.messageId, 'subject': subject, 'messageBody': messageBody});
+					$('#message_' + value.messageId).click(function(){
+						messageData = $(this).data('messageData');
+						messageModal =
+								'<div class="modal" id="messageModal_' + messageData.messageId + '" tabindex="-1" role="dialog">'
+							+	'	<div class="modal-dialog modal-md">'
+							+	'		<div class="modal-content">'
+							+	'			<div class="modal-header">'
+							+	'				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'
+							+	'				<h4 class="modal-title" id="myModalLabel">' + messageData.subject + '</h4>'
+							+	'			</div>'
+							+	'			<div class="modal-body">' + messageData.messageBody + '</div>'
+							+	'		</div>'
+							+	'	</div>'
+							+	'</div>';
+						$(messageModal).modal('show');
+					});
+				}
+			});
+		});
+	}
+	
+	$('#prevPage').click(function(){
+		if(!$(this).hasClass('disabled')){
+			pageNum--;
+			getMessages();
+		}
+	});
+	
+	$('#nextPage').click(function(){
+		if(!$(this).hasClass('disabled')){
+			pageNum++;
+			getMessages();
+		}
+	});
+	
+</script>
