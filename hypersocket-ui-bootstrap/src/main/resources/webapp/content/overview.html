@@ -1,27 +1,34 @@
 <div id="dynamicDashboardMessages"></div>
 <div id="overviewContent" class="panel">
-	<div class="col-md-8"></div>
-	<div id="feed" class="col-md-4"></div>
+	<div id="feedLarge" class="col-md-8"></div>
+	<div id="feedSmall" class="col-md-4"></div>
 </div>
+<div id="invisibleWidgets" style="display: none"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		getJSON('overview/widgets', null, function(data) {
 			$.each(data.resources, function(index, value){
-				if(value.large){
-					$('#overviewContent').find('.col-md-8').append('<div id="' + value.contentPath + '" class="row"></div>');
-					$('#' + value.contentPath).load('content/' + value.contentPath + '.html',
-							function(){
-								$(this).prepend('<h4 class="overviewTitle"><span>' + getResource(value.resourceKey) + '</span></h4>');
-							});
-				}else{
-					$('#overviewContent').find('.col-md-4').append('<div id="' + value.contentPath + '" class="row small-overview-widget"></div>');
-					$('#' + value.contentPath).load('content/' + value.contentPath + '.html',
-							function(){
-								$(this).prepend('<h4><span>' + getResource(value.resourceKey) + '</span></h4>');						
-							});
+			
+			    if(!value.visible) {
+			   		 $('#invisibleWidgets').append('<div id="' + value.contentPath + '" class="row"></div>');
+					 $('#' + value.contentPath).load('content/' + value.contentPath + '.html');
+			    } else {
+					if(value.large){
+						$('#feedLarge').append('<div id="' + value.contentPath + '" class="row"></div>');
+						$('#' + value.contentPath).load('content/' + value.contentPath + '.html',
+								function(){
+									$(this).prepend('<h4 class="overviewTitle"><span>' + getResource(value.resourceKey) + '</span></h4>');
+								});
+					}else{
+						$('#feedSmall').append('<div id="' + value.contentPath + '" class="row small-overview-widget"></div>');
+						$('#' + value.contentPath).load('content/' + value.contentPath + '.html',
+								function(){
+									$(this).prepend('<h4><span>' + getResource(value.resourceKey) + '</span></h4>');						
+								});
+					}
 				}
 			});
-			$('#overviewContent').find('.col-md-4').children().first().addClass('firstFeed');
+			$('#feedSmall').children().first().addClass('firstFeed');
 		});
 		loadComplete();
 	});

@@ -586,8 +586,6 @@ function isDashboardVisible() {
 function showDashboardMessage(text, icon, alertClass, fade, fadeCallback) {
 	log("DASHBOARD: " + text);
 
-	removeMessage();
-	
 	var messageNum = $('#dynamicDashboardMessages').length;
 	var messageDiv = '#dashboardMessage' + messageNum;
 	
