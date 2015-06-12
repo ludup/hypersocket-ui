@@ -280,6 +280,12 @@
 			});
 			
 			$('#createAction').on('click', function(e) {
+				
+				if(!$('#actionProperties').validateProperties()) {
+					showError("error.correctValidationErrors");
+					return;
+				}
+				
 				if(!action) {
 					action = new Object();
 					action.id = new Date().getTime();
@@ -487,8 +493,7 @@
 			},
 			validate: function() {
 				if ($('#resourceName').val().trim() == '') {
-					$('#addTriggerForm').resourceDialog(
-							'error', "error.nameRequired");
+					showError("error.nameRequired");
 					return false;
 				}
 				if (!eventAuto.getValue()) {
@@ -496,6 +501,10 @@
 					return false;
 				}
 				
+				if(!$('#tabProperties').validateProperties()) {
+					showError("error.correctValidationErrors");
+					return false;
+				}
 				var count = 0;
 				$('.editAction').each(function() {
 					var a = $(this).data('action');

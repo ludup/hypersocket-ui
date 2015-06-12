@@ -339,7 +339,11 @@ $.fn.propertyPage = function(opts) {
 		options.url,
 		null,
 		function(data) {
-			;
+			
+			if((data.resources && data.resources.length == 0)
+					&& (!options.additionalTabs || options.additionalTabs.length == 0)) {
+				return;
+			}
 			contentTabs = '#' + propertyDiv + 'Tabs';
 			contentActions = '#' + propertyDiv + 'Actions';
 			revertButton = '#' + propertyDiv + 'Revert';

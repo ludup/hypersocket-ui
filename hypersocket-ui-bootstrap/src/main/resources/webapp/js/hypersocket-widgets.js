@@ -433,6 +433,7 @@ $.fn.selectButton = function(data) {
 			disabled : false, 
 			value: '', 
 			nameIsResourceKey: false,
+			notSetResourceKey: 'text.notSet',
 			getUrlData: function(data) {
 				return data;
 			}
@@ -443,9 +444,8 @@ $.fn.selectButton = function(data) {
 	var name = (obj && obj.resourceKey != null ) ? formatResourceKey(obj.resourceKey) : $(this).attr('id') ;
 
 	$(this).append('<div class="btn-group"><input id="' 
-			 + id + '" type="hidden" name="select_value_' + id + '" value="'
-			 + obj.value + '"><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" name="selectBtn_'+ name +'"><span id="select_button_' 
-			 + id + '">' + (obj.nameIsResourceKey ? getResource(obj.name) : obj.name) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
+			 + id + '" type="hidden" name="select_value_' + id + '" value=""><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" name="selectBtn_'+ name +'"><span id="select_button_' 
+			 + id + '">' + getResource(obj.notSetResourceKey) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
 			 + 'select_' + id + '" name="select_' + name +'" class="dropdown-menu' + (obj.dropdownPosition ? ' ' + obj.dropdownPosition : '') + '" role="menu"></div>');
 
 	var selected = null;
@@ -460,7 +460,11 @@ $.fn.selectButton = function(data) {
 			setValue: function(val) {
 				$('#' + id).val(val);
 				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
-				$('#select_button_' + id).text(selected.attr('data-label'));
+				if(selected) {
+					$('#select_button_' + id).text(selected.attr('data-label'));
+				} else {
+					$('#select_button_' + id).text(getResource(options.notSetText));
+				}
 			},
 			changed: function() {
 				if(obj.changed) {
@@ -471,6 +475,10 @@ $.fn.selectButton = function(data) {
 				return $('#' + id).val();
 			},
 			getSelectedObject: function() {
+				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
+				return selected.data('resource');
+			},
+			getObject: function() {
 				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
 				return selected.data('resource');
 			},
@@ -503,6 +511,9 @@ $.fn.selectButton = function(data) {
  				}
  				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
 					$('#select_button_' + id).text(selected.attr('data-label'));
+ 			},
+ 			selectFirst: function() {
+ 				$('.selectButton_' + id).first().trigger('click');
  			}
 		};
 	var listItem;
@@ -557,7 +568,8 @@ $.fn.selectButton = function(data) {
 						'click',
 						function(evt) {
 							evt.preventDefault();
-							$('#' + id).val($(this).attr('data-value'));
+							var selected = $(this).attr('data-value');
+							$('#' + id).val(selected);
 							$('#select_button_' + id).text($(this).attr('data-label'));
 							if(obj.changed) {
 								obj.changed(callback);
@@ -572,6 +584,12 @@ $.fn.selectButton = function(data) {
 		
 	if(obj.disabled) {
 		callback.disable();
+	}
+	
+	if(obj.val && obj.val!='') {
+		callback.setValue(obj.val);
+	} else {
+		callback.selectFirst();
 	}
 	
 	$(this).data('widget', callback);
@@ -716,7 +734,6 @@ $.fn.autoComplete = function(data) {
 	});
 	
 	$('#input_' + id).keyup(function() {
-		debugger;
 		$('#spin_' + id).removeClass('fa-search');
 		$('#spin_' + id).addClass('fa-spin');
 		$('#spin_' + id).addClass('fa-spinner');

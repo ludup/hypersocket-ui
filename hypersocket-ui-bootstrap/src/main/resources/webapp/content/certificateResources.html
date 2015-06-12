@@ -122,12 +122,15 @@
 							validate : function() {
 
 								if ($('#resourceName').val() == '') {
-									$('#addCertificateForm').resourceDialog(
-											'error', "error.nameRequired");
+									showError("error.nameRequired");
 									return false;
 								}
 
-								// TODO validate any of your other fields
+
+								if(!$('#certificateProperties').validateProperties()) {
+									showError("error.correctValidationErrors");
+									return false;
+								}
 								
 								return true;
 							},

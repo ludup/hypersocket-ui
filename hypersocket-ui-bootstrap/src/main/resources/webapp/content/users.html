@@ -149,6 +149,12 @@
 											return false;
 										}
 									}
+									
+									if(!$('#userProperties').validateProperties()) {
+										showError("error.correctValidationErrors");
+										return false;
+									}
+									
 									return true;
 								},
 								clearDialog : function(create) {
