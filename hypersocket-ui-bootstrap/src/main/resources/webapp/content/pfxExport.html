@@ -52,9 +52,9 @@
 		});
 		
 		$('#downloadPFXButton').click(function(e) {
-			$('#pfxExport').resourceDialog('error','reset');
+			removeMessage();
 			if($('#pfx_passphrase').val() != $('#pfx_confirmPassphrase').val()){
-				$('#pfxExport').resourceDialog('error',getResource("pfxExport.passphraseConfimation.error"));
+				showError(getResource("pfxExport.passphraseConfimation.error"));
 				return;
 			}
 			$('#downloadIcon').removeClass('fa-download');
@@ -74,7 +74,7 @@
 					window.location = basePath + '/api/certificates/downloadPfx/' + $('#pfxExport').data('resource');
 				},
 				error : function(jqXHR,textStatus,errorThrown) {
-				      $('#pfxExport').resourceDialog('error',errorThrown);
+					showError(errorThrown);
 				},
 				complete: function() {
 					$('#downloadIcon').removeClass('fa-spinner fa-spin');

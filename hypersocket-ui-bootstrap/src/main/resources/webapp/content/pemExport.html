@@ -50,9 +50,9 @@
 		});
 		
 		$('#downloadPEMButton').click(function(e) {
-			$('#pemExport').resourceDialog('error','reset');
+			removeMessage();
 			if($('#download_passphrase').val() != $('#download_confirmPassphrase').val()){
-				$('#pemExport').resourceDialog('error',getResource("pemExport.passphraseConfimation.error"));
+				showError(getResource("pemExport.passphraseConfimation.error"));
 				return;
 			}
 			$('#downloadIcon').removeClass('fa-download');
@@ -71,7 +71,7 @@
 					window.location = basePath + '/api/certificates/downloadPem/' + $('#pemExport').data('resource');
 				},
 				error : function(jqXHR,textStatus,errorThrown) {
-				      $('#pemExport').resourceDialog('error',errorThrown);
+					showError(errorThrown);
 				},
 				complete: function() {
 					$('#downloadIcon').removeClass('fa-spinner fa-spin');

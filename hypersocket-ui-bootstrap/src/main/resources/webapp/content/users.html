@@ -136,19 +136,25 @@
 								additionalActions : actions,
 								validate : function(create) {
 									if ($('#userName').val() == '') {
-										$('#addUserModal').resourceDialog('error', "error.nameRequired");
+										showError("error.nameRequired");
 										return false;
 									}
 									if(create) {
 										if($('#userPassword').val() == '') {
-											$('#addUserModal').resourceDialog('error', "error.passwordEmpty");
+											showError("error.passwordEmpty");
 											return false;
 										}
 										if($('#userPassword').val() != $('#userConfirmPassword').val()) {
-											$('#addUserModal').resourceDialog('error', "error.passwordsNotMatched");
+											showError("error.passwordsNotMatched");
 											return false;
 										}
 									}
+									
+									if(!$('#userProperties').validateProperties()) {
+										showError("error.correctValidationErrors");
+										return false;
+									}
+									
 									return true;
 								},
 								clearDialog : function(create) {

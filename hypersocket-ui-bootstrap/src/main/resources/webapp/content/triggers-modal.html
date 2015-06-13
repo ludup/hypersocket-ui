@@ -85,6 +85,7 @@
 					</div>
 				</div>
 				<input type="hidden" id="resourceId" name="resourceId" value="" />
+				<input type="hidden" id="parentId" name="parentId" value="" />
 				<div class="modal-footer"></div>
 			</div>
 		</div>
@@ -311,6 +312,7 @@
 				
 				
 				$('#resourceId').val(resource.id);
+				$('#parentId').val(resource.parentId);
 				$('#resourceName').val(resource.name);
 				eventAuto.setValue(resource.event);
 				eventAuto.disable();
@@ -329,6 +331,7 @@
 				
 				taskAuto.clear();
 				taskAuto.setValue(resource.resourceKey);
+				taskAuto.disable();
 				
 				displaying = false;
 				
@@ -360,6 +363,7 @@
 			createResource: function() {
 				resource = new Object();
 				resource.id = $('#resourceId').val();
+				resource.parentId = $('#parentId').val();
 				resource.name = $('#resourceName').val();
 				resource.event = eventAuto.getValue();
 				resource.task = taskAuto.getValue();

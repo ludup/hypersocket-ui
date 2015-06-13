@@ -433,6 +433,7 @@ $.fn.selectButton = function(data) {
 			disabled : false, 
 			value: '', 
 			nameIsResourceKey: false,
+			notSetResourceKey: 'text.notSet',
 			getUrlData: function(data) {
 				return data;
 			}
@@ -443,9 +444,8 @@ $.fn.selectButton = function(data) {
 	var name = (obj && obj.resourceKey != null ) ? formatResourceKey(obj.resourceKey) : $(this).attr('id') ;
 
 	$(this).append('<div class="btn-group"><input id="' 
-			 + id + '" type="hidden" name="select_value_' + id + '" value="'
-			 + obj.value + '"><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" name="selectBtn_'+ name +'"><span id="select_button_' 
-			 + id + '">' + (obj.nameIsResourceKey ? getResource(obj.name) : obj.name) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
+			 + id + '" type="hidden" name="select_value_' + id + '" value=""><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" name="selectBtn_'+ name +'"><span id="select_button_' 
+			 + id + '">' + getResource(obj.notSetResourceKey) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
 			 + 'select_' + id + '" name="select_' + name +'" class="dropdown-menu' + (obj.dropdownPosition ? ' ' + obj.dropdownPosition : '') + '" role="menu"></div>');
 
 	var selected = null;
@@ -460,7 +460,11 @@ $.fn.selectButton = function(data) {
 			setValue: function(val) {
 				$('#' + id).val(val);
 				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
-				$('#select_button_' + id).text(selected.attr('data-label'));
+				if(selected) {
+					$('#select_button_' + id).text(selected.attr('data-label'));
+				} else {
+					$('#select_button_' + id).text(getResource(options.notSetText));
+				}
 			},
 			changed: function() {
 				if(obj.changed) {
@@ -471,6 +475,10 @@ $.fn.selectButton = function(data) {
 				return $('#' + id).val();
 			},
 			getSelectedObject: function() {
+				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
+				return selected.data('resource');
+			},
+			getObject: function() {
 				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
 				return selected.data('resource');
 			},
@@ -503,6 +511,9 @@ $.fn.selectButton = function(data) {
  				}
  				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
 					$('#select_button_' + id).text(selected.attr('data-label'));
+ 			},
+ 			selectFirst: function() {
+ 				$('.selectButton_' + id).first().trigger('click');
  			}
 		};
 	var listItem;
@@ -557,7 +568,8 @@ $.fn.selectButton = function(data) {
 						'click',
 						function(evt) {
 							evt.preventDefault();
-							$('#' + id).val($(this).attr('data-value'));
+							var selected = $(this).attr('data-value');
+							$('#' + id).val(selected);
 							$('#select_button_' + id).text($(this).attr('data-label'));
 							if(obj.changed) {
 								obj.changed(callback);
@@ -572,6 +584,12 @@ $.fn.selectButton = function(data) {
 		
 	if(obj.disabled) {
 		callback.disable();
+	}
+	
+	if(obj.val && obj.val!='') {
+		callback.setValue(obj.val);
+	} else {
+		callback.selectFirst();
 	}
 	
 	$(this).data('widget', callback);
@@ -699,6 +717,22 @@ $.fn.autoComplete = function(data) {
 		$('#spin_' + id).addClass('fa-search');
 	}
 	
+	var updateValue = function(val) {
+		$.each($('#input_' + id).data('values'), function(idx, obj) {
+			if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
+				$('#' + id).val(obj[options.valueAttr]);
+				$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+				if(options.changed) {
+					options.changed(obj);
+				}
+			}
+		});
+	};
+	
+	$('#input_' + id).change(function() {
+		updateValue($(this).val());
+	});
+	
 	$('#input_' + id).keyup(function() {
 		$('#spin_' + id).removeClass('fa-search');
 		$('#spin_' + id).addClass('fa-spin');
@@ -734,16 +768,7 @@ $.fn.autoComplete = function(data) {
 	
 	var callback = {
 			setValue: function(val) {
-				$.each($('#input_' + id).data('values'), function(idx, obj) {
-					if(obj[options.valueAttr]==val) {
-						$('#' + id).val(val);
-						$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-						if(options.changed) {
-							options.changed(obj);
-						}
-					}
-				});
-				
+				updateValue(val);
 			},
 			getValue: function() {
 				return $('#' + id).val();
@@ -2038,13 +2063,14 @@ $.fn.fileUploadInput = function(data) {
 				showUploadButton: true,
 				showDownloadButton: true,
 				url: 'fileUpload/file',
+				detailedView: true,
 				getUrlData: function(data) {
 					return data;
 				}
 			}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "FileUpload");
-	var html =	'<div id="' + id + '" class="col-xs-8">'
+	var html =	'<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
 			+	'<div class="propertyValue col-xs-4 dialogActions">'
@@ -2079,24 +2105,23 @@ $.fn.fileUploadInput = function(data) {
 			fileSize = (Math.round((data.fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
 		}
 		formattedHtml = '<div class="file-upload-info">'
-					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>'
-					+	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
-					+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>'
-					+	'</div>'
+					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>';
+		if(options.detailedView) {
+			formattedHtml +=	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
+			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>';			
+		}
+
+		formattedHtml +=	'</div>'
 					+	'<div class="file-upload-info">'
-					+	'	<span>' + data.fileName + '</span></br>'
-					+	'	<span>' + fileSize + '</span></br>'
-					+	'	<span>' + data.md5Sum + '</span>'
-					+	'</div>';
+					+	'	<span>' + data.fileName + '</span></br>';
 		
-//					This code shows the delete button next to file's info
+		if(options.detailedView) {
+			formattedHtml +=	'	<span>' + fileSize + '</span></br>'
+						+	'	<span>' + data.md5Sum + '</span>';			
+		}
+					
+		formattedHtml +=	'</div>';
 		
-//					+	'<div class="propertyValue dialogActions">'
-//					+	'<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash-o"></i></a>';
-//		$('#' + id + 'RemoveButton').click(function(){
-//			callback.remove();
-//		});
-			
 		return formattedHtml;
 	}
 	
@@ -2136,26 +2161,30 @@ $.fn.fileUploadInput = function(data) {
  			},
  			setValue: function(uuid) {
  				getJSON('fileUpload/metainfo/' + uuid, null, function(data){
- 					if($('#' + id + 'Info').length){
- 						$('#' + id + 'Info').empty();
- 						$('#' + id + 'Info').append(showInfoFormat(data));
- 						$('#' + id + 'Info').data('uuid', data.name);
- 						$('#' + id + 'RemoveButton').unbind('click');
- 						$('#' + id + 'RemoveButton').click(function(){
- 							callback.remove();
- 						});
- 						$('#' + id + 'DownloadButton').unbind('click');
- 						$('#' + id + 'DownloadButton').click(function(){
- 							callback.download();
- 						});
- 	 				}else{
- 	 					showInfo(data);
- 	 				}
  					
- 					if(options.disabled) {
- 						callback.disable();
+ 					if(data.success) {
+	 					if($('#' + id + 'Info').length){
+	 						$('#' + id + 'Info').empty();
+	 						$('#' + id + 'Info').append(showInfoFormat(data.resource));
+	 						$('#' + id + 'Info').data('uuid', data.resource.name);
+	 						$('#' + id + 'RemoveButton').unbind('click');
+	 						$('#' + id + 'RemoveButton').click(function(){
+	 							callback.remove();
+	 						});
+	 						$('#' + id + 'DownloadButton').unbind('click');
+	 						$('#' + id + 'DownloadButton').click(function(){
+	 							callback.download();
+	 						});
+	 	 				}else{
+	 	 					showInfo(data.resource);
+	 	 				}
+	 					
+	 					if(options.disabled) {
+	 						callback.disable();
+	 					}
+	 					$('#' + id + 'UpdateProgressHolder').hide();
+
  					}
- 					$('#' + id + 'UpdateProgressHolder').hide();
  				});
  			},
  			clear: function() {
@@ -2211,7 +2240,13 @@ $.fn.fileUploadInput = function(data) {
 		 						if(options.changed) {
 		 							options.changed(callback);
 		 						}
-		 						
+		 						if(notify) {
+		 							notify(true);
+		 						}
+	 		        		} else {
+	 		        			if(notify) {
+	 		        				notify(false);
+	 		        			}
 	 		        		} 
  		        		} 
  		        	} 
@@ -2282,7 +2317,7 @@ $.fn.multipleFileUpload = function(data) {
 	
 	var options = $.extend(
 			{  
-				text: "Add file to upload",
+				text: "",
 				maxRows : 0,
 				disabled : false, 
 				values: [],
@@ -2306,11 +2341,11 @@ $.fn.multipleFileUpload = function(data) {
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 			+	'	<div id="' + id + 'FileUploads" ></div>'
 			+	'	<div id="' + id + 'NewRow">'
-			+	'		<div class"row">'
-			+	'			<div class="propertyValue col-xs-11">'
+			+	'		<div class="col-xs-12" style="padding-left: 0px; padding-right: 0px;">'
+			+	'			<div class="propertyValue col-xs-10" style="padding-left: 0px;">'
 			+	'				<span class="help-block">' + options.text + '</span>'
 			+	'			</div>'
-			+	'			<div class="propertyValue col-xs-1 dialogActions">'
+			+	'			<div class="propertyValue col-xs-2 dialogActions">'
 			+	'				<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
 			+	'					<i class="fa fa-plus"></i>'
 			+	'				</a>'

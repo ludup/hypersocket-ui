@@ -68,8 +68,7 @@
 				canDelete: currentMenu.canDelete,
 				validate : function() {
 					if ($('#groupName').val() == '') {
-						$('#contentGroups').resourceDialog('error', 
-								"error.nameRequired");
+						showError("error.nameRequired");
 						return false;
 					}
 					return true;

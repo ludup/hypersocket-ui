@@ -1,4 +1,4 @@
-var newTable = false;
+var newTable = true;
 
 $.fn.ajaxResourcePageInsert = function(resource) {
 	$(this).data('dataTable').fnAddData(resource);
@@ -171,8 +171,10 @@ $.fn.oldResourcePage = function(params) {
 			canUpdate = options.checkUpdate(idCol.aData);
 		}
 
-		renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
-
+		if(!options.disableEditView) {
+			renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
+		}
+		
 		$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 
 		$(document).on(
@@ -513,6 +515,7 @@ $.fn.resourceTable = function(params) {
 		canDelete : false,
 		icon : 'fa-cog',
 		disableDecoration: false,
+		additionalActionsDropdown: true,
 		createButtonText: "text.add",
 		createButtonIcon: "fa-plus-circle"
 		},params);
@@ -520,7 +523,7 @@ $.fn.resourceTable = function(params) {
 	$(this).data('options', options);
 
 	var html = '';
-	
+
 	if(!options.disableDecoration) {
 		html += '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
 			+ options.icon + '"></i><span class="break">' 
@@ -546,14 +549,68 @@ $.fn.resourceTable = function(params) {
 		var c = { field : obj.name,
 				title: getResource(options.resourceKey + "." + obj.name + '.label'),
 				align:'left',
-				sortable: true
+				sortable: true,
+				formatter: obj.formatter
 		};
 		columns.push(c);	
 	});
 	
+	if(!$('#additionalActions').length) {
+		$('body').append('<div id="additionalActions"></div>');
+	}
+	
+	if(options.exportUrl) {
+		if(!options.additionalActions) {
+			options.additionalActions = new Array();
+		}
+		if(!options.toolbarButtons) {
+			options.toolbarButtons = new Array();
+		}
+
+		options.additionalActions.push({
+			resourceKey : 'exportResource',
+			iconClass : 'fa-download',
+			action : function(resource, callback) {
+				window.location = basePath + '/api/' + options.exportUrl + '/' + resource.id;
+				callback();
+			},
+			enabled : true
+		});
+		
+		options.toolbarButtons.push({ 
+			resourceKey: 'exportResources',
+			icon: 'fa-download',
+			action: function(selections, callback) {
+				window.location = basePath + '/api/' + options.exportUrl;
+				callback();
+			}
+		});
+	}
+	
+	if(options.importUrl) {
+
+		if(!options.toolbarButtons) {
+			options.toolbarButtons = new Array();
+		}
+		
+		if(!$('#importResourcesPlaceholder').length) {
+			$('body').append('<div id="importResourcesPlaceholder"></div>');
+			$('#importResourcesPlaceholder').load(basePath + "/ui/content/importResourceDialog.html");
+		}
+		options.toolbarButtons.push({ 
+			resourceKey: 'importResources',
+			icon: 'fa-upload',
+			action: function(selections, callback) {
+				$('#importResources').data('importUrl', options.importUrl);
+				$('#importResources').data('action')(callback);
+			}
+		});
+	}
+	
 	var renderActions = function(value, row, index) {
 		var id = row.id;
 		var renderedActions = '';
+		
 		if (options.additionalActions) {
 
 			if(options.additionalActionsDropdown && options.additionalActions.length > 0) {
@@ -639,19 +696,19 @@ $.fn.resourceTable = function(params) {
 			canUpdate = options.checkUpdate(row);
 		}
 
-		renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
-
-		$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
-
-		$(document).on(
-			'click',
-			'#' + divName + 'Actions' + id + ' .row-edit',
-			function() {
-				var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
-				var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-				$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
-					{ row : curRow, resource : resource });
-		});
+		if(!options.disableEditView) {
+			renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
+			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
+			$(document).on(
+				'click',
+				'#' + divName + 'Actions' + id + ' .row-edit',
+				function() {
+					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
+					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+					$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
+						{ row : curRow, resource : resource });
+			});
+		}
 
 		if (options.canDelete) {
 			
@@ -688,6 +745,7 @@ $.fn.resourceTable = function(params) {
 						                    field: 'id',
 						                    values: [resource.id]
 						                });
+										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 										showSuccess(data.message);
 									} else {
 										showError(data.message);
@@ -755,12 +813,17 @@ $.fn.resourceTable = function(params) {
 	    		this.sortName = sortColumn;
 	    	}
 	    	return false;
+	    },
+	    onClickRow: function(row) {
+	    	if(options.selected) {
+	    		options.selected(row);
+	    	}
 	    }
 	    
 	});
 
-	if(options.additionalButtons) {
-		$.each(options.additionalButtons, function(idx, action) {
+	if(options.toolbarButtons) {
+		$.each(options.toolbarButtons, function(idx, action) {
 			$('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
 					+ action.resourceKey + 'TableAction" class="btn btn-default" title="' 
 					+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
@@ -776,9 +839,33 @@ $.fn.resourceTable = function(params) {
 		});
 	}
 	
+	if(options.additionalButtons) {
+		
+		$.each(options.additionalButtons, function() {
+			$('#' + divName + 'Actions').append(
+				'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>' + getResource(this.resourceKey + '.label') + '</button>');
+			var button = this;
+			$('#' + this.resourceKey).click(function() {
+				if(button.action) {
+					button.action(function() {
+						$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+					});
+				}
+			});
+		});
+	}
+	
 	if (options.complete) {
 		options.complete();
 	}
+	
+	var callback = {
+		refresh: function() {
+			$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+		}
+	}
+	
+	return callback;
 };
 
 $.fn.bootstrapResourceDialog = function(params, params2) {

@@ -100,8 +100,7 @@
 				canDelete: currentMenu.canDelete,
 				validate : function() {
 					if ($('#name').val() == '') {
-						$('#contentRoles').resourceDialog('error',
-								"error.nameRequired");
+						showError("error.nameRequired");
 						return false;
 					}
 					return true;

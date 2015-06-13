@@ -64,7 +64,7 @@
 		
 		$('#uploadPfxButton').click(function(e) {
 			if (!$('#pfxKey')[0].files[0]) {
-				$('#pfxUpload').resourceDialog('error', getResource("uploadPfx.error.selectKey"));
+				showError(getResource("uploadPfx.error.selectKey"));
 				return;
 			}
 			var formData = new FormData();
@@ -90,12 +90,12 @@
 						$('#pfxUpload').data('callback')(data.resource);
 						showSuccess(data.message);
 					} else {
-						$('#pfxUpload').resourceDialog('error', data.message);
+						showError(data.message);
 					}
 
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					$('#pfxUpload').resourceDialog('error', errorThrown);
+					showError(errorThrown);
 				},
 				complete: function() {
 					$('#uploadPfxIcon').removeClass('fa-spinner fa-spin');

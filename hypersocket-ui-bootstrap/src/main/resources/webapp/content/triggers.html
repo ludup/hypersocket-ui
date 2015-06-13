@@ -31,7 +31,7 @@
 				$('#saveTriggerbutton').attr('disabled', true);
 				$('#contentTriggers').load('content/triggers-modal.html', function() {
 						
-					$('#contentTriggers').ajaxResourcePage(
+					var resourcePage = $('#contentTriggers').ajaxResourcePage(
 							{
 								id : "Trigger",
 								tableUrl : "triggers/table",
@@ -45,18 +45,6 @@
 								canCreate: currentMenu.canCreate,
 								canUpdate: currentMenu.canUpdate,
 								canDelete: currentMenu.canDelete,
-								additionalActionsDropdown: true,
-								additionalActions: [{
-										resourceKey : "chainTrigger",
-										iconClass : "fa-chain",
-										action : function(resource, callback) {				
-											getJSON('triggers/parentEvents/' + resource.id, null, function(data) {
-												$(document).data('triggerModalCallback').loadParent(resource, data.resources);
-												$('div[dialog-for="contentTriggers"]').resourceDialog('create');
-											});
-										},
-										enabled : true
-								}],
 								showCreate: function() {
 									$(document).data('triggerModalCallback').loadParent(null, null);
 								},
@@ -79,9 +67,15 @@
 								complete : function() {
 									loadComplete();
 								},
+								resourceUpdated: function() {
+									$('#triggerView').empty();
+									$('._jsPlumb_connector').remove();
+									resourceTable.refresh();
+								},
 								selected: function(row) {
 
 									$('#triggerView').empty();
+									$('._jsPlumb_connector').remove();
 									if(row) {
 										$('#contentTrigger').show();
 										$('#triggerEvent').text(getResource(row.event));
@@ -123,19 +117,44 @@
 										$('.editIcon').on('click', function(e) {
 											e.preventDefault();
 											var trigger = $(this).closest('.moduleShape').data('trigger');
-											
-// 											getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
-// 												$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
 												$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { resource: trigger});
-// 												$(document).data('triggerModalCallback').displayResource(trigger);
-// 											});
-											
 										});
 										
 										$('.deleteIcon').off('click');
 										$('.deleteIcon').on('click', function(e) {
 											e.preventDefault();
 											var trigger = $(this).closest('.moduleShape').data('trigger');
+											if(!trigger.isRoot) {
+												bootbox.confirm(getResource("confirm.deleteTriggerItem").format(trigger.name), function(result) {
+													  if(result) {
+														  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+																if(data.success) {
+																	showSuccess(data.message);
+																	$('#triggerView').empty();
+																	$('._jsPlumb_connector').remove();
+																	resourcePage.refresh();
+																} else {
+																	showError(data.message)
+																}
+															});
+													  }
+												}); 
+											} else {
+												bootbox.confirm(getResource("confirm.deleteTrigger").format(trigger.name), function(result) {
+													  if(result) {
+														  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+																if(data.success) {
+																	showSuccess(data.message);
+																	$('#triggerView').empty();
+																	$('._jsPlumb_connector').remove();
+																	resourcePage.refresh();
+																} else {
+																	showError(data.message)
+																}
+															});
+													  }
+												}); 
+											}
 											
 										});
 										

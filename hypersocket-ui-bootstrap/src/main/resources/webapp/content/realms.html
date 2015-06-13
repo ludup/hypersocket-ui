@@ -108,8 +108,7 @@
 						  additionalActionsDropdown : true,
 						  validate : function() {
 							if ($('#name').val() == '') {
-								$('#addRealmForm').resourceDialog('error', "A name is required!");
-								//showError(getResource("text.nameRequired"));
+								showError(getResource("text.nameRequired"));
 								return false;
 							}
 							

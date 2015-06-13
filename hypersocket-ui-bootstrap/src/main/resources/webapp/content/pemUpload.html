@@ -90,15 +90,15 @@
 		$('#uploadPemButton').click(function(e) {
 			
 			if (!$('#pemFile')[0].files[0]) {
-				$('#pemUpload').resourceDialog('error', getResource("pemUpload.error.selectFile"));
+				showError(getResource("pemUpload.error.selectFile"));
 				return;
 			}
 			if (!$('#pemBundle')[0].files[0]) {
-				$('#pemUpload').resourceDialog('error', getResource("pemUpload.error.selectBundle"));
+				showError(getResource("pemUpload.error.selectBundle"));
 				return;
 			}
 			if (!$('#pemKey')[0].files[0]) {
-				$('#pemUpload').resourceDialog('error', getResource("pemUpload.error.selectKey"));
+				showError(getResource("pemUpload.error.selectKey"));
 				return;
 			}
 			
@@ -128,12 +128,12 @@
 						$('#pemUpload').data('callback')(data.resource);
 						showSuccess(data.message);
 					} else {
-						$('#pemUpload').resourceDialog('error', data.message);
+						showError(data.message);
 					}
 
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					$('#pemUpload').resourceDialog('error', errorThrown);
+					showError(errorThrown);
 				},
 				complete: function() {
 					$('#uploadPemIcon').removeClass('fa-spinner fa-spin');

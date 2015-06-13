@@ -84,8 +84,7 @@
 							validate : function() {
 
 								if ($('#resourceName').val() == '') {
-									$('#addAutomationForm').resourceDialog(
-											'error', "error.nameRequired");
+									showError("error.nameRequired");
 									return false;
 								}
 								if(!$('#automationProperties').validateProperties()) {
