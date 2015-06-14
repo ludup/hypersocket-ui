@@ -196,6 +196,9 @@ $.fn.htmlInput = function(data) {
  			},
  			clear: function() {
  				myCodeMirror.setValue('');
+ 			},
+ 			setSize: function(w,h) {
+ 				myCodeMirror.setSize(w,h);
  			}
  		};
 	

@@ -941,8 +941,9 @@ table {
 
 .code {
 	border: 1px solid rgb(204,204,204);
-	height: 300px;
 	padding: 0px;
+	overflow: visible;
+	height: auto;
 }
 
 .CodeMirror {
