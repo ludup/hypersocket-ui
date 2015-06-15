@@ -28,7 +28,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="propertyItem form-group">
+					<div class="propertyItem form-group requiresEvent">
 						<label class="col-xs-3 control-label" localize="event.result.label"></label>
 							<div class="propertyValue col-xs-9">
 								<div id="eventResult"></div>
@@ -37,126 +37,64 @@
 							</div>
 						</div>	
 					</div>
-					<div id="tabProperties"></div>
-					<div id="tabActions">
-						<div class="row">
-							<div class="col-xs-12">
-								<p localize="performActions.text"></p>
-							</div>
-						</div>
-						<div id="rowActions" class="row">
-						</div>
-						<div class="row">
-							<div class="propertyItem form-group">
-								<div class="propertyValue col-xs-10">
-									<span class="help-block" localize="addAction.text"></span>
-								</div>
-								<div class="propertyValue col-xs-2 dialogActions">
-									<div class="btn-group">
-										<a id="addAction" href="#" class="dropdown dropdown-toggle btn btn-info addButton" data-toggle="dropdown"><i class="fa fa-plus"></i>
-										  <ul id="addActionDropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu" aria-labelledby="addAction">
-										  	<li><a tabindex="-1" href="#"></a></li>
-										  </ul>
-										</a>
-									</div>
-								</div>
+					<div class="propertyItem form-group requiresEvent">
+						<label class="col-xs-3 control-label" localize="event.task.label"></label>
+						<div class="propertyValue col-xs-9">
+							<div id="taskAuto"></div>
+							<div>
+								<span class="help-block" localize="event.task.info"></span>
 							</div>
 						</div>
 					</div>
-					<div id="tabConditions">
-						<div class="row">
-							<div class="col-xs-12">
-								<p localize="allConditions.text"></p>
-							</div>
-						</div>
-						<div id="rowAll" class="row"></div>
-						<div class="row">
-							<div class="propertyItem form-group">
-								<div class="propertyValue col-xs-11">
-									<span class="help-block" localize="addCondition.text"></span>
-								</div>
-								<div class="propertyValue col-xs-1 dialogActions">
-									<a id="addAll" href="#" class="btn btn-info addButton"><i class="fa fa-plus"></i></a>
+					<div id="allTabs">
+						<div id="tabProperties"></div>
+						<div id="tabConditions">
+							<div class="row">
+								<div class="col-xs-12">
+									<p localize="allConditions.text"></p>
 								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<p localize="anyConditions.text"></p>
-							</div>
-						</div>
-						<div id="rowAny" class="row"></div>
-						<div class="row">
-							<div class="propertyItem form-group">
-								<div class="propertyValue col-xs-11">
-									<span class="help-block" localize="addCondition.text"></span>
+							<div id="rowAll" class="row"></div>
+							<div class="row">
+								<div class="propertyItem form-group">
+									<div class="propertyValue col-xs-11">
+										<span class="help-block" localize="addCondition.text"></span>
+									</div>
+									<div class="propertyValue col-xs-1 dialogActions">
+										<a id="addAll" href="#" class="btn btn-info addButton"><i class="fa fa-plus"></i></a>
+									</div>
 								</div>
-								<div class="propertyValue col-xs-1 dialogActions">
-									<a id="addAny" href="#" class="btn btn-info addButton"><i class="fa fa-plus"></i></a>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+									<p localize="anyConditions.text"></p>
+								</div>
+							</div>
+							<div id="rowAny" class="row"></div>
+							<div class="row">
+								<div class="propertyItem form-group">
+									<div class="propertyValue col-xs-11">
+										<span class="help-block" localize="addCondition.text"></span>
+									</div>
+									<div class="propertyValue col-xs-1 dialogActions">
+										<a id="addAny" href="#" class="btn btn-info addButton"><i class="fa fa-plus"></i></a>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<input type="hidden" id="resourceId" name="resourceId" value="" />
+				<input type="hidden" id="parentId" name="parentId" value="" />
 				<div class="modal-footer"></div>
 			</div>
 		</div>
 	</div>
 </div>
 </div>
-<div class="modal" id="actionForm" tabindex="-1" role="dialog">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button id="closeAction" type="button" class="close" >&times;</button>
-				<h4 class="modal-title" id="addActionTitle"></h4>
-			</div>
-			<div class="modal-body">
-				<div class="propertyItem form-group">
-					<label class="col-md-3 control-label" localize="action.name.label"></label>
-					<div class="propertyValue col-md-9">
-						<input type="text" class="form-control"
-							placeholder="" id="actionName" maxlength="" name="actionName" value="">
-						<div>
-							<span class="help-block" localize="action.name.info"></span>
-						</div>
-					</div>
-				</div>
-				<div id="actionProperties"></div>
-				<input name="id" id="id" type="hidden" class="formInput" />
-			</div>
-			<div class="modal-footer">
-				<button type="button" id="createAction" class="btn btn-primary">Create</button>
-			</div>
-		</div>
-	</div>
-</div>
+
 <script type="text/javascript">
 
-	function updateActionRow(action) {
-		$('#action' + action.id).data('action', action);
-		$('#actionName' + action.id).val(action.name);
-	}
-	
-	function addActionRow(action) {
-		$('#rowActions').append('<div class="propertyItem form-group">' +
-		                              '<div class="propertyValue col-xs-10">' + 
-		                              '<input type="text" disabled="disabled" class="form-control conditionValue ' 
-		                              		+ '" size="30"' +  'id="actionName' + action.id
-		                              			+ '" name="actionName" value="' + action.name + '">' + 
-	   			 				 	  '</div>' +
-									  '<div class="propertyValue col-xs-2 dialogActions">' +
-									  		'<a href="#" id="action' + action.id + '" class="btn btn-info editAction" data-value="' 
-									  				+ action.resourceKey + '"><i class="fa fa-edit"></i></a>' 
-									  					+ '<a href="#" class="removeAction btn btn-danger"><i class="fa fa-trash-o"></i></a>' +
-								  '</div>' +
-								'</div>');
-		
-		$('#action' + action.id).data('action', action);
-		
-		bindActions();
-	}
 	
     function addConditionRow(divId, condition) {
     	
@@ -236,93 +174,6 @@
     	});
     }
     
-    function bindActions() {
-    	
-    	$('.removeAction').off('click');
-		$('.removeAction').on('click', function(e) {
-			e.preventDefault();
-			var row = $(this).closest('.propertyItem');
-			bootbox.confirm(getResource("deleteAction.text"),
-					function(confirmed) {
-						if (confirmed) {
-							row.remove();
-						} 
-					});
-		});
-		
-    	$('.editAction').off('click');
-		$('.editAction').on('click', function(e) {
-			e.preventDefault();
-			var currentRow = $(this);
-			var action = $(this).data('action');
-			var resourceKey = $(this).data('value');
-			var url = 'triggers/action/template/' + resourceKey;
-
-			if(action) {
-				$('#createAction').empty();
-				$('#createAction').append('<i class="fa fa-save"></i><span>' + getResource("text.update") + '</span>');	
-				$('#addActionTitle').text(getResource("update.action.title"));
-				$('#actionName').val(action.name);
-				if(!action.newAction) {
-					url = 'triggers/action/properties/' + action.id;
-				}
-			} else {
-				$('#createAction').empty();
-				$('#createAction').append('<i class="fa fa-save"></i><span>' + getResource("text.create") + '</span>');	
-				$('#addActionTitle').text(getResource("create.action.title"));
-				$('#actionName').val('');
-			}
-			
-			$('#closeAction').on('click', function(e) {
-				$('#createAction').off('click');
-				$('#closeAction').off('click');
-				$('#actionForm').modal('hide');
-			});
-			
-			$('#createAction').on('click', function(e) {
-				if(!action) {
-					action = new Object();
-					action.id = new Date().getTime();
-					action.newAction = true;
-					action.resourceKey = resourceKey;
-				} else {
-					action.newAction = false;
-				}
-				
-				if($('#actionName').val()=='') {
-					alert(getResource("error.nameRequired"));
-					return;
-				}
-				action.name = $('#actionName').val();
-				
-				$('#actionProperties').saveProperties(true, function(items) {
-						action.properties = items;
-				});
-				
-				$('#createAction').off('click');
-				if(action.newAction) {
-					addActionRow(action);
-				} else {
-					updateActionRow(action);
-				}
-				$('#actionForm').modal('hide');
-			});
-			
-			$('#actionProperties').empty();
-			$('#actionProperties').propertyPage({
-				url : url,
-				showButtons : false,
-				useTemplates : true,
-				canUpdate : currentMenu.canUpdate,
-				variables: getAttributeNames(),
-				items: (action ? action.properties : null),
-				complete : function() {
-					$('#actionForm').modal('show');
-				}
-			});
-		});
-    }
-    
     function getAttributeNames() {
     	
     	var variables = $('#triggerModal').data('selectedEvent').attributeNames;
@@ -339,7 +190,10 @@
 	$(document).ready(function() {
 		
 		$('#triggerModal').localize();
-		$('#actionForm').localize();
+		$('#allTabs').hide();
+		
+		$('.requiresEvent').hide();
+		
 		$('.addButton').attr('disabled', true);
 		
 		var eventResult = $('#eventResult').selectButton({
@@ -365,47 +219,74 @@
 			changed: function(event) {
 				
 				if(event) {
+					$('.requiresEvent').show();
 					$('.addButton').attr('disabled', false);
-					if(!$('#rowAll').is(':empty') || !$('#rowAny').is(':empty')) {
-						bootbox.confirm(getResource("confirmConditionsDeletion.text"),
-								function(confirmed) {
-									if (confirmed) {
-										$('#rowAll').empty();
-										$('#rowAny').empty();
-									} 
-								});
+					if(!displaying) {
+						if(!$('#rowAll').is(':empty') || !$('#rowAny').is(':empty')) {
+							bootbox.confirm(getResource("confirmConditionsDeletion.text"),
+									function(confirmed) {
+										if (confirmed) {
+											$('#rowAll').empty();
+											$('#rowAny').empty();
+										} 
+									});
+						}
 					}
-					
 					$('#triggerModal').data('selectedEvent', event);
+				} else {
+					$('.requiresEvent').hide();
 				}
 			}
 		});
 		
-		$('#tabProperties').propertyPage({
-			url : 'triggers/template',
-			showButtons : false,
-			useTemplates : true,
-			canUpdate : currentMenu.canUpdate,
-			additionalTabs : [ {
-				id : "tabConditions",
-				name : getResource("tabConditions.label")
-			},{
-				id : "tabActions",
-				name : getResource("tabActions.label")
-			}]
+		var displaying = false;
+		var taskAuto = $('#taskAuto').autoComplete({
+			url: 'triggers/tasks',
+			nameIsResourceKey: true,
+			resourceKeyTemplate: '{0}.label',
+			getUrlData: function(data) {
+				return data.resources;
+			},
+			changed: function(widget) {
+				$('#tabProperties').parent().append($('#tabConditions').detach());
+				$('#tabProperties').empty();
+				if(widget.value != '') {
+// 					if(!displaying) {
+						$('#tabProperties').propertyPage({ 
+							url : 'triggers/task/' + widget.name, 
+							showButtons : false, 
+							i18nNamespace: 'triggers',
+							canUpdate : currentMenu.canUpdate, 
+							useTemplates : true,
+							variables: getAttributeNames(),
+							propertyTabsLast: true,
+							additionalTabs : [ {
+								id : "tabConditions",
+								name : getResource("tabConditions.label")
+							}],
+							complete: function() {
+								$('#allTabs').show();
+							}
+						});
+// 					}
+				} else {
+					$('.requiresEvent').hide();
+				}
+			}
 		});
 		
 		$(document).data('triggerModalCallback', {
 			clearDialog: function(create) {
+				$('.requiresEvent').hide();
 				$('#rowAll').empty();
 				$('#rowAny').empty();
-				$('#rowActions').empty();
 				$('#resourceName').val('');
 				$('#resourceId').val('');
-				
+
 				eventAuto.clear();
 				eventAuto.enable();
-				
+				taskAuto.clear();
+				taskAuto.enable();
 				var parentResource = $('#triggerModal').data('parentResource');
 				if(parentResource) {
 					getJSON('triggers/actionResults/' + parentResource.id, null, function(data) {
@@ -416,29 +297,12 @@
 				
 				eventResult.reset();
 				$('.tabPropertiesTab').first().trigger('click');
-				$('#tabProperties').clearProperties();
 				$('.addButton').attr('disabled', true);
 				
-				if(create) {
-					
+// 				if(create) {
 					$('#tabProperties').parent().append($('#tabConditions').detach());
-					$('#tabProperties').parent().append($('#tabActions').detach());
 					$('#tabProperties').empty();
-					
-					$('#tabProperties').propertyPage({
-						url : 'triggers/template',
-						showButtons : false,
-						useTemplates : true,
-						canUpdate : currentMenu.canUpdate,
-						additionalTabs : [ {
-							id : "tabConditions",
-							name : getResource("tabConditions.label")
-						},{
-							id : "tabActions",
-							name : getResource("tabActions.label")
-						}]
-					});
-				}
+// 				}
 			},
 			loadParent: function(parentResource, parentEvents) {
 				$('#triggerModal').data('parentEvents', parentEvents);
@@ -448,9 +312,11 @@
 				
 				
 				$('#resourceId').val(resource.id);
+				$('#parentId').val(resource.parentId);
 				$('#resourceName').val(resource.name);
 				eventAuto.setValue(resource.event);
 				eventAuto.disable();
+
 				eventResult.setValue(resource.result);
 
 				$.each(resource.allConditions, function(idx, obj) {
@@ -461,28 +327,13 @@
 					addConditionRow('rowAny', obj);
 				});
 				
-				$.each(resource.actions, function(idx, obj) {
-					obj.newAction = false;
-					addActionRow(obj);
-				});
+				displaying = true;
 				
-				$('#tabProperties').parent().append($('#tabConditions').detach());
-				$('#tabProperties').parent().append($('#tabActions').detach());
-				$('#tabProperties').empty();
+				taskAuto.clear();
+				taskAuto.setValue(resource.resourceKey);
+				taskAuto.disable();
 				
-				$('#tabProperties').propertyPage({
-					url : 'triggers/properties/' + resource.id,
-					showButtons : false,
-					useTemplates : true,
-					canUpdate : currentMenu.canUpdate,
-					additionalTabs : [ {
-						id : "tabConditions",
-						name : getResource("tabConditions.label")
-					},{
-						id : "tabActions",
-						name : getResource("tabActions.label")
-					}]
-				});
+				displaying = false;
 				
 			},
 			validate: function() {
@@ -492,20 +343,19 @@
 					return false;
 				}
 				if (!eventAuto.getValue()) {
-					showError("error.eventRequired");
+					$('#addTriggerForm').resourceDialog('error',
+							"error.eventRequired");
 					return false;
 				}
 				
-				var count = 0;
-				$('.editAction').each(function() {
-					var a = $(this).data('action');
-					if(a) {
-						count++;
-					}
-				});
+				if (!taskAuto.getValue()) {
+					$('#addTriggerForm').resourceDialog('error',
+							"error.eventRequired");
+					return false;
+				}
 				
-				if(count==0) {
-					showError("error.atLeastOneActionRequired");
+				if(!$('#automationProperties').validateProperties()) {
+					showError("error.correctValidationErrors");
 					return false;
 				}
 				return true;
@@ -513,20 +363,14 @@
 			createResource: function() {
 				resource = new Object();
 				resource.id = $('#resourceId').val();
+				resource.parentId = $('#parentId').val();
 				resource.name = $('#resourceName').val();
 				resource.event = eventAuto.getValue();
+				resource.task = taskAuto.getValue();
 				resource.result = eventResult.getValue();
 				if($('#triggerModal').data('parentResource')) {
 					resource.parentId = $('#triggerModal').data('parentResource').id;
 				}
-				resource.actions = new Array();
-				$('.editAction').each(function() {
-					var a = $(this).data('action');
-					if(a) {
-						log("Adding action " + a.name);
-						resource.actions.push(a);
-					}
-				});
 				
 				$('#tabProperties').saveProperties(true, function(items) {
 					resource.properties = items;	
@@ -566,16 +410,16 @@
 			$('#triggerModal').data('conditions', data.resources);
 		});
 		
-		getJSON('triggers/actions', null, function(data) {
-			$('#triggerModal').data('actions', data.resources);
-			$('#addActionDropdown').empty();
-			$.each(data.resources, function(idx, obj) {
-				$('#addActionDropdown').append('<li><a tabindex="-1" href="#" class="editAction" data-value="' + obj + '">' + getResource(obj) + '</a></li>');
-			});
-			$(".dropdown-toggle").dropdown();
+// 		getJSON('triggers/actions', null, function(data) {
+// 			$('#triggerModal').data('actions', data.resources);
+// 			$('#addActionDropdown').empty();
+// 			$.each(data.resources, function(idx, obj) {
+// 				$('#addActionDropdown').append('<li><a tabindex="-1" href="#" class="editAction" data-value="' + obj + '">' + getResource(obj) + '</a></li>');
+// 			});
+// 			$(".dropdown-toggle").dropdown();
 			
-			bindActions();
-		});
+// 			bindActions();
+// 		});
 		
 		$('#addAll').click(function(e) {
 			e.preventDefault();

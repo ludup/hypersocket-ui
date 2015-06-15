@@ -182,7 +182,6 @@ function processLogon(data, opts, message) {
 								.each(
 									data['formTemplate']['inputFields'],
 									function() {
-										debugger;
 										var name = encodeURIComponent(this.resourceKey);
 										var value = encodeURIComponent($('#' + this.resourceKey).val());
 										credentials = credentials + '&' + name + '=' + value;

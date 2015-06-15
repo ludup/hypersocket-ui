@@ -171,8 +171,10 @@ $.fn.oldResourcePage = function(params) {
 			canUpdate = options.checkUpdate(idCol.aData);
 		}
 
-		renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
-
+		if(!options.disableEditView) {
+			renderedActions += '<a class="btn btn-info row-edit" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
+		}
+		
 		$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 
 		$(document).on(
@@ -521,7 +523,7 @@ $.fn.resourceTable = function(params) {
 	$(this).data('options', options);
 
 	var html = '';
-	debugger;
+
 	if(!options.disableDecoration) {
 		html += '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
 			+ options.icon + '"></i><span class="break">' 
@@ -694,19 +696,19 @@ $.fn.resourceTable = function(params) {
 			canUpdate = options.checkUpdate(row);
 		}
 
-		renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
-
-		$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
-
-		$(document).on(
-			'click',
-			'#' + divName + 'Actions' + id + ' .row-edit',
-			function() {
-				var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
-				var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-				$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
-					{ row : curRow, resource : resource });
-		});
+		if(!options.disableEditView) {
+			renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
+			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
+			$(document).on(
+				'click',
+				'#' + divName + 'Actions' + id + ' .row-edit',
+				function() {
+					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
+					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+					$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
+						{ row : curRow, resource : resource });
+			});
+		}
 
 		if (options.canDelete) {
 			
@@ -811,6 +813,11 @@ $.fn.resourceTable = function(params) {
 	    		this.sortName = sortColumn;
 	    	}
 	    	return false;
+	    },
+	    onClickRow: function(row) {
+	    	if(options.selected) {
+	    		options.selected(row);
+	    	}
 	    }
 	    
 	});
@@ -841,7 +848,7 @@ $.fn.resourceTable = function(params) {
 			$('#' + this.resourceKey).click(function() {
 				if(button.action) {
 					button.action(function() {
-						$('#' + divName + 'Table').dataTable().fnDraw();
+						$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 					});
 				}
 			});
@@ -851,6 +858,14 @@ $.fn.resourceTable = function(params) {
 	if (options.complete) {
 		options.complete();
 	}
+	
+	var callback = {
+		refresh: function() {
+			$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+		}
+	}
+	
+	return callback;
 };
 
 $.fn.bootstrapResourceDialog = function(params, params2) {

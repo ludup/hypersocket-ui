@@ -5,13 +5,33 @@
 
 <div id="contentTriggers">
 </div>
+<div id="contentTrigger" class="panel panel-default" style="display: none;">
+
+		<div class="spacer20px"></div>
+		<div class="row">
+			<div class="col-md-9" id="schemeArea">
+				<div id="triggerTasks" style="overflow: auto; height: 800px">
+					<div id="rootTrigger" class="moduleShape same-row">
+						<span id="triggerEvent" class="moduleText"></span>
+					</div>
+					<div id="triggerView" class="same-row"></div>
+				</div>
+				<div class="spacer20px"></div>
+			</div>
+			<div class="col-md-3" id="moduleArea">
+				<div id="moduleIcons"></div>
+			</div>
+		</div>
+</div>
+<!-- <div id="drawing" style="height: 1000px"></div> -->
 <script type="text/javascript">
 	$(document).ready(function() {
 				$('#contentTriggers').localize();
-
+				$('#contentTrigger').localize();
+				$('#saveTriggerbutton').attr('disabled', true);
 				$('#contentTriggers').load('content/triggers-modal.html', function() {
 						
-					$('#contentTriggers').ajaxResourcePage(
+					var resourcePage = $('#contentTriggers').ajaxResourcePage(
 							{
 								id : "Trigger",
 								tableUrl : "triggers/table",
@@ -25,18 +45,6 @@
 								canCreate: currentMenu.canCreate,
 								canUpdate: currentMenu.canUpdate,
 								canDelete: currentMenu.canDelete,
-								additionalActionsDropdown: true,
-								additionalActions: [{
-										resourceKey : "chainTrigger",
-										iconClass : "fa-chain",
-										action : function(resource, callback) {				
-											getJSON('triggers/parentEvents/' + resource.actions[0].id, null, function(data) {
-												$(document).data('triggerModalCallback').loadParent(resource.actions[0], data.resources);
-												$('div[dialog-for="contentTriggers"]').resourceDialog('create');
-											});
-										},
-										enabled : true
-								}],
 								showCreate: function() {
 									$(document).data('triggerModalCallback').loadParent(null, null);
 								},
@@ -58,9 +66,187 @@
 								},
 								complete : function() {
 									loadComplete();
+								},
+								resourceUpdated: function() {
+									$('#triggerView').empty();
+									$('._jsPlumb_connector').remove();
+									resourceTable.refresh();
+								},
+								selected: function(row) {
+
+									$('#triggerView').empty();
+									$('._jsPlumb_connector').remove();
+									if(row) {
+										$('#contentTrigger').show();
+										$('#triggerEvent').text(getResource(row.event));
+										$('#triggerName').text(row.name);
+										
+ 										$('#triggerName').prepend('<span class="label ' + getStateLabelClass(row) + '">' + getResource(getStateLabelText(row)) + '</span>&nbsp;&nbsp;&nbsp;');
+
+					                	var trigger = row;
+					                	var top = 25;
+					                	var left = 200;
+					                	
+					                	addTask(trigger, null, top+50, left+50);
+					                	
+					                	jsPlumb.connect({
+					        	            source: 'rootTrigger',
+					        	            target:"trigger" + trigger.id,
+					        	            connector: 'Straight',
+					        	            anchor: "AutoDefault",
+					        	            endpoint:"Blank",
+					        	            detachable:false,
+					        	            overlays:["PlainArrow"]
+					        	        });	
+					                
+
+										jsPlumb.draggable($('.moduleShape'));
+										
+										$('.addIcon').off('click');
+										$('.addIcon').on('click', function(e) {
+											e.preventDefault();
+											var trigger = $(this).closest('.moduleShape').data('trigger');
+											
+											getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
+												$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
+												$('div[dialog-for="contentTriggers"]').resourceDialog('create');
+											});
+										});
+										
+										$('.editIcon').off('click');
+										$('.editIcon').on('click', function(e) {
+											e.preventDefault();
+											var trigger = $(this).closest('.moduleShape').data('trigger');
+												$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { resource: trigger});
+										});
+										
+										$('.deleteIcon').off('click');
+										$('.deleteIcon').on('click', function(e) {
+											e.preventDefault();
+											var trigger = $(this).closest('.moduleShape').data('trigger');
+											if(!trigger.isRoot) {
+												bootbox.confirm(getResource("confirm.deleteTriggerItem").format(trigger.name), function(result) {
+													  if(result) {
+														  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+																if(data.success) {
+																	showSuccess(data.message);
+																	$('#triggerView').empty();
+																	$('._jsPlumb_connector').remove();
+																	resourcePage.refresh();
+																} else {
+																	showError(data.message)
+																}
+															});
+													  }
+												}); 
+											} else {
+												bootbox.confirm(getResource("confirm.deleteTrigger").format(trigger.name), function(result) {
+													  if(result) {
+														  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+																if(data.success) {
+																	showSuccess(data.message);
+																	$('#triggerView').empty();
+																	$('._jsPlumb_connector').remove();
+																	resourcePage.refresh();
+																} else {
+																	showError(data.message)
+																}
+															});
+													  }
+												}); 
+											}
+											
+										});
+										
+										
+										
+									} else {
+										$('#contentTrigger').hide();
+									}
 								}
 							});
 				});
 
 			});
+	
+	function getStateLabelClass(trigger) {
+		var moduleClass = "label-info";
+		if(trigger.result == 'EVENT_FAILURE') {
+			moduleClass = "label-danger";
+		}else if(trigger.result == 'EVENT_WARNING') {
+			moduleClass = "label-warning";
+		} else if(trigger.result == 'EVENT_SUCCESS') {
+			moduleClass = "label-success";
+		}
+		
+		return moduleClass;
+	}
+	
+	function getStateLabelText(trigger) {
+		var moduleClass = "text.any";
+		if(trigger.result == 'EVENT_FAILURE') {
+			moduleClass = "text.failure";
+		}else if(trigger.result == 'EVENT_WARNING') {
+			moduleClass = "text.warning";
+		} else if(trigger.result == 'EVENT_SUCCESS') {
+			moduleClass = "text.success";
+		}
+		
+		return moduleClass;
+	}
+	
+	function getStateClass(trigger) {
+		
+		var moduleClass = "trigger-any";
+		if(trigger.result == 'EVENT_FAILURE') {
+			moduleClass = "trigger-failure";
+		}else if(trigger.result == 'EVENT_WARNING') {
+			moduleClass = "trigger-warning";
+		} else if(trigger.result == 'EVENT_SUCCESS') {
+			moduleClass = "trigger-success";
+		}
+		
+		return moduleClass;
+	}
+	
+	function addTask(trigger, parent, top, left) {
+		
+		var moduleClass = "blueModule";
+		if(trigger.result == 'EVENT_FAILURE') {
+			moduleClass = "redModule";
+		}else if(trigger.result == 'EVENT_WARNING') {
+			moduleClass = "yellowModule";
+		} else if(trigger.result == 'EVENT_SUCCESS') {
+			moduleClass = "greenModule";
+		}
+		
+		$('#triggerView').append("<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='moduleShape " 
+				+ moduleClass + " same-row' id='trigger" + trigger.id + "'><div><a data-trigger='"
+				+ trigger.id + "' class='addIcon' href=''><i class='fa fa-plus-circle'></i></a><a data-trigger='" 
+				+ trigger.id + "' class='editIcon' href=''><i class='fa fa-edit'></i></a><a data-trigger='" 
+				+ trigger.id + "' class='deleteIcon' href=''><i class='fa fa-trash-o'></i></a></div><span class='moduleText'>"
+				+ trigger.name + "</span></div>");
+		
+		$('#trigger' + trigger.id).data('trigger', trigger);
+		
+		if(parent) {
+			jsPlumb.connect({
+	            source:"trigger" + parent.id,
+	            target:"trigger" + trigger.id,
+	            connector: 'Straight',
+	            anchor: "AutoDefault",
+	            endpoint:"Blank",
+	            detachable:false,
+	            overlays:["Arrow"],
+	        });	
+		}
+		
+		top+= 50;
+		$.each(trigger.childTriggers, function(idx, childTrigger) {
+			left+=175;
+			addTask(childTrigger, trigger, top, left);
+		});
+        
+        
+	}
 </script>
