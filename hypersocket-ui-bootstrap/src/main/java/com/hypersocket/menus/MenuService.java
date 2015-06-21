@@ -46,6 +46,8 @@ public interface MenuService extends AuthenticatedService {
 	
 	static final String MENU_DIAGNOSTICS = "diagnostics";
 	
+	static final String MENU_JOBS_STATUS = "jobs"; 
+	
 	List<Menu> getMenus();
 
 	boolean registerMenu(MenuRegistration module);
