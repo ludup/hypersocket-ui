@@ -1,0 +1,96 @@
+<div id="attributeTabContent">
+	<div id="attributeTabContentPanel" class="panel panel-default">
+		<div class="panel-heading">
+			<h2>
+				<i class="fa fa-list-ul"></i><span class="break"></span><span id="attributeHeading" localize="attributes.title"></span>
+			</h2>
+			<ul id="attributeTabContentTabs" class="nav nav-tabs">
+				<li class="active attributeTab"><a href="#tabAttributes" data-resourcekey="attributes.title"><span localize="attributes.title"></span></a></li>
+				<li class="attributeTab"><a href="#tabAttributeCategories" data-resourcekey="attributeCategories.title"><span localize="attributeCategories.title"></span></a></li>
+			</ul>
+		</div>
+		<div class="panel-body">
+			<div id="attributeTabContentContent" class="tab-content">
+				<div id="tabAttributes" class="tab-pane active">
+
+				</div>
+				<div id="tabAttributeCategories" class="tab-pane">
+				
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal" id="addCategoryForm" tabindex="-1" role="dialog"
+		dialog-for="attributeCategoryContent">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<form class="form">
+						<div class="propertyItem form-group">
+							<label class="col-md-3 control-label" localize="attributeCategory.name.label"></label>
+							<div class="propertyValue col-md-9">
+								<input type="text" name="attributeCategoryName" id="attributeCategoryNameInput" class="form-control" />
+								<div>
+									<span class="help-block" localize="attributeCategory.name.info"></span>
+								</div>
+							</div>
+						</div>
+						<div id="attributeCategoryPropertiesPanel" class="panel panel-default">
+							<div class="panel-heading">
+								<h2>
+									<i class="fa fa-th"></i><span class="break"></span>
+								</h2>
+								<ul id="attributeCategoryPropertiesTabs" class="nav nav-tabs">
+									<li id="tabRolesLi" class="active" role="tab" data-toggle="tab">
+										<a href="#tabRoles" class="attributeCategoryPropertiesTab attributeCategoryPropertiesTab2">
+											<span localize="attributeCategory.attributeCategory.label"></span>
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div class="panel-body">
+								<div id="attributeCategoryPropertiesContent" class="tab-content">
+									<div id="tabRoles" class="dialogTab tab-pane active container-fluid">
+										<div class="propertyItem form-group">
+											<label class="col-md-3 control-label" localize="attributeCategory.weight.label"></label>
+											<div class="propertyValue col-md-9">
+												<input type="number" name="attributeCategoryWeight" id="attributeCategoryWeightInput" class="form-control" />
+												<div>
+													<span class="help-block" localize="attributeCategory.weight.info"></span>
+												</div>
+											</div>
+										</div>
+										<input type="hidden" name="attributeCategoryId" id="attributeCategoryIdInput">
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</form>
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+
+	$(document).ready(function() {
+		
+		$('#attributeTabContent').localize();
+		$('#addCategoryForm').localize();
+		$('#tabAttributes').load('${uiPath}/content/userAttributes.html');
+		$('#tabAttributeCategories').load('${uiPath}/content/userAttributeCategories.html');
+		
+		$('.attributeTab a').click(function (e) {
+			  e.preventDefault();
+			  $('#attributeHeading').text(getResource($(this).data('resourcekey')));
+			  $(this).tab('show');
+		});
+	});
+</script>

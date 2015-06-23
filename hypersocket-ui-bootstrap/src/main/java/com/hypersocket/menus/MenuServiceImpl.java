@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.automation.AutomationResourcePermission;
 import com.hypersocket.automation.AutomationResourceServiceImpl;
@@ -133,12 +134,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				SystemPermission.SYSTEM_ADMINISTRATION, null),
 				MenuService.MENU_SERVER);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "attributes",
-				"fa-list-ul", "attributeTabs", 100,
-				SystemPermission.SYSTEM_ADMINISTRATION, null,
-				SystemPermission.SYSTEM_ADMINISTRATION, null),
-				MenuService.MENU_SERVER);
-		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
@@ -210,8 +205,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RolePermission.CREATE, RolePermission.UPDATE,
 				RolePermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "profileAttributes",
+				"fa-user-secret", "userAttributeTabs", 4000,
+				UserAttributePermission.READ, UserAttributePermission.CREATE,
+				UserAttributePermission.UPDATE, UserAttributePermission.DELETE),
+				MenuService.MENU_ACCESS_CONTROL);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realms",
-				"fa-database", "realms", 4000, RealmPermission.READ,
+				"fa-database", "realms", 5000, RealmPermission.READ,
 				RealmPermission.CREATE, RealmPermission.UPDATE,
 				RealmPermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
 
