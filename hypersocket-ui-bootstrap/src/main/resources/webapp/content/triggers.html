@@ -25,6 +25,7 @@
 </div>
 <!-- <div id="drawing" style="height: 1000px"></div> -->
 <script type="text/javascript">
+	var triggerList = [];
 	var resourceList = [];
 	$(document).ready(function() {
 				$('#contentTriggers').localize();
@@ -77,7 +78,8 @@
 
 									$('#triggerView').empty();
 									$('._jsPlumb_connector').remove();
-									resourceList = [];
+									triggerList = [];
+									
 									if(row) {
 										$('#contentTrigger').show();
 										$('#triggerEvent').text(getResource(row.event));
@@ -86,107 +88,104 @@
  										$('#triggerName').prepend('<span class="label ' + getStateLabelClass(row) + '">' + getResource(getStateLabelText(row)) + '</span>&nbsp;&nbsp;&nbsp;');
 
 					                	var trigger = row;
+					                	triggerList.push(trigger.id);
+					                	createTriggerList(trigger.childTriggers);
 					                	var top = 25;
 					                	var left = 200;
-					                	addTask(trigger, null, top+50, left+50);
-					                	
-					                	jsPlumb.connect({
-					        	            source: 'rootTrigger',
-					        	            target:"trigger" + trigger.id,
-					        	            connector: 'Straight',
-					        	            anchor: "AutoDefault",
-					        	            endpoint:"Blank",
-					        	            detachable:false,
-					        	            overlays:["PlainArrow"]
-					        	        });	
-					                	
-										jsPlumb.draggable($('.moduleShape'));
-										
-										$('.moduleShape').draggable({
-									        stop: function(e){
-									            
-									            state = new Object();
-									            state.top = $(this).css('top').substring(0, $(this).css('top').length - 2);
-									            state.leftpx = $(this).css('left').substring(0, $(this).css('left').length - 2);
-									            state.resourceId = $(this).data('trigger').id;
-									            debugger;
-									            /*postJSON('interfaceState/state', state, function(data){
-									            	debugger;
-									            });*/
-									        }
-									    });
-										
-										$('.addIcon').off('click');
-										$('.addIcon').on('click', function(e) {
-											e.preventDefault();
-											var trigger = $(this).closest('.moduleShape').data('trigger');
+					                	getJSON('interfaceState/state/' + triggerList, null, function(data){
+					                		resourceList = data.resources;
+					                		addTask(trigger, null, top+50, left+50);
+						                	
+						                	jsPlumb.connect({
+						        	            source: 'rootTrigger',
+						        	            target:"trigger" + trigger.id,
+						        	            connector: 'Straight',
+						        	            anchor: "AutoDefault",
+						        	            endpoint:"Blank",
+						        	            detachable:false,
+						        	            overlays:["PlainArrow"]
+						        	        });
+						                	
+											jsPlumb.draggable($('.moduleShape'));
 											
-											getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
-												$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
-												$('div[dialog-for="contentTriggers"]').resourceDialog('create');
+											$('.moduleShape').draggable({
+										        stop: function(e){
+										            if($(this).data('trigger')){
+										            	state = new Object();
+											            state.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
+											            state.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
+											            state.resourceId = $(this).data('trigger').id;
+											            state.name = $(this).attr('id');
+											            postJSON('interfaceState/state', state, function(data){
+											            	
+											            });
+										            }
+										        }
+										    });
+											
+											$('.addIcon').off('click');
+											$('.addIcon').on('click', function(e) {
+												e.preventDefault();
+												var trigger = $(this).closest('.moduleShape').data('trigger');
+												
+												getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
+													$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
+													$('div[dialog-for="contentTriggers"]').resourceDialog('create');
+												});
 											});
-										});
-										
-										$('.editIcon').off('click');
-										$('.editIcon').on('click', function(e) {
-											e.preventDefault();
-											var trigger = $(this).closest('.moduleShape').data('trigger');
-												$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { resource: trigger});
-										});
-										
-										$('.deleteIcon').off('click');
-										$('.deleteIcon').on('click', function(e) {
-											e.preventDefault();
-											var trigger = $(this).closest('.moduleShape').data('trigger');
-											if(!trigger.isRoot) {
-												bootbox.confirm(getResource("confirm.deleteTriggerItem").format(trigger.name), function(result) {
-													  if(result) {
-														  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
-																if(data.success) {
-																	showSuccess(data.message);
-																	$('#triggerView').empty();
-																	$('._jsPlumb_connector').remove();
-																	resourcePage.refresh();
-																} else {
-																	showError(data.message)
-																}
-															});
-													  }
-												}); 
-											} else {
-												bootbox.confirm(getResource("confirm.deleteTrigger").format(trigger.name), function(result) {
-													  if(result) {
-														  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
-																if(data.success) {
-																	showSuccess(data.message);
-																	$('#triggerView').empty();
-																	$('._jsPlumb_connector').remove();
-																	resourcePage.refresh();
-																} else {
-																	showError(data.message)
-																}
-															});
-													  }
-												}); 
-											}
 											
-										});
+											$('.editIcon').off('click');
+											$('.editIcon').on('click', function(e) {
+												e.preventDefault();
+												var trigger = $(this).closest('.moduleShape').data('trigger');
+													$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { resource: trigger});
+											});
+											
+											$('.deleteIcon').off('click');
+											$('.deleteIcon').on('click', function(e) {
+												e.preventDefault();
+												var trigger = $(this).closest('.moduleShape').data('trigger');
+												if(!trigger.isRoot) {
+													bootbox.confirm(getResource("confirm.deleteTriggerItem").format(trigger.name), function(result) {
+														  if(result) {
+															  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+																	if(data.success) {
+																		showSuccess(data.message);
+																		$('#triggerView').empty();
+																		$('._jsPlumb_connector').remove();
+																		resourcePage.refresh();
+																	} else {
+																		showError(data.message)
+																	}
+																});
+														  }
+													}); 
+												} else {
+													bootbox.confirm(getResource("confirm.deleteTrigger").format(trigger.name), function(result) {
+														  if(result) {
+															  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+																	if(data.success) {
+																		showSuccess(data.message);
+																		$('#triggerView').empty();
+																		$('._jsPlumb_connector').remove();
+																		resourcePage.refresh();
+																	} else {
+																		showError(data.message)
+																	}
+																});
+														  }
+													}); 
+												}
+												
+											});
+					                	});
+					                	
 										
 										
 										
 									} else {
 										$('#contentTrigger').hide();
 									}
-									debugger;
-									getJSON('interfaceState/state/' + resourceList, null, function(data){
-										debugger;
-										if(data.success){
-											$.each(data.resources, function(index, value){
-												$('#trigger' + value.resourceId).css('top', value.top + 'px');
-												$('#trigger' + value.resourceId).css('leftpx', value.leftpx + 'px');
-											});
-										}
-									});
 								}
 							});
 				});
@@ -233,8 +232,16 @@
 		return moduleClass;
 	}
 	
+	function createTriggerList(childTriggers){
+		$.each(childTriggers, function(index, triggerValue){
+			triggerList.push(triggerValue.id);
+			if(triggerValue.childTriggers && triggerValue.childTriggers.length){
+				createTriggerList(triggerValue.childTriggers);
+			}
+		});
+	}
+	
 	function addTask(trigger, parent, top, left) {
-		resourceList.push(trigger.id);
 		var moduleClass = "blueModule";
 		if(trigger.result == 'EVENT_FAILURE') {
 			moduleClass = "redModule";
@@ -243,7 +250,13 @@
 		} else if(trigger.result == 'EVENT_SUCCESS') {
 			moduleClass = "greenModule";
 		}
-		
+		$.each(resourceList, function(index, value){
+			if(value.resourceId == trigger.id){
+				top = value.top;
+				left = value.leftpx;
+				return false;
+			}
+		});
 		$('#triggerView').append("<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='moduleShape " 
 				+ moduleClass + " same-row' id='trigger" + trigger.id + "'><div><a data-trigger='"
 				+ trigger.id + "' class='addIcon' href=''><i class='fa fa-plus-circle'></i></a><a data-trigger='" 
@@ -252,6 +265,7 @@
 				+ trigger.name + "</span></div>");
 		
 		$('#trigger' + trigger.id).data('trigger', trigger);
+		$('#trigger' + trigger.id).data('parent', parent);
 		
 		if(parent) {
 			jsPlumb.connect({
