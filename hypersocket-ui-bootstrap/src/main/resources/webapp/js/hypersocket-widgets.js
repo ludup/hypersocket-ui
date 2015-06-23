@@ -486,9 +486,72 @@ $.fn.selectButton = function(data) {
 				return selected.data('resource');
 			},
 			reset: function() {
-				$('#' + id).val(obj.value);
-				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
-				$('#select_button_' + id).text(selected.attr('data-label'));
+				$('#select_' + id).empty();
+				var listItem;
+				if (obj.options) {
+					
+					for (var i = 0; i < obj.options.length; i++) {
+						listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
+						$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
+								+ stripNull(obj.options[i][obj['valueAttr']]) + '" data-label="' + listItem + '" name="link_' + listItem + '">' 
+								+ listItem + '</a></li>');
+						if (obj.value == obj.options[i][obj.valueAttr]) {
+							selected = obj.options[i];
+							$('#select_button_' + id).text(listItem);
+						} 
+						$('#data_' + id + "_" + i).data('resource', obj.options[i]);
+					}
+					
+
+					$('.selectButton_' + id).on('click',
+						function(evt) {
+							evt.preventDefault();
+							
+							$('#' + id).val($(this).attr('data-value'));
+							$('#select_button_' + id).text($(this).attr('data-label'));
+							if(obj.changed) {
+								obj.changed(callback);
+							}
+						});
+						
+						if(selected==null) {
+							var val = $('.selectButton_' + id).first().trigger('click');
+						}
+
+				} else if (obj.url) {
+
+					getJSON(obj.url, null,
+						function(data) {
+							$.each(obj.getUrlData(data), function(idx, option) {
+								listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']];
+								
+								$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
+										+ stripNull(option[obj['valueAttr']]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">' 
+										+ listItem + '</a></li>');
+								if (option[obj['valueAttr']] == obj.value) {
+									selected = option;
+									$('#select_button_' + id).text(listItem);
+								}
+								$('#data_' + id + "_" + idx).data('resource', option);
+							});
+
+							$('.selectButton_' + id).on(
+									'click',
+									function(evt) {
+										evt.preventDefault();
+										var selected = $(this).attr('data-value');
+										$('#' + id).val(selected);
+										$('#select_button_' + id).text($(this).attr('data-label'));
+										if(obj.changed) {
+											obj.changed(callback);
+										}
+							});
+							
+							if(selected==null) {
+								var val = $('.selectButton_' + id).first().trigger('click');
+							}
+						});
+				}
 			},
 			disable: function() {
 				$('#button_' + id).removeAttr('data-toggle');
@@ -519,72 +582,9 @@ $.fn.selectButton = function(data) {
  				$('.selectButton_' + id).first().trigger('click');
  			}
 		};
-	var listItem;
-	if (obj.options) {
-		
-		for (var i = 0; i < obj.options.length; i++) {
-			listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
-			$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
-					+ stripNull(obj.options[i][obj['valueAttr']]) + '" data-label="' + listItem + '" name="link_' + listItem + '">' 
-					+ listItem + '</a></li>');
-			if (obj.value == obj.options[i][obj.valueAttr]) {
-				selected = obj.options[i];
-				$('#select_button_' + id).text(listItem);
-			} 
-			$('#data_' + id + "_" + i).data('resource', obj.options[i]);
-		}
-		
-
-		$('.selectButton_' + id).on('click',
-			function(evt) {
-				evt.preventDefault();
-				
-				$('#' + id).val($(this).attr('data-value'));
-				$('#select_button_' + id).text($(this).attr('data-label'));
-				if(obj.changed) {
-					obj.changed(callback);
-				}
-			});
-			
-			if(selected==null) {
-				var val = $('.selectButton_' + id).first().trigger('click');
-			}
-
-	} else if (obj.url) {
-
-		getJSON(obj.url, null,
-			function(data) {
-				$.each(obj.getUrlData(data), function(idx, option) {
-					listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']];
-					
-					$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
-							+ stripNull(option[obj['valueAttr']]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">' 
-							+ listItem + '</a></li>');
-					if (option[obj['valueAttr']] == obj.value) {
-						selected = option;
-						$('#select_button_' + id).text(listItem);
-					}
-					$('#data_' + id + "_" + idx).data('resource', option);
-				});
-
-				$('.selectButton_' + id).on(
-						'click',
-						function(evt) {
-							evt.preventDefault();
-							var selected = $(this).attr('data-value');
-							$('#' + id).val(selected);
-							$('#select_button_' + id).text($(this).attr('data-label'));
-							if(obj.changed) {
-								obj.changed(callback);
-							}
-				});
-				
-				if(selected==null) {
-					var val = $('.selectButton_' + id).first().trigger('click');
-				}
-			});
-	}
-		
+	
+	callback.reset();
+	
 	if(obj.disabled) {
 		callback.disable();
 	}

@@ -338,19 +338,16 @@
 			},
 			validate: function() {
 				if ($('#resourceName').val().trim() == '') {
-					$('#addTriggerForm').resourceDialog(
-							'error', "error.nameRequired");
+					showError("error.nameRequired");
 					return false;
 				}
 				if (!eventAuto.getValue()) {
-					$('#addTriggerForm').resourceDialog('error',
-							"error.eventRequired");
+					showError("error.eventRequired");
 					return false;
 				}
 				
 				if (!taskAuto.getValue()) {
-					$('#addTriggerForm').resourceDialog('error',
-							"error.eventRequired");
+					showError("error.eventRequired");
 					return false;
 				}
 				

@@ -339,7 +339,7 @@ $.fn.resourceDialog = function(params, params2) {
 			});
 		
 		dialogOptions.clearDialog(true);
-		dialog.resourceDialog('error', 'reset');
+		removeMessage();
 
 		$(this).find('.modal-title').text(
 			getResource(dialogOptions.resourceKey + '.create.title'));
@@ -370,7 +370,7 @@ $.fn.resourceDialog = function(params, params2) {
                 	if(resource.name.trim() == "" ) {
                     	stopSpin(icon, 'fa-save');
 	                	log("Resource name is incorrect");
-	                	dialog.resourceDialog('error', getResource("error.incorrectName"));
+	                	showError("error.incorrectName");
 						return;
                 	}
                 }
@@ -391,7 +391,7 @@ $.fn.resourceDialog = function(params, params2) {
 						showSuccess(data.message);
 					} else {
 						log("Resource object creation failed " + data.message);
-						dialog.resourceDialog('error', data.message);
+						showError(data.message);
 					}
 				}, null, function() { stopSpin(icon, 'fa-save');});
 			});
@@ -408,7 +408,7 @@ $.fn.resourceDialog = function(params, params2) {
 			});
 		
 		dialogOptions.clearDialog(false);
-		dialog.resourceDialog('error', 'reset');
+		removeMessage();
 		dialogOptions.displayResource(params2.resource, readOnly);
 		
 		if(readOnly) {
@@ -445,7 +445,7 @@ $.fn.resourceDialog = function(params, params2) {
                 	if(resource.name.trim() == "" ) {
 	                	stopSpin(icon, 'fa-save');
 	                	log("Resource name is incorrect");
-	                	dialog.resourceDialog('error', getResource("error.incorrectName"));
+	                	showError("error.incorrectName");
 						return;
                 	}
                 }
@@ -462,7 +462,7 @@ $.fn.resourceDialog = function(params, params2) {
 						}
 						showSuccess(data.message);
 					} else {
-						dialog.resourceDialog('error', data.message);
+						showError(data.message);
 					}
 				}, null, function() { stopSpin(icon, 'fa-save');});
 
@@ -882,7 +882,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		log("Creating resource dialog");
 
 		dialogOptions.clearDialog(true);
-		dialog.bootstrapResourceDialog('error', 'reset');
+		removeMessage();
 
 		$(this).find('.modal-title').text(
 			getResource(dialogOptions.resourceKey + '.create.title'));
@@ -924,7 +924,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						showSuccess(data.message);
 					} else {
 						log("Resource object creation failed " + data.message);
-						dialog.bootstrapResourceDialog('error', data.message);
+						showError(data.message);
 					}
 				}, null, function() { stopSpin(icon, 'fa-save');});
 			});
@@ -933,7 +933,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 	} else if (params === 'edit' || params === 'read') {
 		var readOnly = params==='read';
 		dialogOptions.clearDialog(false);
-		dialog.bootstrapResourceDialog('error', 'reset');
+		removeMessage();
 		dialogOptions.displayResource(params2.resource, readOnly);
 		
 		if(readOnly) {
@@ -977,7 +977,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						}
 						showSuccess(data.message);
 					} else {
-						dialog.bootstrapResourceDialog('error', data.message);
+						showError(data.message);
 					}
 				}, null, function() { stopSpin(icon, 'fa-save');});
 
@@ -989,14 +989,10 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 	} else if (params === 'close') {
 		dialog.modal('hide');
 	} else if (params === 'error') {
-
-		$('#dialogErrorHighlight' + $(this).attr('id'), $(this)).remove();
-
-		if (params2 != 'reset') {
-			$(this).prepend(
-						'<div id="dialogErrorHighlight' + $(this).attr('id') + '" class="alert alert-danger"/>');
-			$('#dialogErrorHighlight' + $(this).attr('id')).append('<i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' 
-					+ (getResourceNoDefault(params2) == undefined ? params2 : getResource(params2)) + '</span>');
+		if(params2 == 'reset') {
+			removeMessage();
+		} else {
+			showError(params2);
 		}
 	} else {
 		if (!options.resourceKey) {
