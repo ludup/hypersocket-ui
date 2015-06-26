@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -40,7 +42,6 @@ import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
-import com.hypersocket.scheduler.SchedulerService;
 import com.hypersocket.triggers.TriggerResourcePermission;
 import com.hypersocket.triggers.TriggerResourceServiceImpl;
 
@@ -64,6 +65,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	@Autowired
 	BrowserLaunchableService browserService;
+	
+	Set<MenuFilter> filters = new HashSet<MenuFilter>();
 	
 	@PostConstruct
 	private void postConstruct() {
@@ -125,15 +128,24 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_SYSTEM, "", null, 100, null, null, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_SERVER, "fa-server", null, 0, null, null, null,
+				MenuService.MENU_SYSTEM_CONFIGURATION, "fa-server", null, 0, null, null, null,
 				null), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
 				"fa-cog", "settings", 0,
 				SystemPermission.SYSTEM_ADMINISTRATION, null,
 				SystemPermission.SYSTEM_ADMINISTRATION, null),
-				MenuService.MENU_SERVER);
+				MenuService.MENU_SYSTEM_CONFIGURATION);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realms",
+				"fa-database", "realms", 5000, RealmPermission.READ,
+				RealmPermission.CREATE, RealmPermission.UPDATE,
+				RealmPermission.DELETE), MenuService.MENU_SYSTEM_CONFIGURATION);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS,
+				"fa-wrench", "schedulers", 99999, null, null, null, null, null),
+				MENU_SYSTEM_CONFIGURATION);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
@@ -211,11 +223,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				UserAttributePermission.UPDATE, UserAttributePermission.DELETE),
 				MenuService.MENU_ACCESS_CONTROL);
 		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realms",
-				"fa-database", "realms", 5000, RealmPermission.READ,
-				RealmPermission.CREATE, RealmPermission.UPDATE,
-				RealmPermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
-
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
 				null));
@@ -267,25 +274,19 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_TOOLS, "",
 				null, 99999, null, null, null, null, null));
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS,
-				"fa-wrench", null, 99999, null, null, null, null, null),
-				MENU_TOOLS);
-
 		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
 				"changePassword", "fa-lock", "changePassword", 1000,
 				PasswordPermission.CHANGE, null, PasswordPermission.CHANGE,
 				null), MenuService.MENU_MY_PROFILE);
-		
-		registerMenu(new MenuRegistration(SchedulerService.RESOURCE_BUNDLE,
-				"jobs", "fa-bar-chart", "schedulers", 1000,
-				SystemPermission.SYSTEM_ADMINISTRATION, null, SystemPermission.SYSTEM_ADMINISTRATION,
-				null), MENU_DIAGNOSTICS);
-		
-		
-		
+	
 
 	}
 
+	@Override
+	public void registerFilter(MenuFilter filter) {
+		filters.add(filter);
+	}
+	
 	@Override
 	public boolean registerMenu(MenuRegistration module) {
 		return registerMenu(module, null);
@@ -390,7 +391,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		for (MenuRegistration m : rootMenus.values()) {
 			try {
-				if (!m.canRead()) {
+				if(shouldFilter(m)) {
+					if(log.isDebugEnabled()) {
+						log.debug(m.getResourceKey() + " has been filtered out");
+					}
+					continue;
+				} else if (!m.canRead()) {
 					if (log.isDebugEnabled()) {
 						log.debug(getCurrentPrincipal().getRealm() + "/"
 								+ getCurrentPrincipal().getName()
@@ -403,7 +409,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				} else if (m.getReadPermission() != null) {
 					assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
 							m.getReadPermission());
-				}
+				} 
 
 				Menu rootMenu = new Menu(
 						m,
@@ -413,7 +419,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						m.getIcon(), m.getData(), m.isHidden());
 
 				for (MenuRegistration child : m.getMenus()) {
-					if (!child.canRead()) {
+					if(shouldFilter(child)) {
+						if(log.isDebugEnabled()) {
+							log.debug(m.getResourceKey() + " has been filtered out");
+						}
+						continue;
+					} else if (!child.canRead()) {
 						// User does not have access to this menu
 						if (log.isDebugEnabled()) {
 							log.debug(getCurrentPrincipal().getRealm() + "/"
@@ -453,7 +464,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 					for (MenuRegistration leaf : child.getMenus()) {
 
-						if (!leaf.canRead()) {
+						if(shouldFilter(leaf)) {
+							if(log.isDebugEnabled()) {
+								log.debug(m.getResourceKey() + " has been filtered out");
+							}
+							continue;
+						} else if (!leaf.canRead()) {
 							// User does not have access to this menu
 							if (log.isDebugEnabled()) {
 								log.debug(getCurrentPrincipal().getRealm()
@@ -572,6 +588,15 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		} catch (AccessDeniedException ex) {
 			return false;
 		}
+	}
+	
+	protected boolean shouldFilter(MenuRegistration m) {
+		for(MenuFilter filter : filters) {
+			if(!filter.isVisible(m)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	class RealmMenuRegistration extends MenuRegistration {

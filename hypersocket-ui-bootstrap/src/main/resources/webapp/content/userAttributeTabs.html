@@ -1,25 +1,7 @@
 <div id="attributeTabContent">
-	<div id="attributeTabContentPanel" class="panel panel-default">
-		<div class="panel-heading">
-			<h2>
-				<i class="fa fa-list-ul"></i><span class="break"></span><span id="attributeHeading" localize="attributes.title"></span>
-			</h2>
-			<ul id="attributeTabContentTabs" class="nav nav-tabs">
-				<li class="active attributeTab"><a href="#tabAttributes" data-resourcekey="attributes.title"><span localize="attributes.title"></span></a></li>
-				<li class="attributeTab"><a href="#tabAttributeCategories" data-resourcekey="attributeCategories.title"><span localize="attributeCategories.title"></span></a></li>
-			</ul>
-		</div>
-		<div class="panel-body">
-			<div id="attributeTabContentContent" class="tab-content">
-				<div id="tabAttributes" class="tab-pane active">
-
-				</div>
-				<div id="tabAttributeCategories" class="tab-pane">
-				
-				</div>
-			</div>
-		</div>
-	</div>
+	<div id="attributeProperties"></div>
+	<div id="tabAttributes"></div>
+	<div id="tabAttributeCategories"></div>
 </div>
 <div class="modal" id="addCategoryForm" tabindex="-1" role="dialog"
 		dialog-for="attributeCategoryContent">
@@ -87,10 +69,31 @@
 		$('#tabAttributes').load('${uiPath}/content/userAttributes.html');
 		$('#tabAttributeCategories').load('${uiPath}/content/userAttributeCategories.html');
 		
+	    $('#attributeProperties').propertyPage({
+	    	  url : 'configuration/realm/userProfiles',
+	   	   title: getResource('configuration.title'),
+	   	   icon: 'fa-cog',
+	   	   disableDecoration: true,
+	   	   canUpdate: currentMenu.canUpdate,
+	   	   additionalTabs: [{
+				id : "tabAttributes",
+				name : getResource("attributes.label")
+			},
+			{
+				id : "tabAttributeCategories",
+				name : getResource("attributeCategories.label")
+			}],
+	   	   complete: function() {
+	   		   loadComplete();
+	   	   }
+		  });
+	      
 		$('.attributeTab a').click(function (e) {
 			  e.preventDefault();
 			  $('#attributeHeading').text(getResource($(this).data('resourcekey')));
 			  $(this).tab('show');
 		});
+		
+		
 	});
 </script>
