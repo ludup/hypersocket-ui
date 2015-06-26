@@ -12,7 +12,7 @@
 						<label for="file" class="col-md-3 control-label"
 							localize="import.file.label"></label>
 						<div class="propertyValue col-md-9">
-							<input type="file" name="jsonFile" id="jsonFile" class="form-control" />
+							<input type="file" name="importFile" id="importFile" class="form-control" />
 							<div>
 								<span class="help-block" localize="import.file.info"></span>
 							</div>
@@ -33,20 +33,20 @@
 		$('#importResources').localize();
 
 		$('#importResources').data('action', function(callback) {
-			$('#jsonFile').val('');
+			$('#importFile').val('');
 			$('#importResources').data('callback', callback);
 			$('#importResources').modal('show');
 		});
 
 		$('#importResourceButton').click(function(e) {
 	
-			if (!$('#jsonFile')[0].files[0]) {
+			if ($('#importFile').val() == '') {
 				showError(getResource("error.selectImportFile"));
 				return;
 			}
 			
 			var formData = new FormData();
-			formData.append('file', $('#jsonFile')[0].files[0]);
+			formData.append('file', $('#importFile')[0].files[0]);
 			$('#uploadIcon').removeClass('fa-upload');
 			$('#uploadIcon').addClass('fa-spinner fa-spin');
 			$.ajax({
