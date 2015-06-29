@@ -91,7 +91,16 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "details",
 				"fa-tags", "details", 200, ProfilePermission.READ, null,
-				ProfilePermission.UPDATE, null), MenuService.MENU_MY_PROFILE);
+				ProfilePermission.UPDATE, null) {
+			@Override
+			public boolean canRead() {
+				try {
+					return realmService.getUserProfileTemplates(getCurrentPrincipal()).size() > 0;
+				} catch (AccessDeniedException e) {
+					return false;
+				}
+			}
+		}, MenuService.MENU_MY_PROFILE);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_MY_RESOURCES, "fa-share-alt", null, 300, null,

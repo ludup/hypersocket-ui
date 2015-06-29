@@ -342,6 +342,9 @@ $.fn.propertyPage = function(opts) {
 			
 			if((data.resources && data.resources.length == 0)
 					&& (!options.additionalTabs || options.additionalTabs.length == 0)) {
+				if (options.complete) {
+					options.complete();
+				}
 				return;
 			}
 			contentTabs = '#' + propertyDiv + 'Tabs';
