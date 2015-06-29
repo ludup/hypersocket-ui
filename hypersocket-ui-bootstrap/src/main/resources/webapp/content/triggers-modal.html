@@ -201,8 +201,6 @@
 			url: 'triggers/eventResults',
 			nameIsResourceKey: true,
 			resourceKeyTemplate: '{0}.label',
-			name: 'result',
-			value: 'EVENT_SUCCESS',
 			getUrlData: function(data) {
 				return data.resources;
 			},
@@ -210,6 +208,9 @@
 				
 			}
 		});
+		
+		eventResult.selectFirst();
+		
 		var eventAuto = $('#eventAuto').autoComplete({
 			id: 'eventA',
 			url: 'triggers/events',
@@ -239,6 +240,8 @@
 			}
 		});
 		
+		
+		
 		var displaying = false;
 		var taskAuto = $('#taskAuto').autoComplete({
 			url: 'triggers/tasks',
@@ -251,7 +254,7 @@
 				$('#tabProperties').parent().append($('#tabConditions').detach());
 				$('#tabProperties').empty();
 				if(widget.value != '') {
-// 					if(!displaying) {
+					if(taskAuto.isEnabled()) {
 						$('#tabProperties').propertyPage({ 
 							url : 'triggers/task/' + widget.name, 
 							showButtons : false, 
@@ -268,7 +271,7 @@
 								$('#allTabs').show();
 							}
 						});
-// 					}
+					}
 				} else {
 					$('.requiresEvent').hide();
 				}
@@ -295,14 +298,12 @@
 					});
 				} 
 				
-				eventResult.reset();
+				eventResult.selectFirst();
 				$('.tabPropertiesTab').first().trigger('click');
 				$('.addButton').attr('disabled', true);
 				
-// 				if(create) {
-					$('#tabProperties').parent().append($('#tabConditions').detach());
-					$('#tabProperties').empty();
-// 				}
+				$('#tabProperties').parent().append($('#tabConditions').detach());
+				$('#tabProperties').empty();
 			},
 			loadParent: function(parentResource, parentEvents) {
 				$('#triggerModal').data('parentEvents', parentEvents);
@@ -327,13 +328,26 @@
 					addConditionRow('rowAny', obj);
 				});
 				
-				displaying = true;
-				
-				taskAuto.clear();
-				taskAuto.setValue(resource.resourceKey);
 				taskAuto.disable();
+				taskAuto.setValue(resource.resourceKey);
 				
-				displaying = false;
+				debugger;
+				$('#tabProperties').propertyPage({ 
+					url : 'triggers/properties/' + resource.id, 
+					showButtons : false, 
+					i18nNamespace: 'triggers',
+					canUpdate : currentMenu.canUpdate, 
+					useTemplates : true,
+					variables: getAttributeNames(),
+					propertyTabsLast: true,
+					additionalTabs : [ {
+						id : "tabConditions",
+						name : getResource("tabConditions.label")
+					}],
+					complete: function() {
+						$('#allTabs').show();
+					}
+				});
 				
 			},
 			validate: function() {

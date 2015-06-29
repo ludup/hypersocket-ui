@@ -804,6 +804,9 @@ $.fn.autoComplete = function(data) {
 			enable: function() {
 				$('#input_' + id).attr('disabled', false);
 			},
+			isEnabled: function() {
+				return !$('#input_' + id).attr('disabled');
+			},
 			options: function() {
 				return options;
 			},
