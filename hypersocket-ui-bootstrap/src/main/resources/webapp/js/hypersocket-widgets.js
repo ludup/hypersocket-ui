@@ -563,6 +563,9 @@ $.fn.selectButton = function(data) {
 				$('#button_' + id).removeClass('btn-disabled-dark');
 				$('#button_' + id).addClass('btn-primary');
 			},
+			isEnabled: function() {
+				return !$('#button_' + id).hasClass('btn-disabled-dark');
+			},
 			options: function() {
 				return obj;
 			},
