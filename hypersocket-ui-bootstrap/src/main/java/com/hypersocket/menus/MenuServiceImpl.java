@@ -152,7 +152,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RealmPermission.DELETE), MenuService.MENU_SYSTEM_CONFIGURATION);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS,
-				"fa-wrench", "schedulers", 99999, null, null, null, null, null),
+				"fa-wrench", "schedulers", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
 				MENU_SYSTEM_CONFIGURATION);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
@@ -242,7 +242,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"setPassword", "fa-key", "password", UserPermission.UPDATE, 0,
 				null, null) {
 			public boolean isEnabled() {
-				return !realmService.isReadOnly(getCurrentRealm());
+				try {
+					assertPermission(PasswordPermission.CHANGE);
+					return !realmService.isReadOnly(getCurrentRealm());
+				} catch (AccessDeniedException e) {
+					return false;
+				}
 			}
 		});
 

@@ -198,7 +198,7 @@
 									user.id = $('#userId').val();
 									user.name = $('#userName').val();
 									user.password = $('#userPassword').val();
-									user.forceChange = $('#userForceChange').attr('checked') ? true : false;
+									user.forceChange = $('#userForceChange').prop('checked') ? true : false;
 									
 									$('#userProperties').saveProperties(true,
 											function(items) {
