@@ -11,15 +11,15 @@
 		<div class="row">
 			<div class="col-md-9" id="schemeArea">
 				<div id="triggerTasks" style="overflow: auto; height: 800px">
-					<div id="rootTrigger" class="moduleShape same-row">
-						<span id="triggerEvent" class="moduleText"></span>
+					<div id="rootTrigger" class="triggerShape trigger-same-row">
+						<span id="triggerEvent" class="triggerContent"></span>
 					</div>
-					<div id="triggerView" class="same-row"></div>
+					<div id="triggerView" class="trigger-same-row"></div>
 				</div>
 				<div class="spacer20px"></div>
 			</div>
-			<div class="col-md-3" id="moduleArea">
-				<div id="moduleIcons"></div>
+			<div class="col-md-3" id="triggerArea">
+				<div id="triggerIcons"></div>
 			</div>
 		</div>
 </div>
@@ -92,10 +92,9 @@
 					                	createTriggerList(trigger.childTriggers);
 					                	var top = 25;
 					                	var left = 200;
-					                	getJSON('interfaceState/state/' + triggerList, null, function(data){
+					                	getJSON('interfaceState/state/false/' + triggerList, null, function(data){
 					                		resourceList = data.resources;
 					                		addTask(trigger, null, top+50, left+50);
-						                	
 						                	jsPlumb.connect({
 						        	            source: 'rootTrigger',
 						        	            target:"trigger" + trigger.id,
@@ -103,12 +102,12 @@
 						        	            anchor: "AutoDefault",
 						        	            endpoint:"Blank",
 						        	            detachable:false,
-						        	            overlays:["PlainArrow"]
+						        	            overlays:[["Arrow", {location: 1}]]
 						        	        });
 						                	
-											jsPlumb.draggable($('.moduleShape'));
+											jsPlumb.draggable($('.triggerShape'));
 											
-											$('.moduleShape').draggable({
+											$('.triggerShape').draggable({
 										        stop: function(e){
 										            if($(this).data('trigger')){
 										            	state = new Object();
@@ -116,6 +115,7 @@
 											            state.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
 											            state.resourceId = $(this).data('trigger').id;
 											            state.name = $(this).attr('id');
+											            state.specific = false;
 											            postJSON('interfaceState/state', state, function(data){
 											            	
 											            });
@@ -126,7 +126,7 @@
 											$('.addIcon').off('click');
 											$('.addIcon').on('click', function(e) {
 												e.preventDefault();
-												var trigger = $(this).closest('.moduleShape').data('trigger');
+												var trigger = $(this).closest('.triggerShape').data('trigger');
 												
 												getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
 													$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
@@ -137,14 +137,14 @@
 											$('.editIcon').off('click');
 											$('.editIcon').on('click', function(e) {
 												e.preventDefault();
-												var trigger = $(this).closest('.moduleShape').data('trigger');
+												var trigger = $(this).closest('.triggerShape').data('trigger');
 													$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { resource: trigger});
 											});
 											
-											$('.deleteIcon').off('click');
-											$('.deleteIcon').on('click', function(e) {
+											$('.deleteTriggerIcon').off('click');
+											$('.deleteTriggerIcon').on('click', function(e) {
 												e.preventDefault();
-												var trigger = $(this).closest('.moduleShape').data('trigger');
+												var trigger = $(this).closest('.triggerShape').data('trigger');
 												if(!trigger.isRoot) {
 													bootbox.confirm(getResource("confirm.deleteTriggerItem").format(trigger.name), function(result) {
 														  if(result) {
@@ -193,43 +193,43 @@
 			});
 	
 	function getStateLabelClass(trigger) {
-		var moduleClass = "label-info";
+		var triggerClass = "label-info";
 		if(trigger.result == 'EVENT_FAILURE') {
-			moduleClass = "label-danger";
+			triggerClass = "label-danger";
 		}else if(trigger.result == 'EVENT_WARNING') {
-			moduleClass = "label-warning";
+			triggerClass = "label-warning";
 		} else if(trigger.result == 'EVENT_SUCCESS') {
-			moduleClass = "label-success";
+			triggerClass = "label-success";
 		}
 		
-		return moduleClass;
+		return triggerClass;
 	}
 	
 	function getStateLabelText(trigger) {
-		var moduleClass = "text.any";
+		var triggerText = "text.any";
 		if(trigger.result == 'EVENT_FAILURE') {
-			moduleClass = "text.failure";
+			triggerText = "text.failure";
 		}else if(trigger.result == 'EVENT_WARNING') {
-			moduleClass = "text.warning";
+			triggerText = "text.warning";
 		} else if(trigger.result == 'EVENT_SUCCESS') {
-			moduleClass = "text.success";
+			triggerText = "text.success";
 		}
 		
-		return moduleClass;
+		return triggerText;
 	}
 	
 	function getStateClass(trigger) {
 		
-		var moduleClass = "trigger-any";
+		var triggerClass = "trigger-any";
 		if(trigger.result == 'EVENT_FAILURE') {
-			moduleClass = "trigger-failure";
+			triggerClass = "trigger-failure";
 		}else if(trigger.result == 'EVENT_WARNING') {
-			moduleClass = "trigger-warning";
+			triggerClass = "trigger-warning";
 		} else if(trigger.result == 'EVENT_SUCCESS') {
-			moduleClass = "trigger-success";
+			triggerClass = "trigger-success";
 		}
 		
-		return moduleClass;
+		return triggerClass;
 	}
 	
 	function createTriggerList(childTriggers){
@@ -242,13 +242,13 @@
 	}
 	
 	function addTask(trigger, parent, top, left) {
-		var moduleClass = "blueModule";
+		var triggerClass = "blueTrigger";
 		if(trigger.result == 'EVENT_FAILURE') {
-			moduleClass = "redModule";
+			triggerClass = "redTrigger";
 		}else if(trigger.result == 'EVENT_WARNING') {
-			moduleClass = "yellowModule";
+			triggerClass = "yellowTrigger";
 		} else if(trigger.result == 'EVENT_SUCCESS') {
-			moduleClass = "greenModule";
+			triggerClass = "greenTrigger";
 		}
 		$.each(resourceList, function(index, value){
 			if(value.resourceId == trigger.id){
@@ -257,12 +257,21 @@
 				return false;
 			}
 		});
-		$('#triggerView').append("<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='moduleShape " 
-				+ moduleClass + " same-row' id='trigger" + trigger.id + "'><div><a data-trigger='"
-				+ trigger.id + "' class='addIcon' href=''><i class='fa fa-plus-circle'></i></a><a data-trigger='" 
-				+ trigger.id + "' class='editIcon' href=''><i class='fa fa-edit'></i></a><a data-trigger='" 
-				+ trigger.id + "' class='deleteIcon' href=''><i class='fa fa-trash-o'></i></a></div><span class='moduleText'>"
-				+ trigger.name + "</span></div>");
+		$('#triggerView').append(
+					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape " + triggerClass + " trigger-same-row' id='trigger" + trigger.id + "'>"
+				+	"	<div class='triggerContent'>"
+				+	"		<span class='triggerText'>"	+ trigger.name + "</span>"
+				+	"		<a data-trigger='"+ trigger.id + "' class='addIcon triggerIcon' href=''>"
+				+	"			<i class='fa fa-plus-circle'></i>"
+				+	"		</a>"
+				+	"		<a data-trigger='" + trigger.id + "' class='editIcon triggerIcon' href=''>"
+				+	"			<i class='fa fa-edit'></i>"
+				+	"		</a>"
+				+	"		<a data-trigger='" + trigger.id + "' class='deleteTriggerIcon triggerIcon' href=''>"
+				+	"			<i class='fa fa-trash-o'></i>"
+				+	"		</a>"
+				+	"	</div>"
+				+	"</div>");
 		
 		$('#trigger' + trigger.id).data('trigger', trigger);
 		$('#trigger' + trigger.id).data('parent', parent);
@@ -275,7 +284,7 @@
 	            anchor: "AutoDefault",
 	            endpoint:"Blank",
 	            detachable:false,
-	            overlays:["Arrow"],
+	            overlays:[["Arrow", {location: 1}]]
 	        });	
 		}
 		

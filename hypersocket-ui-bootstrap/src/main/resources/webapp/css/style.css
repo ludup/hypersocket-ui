@@ -1221,3 +1221,68 @@ span.input-group-addon {
   text-align: center;
   vertical-align: middle;
 }
+
+.redTrigger {
+	background-color: #f2dede;
+	border-color: #ebccd1;
+	color: #a94442;
+}
+
+.greenTrigger {
+	background-color: #dff0d8;
+	border-color: #d6e9c6;
+	color: #3c763d;
+}
+
+.blueTrigger {
+	background-color: #d9edf7;
+	border-color: #bce8f1;
+	color: #31708f;
+}
+
+.yellowTrigger {
+	background-color: #fcf8e3;
+	border-color: #faebcc;
+	color: #8a6d3b;
+}
+
+.triggerShape {
+	width: auto;
+	max-width: 120px;
+	height: 80px;
+	position: relative;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	border-color: grey;
+	border-width: 1px;
+	border-style: solid;
+	text-align: center;
+	vertical-align: middle;
+	cursor: move;
+}
+
+.triggerContent {
+	height: inherit;
+	vertical-align: middle;
+	display: table-cell;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.triggerText {
+	display: block;
+	text-align:center;
+}
+
+.trigger-same-row {
+	display: inline-block;
+}
+
+.triggerIcon {
+	float: right;
+	bottom: 0;
+	right: 0;
+	margin: 5px;
+	cursor: hand;
+}
