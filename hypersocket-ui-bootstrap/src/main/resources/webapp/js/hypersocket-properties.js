@@ -342,6 +342,9 @@ $.fn.propertyPage = function(opts) {
 			
 			if((data.resources && data.resources.length == 0)
 					&& (!options.additionalTabs || options.additionalTabs.length == 0)) {
+				if (options.complete) {
+					options.complete();
+				}
 				return;
 			}
 			contentTabs = '#' + propertyDiv + 'Tabs';
@@ -351,12 +354,12 @@ $.fn.propertyPage = function(opts) {
 			panel = '#' + propertyDiv + 'Panel';
 
 			$('#' + propertyDiv)
-					.append(
-						'<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
-						+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
-						+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
-						+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
-
+						.append(
+							'<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
+							+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
+							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
+							+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
+			
 			if (options.showButtons) {
 				$(panel)
 						.append(
@@ -472,6 +475,7 @@ $.fn.propertyPage = function(opts) {
 													}
 												}
 											},
+											displayMode: '',
 											getUrlData: function(data) {
 												return data.resources;
 											},
@@ -482,6 +486,12 @@ $.fn.propertyPage = function(opts) {
 										}, obj);
 										
 										makeBooleanSafe(obj);
+										
+										if(obj.displayMode && obj.displayMode != '') {
+											if(obj.displayMode != options.displayMode) {
+												return;
+											}
+										}
 										
 										if(obj.inputType!='hidden') {
 											$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');

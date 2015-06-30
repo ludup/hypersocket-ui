@@ -110,6 +110,7 @@
 						useTemplates : true,
 						propertyTabsLast: false,
 						canUpdate : currentMenu.canUpdate,
+						displayMode: 'admin',
 						additionalTabs : [ {
 							id : "tabUserGroups",
 							name : getResource("label.groups")
@@ -180,6 +181,7 @@
 											useTemplates : true,
 											propertyTabsLast: false,
 											canUpdate : currentMenu.canUpdate,
+											displayMode: 'admin',
 											additionalTabs : [ {
 												id : "tabUserGroups",
 												name : getResource("label.groups")
@@ -196,7 +198,7 @@
 									user.id = $('#userId').val();
 									user.name = $('#userName').val();
 									user.password = $('#userPassword').val();
-									user.forceChange = $('#userForceChange').attr('checked') ? true : false;
+									user.forceChange = $('#userForceChange').prop('checked') ? true : false;
 									
 									$('#userProperties').saveProperties(true,
 											function(items) {
@@ -228,6 +230,7 @@
 											showButtons : false,
 											displayMode: 'update',
 											canUpdate : !readOnly,
+											displayMode: 'admin',
 											propertyTabsLast: false,
 											additionalTabs : [ {
 												id : "tabUserGroups",

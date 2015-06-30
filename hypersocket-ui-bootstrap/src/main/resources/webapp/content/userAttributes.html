@@ -22,24 +22,35 @@
 						<div class="propertyItem form-group">
 							<label class="col-md-3 control-label" localize="attribute.category.label"></label>
 							<div class="propertyValue col-md-9">
-								<div id="attributeCategoryAutocomplete" class="propertyValue"></div>
+								<div id="attributeCategoryAutocomplete"></div>
 								<div>
-									<span class="help-block" localize="attribute.category.info"></span>
+									<span class="help-block" localize="attribute.createCategory.info">&nbsp;</span>
 								</div>
-								<button id="createCategory" class="btn btn-primary">
-									<i class="fa fa-plus-circle"></i>
-									<span localize="attribute.createCategory"></span>
-								</button>
+								
 							</div>
 						</div>
+						<div class="propertyItem form-group">
+							<label class="col-md-3 control-label">&nbsp;</label>
+							<div class="propertyValue col-md-9">
+								<button id="createCategory" class="btn btn-primary">
+									<i class="fa fa-plus-circle"></i>
+									<span localize="attribute.createCategory">&nbsp;</span>
+								</button>
+								<div>
+									<span class="help-block" localize="attribute.category.info">&nbsp;</span>
+								</div>
+							</div>
+						</div>
+						
+						
 						<div id="attributePropertiesPanel" class="panel panel-default">
 							<div class="panel-heading">
 								<h2>
 									<i class="fa fa-th"></i><span class="break"></span>
 								</h2>
 								<ul id="attributePropertiesTabs" class="nav nav-tabs">
-									<li id="tabRolesLi" class="active">
-										<a href="#tabRoles" role="tab" data-toggle="tab" class="attributePropertiesTab attributePropertiesTab2">
+									<li id="tabAttributeInfoLi" class="active">
+										<a href="#tabAttributeInfo" role="tab" data-toggle="tab" class="attributePropertiesTab attributePropertiesTab2">
 											<span localize="attribute.attribute.label"></span>
 										</a>
 									</li>
@@ -48,11 +59,16 @@
 											<span localize="attributeCategory.attributeOptions.label"></span>
 										</a>
 									</li>
+									<li id="tabRolesLi">
+										<a href="#tabRoles" role="tab" data-toggle="tab" class="attributeCategoryPropertiesTab attributeCategoryPropertiesTab2">
+											<span localize="roles.title"></span>
+										</a>
+									</li>
 								</ul>
 							</div>
 							<div class="panel-body">
 								<div id="attributePropertiesContent" class="tab-content">
-									<div id="tabRoles" role="tabpanel" class="dialogTab tab-pane active container-fluid">
+									<div id="tabAttributeInfo" role="tabpanel" class="dialogTab tab-pane active container-fluid">
 										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.type.label"></label>
 											<div class="propertyValue col-md-9">
@@ -93,9 +109,18 @@
 											</div>
 										</div>
 
-										<input type="hidden" name="attributeId" id="attributeIdInput">
+										<input type="hidden" name="attributeId" id="attributeId">
 									</div>
 									<div id="tabOther" role="tabpanel" class="dialogTab tab-pane container-fluid">
+										<div class="propertyItem form-group">
+											<label class="col-md-3 control-label" localize="attribute.displayMode.label"></label>
+											<div class="propertyValue col-md-9">
+												<div id="attributeDisplayMode"></div>
+												<div>
+													<span class="help-block" localize="attribute.displayMode.info"></span>
+												</div>
+											</div>
+										</div>
 										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.readOnly.label"></label>
 											<div class="propertyValue col-md-9">
@@ -124,6 +149,9 @@
 											</div>
 										</div>
 									</div>
+									<div id="tabRoles" role="tabpanel" class="dialogTab tab-pane container-fluid">
+										<div id="roles"></div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -135,75 +163,6 @@
 	</div>
 	<div id="additionalActions"></div>
 </div>
-<div class="modal" id="attributeCategoryContent" tabindex="-1" role="dialog"
-	aria-labelledby="createCategoryModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="createCategoryTitle" localize="attribute.createCategory.title">
-			</div>
-			<div class="modal-body">
-				<div class="propertyItem form-group">
-					<label class="col-md-3 control-label" localize="attributeCategory.name.label"></label>
-					<div class="propertyValue col-md-9">
-						<input type="text" id="attributeCategoryName" class="form-control" />
-						<div>
-							<span class="help-block" localize="attributeCategory.name.info"></span>
-						</div>
-					</div>
-				</div>
-				<div id="attributeCategoryPropertiesPanel" class="panel panel-default">
-					<div class="panel-heading">
-						<h2>
-							<i class="fa fa-th"></i><span class="break"></span>
-						</h2>
-						<ul id="attributeCategoryPropertiesTabs" class="nav nav-tabs">
-							<li id="tabRolesLi" class="active">
-								<a href="#tabRoles" role="tab" data-toggle="tab" class="attributeCategoryPropertiesTab attributeCategoryPropertiesTab2">
-									<span localize="attributeCategory.attributeCategory.label"></span>
-								</a>
-							</li>
-						</ul>
-					</div>
-					<div class="panel-body">
-						<div id="attributeCategoryPropertiesContent" class="tab-content">
-							<div id="tabRoles" role="tabpanel" class="dialogTab tab-pane active container-fluid">
-								<div class="propertyItem form-group">
-									<label class="col-md-3 control-label" localize="attributeCategory.weight.label"></label>
-									<div class="propertyValue col-md-9">
-										<input type="number" id="attributeCategoryWeight" class="form-control" />
-										<div>
-											<span class="help-block" localize="attributeCategory.weight.info"></span>
-										</div>
-									</div>
-								</div>
-								<div class="propertyItem form-group">
-									<label class="col-md-3 control-label" localize="attributeCategory.context.label"></label>
-									<div class="propertyValue col-md-9">
-										<div id="attributeCategoryContext"></div>
-										<div>
-											<span class="help-block" localize="attributeCategory.context.info"></span>
-										</div>
-									</div>
-								</div>
-								<input type="hidden" id="attributeId">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button id="createCategoryDialogButton" class="btn btn-primary">
-					<i class="fa fa-plus-circle"></i>
-					<span localize="text.add"></span>
-				</button>
-			</div>
-		</div>
-	</div>
-</div>
-
 <script type="text/javascript">
 $(document).ready(function() {
 	$('#attributeContent').localize();
@@ -211,7 +170,7 @@ $(document).ready(function() {
 	
 	function createAutocomplete(selectedValue){
 		$('#attributeCategoryAutocomplete').autoComplete({
-			url: 'attributeCategories/categories',
+			url: 'userAttributeCategories/categories',
 			nameIsResourceKey: false,
 			selectedValue: selectedValue
 		});
@@ -225,6 +184,23 @@ $(document).ready(function() {
 		options: [{ id: 'PASSWORD', name: 'Password', value: 'PASSWORD' },
 		          { id: 'TEXT', name: 'Text', value: 'TEXT'}],
 		nameIsResourceKey: false
+	});
+	
+	$('#attributeDisplayMode').selectButton({
+		id: 'attributeDisplayMode',
+		value: '',
+		options: [{ id: '', name: 'scope.user', value: '' },
+		          { id: 'admin', name: 'scope.admin', value: 'admin'}],
+		nameIsResourceKey: true
+	});
+	
+	getJSON('roles/list', null, function(data) {
+			$('#roles').multipleSelect({
+				values : data.resources,
+				selectedIsObjectList : true,
+				resourceKey : 'userAttribute',
+				disabled: !currentMenu.canUpdate
+		});
 	});
 	
 	$('#attributeReadOnly').switchInput({
@@ -241,41 +217,11 @@ $(document).ready(function() {
 	
 	$('#createCategory').click(function(e){
 		e.preventDefault();
-		$('#attributeCategoryContent').modal('show');
-		$('#attributeCategoryName').val('');
-		$('#attributeCategoryWeight').val('0');
-		$('#attributeCategoryContext').data('widget').reset();
-	});
-	
-	$('#createCategoryDialogButton').click(function(){
-		
-		if ($('#attributeCategoryName').val() == '') {
-			showError('attribute.nameRequired.error');
-			return false;
-		}
-		if ($('#attributeCategoryWeight').val() == '') {
-			showError('attribute.weightRequired.error');
-			return false;
-		}
-		if ($('#attributeCategoryContext').val() == '') {
-			showError('attribute.contextRequired.error');
-			return false;
-		}
-		resource = new Object();
-		resource.name = $('#attributeCategoryName').val();
-		resource.weight = $('#attributeCategoryWeight').val();
-		resource.context = $('#attributeCategoryContext').data('widget').getValue();
-		postJSON('attributeCategories/attributeCategory', resource, function(data){
-			if(data.success){
-				$('#attributeCategoryContent').modal('hide');
-				$('#attributeCategoryAutocomplete').empty();
-				createAutocomplete(data.resource.id);
-			}else{
-				showError(data.message);
-			}
-			
+		$('#attributeTabContent').data('categoryPage').showCreate(function(resource) {
+			$('#attributeCategoryAutocomplete').widget().reset(resource.id);
 		});
 	});
+
 	
 	$('#attributeCategoryContext').selectButton({
 		id: 'attributeCategoryContext',
@@ -290,8 +236,8 @@ $(document).ready(function() {
 				id : "attribute",
 				title : getResource('attribute.title'),
 				icon : 'fa-list-lu',
-				tableUrl : "attributes/table",
-				resourceUrl : "attributes/attribute",
+				tableUrl : "userAttributes/table",
+				resourceUrl : "userAttributes/userAttribute",
 				fields : [
 					{name : "name"}
 					],
@@ -300,6 +246,7 @@ $(document).ready(function() {
 				canCreate : true,
 				canDelete : true,
 				canUpdate : true,
+				readOnly: false,
 				validate : function() {
 						if ($('#attributeName').val() == '') {
 							showError('attribute.nameRequired.error');
@@ -335,9 +282,12 @@ $(document).ready(function() {
 					$('#attributeDefaultValue').val('');
 					$('#attributeWeight').val('0');
 					$('#attributeType').data('widget').reset();
+					$('#attributeDisplayMode').data('widget').reset();
 					$('#attributeReadOnly').data('widget').setValue(false);
 					$('#attributeEncrypted').data('widget').setValue(false);
 					$('#attributeVariableName').val('');
+					$('#roles').multipleSelect({ disabled: false });
+					$('.attributePropertiesTab').first().click();
 				},
 				createResource : function() {
 					resource = new Object();
@@ -348,12 +298,15 @@ $(document).ready(function() {
 					resource.defaultValue = $('#attributeDefaultValue').val();
 					resource.weight = $('#attributeWeight').val();
 					resource.type = $('#attributeType').data('widget').getValue();
+					resource.displayMode = $('#attributeDisplayMode').data('widget').getValue();
 					resource.readOnly = $('#attributeReadOnly').data('widget').getValue()
 					resource.encrypted = $('#attributeEncrypted').data('widget').getValue();
 					resource.variableName = $('#attributeVariableName').val();
+					resource.roles = $('#roles').multipleSelectValues();
+					
 					return resource;
 				},
-				displayResource : function(resource) {
+				displayResource : function(resource, readOnly) {
 					$('#attributeId').val(resource.id);
 					$('#attributeName').val(resource.name);
 					$('#attributeCategoryAutocomplete').data('widget').setValue(resource.category.id);
@@ -361,12 +314,29 @@ $(document).ready(function() {
 					$('#attributeDefaultValue').val(resource.defaultValue);
 					$('#attributeWeight').val(resource.weight);
 					$('#attributeType').data('widget').setValue(resource.type);
+					$('#attributeDisplayMode').data('widget').setValue(resource.displayMode);
 					$('#attributeReadOnly').data('widget').setValue(resource.readOnly);
 					$('#attributeEncrypted').data('widget').setValue(resource.encrypted);
 					$('#attributeVariableName').val(resource.variableName);
+					
+					$('#roles').multipleSelect({
+						selected : resource.roles,
+						selectedIsObjectList : true,
+						resourceKey : 'userAttribute',
+						disabled: readOnly || resource.resource != null
+					});
 				},
 				complete : function() {
 					loadComplete();
+				},
+				resourceCreated: function() {
+					loadResources();
+				},
+				resourceDeleted: function() {
+					loadResources();
+				},
+				resourceUpdated: function() {
+					loadResources();
 				}
 	});
 });

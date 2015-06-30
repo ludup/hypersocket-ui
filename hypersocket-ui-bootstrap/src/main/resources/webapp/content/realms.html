@@ -57,13 +57,15 @@
 					return data.resources;
 				},
 				changed: function(widget) {
-					$('#realmProperties').propertyPage({ 
-						url : 'realms/template/' + widget.getSelectedObject().module, 
-						showButtons : false, 
-						resource: widget.getSelectedObject().module,
-						canUpdate : currentMenu.canUpdate, 
-						useTemplates : true 
-					});
+					if(typeButton.isEnabled()) {
+						$('#realmProperties').propertyPage({ 
+							url : 'realms/template/' + widget.getSelectedObject().module, 
+							showButtons : false, 
+							resource: widget.getSelectedObject().module,
+							canUpdate : currentMenu.canUpdate, 
+							useTemplates : true 
+						});
+					}
 				}
 			});
 
@@ -140,15 +142,10 @@
 						}, checkUpdate: function(resource) {
 							return true;
 						}, showCreate : function() {
+							
 							typeButton.enable();
-							typeButton.reset();
-							$('#realmProperties').propertyPage({ 
-								url : 'realms/template/' + typeButton.getSelectedObject().module, 
-								showButtons : false, 
-								resource: typeButton.getSelectedObject().module,
-								canUpdate : currentMenu.canUpdate, 
-								useTemplates : true 
-							});
+							typeButton.selectFirst();
+
 						}, displayResource : function(resource, readOnly) {
 							$('#id').val(resource.id);
 							$('#name').val(resource.name);

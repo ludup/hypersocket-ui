@@ -57,7 +57,7 @@ function processLogon(data, opts, message) {
 		if (data['errorMsg']) {
 			$('#logonForm')
 					.append(
-						'<h2 class="form-signin-heading">' + (data.lastErrorIsResourceKey ? getResource(data['errorMsg']) : data['errorMsg']) + '</h2>');
+						'<h2 class="form-signin-heading error">' + (data.lastErrorIsResourceKey ? getResource(data['errorMsg']) : data['errorMsg']) + '</h2>');
 		} else if (message) {
 			$('#logonForm').append(
 				'<h2 class="form-signin-heading">' + message + '</h2>');

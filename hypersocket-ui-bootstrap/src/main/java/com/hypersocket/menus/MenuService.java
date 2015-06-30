@@ -26,7 +26,7 @@ public interface MenuService extends AuthenticatedService {
 	
 	static final String MENU_SYSTEM = "system";
 	
-	static final String MENU_SERVER = "server";
+	static final String MENU_SYSTEM_CONFIGURATION = "server";
 	
 	static final String MENU_CONFIGURATION = "configuration";
 	
@@ -59,4 +59,6 @@ public interface MenuService extends AuthenticatedService {
 	void registerTableAction(String table, AbstractTableAction action);
 
 	List<AbstractTableAction> getTableActions(String table);
+
+	void registerFilter(MenuFilter filter);
 }

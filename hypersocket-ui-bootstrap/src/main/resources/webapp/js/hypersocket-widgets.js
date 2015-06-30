@@ -563,6 +563,9 @@ $.fn.selectButton = function(data) {
 				$('#button_' + id).removeClass('btn-disabled-dark');
 				$('#button_' + id).addClass('btn-primary');
 			},
+			isEnabled: function() {
+				return !$('#button_' + id).hasClass('btn-disabled-dark');
+			},
 			options: function() {
 				return obj;
 			},
@@ -779,19 +782,30 @@ $.fn.autoComplete = function(data) {
 			getObject: function() {
 				return $('#input_' + id).data('map')[$('#' + id).val()];
 			},
-			reset: function() {
-				$.each($('#input_' + id).data('values'), function(idx, obj) {
-					if(obj[options.valueAttr]==options.val) {
-						$('#' + id).val(options.val);
-						$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-					}
-				});
+			reset: function(newValue) {
+				
+				if(options.url && !options.remoteSearch) {
+					getJSON(
+						options.url,
+						null,
+						function(data) {
+							buildData(options.isResourceList ? data.resources : data);
+							callback.setValue(newValue);
+						});
+				} else if(options.values && !options.remoteSearch) {
+					buildData(options.values);
+					callback.setValue(newValue);
+				} 
+				
 			},
 			disable: function() {
 				$('#input_' + id).attr('disabled', true);
 			},
 			enable: function() {
 				$('#input_' + id).attr('disabled', false);
+			},
+			isEnabled: function() {
+				return !$('#input_' + id).attr('disabled');
 			},
 			options: function() {
 				return options;
@@ -830,16 +844,7 @@ $.fn.autoComplete = function(data) {
 		callback.disable();
 	}
 	
-	if(options.url && !options.remoteSearch) {
-		getJSON(
-			options.url,
-			null,
-			function(data) {
-				buildData(options.isResourceList ? data.resources : data);
-			});
-	} else if(options.values && !options.remoteSearch) {
-		buildData(options.values);
-	} 
+	callback.reset();
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');

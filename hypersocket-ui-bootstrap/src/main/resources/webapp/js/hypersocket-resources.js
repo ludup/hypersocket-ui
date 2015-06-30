@@ -7,9 +7,9 @@ $.fn.ajaxResourcePageInsert = function(resource) {
 $.fn.ajaxResourcePage = function(params) {
 
 	if(newTable) {
-		$(this).resourceTable(params);
+		return $(this).resourceTable(params);
 	} else {
-		$(this).oldResourcePage(params);
+		return $(this).oldResourcePage(params);
 	}
 	
 }
@@ -779,7 +779,7 @@ $.fn.resourceTable = function(params) {
 			if (options.showCreate) {
 				options.showCreate();
 			}
-			$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog('create');
+			$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog('create', $('#'+divName).data('createCallback'));
 		});
 	}
 
@@ -824,12 +824,12 @@ $.fn.resourceTable = function(params) {
 
 	if(options.toolbarButtons) {
 		$.each(options.toolbarButtons, function(idx, action) {
-			$('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
-					+ action.resourceKey + 'TableAction" class="btn btn-default" title="' 
+			$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
+					+ divName + action.resourceKey + 'TableAction" class="btn btn-default" title="' 
 					+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
 					+ action.icon + '"></i></button>');
 			
-			$('#' + action.resourceKey + 'TableAction').on('click', function(e) {
+			$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
 				if(action.action) {
 					action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
 						$('#' + divName + 'Placeholder').bootstrapTable('refresh');
@@ -862,6 +862,11 @@ $.fn.resourceTable = function(params) {
 	var callback = {
 		refresh: function() {
 			$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+		},
+		showCreate: function(callback) {
+			$('#'+divName).data('createCallback', callback);
+			$('#' + divName + 'Add').trigger('click');
+			
 		}
 	}
 	
@@ -915,11 +920,13 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						log("Resource object created");
 						dialog.bootstrapResourceDialog('close');
 						if (dialogOptions.hasResourceTable) {
-//							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('append',	data.resource);
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
 						if (dialogOptions.resourceCreated) {
 							dialogOptions.resourceCreated(data.resource);
+						}
+						if(params2) {
+							params2(data.resource);
 						}
 						showSuccess(data.message);
 					} else {

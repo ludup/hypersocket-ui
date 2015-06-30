@@ -634,3 +634,5 @@ function fadeMessage(fadeCallback) {
 		}
 	});
 }
+
+
