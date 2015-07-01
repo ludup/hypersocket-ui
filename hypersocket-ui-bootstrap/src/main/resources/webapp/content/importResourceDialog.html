@@ -17,6 +17,15 @@
 								<span class="help-block" localize="import.file.info"></span>
 							</div>
 						</div>
+					<div class="propertyItem form-group">
+						<label for="file" class="col-md-3 control-label"
+							localize="import.dropExisting.label"></label>
+						<div class="propertyValue col-md-9">
+							<div id="dropSwitch"></div>
+							<div>
+								<span class="help-block" localize="import.dropExisting.info"></span>
+							</div>
+						</div>
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -38,6 +47,11 @@
 			$('#importResources').modal('show');
 		});
 
+		var dropSwitch = $('#dropSwitch').switchInput({
+		    onResourceKey: 'text.yes',
+		    offResourceKey: 'text.no'
+		}};
+		
 		$('#importResourceButton').click(function(e) {
 	
 			if ($('#importFile').val() == '') {
@@ -47,6 +61,8 @@
 			
 			var formData = new FormData();
 			formData.append('file', $('#importFile')[0].files[0]);
+			formData.append('dropExisting', dropSwitch.getValue());
+			
 			$('#uploadIcon').removeClass('fa-upload');
 			$('#uploadIcon').addClass('fa-spinner fa-spin');
 			$.ajax({

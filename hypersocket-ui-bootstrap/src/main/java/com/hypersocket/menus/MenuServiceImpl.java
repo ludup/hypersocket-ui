@@ -151,9 +151,17 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RealmPermission.CREATE, RealmPermission.UPDATE,
 				RealmPermission.DELETE), MenuService.MENU_SYSTEM_CONFIGURATION);
 		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS,
-				"fa-wrench", "schedulers", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
-				MENU_SYSTEM_CONFIGURATION);
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				MENU_DIAGNOSTICS, "fa-wrench", null, 100, null,
+				null, null, null), MenuService.MENU_SYSTEM);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "schedulers",
+				"fa-clock-o", "schedulers", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
+				MENU_DIAGNOSTICS);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "importDiagnostics",
+				"fa-upload", "importDiagnostics", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
+				MENU_DIAGNOSTICS);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
