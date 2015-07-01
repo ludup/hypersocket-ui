@@ -755,14 +755,14 @@ $.fn.autoComplete = function(data) {
 					function(data) {
 						
 						var map = [];
-						$.each(data.aaData, function(idx, obj) {
+						$.each(data.rows, function(idx, obj) {
 							map[obj[options.valueAttr]] = obj[options.nameAttr];
 							if(obj[options.valueAttr]==options.value) {
 								$('#' + id).val(options.value);
 								$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
 							}
 						});
-						$('#input_' + id).data('values', data.aaData);
+						$('#input_' + id).data('values', data.rows);
 						$('#input_' + id).data('map', map);
 						
 						createDropdown(text);

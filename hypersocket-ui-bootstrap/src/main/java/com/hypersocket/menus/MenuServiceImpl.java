@@ -159,9 +159,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"fa-clock-o", "schedulers", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
 				MENU_DIAGNOSTICS);
 		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "importDiagnostics",
-				"fa-upload", "importDiagnostics", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
-				MENU_DIAGNOSTICS);
+//		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "importDiagnostics",
+//				"fa-upload", "importDiagnostics", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
+//				MENU_DIAGNOSTICS);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
