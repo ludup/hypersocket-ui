@@ -285,11 +285,13 @@
 				$('#rowAny').empty();
 				$('#resourceName').val('');
 				$('#resourceId').val('');
-
+				$('#allTabs').hide();
 				eventAuto.clear();
+				eventAuto.reset();
 				eventAuto.enable();
 				taskAuto.clear();
 				taskAuto.enable();
+				
 				var parentResource = $('#triggerModal').data('parentResource');
 				if(parentResource) {
 					getJSON('triggers/actionResults/' + parentResource.id, null, function(data) {
@@ -330,8 +332,7 @@
 				
 				taskAuto.disable();
 				taskAuto.setValue(resource.resourceKey);
-				
-				debugger;
+
 				$('#tabProperties').propertyPage({ 
 					url : 'triggers/properties/' + resource.id, 
 					showButtons : false, 
