@@ -1116,13 +1116,13 @@ $.fn.multipleSelect = function(data) {
 	}
 
 	if(options.useVariablesAsValues) {
-		options.values = options.variables;
+		options.options = options.variables;
 		options.valuesIsObjectList = false;
 	}
 	
-	if (options.values) {
+	if (options.options) {
 
-		$.each(options.values,
+		$.each(options.options,
 			function(idx, obj) {
 				var selectItem = options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0) ? toSelect : select;
 				
