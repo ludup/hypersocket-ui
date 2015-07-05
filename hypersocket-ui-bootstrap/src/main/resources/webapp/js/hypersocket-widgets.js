@@ -1120,8 +1120,10 @@ $.fn.multipleSelect = function(data) {
 		options.valuesIsObjectList = false;
 	}
 	
-	if (options.options) {
-
+	if (options.options || options.values) {
+		if(options.values) {
+			options.options = options.values;
+		}
 		$.each(options.options,
 			function(idx, obj) {
 				var selectItem = options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0) ? toSelect : select;
