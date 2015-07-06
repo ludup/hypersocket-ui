@@ -635,4 +635,8 @@ function fadeMessage(fadeCallback) {
 	});
 }
 
+function doNotDisplayIfNotEnabled(resource) {
+	return resource.enabled;
+}
+
 
