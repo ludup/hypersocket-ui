@@ -27,6 +27,7 @@
 <script type="text/javascript">
 	var triggerList = [];
 	var resourceList = [];
+	var selectedId;
 	$(document).ready(function() {
 				$('#contentTriggers').localize();
 				$('#contentTrigger').localize();
@@ -40,6 +41,8 @@
 								title: getResource("triggers.label"),
 								icon: 'fa-globe',
 								resourceUrl : "triggers/trigger",
+								importUrl: 'triggers/import',
+								exportUrl: 'triggers/export',
 								fields : [ {
 									name : "name"
 								}],
@@ -75,7 +78,13 @@
 									resourceTable.refresh();
 								},
 								selected: function(row) {
-
+									
+									if(selectedId && selectedId == row.id){
+										return;
+									}else{
+										selectedId = row.id;
+									}
+									
 									$('#triggerView').empty();
 									$('._jsPlumb_connector').remove();
 									triggerList = [];
