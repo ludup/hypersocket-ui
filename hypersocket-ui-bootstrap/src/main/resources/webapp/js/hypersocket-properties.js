@@ -54,6 +54,8 @@ function internalValidate(widget, value) {
 		return false;
 	}
 	if (obj.inputType == 'number') {
+		return !isNaN(parseFloat(value)) && isFinite(value);
+	} if (obj.inputType == 'integer') {
 		// Validate for integer
 		if(!validateRegex('^[0-9]+$',value)){
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
@@ -140,6 +142,7 @@ function internalValidate(widget, value) {
 function validateInputType(type){
 	switch(type){
 		case 'number' :
+		case 'integer' :
 		case 'autoComplete' :
 		case 'countries' :
 		case 'fileInput' :
@@ -509,7 +512,11 @@ $.fn.propertyPage = function(opts) {
 											
 											widget = $('#' + tab + '_value' + this.id).namePairInput(obj);
 			
-										} else if (obj.inputType == 'textarea' || obj.inputType == 'text' || obj.inputType == 'password' || obj.inputType == 'number') {
+										} else if (obj.inputType == 'textarea' 
+											|| obj.inputType == 'text' 
+											|| obj.inputType == 'password' 
+											|| obj.inputType == 'number' 
+											|| obj.inputType == 'integer') {
 											widget = $('#' + tab + '_value' + this.id).textInput(obj);
 			
 										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java') {
