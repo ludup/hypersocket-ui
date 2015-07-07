@@ -27,19 +27,22 @@
 <script type="text/javascript">
 	var triggerList = [];
 	var resourceList = [];
+	var selectedId;
 	$(document).ready(function() {
 				$('#contentTriggers').localize();
 				$('#contentTrigger').localize();
 				$('#saveTriggerbutton').attr('disabled', true);
 				$('#contentTriggers').load('content/triggers-modal.html', function() {
 						
-					var resourcePage = $('#contentTriggers').ajaxResourcePage(
+				var resourcePage = $('#contentTriggers').ajaxResourcePage(
 							{
 								id : "Trigger",
 								tableUrl : "triggers/table",
 								title: getResource("triggers.label"),
 								icon: 'fa-globe',
 								resourceUrl : "triggers/trigger",
+								importUrl: 'triggers/import',
+								exportUrl: 'triggers/export',
 								fields : [ {
 									name : "name"
 								}],
@@ -69,128 +72,134 @@
 								complete : function() {
 									loadComplete();
 								},
-								resourceUpdated: function() {
-									$('#triggerView').empty();
-									$('._jsPlumb_connector').remove();
-									resourceTable.refresh();
-								},
 								selected: function(row) {
-
-									$('#triggerView').empty();
-									$('._jsPlumb_connector').remove();
-									triggerList = [];
-									
-									if(row) {
-										$('#contentTrigger').show();
-										$('#triggerEvent').text(getResource(row.event));
-										$('#triggerName').text(row.name);
-										
- 										$('#triggerName').prepend('<span class="label ' + getStateLabelClass(row) + '">' + getResource(getStateLabelText(row)) + '</span>&nbsp;&nbsp;&nbsp;');
-
-					                	var trigger = row;
-					                	triggerList.push(trigger.id);
-					                	createTriggerList(trigger.childTriggers);
-					                	var top = 25;
-					                	var left = 200;
-					                	getJSON('interfaceState/state/false/' + triggerList, null, function(data){
-					                		resourceList = data.resources;
-					                		addTask(trigger, null, top+50, left+50);
-						                	jsPlumb.connect({
-						        	            source: 'rootTrigger',
-						        	            target:"trigger" + trigger.id,
-						        	            connector: 'Straight',
-						        	            anchor: "AutoDefault",
-						        	            endpoint:"Blank",
-						        	            detachable:false,
-						        	            overlays:[["Arrow", {location: 1}]]
-						        	        });
-						                	
-											jsPlumb.draggable($('.triggerShape'));
-											
-											$('.triggerShape').draggable({
-										        stop: function(e){
-										            if($(this).data('trigger')){
-										            	state = new Object();
-											            state.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
-											            state.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
-											            state.resourceId = $(this).data('trigger').id;
-											            state.name = $(this).attr('id');
-											            state.specific = false;
-											            postJSON('interfaceState/state', state, function(data){
-											            	
-											            });
-										            }
-										        }
-										    });
-											
-											$('.addIcon').off('click');
-											$('.addIcon').on('click', function(e) {
-												e.preventDefault();
-												var trigger = $(this).closest('.triggerShape').data('trigger');
-												
-												getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
-													$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
-													$('div[dialog-for="contentTriggers"]').resourceDialog('create');
-												});
-											});
-											
-											$('.editIcon').off('click');
-											$('.editIcon').on('click', function(e) {
-												e.preventDefault();
-												var trigger = $(this).closest('.triggerShape').data('trigger');
-													$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { resource: trigger});
-											});
-											
-											$('.deleteTriggerIcon').off('click');
-											$('.deleteTriggerIcon').on('click', function(e) {
-												e.preventDefault();
-												var trigger = $(this).closest('.triggerShape').data('trigger');
-												if(!trigger.isRoot) {
-													bootbox.confirm(getResource("confirm.deleteTriggerItem").format(trigger.name), function(result) {
-														  if(result) {
-															  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
-																	if(data.success) {
-																		showSuccess(data.message);
-																		$('#triggerView').empty();
-																		$('._jsPlumb_connector').remove();
-																		resourcePage.refresh();
-																	} else {
-																		showError(data.message)
-																	}
-																});
-														  }
-													}); 
-												} else {
-													bootbox.confirm(getResource("confirm.deleteTrigger").format(trigger.name), function(result) {
-														  if(result) {
-															  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
-																	if(data.success) {
-																		showSuccess(data.message);
-																		$('#triggerView').empty();
-																		$('._jsPlumb_connector').remove();
-																		resourcePage.refresh();
-																	} else {
-																		showError(data.message)
-																	}
-																});
-														  }
-													}); 
-												}
-												
-											});
-					                	});
-					                	
-										
-										
-										
-									} else {
-										$('#contentTrigger').hide();
-									}
+									renderDiagram(row, resourcePage);
 								}
 							});
 				});
 
 			});
+	
+	function renderDiagram(trigger, resourcePage) {
+		
+		jsPlumb.empty($('#triggerView'));
+		triggerList = [];
+		
+		if(trigger) {
+
+			$('#contentTrigger').show();
+			$('#triggerEvent').text(getResource(trigger.event));
+			$('#triggerName').text(trigger.name);
+			$('#triggerName').prepend('<span class="label ' + getStateLabelClass(trigger) + '">' + getResource(getStateLabelText(trigger)) + '</span>&nbsp;&nbsp;&nbsp;');
+        	
+        	triggerList.push(trigger.id);
+        	createTriggerList(trigger.childTriggers);
+        	var top = 25;
+        	var left = 200;
+        	getJSON('interfaceState/state/false/' + triggerList, null, function(data){
+        		resourceList = data.resources;
+        		addTask(trigger, null, top+50, left+50);
+            	jsPlumb.connect({
+    	            source: 'rootTrigger',
+    	            target:"trigger" + trigger.id,
+    	            connector: 'Flowchart',
+    	            anchor: "AutoDefault",
+    	            endpoint:"Blank",
+    	            detachable:false,
+    	            overlays:[["Arrow", {location: 1}]]
+    	        });
+            	
+				jsPlumb.draggable($('.triggerShape'));
+				
+				$('.triggerShape').draggable({
+			        stop: function(e){
+			            if($(this).data('trigger')){
+			            	state = new Object();
+				            state.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
+				            state.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
+				            state.resourceId = $(this).data('trigger').id;
+				            state.name = $(this).attr('id');
+				            state.specific = false;
+				            postJSON('interfaceState/state', state, function(data){
+				            	
+				            });
+			            }
+			        }
+			    });
+				
+				$('.addIcon').off('click');
+				$('.addIcon').on('click', function(e) {
+					e.preventDefault();
+					var trigger = $(this).closest('.triggerShape').data('trigger');
+					getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
+						$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
+						$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
+							resourceCreated: function(resource) {
+								renderDiagram(resource, resourcePage);
+							}
+						});
+					});
+				});
+				
+				$('.editIcon').off('click');
+				$('.editIcon').on('click', function(e) {
+					e.preventDefault();
+					var triggerShape = $(this).closest('.triggerShape');
+					var trigger = triggerShape.data('trigger');
+						$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { 
+							resource: trigger,
+							resourceUpdated: function(resource) {
+								triggerShape.data('trigger', resource);
+							}
+						});
+				});
+				
+				$('.deleteTriggerIcon').off('click');
+				$('.deleteTriggerIcon').on('click', function(e) {
+					e.preventDefault();
+					var triggerShape = $(this).closest('.triggerShape');
+					var trigger = triggerShape.data('trigger');
+
+					if(!trigger.isRoot) {
+						bootbox.confirm(getResource("confirm.deleteTriggerItem").format(trigger.name), function(result) {
+							  if(result) {
+								  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+										if(data.success) {
+											showSuccess(data.message);
+											renderDiagram(data.resource, resourcePage);
+											resourcePage.refresh();
+										} else {
+											showError(data.message)
+										}
+									});
+							  }
+						}); 
+					} else {
+						bootbox.confirm(getResource("confirm.deleteTrigger").format(trigger.name), function(result) {
+							  if(result) {
+								  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+										if(data.success) {
+											showSuccess(data.message);
+											renderDiagram(null, resourcePage);
+											resourcePage.refresh();
+										} else {
+											showError(data.message)
+										}
+									});
+							  }
+						}); 
+					}
+					
+				});
+        	});
+        	
+			
+			
+			
+		} else {
+			$('#contentTrigger').hide();
+		}
+	}
 	
 	function getStateLabelClass(trigger) {
 		var triggerClass = "label-info";
@@ -280,7 +289,7 @@
 			jsPlumb.connect({
 	            source:"trigger" + parent.id,
 	            target:"trigger" + trigger.id,
-	            connector: 'Straight',
+	            connector: 'Flowchart',
 	            anchor: "AutoDefault",
 	            endpoint:"Blank",
 	            detachable:false,
