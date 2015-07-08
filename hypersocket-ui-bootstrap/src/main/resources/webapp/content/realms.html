@@ -100,7 +100,10 @@
 						  icon : "fa-database", 
 						  resourceUrl : "realms/realm", 
 						  fields : [ { name : "name" },
-						             { name : "resourceCategory", isResourceKey : true }
+						             { name : "resourceCategory",
+							           formatter: function(value, obj, index) {
+							        	   return getResource("realm." + obj.resourceCategory + ".label");
+							           }}
 						  ], 
 						  resourceKey : 'realm', 
 						  canCreate : currentMenu.canCreate, 
