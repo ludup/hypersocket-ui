@@ -586,8 +586,8 @@ $.fn.selectButton = function(data) {
 		callback.disable();
 	}
 	
-	if(obj.val && obj.val!='') {
-		callback.setValue(obj.val);
+	if(obj.value && obj.value!='') {
+		callback.setValue(obj.value);
 	} else {
 		callback.selectFirst();
 	}
