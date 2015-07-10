@@ -250,12 +250,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"setPassword", "fa-key", "password", UserPermission.UPDATE, 0,
 				null, null) {
 			public boolean isEnabled() {
-				try {
-					assertPermission(PasswordPermission.CHANGE);
-					return !realmService.isReadOnly(getCurrentRealm());
-				} catch (AccessDeniedException e) {
-					return false;
-				}
+				return !realmService.isReadOnly(getCurrentRealm());
 			}
 		});
 
@@ -299,7 +294,16 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RealmService.RESOURCE_BUNDLE,
 				"changePassword", "fa-lock", "changePassword", 1000,
 				PasswordPermission.CHANGE, null, PasswordPermission.CHANGE,
-				null), MenuService.MENU_MY_PROFILE);
+				null) {
+			public boolean canRead() {
+				try {
+					assertPermission(PasswordPermission.CHANGE);
+					return !realmService.isReadOnly(getCurrentRealm());
+				} catch (AccessDeniedException e) {
+					return false;
+				}
+			}
+		}, MenuService.MENU_MY_PROFILE);
 	
 
 	}

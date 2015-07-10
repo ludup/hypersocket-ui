@@ -415,22 +415,22 @@ function home(data) {
 				}
 			}
 			
+			if(!currentMenu) {
+				showError("error.nothingToShow");
+			} else {
+				loadMenu(currentMenu);
 			
-//			$('#' + currentMenu.id).trigger('click');
-			loadMenu(currentMenu);
-
-			
-			
-			if(message != null && message.length > 0) {
-				if(message.startsWith('info=')) {
-					showInformation(message.substring(5));
-				} else if(message.startsWith('success=')) {
-					showSuccess(message.substring(8));
-				} else if(message.startsWith('warning=')) {
-					showWarning(message.substring(8));
-				} else if(message.startsWith('error=')) {
-					showError(message.substring(6));
-				} 
+				if(message != null && message.length > 0) {
+					if(message.startsWith('info=')) {
+						showInformation(message.substring(5));
+					} else if(message.startsWith('success=')) {
+						showSuccess(message.substring(8));
+					} else if(message.startsWith('warning=')) {
+						showWarning(message.substring(8));
+					} else if(message.startsWith('error=')) {
+						showError(message.substring(6));
+					} 
+				}
 			}
 			hideBusy();
 		});

@@ -128,6 +128,7 @@
 							$('#name').attr('disabled', false);
 							$('#id').val("");
 							$('#realmProperties').clearProperties();
+							removeMessage();
 						}, createResource : function() {
 							realm = new Object();
 							realm.name = $('#name').val();
