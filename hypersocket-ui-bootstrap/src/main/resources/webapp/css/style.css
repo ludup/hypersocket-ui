@@ -440,6 +440,14 @@ a.disabled-link:hover {
     color:#aaa !important;
 }
 
+.user-success {
+	color: #3c763d;
+}
+
+.user-warning {
+	color: #8a6d3b;
+}
+
 select {
 	background: #ffffff url("/hypersocket/ui/images/select.png") no-repeat
 		!important;

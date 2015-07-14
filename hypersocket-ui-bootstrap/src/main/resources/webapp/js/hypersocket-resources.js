@@ -322,7 +322,7 @@ $.fn.resourceTable = function(params) {
 	    pageSize: options.pageSize,
 	    pageList: options.pageList,
 	    search: options.search,
-	    showColumns : options.showColumns,
+	    showColumns : columns.length > 2 && options.showColumns,
 		showRefresh : options.showRefresh,
 	    method: options.method,
 	    striped: options.striped,

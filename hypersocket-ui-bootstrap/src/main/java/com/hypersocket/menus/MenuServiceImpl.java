@@ -276,14 +276,17 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				TriggerResourcePermission.DELETE),
 				MenuService.MENU_BUSINESS_RULES);
 
-		registerMenu(new MenuRegistration(
-				AutomationResourceServiceImpl.RESOURCE_BUNDLE, "automations",
-				"fa-clock-o", "automations", 100,
-				AutomationResourcePermission.READ,
-				AutomationResourcePermission.CREATE,
-				AutomationResourcePermission.UPDATE,
-				AutomationResourcePermission.DELETE),
-				MenuService.MENU_BUSINESS_RULES);
+		/**
+		 * Removed until the feature is in a better state to be included.
+		 */
+//		registerMenu(new MenuRegistration(
+//				AutomationResourceServiceImpl.RESOURCE_BUNDLE, "automations",
+//				"fa-clock-o", "automations", 100,
+//				AutomationResourcePermission.READ,
+//				AutomationResourcePermission.CREATE,
+//				AutomationResourcePermission.UPDATE,
+//				AutomationResourcePermission.DELETE),
+//				MenuService.MENU_BUSINESS_RULES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));

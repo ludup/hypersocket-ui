@@ -127,7 +127,15 @@
 								icon : 'fa-user',
 								resourceUrl : "currentRealm/user",
 								fields : [ {
-									name : "principalName"
+									name : "principalName",
+									formatter: function(value, obj, index) {
+										return obj.isSuspended ? '<i class="fa fa-warning user-warning"></i>' : '<i class="fa fa-check user-success"></i>' + '&nbsp;' + obj.principalName;
+									}
+								}, {
+									name : "principalDesc",
+									formatter: function(value, obj, index) {
+										return obj.principalDescription;
+									}
 								}],
 								resourceKey : 'user',
 								canCreate : currentMenu.canCreate,
