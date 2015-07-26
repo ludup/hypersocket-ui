@@ -25,8 +25,6 @@ import org.springframework.stereotype.Service;
 
 import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
-import com.hypersocket.automation.AutomationResourcePermission;
-import com.hypersocket.automation.AutomationResourceServiceImpl;
 import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.config.ConfigurationPermission;
