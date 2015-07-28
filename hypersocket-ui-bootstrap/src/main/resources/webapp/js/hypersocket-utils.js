@@ -635,8 +635,8 @@ function fadeMessage(fadeCallback) {
 	});
 }
 
-function doNotDisplayIfNotEnabled(resource) {
-	return resource.enabled;
+function doNotDisplayIfNotEnabled(resource, menu) {
+	return menu.enabled;
 }
 
 

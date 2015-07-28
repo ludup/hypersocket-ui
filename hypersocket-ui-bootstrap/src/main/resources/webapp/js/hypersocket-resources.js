@@ -177,7 +177,7 @@ $.fn.resourceTable = function(params) {
 					$.each(options.additionalActions, function(x, act) {
 						if(act.enabled) {
 							if(act.displayFunction && act.displayFunction != '') {
-								var display = window[act.displayFunction].apply(null, [resource]);
+								var display = window[act.displayFunction].apply(null, [resource, act]);
 								var el = $('.row-' + act.resourceKey, dropdown);   
 								if(display) {
 									el.show();
@@ -186,7 +186,7 @@ $.fn.resourceTable = function(params) {
 								}
 							}
 							if(act.enableFunction && act.enableFunction != '') {
-								if(!window[act.enableFunction].apply(null, [resource])) {
+								if(!window[act.enableFunction].apply(null, [resource, act])) {
 									var el = $('.row-' + act.resourceKey, dropdown);    
 									el.parent().addClass('disabled');
 									el.attr('disabled', true);
