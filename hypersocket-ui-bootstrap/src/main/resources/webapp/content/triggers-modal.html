@@ -294,7 +294,7 @@
 				
 				var parentResource = $('#triggerModal').data('parentResource');
 				if(parentResource) {
-					getJSON('triggers/actionResults/' + parentResource.id, null, function(data) {
+					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						eventAuto.setValue(data.resources[0].resourceKey);
 						eventAuto.disable();	
 					});
@@ -307,9 +307,10 @@
 				$('#tabProperties').parent().append($('#tabConditions').detach());
 				$('#tabProperties').empty();
 			},
-			loadParent: function(parentResource, parentEvents) {
+			loadParent: function(parentResource, parentEvents, triggerType) {
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
+				$('#triggerModal').data('triggerType', triggerType);
 			},
 			displayResource: function(resource) {
 				
@@ -384,6 +385,8 @@
 					resource.parentId = $('#triggerModal').data('parentResource').id;
 				}
 				
+				resource.type = $('#triggerModal').data('triggerType');
+				
 				$('#tabProperties').saveProperties(true, function(items) {
 					resource.properties = items;	
 				});
@@ -421,17 +424,6 @@
 		getJSON('triggers/conditions', null, function(data) {
 			$('#triggerModal').data('conditions', data.resources);
 		});
-		
-// 		getJSON('triggers/actions', null, function(data) {
-// 			$('#triggerModal').data('actions', data.resources);
-// 			$('#addActionDropdown').empty();
-// 			$.each(data.resources, function(idx, obj) {
-// 				$('#addActionDropdown').append('<li><a tabindex="-1" href="#" class="editAction" data-value="' + obj + '">' + getResource(obj) + '</a></li>');
-// 			});
-// 			$(".dropdown-toggle").dropdown();
-			
-// 			bindActions();
-// 		});
 		
 		$('#addAll').click(function(e) {
 			e.preventDefault();

@@ -240,6 +240,9 @@ ${stylesheets}
 					</div>
 				</div>
 			</div>
+			<div class="propertyItem form-group credsDiv">
+				<div id="stepForm"></div>
+			</div>
 		</div>
 	</div>
 
@@ -274,6 +277,7 @@ ${stylesheets}
 	<script src="${uiPath}/js/notify.min.js"></script>
 	<script src="${uiPath}/js/hypersocket-utils.js"></script>
 	<script src="${uiPath}/js/hypersocket-widgets.js"></script>
+	<script src="${uiPath}/js/hypersocket-forms.js"></script>
 	<script src="${uiPath}/js/hypersocket-properties.js"></script>
 
 	<script type="text/javascript">
@@ -371,6 +375,15 @@ ${stylesheets}
 				$('#example20').sliderInput({ value: 500,
 					min: 0,
 					max: 1000});
+				
+				$('#stepForm').stepForm({
+					steps: [ {
+						title: 'Step One'
+					},
+					{
+						title: 'Step Two'
+					}]
+				})
 			});
 		});
 	</script>

@@ -27,11 +27,11 @@
 <script type="text/javascript">
 	var triggerList = [];
 	var resourceList = [];
+	var triggerMap = [];
 	var selectedId;
 	$(document).ready(function() {
 				$('#contentTriggers').localize();
 				$('#contentTrigger').localize();
-				$('#saveTriggerbutton').attr('disabled', true);
 				$('#contentTriggers').load('content/triggers-modal.html', function() {
 						
 				var resourcePage = $('#contentTriggers').ajaxResourcePage(
@@ -66,7 +66,7 @@
 									return $(document).data('triggerModalCallback').createResource();
 								},
 								displayResource : function(resource) {
-									$(document).data('triggerModalCallback').loadParent(null, null);
+									$(document).data('triggerModalCallback').loadParent(null, null, 0);
 									$(document).data('triggerModalCallback').displayResource(resource);
 								},
 								complete : function() {
@@ -74,6 +74,11 @@
 								},
 								selected: function(row) {
 									renderDiagram(row, resourcePage);
+								},
+								resourceUpdated: function() {
+									$('#triggerView').empty();
+									$('._jsPlumb_connector').remove();
+									resourcePage.refresh();
 								}
 							});
 				});
@@ -84,7 +89,7 @@
 		
 		jsPlumb.empty($('#triggerView'));
 		triggerList = [];
-		
+		triggerMap = [];
 		if(trigger) {
 
 			$('#contentTrigger').show();
@@ -93,6 +98,7 @@
 			$('#triggerName').prepend('<span class="label ' + getStateLabelClass(trigger) + '">' + getResource(getStateLabelText(trigger)) + '</span>&nbsp;&nbsp;&nbsp;');
         	
         	triggerList.push(trigger.id);
+        	triggerMap[trigger.id] = trigger;
         	createTriggerList(trigger.childTriggers);
         	var top = 25;
         	var left = 200;
@@ -159,6 +165,7 @@
 							resource: trigger,
 							resourceUpdated: function(resource) {
 								triggerShape.data('trigger', resource);
+								renderDiagram(getParent(resource), resourcePage);
 							}
 						});
 				});
@@ -202,12 +209,16 @@
 				});
         	});
         	
-			
-			
-			
 		} else {
 			$('#contentTrigger').hide();
 		}
+	}
+	
+	function getParent(trigger) {
+		while(trigger.parentId!=null) {
+			trigger = triggerMap[trigger.parentId];
+		}	
+		return trigger;
 	}
 	
 	function getStateLabelClass(trigger) {
@@ -253,6 +264,7 @@
 	function createTriggerList(childTriggers){
 		$.each(childTriggers, function(index, triggerValue){
 			triggerList.push(triggerValue.id);
+			triggerMap[triggerValue.id] = triggerValue;
 			if(triggerValue.childTriggers && triggerValue.childTriggers.length){
 				createTriggerList(triggerValue.childTriggers);
 			}
