@@ -11,7 +11,7 @@
 		<div class="row">
 			<div class="col-md-9" id="schemeArea">
 				<div id="triggerTasks" style="overflow: auto; height: 800px">
-					<div id="rootTrigger" class="triggerShape trigger-same-row">
+					<div id="rootTrigger" class="triggerShape trigger-same-row" style="position: absolute; left: 50px; top: 50px;">
 						<span id="triggerEvent" class="triggerContent"></span>
 					</div>
 					<div id="triggerView" class="trigger-same-row"></div>
@@ -109,9 +109,9 @@
     	            overlays:[["Arrow", {location: 1}]]
     	        });
             	
-				jsPlumb.draggable($('.triggerShape'));
+				jsPlumb.draggable($('.triggerDraggable'));
 				
-				$('.triggerShape').draggable({
+				$('.triggerDraggable').draggable({
 			        stop: function(e){
 			            if($(this).data('trigger')){
 			            	state = new Object();
@@ -120,6 +120,15 @@
 				            state.resourceId = $(this).data('trigger').id;
 				            state.name = $(this).attr('id');
 				            state.specific = false;
+				            
+				            if(state.leftpx < 0) {
+				            	state.leftpx = 0;
+				            }
+				            
+				            if(state.top < 0) {
+				            	state.top = 0;
+				            }
+				            
 				            postJSON('interfaceState/state', state, function(data){
 				            	
 				            });
@@ -267,7 +276,7 @@
 			}
 		});
 		$('#triggerView').append(
-					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape " + triggerClass + " trigger-same-row' id='trigger" + trigger.id + "'>"
+					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape triggerDraggable " + triggerClass + " trigger-same-row' id='trigger" + trigger.id + "'>"
 				+	"	<div class='triggerContent'>"
 				+	"		<span class='triggerText'>"	+ trigger.name + "</span>"
 				+	"		<a data-trigger='"+ trigger.id + "' class='addIcon triggerIcon' href=''>"
