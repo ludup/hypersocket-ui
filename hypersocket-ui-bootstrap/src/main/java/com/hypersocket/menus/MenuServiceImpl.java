@@ -299,7 +299,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			public boolean canRead() {
 				try {
 					assertPermission(PasswordPermission.CHANGE);
-					return !realmService.isReadOnly(getCurrentRealm());
+					return true;
 				} catch (AccessDeniedException e) {
 					return false;
 				}
