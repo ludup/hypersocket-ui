@@ -435,7 +435,14 @@ function pollForServerContact() {
 	    	
 	    }
 	}).fail(function(xmlRequest) {
-		setTimeout(pollForServerContact, 1000);
+		if(xmlRequest.status==401) {
+			showInformation(getResource('info.serverIsBack'), true, function() {
+	    		polling = false;
+	    		window.location.reload();	
+	    	});
+		} else {
+			setTimeout(pollForServerContact, 1000);
+		}
 	});
 	
 }

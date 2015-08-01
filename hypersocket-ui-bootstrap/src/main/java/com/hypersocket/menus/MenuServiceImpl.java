@@ -40,6 +40,7 @@ import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
+import com.hypersocket.session.SessionPermission;
 import com.hypersocket.triggers.TriggerResourcePermission;
 import com.hypersocket.triggers.TriggerResourceServiceImpl;
 
@@ -155,11 +156,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "schedulers",
 				"fa-clock-o", "schedulers", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
-				MENU_DIAGNOSTICS);
-		
-//		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "importDiagnostics",
-//				"fa-upload", "importDiagnostics", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
-//				MENU_DIAGNOSTICS);
+				MENU_SYSTEM_CONFIGURATION);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
@@ -213,6 +210,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						"pfxExport", CertificateResourcePermission.READ, 600,
 						null, null));
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "profileAttributes",
+				"fa-sticky-note-o", "userAttributeTabs", 4000,
+				UserAttributePermission.READ, UserAttributePermission.CREATE,
+				UserAttributePermission.UPDATE, UserAttributePermission.DELETE),
+				MenuService.MENU_ACCESS_CONTROL);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "accessControl",
 				"fa-unlock-alt", null, 200, null, null, null, null),
 				MenuService.MENU_SYSTEM);
@@ -232,11 +235,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RolePermission.CREATE, RolePermission.UPDATE,
 				RolePermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "profileAttributes",
-				"fa-user-secret", "userAttributeTabs", 4000,
-				UserAttributePermission.READ, UserAttributePermission.CREATE,
-				UserAttributePermission.UPDATE, UserAttributePermission.DELETE),
-				MenuService.MENU_ACCESS_CONTROL);
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
+				"fa-hourglass-start", "sessions", 99999, SessionPermission.READ, null, null, SessionPermission.DELETE, null),
+				MENU_ACCESS_CONTROL);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
