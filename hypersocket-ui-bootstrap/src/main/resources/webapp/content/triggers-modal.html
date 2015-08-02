@@ -152,19 +152,34 @@
    			 + '    </div>'
    			 + '    <div class="propertyValue col-xs-4" style="display: inline-block">'
    			 + '        <input type="text" class="form-control conditionValue" size="30"'
-   			 + '            ' + conditionId.format('conditionValue') + ' name="conditionValue" value="">'
+   			 + '            ' + conditionId.format('conditionValue') + ' name="conditionValue" value="" style="display: none">'
    			 + '    </div>'
    			 + '    <div class="propertyValue col-xs-1 dialogActions">'
    			 + '         <a href="#" class="removeCondition btn btn-danger"><i class="fa fa-trash-o"></i></a>'
    			 + '    </div>'
    			 + '</div>';
+   			 
     	$('#'+divId).append(html);
+    	
+    	$('.conditionKey').change(function() {
+    		if(!$(this).val().startsWith('condition.is')) {
+    			$(this).closest('.propertyItem').find('.conditionValue').show();
+    		} else {
+    			$(this).closest('.propertyItem').find('.conditionValue').hide();
+    		}
+    	});
+    	
+    	$('.conditionKey').trigger('click');
     	
     	if(condition) {
 	    	$('#attribute' + condition.id).data('condition', condition);
 	    	$('#attribute' + condition.id).val(condition.attributeKey);
 	    	$('#condition' + condition.id).val(condition.conditionKey);
 	    	$('#conditionValue' + condition.id).val(condition.conditionValue);
+	    	
+	    	if(!condition.valueRequired) {
+	    		$('#conditionValue' + condition.id).hide();
+	    	}
     	}
     	
     	$('.removeCondition').off('click');

@@ -155,7 +155,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null, null, null), MenuService.MENU_SYSTEM);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "schedulers",
-				"fa-clock-o", "schedulers", 99999, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
+				"fa-clock-o", "schedulers", Integer.MAX_VALUE, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
 				MENU_SYSTEM_CONFIGURATION);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,

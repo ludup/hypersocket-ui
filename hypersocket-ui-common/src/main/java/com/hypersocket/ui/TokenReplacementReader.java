@@ -4,18 +4,19 @@ import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
 import java.nio.CharBuffer;
+import java.util.List;
 
 public class TokenReplacementReader extends Reader {
 
 	  protected PushbackReader pushbackReader   = null;
-	  protected ITokenResolver tokenResolver    = null;
+	  protected List<ITokenResolver> tokenResolvers    = null;
 	  protected StringBuilder  tokenNameBuffer  = new StringBuilder();
 	  protected String         tokenValue       = null;
 	  protected int            tokenValueIndex  = 0;
 
-	  public TokenReplacementReader(Reader source, ITokenResolver resolver) {
+	  public TokenReplacementReader(Reader source, List<ITokenResolver> resolvers) {
 	    this.pushbackReader = new PushbackReader(source, 2);
-	    this.tokenResolver  = resolver;
+	    this.tokenResolvers  = resolvers;
 	  }
 
 	  public int read(CharBuffer target) throws IOException {
@@ -49,14 +50,22 @@ public class TokenReplacementReader extends Reader {
 	      data = this.pushbackReader.read();
 	    }
 
-	    this.tokenValue = this.tokenResolver
-	      .resolveToken(this.tokenNameBuffer.toString());
+	    for(ITokenResolver r : tokenResolvers) {
+    		tokenValue = r.resolveToken(this.tokenNameBuffer.toString());
+    		if(tokenValue!=null) {
+    			break;
+    		}
+    	}
 
 	    if(this.tokenValue == null){
 	      this.tokenValue = "${"+ this.tokenNameBuffer.toString() + "}";
 	    }
-	    return this.tokenValue.charAt(this.tokenValueIndex++);
-
+	    
+	    if(this.tokenValue.length()==0) {
+	    	return read();
+	    } else {
+	    	return this.tokenValue.charAt(this.tokenValueIndex++);
+	    }
 
 	  }
 

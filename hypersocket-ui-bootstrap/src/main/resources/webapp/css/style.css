@@ -1266,11 +1266,12 @@ span.input-group-addon {
 	border-style: solid;
 	text-align: center;
 	vertical-align: middle;
-	cursor: move;
-	z-index: 99999;
 	background-color: white;
 }
 
+.triggerDraggable {
+	cursor: move;
+}
 .triggerShape span {
 	width: 100%;
 }

@@ -531,7 +531,11 @@ function isValidURL(url) {
 }
 
 function isReplacementVariable(value) {
-	return value.trim().startsWith('${') && value.trim().endsWith('}');
+	if(typeof value == 'string') {
+		return value.trim().startsWith('${') && value.trim().endsWith('}');
+	} else {
+		return false;
+	}
 }
 
 function looksLikeMail(str) {
