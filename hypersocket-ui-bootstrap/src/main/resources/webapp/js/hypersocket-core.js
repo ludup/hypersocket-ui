@@ -701,7 +701,6 @@ function loadMenu(menu) {
 					+	'</a>'
 				+ '</div>');
 			}
-
 		});
 	
 		for(var i=0;i<menu.menus.length;i++) {
@@ -711,7 +710,8 @@ function loadMenu(menu) {
 		
 		$('.subMenu').click(function(e) {
 			e.preventDefault();
-			currentMenu = $(document).data($(this).attr('data-value'));
+			menuKey = $(this).attr('data-value');
+			currentMenu = $(document).data(menuKey);
 			loadSubPage(currentMenu, $(this));
 		});
 		
