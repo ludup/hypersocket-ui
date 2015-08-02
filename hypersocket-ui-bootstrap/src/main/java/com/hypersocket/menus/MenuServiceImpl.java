@@ -83,6 +83,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"fa-home", "overview", 0, SystemPermission.SYSTEM_ADMINISTRATION, null,
 				null, null), MenuService.MENU_DASHBOARD);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
+				"fa-hourglass-start", "sessions", 99999, SessionPermission.READ, null, null, SessionPermission.DELETE, null),
+				MenuService.MENU_DASHBOARD);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_MY_PROFILE, "fa-tags", null, 200, null, null,
@@ -234,10 +237,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"fa-user-md", "roles", 3000, RolePermission.READ,
 				RolePermission.CREATE, RolePermission.UPDATE,
 				RolePermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
-
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
-				"fa-hourglass-start", "sessions", 99999, SessionPermission.READ, null, null, SessionPermission.DELETE, null),
-				MENU_ACCESS_CONTROL);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
