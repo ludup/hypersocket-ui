@@ -45,7 +45,7 @@ function validate(widget, value) {
 function internalValidate(widget, value) {
 	obj = widget.options();
 	
-	obj = $.extend({ allowEmpty: true }, obj);
+	obj = $.extend({ allowEmpty: true, allowAttribute: true }, obj);
 	
 	log("Validating " + obj.resourceKey + ' value ' + value);
 	
@@ -53,6 +53,13 @@ function internalValidate(widget, value) {
 		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false;
 	}
+	
+	if(obj.allowAttribute) {
+		if(isReplacementVariable(value)) {
+			return true;
+		}
+	}
+	
 	if (obj.inputType == 'number') {
 		return !isNaN(parseFloat(value)) && isFinite(value);
 	} if (obj.inputType == 'integer') {
@@ -211,7 +218,12 @@ function validateAny(option,value){
 				if(isValidCIDR(value)){
 					matched = true;
 			    }
-			    break;    
+			    break;
+			case 'attribute':
+				if(isReplacementVariable(value)) {
+					matched = true;
+				}
+				break;
 			default : matched = false;
 		}
 		if(matched){
@@ -272,12 +284,20 @@ function validateAll(option,value){
 			    }else{
 					matched = false;
 				}
+				break;
 			case 'notGmail' :
 				if(isNotGmail(value)){
 					matched = true;
 			    }else{
 					matched = false;
-				}	
+				}
+				break;
+			case 'attribute':
+				if(isReplacementVariable(value)) {
+					matched = true;
+				} else {
+					matched = false;
+				}
 			    break;    
 			default : matched = false;
 		}

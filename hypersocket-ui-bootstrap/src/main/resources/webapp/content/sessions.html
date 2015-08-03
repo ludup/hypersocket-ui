@@ -1,0 +1,51 @@
+<div id="contentSessions">
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#contentSessions').ajaxResourcePage(
+				{
+					id : "Session",
+					tableUrl : "session/table",
+					title: getResource("sessions.label"),
+					icon: 'fa-hourglass-start',
+					resourceUrl: 'session/logoff',
+					disableEditView: true,
+					fields : [ {
+						name : "principalName",
+						formatter: function(value, obj, index) {
+							if(obj.currentPrincipal) {
+				        	   return obj.currentPrincipal.name;
+							} else {
+								return "";
+							}
+				           }
+						},
+						 {
+							name : "remoteAddress"
+						 },
+						 {
+							 name: "lastUpdated",
+							 formatter: function(value, obj, index) {
+								 return new Date(value).format("mmm dd HH:MM");
+							 }
+						 },
+						 {
+							 name: "os"
+						 },
+						 {
+							 name: "userAgent"
+						 }
+						],
+					resourceKey : "session",
+					canCreate: false,
+					canUpdate: false,
+					canDelete: currentMenu.canDelete,
+					checkDelete: function(session) {
+						return $(document).data('session').id != session.id;
+					},
+					complete : function() {
+						loadComplete();
+					}
+		});
+	});
+</script>

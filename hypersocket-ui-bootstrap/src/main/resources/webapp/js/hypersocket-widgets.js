@@ -52,7 +52,7 @@ $.fn.textInput = function(data) {
 				+ stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value) + '</textarea>';
 		
 		if(options.variables || options.url) {
-			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
+			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
 		    	+ 'data-toggle="dropdown">${}</span></div>';
 		}
 
@@ -69,7 +69,7 @@ $.fn.textInput = function(data) {
 				+ stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
 		
 		if(hasVariables || options.url) {
-			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
+			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
 		 	  + 'data-toggle="dropdown">${}</span></div>';
 		}
   
@@ -1936,10 +1936,11 @@ $.fn.namePairInput = function(data) {
  			getValue: function() {
  				var values = [];
  				$('#' + id + 'NamePairs').find('.namePairInput').each(function(){
- 					name = encodeURIComponent($(this).find('.namePairName').widget().getValue());
- 					if(options.onlyName){
+ 					name = $(this).find('.namePairName').widget().getValue();
+ 					if(options.onlyName) {
  	 					values.push(name);
- 					}else{
+ 					} else {
+ 						name = encodeURIComponent(name);
  						value = encodeURIComponent($(this).find('.namePairValue').widget().getValue());
  	 					values.push(name + '=' + value);
  					}

@@ -21,7 +21,7 @@ public class HtmlContentFilter implements ContentFilter {
 	@Autowired
 	HypersocketServer server;
 	
-	List<MapTokenResolver> additionalResolvers = new ArrayList<MapTokenResolver>();
+	List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
 	
 	String brandCompany = "Hypersocket Limited";
 	String companyUrl = "https://www.hypersocket.com/";
@@ -51,15 +51,15 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("supportContact", supportContact);
 		resolver.addToken("supportName", supportName);
 		resolver.addToken("supportUrl", supportUrl);
+		
 		if(license!=null) {
 			resolver.addToken("license", license);
 		}
 		
-		for(MapTokenResolver t : additionalResolvers) {
-			resolver.addAll(t);
-		}
+		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
+		resolvers.add(resolver);
 		
-		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)), resolver);
+		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)), resolvers);
 		return new ReaderInputStream(r, Charset.forName("UTF-8"));
 	}
 
@@ -68,7 +68,7 @@ public class HtmlContentFilter implements ContentFilter {
 		return path.endsWith(".html") || path.endsWith(".htm");
 	}
 	
-	public void addResolver(MapTokenResolver resolver) {
+	public void addResolver(ITokenResolver resolver) {
 		additionalResolvers.add(resolver);
 	}
 

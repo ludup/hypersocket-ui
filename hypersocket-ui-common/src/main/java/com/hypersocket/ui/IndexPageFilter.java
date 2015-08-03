@@ -21,7 +21,7 @@ public class IndexPageFilter implements ContentFilter {
 
 	List<String> stylesheets = new ArrayList<String>();
 	List<String> scripts = new ArrayList<String>();
-	List<MapTokenResolver> additionalResolvers = new ArrayList<MapTokenResolver>();
+	List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
 	List<FilterExtender> extenders = new ArrayList<FilterExtender>();
 	Set<String> filterPages = new HashSet<String>();
 	
@@ -35,16 +35,15 @@ public class IndexPageFilter implements ContentFilter {
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("stylesheets", generateStylesheets());
 		resolver.addToken("scripts", generateScripts());
-		
-		for(MapTokenResolver t : additionalResolvers) {
-			resolver.addAll(t);
-		}
-		
+
 		for(FilterExtender extender : extenders) {
 			resolver.addAll(extender.getAdditionalResolvers(request));
 		}
 		
-		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)), resolver);
+		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
+		resolvers.add(resolver);
+		
+		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)), resolvers);
 		return new ReaderInputStream(r, Charset.forName("UTF-8"));
 	}
 
@@ -83,7 +82,7 @@ public class IndexPageFilter implements ContentFilter {
 		scripts.add(script);
 	}
 	
-	public void addResolver(MapTokenResolver resolver) {
+	public void addResolver(ITokenResolver resolver) {
 		additionalResolvers.add(resolver);
 	}
 	

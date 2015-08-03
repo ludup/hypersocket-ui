@@ -146,14 +146,15 @@
 				$('.addIcon').on('click', function(e) {
 					e.preventDefault();
 					var trigger = $(this).closest('.triggerShape').data('trigger');
-					getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
-						$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
+// 					getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
+// 						$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
+						$(document).data('triggerModalCallback').loadParent(trigger, null);
 						$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
 							resourceCreated: function(resource) {
 								renderDiagram(resource, resourcePage);
 							}
 						});
-					});
+// 					});
 				});
 				
 				$('.editIcon').off('click');
