@@ -1,0 +1,62 @@
+	<!-- Modal -->
+	<div class="modal" id="addUserModal" tabindex="-1" role="dialog"
+		aria-labelledby="addUserModalLabel" aria-hidden="true"
+		dialog-for="contentUsers">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="propertyItem form-group">
+						<label class="col-md-3 control-label" localize="user.name"></label>
+						<div class="propertyValue col-md-9">
+							<input type="text" class="form-control"
+								placeholder="" id="userName" maxlength="" name="name" value="">
+							<div>
+								<span class="help-block" localize="user.name.info"></span>
+							</div>
+						</div>
+					</div>
+					<div id="userProperties" class="tabContent"></div>
+					<div id="tabUserGroups" class="tabContent"></div>
+					<div id="tabPassword" class="tabContent">
+						<div class="propertyItem form-group">
+						<label class="col-md-3 control-label" localize="label.password"></label>
+						<div class="propertyValue col-md-9">
+							<input type="password" name="password" id="userPassword"
+								class="form-control" />
+							<div>
+								<span class="help-block" localize="password.info"></span>
+							</div>
+						</div>
+						</div>
+						<div class="propertyItem form-group">
+							<label class="col-md-3 control-label" localize="label.confirmPassword"></label>
+							<div class="propertyValue col-md-9">
+								<input type="password" name="confirmPassword" id="userConfirmPassword"
+									class="form-control" />
+								<div>
+									<span class="help-block" localize="confirmPassword.info"></span>
+								</div>
+							</div>
+						</div>
+						<div class="propertyItem form-group">
+							<label class="col-md-3 control-label" localize="label.forceChange"></label>
+							<div class="propertyValue col-md-9">
+								<input type="checkbox" name="forceChange" id="userForceChange">
+								<div>
+									<span class="help-block" localize="forceChange.info"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<input type="hidden" name="userId" id="userId">
+
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
