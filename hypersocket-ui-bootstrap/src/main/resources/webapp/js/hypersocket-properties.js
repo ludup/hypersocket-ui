@@ -735,6 +735,11 @@ $.fn.propertyPage = function(opts) {
 				});
 				$(applyButton).click(function() {
 
+					if(!$('#' + propertyDiv).validateProperties()) {
+						showError("error.correctValidationErrors");
+						return;
+					}
+					
 					$('#' + propertyDiv).saveProperties(false, function(items) {
 						postJSON(options.url, items, function(data) {
 

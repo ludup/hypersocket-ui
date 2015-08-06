@@ -112,6 +112,9 @@
 						  additionalActions : actions,
 						  additionalActionsDropdown : true,
 						  validate : function() {
+							  
+							removeMessage();
+							  
 							if ($('#name').val() == '') {
 								showError(getResource("text.nameRequired"));
 								return false;
