@@ -142,7 +142,7 @@ $.fn.resourceTable = function(params) {
 		
 		if (options.additionalActions) {
 
-			if(options.additionalActionsDropdown && options.additionalActions.length > 0) {
+			if(options.additionalActions.length > 1) {
 				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
 				renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
