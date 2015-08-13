@@ -226,12 +226,39 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new RealmMenuRegistration(RESOURCE_BUNDLE, "users",
 				"fa-user", "users", 1000, UserPermission.READ,
 				UserPermission.CREATE, UserPermission.UPDATE,
-				UserPermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
+				UserPermission.DELETE) {
+
+			@Override
+			public boolean canDelete() {
+				return getCurrentRealm().getResourceCategory().equals("local");
+			}
+
+			@Override
+			public boolean canCreate() {
+				return getCurrentRealm().getResourceCategory().equals("local");
+			}
+		}, MenuService.MENU_ACCESS_CONTROL);
 
 		registerMenu(new RealmMenuRegistration(RESOURCE_BUNDLE, "groups",
 				"fa-users", "groups", 2000, GroupPermission.READ,
 				GroupPermission.CREATE, GroupPermission.UPDATE,
-				GroupPermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
+				GroupPermission.DELETE) {
+
+			@Override
+			public boolean canUpdate() {
+				return getCurrentRealm().getResourceCategory().equals("local");
+			}
+			
+			@Override
+			public boolean canDelete() {
+				return getCurrentRealm().getResourceCategory().equals("local");
+			}
+
+			@Override
+			public boolean canCreate() {
+				return getCurrentRealm().getResourceCategory().equals("local");
+			}
+		}, MenuService.MENU_ACCESS_CONTROL);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "roles",
 				"fa-user-md", "roles", 3000, RolePermission.READ,
