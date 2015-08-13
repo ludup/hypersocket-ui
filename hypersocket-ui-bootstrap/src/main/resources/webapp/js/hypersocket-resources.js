@@ -503,7 +503,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 
 				postJSON(dialogOptions.resourceUrl, resource, function(data) {
 					if (data.success) {
-						debugger;
+						
 						dialog.bootstrapResourceDialog('close');
 						if (dialogOptions.hasResourceTable) {
 							updateRow = {index: params2.row, row: data.resource}

@@ -190,7 +190,7 @@
 
 										$('#tabUserGroups').multipleSelect({
 											selected : data.resources,
-											disabled: !currentMenu.canUpdate || readOnly,
+											disabled: !currentMenu.canUpdate || readOnly || resource.resourceCategory != 'localUser',
 										});
 
 										$('#addUserModal').modal('show');
