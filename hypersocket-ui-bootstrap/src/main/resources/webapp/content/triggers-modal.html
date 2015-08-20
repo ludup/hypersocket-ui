@@ -13,7 +13,7 @@
 						<label class="col-md-3 control-label" localize="name.label"></label>
 						<div class="propertyValue col-md-9">
 							<input type="text" class="form-control"
-								placeholder="" id="resourceName" maxlength="" name="resourceName" value="">
+								placeholder="" id="triggerName" maxlength="" name="triggerName" value="">
 							<div>
 								<span class="help-block" localize="name.info"></span>
 							</div>
@@ -22,7 +22,7 @@
 					<div class="propertyItem form-group">
 						<label class="col-xs-3 control-label" localize="event.label"></label>
 						<div class="propertyValue col-xs-9">
-							<div id="eventAuto"></div>
+							<div id="triggerEvent"></div>
 							<div>
 								<span class="help-block" localize="event.info"></span>
 							</div>
@@ -31,7 +31,7 @@
 					<div class="propertyItem form-group requiresEvent">
 						<label class="col-xs-3 control-label" localize="event.result.label"></label>
 							<div class="propertyValue col-xs-9">
-								<div id="eventResult"></div>
+								<div id="triggerResult"></div>
 								<div>
 								<span class="help-block" localize="event.result.info"></span>
 							</div>
@@ -40,7 +40,7 @@
 					<div class="propertyItem form-group requiresEvent">
 						<label class="col-xs-3 control-label" localize="event.task.label"></label>
 						<div class="propertyValue col-xs-9">
-							<div id="taskAuto"></div>
+							<div id="triggerTask"></div>
 							<div>
 								<span class="help-block" localize="event.task.info"></span>
 							</div>
@@ -61,7 +61,7 @@
 										<span class="help-block" localize="addCondition.text"></span>
 									</div>
 									<div class="propertyValue col-xs-1 dialogActions">
-										<a id="addAll" href="#" class="btn btn-info addButton"><i class="fa fa-plus"></i></a>
+										<a id="triggerConditionsAll" href="#" class="btn btn-info addButton"><i class="fa fa-plus"></i></a>
 									</div>
 								</div>
 							</div>
@@ -77,15 +77,15 @@
 										<span class="help-block" localize="addCondition.text"></span>
 									</div>
 									<div class="propertyValue col-xs-1 dialogActions">
-										<a id="addAny" href="#" class="btn btn-info addButton"><i class="fa fa-plus"></i></a>
+										<a id="triggerConditionsAny" href="#" class="btn btn-info addButton"><i class="fa fa-plus"></i></a>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<input type="hidden" id="resourceId" name="resourceId" value="" />
-				<input type="hidden" id="parentId" name="parentId" value="" />
+				<input type="hidden" id="triggerResourceId" name="triggerResourceId" value="" />
+				<input type="hidden" id="triggerParentId" name="triggerParentId" value="" />
 				<div class="modal-footer"></div>
 			</div>
 		</div>
@@ -211,7 +211,7 @@
 		
 		$('.addButton').attr('disabled', true);
 		
-		var eventResult = $('#eventResult').selectButton({
+		var triggerResult = $('#triggerResult').selectButton({
 			id: 'result',
 			url: 'triggers/eventResults',
 			nameIsResourceKey: true,
@@ -224,9 +224,9 @@
 			}
 		});
 		
-		eventResult.selectFirst();
+		triggerResult.selectFirst();
 		
-		var eventAuto = $('#eventAuto').autoComplete({
+		var triggerEvent = $('#triggerEvent').autoComplete({
 			id: 'eventA',
 			url: 'triggers/events',
 			nameAttr: 'resourceKey',
@@ -258,7 +258,7 @@
 		
 		
 		var displaying = false;
-		var taskAuto = $('#taskAuto').autoComplete({
+		var triggerTask = $('#triggerTask').autoComplete({
 			url: 'triggers/tasks',
 			nameIsResourceKey: true,
 			resourceKeyTemplate: '{0}.label',
@@ -269,7 +269,7 @@
 				$('#tabProperties').parent().append($('#tabConditions').detach());
 				$('#tabProperties').empty();
 				if(widget.value != '') {
-					if(taskAuto.isEnabled()) {
+					if(triggerTask.isEnabled()) {
 						$('#tabProperties').propertyPage({ 
 							url : 'triggers/task/' + widget.name, 
 							showButtons : false, 
@@ -298,24 +298,24 @@
 				$('.requiresEvent').hide();
 				$('#rowAll').empty();
 				$('#rowAny').empty();
-				$('#resourceName').val('');
-				$('#resourceId').val('');
+				$('#triggerName').val('');
+				$('#triggerResourceId').val('');
 				$('#allTabs').hide();
-				eventAuto.clear();
-				eventAuto.reset();
-				eventAuto.enable();
-				taskAuto.clear();
-				taskAuto.enable();
+				triggerEvent.clear();
+				triggerEvent.reset();
+				triggerEvent.enable();
+				triggerTask.clear();
+				triggerTask.enable();
 				
 				var parentResource = $('#triggerModal').data('parentResource');
 				if(parentResource) {
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
-						eventAuto.setValue(data.resources[0].resourceKey);
-						eventAuto.disable();	
+						triggerEvent.setValue(data.resources[0].resourceKey);
+						triggerEvent.disable();	
 					});
 				} 
 				
-				eventResult.selectFirst();
+				triggerResult.selectFirst();
 				$('.tabPropertiesTab').first().trigger('click');
 				$('.addButton').attr('disabled', true);
 				
@@ -323,6 +323,7 @@
 				$('#tabProperties').empty();
 			},
 			loadParent: function(parentResource, parentEvents, triggerType) {
+				debugger;
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);
@@ -330,13 +331,13 @@
 			displayResource: function(resource) {
 				
 				
-				$('#resourceId').val(resource.id);
-				$('#parentId').val(resource.parentId);
-				$('#resourceName').val(resource.name);
-				eventAuto.setValue(resource.event);
-				eventAuto.disable();
+				$('#triggerResourceId').val(resource.id);
+				$('#triggerParentId').val(resource.parentId);
+				$('#triggerName').val(resource.name);
+				triggerEvent.setValue(resource.event);
+				triggerEvent.disable();
 
-				eventResult.setValue(resource.result);
+				triggerResult.setValue(resource.result);
 
 				$.each(resource.allConditions, function(idx, obj) {
 					addConditionRow('rowAll', obj);
@@ -346,8 +347,8 @@
 					addConditionRow('rowAny', obj);
 				});
 				
-				taskAuto.disable();
-				taskAuto.setValue(resource.resourceKey);
+				triggerTask.disable();
+				triggerTask.setValue(resource.resourceKey);
 
 				$('#tabProperties').propertyPage({ 
 					url : 'triggers/properties/' + resource.id, 
@@ -368,16 +369,16 @@
 				
 			},
 			validate: function() {
-				if ($('#resourceName').val().trim() == '') {
+				if ($('#triggerName').val().trim() == '') {
 					showError("error.nameRequired");
 					return false;
 				}
-				if (!eventAuto.getValue()) {
+				if (!triggerEvent.getValue()) {
 					showError("error.eventRequired");
 					return false;
 				}
 				
-				if (!taskAuto.getValue()) {
+				if (!triggerTask.getValue()) {
 					showError("error.eventRequired");
 					return false;
 				}
@@ -390,12 +391,12 @@
 			},
 			createResource: function() {
 				resource = new Object();
-				resource.id = $('#resourceId').val();
-				resource.parentId = $('#parentId').val();
-				resource.name = $('#resourceName').val();
-				resource.event = eventAuto.getValue();
-				resource.task = taskAuto.getValue();
-				resource.result = eventResult.getValue();
+				resource.id = $('#triggerResourceId').val();
+				resource.parentId = $('#triggerParentId').val();
+				resource.name = $('#triggerName').val();
+				resource.event = triggerEvent.getValue();
+				resource.task = triggerTask.getValue();
+				resource.result = triggerResult.getValue();
 				if($('#triggerModal').data('parentResource')) {
 					resource.parentId = $('#triggerModal').data('parentResource').id;
 				}
@@ -440,14 +441,14 @@
 			$('#triggerModal').data('conditions', data.resources);
 		});
 		
-		$('#addAll').click(function(e) {
+		$('#triggerConditionsAll').click(function(e) {
 			e.preventDefault();
 			addConditionRow('rowAll');
 			
 			
 		});
 		
-		$('#addAny').click(function(e) {
+		$('#triggerConditionsAny').click(function(e) {
 			e.preventDefault();
 			addConditionRow('rowAny');
 		});

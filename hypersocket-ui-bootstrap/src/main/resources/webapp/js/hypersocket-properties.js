@@ -60,6 +60,10 @@ function internalValidate(widget, value) {
 		}
 	}
 	
+	if(!obj.allowEmpty && value=='') {
+		return false;
+	}
+	
 	if (obj.inputType == 'number') {
 		return !isNaN(parseFloat(value)) && isFinite(value);
 	} if (obj.inputType == 'integer') {

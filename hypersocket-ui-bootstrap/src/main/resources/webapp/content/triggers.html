@@ -12,7 +12,7 @@
 			<div class="col-md-9" id="schemeArea">
 				<div id="triggerTasks" style="overflow: auto; height: 800px">
 					<div id="rootTrigger" class="triggerShape trigger-same-row" style="position: absolute; left: 50px; top: 50px;">
-						<span id="triggerEvent" class="triggerContent"></span>
+						<span id="rootEvent" class="triggerContent"></span>
 					</div>
 					<div id="triggerView" class="trigger-same-row"></div>
 				</div>
@@ -93,10 +93,9 @@
 		if(trigger) {
 
 			$('#contentTrigger').show();
-			$('#triggerEvent').text(getResource(trigger.event));
-			$('#triggerName').text(trigger.name);
-			$('#triggerName').prepend('<span class="label ' + getStateLabelClass(trigger) + '">' + getResource(getStateLabelText(trigger)) + '</span>&nbsp;&nbsp;&nbsp;');
-        	
+			debugger;
+			$('#rootEvent').text(getResource(trigger.event));
+
         	triggerList.push(trigger.id);
         	triggerMap[trigger.id] = trigger;
         	createTriggerList(trigger.childTriggers);
@@ -146,15 +145,12 @@
 				$('.addIcon').on('click', function(e) {
 					e.preventDefault();
 					var trigger = $(this).closest('.triggerShape').data('trigger');
-// 					getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
-// 						$(document).data('triggerModalCallback').loadParent(trigger, data.resources);
-						$(document).data('triggerModalCallback').loadParent(trigger, null);
-						$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
-							resourceCreated: function(resource) {
-								renderDiagram(resource, resourcePage);
-							}
-						});
-// 					});
+					$(document).data('triggerModalCallback').loadParent(trigger, null);
+					$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
+						resourceCreated: function(resource) {
+							renderDiagram(resource, resourcePage);
+						}
+					});
 				});
 				
 				$('.editIcon').off('click');

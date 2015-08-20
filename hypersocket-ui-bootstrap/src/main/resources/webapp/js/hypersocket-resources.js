@@ -454,7 +454,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						if (dialogOptions.resourceCreated) {
 							dialogOptions.resourceCreated(data.resource);
 						}
-						if(params2.resourceCreated) {
+						if(params2 && params2.resourceCreated) {
 							params2.resourceCreated(data.resource);
 						}
 						showSuccess(data.message);

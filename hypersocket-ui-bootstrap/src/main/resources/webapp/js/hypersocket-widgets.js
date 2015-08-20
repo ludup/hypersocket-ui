@@ -790,11 +790,19 @@ $.fn.autoComplete = function(data) {
 						null,
 						function(data) {
 							buildData(options.isResourceList ? data.resources : data);
-							callback.setValue(newValue);
+							if(newValue) {
+								callback.setValue(newValue);
+							} else {
+								callback.setValue(options.value);
+							}
 						});
 				} else if(options.values && !options.remoteSearch) {
 					buildData(options.values);
-					callback.setValue(newValue);
+					if(newValue) {
+						callback.setValue(newValue);
+					} else {
+						callback.setValue(options.value);
+					}callback.setValue(newValue);
 				} 
 				
 			},
