@@ -173,7 +173,7 @@ $.fn.htmlInput = function(data) {
  			setValue: function(val) {
  				myCodeMirror.setValue(val);
  				if(options.changed) {
- 					options.changed(val);
+ 					options.changed(callback);
  				}
  			},
  			getValue: function() {
@@ -245,7 +245,7 @@ $.fn.codeInput = function(data) {
  				myCodeMirror.setValue(val);
  				myCodeMirror.refresh();
  				if(options.changed) {
- 					options.changed(val);
+ 					options.changed(callback);
  				}
  			},
  			getValue: function() {
@@ -620,6 +620,7 @@ $.fn.autoComplete = function(data) {
 			icon: 'fa-search'
 		}, data);
 	
+	var callback;
 	var id = (options.id ? options.id : $(this).attr('id') + "AutoComplete");
 
 	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
@@ -729,7 +730,7 @@ $.fn.autoComplete = function(data) {
 				$('#' + id).val(obj[options.valueAttr]);
 				$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
 				if(options.changed) {
-					options.changed(obj);
+					options.changed(callback);
 				}
 			}
 		});
@@ -772,7 +773,7 @@ $.fn.autoComplete = function(data) {
 		
 	});
 	
-	var callback = {
+	callback = {
 			setValue: function(val) {
 				updateValue(val);
 			},
@@ -802,7 +803,7 @@ $.fn.autoComplete = function(data) {
 						callback.setValue(newValue);
 					} else {
 						callback.setValue(options.value);
-					}callback.setValue(newValue);
+					}
 				} 
 				
 			},
