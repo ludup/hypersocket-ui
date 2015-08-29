@@ -160,8 +160,7 @@ $.fn.resourceTable = function(params) {
 										var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 										act.action(resource, function(resource) {
-											$('#' + divName + 'Table').dataTable().fnUpdate(resource, curRow);
-											$('#' + divName + 'Table').dataTable().fnDraw();
+											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 										});
 									});
 							}
@@ -210,7 +209,9 @@ $.fn.resourceTable = function(params) {
 									function() {
 										var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-										act.action(resource);
+										act.action(resource, function(resource) {
+											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+										});
 								});
 						}
 

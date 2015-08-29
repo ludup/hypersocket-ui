@@ -69,10 +69,10 @@
 					},
 					changed: function(widget) {
 						$('#automationProperties').empty();
-						if(widget.value != '') {
+						if(widget.getObject() && widget.getObject().value != '') {
 							if(!displaying) {
 								$('#automationProperties').propertyPage({ 
-									url : 'automations/template/' + widget.name, 
+									url : 'automations/template/' +  widget.getObject().name, 
 									showButtons : false, 
 									i18nNamespace: 'automations',
 									canUpdate : currentMenu.canUpdate, 

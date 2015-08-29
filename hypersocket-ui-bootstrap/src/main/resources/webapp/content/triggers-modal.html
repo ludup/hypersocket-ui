@@ -232,9 +232,9 @@
 			nameAttr: 'resourceKey',
 			valueAttr: 'resourceKey',
 			nameIsResourceKey: true,
-			changed: function(event) {
+			changed: function(widget) {
 				
-				if(event) {
+				if(widget.getObject()) {
 					$('.requiresEvent').show();
 					$('.addButton').attr('disabled', false);
 					if(!displaying) {
@@ -248,7 +248,7 @@
 									});
 						}
 					}
-					$('#triggerModal').data('selectedEvent', event);
+					$('#triggerModal').data('selectedEvent', widget.getObject());
 				} else {
 					$('.requiresEvent').hide();
 				}
@@ -268,10 +268,10 @@
 			changed: function(widget) {
 				$('#tabProperties').parent().append($('#tabConditions').detach());
 				$('#tabProperties').empty();
-				if(widget.value != '') {
+				if(widget.getObject() && widget.getObject().value != '') {
 					if(triggerTask.isEnabled()) {
 						$('#tabProperties').propertyPage({ 
-							url : 'triggers/task/' + widget.name, 
+							url : 'triggers/task/' + widget.getObject().name, 
 							showButtons : false, 
 							i18nNamespace: 'triggers',
 							canUpdate : currentMenu.canUpdate, 
