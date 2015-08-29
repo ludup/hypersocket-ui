@@ -28,6 +28,15 @@
 							</div>
 						</div>
 					</div>
+					<div class="propertyItem form-group systemOnly">
+						<label class="col-xs-3 control-label" localize="allRealms.label"></label>
+						<div class="propertyValue col-xs-9">
+							<div id="triggerAllRealms"></div>
+							<div>
+								<span class="help-block" localize="allRealms.info"></span>
+							</div>
+						</div>
+					</div>
 					<div class="propertyItem form-group requiresEvent">
 						<label class="col-xs-3 control-label" localize="event.result.label"></label>
 							<div class="propertyValue col-xs-9">
@@ -211,6 +220,7 @@
 		
 		$('.addButton').attr('disabled', true);
 		
+		
 		var triggerResult = $('#triggerResult').selectButton({
 			id: 'result',
 			url: 'triggers/eventResults',
@@ -225,6 +235,8 @@
 		});
 		
 		triggerResult.selectFirst();
+		
+		var triggerAllRealms = $('#triggerAllRealms').switchInput({});
 		
 		var triggerEvent = $('#triggerEvent').autoComplete({
 			id: 'eventA',
@@ -306,6 +318,7 @@
 				triggerEvent.enable();
 				triggerTask.clear();
 				triggerTask.enable();
+				triggerAllRealms.reset();
 				
 				var parentResource = $('#triggerModal').data('parentResource');
 				if(parentResource) {
@@ -323,10 +336,16 @@
 				$('#tabProperties').empty();
 			},
 			loadParent: function(parentResource, parentEvents, triggerType) {
-				debugger;
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);
+				debugger;
+				var session = $(document).data('session');
+				if(!session.currentRealm.system || parentResource!=null || triggerType!=0) {
+					$('.systemOnly').hide();
+				} else {
+					$('.systemOnly').show();
+				}
 			},
 			displayResource: function(resource) {
 				
@@ -338,7 +357,8 @@
 				triggerEvent.disable();
 
 				triggerResult.setValue(resource.result);
-
+				triggerAllRealms.setValue(resource.allRealms);
+				
 				$.each(resource.allConditions, function(idx, obj) {
 					addConditionRow('rowAll', obj);
 				});
@@ -397,6 +417,8 @@
 				resource.event = triggerEvent.getValue();
 				resource.task = triggerTask.getValue();
 				resource.result = triggerResult.getValue();
+				resource.allRealms = triggerAllRealms.getValue();
+				
 				if($('#triggerModal').data('parentResource')) {
 					resource.parentId = $('#triggerModal').data('parentResource').id;
 				}

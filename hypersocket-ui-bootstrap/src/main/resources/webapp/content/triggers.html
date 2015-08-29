@@ -51,10 +51,10 @@
 								canUpdate: currentMenu.canUpdate,
 								canDelete: currentMenu.canDelete,
 								showCreate: function() {
-									$(document).data('triggerModalCallback').loadParent(null, null);
+									$(document).data('triggerModalCallback').loadParent(null, null, 0);
 								},
 								showUpdate: function() {
-									$(document).data('triggerModalCallback').loadParent(null, null);
+									$(document).data('triggerModalCallback').loadParent(null, null, 0);
 								},
 								validate : function() {
 									return $(document).data('triggerModalCallback').validate();
@@ -145,7 +145,7 @@
 				$('.addIcon').on('click', function(e) {
 					e.preventDefault();
 					var trigger = $(this).closest('.triggerShape').data('trigger');
-					$(document).data('triggerModalCallback').loadParent(trigger, null);
+					$(document).data('triggerModalCallback').loadParent(trigger, null, 0);
 					$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
 						resourceCreated: function(resource) {
 							renderDiagram(resource, resourcePage);
@@ -158,13 +158,14 @@
 					e.preventDefault();
 					var triggerShape = $(this).closest('.triggerShape');
 					var trigger = triggerShape.data('trigger');
-						$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { 
-							resource: trigger,
-							resourceUpdated: function(resource) {
-								triggerShape.data('trigger', resource);
-								renderDiagram(getParent(resource), resourcePage);
-							}
-						});
+					$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { 
+						resource: trigger,
+						resourceUpdated: function(resource) {
+							triggerShape.data('trigger', resource);
+							renderDiagram(getParent(resource), resourcePage);
+						}
+					});
+					
 				});
 				
 				$('.deleteTriggerIcon').off('click');

@@ -118,7 +118,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						return true;
 					}
 					for(MenuRegistration m : modules) {
-						if(!m.isHidden()) {
+						if(!m.isHidden() && m.canRead()) {
 							return false;
 						}
 					}
