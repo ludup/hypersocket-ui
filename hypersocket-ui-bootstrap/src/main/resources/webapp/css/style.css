@@ -412,7 +412,7 @@ div.tablePages ul.pagination {
 
 .tabContent {
 	display: block;
-	overflow: auto;
+	overflow: visible;
 }
 
 .propertyItem {
