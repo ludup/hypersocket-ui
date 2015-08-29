@@ -703,7 +703,7 @@ $.fn.autoComplete = function(data) {
 				$('[data-toggle="dropdown"]').parent().removeClass('open');
 				
 				if(options.changed) {
-					options.changed(obj);
+					options.changed(callback);
 				}
 			});
 
