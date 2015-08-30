@@ -163,7 +163,7 @@ function processLogon(data, opts, message) {
 				e.preventDefault();
 				
 				getJSON(obj.defaultValue, null, function(data) {
-					processLogon(data, null);
+					processLogon(data, opts);
 				});
 			});
 		});
