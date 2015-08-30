@@ -44,7 +44,7 @@ $.fn.resourceTable = function(params) {
 		canDelete : false,
 		icon : 'fa-cog',
 		disableDecoration: false,
-		additionalActionsDropdown: true,
+		disableActionsDropdown: false,
 		createButtonText: "text.add",
 		createButtonIcon: "fa-plus-circle"
 		},params);
@@ -142,7 +142,7 @@ $.fn.resourceTable = function(params) {
 		
 		if (options.additionalActions) {
 
-			if(options.additionalActions.length > 1) {
+			if(!options.disableActionsDropdown && options.additionalActions.length > 1) {
 				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
 				renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
@@ -201,7 +201,9 @@ $.fn.resourceTable = function(params) {
 						function(x, act) {
 							if (act.enabled) {
 
-								renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' + act.resourceKey + ' btn-action" href="#"><i class="fa ' + act.iconClass + '"></i></a>';
+								renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' 
+												+ act.resourceKey + ' btn-action" href="#" data-toggle="tooltip" data-placement="top" title="' 
+												+ getResource(act.resourceKey + ".label") + '"><i class="fa ' + act.iconClass + '"></i></a>';
 
 								$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
 								$(document).on('click',
@@ -216,6 +218,8 @@ $.fn.resourceTable = function(params) {
 						}
 
 					});
+				
+	
 				}
 
 		}
@@ -313,6 +317,9 @@ $.fn.resourceTable = function(params) {
 		});
 	}
 
+	$('#' + divName + 'Placeholder').on('post-body.bs.table', function() {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
 	
 	$('#' + divName + 'Placeholder').bootstrapTable({
 	    pagination: options.pagination,
@@ -352,10 +359,12 @@ $.fn.resourceTable = function(params) {
 	    
 	});
 
+	
+	
 	if(options.toolbarButtons) {
 		$.each(options.toolbarButtons, function(idx, action) {
 			$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
-					+ divName + action.resourceKey + 'TableAction" class="btn btn-default" title="' 
+					+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
 					+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
 					+ action.icon + '"></i></button>');
 			
