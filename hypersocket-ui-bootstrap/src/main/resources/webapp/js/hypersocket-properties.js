@@ -421,7 +421,7 @@ $.fn.propertyPage = function(opts) {
 							function() {
 
 								if(this.displayMode && this.displayMode != '') {
-									if(this.displayMode != options.displayMode) {
+									if(!options.displayMode.contains(this.displayMode)) {
 										return;
 									}
 								}
@@ -515,7 +515,7 @@ $.fn.propertyPage = function(opts) {
 										makeBooleanSafe(obj);
 										
 										if(obj.displayMode && obj.displayMode != '') {
-											if(obj.displayMode != options.displayMode) {
+											if(!options.displayMode.contains(obj.displayMode)) {
 												return;
 											}
 										}

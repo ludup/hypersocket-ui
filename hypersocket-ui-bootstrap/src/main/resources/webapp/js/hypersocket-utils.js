@@ -30,6 +30,11 @@ if (typeof String.prototype.endsWith != 'function') {
   };
 }
 
+if (!('contains' in String.prototype)) {
+	  String.prototype.contains = function(str, startIndex) {
+	    return ''.indexOf.call(this, str, startIndex) !== -1;
+	 };
+}
 /*
  * Date Format 1.2.3
  * (c) 2007-2009 Steven Levithan <stevenlevithan.com>

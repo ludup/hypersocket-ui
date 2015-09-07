@@ -48,11 +48,11 @@
 					$('#userProperties').propertyPage({
 						url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
 						showButtons : false,
-						displayMode: 'create',
+						displayMode: 'create,admin',
 						useTemplates : true,
 						propertyTabsLast: false,
 						canUpdate : currentMenu.canUpdate,
-						displayMode: 'admin',
+						displayMode: 'admin,create',
 						additionalTabs : [ {
 							id : "tabUserGroups",
 							name : getResource("label.groups")
@@ -126,11 +126,10 @@
 										$('#userProperties').propertyPage({
 											url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
 											showButtons : false,
-											displayMode: 'create',
+											displayMode: 'admin,create',
 											useTemplates : true,
 											propertyTabsLast: false,
 											canUpdate : currentMenu.canUpdate,
-											displayMode: 'admin',
 											additionalTabs : [ {
 												id : "tabUserGroups",
 												name : getResource("label.groups")
@@ -177,9 +176,8 @@
 										$('#userProperties').propertyPage({
 											url : 'currentRealm/user/properties/' + resource.id,
 											showButtons : false,
-											displayMode: 'update',
+											displayMode: 'admin,update',
 											canUpdate : !readOnly,
-											displayMode: 'admin',
 											propertyTabsLast: false,
 											additionalTabs : [ {
 												id : "tabUserGroups",
@@ -189,7 +187,7 @@
 
 										$('#tabUserGroups').multipleSelect({
 											selected : data.resources,
-											disabled: !currentMenu.canUpdate || readOnly || resource.resourceCategory != 'localUser',
+											disabled: !currentMenu.canUpdate || readOnly,
 										});
 
 										$('#addUserModal').modal('show');
