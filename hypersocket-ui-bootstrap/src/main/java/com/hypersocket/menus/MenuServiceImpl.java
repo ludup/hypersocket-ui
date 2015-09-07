@@ -149,7 +149,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_SYSTEM_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realms",
-				"fa-database", "realms", 5000, RealmPermission.READ,
+				"fa-database", "realms", 1, RealmPermission.READ,
 				RealmPermission.CREATE, RealmPermission.UPDATE,
 				RealmPermission.DELETE), MenuService.MENU_SYSTEM_CONFIGURATION);
 		
@@ -230,12 +230,17 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 			@Override
 			public boolean canDelete() {
-				return getCurrentRealm().getResourceCategory().equals("local");
+				return !realmService.isReadOnly(getCurrentRealm());
 			}
 
 			@Override
 			public boolean canCreate() {
-				return getCurrentRealm().getResourceCategory().equals("local");
+				return !realmService.isReadOnly(getCurrentRealm());
+			}
+			
+			@Override
+			public boolean canUpdate() {
+				return !realmService.isReadOnly(getCurrentRealm());
 			}
 		}, MenuService.MENU_ACCESS_CONTROL);
 
@@ -246,17 +251,17 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 			@Override
 			public boolean canUpdate() {
-				return getCurrentRealm().getResourceCategory().equals("local");
+				return !realmService.isReadOnly(getCurrentRealm());
 			}
 			
 			@Override
 			public boolean canDelete() {
-				return getCurrentRealm().getResourceCategory().equals("local");
+				return !realmService.isReadOnly(getCurrentRealm());
 			}
 
 			@Override
 			public boolean canCreate() {
-				return getCurrentRealm().getResourceCategory().equals("local");
+				return !realmService.isReadOnly(getCurrentRealm());
 			}
 		}, MenuService.MENU_ACCESS_CONTROL);
 
