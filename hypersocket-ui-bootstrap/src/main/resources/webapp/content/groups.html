@@ -21,6 +21,7 @@
 					</div>
 					<div id="groupProperties" class="tabContent"></div>
 					<div id="tabGroupUsers" class="tabContent"></div>
+					<div id="tabGroupGroups" class="tabContent"></div>
 					<input type="hidden" name="groupId" id="groupId"/>
 
 				</div>
@@ -42,6 +43,15 @@
 				return data.resources;
 			}
 		});
+		
+		$('#tabGroupGroups').multipleSelect({
+			nameAttr : 'principalName',
+			selectedIsObjectList: true,
+			url: 'currentRealm/groups/list',
+			getUrlData: function(data) {
+				return data.resources;
+			}
+		});
 	
 		
 		$('#groupProperties').propertyPage({
@@ -52,7 +62,11 @@
 			additionalTabs : [ {
 				id : "tabGroupUsers",
 				name : getResource("label.users")
-			} ]
+			},
+			{
+				id : "tabGroupGroups",
+				name : getResource("label.groups")
+			}]
 		});
 		
 		$('#contentGroups').ajaxResourcePage(
@@ -73,16 +87,43 @@
 					}
 					return true;
 				},
-				clearDialog : function() {
+				clearDialog : function(create) {
 					$('#groupName').val('');
 					$('#groupId').val('');
 					$('#tabGroupUsers').multipleSelect();
+					$('#groupProperties').parent().append($('#tabGroupUsers').detach());
+					$('#groupProperties').parent().append($('#tabGroupGroups').detach());
+					$('#groupProperties').empty();
+					
+					if(create) {
+						$('#groupProperties').propertyPage({
+							url : 'currentRealm/group/template/' + currentRealm.resourceCategory,
+							showButtons : false,
+							useTemplates : true,
+							canUpdate : currentMenu.canUpdate,
+							additionalTabs : [ {
+								id : "tabGroupUsers",
+								name : getResource("label.users")
+							},
+							{
+								id : "tabGroupGroups",
+								name : getResource("label.groups")
+							}]
+						});
+					}
+					
 				},
 				createResource : function() {
 					group = new Object();
 					group.id = $('#groupId').val();
 					group.name = $('#groupName').val();
 					group.users = $('#tabGroupUsers').widget().getValue();
+					group.groups = $('#tabGroupGroups').widget().getValue();
+					
+					$('#groupProperties').saveProperties(true,
+						function(items) {
+							group.properties = items;
+					});
 					return group;
 				},
 				resourceCreated : function(resource) {
@@ -98,6 +139,29 @@
 	 						selected : data.resources,
 	 						disabled : readOnly
 	 					});
+					});
+					getJSON("currentRealm/groups/group/" + resource.id, null, function(data) {
+						$('#tabGroupGroups').multipleSelect({
+	 						selected : data.resources,
+	 						disabled : readOnly
+	 					});
+					});
+					$('#groupProperties').parent().append($('#tabGroupUsers').detach());
+					$('#groupProperties').parent().append($('#tabGroupGroups').detach());
+					$('#groupProperties').empty();
+					$('#groupProperties').propertyPage({
+						url : 'currentRealm/group/properties/' + resource.id,
+						showButtons : false,
+						useTemplates : true,
+						canUpdate : currentMenu.canUpdate,
+						additionalTabs : [ {
+							id : "tabGroupUsers",
+							name : getResource("label.users")
+						},
+						{
+							id : "tabGroupGroups",
+							name : getResource("label.groups")
+						}]
 					});
  	 			  	
 				},
