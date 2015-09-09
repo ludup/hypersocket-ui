@@ -47,6 +47,9 @@ public class UserInterfaceContentHandler implements ContentHandler, ApplicationL
 	HtmlContentFilter htmlContentFilter;
 	
 	@Autowired
+	IncludeContentFilter includeContentFilter;
+	
+	@Autowired
 	IndexPageFilter indexHeaderFilter;
 	
 	@Autowired
@@ -88,9 +91,8 @@ public class UserInterfaceContentHandler implements ContentHandler, ApplicationL
 		actualHandler.addAlias("/home", "/index.html");
 
 		actualHandler.addFilter(indexHeaderFilter);
-		
-		// Make sure this is last so that tokens can be used in other filters
 		actualHandler.addFilter(htmlContentFilter);
+		actualHandler.addFilter(includeContentFilter);
 		
 		server.addCompressablePath(server.resolvePath(basePath));
 		server.registerHttpHandler(actualHandler);

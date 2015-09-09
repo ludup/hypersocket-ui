@@ -1,6 +1,7 @@
 package com.hypersocket.ui;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -20,9 +21,9 @@ public class HtmlContentFilter implements ContentFilter {
 
 	@Autowired
 	HypersocketServer server;
-	
+
 	List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
-	
+
 	String brandCompany = "Hypersocket Limited";
 	String companyUrl = "https://www.hypersocket.com/";
 	String brandIcon = "/images/favicon.ico";
@@ -31,13 +32,13 @@ public class HtmlContentFilter implements ContentFilter {
 	String supportName = "Hypersocket Software";
 	String supportUrl = "https://helpdesk.hypersocket.com";
 	String license = null;
-	
-	public HtmlContentFilter() {
+
+	public HtmlContentFilter() throws IOException {
 	}
-	
+
 	@Override
 	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) {
-		
+
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("appPath", server.getApplicationPath());
 		resolver.addToken("uiPath", server.getUiPath());
@@ -51,15 +52,16 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("supportContact", supportContact);
 		resolver.addToken("supportName", supportName);
 		resolver.addToken("supportUrl", supportUrl);
-		
-		if(license!=null) {
+
+		if (license != null) {
 			resolver.addToken("license", license);
 		}
-		
+
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
-		
-		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)), resolvers);
+
+		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)),
+				resolvers);
 		return new ReaderInputStream(r, Charset.forName("UTF-8"));
 	}
 
@@ -67,7 +69,7 @@ public class HtmlContentFilter implements ContentFilter {
 	public boolean filtersPath(String path) {
 		return path.endsWith(".html") || path.endsWith(".htm");
 	}
-	
+
 	public void addResolver(ITokenResolver resolver) {
 		additionalResolvers.add(resolver);
 	}
@@ -75,32 +77,37 @@ public class HtmlContentFilter implements ContentFilter {
 	public void setCompany(String brandCompany) {
 		this.brandCompany = brandCompany;
 	}
-	
+
 	public void setCompanyUrl(String companyUrl) {
 		this.companyUrl = companyUrl;
 	}
-	
+
 	public void setIcon(String brandIcon) {
 		this.brandIcon = brandIcon;
 	}
-	
+
 	public void setImage(String brandImage) {
 		this.brandImage = brandImage;
 	}
-	
+
 	public void setSupportContact(String supportContact) {
 		this.supportContact = supportContact;
 	}
-	
+
 	public void setSupportName(String supportName) {
 		this.supportName = supportName;
 	}
-	
+
 	public void setSupportUrl(String supportUrl) {
 		this.supportUrl = supportUrl;
 	}
 
 	public void setLicense(String license) {
 		this.license = license;
+	}
+
+	@Override
+	public Integer getWeight() {
+		return Integer.MAX_VALUE;
 	}
 }

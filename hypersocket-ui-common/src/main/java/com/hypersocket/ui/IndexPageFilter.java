@@ -97,4 +97,9 @@ public class IndexPageFilter implements ContentFilter {
 	public void removeExtender(FilterExtender extender) {
 		extenders.remove(extender);
 	}
+
+	@Override
+	public Integer getWeight() {
+		return 0;
+	}
 }

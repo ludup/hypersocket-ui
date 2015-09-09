@@ -602,7 +602,8 @@ $.fn.propertyPage = function(opts) {
 											
 											var widgetOptions = $.extend(obj, {
 												isArrayValue: true,
-												values: splitFix(obj.value)
+												values: splitFix(obj.value),
+												url : basePath + '/api/fileUpload/file'
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).multipleFileUpload(widgetOptions);
