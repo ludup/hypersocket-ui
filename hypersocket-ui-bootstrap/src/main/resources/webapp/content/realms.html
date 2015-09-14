@@ -63,6 +63,7 @@
 							showButtons : false, 
 							resource: widget.getSelectedObject().module,
 							canUpdate : currentMenu.canUpdate, 
+							displayMode: "admin,create",
 							useTemplates : true 
 						});
 					}
@@ -125,7 +126,7 @@
 							}
 							
 							return true;
-						}, clearDialog : function() {
+						}, clearDialog : function(create) {
 							$('#name').val("");
 							$('#name').attr('disabled', false);
 							$('#id').val("");
@@ -161,8 +162,10 @@
 							$('#realmProperties').propertyPage(
 								{ url : 'realms/realm/properties/' + resource.id, 
 									showButtons : false, 
-									resource: resource.id,
-									canUpdate : currentMenu.canUpdate && !readOnly
+									resource: resource,
+									displayMode: 'admin,update',
+									canUpdate : currentMenu.canUpdate && !readOnly,
+									
 							});
 						}, complete : function() {
 							loadComplete();
