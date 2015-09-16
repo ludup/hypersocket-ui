@@ -241,6 +241,16 @@ ${stylesheets}
 				</div>
 			</div>
 			<div class="propertyItem form-group credsDiv">
+				<label class="col-md-3 control-label"
+					localize="mount.password.label"></label>
+				<div class="propertyValue col-md-9">
+					<div id="example21"></div>
+					<div>
+						<span class="help-block" localize="mount.password.info"></span>
+					</div>
+				</div>
+			</div>
+			<div class="propertyItem form-group credsDiv">
 				<div id="stepForm"></div>
 			</div>
 		</div>
@@ -375,6 +385,12 @@ ${stylesheets}
 				$('#example20').sliderInput({ value: 500,
 					min: 0,
 					max: 1000});
+				
+				$('#example21').multipleSearchInput({ 
+					url: 'currentRealm/users/table',
+					nameAttr: 'principalName',
+					valueAttr: 'id'
+				});
 				
 				$('#stepForm').stepForm({
 					steps: [ {

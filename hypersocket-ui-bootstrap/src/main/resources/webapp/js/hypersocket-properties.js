@@ -164,6 +164,7 @@ function validateInputType(type){
 		case 'password' :
 		case 'multipleSelect' :
 		case 'multipleTextInput' :
+		case 'multipleSearchInput' :
 		case 'boolean' :
 		case 'image' :
 		case 'switch' :
@@ -574,7 +575,7 @@ $.fn.propertyPage = function(opts) {
 											}
 											
 											var widgetOptions = $.extend(obj, {
-												url: url
+												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).autoComplete(widgetOptions);
@@ -633,6 +634,14 @@ $.fn.propertyPage = function(opts) {
 											});
 	
 											widget = $('#' + tab + '_value' + this.id).multipleTextInput(widgetOptions);
+
+										} else if (obj.inputType == 'multipleSearchInput') {
+											
+											var widgetOptions = $.extend(obj, {
+												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url)
+											});
+											
+											widget = $('#' + tab + '_value' + this.id).multipleSearchInput(widgetOptions);
 
 										} else if (obj.inputType == 'date') {
 											
