@@ -46,7 +46,28 @@ public interface MenuService extends AuthenticatedService {
 	
 	static final String MENU_DIAGNOSTICS = "diagnostics";
 	
-	static final String MENU_JOBS_STATUS = "jobs"; 
+	static final String MENU_JOBS_STATUS = "jobs";
+
+	static final String MENU_REALM_CONFIGURATION = "realmSettings";
+
+	static final String MENU_CERTIFICATES = "certificates";
+
+	static final String MENU_SCHEDULERS = "schedulers";
+
+	static final String MENU_REALMS = "realms";
+
+	static final String MENU_MY_DETAILS = "details";
+
+	static final String MENU_DASHBOARD_OVERVIEW = "overview";
+
+	static final String MENU_EXTENSIONS = "extensions";
+
+	static final String MENU_EXTENSIONS_OPTIONS = "extensionOptions";
+
+	static final String MENU_EXTENSIONS_STORE = "extensionStore";
+
+	static final String MENU_LICENSES = "licenses";
+	
 	
 	List<Menu> getMenus();
 

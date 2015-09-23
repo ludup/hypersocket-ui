@@ -148,7 +148,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				SystemPermission.SYSTEM_ADMINISTRATION, null),
 				MenuService.MENU_SYSTEM_CONFIGURATION);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realms",
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_REALMS,
 				"fa-database", "realms", 1, RealmPermission.READ,
 				RealmPermission.CREATE, RealmPermission.UPDATE,
 				RealmPermission.DELETE), MenuService.MENU_SYSTEM_CONFIGURATION);
@@ -157,7 +157,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MENU_DIAGNOSTICS, "fa-wrench", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
 		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "schedulers",
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_SCHEDULERS,
 				"fa-clock-o", "schedulers", Integer.MAX_VALUE, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
 				MENU_SYSTEM_CONFIGURATION);
 		
@@ -165,12 +165,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "realmSettings",
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_REALM_CONFIGURATION,
 				"fa-cogs", "realmSettings", 0, ConfigurationPermission.READ,
 				null, ConfigurationPermission.UPDATE, null),
 				MenuService.MENU_CONFIGURATION);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "certificates",
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_CERTIFICATES,
 				"fa-certificate", "certificateResources", 99999,
 				CertificateResourcePermission.READ,
 				CertificateResourcePermission.CREATE,
