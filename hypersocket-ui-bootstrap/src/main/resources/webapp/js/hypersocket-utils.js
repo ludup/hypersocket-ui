@@ -241,6 +241,14 @@ function getResourceNoDefault(key) {
 	return result;
 };
 
+function getResourceOrText(key) {
+	var result = $(document).data('i18n')[key];
+	if(!result) {
+		return key;
+	}
+	return result;
+};
+
 function getResourceWithNamespace(namespace, key) {
 	
 	var withNamespace = getResourceNoDefault(namespace + '.' + key);

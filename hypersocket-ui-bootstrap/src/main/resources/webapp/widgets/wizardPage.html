@@ -1,0 +1,131 @@
+${header}
+
+<div class="container-fluid content">
+	<div id="content" class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8">
+
+			<div id="wizardPage">
+				<div id="wizardActions" class="propertyItem form-group buttonBar">
+					<a id="resetForm" href="#" localize="text.reset"></a>
+				</div>
+				<div id="wizardPages" class="panel-group" id="accordion" role="tablist"'
+						+ 'aria-multiselectable="false">
+				</div>
+			</div>
+			<div id="pageOne" style="display: none"">
+				<p>asdsadasdsad asda sd asd asd asd as sad as das das das da sdasd asd asdasd
+				</p>
+			</div>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		loadResources(function() {
+			
+			var steps = new Array();
+			steps.push({
+				title: "Your Details",
+				pageDiv: "pageOne",
+				onNext: function() {
+					return true;
+				}
+			});
+			steps.push({
+				title: "Domain",
+				onNext: function() {
+					return true;
+				}
+			});
+			steps.push({
+				title: "Another",
+				buttonText: 'text.finish'
+			});
+			
+			$.each(steps, function(idx, obj) {
+				
+				var page = $.extend({
+					buttonText: 'text.next'
+				}, obj);
+				
+				debugger;
+				
+				$('#wizardPages').append(
+						'<div id="panel' + idx + '" class="panel panel-default wizardPage" style="display: none">'
+						+ '<div class="panel-heading" role="tab" id="heading' + idx + '">'
+						+ ' 	<h4 class="panel-title wizardTitle">'
+						+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+						+ '				href="#collapse' + idx + '" aria-expanded="' + (idx > 0 ? "false" : "true") + '"'
+						+ '				aria-controls="collapse' + idx + '" >' + getResourceOrText(page.title) + '</a>'
+						+ '	    </h4>'
+						+ '</div>'
+						+ '<div id="collapse' + idx + '" class="panel-collapse collapse' + (idx == 0 ? ' in' : '') + '"'
+						+ '	role="tabpanel" aria-labelledby="heading' + idx + '">'
+						+ '	<div class="panel-body"><div id="page' + idx + '"></div>'
+						+ '		<div class="propertyItem form-group buttonBar">'
+						+ '			<button class="nextButton btn btn-primary">'
+						+ '				<i class="fa fa-forward"></i><span localize="' + page.buttonText + '"></span>'
+						+ '			</button>'
+						+ '		</div>'
+						+ '</div>'
+						+ '</div>'
+						+ '</div>');
+				
+				$('#panel' + idx).data('page', page);
+				$('#panel' + idx).data('index', idx);
+				
+				$('#' + page.pageDiv).detach().appendTo('#page' + idx).show();
+			});
+			
+			$('.wizardPage').first().show();
+			
+			$('#content').localize();
+
+			$('.nextButton').click(function() {
+
+				var page = $(this).closest('.panel').data('page');
+				var idx = $(this).closest('.panel').data('index');
+				
+				if(page.onNext) {
+					if(!page.onNext()) {
+						return;
+					}
+				}
+				
+				if(steps.length > idx + 1) {
+				
+					var nextPage = idx + 1;
+ 					$(this).closest('button').attr('disabled', true);
+					//$('#panel' + nextPage).find('.nextButton').prop('disabled', false);
+					$('#panel' + nextPage).show();
+					$('#collapse' + idx).collapse('hide');
+					$('#collapse' + nextPage).collapse('show');
+				}
+
+
+			});
+
+			$('#resetForm').click(function() {
+				
+				$.each(steps, function(idx, obj) {
+					if(steps.onReset) {
+						steps.onReset();
+					}
+				});
+				
+				$('.nextButton').attr('disabled', false);
+
+				$('.panel:gt(0)').hide();
+				$('.collapse:gt(0)').collapse('hide');
+				
+				$('.panel').first().show();
+				$('.collapse').first().collapse('show');
+			});
+		});
+	});
+</script>
+${footer}

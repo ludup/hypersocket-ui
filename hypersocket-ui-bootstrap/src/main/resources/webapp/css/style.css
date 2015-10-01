@@ -1316,3 +1316,21 @@ span.input-group-addon {
 	margin: 5px;
 	cursor: hand;
 }
+
+.wizardTitle {
+	margin-top: 20px;
+}
+
+.wizardPage {
+	overflow: visible;
+}
+
+.wizardPage .panel-body {
+	padding-bottom: 5px;
+}
+
+.buttonBar {
+	text-align: right;
+	padding-right: 15px;
+	padding-bottom: 15px;
+}
