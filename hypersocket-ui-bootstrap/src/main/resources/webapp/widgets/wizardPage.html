@@ -29,27 +29,28 @@ ${header}
 			
 			var steps = new Array();
 			steps.push({
-				title: "Your Details",
 				pageDiv: "pageOne",
 				onNext: function() {
 					return true;
 				}
 			});
 			steps.push({
-				title: "Domain",
 				onNext: function() {
 					return true;
 				}
 			});
 			steps.push({
-				title: "Another",
-				buttonText: 'text.finish'
+				buttonText: 'text.finish',
+				buttonIcon: 'fa-save'
 			});
 			
 			$.each(steps, function(idx, obj) {
 				
 				var page = $.extend({
-					buttonText: 'text.next'
+					titleText: getResource('text.step') + '. ' + (idx+1),
+					titleIcon: 'fa-flash',
+					buttonText: 'text.next',
+					buttonIcon: 'fa-forward'
 				}, obj);
 				
 				debugger;
@@ -57,10 +58,10 @@ ${header}
 				$('#wizardPages').append(
 						'<div id="panel' + idx + '" class="panel panel-default wizardPage" style="display: none">'
 						+ '<div class="panel-heading" role="tab" id="heading' + idx + '">'
-						+ ' 	<h4 class="panel-title wizardTitle">'
+						+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
 						+ '		    <a data-toggle="collapse" data-parent="#accordion"'
 						+ '				href="#collapse' + idx + '" aria-expanded="' + (idx > 0 ? "false" : "true") + '"'
-						+ '				aria-controls="collapse' + idx + '" >' + getResourceOrText(page.title) + '</a>'
+						+ '				aria-controls="collapse' + idx + '" >' + getResourceOrText(page.titleText) + '</a>'
 						+ '	    </h4>'
 						+ '</div>'
 						+ '<div id="collapse' + idx + '" class="panel-collapse collapse' + (idx == 0 ? ' in' : '') + '"'
@@ -68,7 +69,7 @@ ${header}
 						+ '	<div class="panel-body"><div id="page' + idx + '"></div>'
 						+ '		<div class="propertyItem form-group buttonBar">'
 						+ '			<button class="nextButton btn btn-primary">'
-						+ '				<i class="fa fa-forward"></i><span localize="' + page.buttonText + '"></span>'
+						+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
 						+ '			</button>'
 						+ '		</div>'
 						+ '</div>'
