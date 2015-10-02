@@ -14,8 +14,7 @@ ${header}
 				</div>
 			</div>
 			<div id="pageOne" style="display: none"">
-				<p>asdsadasdsad asda sd asd asd asd as sad as das das das da sdasd asd asdasd
-				</p>
+				<input type="text" class="pageState0">
 			</div>
 		</div>
 		<div class="col-md-2"></div>
@@ -30,18 +29,21 @@ ${header}
 			var steps = new Array();
 			steps.push({
 				pageDiv: "pageOne",
-				onNext: function() {
-					return true;
+				onNext: function(nextPage) {
+					nextPage();
 				}
 			});
 			steps.push({
-				onNext: function() {
-					return true;
+				onNext: function(nextPage) {
+					nextPage();
 				}
 			});
 			steps.push({
 				buttonText: 'text.finish',
-				buttonIcon: 'fa-save'
+				buttonIcon: 'fa-save',
+				onNext: function() {
+					// This completes the wizard
+				}
 			});
 			
 			$.each(steps, function(idx, obj) {
@@ -68,7 +70,7 @@ ${header}
 						+ '	role="tabpanel" aria-labelledby="heading' + idx + '">'
 						+ '	<div class="panel-body"><div id="page' + idx + '"></div>'
 						+ '		<div class="propertyItem form-group buttonBar">'
-						+ '			<button class="nextButton btn btn-primary">'
+						+ '			<button class="nextButton pageState' + idx + ' btn btn-primary">'
 						+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
 						+ '			</button>'
 						+ '		</div>'
@@ -86,27 +88,25 @@ ${header}
 			
 			$('#content').localize();
 
+			
 			$('.nextButton').click(function() {
 
 				var page = $(this).closest('.panel').data('page');
 				var idx = $(this).closest('.panel').data('index');
 				
 				if(page.onNext) {
-					if(!page.onNext()) {
-						return;
-					}
+					page.onNext(function() {
+						
+						if(steps.length > idx + 1) {
+							
+							var nextPage = idx + 1;
+		 					$('.pageState' + idx).attr('disabled', true);
+							$('#panel' + nextPage).show();
+							$('#collapse' + idx).collapse('hide');
+							$('#collapse' + nextPage).collapse('show');
+						}
+					});
 				}
-				
-				if(steps.length > idx + 1) {
-				
-					var nextPage = idx + 1;
- 					$(this).closest('button').attr('disabled', true);
-					//$('#panel' + nextPage).find('.nextButton').prop('disabled', false);
-					$('#panel' + nextPage).show();
-					$('#collapse' + idx).collapse('hide');
-					$('#collapse' + nextPage).collapse('show');
-				}
-
 
 			});
 
