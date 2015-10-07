@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.hypersocket.HypersocketVersion;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 
@@ -52,6 +53,7 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("supportContact", supportContact);
 		resolver.addToken("supportName", supportName);
 		resolver.addToken("supportUrl", supportUrl);
+		resolver.addToken("version", HypersocketVersion.getVersion());
 
 		if (license != null) {
 			resolver.addToken("license", license);
