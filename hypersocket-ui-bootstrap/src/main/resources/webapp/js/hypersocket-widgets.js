@@ -2690,3 +2690,108 @@ $.fn.multipleFileUpload = function(data) {
 	$(this).addClass('widget');
 	return callback;
 }
+
+$.fn.wizardPage = function(data) {
+	
+	var options = $.extend(
+			{  
+				
+			}, data);
+	
+	
+	$(this).append('<div class="propertyItem form-group buttonBar">' +
+						'<a id="resetForm" href="#" localize="text.reset"></a>' +
+					'</div>' +
+						'<div id="wizardPages" class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">' +
+					'</div>');
+
+	$.each(options.steps, function(index, obj) {
+	
+		var page = $.extend({
+			titleText: getResource('text.step') + '. ' + (index+1),
+			titleIcon: 'fa-flash',
+			buttonText: 'text.next',
+			buttonIcon: 'fa-forward'
+		}, obj);
+		
+		$('#wizardPages').append(
+			'<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
+			+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
+			+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
+			+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+			+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
+			+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
+			+ '	    </h4>'
+			+ '</div>'
+			+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
+			+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
+			+ '	<div class="panel-body"><div id="page' + index + '"></div>'
+			+ '		<div class="propertyItem form-group buttonBar">'
+			+ '			<button id="button' + index + '" class="nextButton pageState' + index + ' btn btn-primary">'
+			+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
+			+ '			</button>'
+			+ '		</div>'
+			+ '</div>'
+			+ '</div>'
+			+ '</div>');
+		
+			$('#panel' + index).data('page', page);
+			$('#panel' + index).data('index', index);
+			
+			$('#' + page.pageDiv).detach().appendTo('#page' + index).show();
+		
+		});
+		
+		$('.wizardPage').first().show();
+		
+		$('#content').localize();
+		
+		$('.nextButton').click(function() {
+		
+		var page = $(this).closest('.panel').data('page');
+		var idx = $(this).closest('.panel').data('index');
+		
+		if(page.onNext) {
+			
+			$('#button' + idx).find('i').removeClass(page.buttonIcon);
+			$('#button' + idx).find('i').addClass('fa-spinner fa-spin');
+			
+			page.onNext(function() {
+
+				$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
+				$('#button' + idx).find('i').addClass(page.buttonIcon);
+				
+				if(options.steps.length > idx + 1) {
+					var nextPage = idx + 1;
+						$('.pageState' + idx).attr('disabled', true);
+					
+					$('#panel' + nextPage).show();
+					$('#collapse' + idx).collapse('hide');
+					$('#collapse' + nextPage).collapse('show');
+				}
+			}, function() {
+				$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
+				$('#button' + idx).find('i').addClass(page.buttonIcon);
+			});
+		}
+		
+		});
+		
+		$('#resetForm').click(function() {
+		
+		$.each(options.steps, function(idx, obj) {
+			if(obj.onReset) {
+				obj.onReset();
+			}
+		});
+		
+		$('.nextButton').attr('disabled', false);
+		
+		$('.panel:gt(0)').hide();
+		$('.collapse:gt(0)').collapse('hide');
+		
+		$('.panel').first().show();
+		$('.collapse').first().collapse('show');
+	});
+	
+}
