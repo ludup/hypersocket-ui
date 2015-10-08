@@ -2748,38 +2748,46 @@ $.fn.wizardPage = function(data) {
 		
 		$('.nextButton').click(function() {
 		
-		var page = $(this).closest('.panel').data('page');
-		var idx = $(this).closest('.panel').data('index');
+			var page = $(this).closest('.panel').data('page');
+			var idx = $(this).closest('.panel').data('index');
 		
-		if(page.onNext) {
-			
-			$('#button' + idx).find('i').removeClass(page.buttonIcon);
-			$('#button' + idx).find('i').addClass('fa-spinner fa-spin');
-			
-			page.onNext(function() {
-
-				$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
-				$('#button' + idx).find('i').addClass(page.buttonIcon);
+			if(page.onNext) {
+				var clicked = false;
 				
-				if(options.steps.length > idx + 1) {
-					var nextPage = idx + 1;
-						$('.pageState' + idx).attr('disabled', true);
+				$('#button' + idx).find('i').removeClass(page.buttonIcon);
+				$('#button' + idx).find('i').addClass('fa-spinner fa-spin');
+				
+				page.onNext(function() {
+	
+					if(clicked) {
+						return;
+					}
 					
-					$('#panel' + nextPage).show();
-					$('#collapse' + idx).collapse('hide');
-					$('#collapse' + nextPage).collapse('show');
-				}
-			}, function() {
-				$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
-				$('#button' + idx).find('i').addClass(page.buttonIcon);
-			});
-		}
+					clicked = true;
+					
+					$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
+					$('#button' + idx).find('i').addClass(page.buttonIcon);
+					
+					if(options.steps.length > idx + 1) {
+						var nextPage = idx + 1;
+							$('.pageState' + idx).attr('disabled', true);
+						
+						$('#panel' + nextPage).show();
+						$('#collapse' + idx).collapse('hide');
+						$('#collapse' + nextPage).collapse('show');
+					}
+				}, function() {
+					$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
+					$('#button' + idx).find('i').addClass(page.buttonIcon);
+				});
+			}
 		
 		});
 		
 		$('#resetForm').click(function() {
 		
 		$.each(options.steps, function(idx, obj) {
+			$('.pageState' + idx).attr('disabled', false);
 			if(obj.onReset) {
 				obj.onReset();
 			}

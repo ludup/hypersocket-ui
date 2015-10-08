@@ -54,7 +54,7 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("supportName", supportName);
 		resolver.addToken("supportUrl", supportUrl);
 		resolver.addToken("version", HypersocketVersion.getVersion());
-
+		
 		if (license != null) {
 			resolver.addToken("license", license);
 		}

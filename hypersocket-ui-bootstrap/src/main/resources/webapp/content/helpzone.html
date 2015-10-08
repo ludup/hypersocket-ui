@@ -6,7 +6,7 @@
 <div id="invisibleWidgets" style="display: none"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
-		getJSON('overview/widgets', null, function(data) {
+		getJSON('overview/widgets/helpzone', null, function(data) {
 			$.each(data.resources, function(index, value){
 			
 			    if(!value.visible) {

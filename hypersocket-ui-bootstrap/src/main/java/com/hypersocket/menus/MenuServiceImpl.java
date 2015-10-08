@@ -79,8 +79,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_DASHBOARD, "fa-home", null, 0, null, null,
 				null, null), MenuService.MENU_PERSONAL);
 		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "overview",
-				"fa-home", "overview", 0, SystemPermission.SYSTEM_ADMINISTRATION, null,
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DASHBOARD_HELPZONE,
+				"fa-graduation-cap", "helpzone", 0, SystemPermission.SYSTEM_ADMINISTRATION, null,
 				null, null), MenuService.MENU_DASHBOARD);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
