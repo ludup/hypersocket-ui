@@ -179,15 +179,17 @@
     	});
     	
     	$('.conditionKey').trigger('click');
-    	
+
     	if(condition) {
 	    	$('#attribute' + condition.id).data('condition', condition);
 	    	$('#attribute' + condition.id).val(condition.attributeKey);
 	    	$('#condition' + condition.id).val(condition.conditionKey);
 	    	$('#conditionValue' + condition.id).val(condition.conditionValue);
 	    	
-	    	if(!condition.valueRequired) {
+	    	if(condition.conditionKey.startsWith('condition.is')) {
 	    		$('#conditionValue' + condition.id).hide();
+	    	} else {
+	    		$('#conditionValue' + condition.id).show();
 	    	}
     	}
     	
@@ -339,7 +341,7 @@
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);
-				debugger;
+
 				var session = $(document).data('session');
 				if(!session.currentRealm.system || parentResource!=null || triggerType!=0) {
 					$('.systemOnly').hide();
