@@ -58,7 +58,7 @@ public interface MenuService extends AuthenticatedService {
 
 	static final String MENU_MY_DETAILS = "details";
 
-	static final String MENU_DASHBOARD_HELPZONE = "helpzone";
+	static final String MENU_DASHBOARD_HELPZONE = "helpzone"; 
 
 	static final String MENU_EXTENSIONS = "extensions";
 
