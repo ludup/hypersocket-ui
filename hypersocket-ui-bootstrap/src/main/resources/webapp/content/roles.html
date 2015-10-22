@@ -48,25 +48,19 @@
 		});
 
 
-		$('#tabRoleGroups').multipleSelect({
+		$('#tabRoleGroups').multipleSearchInput({
 			nameAttr : 'principalName',
 			selectedIsObjectList: true,
 			disabled: !currentMenu.canUpdate,
-			url: 'currentRealm/groups/list',
-			getUrlData: function(data) {
-				return data.resources;
-			}
+			url: 'currentRealm/groups/table'
 		});
 
 
-		$('#tabRoleUsers').multipleSelect({
+		$('#tabRoleUsers').multipleSearchInput({
 			nameAttr : 'principalName',
 			selectedIsObjectList: true,
 			disabled: !currentMenu.canUpdate,
-			url: 'currentRealm/users/list',
-			getUrlData: function(data) {
-				return data.resources;
-			}
+			url: 'currentRealm/users/table'
 		});
 	
 		
@@ -108,8 +102,8 @@
 				clearDialog : function(create) {
 					$('#name').val('');
 					$('#roleId').val('');
-					$('#tabRoleUsers').multipleSelect();
-					$('#tabRoleGroups').multipleSelect();
+					$('#tabRoleUsers').multipleSearchInput();
+					$('#tabRoleGroups').multipleSearchInput();
 					$('#tabRolePermissions').multipleSelect();
 
 				},
@@ -132,12 +126,21 @@
 					$('#roleId').val(resource.id);
 					$('#name').val(resource.name);
 					$('#name').attr('disabled', readOnly);
- 	 			  	$('#tabRoleUsers').multipleSelect({
- 						selected : resource.principals,
+					var users = new Array();
+					var groups = new Array();
+					$.each(resource.principals, function(idx, obj) {
+						if(obj.type == 'USER') {
+							users.push(obj);
+						} else if(obj.type == 'GROUP') {
+							groups.push(obj);
+						}
+					});
+ 	 			  	$('#tabRoleUsers').multipleSearchInput({
+ 						selected : users,
  						disabled: resource.allUsers || readOnly
  					});
- 					$('#tabRoleGroups').multipleSelect({
- 						selected : resource.principals,
+ 					$('#tabRoleGroups').multipleSearchInput({
+ 						selected : groups,
  						disabled: resource.allUsers || readOnly
  					});
  					$('#tabRolePermissions').multipleSelect({
