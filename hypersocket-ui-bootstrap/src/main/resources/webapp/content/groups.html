@@ -35,22 +35,18 @@
 	$(document).ready(function() {
 		$('#contentGroups').localize();
 
-		$('#tabGroupUsers').multipleSelect({
+		$('#tabGroupUsers').multipleSearchInput({
 			nameAttr : 'principalName',
-			selectedIsObjectList: true,
-			url: 'currentRealm/users/list',
-			getUrlData: function(data) {
-				return data.resources;
-			}
+			selectedIsObjectList: false,
+			valueAttr: 'id',
+			url: 'currentRealm/users/table'
 		});
 		
-		$('#tabGroupGroups').multipleSelect({
+		$('#tabGroupGroups').multipleSearchInput({
 			nameAttr : 'principalName',
-			selectedIsObjectList: true,
-			url: 'currentRealm/groups/list',
-			getUrlData: function(data) {
-				return data.resources;
-			}
+			selectedIsObjectList: false,
+			valueAttr: 'id',
+			url: 'currentRealm/groups/table'
 		});
 	
 		

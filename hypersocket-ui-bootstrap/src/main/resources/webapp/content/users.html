@@ -10,14 +10,12 @@
 				
 				$('#contentUsers').localize();
 
-				$('#tabUserGroups').multipleSelect({
+				$('#tabUserGroups').multipleSearchInput({
 					nameAttr : 'principalName',
 					disabled: !currentMenu.canUpdate,
-					selectedIsObjectList : true,
-					url: "currentRealm/groups/list",
-					getUrlData: function(data) {
-						return data.resources;
-					}
+					selectedIsObjectList: true,
+					valueAttr: 'id',
+					url: "currentRealm/groups/table"
 				});
 		
 
@@ -153,6 +151,7 @@
 												user.properties = items;
 											});
 									user.groups = $('#tabUserGroups').widget().getValue();
+									debugger;
 									return user;
 								},
 								resourceCreated : function(resource) {
@@ -185,7 +184,7 @@
 											} ]
 										});
 
-										$('#tabUserGroups').multipleSelect({
+										$('#tabUserGroups').multipleSearchInput({
 											selected : data.resources,
 											disabled: !currentMenu.canUpdate || readOnly,
 										});
