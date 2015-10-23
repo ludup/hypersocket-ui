@@ -970,7 +970,7 @@ table {
 
 .dialogActions {
 	valign: middle; 
-	text-align: right;
+/* 	text-align: right; */
 	padding-right: 0px;
 }
 

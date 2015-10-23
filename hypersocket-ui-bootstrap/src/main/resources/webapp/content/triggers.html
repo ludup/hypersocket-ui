@@ -309,8 +309,13 @@
 									return $(document).data('triggerModalCallback').createResource();
 								},
 								displayResource : function(resource) {
-									$(document).data('triggerModalCallback').loadParent(null, null, 0);
-									$(document).data('triggerModalCallback').displayResource(resource);
+									if(resource.isRoot) {
+										$(document).data('triggerModalCallback').loadParent(null, null, 0);
+										$(document).data('triggerModalCallback').displayResource(resource);
+									} else {
+										$(document).data('triggerModalCallback').loadParent(resource, null, 0);
+										$(document).data('triggerModalCallback').displayResource(resource);	
+									}
 								},
 								complete : function() {
 									loadComplete();
@@ -408,7 +413,6 @@
 							renderDiagram(getParent(resource), resourcePage);
 						}
 					});
-					
 				});
 				
 				$('.deleteTriggerIcon').off('click');
