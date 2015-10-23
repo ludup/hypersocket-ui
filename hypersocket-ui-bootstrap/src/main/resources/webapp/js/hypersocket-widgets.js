@@ -1249,8 +1249,7 @@ var id = $(this).attr('id');
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
 		
-		
-		if (data.selected) {
+		if (data && data.selected) {
 			$.each(data.selected, function(idx, obj) {
 				toSelect.append('<option ' + 'value="' + obj[options.idAttr] + '">' + obj[options.nameAttr] + "</option>");
 			});
