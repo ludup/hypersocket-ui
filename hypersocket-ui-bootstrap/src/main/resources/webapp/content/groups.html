@@ -35,22 +35,18 @@
 	$(document).ready(function() {
 		$('#contentGroups').localize();
 
-		$('#tabGroupUsers').multipleSelect({
+		$('#tabGroupUsers').multipleSearchInput({
 			nameAttr : 'principalName',
-			selectedIsObjectList: true,
-			url: 'currentRealm/users/list',
-			getUrlData: function(data) {
-				return data.resources;
-			}
+			selectedIsObjectList: false,
+			valueAttr: 'id',
+			url: 'currentRealm/users/table'
 		});
 		
-		$('#tabGroupGroups').multipleSelect({
+		$('#tabGroupGroups').multipleSearchInput({
 			nameAttr : 'principalName',
-			selectedIsObjectList: true,
-			url: 'currentRealm/groups/list',
-			getUrlData: function(data) {
-				return data.resources;
-			}
+			selectedIsObjectList: false,
+			valueAttr: 'id',
+			url: 'currentRealm/groups/table'
 		});
 	
 		
@@ -90,7 +86,7 @@
 				clearDialog : function(create) {
 					$('#groupName').val('');
 					$('#groupId').val('');
-					$('#tabGroupUsers').multipleSelect();
+					$('#tabGroupUsers').multipleSearchInput();
 					$('#groupProperties').parent().append($('#tabGroupUsers').detach());
 					$('#groupProperties').parent().append($('#tabGroupGroups').detach());
 					$('#groupProperties').empty();
@@ -135,13 +131,13 @@
 					$('#groupName').val(resource.name);
 					$('#groupName').attr('disabled', readOnly);
 					getJSON("currentRealm/users/group/" + resource.id, null, function(data) {
-						$('#tabGroupUsers').multipleSelect({
+						$('#tabGroupUsers').multipleSearchInput({
 	 						selected : data.resources,
 	 						disabled : readOnly
 	 					});
 					});
 					getJSON("currentRealm/groups/group/" + resource.id, null, function(data) {
-						$('#tabGroupGroups').multipleSelect({
+						$('#tabGroupGroups').multipleSearchInput({
 	 						selected : data.resources,
 	 						disabled : readOnly
 	 					});

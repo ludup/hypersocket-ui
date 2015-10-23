@@ -58,13 +58,13 @@
 					<div id="allTabs">
 						<div id="tabProperties"></div>
 						<div id="tabConditions">
-							<div class="row">
+							<div>
 								<div class="col-xs-12">
 									<p localize="allConditions.text"></p>
 								</div>
 							</div>
-							<div id="rowAll" class="row"></div>
-							<div class="row">
+							<div id="rowAll"></div>
+							<div>
 								<div class="propertyItem form-group">
 									<div class="propertyValue col-xs-11">
 										<span class="help-block" localize="addCondition.text"></span>
@@ -74,13 +74,13 @@
 									</div>
 								</div>
 							</div>
-							<div class="row">
+							<div>
 								<div class="col-xs-12">
 									<p localize="anyConditions.text"></p>
 								</div>
 							</div>
-							<div id="rowAny" class="row"></div>
-							<div class="row">
+							<div id="rowAny"></div>
+							<div>
 								<div class="propertyItem form-group">
 									<div class="propertyValue col-xs-11">
 										<span class="help-block" localize="addCondition.text"></span>
@@ -107,6 +107,7 @@
 	
     function addConditionRow(divId, condition) {
     	
+    	debugger;
     	var event = $('#triggerModal').data('selectedEvent');
     	var parentEvents = $('#triggerModal').data('parentEvents');
     	
@@ -126,6 +127,7 @@
     			 + '        <input type="hidden" class="conditionId" name="conditionId" value="' + (condition ? condition.id : '') + '">'
     			 + '        <select ' + conditionId.format('attribute') + ' class="form-control attributeKey">';
     	
+    	html += '<option disabled>' + getResource("text.sourceEvent") + '</option>'
     	var tmp = new Array();
     	var tmp2 = new Array();
     	$.each(event.attributeNames, function(idx, obj) {
@@ -144,9 +146,9 @@
     		});
     	}
     	
-    	$.each(tmp2.sort(), function(idx, obj) {
-    		html += '<option value="' + tmp[obj] + '">' + obj + '</option>';
-    	});
+		$.each(tmp2.sort(), function(idx, obj) {
+    		html += '<option value="source.' + tmp[obj] + '">' + obj + '</option>';
+    	});    	
     	
    		html += '        </select>'
    			 + '    </div>'
@@ -338,6 +340,7 @@
 				$('#tabProperties').empty();
 			},
 			loadParent: function(parentResource, parentEvents, triggerType) {
+				debugger;
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);

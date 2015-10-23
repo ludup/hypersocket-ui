@@ -1246,18 +1246,16 @@ var id = $(this).attr('id');
 			$(allIncludedOptions).remove();
 		}
 
+		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
-
-		if(data && data.values) {
-			options.values = data.values;
-		} 
 		
-		if (options.values) {
-			$.each(options.values, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
+		
+		if (data.selected) {
+			$.each(data.selected, function(idx, obj) {
+				toSelect.append('<option ' + 'value="' + obj[options.idAttr] + '">' + obj[options.nameAttr] + "</option>");
 			});
 		}
-
+		
 		return;
 
 	} else {
