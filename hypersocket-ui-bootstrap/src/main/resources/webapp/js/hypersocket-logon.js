@@ -72,7 +72,6 @@ function processLogon(data, opts, message) {
 		
 		if(data.formTemplate) {
 			$.each(data.formTemplate.inputFields, function() {
-	
 				if (this.type == 'hidden') {
 					$('#logonForm').append('<input type="' + this.type + '" name="' 
 								+ this.resourceKey + '" id="' 
@@ -92,6 +91,12 @@ function processLogon(data, opts, message) {
 					return;
 				} else if(this.type == 'script') {
 					scripts.push(this);
+					return;
+				} else if(this.type == 'div') {
+					$('#logonForm').append('<div id="' + this.resourceKey + '"></div>');
+					$('#' + this.resourceKey).load(this.defaultValue, function() {
+						
+					});
 					return;
 				}
 	
@@ -141,7 +146,7 @@ function processLogon(data, opts, message) {
 			}
 		}
 		
-		if(!data.newSession) {
+		if(!data.newSession && !data.postAuthentication) {
 			$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 			
 			$('#resetLogon').click(function(e) {
