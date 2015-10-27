@@ -2147,11 +2147,10 @@ $.fn.namePairInput = function(data) {
  			getValue: function() {
  				var values = [];
  				$('#' + id + 'NamePairs').find('.namePairInput').each(function(){
- 					name = $(this).find('.namePairName').widget().getValue();
+ 					name = encodeURIComponent($(this).find('.namePairName').widget().getValue());
  					if(options.onlyName) {
  	 					values.push(name);
  					} else {
- 						name = encodeURIComponent(name);
  						value = encodeURIComponent($(this).find('.namePairValue').widget().getValue());
  	 					values.push(name + '=' + value);
  					}
