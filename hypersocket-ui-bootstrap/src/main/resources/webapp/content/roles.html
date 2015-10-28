@@ -50,6 +50,7 @@
 
 		$('#tabRoleGroups').multipleSearchInput({
 			nameAttr : 'principalName',
+			valueAttr: 'id',
 			selectedIsObjectList: true,
 			disabled: !currentMenu.canUpdate,
 			url: 'currentRealm/groups/table'
@@ -58,6 +59,7 @@
 
 		$('#tabRoleUsers').multipleSearchInput({
 			nameAttr : 'principalName',
+			valueAttr: 'id',
 			selectedIsObjectList: true,
 			disabled: !currentMenu.canUpdate,
 			url: 'currentRealm/users/table'
