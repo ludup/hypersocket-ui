@@ -925,6 +925,10 @@ table {
 	text-align: center;
 }
 
+.padme {
+	padding: 10px;
+}
+
 .logonLink {
 	margin-top: 10px;
 }

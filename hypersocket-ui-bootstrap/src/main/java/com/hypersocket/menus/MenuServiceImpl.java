@@ -28,6 +28,8 @@ import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.config.ConfigurationPermission;
+import com.hypersocket.dashboard.OverviewWidgetService;
+import com.hypersocket.dashboard.OverviewWidgetServiceImpl;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionStrategy;
@@ -64,6 +66,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	@Autowired
 	BrowserLaunchableService browserService;
+	
+	@Autowired
+	OverviewWidgetService overviewWidgetService; 
 	
 	Set<MenuFilter> filters = new HashSet<MenuFilter>();
 	
@@ -306,18 +311,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				TriggerResourcePermission.DELETE),
 				MenuService.MENU_BUSINESS_RULES);
 
-		/**
-		 * Removed until the feature is in a better state to be included.
-		 */
-//		registerMenu(new MenuRegistration(
-//				AutomationResourceServiceImpl.RESOURCE_BUNDLE, "automations",
-//				"fa-clock-o", "automations", 100,
-//				AutomationResourcePermission.READ,
-//				AutomationResourcePermission.CREATE,
-//				AutomationResourcePermission.UPDATE,
-//				AutomationResourcePermission.DELETE),
-//				MenuService.MENU_BUSINESS_RULES);
-
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));
 
@@ -338,6 +331,23 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		}, MenuService.MENU_MY_PROFILE);
 	
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "userOverview",
+				"fa-home", "userOverview", -100, null, null,
+				null, null) {
+
+					@Override
+					public boolean canRead() {
+						try {
+							return !permissionService.hasSystemPermission(getCurrentPrincipal()) 
+									&& !overviewWidgetService.getWidgets(OverviewWidgetServiceImpl.USERDASH).isEmpty();
+						} catch (AccessDeniedException e) {
+							return false;
+						}
+						
+					}
+			
+		}, MenuService.MENU_DASHBOARD);
 
 	}
 

@@ -272,7 +272,11 @@ $.fn.localize = function() {
 
 	$('[localize]', '#' + $(this).attr('id')).each(function(i,obj) {
 		text = getResource([$(obj).attr('localize')]);
-		$(obj).text(text);
+		if($(this).attr('allowHtml')) {
+			$(obj).html(text);
+		} else {
+			$(obj).text(text);
+		}
 	});
 };
 
