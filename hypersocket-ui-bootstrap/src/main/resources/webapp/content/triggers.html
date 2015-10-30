@@ -228,7 +228,7 @@
 														$('#addTemplate').children('i').addClass('fa-save');
 														if(data.success) {
 															loadResources(function() {
-																//$('#contentTriggers').ajaxResourcePageInsert(data.resource);
+																resourcePage.refresh();
 																$('#searchTriggersForm').modal('hide');
 																showInformation(getResource('info.createdTrigger').format(data.resource.name));
 															});
