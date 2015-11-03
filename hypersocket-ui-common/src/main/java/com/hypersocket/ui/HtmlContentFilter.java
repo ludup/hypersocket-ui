@@ -55,6 +55,7 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("supportUrl", supportUrl);
 		resolver.addToken("stylesheets", "");
 		resolver.addToken("scripts", "");
+		resolver.addToken("additionalStylesheets", "");
 		
 		resolver.addToken("version", HypersocketVersion.getVersion());
 		
