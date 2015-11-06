@@ -2710,8 +2710,8 @@ $.fn.wizardPage = function(data) {
 			buttonIcon: 'fa-forward'
 		}, obj);
 		
-		$('#wizardPages').append(
-			'<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
+		
+		var html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
 			+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
 			+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
 			+ '		    <a data-toggle="collapse" data-parent="#accordion"'
@@ -2721,22 +2721,27 @@ $.fn.wizardPage = function(data) {
 			+ '</div>'
 			+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
 			+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
-			+ '	<div class="panel-body"><div id="page' + index + '"></div>'
-			+ '		<div class="propertyItem form-group buttonBar">'
+			+ '	<div class="panel-body"><div id="page' + index + '"></div>';
+			
+		if(page.onNext) {
+			html += '		<div class="propertyItem form-group buttonBar">'
 			+ '			<button id="button' + index + '" class="nextButton pageState' + index + ' btn btn-primary">'
 			+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
 			+ '			</button>'
-			+ '		</div>'
+			+ '		</div>';
+		}
+	
+		html += '</div>'
 			+ '</div>'
-			+ '</div>'
-			+ '</div>');
+			+ '</div>';
+	
+		$('#wizardPages').append(html);
+		$('#panel' + index).data('page', page);
+		$('#panel' + index).data('index', index);
 		
-			$('#panel' + index).data('page', page);
-			$('#panel' + index).data('index', index);
-			
-			$('#' + page.pageDiv).detach().appendTo('#page' + index).show();
+		$('#' + page.pageDiv).detach().appendTo('#page' + index).show();
 		
-		});
+	});
 		
 		$('.wizardPage').first().show();
 		
@@ -2796,6 +2801,12 @@ $.fn.wizardPage = function(data) {
 		
 		$('.panel').first().show();
 		$('.collapse').first().collapse('show');
+		
+		return {
+			reset: function() {
+				$('#resetForm').click();
+			}
+		}
 	});
 	
 }
