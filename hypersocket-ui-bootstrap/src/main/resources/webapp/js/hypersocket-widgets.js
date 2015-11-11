@@ -489,7 +489,7 @@ $.fn.selectButton = function(data) {
 				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
 				return selected.data('resource');
 			},
-			reset: function() {
+			load: function() {
 				$('#select_' + id).empty();
 				var listItem;
 				if (obj.options) {
@@ -585,12 +585,21 @@ $.fn.selectButton = function(data) {
  				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
 					$('#select_button_' + id).text(selected.attr('data-label'));
  			},
+			reset: function() {
+				if(obj.emptySelectionAllowed) {
+ 					$('#' + id).val('');			
+ 				} else {
+ 					$('#' + id).val(obj.value);
+ 				}
+ 				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
+					$('#select_button_' + id).text(selected.attr('data-label'));
+			},
  			selectFirst: function() {
  				$('.selectButton_' + id).first().trigger('click');
  			}
 		};
 	
-	callback.reset();
+	callback.load();
 	
 	if(obj.disabled) {
 		callback.disable();
