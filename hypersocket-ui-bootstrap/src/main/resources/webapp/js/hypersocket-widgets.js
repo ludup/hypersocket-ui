@@ -489,7 +489,7 @@ $.fn.selectButton = function(data) {
 				var selected = $('#select_' + id).find('[data-value="' + $('#' + id).val() + '"]');
 				return selected.data('resource');
 			},
-			load: function() {
+			load: function(loadCallback) {
 				$('#select_' + id).empty();
 				var listItem;
 				if (obj.options) {
@@ -521,6 +521,10 @@ $.fn.selectButton = function(data) {
 						if(selected==null) {
 							var val = $('.selectButton_' + id).first().trigger('click');
 						}
+						
+					if(loadCallback) {
+						loadCallback();
+					}
 
 				} else if (obj.url) {
 
@@ -553,6 +557,10 @@ $.fn.selectButton = function(data) {
 							
 							if(selected==null) {
 								var val = $('.selectButton_' + id).first().trigger('click');
+							}
+							
+							if(loadCallback) {
+								loadCallback();
 							}
 						});
 				}
