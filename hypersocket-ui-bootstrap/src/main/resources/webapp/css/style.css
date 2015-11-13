@@ -433,7 +433,7 @@ div.tablePages ul.pagination {
 }
 
 .dropdown-menu {
-	z-index: 9999;
+	z-index: 999999;
 }
 
 a.disabled-link,
