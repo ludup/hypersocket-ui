@@ -1014,7 +1014,24 @@ $.fn.multipleSelect = function(data) {
 
 		var callback = {
 				setValue: function(val) {
-					// Cannot be done yet.
+					if (val) {
+						var select = $('#' + id + 'ExcludedSelect');
+						var toSelect = $('#' + id + 'IncludedSelect');
+						$.each(
+							splitFix(val),
+							function(idx, id) {
+								var selectedOpt;
+								if (options.selectedIsObjectList) {
+									selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+								} else {
+									selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+								}
+								if (selectedOpt) {
+									toSelect.append($(selectedOpt).clone());
+									$(selectedOpt).remove();
+								}
+							});
+					}
 				},
 				getValue: function() {
 					result = new Array();
@@ -1038,6 +1055,9 @@ $.fn.multipleSelect = function(data) {
 					$('#' + id + 'RemoveButton').attr('disabled', false);
 					$('#' + id + 'ExcludedSelect').attr('disabled', false);
 					$('#' + id + 'IncludedSelect').attr('disabled', false);
+				},
+				isEnabled: function() {
+					return !$('#' + id + 'IncludedSelect').attr('disabled');
 				},
 				options: function() {
 					return options;
@@ -1128,7 +1148,7 @@ $.fn.multipleSelect = function(data) {
 			toSelect.append($(selectedOpts).clone());
 			$(selectedOpts).remove();
 			e.preventDefault();
-
+			debugger;
 			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
@@ -1143,8 +1163,8 @@ $.fn.multipleSelect = function(data) {
 			select.append($(selectedOpts).clone());
 			$(selectedOpts).remove();
 			e.preventDefault();
-
-			if (options.changed && selectedOpts.length != 0) {
+			debugger;
+			if (options.changed) {
 				options.changed(callback);
 			}
 		});
