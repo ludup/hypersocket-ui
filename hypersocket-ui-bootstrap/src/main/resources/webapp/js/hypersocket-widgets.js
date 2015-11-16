@@ -1148,7 +1148,6 @@ $.fn.multipleSelect = function(data) {
 			toSelect.append($(selectedOpts).clone());
 			$(selectedOpts).remove();
 			e.preventDefault();
-			debugger;
 			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
@@ -1163,7 +1162,6 @@ $.fn.multipleSelect = function(data) {
 			select.append($(selectedOpts).clone());
 			$(selectedOpts).remove();
 			e.preventDefault();
-			debugger;
 			if (options.changed) {
 				options.changed(callback);
 			}
