@@ -646,9 +646,9 @@ $.fn.autoComplete = function(data) {
 	var thisWidget = $(this);
 	
 	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
-			+ '"><input type="text" id="input_' + id + '" class="form-control dropdown-toggle" data-toggle="dropdown" value=""' + (options.disabled ? 'disabled=\"disabled\"' : '') + '>' 
-			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"><li><a tabindex="-1" href="#">' + getResource('search.text') + '</a></li></ul>' 
-			+ '<span class="input-group-addon"><a href="#" id="click_' + id + '"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
+			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="dropdown-toggle" data-toggle="dropdown"' : '') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>' 
+			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>' 
+			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"') + '><a href="#" id="click_' + id + '"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
 	
 	var buildData = function(values) {
 		var map = [];
@@ -667,9 +667,10 @@ $.fn.autoComplete = function(data) {
 		}
 	};
 	
-	var createDropdown = function(text) {
+	var createDropdown = function(text, show) {
+		debugger;
 		var selected = new Array();
-		if((text == '*') || (text == ' ')){
+		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
 				selected.push(obj);
@@ -712,7 +713,7 @@ $.fn.autoComplete = function(data) {
 		});
 		
 		$('#auto_' + id).empty();
-		if(selected.length > 0 && text != '') {
+		if(selected.length > 0 && (text != '' || options.alwaysDropdown)) {
 			$.each(selected, function(idx, obj) {
 				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
 						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
@@ -743,7 +744,10 @@ $.fn.autoComplete = function(data) {
 		}
 		$('#input_' + id).dropdown();
 		$('[data-toggle="dropdown"]').parent().removeClass('open');
-		$('#input_' + id).dropdown('toggle');
+		
+		if(show) {
+			$('#input_' + id).dropdown('toggle');
+		}
 		$('#spin_' + id).removeClass('fa-spin');
 		$('#spin_' + id).removeClass('fa-spinner');
 		$('#spin_' + id).addClass('fa-search');
@@ -766,15 +770,13 @@ $.fn.autoComplete = function(data) {
 		updateValue($(this).val());
 	});
 	
-	$('#input_' + id).keyup(function() {
+	var doDropdown = function(text) {
 		$('#spin_' + id).removeClass('fa-search');
 		$('#spin_' + id).addClass('fa-spin');
 		$('#spin_' + id).addClass('fa-spinner');
-		var text = $(this).val();
-		
 		
 		if(!options.remoteSearch) {
-			createDropdown(text);
+			createDropdown(text, true);
 		} else {
 			getJSON(
 					options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text,
@@ -793,11 +795,16 @@ $.fn.autoComplete = function(data) {
 						$('#input_' + id).data('values', data.rows);
 						$('#input_' + id).data('map', map);
 						
-						createDropdown(text);
+						createDropdown(text, true);
 					});
 			
 		}
 		
+	};
+	
+	$('#input_' + id).keyup(function() {
+		var text = $(this).val();
+		doDropdown(text);
 	});
 	
 	callback = {
@@ -871,8 +878,13 @@ $.fn.autoComplete = function(data) {
 	};
 
 	$('#click_' + id).click(function(e){
-		if(options.clicked) {
-			options.clicked(callback);
+		if(options.alwaysDropdown) {
+			debugger;
+			createDropdown("", true);
+		} else {
+			if(options.clicked) {
+				options.clicked(callback);
+			}
 		}
 	});
 	
@@ -884,8 +896,17 @@ $.fn.autoComplete = function(data) {
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	
+	createDropdown('', false);
 	return callback;
 	
+}
+
+$.fn.textDropdown = function(data) {
+	$(this).autoComplete($.extend(data, {
+		alwaysDropdown: true,
+		icon: 'fa-caret-down'
+	}));
 }
 
 /**
