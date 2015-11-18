@@ -1353,3 +1353,7 @@ span.input-group-addon {
 	padding-right: 15px;
 	padding-bottom: 15px;
 }
+
+.floatRight {
+	float: right;
+}
