@@ -1296,7 +1296,7 @@ var id = $(this).attr('id');
 
 		var options = $
 				.extend(
-					{ idAttr : 'id', 
+					{ valueAttr : 'id', 
 						nameAttr : 'name', 
 						nameIsResourceKey : false, 
 						selectAllIfEmpty : false, 
