@@ -24,6 +24,12 @@
 							name : "remoteAddress"
 						 },
 						 {
+							 name: "createDate",
+							 formatter: function(value, obj, index) {
+								 return new Date(value).format("mmm dd HH:MM");
+							 }
+						 },
+						 {
 							 name: "lastUpdated",
 							 formatter: function(value, obj, index) {
 								 return new Date(value).format("mmm dd HH:MM");
@@ -43,7 +49,7 @@
 						 }
 						],
 					resourceKey : "session",
-					sortName: 'created',
+					sortName: 'createDate',
 					sortOrder: 'desc',
 					canCreate: false,
 					canUpdate: false,
