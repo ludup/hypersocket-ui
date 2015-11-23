@@ -43,6 +43,8 @@ $.fn.resourceTable = function(params) {
 		canUpdate : false,
 		canDelete : false,
 		icon : 'fa-cog',
+		sortName: 'name',
+		sortOrder: 'asc',
 		disableDecoration: false,
 		disableActionsDropdown: false,
 		createButtonText: "text.add",
@@ -78,7 +80,7 @@ $.fn.resourceTable = function(params) {
 		var c = { field : obj.name,
 				title: getResource(options.resourceKey + "." + obj.name + '.label'),
 				align:'left',
-				sortable: true,
+				sortable: obj.name == options.sortName,
 				formatter: obj.formatter
 		};
 		columns.push(c);	
@@ -299,7 +301,6 @@ $.fn.resourceTable = function(params) {
 	
 	columns.push({ field : "actions",
 		align:'right',
-		sortable: false,
 		formatter: renderActions,
 		width: 125
 	});
@@ -338,19 +339,31 @@ $.fn.resourceTable = function(params) {
 	    sidePagination: 'server',
 	    url: basePath + '/api/' + options.tableUrl,
 	    columns: columns,
-	    onSort: function (name, order) {
-	    	var sortColumn;
-	    	$.each(options.fields,function(idx, obj) {
-	    		if(obj.name == name){
-	    			sortColumn = idx;
-	    			return false;
-	    		}
+	    sortName: options.sortName,
+	    sortOrder: options.sortOrder,
+	    sortable: true,
+	    onSort: function(name, order) {
+
+	    	$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
+	    		sortName: name,
+	    		sortOrder: order
 	    	});
-	    	if(sortColumn != undefined){
-	    		this.sortName = sortColumn;
-	    	}
-	    	return false;
+	    	
+	    	$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 	    },
+//	    onSort: function (name, order) {
+//	    	var sortColumn;
+//	    	$.each(options.fields,function(idx, obj) {
+//	    		if(obj.name == name){
+//	    			sortColumn = idx;
+//	    			return false;
+//	    		}
+//	    	});
+//	    	if(sortColumn != undefined){
+//	    		this.sortName = sortColumn;
+//	    	}
+//	    	return false;
+//	    },
 	    onClickRow: function(row) {
 	    	if(options.selected) {
 	    		options.selected(row);

@@ -107,7 +107,6 @@
 	
     function addConditionRow(divId, condition) {
     	
-    	debugger;
     	var event = $('#triggerModal').data('selectedEvent');
     	var parentEvents = $('#triggerModal').data('parentEvents');
     	
@@ -340,7 +339,7 @@
 				$('#tabProperties').empty();
 			},
 			loadParent: function(parentResource, parentEvents, triggerType) {
-				debugger;
+
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);

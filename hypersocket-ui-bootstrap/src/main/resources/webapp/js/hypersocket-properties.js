@@ -474,10 +474,14 @@ $.fn.propertyPage = function(opts) {
 	
 								$.each(toSort, function() {
 
-										debugger;
+										
 										makeBooleanSafe(this);
 										makeBooleanSafe(this.attributes);
 										
+										obj = JSON.parse(this.metaData);
+										makeBooleanSafe(obj);
+										
+										obj = $.extend(this, obj);
 										obj = $.extend(this, this.attributes);
 										
 //										obj = $.extend(obj, this);

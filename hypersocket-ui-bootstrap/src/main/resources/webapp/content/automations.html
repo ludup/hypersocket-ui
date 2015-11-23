@@ -124,7 +124,6 @@
 							canUpdate: currentMenu.canUpdate,
 							canDelete: currentMenu.canDelete,
 							validate : function() {
-								debugger;
 								if ($('#resourceName').val() == '') {
 									showError("error.nameRequired");
 									return false;
@@ -224,7 +223,6 @@
         	createTriggerList(automation.childTriggers);
         	var top = 125;
         	var left = 200;
-        	debugger;
         	if(triggerList.length > 0) {
 	        	getJSON('interfaceState/state/false/' + triggerList, null, function(data) {
 	        		resourceList = data.resources;
