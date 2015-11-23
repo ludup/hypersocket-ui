@@ -170,7 +170,9 @@ function makeBooleanSafe(options) {
 					options[property] = true;
 				} else if(options[property] == 'false') {
 					options[property] = false;
-				} 
+				} else if(options[property] != "" && !isNaN(options[property])) {
+					options[property] = parseInt(options[property]);
+				}
 			}
 		}
 	}

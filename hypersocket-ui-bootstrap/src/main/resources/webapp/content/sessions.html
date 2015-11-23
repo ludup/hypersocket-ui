@@ -30,6 +30,12 @@
 							 }
 						 },
 						 {
+							 name: "connectedFor",
+							 formatter: function(value, row, index) {
+								 return parseFloat(row.totalSeconds / 60).toFixed(1);
+							 }
+						 },
+						 {
 							 name: "os"
 						 },
 						 {

@@ -474,11 +474,14 @@ $.fn.propertyPage = function(opts) {
 	
 								$.each(toSort, function() {
 
-										obj = JSON.parse(this.metaData);
-										makeBooleanSafe(obj);
+										debugger;
+										makeBooleanSafe(this);
+										makeBooleanSafe(this.attributes);
 										
-										obj = $.extend(obj, this);
-										makeBooleanSafe(obj);
+										obj = $.extend(this, this.attributes);
+										
+//										obj = $.extend(obj, this);
+//										makeBooleanSafe(obj);
 										
 										var widget; 
 										var inputId = this.id;
