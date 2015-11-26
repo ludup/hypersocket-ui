@@ -646,7 +646,7 @@ $.fn.autoComplete = function(data) {
 	var thisWidget = $(this);
 	
 	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
-			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="dropdown-toggle" data-toggle="dropdown"' : '') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>' 
+			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : '') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>' 
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>' 
 			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"') + '><a href="#" id="click_' + id + '"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
 	
@@ -2862,5 +2862,79 @@ $.fn.wizardPage = function(data) {
 			}
 		}
 	});
+}
+
+$.fn.textAndSelect = function(data) {
 	
+	var selectOptions = $.extend(
+			{	
+				selectValue: '',
+				nameAttr: 'name', 
+				valueAttr: 'value', 
+				nameIsResourceKey : false, 
+				resourceKeyTemplate: '{0}', 
+				disabled : false, 
+				nameIsResourceKey: false,
+				notSetResourceKey: 'text.notSet',
+				getUrlData: function(data) {
+					return data;
+				},
+				options: data.selectOptions,
+				value: data.selectValue
+			}, data);
+	
+	var textOptions = $.extend({
+		value: data.textValue,
+		disabled: false
+	}, data);
+	
+	var textId = $(this).attr('id') + 'Text';
+	var selectId = $(this).attr('id') + 'Select';
+	
+	$(this).append('<div class="propertyItem form-group">' +
+			'<div class="row"><div class="col-xs-6" id="' + textId + '"></div><div class="col-xs-6" id="' +  selectId + '"></div></div>');
+
+	$('#' + textId).textInput(textOptions);
+	
+	$('#' + selectId).selectButton(selectOptions);
+	
+	var callback = {
+			setValue: function(val) {
+				
+			},
+			getValue: function() {
+				result = new Array();
+
+				result.push($('#' + textId).widget().getValue());
+				result.push($('#' + selectId).widget().getValue());
+				
+				return result;
+			},
+			reset: function() {
+				$('#' + textId).widget().setValue(textOptions.textValue);
+				$('#' + selectId).widget().setValue(selectOptions.selectValue);
+			},
+			disable: function() {
+				$('#' + textId).widget().disable();
+				$('#' + selectId).widget().disable();
+			},
+			enable: function() {
+				$('#' + textId).widget().enable();
+				$('#' + selectId).widget().enable();
+			},
+			options: function() {
+				return selectOptions;
+			},
+			getInput: function() {
+				return $('#' + textId);
+			}, 
+			clear: function() {
+				$('#' + textId).widget().clear();
+				$('#' + selectId).widget().clear();
+			}
+	}
+			
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
 }

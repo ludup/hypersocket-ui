@@ -160,6 +160,7 @@ function validateInputType(type){
 		case 'multipleFileInput' :
 		case 'textarea' :
 		case 'text' :
+		case 'textAndSelect' :
 		case 'select' :
 		case 'password' :
 		case 'multipleSelect' :
@@ -483,9 +484,15 @@ $.fn.propertyPage = function(opts) {
 										
 										obj = $.extend(this, obj);
 										obj = $.extend(this, this.attributes);
-										
-//										obj = $.extend(obj, this);
-//										makeBooleanSafe(obj);
+									
+										if(obj.options && !Array.isArray(obj.options)) {
+											var tmp = obj.options.split(",");
+											var arr = new Array();
+											$.each(tmp, function(idx, obj) {
+												arr.push({ name: obj, value: obj});
+											});
+											obj.options = arr;
+										}
 										
 										var widget; 
 										var inputId = this.id;
@@ -571,6 +578,18 @@ $.fn.propertyPage = function(opts) {
 											});
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).selectButton(obj);
+
+										} else if (obj.inputType == 'textAndSelect') {
+
+											var values = splitFix(obj.value);
+									    	var widgetOptions = $.extend(obj, {
+									    		textValue: values[0],
+									    		selectValue: values[1],
+									    		isArrayValue: true,
+									    		selectOptions: obj.options
+											});
+									    	
+									    	widget = $('#' + tab + '_value' + this.id).textAndSelect(obj);
 
 										} else if (obj.inputType == 'autoComplete') {
 

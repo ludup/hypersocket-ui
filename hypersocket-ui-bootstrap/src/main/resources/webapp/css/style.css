@@ -1357,3 +1357,11 @@ span.input-group-addon {
 .floatRight {
 	float: right;
 }
+
+.textAndSelectText {
+	width: 45%;
+}
+
+.textAndSelectSelect {
+	width: 45%;
+}
