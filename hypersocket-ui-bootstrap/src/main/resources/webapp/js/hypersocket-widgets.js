@@ -1287,7 +1287,8 @@ $.fn.multipleSelectValues = function() {
 
 
 $.fn.multipleSearchInput = function(data) {
-var id = $(this).attr('id');
+	
+	var id = $(this).attr('id');
 	
 	if ($(this).data('created')) {
 
@@ -1305,8 +1306,16 @@ var id = $(this).attr('id');
 		
 		if (data && data.selected) {
 			$.each(data.selected, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + obj[options.idAttr] + '">' + obj[options.nameAttr] + "</option>");
+				toSelect.append('<option ' + 'value="' + obj[options.valueAttr] + '">' + obj[options.nameAttr] + "</option>");
 			});
+		}
+		
+		if(data && data.disabled) {
+			$('#' + id + 'Excluded').widget().disable();
+			$('#' + id + 'IncludedSelect').attr('disabled', true);
+		} else {
+			$('#' + id + 'Excluded').widget().enable();
+			$('#' + id + 'IncludedSelect').attr('disabled', false);
 		}
 		
 		return;
@@ -1337,7 +1346,8 @@ var id = $(this).attr('id');
 				url: options.url,
 				nameAttr: options.nameAttr,
 				valueAttr: options.valueAttr,
-				selectedIsObjectList: true
+				selectedIsObjectList: true,
+				disabled: options.disabled
 			});
 
 		$(this).append('<div class="multipleTextInputButtons" id="' + id + 'Buttons"/>');
