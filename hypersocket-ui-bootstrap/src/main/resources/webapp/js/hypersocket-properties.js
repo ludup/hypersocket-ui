@@ -340,8 +340,6 @@ function validateRegex(regex,value){
 
 $.fn.propertyPage = function(opts) {
 
-	 
-	
 	log("Creating property page for div " + $(this).attr('id'));
 
 	var propertyDiv = $(this).attr('id');
@@ -426,6 +424,16 @@ $.fn.propertyPage = function(opts) {
 										return;
 									}
 								}
+								
+								if(this.systemOnly) {
+									if($(document).data('session') && $(document).data('session').currentRealm) {
+										if(!$(document).data('session').currentRealm.system) {
+											return;
+										}
+									} else {
+										return;
+									}
+								}
 								var tab = "tab" + this.id;
 
 								// Overwrite template values with any items
@@ -476,7 +484,7 @@ $.fn.propertyPage = function(opts) {
 
 										obj = JSON.parse(this.metaData);
 										makeBooleanSafe(obj);
-										
+										debugger;
 										obj = $.extend(obj, this);
 										makeBooleanSafe(obj);
 										
@@ -617,7 +625,7 @@ $.fn.propertyPage = function(opts) {
 											} else { 
 												url = obj.url;
 											}
-											
+
 											var widgetOptions = $.extend(obj, {
 												selected : splitFix(obj.value), 
 												isArrayValue: true,

@@ -28,6 +28,7 @@ import com.hypersocket.menus.MenuService;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionService;
 import com.hypersocket.permissions.PermissionStrategy;
+import com.hypersocket.permissions.SystemPermission;
 import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.session.json.SessionTimeoutException;
@@ -78,7 +79,9 @@ public class MenuController extends AuthenticatedController {
 			try {
 				permissionService.verifyPermission(
 						sessionUtils.getPrincipal(request),
-						PermissionStrategy.EXCLUDE_IMPLIED, RealmPermission.READ);
+						PermissionStrategy.EXCLUDE_IMPLIED, 
+						RealmPermission.READ, 
+						SystemPermission.SWITCH_REALM);
 				list.setRealms(realmService.allRealms());
 			} catch (AccessDeniedException e) {
 			}
