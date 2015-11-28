@@ -1,3 +1,5 @@
+var submitLogon;
+
 /**
  * Perform a logon against the REST API and/or show logon form in the specified
  * div id.
@@ -8,6 +10,10 @@ function logon(credentials, opts) {
 
 	log("Logging on");
 
+	submitLogon = function(params) {
+		logon(params, opts);
+	};
+	
 	loadResources(function() {
 		if(opts.showBusy) {
 			opts.showBusy();
