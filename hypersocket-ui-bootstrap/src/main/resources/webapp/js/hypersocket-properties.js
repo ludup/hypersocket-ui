@@ -341,8 +341,6 @@ function validateRegex(regex,value){
 
 $.fn.propertyPage = function(opts) {
 
-	 
-	
 	log("Creating property page for div " + $(this).attr('id'));
 
 	var propertyDiv = $(this).attr('id');
@@ -424,6 +422,16 @@ $.fn.propertyPage = function(opts) {
 
 								if(this.displayMode && this.displayMode != '') {
 									if(!options.displayMode.contains(this.displayMode)) {
+										return;
+									}
+								}
+								
+								if(this.systemOnly) {
+									if($(document).data('session') && $(document).data('session').currentRealm) {
+										if(!$(document).data('session').currentRealm.system) {
+											return;
+										}
+									} else {
 										return;
 									}
 								}
@@ -643,7 +651,7 @@ $.fn.propertyPage = function(opts) {
 											} else { 
 												url = obj.url;
 											}
-											
+
 											var widgetOptions = $.extend(obj, {
 												selected : splitFix(obj.value), 
 												isArrayValue: true,
