@@ -58,7 +58,7 @@ function processLogon(data, opts, message) {
 		log("Logon form present");
 
 		opts.formContent.append(
-			'<form id="logonForm" class="form-signin" role="form"/>');
+			'<form id="logonForm" class="' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/>');
 
 		if (data['errorMsg']) {
 			$('#logonForm')
