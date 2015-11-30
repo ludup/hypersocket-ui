@@ -360,7 +360,7 @@ $.fn.propertyPage = function(opts) {
 	
 	var options = $
 			.extend(
-				{ resourceNameField: false, typeCallback: false, showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th', propertyTabsLast: true, i18nNamespace: '' },
+				{ resourceNameField: false, resourceNameCallback: false, typeCallback: false, showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th', propertyTabsLast: true, i18nNamespace: '' },
 				opts);
 	
 	makeBooleanSafe(options);
@@ -617,7 +617,7 @@ $.fn.propertyPage = function(opts) {
 													return options.typeCallback ? options.typeCallback() : 'default';
 												},
 												defaultTextCallback : function() {
-													return options.resourceNameField ? $(options.resourceNameField).val() : 'X X';
+													return options.resourceNameCallback ? options.resourceNameCallback() : ( options.resourceNameField ? $(options.resourceNameField).val() : 'X X' );
 												}
 											});
 											
