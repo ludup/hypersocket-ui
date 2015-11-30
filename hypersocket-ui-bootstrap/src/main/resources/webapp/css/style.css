@@ -1365,3 +1365,7 @@ span.input-group-addon {
 .textAndSelectSelect {
 	width: 45%;
 }
+
+.clear {
+	clear: both;
+}

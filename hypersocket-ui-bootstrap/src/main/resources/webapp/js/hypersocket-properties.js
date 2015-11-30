@@ -544,7 +544,7 @@ $.fn.propertyPage = function(opts) {
 										}
 										
 										if(obj.inputType!='hidden') {
-											$('#' + tab).append('<div class="propertyItem form-group" id="' + tab + '_item' + this.id + '"/>');
+											$('#' + tab).append('<div class="propertyItem form-group"><div id="' + tab + '_item' + this.id + '"/></div>');
 											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResourceWithNamespace(options.i18nNamespace, this.resourceKey) + '</label>');
 											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
 											
@@ -589,14 +589,19 @@ $.fn.propertyPage = function(opts) {
 
 										} else if (obj.inputType == 'textAndSelect') {
 
-											var values = splitFix(obj.value);
-									    	var widgetOptions = $.extend(obj, {
-									    		textValue: values[0],
-									    		selectValue: values[1],
-									    		isArrayValue: true,
-									    		selectOptions: obj.options
+											obj = $.extend(obj, {
+												selectOptions: obj.options
 											});
-									    	
+											
+											var values;
+											if(obj.value) {
+												values = obj.value.split('=');
+											
+												obj.textValue = decodeURIComponent(values[0]);
+												obj.selectValue = decodeURIComponent(values[1]);
+											}
+											
+									    	obj.valueTemplate = '{0}={1}';
 									    	widget = $('#' + tab + '_value' + this.id).textAndSelect(obj);
 
 										} else if (obj.inputType == 'autoComplete') {
@@ -715,7 +720,7 @@ $.fn.propertyPage = function(opts) {
 											widgets.push(widget);
 											
 											$('#' + tab + '_value' + this.id).append(
-													'<div><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
+													'<div class="clear"><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
 													+  getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') 
 													+ '</span></div>');
 										}

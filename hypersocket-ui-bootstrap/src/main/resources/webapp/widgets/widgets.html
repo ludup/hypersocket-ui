@@ -341,13 +341,13 @@ ${stylesheets}
 				});
 				$('#example8').selectButton({
 					url : "../ui/widgets/objects.json",
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false
 				});
 				
 				$('#example9').selectButton({
 					url : "../ui/widgets/objects2.json",
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false,
 					getUrlData: function(data) {
 						return data.resources;
@@ -356,7 +356,7 @@ ${stylesheets}
 				
 				$('#example10').autoComplete({
 					url : "../ui/widgets/objects2.json",
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false
 				});
 				
@@ -372,14 +372,14 @@ ${stylesheets}
 				$('#example13').multipleSelect({
 					url: "../ui/widgets/objects2.json",
 					selected: splitFix("1]|[3"),
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false
 				});
 				
 				$('#example14').multipleTextInput({
 					values: ["1", "2", "3"],
 					variables: [ "one", "two", "three"],
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false
 				});
 				

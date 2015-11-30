@@ -432,8 +432,7 @@ $.fn.editor = function(data) {
 $.fn.selectButton = function(data) {
 	
 	var obj = $.extend(
-		{ idAttr: 'id', 
-			nameAttr: 'name', 
+		{ nameAttr: 'name', 
 			valueAttr: 'value', 
 			nameIsResourceKey : false, 
 			resourceKeyTemplate: '{0}', 
@@ -943,7 +942,7 @@ $.fn.multipleSelect = function(data) {
 				function(idx, id) {
 					var selectedOpt;
 					if (options.selectedIsObjectList) {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
 					} else {
 						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
 					}
@@ -958,7 +957,7 @@ $.fn.multipleSelect = function(data) {
 			$.each(
 				data.insert,
 				function(idx, obj) {
-					select.append('<option ' + 'value="' + obj[options.idAttr] + '">' 
+					select.append('<option ' + 'value="' + obj[options.valueAttr] + '">' 
 							+ (options.nameIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined 
 									? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
 				});
@@ -969,9 +968,9 @@ $.fn.multipleSelect = function(data) {
 				data.remove,
 				function(idx, obj) {
 					if (options.selectedIsObjectList) {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj[options.valueAttr] + '"]');
 						if (!selectedOpt) {
-							selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj[options.idAttr] + '"]');
+							selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj[options.valueAttr] + '"]');
 						}
 					} else {
 						selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj + '"]');
@@ -991,7 +990,7 @@ $.fn.multipleSelect = function(data) {
 				function(idx, id) {
 					var selectedOpt;
 					if (options.selectedIsObjectList) {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
 					} else {
 						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
 					}
@@ -1013,7 +1012,7 @@ $.fn.multipleSelect = function(data) {
 
 		var options = $
 				.extend(
-					{ idAttr : 'id', 
+					{ valueAttr : 'id', 
 						nameAttr : 'name', 
 						nameIsResourceKey : false, 
 						selectAllIfEmpty : false, 
@@ -1041,7 +1040,7 @@ $.fn.multipleSelect = function(data) {
 							function(idx, id) {
 								var selectedOpt;
 								if (options.selectedIsObjectList) {
-									selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+									selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
 								} else {
 									selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
 								}
@@ -1202,7 +1201,7 @@ $.fn.multipleSelect = function(data) {
 				var selectItem = options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0) ? toSelect : select;
 				
 				if(options.valuesIsObjectList) {
-					selectItem.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameIsResourceKey 
+					selectItem.append('<option ' + 'value="' + obj[options.valueAttr] + '">' + (options.nameIsResourceKey 
 							? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] 
 								: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
 				} else {
@@ -1217,7 +1216,7 @@ $.fn.multipleSelect = function(data) {
 				function(idx, id) {
 					var selectedOpt;
 					if (options.selectedIsObjectList) {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
 					} else {
 						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
 					}
@@ -1238,7 +1237,7 @@ $.fn.multipleSelect = function(data) {
 					
 					var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
 					if(options.valuesIsObjectList) {
-						selectItem.append('<option ' + 'value="' + obj[options.idAttr] + '">' + (options.nameIsResourceKey 
+						selectItem.append('<option ' + 'value="' + obj[options.valueAttr] + '">' + (options.nameIsResourceKey 
 								? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] 
 									: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
 					} else {
@@ -1253,7 +1252,7 @@ $.fn.multipleSelect = function(data) {
 						function(idx, id) {
 							var selectedOpt;
 							if (options.selectedIsObjectList) {
-								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.idAttr] + '"]');
+								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
 							} else {
 								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
 							}
@@ -1523,7 +1522,7 @@ $.fn.multipleTextInput = function(data) {
 
 		var options = $
 				.extend(
-					{ idAttr : 'id', 
+					{ valueAttr : 'id', 
 						nameAttr : 'name', 
 						nameIsResourceKey : false, 
 						selectAllIfEmpty : false, 
@@ -2876,27 +2875,28 @@ $.fn.wizardPage = function(data) {
 
 $.fn.textAndSelect = function(data) {
 	
-	var selectOptions = $.extend(
-			{	
-				selectValue: '',
-				nameAttr: 'name', 
-				valueAttr: 'value', 
-				nameIsResourceKey : false, 
-				resourceKeyTemplate: '{0}', 
-				disabled : false, 
-				nameIsResourceKey: false,
-				notSetResourceKey: 'text.notSet',
-				getUrlData: function(data) {
-					return data;
-				},
-				options: data.selectOptions,
-				value: data.selectValue
-			}, data);
+	var options = $.extend({
+		selectValue: '',
+		textValue: '',
+		valueTemplate: '{0}={1}'
+	}, data);
 	
-	var textOptions = $.extend({
+	var selectOptions = {	
+		nameAttr: options.nameAttr, 
+		valueAttr: options.valueAttr, 
+		nameIsResourceKey : options.nameIsResourceKey, 
+		resourceKeyTemplate: '{0}', 
+		disabled : options.disabled, 
+		notSetResourceKey: 'text.notSet',
+		getUrlData: options.getUrlData,
+		options: data.selectOptions,
+		value: data.selectValue
+	};
+	
+	var textOptions = {
 		value: data.textValue,
 		disabled: false
-	}, data);
+	};
 	
 	var textId = $(this).attr('id') + 'Text';
 	var selectId = $(this).attr('id') + 'Select';
@@ -2904,43 +2904,40 @@ $.fn.textAndSelect = function(data) {
 	$(this).append('<div class="propertyItem form-group">' +
 			'<div class="row"><div class="col-xs-6" id="' + textId + '"></div><div class="col-xs-6" id="' +  selectId + '"></div></div>');
 
-	$('#' + textId).textInput(textOptions);
+	var textInput = $('#' + textId).textInput(textOptions);
 	
-	$('#' + selectId).selectButton(selectOptions);
+	var selectInput = $('#' + selectId).selectButton(selectOptions);
 	
 	var callback = {
 			setValue: function(val) {
 				
 			},
 			getValue: function() {
-				result = new Array();
-
-				result.push($('#' + textId).widget().getValue());
-				result.push($('#' + selectId).widget().getValue());
-				
-				return result;
+				return options.valueTemplate.format(
+						encodeURIComponent(textInput.getValue()),
+						encodeURIComponent(selectInput.getValue()));
 			},
 			reset: function() {
-				$('#' + textId).widget().setValue(textOptions.textValue);
-				$('#' + selectId).widget().setValue(selectOptions.selectValue);
+				textInput.setValue(textOptions.textValue);
+				selectInput.setValue(selectOptions.selectValue);
 			},
 			disable: function() {
-				$('#' + textId).widget().disable();
-				$('#' + selectId).widget().disable();
+				textInput.disable();
+				selectInput.disable();
 			},
 			enable: function() {
-				$('#' + textId).widget().enable();
-				$('#' + selectId).widget().enable();
+				textInput.enable();
+				selectInput.enable();
 			},
 			options: function() {
-				return selectOptions;
+				return options;
 			},
 			getInput: function() {
 				return $('#' + textId);
 			}, 
 			clear: function() {
-				$('#' + textId).widget().clear();
-				$('#' + selectId).widget().clear();
+				textInput.clear();
+				textInput.clear();
 			}
 	}
 			
