@@ -48,7 +48,9 @@ $.fn.resourceTable = function(params) {
 		disableDecoration: false,
 		disableActionsDropdown: false,
 		createButtonText: "text.add",
-		createButtonIcon: "fa-plus-circle"
+		createButtonIcon: "fa-plus-circle",
+		logo: false,
+		logoResourceTypeCallback: false
 		},params);
 
 	$(this).data('options', options);
@@ -75,6 +77,41 @@ $.fn.resourceTable = function(params) {
 
 	var columns = new Array();
 	var columnsDefs = new Array();
+	
+	if(options.logo) {
+		var c = { field : 'logo',
+				title: getResource(options.resourceKey + '.logo.label'),
+				align:'left',
+				sortable: false,
+				formatter: function(value, row, index) {
+					var prefix = "logo://";
+					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[index];
+					var itype = options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default';
+					if(!resource) {
+						return '';
+					}
+					if(!value) {
+						value = 'logo://32_autotype_autotype_auto.png';
+					}
+					
+					if(value.slice(0, prefix.length) == prefix) {
+						var txt = resource.name;
+						if(!txt || txt == '')
+							txt = 'Default';
+						var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
+						return '<img class="resource-logo" src="' + uri + '"/>';
+					}
+					else {
+						var idx = value.indexOf('/');
+						if(idx == -1)
+							return '<img class="resource-logo" src="' + (basePath + '/api/fileUpload/file/' + value)+ '"/>';
+						else
+							return '<img class="resource-logo" src="' + (basePath + '/api/' + value)+ '"/>';
+					}
+				}
+		};
+		columns.push(c);	
+	}
 
 	$.each(options.fields,function(idx, obj) {
 		var c = { field : obj.name,

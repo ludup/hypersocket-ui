@@ -108,6 +108,17 @@ function internalValidate(widget, value) {
 			log("File upload widget needs upload");
 			return false;
 		}
+	} else if(obj.inputType == 'logoInput') {
+		if(!obj.allowEmpty && value == '') {
+			log("validation failed for " + obj.resourceKey + " and value " + value);
+			return false;
+		} else if(obj.allowEmpty && value == '') {
+			return true;
+		} 
+		else if(widget.needsUpload()) {
+			log("Logo widget needs upload");
+			return false;
+		}
 	}
 	if(obj.maxLength){
 	   if(value) {
@@ -157,6 +168,7 @@ function validateInputType(type){
 		case 'autoComplete' :
 		case 'countries' :
 		case 'fileInput' :
+		case 'logoInput' :
 		case 'multipleFileInput' :
 		case 'textarea' :
 		case 'text' :
@@ -348,7 +360,7 @@ $.fn.propertyPage = function(opts) {
 	
 	var options = $
 			.extend(
-				{ showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th', propertyTabsLast: true, i18nNamespace: '' },
+				{ resourceNameField: false, typeCallback: false, showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th', propertyTabsLast: true, i18nNamespace: '' },
 				opts);
 	
 	makeBooleanSafe(options);
@@ -597,6 +609,24 @@ $.fn.propertyPage = function(opts) {
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).autoComplete(widgetOptions);
+
+										} else if (obj.inputType == 'logoInput') { 
+											var widgetOptions = $.extend(obj, {
+												url : basePath + '/api/fileUpload/file',
+												typeCallback: function() {
+													return options.typeCallback ? options.typeCallback() : 'default';
+												},
+												defaultTextCallback : function() {
+													return options.resourceNameField ? $(options.resourceNameField).val() : 'X X';
+												}
+											});
+											
+											widget = $('#' + tab + '_value' + this.id).logoInput(obj);
+											if(options.resourceNameField) {
+												$(options.resourceNameField).on('input', function(){
+													widget.defaultTextChanged();
+												});
+											}
 
 										} else if (obj.inputType == 'fileInput') { 
 											
