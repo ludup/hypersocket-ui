@@ -35,7 +35,7 @@ $.fn.textInput = function(data) {
 				}
 			}, data);
 	
-	var id = (options && options.id ? options.id : $(this).attr('id') + "TextInput");
+	var id = 'input' + (options && options.id ? options.id : $(this).attr('id') + "TextInput");
 	var hasVariables = (options.variables && options.variables.length > 0);
 	var html = '';
 
@@ -52,8 +52,7 @@ $.fn.textInput = function(data) {
 				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" ' 
 				+ (options.maxlength > -1 ? 'maxlength="' + options.maxlength  + '"' : '' )
 				+ (options.font ? 'style="font-family: ' + options.font + '"' : '')
-				+ '>' 
-				+ stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value) + '</textarea>';
+				+ '></textarea>';
 		
 		if(options.variables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
@@ -69,8 +68,9 @@ $.fn.textInput = function(data) {
 		}
 		
 		var type = options.inputType != 'text' && options.inputType != 'password' ? 'text' : options.inputType;
-		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" value="' 
-				+ stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
+		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" value=""'
+					+ (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
+		
 		
 		if(hasVariables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
@@ -80,6 +80,8 @@ $.fn.textInput = function(data) {
 	}
 	
 	$(this).append(html);
+	
+	$('#' + id).val(stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value));
 	
  	if(hasVariables) {
  		$.each(options.variables, function(idx, obj) {

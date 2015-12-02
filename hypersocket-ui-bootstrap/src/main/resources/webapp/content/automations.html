@@ -123,6 +123,21 @@
 							canCreate: currentMenu.canCreate,
 							canUpdate: currentMenu.canUpdate,
 							canDelete: currentMenu.canDelete,
+							additionalActions: [{
+								resourceKey : 'automationRunNow',
+								iconClass : 'fa-play',
+								action : function(resource, callback) {
+									debugger;
+									getJSON('automations/run/' + resource.id, null, function(data) {
+										if(data.success) {
+											showSuccess(data.message);
+										} else {
+											showError(data.message);
+										}
+									});
+								},
+								enabled : true
+							}],
 							validate : function() {
 								if ($('#resourceName').val() == '') {
 									showError("error.nameRequired");
