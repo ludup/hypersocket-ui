@@ -564,6 +564,7 @@ function looksLikeMail(str) {
 }
 
 function splitFix(value) {
+	value = value.toString();
 	if(value==null) {
 		return [];
 	}
