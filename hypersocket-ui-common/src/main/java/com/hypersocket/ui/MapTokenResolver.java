@@ -3,6 +3,8 @@ package com.hypersocket.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.hypersocket.utils.ITokenResolver;
+
 public class MapTokenResolver implements ITokenResolver {
 
 	  protected Map<String, String> tokenMap = new HashMap<String, String>();
