@@ -1,3 +1,5 @@
+var submitLogon;
+
 /**
  * Perform a logon against the REST API and/or show logon form in the specified
  * div id.
@@ -8,6 +10,10 @@ function logon(credentials, opts) {
 
 	log("Logging on");
 
+	submitLogon = function(params) {
+		logon(params, opts);
+	};
+	
 	loadResources(function() {
 		if(opts.showBusy) {
 			opts.showBusy();
@@ -52,7 +58,7 @@ function processLogon(data, opts, message) {
 		log("Logon form present");
 
 		opts.formContent.append(
-			'<form id="logonForm" class="form-signin" role="form"/>');
+			'<form id="logonForm" class="' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/>');
 
 		if (data['errorMsg']) {
 			$('#logonForm')
