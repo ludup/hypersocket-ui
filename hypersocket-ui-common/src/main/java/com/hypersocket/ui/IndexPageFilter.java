@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import com.hypersocket.server.handlers.impl.ContentFilter;
+import com.hypersocket.utils.ITokenResolver;
+import com.hypersocket.utils.TokenReplacementReader;
 
 @Component
 public class IndexPageFilter implements ContentFilter {
