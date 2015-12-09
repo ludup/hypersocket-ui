@@ -266,14 +266,18 @@ pre {
 }
 
 .large-button-active {
-	border: 2px solid #555 !important;
+/* 	border: 2px solid #555 !important; */
 	color: #555 !important;
-	background: #e1e6ef !important;
+/* 	background: #e1e6ef !important; */
+}
+
+.small-button-active {
+	color: #555 !important;
 }
 
 .large-button {
-	border: 1px solid #e1e6ef;
-	background: #f2f4f8;
+/* 	border: 1px solid #e1e6ef; */
+/* 	background: #f2f4f8; */
 	margin-bottom: 10px;
 	padding: 10px 0px 0px 0px;
 	display: block;
@@ -289,6 +293,19 @@ pre {
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	border-radius: 2px;
+}
+
+.subMenu {
+	min-height: 100px;
+	margin: auto 0;
+}
+
+.subMenuSmall {
+	margin-bottom: 10px;
+}
+
+.subMenu p {
+	margin: 10px 0;
 }
 
 .dropdown-menu > .disabled{
