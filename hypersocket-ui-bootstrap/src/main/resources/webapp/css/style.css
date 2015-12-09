@@ -304,6 +304,10 @@ pre {
 	margin-bottom: 10px;
 }
 
+.subMenuLarge {
+	height: 90px;
+}
+
 .subMenu p {
 	margin: 10px 0;
 }
