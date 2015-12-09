@@ -692,11 +692,12 @@ function loadMenu(menu) {
 			allMenus[this.resourceKey] = this;
 			if(!this.hidden) {
 				$('#subMenuIconPanel').append(
-					'<div class="col-xs-2">'
-					+	'<a class="hidden-xs hidden-sm large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+					'<div class="col-xs-2 hidden-xs hidden-sm subMenuLarge">'
+					+	'<a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
 					+		'<i class="fa ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
 					+	'</a>'
-					+	'<a class="visible-xs visible-sm small-button subMenuSmall" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+					+   '</div><div class="col-xs-2 visible-xs visible-sm subMenuSmall" style="padding-bottom: 10px">'
+					+	'<a class="small-button" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
 					+		'<i class="fa ' + this.icon + '"></i>'
 					+	'</a>'
 				+ '</div>');

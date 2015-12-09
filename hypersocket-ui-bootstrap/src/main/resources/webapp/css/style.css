@@ -304,6 +304,10 @@ pre {
 	margin-bottom: 10px;
 }
 
+.subMenuLarge {
+	height: 90px;
+}
+
 .subMenu p {
 	margin: 10px 0;
 }
@@ -1373,4 +1377,16 @@ span.input-group-addon {
 
 .floatRight {
 	float: right;
+}
+
+.textAndSelectText {
+	width: 45%;
+}
+
+.textAndSelectSelect {
+	width: 45%;
+}
+
+.clear {
+	clear: both;
 }
