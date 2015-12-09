@@ -696,7 +696,7 @@ function loadMenu(menu) {
 					+	'<a class="hidden-xs hidden-sm large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
 					+		'<i class="fa ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
 					+	'</a>'
-					+	'<a class="visible-xs visible-sm small-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+					+	'<a class="visible-xs visible-sm small-button subMenuSmall" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
 					+		'<i class="fa ' + this.icon + '"></i>'
 					+	'</a>'
 				+ '</div>');
@@ -708,7 +708,7 @@ function loadMenu(menu) {
 			$(document).data(menu.menus[i].resourceName, menu.menus[i]);
 		}
 		
-		$('.subMenu').click(function(e) {
+		$('.subMenu, .subMenuSmall').click(function(e) {
 			e.preventDefault();
 			menuKey = $(this).attr('data-value');
 			currentMenu = $(document).data(menuKey);
