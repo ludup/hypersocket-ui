@@ -336,6 +336,10 @@ pre {
 	font-size: 32px;
 }
 
+.padded-row {
+	padding: 25px;
+}
+
 .alert-danger {
 	background: #ffd4d4;
 	border-color: #ff5454;
