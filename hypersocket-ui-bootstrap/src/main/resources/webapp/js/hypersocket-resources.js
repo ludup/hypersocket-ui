@@ -126,7 +126,7 @@ $.fn.resourceTable = function(params) {
 		
 		if(!$('#importResourcesPlaceholder').length) {
 			$('body').append('<div id="importResourcesPlaceholder"></div>');
-			$('#importResourcesPlaceholder').load(basePath + "/ui/content/importResourceDialog.html");
+			$('#importResourcesPlaceholder').load(uiPath + "content/importResourceDialog.html");
 		}
 		options.toolbarButtons.push({ 
 			resourceKey: 'importResources',

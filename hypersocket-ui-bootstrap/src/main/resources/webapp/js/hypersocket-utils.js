@@ -3,12 +3,8 @@
  */
 var hasShutdown = false;
 var polling = false;
-var regex = new RegExp(/(.[^\:]+)(\:\/\/)(.[^\/]+)(.[^\/]+)(.[^\/]+)(.*)/);
-
-var url = regex.exec(document.URL);
-var baseURL = url[1] + url[2] + url[3] + url[4];
-var basePath = url[4];
-var uiPath = basePath + '/ui/';
+var basePath = '${appPath}';
+var uiPath = '${uiPath}';
 
 String.prototype.format = function() {
     var args = arguments;

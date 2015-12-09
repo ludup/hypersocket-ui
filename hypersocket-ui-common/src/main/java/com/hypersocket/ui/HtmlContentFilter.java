@@ -75,7 +75,10 @@ public class HtmlContentFilter implements ContentFilter {
 
 	@Override
 	public boolean filtersPath(String path) {
-		return path.endsWith(".html") || path.endsWith(".htm");
+		return path.endsWith(".html") 
+				|| path.endsWith(".htm") 
+				|| path.endsWith(".js") 
+				|| path.endsWith(".css");
 	}
 
 	public void addResolver(ITokenResolver resolver) {
