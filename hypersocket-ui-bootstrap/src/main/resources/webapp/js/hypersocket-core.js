@@ -7,7 +7,7 @@ var restartAutoLogoff = false;
 var allMenus = new Array();
 
 $.ajax({
-    url: basePath + '/ui/json/countries.json',
+    url: uiPath + 'json/countries.json',
     dataType: "text",
     success: function(data) {
     	countries = $.parseJSON(data);

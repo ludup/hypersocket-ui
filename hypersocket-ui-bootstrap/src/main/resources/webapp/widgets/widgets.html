@@ -305,11 +305,11 @@ ${stylesheets}
 					variables : [ "username", "password" ]
 				});
 				$('#example2').textInput({
-					url : "../ui/widgets/variables.json"
+					url : uiPath + "widgets/variables.json"
 				});
 				
 				$('#example3').textInput({
-					url : "../ui/widgets/variables2.json",
+					url : uiPath + "widgets/variables2.json",
 					getUrlData: function(data) {
 						return data.resources;
 					}
@@ -329,13 +329,13 @@ ${stylesheets}
 					value: "This is a <b>html</b> text editor"
 				});
 				$('#example8').selectButton({
-					url : "../ui/widgets/objects.json",
+					url : uiPath + "widgets/objects.json",
 					idAttr: "value",
 					nameIsResourceKey: false
 				});
 				
 				$('#example9').selectButton({
-					url : "../ui/widgets/objects2.json",
+					url : uiPath + "widgets/objects2.json",
 					idAttr: "value",
 					nameIsResourceKey: false,
 					getUrlData: function(data) {
@@ -344,7 +344,7 @@ ${stylesheets}
 				});
 				
 				$('#example10').autoComplete({
-					url : "../ui/widgets/objects2.json",
+					url : uiPath + "widgets/objects2.json",
 					idAttr: "value",
 					nameIsResourceKey: false
 				});
@@ -359,7 +359,7 @@ ${stylesheets}
 				});
 				
 				$('#example13').multipleSelect({
-					url: "../ui/widgets/objects2.json",
+					url: uiPath + "widgets/objects2.json",
 					selected: splitFix("1]|[3"),
 					idAttr: "value",
 					nameIsResourceKey: false
@@ -380,7 +380,7 @@ ${stylesheets}
 				
 				$('#example18').switchInput({ value: false});
 				
-				$('#example19').imageInput({ value: "/hypersocket/ui/images/hypersocket.png"});
+				$('#example19').imageInput({ value: uiPath + "images/hypersocket.png"});
 				
 				$('#example20').sliderInput({ value: 500,
 					min: 0,
