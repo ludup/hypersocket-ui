@@ -31,7 +31,7 @@ $.fn.textInput = function(data) {
 				maxlength: -1, 
 				valueIsResourceKey: false,
 				getUrlData: function(data) {
-					return data;
+					return data.resources;
 				}
 			}, data);
 	
@@ -52,8 +52,7 @@ $.fn.textInput = function(data) {
 				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" ' 
 				+ (options.maxlength > -1 ? 'maxlength="' + options.maxlength  + '"' : '' )
 				+ (options.font ? 'style="font-family: ' + options.font + '"' : '')
-				+ '>' 
-				+ stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value) + '</textarea>';
+				+ '></textarea>';
 		
 		if(options.variables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
@@ -69,8 +68,7 @@ $.fn.textInput = function(data) {
 		}
 		
 		var type = options.inputType != 'text' && options.inputType != 'password' ? 'text' : options.inputType;
-		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" value="' 
-				+ stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
+		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" value=""' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
 		
 		if(hasVariables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
@@ -80,6 +78,7 @@ $.fn.textInput = function(data) {
 	}
 	
 	$(this).append(html);
+	$('#' + id).val(stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value));
 	
  	if(hasVariables) {
  		$.each(options.variables, function(idx, obj) {
@@ -2135,9 +2134,8 @@ $.fn.namePairInput = function(data) {
 				readOnly: false,
 				disableName: false,
 				columnWeight: 'equal',
-				valueVariables: [],
-				nameVariables: [],
-				variables: [],
+				valueVariablesUrl: null,
+				nameVariablesUrl: null,
 				onlyName: false,
 				isArrayValue: true
 			}, data);
@@ -2165,8 +2163,6 @@ $.fn.namePairInput = function(data) {
 		valueWeight = 'col-xs-10';
 	}
 	
-	var nameVariables = options.nameVariables.concat(options.variables);
-	var valueVariables = options.valueVariables.concat(options.variables);
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 			+	'	<div id="' + id + 'NamePairs" ></div>'
 			+	'	<div id="' + id + 'NewRow" class="row">'
@@ -2260,7 +2256,7 @@ $.fn.namePairInput = function(data) {
  	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'));
  	 				} else {
 	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
-	 	 					variables: nameVariables,
+	 	 					url: options.nameVariablesUrl,
 	 	 					disabled: options.disabled || options.disableName
 	 	 				});
  	 				}
@@ -2269,7 +2265,7 @@ $.fn.namePairInput = function(data) {
  	 						options.renderValueFunc($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'));
  	 					} else {
 	 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
-	 	 	 					variables: valueVariables,
+	 	 	 					url: options.valueVariablesUrl,
 	 	 	 					disabled: options.disabled
 	 	 	 				});
  	 					}
