@@ -12,6 +12,10 @@
 							tableUrl : "browser/personal",
 							title: getResource("browserLaunchable.title"),
 							icon: 'fa-globe',
+							logo: true,
+							logoResourceTypeCallback: function(resource) {
+								return 'SSO';
+							},
 							resourceUrl : "browser",
 							fields : [ {
 								name : "name"

@@ -2599,6 +2599,582 @@ $.fn.fileUploadInput = function(data) {
 	return callback;
 }
 
+
+$.fn.logoInput = function(data) {
+	var generated = true;
+	var options = $.extend(
+			{  
+				disabled : false,
+				showUploadButton: true,
+				showDownloadButton: true,
+				previewSize: 96,
+				defaultTextCallback: false,
+				typeCallback: false,
+				url: 'fileUpload/file',
+				getUrlData: function(data) {
+					return data;
+				}
+			}, data);
+	
+	var imagePath = basePath + "/api/logo/default/default/" + options.previewSize + "_auto_auto_auto.png";
+	
+	var id = (options.id ? options.id : $(this).attr('id') + "FileUpload");
+	
+	var generatorHtml =	'<div id="' + id + 'Generator" class="logo-generator">'
+		+	'<div class="logo-text-container logo-row">'
+        +	'<span class="help-block">' + getResource('logo.text.label') + ':</span>'
+        +   '<select id="' + id + 'TextSource" class="logo-shape form-control">'
+        +   '<option value="auto">' + getResource('logo.text.auto') + '</option>'
+        +   '<option value="autoname">' + getResource('logo.text.autoname') + '</option>'
+        +   '<option value="autoicon">' + getResource('logo.text.autoicon') + '</option>'
+        +   '<option value="icon">' + getResource('logo.text.icon') + '</option>'
+        +   '<option value="text">' + getResource('logo.text.text') + '</option>'
+        +   '</select>'
+        +   '<input class="form-control logo-text" maxlength="3" type="text" id="' + id + 'Text"/>'
+        +   '<div id="' + id + 'Icon" class="logo-icon"/>'
+        +	'</div>'
+		+	'<div class="logo-shape-container logo-row">'
+        +	'<span class="help-block">' + getResource('logo.shape.label') + ':</span>'
+        +   '<select id="' + id + 'Shape" class="logo-shape form-control">'
+        +   '<option value="autoname">' + getResource('logo.shape.autoname') + '</option>'
+        +   '<option value="autotype">' + getResource('logo.shape.autotype') + '</option>'
+        +   '<option value="round">' + getResource('logo.shape.circle') + '</option>'
+        +   '<option value="rectangle">' + getResource('logo.shape.square') + '</option>'
+        +   '<option value="rounded">' + getResource('logo.shape.rounded') + '</option>'
+        +   '</select>'
+        +	'</div>'
+		+	'<div class="logo-colour-container logo-row">'
+        +   '<span class="logo-colour-label help-block">' + getResource('logo.colour.label') + ':</span>'
+        +	'<select id="' + id + 'ColourSource" class="logo-shape form-control">'
+        +   '<option value="autoname">' + getResource('logo.colour.autoname') + '</option>'
+        +   '<option value="autotype">' + getResource('logo.colour.autotype') + '</option>'
+        +   '<option value="fixed">' + getResource('logo.colour.fixed') + '</option>'
+        +   '</select>'
+	    +   '<div class="logo-colour-outer"><div id="' + id + 'FixedColour" class="input-group logo-colour">'
+	    +	'	<input id="' + id + 'FixedColourInput" class="form-control" type="text"/>'
+	    +	'	<span class="input-group-addon"><i></i></span>'
+	    +	'</div></div>'
+        +	'</div>'
+    	+	'</div>';
+	
+	
+	var uploadHtml =  '<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
+			+	'	<input type="file" id="' + id + 'File"/>'
+			+	'</div>'
+			+	'<div class="propertyValue col-xs-4 dialogActions">'
+			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
+			+	'</div>'
+			+	'<div class="col-xs-8">'
+			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
+			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
+			+	'	</div>'
+			+	'</div>';
+
+	var html = '<div id="' + id + 'Container" class="logo-container">'
+			+	'<div class="logo-preview">'
+			+	'	<img src="' + imagePath + '" id="' + id + 'Preview"/>'
+			+	'</div>'
+			+ 	generatorHtml
+			+	'<div class="logo-separator help-block">'
+			+	'	<span id="' + id + 'Separator">' + getResource('logo.separator')  + '</span>'
+			+	'</div>'
+			+	uploadHtml
+			+	'</div>';
+	
+	$(this).append(html);
+	
+	$('#' + id + 'UpdateProgressHolder').css('height', '12px');
+	$('#' + id + 'UpdateProgressHolder').hide();
+	
+	if(!options.showUploadButton){
+		$('#' + id + 'UploadButton').parent().hide();
+		$('#' + id + 'File').parent().removeClass('col-xs-11').addClass('col-xs-12');
+	}
+	
+	var uploadProgress = function(evt){
+		if (evt.lengthComputable) {
+			var width = Math.round(evt.loaded * 100 / evt.total);
+			$('#' + id + 'UpdateProgress').css("width", width + "%");
+		}
+	}
+	
+	var showInfoFormat = function(data){
+		fileSize = data.fileSize + ' Bytes';
+		if(data.fileSize > 1024 * 1024){
+			fileSize = (Math.round((data.fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
+		}
+		formattedHtml = '<div class="file-upload-info">'
+					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>';
+		formattedHtml +=	'</div>'
+					+	'<div class="file-upload-info">'
+					+	'	<span>' + data.fileName + '</span></br>';
+		
+		formattedHtml +=	'</div>';
+		
+		return formattedHtml;
+	}
+	
+	var rebuildPreview = function(data) {
+		var val = callback.getValue();
+		var prefix = "logo://";
+		var itype = options.typeCallback ? options.typeCallback() : 'default';
+		if(val.slice(0, prefix.length) == prefix) {
+			var txt = options.defaultTextCallback ? options.defaultTextCallback() : id;
+			if(!txt || txt == '')
+				txt = 'Default';
+			var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + val.slice(prefix.length);
+			$('#' + id + 'Preview').attr('src', uri);
+		}
+		else {
+			var idx = val.indexOf('/');
+			if(idx == -1)
+				$('#' + id + 'Preview').attr('src', options.url + '/' + val);
+			else
+				$('#' + id + 'Preview').attr('src', basePath + '/api/' + val);
+		}
+	}
+	
+	var showInfo = function(data){
+			
+		fileSize = data.fileSize + ' KB';
+		if(data.fileSize > 1024 * 1024){
+			fileSize = (Math.round((data.fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
+		}
+		$('#' + id + 'File').parent().append(
+				'<div id="' + id + 'Info">' + showInfoFormat(data) + '</div>');
+		$('#' + id + 'File').remove();
+		$('#' + id + 'RemoveButton').remove();
+		$('#' + id + 'UploadButton').parent().append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
+		if(options.showDownloadButton){
+			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
+		}
+		$('#' + id + 'UploadButton').remove();
+		$('#' + id + 'Info').data('uuid', data.name);
+		$('#' + id + 'RemoveButton').click(function(){
+			bootbox.confirm(getResource('fileUpload.confirmRemoveFile'),
+			function(confirmed) {
+				if(confirmed){
+					callback.remove();
+				}
+			});
+		});
+		$('#' + id + 'DownloadButton').click(function(){
+			callback.download();
+		});
+
+		$('#' + id + 'Generator').hide();
+		$('#' + id + 'Separator').hide();
+		generated = false;
+		rebuildPreview();
+	}
+	
+	var _showOrHideTextFields = function() {
+		var txtSrc = $('#' + id + 'TextSource').val();
+		if(txtSrc == 'icon') {
+			$('#' + id + 'Text').hide();
+			$('#' + id + 'Icon').show();
+		}
+		else if(txtSrc == 'text') {
+			$('#' + id + 'Text').show();
+			$('#' + id + 'Icon').hide();
+		}
+		else {
+			$('#' + id + 'Icon').hide();
+			$('#' + id + 'Text').hide();
+		}
+	}
+	
+	var _doClear = function() {
+		$('#' + id + 'Shape').val('autotype');
+		$('#' + id + 'TextSource').val('auto');
+		$('#' + id + 'Text').hide();
+		$('#' + id + 'Icon').hide();
+		$('#' + id + 'Text').val('');
+		$('#' + id + 'FixedColour').colorpicker('setValue', '#000000');
+		$('#' + id + 'ColourSource').val('autotype');
+		var src = $('#' + id + 'ColourSource').val();
+		$('#' + id + 'FixedColour').colorpicker(src == 'autoname' || src == 'autotype' || options.disabled ? 'disable' : 'enable');
+		rebuildPreview();
+			 // How to clear file input?
+	}
+	
+	var callback = {
+			defaultTextChanged: function() {
+				rebuildPreview();
+			},
+ 			getValue: function() {
+ 				if(generated) {
+ 					// Text
+ 					var textSource = $('#' + id + 'TextSource').val();
+ 					var text = $('#' + id + 'Text').val();
+ 					if(textSource == 'auto' ||textSource == 'autoname' || textSource == 'autoicon') {
+ 						text = textSource;
+ 					}
+ 					else if(textSource == 'icon') {
+ 						text = 'icon' + icon.getValue();;
+ 					}
+ 					if(text == '')
+ 						text = 'autoname';
+ 					
+ 					// Colour
+ 					var colSource = $('#' + id + 'ColourSource').val();
+ 					var col = colSource;
+ 					if(colSource == 'fixed')
+ 						col = $('#' + id + 'FixedColour').colorpicker('getValue', '#000000');
+ 					if(!col || col == '')
+ 						col = "autotype";
+ 					
+ 					// Shape
+ 					var shape = $('#' + id + 'Shape').val();
+ 					if(!shape || shape == '')
+ 						shape = 'autotype';
+ 					return "logo://" + options.previewSize + '_' + shape + '_' + encodeURIComponent(col) + '_' + encodeURIComponent(text) + '.png';
+ 				}
+ 				else {
+	 				if(!$('#' + id + 'Info').length){
+	 					return '';
+	 				}
+	 				return $('#' + id + 'Info').data('uuid');
+ 				}
+ 			},
+ 			setValue: function(uuid) {
+ 				var prefix = "logo://";
+ 				if(uuid && uuid.length > 0) {
+	 				if(uuid.slice(0, prefix.length) == prefix) {
+	 					var spec = uuid.slice(prefix.length);
+	 					var idx = spec.indexOf('.');
+	 					if(idx != -1) {
+	 						spec = spec.slice(0, idx);
+	 					}
+	 					var arr = spec.split("_");
+	 					
+	 					if(arr.length > 1)
+	 						$('#' + id + 'Shape').val(arr[1] == 'auto' ? 'autotype' : arr[1]);
+	 					else
+							$('#' + id + 'Shape').val('autotype');
+	 					
+	 					if(arr.length > 2) {
+	 						var col = decodeURIComponent(arr[2]);
+	 						if(col.slice(0, 1) == '#')
+	 							col = col.slice(1);
+	 						var colSource = col;
+	 						if(colSource == 'auto') {
+	 							colSource == 'autotype';
+	 						}
+	 						if(colSource != 'autoname' && colSource != 'autotype') {
+	 							colSource = 'fixed'
+	 						}
+	 						else
+	 							col = '#000000';
+	 						$('#' + id + 'FixedColour').colorpicker('setValue', col);
+							$('#' + id + 'ColourSource').val(colSource);
+	 					}
+	 					else {
+							$('#' + id + 'ColourSource').val('autotype');
+	 						$('#' + id + 'FixedColour').colorpicker('setValue', '#000000');
+	 					}
+	 					var src = $('#' + id + 'ColourSource').val();
+	 	 				$('#' + id + 'FixedColour').colorpicker(src == 'autoname' || src == 'autotype' || options.disabled ? 'disable' : 'enable');
+	 					
+	 					if(arr.length > 3) {
+	 						var txt = decodeURIComponent(arr[3]);
+	 						var txtSource = txt;
+	 						if(txtSource == 'auto' || txtSource == 'autoicon' || txtSource == 'autotext') {
+		 						$('#' + id + 'Text').val('');
+	 						}
+	 						else {
+	 							if(txt.slice(0, 4) == 'icon') {
+		 							$('#' + id + 'Text').val('');
+		 							txtSource = 'icon';
+		 							icon.setValue(txt.slice(4));
+	 							}
+	 							else {
+		 							txtSource = 'text';		 							
+		 							$('#' + id + 'Text').val(txt);
+		 							icon.setValue('');
+	 							}
+	 						}
+							$('#' + id + 'TextSource').val(txtSource);
+	 					}
+	 					else {
+							$('#' + id + 'TextSource').val('auto');
+	 						$('#' + id + 'Text').val('');
+ 							icon.setValue('');
+	 					}
+	 					var txtSrc = $('#' + id + 'TextSource').val();
+	 	 				if(options.disable) {
+	 	 	 				$('#' + id + 'Text').attr('disabled', 'disabled');
+	 	 	 				icon.disable();
+	 	 				}
+	 	 				else if(txtSrc == 'text') {
+	 	 	 				$('#' + id + 'Text').removeAttr('disabled');
+	 	 	 				icon.disable();
+	 	 				}
+	 	 				else {
+	 	 	 				$('#' + id + 'Text').attr('disabled', 'disabled');
+	 	 	 				icon.enable();
+	 	 				}			
+	 					$('#' + id + 'Generator').show();
+ 						$('#' + id + 'Separator').show();
+	 					generated = true;
+	 					rebuildPreview();
+	 					_showOrHideTextFields();
+	 				}
+	 				else { 	
+	 					var idx = uuid.indexOf('/');
+	 					if(idx == -1) {
+			 				getJSON('fileUpload/metainfo/' + uuid, null, function(data){
+			 					if(data.success) {
+				 					if($('#' + id + 'Info').length){
+				 						$('#' + id + 'Separator').hide();
+				 						$('#' + id + 'Info').empty();
+				 						$('#' + id + 'Info').append(showInfoFormat(data.resource));
+				 						$('#' + id + 'Info').data('uuid', data.resource.name);
+				 						$('#' + id + 'RemoveButton').unbind('click');
+				 						$('#' + id + 'RemoveButton').click(function(){
+				 							callback.remove();
+				 						});
+				 						$('#' + id + 'DownloadButton').unbind('click');
+				 						$('#' + id + 'DownloadButton').click(function(){
+				 							callback.download();
+				 						});
+				 	 				}else{
+				 	 					showInfo(data.resource);
+				 	 				}
+				 					
+				 					if(options.disabled) {
+				 						callback.disable();
+				 					}
+				 					$('#' + id + 'UpdateProgressHolder').hide();
+			 					}
+			 				});
+	 					}
+	 					else {
+	 						// Path
+	 						$('#' + id + 'Separator').hide();
+	 						$('#' + id + 'RemoveButton').remove();
+		 					$('#' + id + 'UpdateProgressHolder').hide();
+	 						$('#' + id + 'Info').empty();
+	 						$('#' + id + 'File').parent().append(
+	 								'<div id="' + id + 'Info"></div>');
+	 						$('#' + id + 'Info').data('uuid',uuid);
+	 						$('#' + id + 'UploadButton').parent().append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
+	 						$('#' + id + 'RemoveButton').unbind('click');
+	 						$('#' + id + 'RemoveButton').click(function(){
+	 							callback.remove();
+	 						});
+	 						$('#' + id + 'Generator').hide();
+		 					generated = false;
+		 					rebuildPreview();
+	 					}
+	 				}
+ 				}
+ 				else {
+ 					_doClear();
+ 				}
+ 			},
+ 			clear: function() {
+ 				_doClear();
+ 			},
+ 			disable: function() {
+ 				$('#' + id + 'TextSource').attr('disabled', 'disabled');
+ 				$('#' + id + 'ColourSource').attr('disabled', 'disabled');
+ 				$('#' + id + 'FixedColour').colorpicker('disable');
+ 				$('#' + id + 'Shape').attr('disabled', 'disabled');
+ 				$('#' + id + 'Text').attr('disabled', 'disabled');
+ 				$('#' + id + 'File').attr('disabled', 'disabled');
+ 				$('#' + id + 'UploadButton').attr('disabled', 'disabled');
+ 				$('#' + id + 'RemoveButton').attr('disabled', 'disabled');
+ 				$('#' + id + 'DownloadButton').attr('disabled', 'disabled');
+ 				icon.disable();
+ 				options.disabled = true;
+ 			},
+ 			enable: function() {
+ 				$('#' + id + 'ColourSource').removeAttr('disabled');
+ 				var src = $('#' + id + 'ColourSource').val();
+ 				$('#' + id + 'FixedColour').colorpicker(src == 'autoname' || src == 'autotype' ? 'disable' : 'enable');
+ 				var txtSrc = $('#' + id + 'TextSource').val();
+ 				if(txtSrc == 'text') {
+ 	 				$('#' + id + 'Text').removeAttr('disabled');
+ 	 				icon.disable();
+ 				}
+ 				else {
+ 	 				$('#' + id + 'Text').attr('disabled', 'disabled');
+ 	 				icon.enable();
+ 				}
+ 				$('#' + id + 'Shape').removeAttr('disabled');
+ 				$('#' + id + 'TextSource').removeAttr('disabled');
+ 				$('#' + id + 'File').removeAttr('disabled');
+ 				$('#' + id + 'UploadButton').removeAttr('disabled');
+ 				$('#' + id + 'RemoveButton').removeAttr('disabled');
+ 				$('#' + id + 'DownloadButton').removeAttr('disabled');
+ 				options.disabled = false;
+ 			},
+ 			hasFile: function() {
+ 				if($('#' + id + 'File').val() == ''){
+ 					return false;
+ 				}
+ 				return true;
+ 			},
+ 			needsUpload: function() {
+ 				return $(this).data('needsUpload');
+ 			},
+ 			upload: function(notify) {
+ 				
+ 				if($('#' + id + 'File').val() == ''){
+ 					return false;
+ 				}
+ 				$('#' + id + 'UpdateProgressHolder').show();
+ 				$('#' + id + 'UpdateProgress').css("width",  "0%");
+ 				var formData = new FormData();
+ 				formData.append('file', $('#' + id + 'File')[0].files[0]);
+ 				
+ 		        var xhr = new XMLHttpRequest();
+ 		        xhr.upload.addEventListener("progress", uploadProgress, false);
+ 		        xhr.onreadystatechange=function()
+ 		        {
+ 		        	if (xhr.readyState==4 && xhr.status!=0)
+ 		        	{
+ 		        		if(xhr.status==200) {
+ 		        			data = jQuery.parseJSON(xhr.response);
+	 		        		if(data.success) {
+		 		        		showInfo(data.resource);
+		 						if(options.disabled) {
+		 							callback.disable();
+		 						}
+		 						 $(this).data('needsUpload', false);
+		 						if(options.changed) {
+		 							options.changed(callback);
+		 						}
+		 						if(notify) {
+		 							notify(true);
+		 						}
+	 		        		} else {
+	 		        			if(notify) {
+	 		        				notify(false);
+	 		        			}
+	 		        		} 
+ 		        		} 
+ 		        	} 
+ 		        }
+ 		        xhr.open("POST", options.url);
+ 		        xhr.send(formData);
+ 		        
+ 		        return true;
+ 			},
+ 			remove: function() {
+ 				if(!$('#' + id + 'Info').length){
+ 					return;
+ 				}
+ 				$('#' + id + 'UpdateProgressHolder').hide();
+ 				deleteJSON(options.url + '/' + $('#' + id + 'Info').data('uuid'), null, function(data){
+ 					$('#' + id + 'Info').parent().append('<input type="file" id="' + id + 'File"/>');
+					$('#' + id + 'Info').remove();
+					$('#' + id + 'RemoveButton').parent().append('<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>');
+					$('#' + id + 'RemoveButton').remove();
+					$('#' + id + 'DownloadButton').remove();
+					$('#' + id + 'UploadButton').click(function(){
+						callback.upload();
+					});
+					if(options.disabled) {
+						callback.disable();
+					}
+ 				});
+
+ 				generated = true;
+ 				$('#' + id + 'Separator').show();
+ 				$('#' + id + 'Generator').show();
+				_showOrHideTextFields();
+ 				rebuildPreview();
+ 			},
+ 			download: function(){
+ 				uuid = $('#' + id + 'Info').data('uuid');
+ 				window.location = basePath + '/api/fileUpload/file/' + uuid;
+ 			},
+ 			options: function() {
+ 				return options;
+ 			},
+ 			getInput: function() {
+ 				return $('#' + id);
+ 			}
+ 		};
+	
+	$('#' + id + 'UploadButton').click(function(){
+		
+		callback.upload();
+	});
+	
+	$('#' + id + 'File').change(function() {
+		$(this).data('needsUpload', true);
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
+	
+	$('#' + id + 'Shape').change(function() {
+		rebuildPreview();
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
+	
+	$('#' + id + 'TextSource').change(function() {
+		rebuildPreview();
+		_showOrHideTextFields();
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
+	
+	$('#' + id + 'ColourSource').change(function() {
+		rebuildPreview();
+		var src = $('#' + id + 'ColourSource').val();
+		$('#' + id + 'FixedColour').colorpicker(src == 'autoname' || src == 'autotype' ? 'disable' : 'enable');
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
+
+	var icon = $('#' + id + 'Icon').autoComplete({
+		url : 'icons/list',
+		valueAttr : 'name',
+		nameIsResourceKey: false,
+		changed: function(widget) {
+			rebuildPreview();			
+		}
+	});
+	$('#' + id + 'Icon').hide();
+	
+	$('#' + id + 'Text').on('input', function(){
+		rebuildPreview();
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
+	$('#' + id + 'Text').hide();
+
+	$('#' + id + 'FixedColour').colorpicker({
+		format: 'hex'
+	}).on('changeColor.colorpicker', function(event){
+		rebuildPreview();
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});;
+	
+ 	if(options.value) {
+ 		callback.setValue(options.value);
+ 	}
+ 	
+	if(options.disabled) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+}
+
 $.fn.multipleFileUpload = function(data) {
 	
 	var options = $.extend(

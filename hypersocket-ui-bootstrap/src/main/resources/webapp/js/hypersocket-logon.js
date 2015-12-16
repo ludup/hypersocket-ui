@@ -152,7 +152,7 @@ function processLogon(data, opts, message) {
 			}
 		}
 		
-		if(!data.newSession && !data.postAuthentication) {
+		if(!data.postAuthentication) {
 			$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 			
 			$('#resetLogon').click(function(e) {
