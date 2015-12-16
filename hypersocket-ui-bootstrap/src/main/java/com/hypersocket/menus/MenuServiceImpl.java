@@ -323,6 +323,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null) {
 			public boolean canRead() {
 				try {
+					if(!realmService.canChangePassword(getCurrentPrincipal())) {
+						return false;
+					}
 					assertPermission(PasswordPermission.CHANGE);
 					return true;
 				} catch (AccessDeniedException e) {

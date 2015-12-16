@@ -2173,16 +2173,16 @@ $.fn.namePairInput = function(data) {
 	}
 	
 	var nameWeight = 'col-xs-5';
-	var valueWeight = 'col-xs-6';
+	var valueWeight = 'col-xs-5';
 	if(options.columnWeight=='nameHeavy') {
-		nameWeight = 'col-xs-8';
+		nameWeight = 'col-xs-7';
 		valueWeight = 'col-xs-3';
 	}else if(options.columnWeight=='valueHeavy'){
 		nameWeight = 'col-xs-3';
-		valueWeight = 'col-xs-8';
+		valueWeight = 'col-xs-7';
 	}else if(options.columnWeight=='separateLines'){
-		nameWeight = 'col-xs-11';
-		valueWeight = 'col-xs-11';
+		nameWeight = 'col-xs-10';
+		valueWeight = 'col-xs-10';
 	}
 	
 	var nameVariables = options.nameVariables.concat(options.variables);
@@ -2190,7 +2190,7 @@ $.fn.namePairInput = function(data) {
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 			+	'	<div id="' + id + 'NamePairs" ></div>'
 			+	'	<div id="' + id + 'NewRow" class="row">'
-			+	'		<div class="propertyValue col-xs-11">'
+			+	'		<div class="propertyValue col-xs-10">'
 			+	'			<span class="help-block">' + options.text + '</span>'
 			+	'		</div>'
 			+	'		<div class="propertyValue col-xs-1 dialogActions">'
@@ -2265,7 +2265,7 @@ $.fn.namePairInput = function(data) {
  					html = '';
  	 				html =	'<div class="row namePairInput">';
  	 				if(options.onlyName){
- 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue col-xs-11 namePairName"></div>' 
+ 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue col-xs-10 namePairName"></div>' 
  	 				}else{
  	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
  	 						 +	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'; 

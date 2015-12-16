@@ -266,14 +266,18 @@ pre {
 }
 
 .large-button-active {
-	border: 2px solid #555 !important;
+/* 	border: 2px solid #555 !important; */
 	color: #555 !important;
-	background: #e1e6ef !important;
+/* 	background: #e1e6ef !important; */
+}
+
+.small-button-active {
+	color: #555 !important;
 }
 
 .large-button {
-	border: 1px solid #e1e6ef;
-	background: #f2f4f8;
+/* 	border: 1px solid #e1e6ef; */
+/* 	background: #f2f4f8; */
 	margin-bottom: 10px;
 	padding: 10px 0px 0px 0px;
 	display: block;
@@ -291,6 +295,23 @@ pre {
 	border-radius: 2px;
 }
 
+.subMenu {
+	min-height: 100px;
+	margin: auto 0;
+}
+
+.subMenuSmall {
+	margin-bottom: 10px;
+}
+
+.subMenuLarge {
+	height: 90px;
+}
+
+.subMenu p {
+	margin: 10px 0;
+}
+
 .dropdown-menu > .disabled{
  cursor: not-allowed; 
 }
@@ -306,13 +327,17 @@ pre {
 }
 
 .large-button:hover {
-	color: #9faecb;
+	color: #555;
 	text-decoration: none;
-	background: #e1e6ef;
+/* 	background: #e1e6ef; */
 }
 
 .large-button i {
 	font-size: 32px;
+}
+
+.padded-row {
+	padding: 25px;
 }
 
 .alert-danger {
@@ -1225,7 +1250,7 @@ span.input-group-addon {
 }
 
 .small-button:hover{
-	color: #9faecb;
+	color: #555;
 }
 
 .small-button-active.small-button-active:hover{
