@@ -3,9 +3,9 @@ package com.hypersocket.ui;
 public class BarChartDataPoint {
 
 	String x;
-	long y;
+	Long y;
 	
-	public BarChartDataPoint(String x, long y) {
+	public BarChartDataPoint(String x, Long y) {
 	
 		this.x = x;
 		this.y = y;
@@ -19,11 +19,11 @@ public class BarChartDataPoint {
 		this.x = x;
 	}
 
-	public long getY() {
+	public Long getY() {
 		return y;
 	}
 
-	public void setY(long y) {
+	public void setY(Long y) {
 		this.y = y;
 	}
 	
