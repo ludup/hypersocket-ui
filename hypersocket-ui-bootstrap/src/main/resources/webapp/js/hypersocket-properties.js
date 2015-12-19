@@ -353,7 +353,8 @@ $.fn.propertyPage = function(opts) {
 				  icon : 'fa-th', 
 				  propertyTabsLast: true, 
 				  i18nNamespace: '',
-				  useFilters: false },
+				  useFilters: false,
+				  alwaysShowStandardFilter: false},
 				opts);
 	
 	makeBooleanSafe(options);
@@ -562,7 +563,7 @@ $.fn.propertyPage = function(opts) {
 													if($.inArray(obj.filter, filters) == -1) {
 														filters.push(obj.filter);
 													}
-													filterClass = "class_" + this.filter;
+													filterClass = "class_" + obj.filter;
 												}
 											}
 										}
@@ -767,6 +768,7 @@ $.fn.propertyPage = function(opts) {
 							e.preventDefault();
 							$.each(filters, function(i,f) {
 								if(f!=filter) {
+									if(f!='default' || !options.alwaysShowStandardFilter)
 									$('.class_' + f).hide();
 								}
 							});
