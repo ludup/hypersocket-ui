@@ -359,7 +359,17 @@ $.fn.propertyPage = function(opts) {
 	
 	var options = $
 			.extend(
-				{ resourceNameField: false, resourceNameCallback: false, typeCallback: false, showButtons : true, displayMode: '', canUpdate : false, title : '', icon : 'fa-th', propertyTabsLast: true, i18nNamespace: '' },
+				{ resourceNameField: false, 
+				  resourceNameCallback: false, 
+				  typeCallback: false, 
+				  showButtons : true, 
+				  displayMode: '', 
+				  canUpdate : false, 
+				  title : '', 
+				  icon : 'fa-th', 
+				  propertyTabsLast: true, 
+				  i18nNamespace: '',
+				  useFilters: false },
 				opts);
 	
 	makeBooleanSafe(options);
@@ -394,7 +404,8 @@ $.fn.propertyPage = function(opts) {
 
 			$('#' + propertyDiv)
 						.append(
-							'<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
+							'<div class="row"><div class="col-xs-12" id="propertyFilter"></div></div>'
+							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
 							+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
 							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
 							+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
@@ -415,7 +426,7 @@ $.fn.propertyPage = function(opts) {
 						function(idx, o) {
 							$(contentTabs)
 									.append(
-										'<li id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
+										'<li class="class_default" id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
 							$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 							$('#' + this.id).addClass('tab-pane');
 						});
@@ -429,6 +440,7 @@ $.fn.propertyPage = function(opts) {
 			if(data.resources) {
 				
 				var widgets = new Array();
+				var filters = new Array();
 				$.each(	data.resources,
 							function() {
 
@@ -483,10 +495,25 @@ $.fn.propertyPage = function(opts) {
 									return;
 								}
 								
+								
+								var tabfilterClass = "class_default";
+								
+								if(options.useFilters) {
+									if(this.filter && this.filter != 'default') {
+										if($.inArray(this.filter, filters) == -1) {
+											filters.push(this.filter);
+										}
+										tabfilterClass = "class_" + this.filter;
+									}
+								}
+								
 								$(contentTabs)
 										.append(
-											'<li name="tab_'+getResource(this.categoryKey + '.label')+'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
+											'<li class="' + tabfilterClass + '" name="tab_'+getResource(this.categoryKey + '.label')+'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
 											+ ' href="#' + tab + '"  name="link_' + getResource(this.categoryKey + '.label') + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
+								
+								
+								
 								first = false;
 	
 								$('#' + propertyDiv + 'Content').append(
@@ -555,11 +582,24 @@ $.fn.propertyPage = function(opts) {
 											}
 										}
 										
+										
+										var filterClass = tabfilterClass;
+										
+										if(options.useFilters) {
+											if(filterClass=='class_default') {
+												if(obj.filter && obj.filter != 'default') {
+													if($.inArray(obj.filter, filters) == -1) {
+														filters.push(obj.filter);
+													}
+													filterClass = "class_" + this.filter;
+												}
+											}
+										}
+										
 										if(obj.inputType!='hidden') {
-											$('#' + tab).append('<div class="propertyItem form-group"><div id="' + tab + '_item' + this.id + '"/></div>');
+											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + this.id + '"/></div>');
 											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResourceWithNamespace(options.i18nNamespace, this.resourceKey) + '</label>');
 											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
-											
 										} 
 
 
@@ -778,6 +818,27 @@ $.fn.propertyPage = function(opts) {
 						}
 					}
 				});
+				
+				if(filters.length > 0 && options.useFilters) {
+					$('#propertyFilter').append('<a href="#" class="click_default">' + getResource('default.label') + '</a>');
+					filters.push('default');
+					$.each(filters, function(idx, filter) {
+						if(filter!='default') {
+							$('#propertyFilter').append(' | <a href="#" class="click_' + filter + '">' + getResource(filter + '.label') + '</a>');
+							$('.class_' + filter).hide();
+						}
+						$('.click_' + filter).on('click', function(e) {
+							e.preventDefault();
+							$.each(filters, function(i,f) {
+								if(f!=filter) {
+									$('.class_' + f).hide();
+								}
+							});
+							$('.class_' + filter).show();
+							$('.class_' + filter + ':first a').tab('show');
+						});
+					});
+				}
 			}
 			
 			if (options.additionalTabs && !options.propertyTabsLast) {

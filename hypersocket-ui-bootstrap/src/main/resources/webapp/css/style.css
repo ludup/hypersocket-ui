@@ -447,6 +447,11 @@ div.tablePages ul.pagination {
 	overflow: visible;
 }
 
+#propertyFilter {
+	text-align: right;
+	margin-bottom: 10px;
+}
+
 .propertyItem {
 	display: table;
 	width: 100%;
