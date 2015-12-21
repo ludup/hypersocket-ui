@@ -784,16 +784,22 @@ $.fn.propertyPage = function(opts) {
 										}
 										
 										if(obj.inputType != 'hidden') {
-											widget.getInput().addClass('propertyInput');
-											widget.getInput().data('widget', widget);
 											
-											$(document).data(this.resourceKey, widget);
-											widgets.push(widget);
-											
-											$('#' + tab + '_value' + this.id).append(
-													'<div class="clear"><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
-													+  getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') 
-													+ '</span></div>');
+											if(!widget) {
+												debugger;
+												log("Cannot find input for widget " + obj.inputType);
+											} else {
+												widget.getInput().addClass('propertyInput');
+												widget.getInput().data('widget', widget);
+												
+												$(document).data(this.resourceKey, widget);
+												widgets.push(widget);
+												
+												$('#' + tab + '_value' + this.id).append(
+														'<div class="clear"><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
+														+  getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') 
+														+ '</span></div>');
+											}
 										}
 										
 									});
