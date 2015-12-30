@@ -104,7 +104,7 @@
 						return $(document).data('triggerModalCallback').createResource();
 					},
 					displayResource : function(resource) {
-						$(document).data('triggerModalCallback').loadParent(null, null, 1);
+// 						$(document).data('triggerModalCallback').loadParent(null, null, 1);
 						$(document).data('triggerModalCallback').displayResource(resource);
 					}
 				});
@@ -284,6 +284,12 @@
 						e.preventDefault();
 						var triggerShape = $(this).closest('.triggerShape');
 						var trigger = triggerShape.data('trigger');
+						
+						if(trigger.parentId==null) {
+							$(document).data('triggerModalCallback').loadParent(automation, null, 1);	
+						} else {
+							$(document).data('triggerModalCallback').loadParent(trigger.parentId, null, 0);	
+						}
 						$('div[dialog-for="contentTriggers"]').resourceDialog('edit', { 
 							resource: trigger,
 							resourceUpdated: function(resource) {
