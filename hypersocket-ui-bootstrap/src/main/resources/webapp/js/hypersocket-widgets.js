@@ -628,6 +628,7 @@ $.fn.selectButton = function(data) {
  */
 $.fn.autoComplete = function(data) {
 	
+	
 	var options = $.extend(
 		{ valueAttr : 'value', 
 			nameAttr : 'name', 
@@ -749,6 +750,14 @@ $.fn.autoComplete = function(data) {
 	}
 	
 	var updateValue = function(val) {
+		if(val && val.toString().startsWith('${') && val.toString().endsWith('}')) {
+			$('#' + id).val(val);
+			$('#input_' + id).val(val);
+			if(options.changed) {
+				options.changed(callback);
+			}
+			return;
+		}
 		$.each($('#input_' + id).data('values'), function(idx, obj) {
 			if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
 				thisWidget.data('selectedObject', obj);

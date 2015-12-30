@@ -509,7 +509,7 @@ $.fn.propertyPage = function(opts) {
 
 										obj = JSON.parse(this.metaData);
 										makeBooleanSafe(obj);
-										debugger;
+										
 										obj = $.extend(obj, this);
 										makeBooleanSafe(obj);
 										
