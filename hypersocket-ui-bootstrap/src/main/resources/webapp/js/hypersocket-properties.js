@@ -173,6 +173,7 @@ function validateInputType(type){
 		case 'textarea' :
 		case 'text' :
 		case 'textAndSelect' :
+		case 'timeAndAutoComplete':
 		case 'select' :
 		case 'password' :
 		case 'multipleSelect' :
@@ -331,6 +332,7 @@ function validateAll(option,value){
 }
 
 function isValidEmail(email){
+//	"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"
 	return validateRegex("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",email);
 }
 
@@ -364,6 +366,7 @@ $.fn.propertyPage = function(opts) {
 				  typeCallback: false, 
 				  showButtons : true, 
 				  displayMode: '', 
+				  editMode: '',
 				  canUpdate : false, 
 				  title : '', 
 				  icon : 'fa-th', 
@@ -547,6 +550,13 @@ $.fn.propertyPage = function(opts) {
 										var inputTab = tab;
 										var inputObj = this;
 										
+										var allowEdit = options.canUpdate;
+										
+										if(allowEdit && obj.editMode && obj.editMode != '') {
+											if(!options.displayMode.contains(obj.editMode)) {
+												allowEdit = false;
+											}
+										}
 										obj = $.extend({
 											changed : function(widget) {
 												if(!validateWidget(widget)) {
@@ -569,10 +579,11 @@ $.fn.propertyPage = function(opts) {
 											getUrlData: function(data) {
 												return data.resources;
 											},
-											disabled : !options.canUpdate  || obj.readOnly || obj.disabled,
+											disabled : !allowEdit  || obj.readOnly || obj.disabled,
 											variables: options.variables,
 											errorElementId: '#' + tab + '_helpspan' + inputId,
-											i18nNamespace: options.i18nNamespace
+											i18nNamespace: options.i18nNamespace,
+											resourceKeyTemplate: (options.i18nNamespace != '' ? (options.i18nNamespace + '.{0}') : '{0}')
 										}, obj);
 										
 										makeBooleanSafe(obj);

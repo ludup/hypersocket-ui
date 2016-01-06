@@ -764,16 +764,18 @@ $.fn.autoComplete = function(data) {
 			}
 			return;
 		}
-		$.each($('#input_' + id).data('values'), function(idx, obj) {
-			if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
-				thisWidget.data('selectedObject', obj);
-				$('#' + id).val(obj[options.valueAttr]);
-				$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-				if(options.changed) {
-					options.changed(callback);
+		if($('#input_' + id).data('values')) {
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
+					thisWidget.data('selectedObject', obj);
+					$('#' + id).val(obj[options.valueAttr]);
+					$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+					if(options.changed) {
+						options.changed(callback);
+					}
 				}
-			}
-		});
+			});
+		}
 	};
 	
 	$('#input_' + id).change(function() {
@@ -872,17 +874,22 @@ $.fn.autoComplete = function(data) {
  			},
  			addItem: function(item, select){
  				exists = false;
- 				$.each($('#input_' + id).data('values'), function(idx, obj) {
- 					if(item.value==obj.value && item.name==obj.name){
- 						exists = true;
- 						return false;
- 					}
- 				});
+ 				if($('#input_' + id).data('values')) {
+	 				$.each($('#input_' + id).data('values'), function(idx, obj) {
+	 					if(item[options.nameAttr]==obj[options.nameAttr] && item[options.valueAttr]==obj[options.valueAttr]){
+	 						exists = true;
+	 						return false;
+	 					}
+	 				});
+ 				} else {
+ 					$('#input_' + id).data('values', new Array());
+ 				}
+
  				if(!exists){
  					$('#input_' + id).data('values').push(item);
  				}
  				if(select){
- 					$('#' + id).parent().parent().data('widget').setValue(item.value);
+ 					$('#' + id).parent().parent().data('widget').setValue(item[options.valueAttr]);
  				}
  			}
 	};
@@ -2156,6 +2163,7 @@ $.fn.sliderInput = function(options) {
 
 $.fn.namePairInput = function(data) {
 	
+	var init = false;
 	var options = $.extend(
 			{  
 				text: "Add name/value pair",
@@ -2220,6 +2228,9 @@ $.fn.namePairInput = function(data) {
 	var callback = {
  			getValue: function() {
  				var values = [];
+ 				if(init) {
+ 					return values;
+ 				}
  				$('#' + id + 'NamePairs').find('.namePairInput').each(function(){
  					name = encodeURIComponent($(this).find('.namePairName').widget().getValue());
  					if(options.onlyName) {
@@ -2235,13 +2246,12 @@ $.fn.namePairInput = function(data) {
  			setValue: function(val) {
  				callback.removeRows();
  				$.each(val, function(index, value){
- 					callback.addRows(1);
  					valuePair = value.split('=');
- 					$('#' + id + 'NamePairName' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[0]));
- 					if(!options.onlyName){
- 						$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[1]));
- 					}
- 					
+ 					callback.addRows(1, valuePair);
+// 					$('#' + id + 'NamePairName' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[0]));
+// 					if(!options.onlyName){
+// 						$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[1]));
+// 					}
  				});
  			},
  			disable: function() {
@@ -2268,7 +2278,8 @@ $.fn.namePairInput = function(data) {
  				}
  				options.disabled = false;
  			},
- 			addRows: function(val){
+ 			addRows: function(val, values){
+ 				init = true;
  				for (i = 0; i < val; i++) {
  					rowNum++;
  					html = '';
@@ -2285,21 +2296,34 @@ $.fn.namePairInput = function(data) {
 	 					 +	'</div>';
  	 				$('#' + id + 'NamePairs').append(html);
  	 				if(options.renderNameFunc) {
- 	 					var renderField = new Function('div', options.renderNameFunc);
- 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'));
+ 	 					if(values) {
+ 	 						var renderField = new Function('div', 'val', options.renderNameFunc);
+ 	 						renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'), decodeURIComponent(values[0]));
+ 	 					} else {
+ 	 						var renderField = new Function('div', 'val', options.renderNameFunc);
+ 	 						renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'), undefined);
+ 	 					}
  	 				} else {
 	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
 	 	 					variables: nameVariables,
-	 	 					disabled: options.disabled || options.disableName
+	 	 					disabled: options.disabled || options.disableName,
+	 	 					value: values[0]
 	 	 				});
  	 				}
  	 				if(!options.onlyName){
  	 					if(options.renderValueFunc) {
- 	 						options.renderValueFunc($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'));
+ 	 						if(values) {
+	 	 						var renderField = new Function('div', 'val', options.renderValueFunc);
+	 	 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), decodeURIComponent(values[1]));
+ 	 						} else {
+ 	 							var renderField = new Function('div', 'val', options.renderValueFunc);
+	 	 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), undefined);
+ 	 						}
  	 					} else {
 	 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
 	 	 	 					variables: valueVariables,
-	 	 	 					disabled: options.disabled
+	 	 	 					disabled: options.disabled,
+	 	 	 					value: values[1]
 	 	 	 				});
  	 					}
  	 				}
@@ -2311,6 +2335,7 @@ $.fn.namePairInput = function(data) {
  	 					$('#' + id + 'NewRow').hide();
  	 				}
  				}
+ 				init = false;
  			},
  			removeRows: function(){
  				$('#' + id + 'NamePairs').empty();
