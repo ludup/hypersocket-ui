@@ -1786,7 +1786,7 @@ $.fn.dateInput = function(options) {
  * Time input
  */
 $.fn.timeInput = function(options) {
-	
+
 	var id = (options && options.id ? options.id : $(this).attr('id') + "TimeInput");
 	
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
@@ -1848,6 +1848,9 @@ $.fn.timeInput = function(options) {
 	    }
 	});
 
+	if(options.defaultTime) {
+		callback.setValue(options.defaultTime);
+	}
 	if(options.disabled) {
 		callback.disable();
 	}
@@ -2262,6 +2265,7 @@ $.fn.namePairInput = function(data) {
  					$(this).attr('disabled', 'disabled');
  				});
  				$('#' + id + 'AddPair').attr('disabled', 'disabled');
+ 				$('#' + id + 'NewRow').hide();
  				options.disabled = true;
  			},
  			enable: function() {
@@ -2276,6 +2280,7 @@ $.fn.namePairInput = function(data) {
  				if(options.maxRows == 0 || (options.maxRows != 0 && $('#' + id + 'NamePairs').children().length < options.maxRows)){
  					$('#' + id + 'AddPair').removeAttr('disabled');
  				}
+ 				$('#' + id + 'NewRow').show();
  				options.disabled = false;
  			},
  			addRows: function(val, values){
@@ -2290,10 +2295,13 @@ $.fn.namePairInput = function(data) {
  	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
  	 						 +	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'; 
  	 				}
- 	 				html += '	<div class="propertyValue col-xs-1 dialogActions">'
-	 					 + 	'		<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>'
-	 					 + 	'	</div>'
-	 					 +	'</div>';
+ 	 				html += '	<div class="propertyValue col-xs-1 dialogActions">';
+ 	 				if(!options.readOnly && !options.disabled) {
+ 	 					html +=  '<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>';
+ 	 				}
+	 					 
+	 				html +=  '</div></div>';
+
  	 				$('#' + id + 'NamePairs').append(html);
  	 				if(options.renderNameFunc) {
  	 					if(values) {
@@ -2312,6 +2320,7 @@ $.fn.namePairInput = function(data) {
  	 				}
  	 				if(!options.onlyName){
  	 					if(options.renderValueFunc) {
+ 	 						
  	 						if(values) {
 	 	 						var renderField = new Function('div', 'val', options.renderValueFunc);
 	 	 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), decodeURIComponent(values[1]));

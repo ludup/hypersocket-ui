@@ -626,8 +626,6 @@ function loadComplete(pageChange) {
 
 function loadWait() {
 
-	log("Waiting for page load");
-
 	if($('#mainContent').data('pageChange')) {
 		$('#mainContent').data('pageChange')();
 		$('#mainContent').data('pageChange', null);

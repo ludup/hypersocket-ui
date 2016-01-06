@@ -16,6 +16,10 @@ h2 {
 	text-align: center;
 }
 
+input:disabled, .form-control[disabled] {
+    background-color: #ddd;
+}
+
 /*
  * Global add-ons
  */

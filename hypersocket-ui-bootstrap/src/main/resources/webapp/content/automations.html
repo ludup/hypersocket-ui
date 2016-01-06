@@ -127,7 +127,7 @@
 								resourceKey : 'automationRunNow',
 								iconClass : 'fa-play',
 								action : function(resource, callback) {
-									debugger;
+
 									getJSON('automations/run/' + resource.id, null, function(data) {
 										if(data.success) {
 											showSuccess(data.message);

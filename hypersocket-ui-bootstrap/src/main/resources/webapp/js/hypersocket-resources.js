@@ -26,7 +26,6 @@ $.fn.iconPage = function(params) {
 	}, params);
 	
 	getJSON(options.url, null, function(data) {
-		debugger;
 		var row = 6;
 		
 		$(divName).append('<div class="row"></div>');
@@ -438,6 +437,7 @@ $.fn.resourceTable = function(params) {
 	    sortName: options.sortName,
 	    sortOrder: options.sortOrder,
 	    sortable: true,
+	    cache: false,
 	    onSort: function(name, order) {
 
 	    	$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
@@ -447,19 +447,8 @@ $.fn.resourceTable = function(params) {
 	    	
 	    	$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 	    },
-//	    onSort: function (name, order) {
-//	    	var sortColumn;
-//	    	$.each(options.fields,function(idx, obj) {
-//	    		if(obj.name == name){
-//	    			sortColumn = idx;
-//	    			return false;
-//	    		}
-//	    	});
-//	    	if(sortColumn != undefined){
-//	    		this.sortName = sortColumn;
-//	    	}
-//	    	return false;
-//	    },
+	    detailView: options.detailFormatter != undefined,
+	    detailFormatter: options.detailFormatter,
 	    onClickRow: function(row) {
 	    	if(options.selected) {
 	    		options.selected(row);

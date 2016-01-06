@@ -797,7 +797,6 @@ $.fn.propertyPage = function(opts) {
 										if(obj.inputType != 'hidden') {
 											
 											if(!widget) {
-												debugger;
 												log("Cannot find input for widget " + obj.inputType);
 											} else {
 												widget.getInput().addClass('propertyInput');
