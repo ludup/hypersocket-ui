@@ -17,7 +17,7 @@ h2 {
 }
 
 input:disabled, .form-control[disabled] {
-    background-color: #ddd;
+    background-color: #fff;
 }
 
 /*

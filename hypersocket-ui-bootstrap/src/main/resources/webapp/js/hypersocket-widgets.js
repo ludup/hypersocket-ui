@@ -2182,7 +2182,11 @@ $.fn.namePairInput = function(data) {
 				isArrayValue: true
 			}, data);
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "NamePairInput");
+	var id =  $(this).attr('id');
+	if(id==undefined) {
+		id = new Date().getTime();
+	}
+	id = (options.id ? options.id : "_" + id + "NamePairInput");
 	
 	if(!rowNum){
 		var rowNum = 0;
