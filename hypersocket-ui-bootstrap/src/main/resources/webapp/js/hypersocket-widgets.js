@@ -1557,17 +1557,13 @@ $.fn.multipleTextInput = function(data) {
 
 		$(this).append('<div class="excludedList" id="' + id + 'Excluded"></div>');
 
-		if(options.variables) {
-			$('#' + id + 'Excluded').textInput({
+		var textInput = $('#' + id + 'Excluded').textInput({
 				id: id + 'ExcludedSelect',
 				isPropertyInput: false,
 				variables: options.variables
-			});
-		} else {
-			$('#' + id + 'Excluded').append(
-					'<input type="text" ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'id="' 
-							+ id + 'ExcludedSelect" class="formInput text form-control" name="Excluded_' + name + '"/>');
-		}
+		});
+		
+
 
 		$(this).append('<div class="multipleTextInputButtons" id="' + id + 'Buttons"/>');
 		
@@ -1586,7 +1582,6 @@ $.fn.multipleTextInput = function(data) {
 					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
 							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '" class="formInput text form-control"/>');
 
-		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
 		
 		if(options.allowOrdering) {
@@ -1657,7 +1652,7 @@ $.fn.multipleTextInput = function(data) {
 				.click(
 					function(e) {
 						e.preventDefault();
-						var selectedText = select.val();
+						var selectedText = textInput.getValue();
 						if (selectedText == '') {
 
 							return;
@@ -1665,7 +1660,7 @@ $.fn.multipleTextInput = function(data) {
 
 						toSelect
 								.append('<option ' + 'value="' + selectedText + '">' + selectedText + "</option>");
-						select.val('');
+						textInput.setValue('');
 						toSelect.data('updated', true);
 						if (options.changed) {
 							options.changed(callback);
@@ -1679,7 +1674,7 @@ $.fn.multipleTextInput = function(data) {
 				return;
 			}
 
-			select.val($(selectedOpts).val());
+			textInput.setValue($(selectedOpts).val());
 			$(selectedOpts).remove();
 
 			toSelect.data('updated', true);
