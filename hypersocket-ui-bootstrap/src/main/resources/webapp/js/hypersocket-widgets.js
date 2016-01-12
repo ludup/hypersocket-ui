@@ -2174,7 +2174,8 @@ $.fn.namePairInput = function(data) {
 				nameVariables: [],
 				variables: [],
 				onlyName: false,
-				isArrayValue: true
+				isArrayValue: true,
+				showEmptyRow: true
 			}, data);
 	
 	var id =  $(this).attr('id');
@@ -2210,7 +2211,7 @@ $.fn.namePairInput = function(data) {
 			+	'	<div id="' + id + 'NamePairs" ></div>'
 			+	'	<div id="' + id + 'NewRow" class="row">'
 			+	'		<div class="propertyValue col-xs-10">'
-			+	'			<span class="help-block">' + options.text + '</span>'
+			+	'			<span class="help-block">&nbsp;</span>'
 			+	'		</div>'
 			+	'		<div class="propertyValue col-xs-1 dialogActions">'
 			+	'			<a id="' + id + 'AddPair" href="#" class="btn btn-info addButton">'
@@ -2250,11 +2251,14 @@ $.fn.namePairInput = function(data) {
  				$.each(val, function(index, value){
  					valuePair = value.split('=');
  					callback.addRows(1, valuePair);
-// 					$('#' + id + 'NamePairName' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[0]));
-// 					if(!options.onlyName){
-// 						$('#' + id + 'NamePairValue' + rowNum).data('widget').setValue(decodeURIComponent(valuePair[1]));
-// 					}
  				});
+ 				
+ 				if(options.showEmptyRow) {
+ 					if(options.maxRows == 0 ||
+ 							$('#' + id + 'NamePairs').children().length < options.maxRows) {
+ 						callback.addRows(1);
+ 					}
+ 				}
  			},
  			disable: function() {
  				$('#' + id).find('.widget').each(function(){
@@ -2314,7 +2318,7 @@ $.fn.namePairInput = function(data) {
 	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
 	 	 					variables: nameVariables,
 	 	 					disabled: options.disabled || options.disableName,
-	 	 					value: values[0]
+	 	 					value: values ? values[0] : ''
 	 	 				});
  	 				}
  	 				if(!options.onlyName){
@@ -2331,7 +2335,7 @@ $.fn.namePairInput = function(data) {
 	 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
 	 	 	 					variables: valueVariables,
 	 	 	 					disabled: options.disabled,
-	 	 	 					value: values[1]
+	 	 	 					value: values && values.length > 1 ? values[1] : ''
 	 	 	 				});
  	 					}
  	 				}
