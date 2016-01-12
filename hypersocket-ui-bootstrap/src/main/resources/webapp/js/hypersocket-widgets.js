@@ -531,6 +531,7 @@ $.fn.selectButton = function(data) {
 
 					getJSON(obj.url, null,
 						function(data) {
+						debugger;
 							$.each(obj.getUrlData(data), function(idx, option) {
 								listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']];
 								
@@ -556,7 +557,7 @@ $.fn.selectButton = function(data) {
 										}
 							});
 							
-							if(selected==null) {
+							if(selected==null && !obj.emptySelectionAllowed) {
 								var val = $('.selectButton_' + id).first().trigger('click');
 							}
 							

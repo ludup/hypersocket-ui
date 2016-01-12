@@ -570,8 +570,10 @@ $.fn.propertyPage = function(opts) {
 														$(revertButton).attr('disabled', false);
 														$(applyButton).attr('disabled', false);
 													}
-													if(widget.options().visibilityCallback) {
-														widget.options().visibilityCallback();
+													if(widget.options().visibilityCallbacks) {
+														$.each(widget.options().visibilityCallbacks, function(idx, func) {
+															func();
+														});
 													}
 												}
 											},
@@ -822,16 +824,22 @@ $.fn.propertyPage = function(opts) {
 						if(!w2) {
 							log("WARNING: " + w.options().resourceKey + " visibility depends on " + w.options().visibilityDependsOn + " but a property with that resource key does not exist");
 						} else {
-							w2.options().visibilityCallback = function() {
+							w.getInput().parents('.propertyItem').hide();
+							var visibilityCallback = function() {
 								if(w2.getValue() == w.options().visibilityDependsValue) {
-									w.enable();
+									w.getInput().parents('.propertyItem').show();
 								} else {
 									if(w.options().clearOnVisibilityChange) {
 										w.clear();
 									}
-									w.disable();
+									w.getInput().parents('.propertyItem').hide();
 								}
 							}
+							visibilityCallback();
+							if(!w2.options().visibilityCallbacks) {
+								w2.options().visibilityCallbacks = new Array();
+							}
+							w2.options().visibilityCallbacks.push(visibilityCallback);
 						}
 					}
 				});
