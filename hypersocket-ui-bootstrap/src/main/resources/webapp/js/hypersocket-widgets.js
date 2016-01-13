@@ -2255,8 +2255,7 @@ $.fn.namePairInput = function(data) {
  				});
  				
  				if(options.showEmptyRow) {
- 					if(options.maxRows == 0 ||
- 							$('#' + id + 'NamePairs').children().length < options.maxRows) {
+ 					if($('#' + id + 'NamePairs').children().length == 0) {
  						callback.addRows(1);
  					}
  				}
