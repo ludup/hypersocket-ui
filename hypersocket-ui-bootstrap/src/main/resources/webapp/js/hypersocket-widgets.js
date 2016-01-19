@@ -2176,7 +2176,7 @@ $.fn.namePairInput = function(data) {
 				variables: [],
 				onlyName: false,
 				isArrayValue: true,
-				showEmptyRow: true
+				showEmptyRow: false
 			}, data);
 	
 	var id =  $(this).attr('id');
