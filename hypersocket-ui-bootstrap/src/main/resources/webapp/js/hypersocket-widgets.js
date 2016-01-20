@@ -2251,6 +2251,9 @@ $.fn.namePairInput = function(data) {
  				callback.removeRows();
  				$.each(val, function(index, value){
  					valuePair = value.split('=');
+ 					for(valueIndex = 0; valueIndex < valuePair.length; valueIndex++){
+ 						valuePair[valueIndex] = decodeURIComponent(valuePair[valueIndex]);
+ 					}
  					callback.addRows(1, valuePair);
  				});
  				
