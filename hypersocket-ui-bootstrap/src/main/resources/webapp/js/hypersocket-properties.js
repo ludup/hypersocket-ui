@@ -332,8 +332,7 @@ function validateAll(option,value){
 }
 
 function isValidEmail(email){
-//	"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"
-	return validateRegex("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",email);
+	return validateRegex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",email);
 }
 
 function isValidCIDR(cdir){
@@ -347,7 +346,7 @@ function isNotGmail(email){
 function validateRegex(regex,value){
 	if(value) {
 		var patt = new RegExp(regex) ;
-		return value.match(patt);
+		return patt.test(value);
 	} else {
 		return false;
 	}
