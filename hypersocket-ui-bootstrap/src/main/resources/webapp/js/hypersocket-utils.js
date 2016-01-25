@@ -545,6 +545,18 @@ function isValidURL(url) {
 	return url.search(urlRegex) == 0;
 }
 
+function isValidEmail(email){
+	return validateRegex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",email);
+}
+
+function isValidCIDR(cdir){
+	return validateRegex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$",cdir);
+}
+
+function isNotGmail(email){
+	return validateRegex("^(.(?!@gmail\.com))*$",email);
+}
+
 function isReplacementVariable(value) {
 	if(typeof value == 'string') {
 		return value.trim().startsWith('${') && value.trim().endsWith('}');

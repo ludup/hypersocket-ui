@@ -331,18 +331,6 @@ function validateAll(option,value){
     }
 }
 
-function isValidEmail(email){
-	return validateRegex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",email);
-}
-
-function isValidCIDR(cdir){
-	return validateRegex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$",cdir);
-}
-
-function isNotGmail(email){
-	return validateRegex("^(.(?!@gmail\.com))*$",email);
-}
-
 function validateRegex(regex,value){
 	if(value) {
 		var patt = new RegExp(regex) ;
@@ -988,6 +976,7 @@ $.fn.saveProperties = function(includeAll, callback) {
 
 			if (includeAll || $(this).data('updated')) {
 				if(meta.isArrayValue) {
+					debugger;
 					items.push(new PropertyItem(meta.resourceKey, widget.getValue().join(']|[')));
 				} else {
 					items.push(new PropertyItem(meta.resourceKey, widget.getValue()));
