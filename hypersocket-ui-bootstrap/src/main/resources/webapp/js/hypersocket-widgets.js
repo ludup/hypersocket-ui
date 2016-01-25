@@ -2320,6 +2320,10 @@ $.fn.namePairInput = function(data) {
  	 				} else {
 	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
 	 	 					variables: nameVariables,
+	 	 					url: options.nameVariablesUrl,
+ 	 	 					getUrlData: function(data) {
+ 	 	 						return data.resources;
+ 	 	 					},
 	 	 					disabled: options.disabled || options.disableName,
 	 	 					value: values ? values[0] : ''
 	 	 				});
@@ -2337,6 +2341,10 @@ $.fn.namePairInput = function(data) {
  	 					} else {
 	 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
 	 	 	 					variables: valueVariables,
+	 	 	 					url: options.valueVariablesUrl,
+	 	 	 					getUrlData: function(data) {
+	 	 	 						return data.resources;
+	 	 	 					},
 	 	 	 					disabled: options.disabled,
 	 	 	 					value: values && values.length > 1 ? values[1] : ''
 	 	 	 				});
