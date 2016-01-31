@@ -60,7 +60,7 @@ $.fn.iconPage = function(params) {
 				var idx = value.indexOf('/');
 				if(idx == -1) {
 					$(divName).children('.row').children('.col-xs-1').last().append(
-							'<img width="100" height="100" src="' + (basePath + '/api/fileUpload/file/' + value)+ '"/>');
+							'<img width="100" height="100" src="' + (basePath + '/api/files/download/' + value)+ '"/>');
 				} else {
 					$(divName).children('.row').children('.col-xs-2').last().append('<img width="100" height="100" src="' + (basePath + '/api/' + value)+ '"/>');
 				}
@@ -162,7 +162,7 @@ $.fn.resourceTable = function(params) {
 					else {
 						var idx = value.indexOf('/');
 						if(idx == -1)
-							return '<img class="resource-logo" src="' + (basePath + '/api/fileUpload/file/' + value)+ '"/>';
+							return '<img class="resource-logo" src="' + (basePath + '/api/files/download/' + value)+ '"/>';
 						else
 							return '<img class="resource-logo" src="' + (basePath + '/api/' + value)+ '"/>';
 					}

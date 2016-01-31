@@ -98,13 +98,13 @@ function internalValidate(widget, value) {
 			return true;
 		}
 	} else if(obj.inputType == 'fileInput' || obj.inputType == 'multipleFileInput') {
+		debugger;
 		if(!obj.allowEmpty && value == '') {
 			log("validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
 			return true;
-		} 
-		else if(widget.needsUpload()) {
+		} else if(widget.needsUpload()) {
 			log("File upload widget needs upload");
 			return false;
 		}
@@ -685,7 +685,7 @@ $.fn.propertyPage = function(opts) {
 
 										} else if (obj.inputType == 'logoInput') { 
 											var widgetOptions = $.extend(obj, {
-												url : basePath + '/api/fileUpload/file',
+												url : basePath + '/api/files/file',
 												typeCallback: function() {
 													return options.typeCallback ? options.typeCallback() : 'default';
 												},
@@ -704,7 +704,7 @@ $.fn.propertyPage = function(opts) {
 										} else if (obj.inputType == 'fileInput') { 
 											
 											var widgetOptions = $.extend(obj, {
-												url : basePath + '/api/fileUpload/file'
+												url : basePath + '/api/files/file'
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).fileUploadInput(obj);
@@ -714,7 +714,7 @@ $.fn.propertyPage = function(opts) {
 											var widgetOptions = $.extend(obj, {
 												isArrayValue: true,
 												values: splitFix(obj.value),
-												url : basePath + '/api/fileUpload/file'
+												url : basePath + '/api/files/file'
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).multipleFileUpload(widgetOptions);

@@ -37,6 +37,9 @@ $.fn.textInput = function(data) {
 	
 	var id = 'input' + (options && options.id ? options.id : $(this).attr('id') + "TextInput");
 	var hasVariables = (options.variables && options.variables.length > 0);
+	if(hasVariables && options.variables.constructor !== Array) {
+		options.variables = options.variables.split(',');
+	} 
 	var html = '';
 
 	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
@@ -2405,7 +2408,7 @@ $.fn.fileUploadInput = function(data) {
 				disabled : false,
 				showUploadButton: true,
 				showDownloadButton: true,
-				url: 'fileUpload/file',
+				url: 'files/file',
 				detailedView: true,
 				getUrlData: function(data) {
 					return data;
@@ -2503,7 +2506,7 @@ $.fn.fileUploadInput = function(data) {
  				return $('#' + id + 'Info').data('uuid');
  			},
  			setValue: function(uuid) {
- 				getJSON('fileUpload/metainfo/' + uuid, null, function(data){
+ 				getJSON('files/file/' + uuid, null, function(data){
  					
  					if(data.success) {
 	 					if($('#' + id + 'Info').length){
@@ -2621,7 +2624,7 @@ $.fn.fileUploadInput = function(data) {
  			},
  			download: function(){
  				uuid = $('#' + id + 'Info').data('uuid');
- 				window.location = basePath + '/api/fileUpload/file/' + uuid;
+ 				window.location = basePath + '/api/files/download/' + uuid;
  			},
  			options: function() {
  				return options;
@@ -2667,7 +2670,7 @@ $.fn.logoInput = function(data) {
 				previewSize: 96,
 				defaultTextCallback: false,
 				typeCallback: false,
-				url: 'fileUpload/file',
+				url: 'files/file',
 				getUrlData: function(data) {
 					return data;
 				}
@@ -2980,7 +2983,7 @@ $.fn.logoInput = function(data) {
 	 				else { 	
 	 					var idx = uuid.indexOf('/');
 	 					if(idx == -1) {
-			 				getJSON('fileUpload/metainfo/' + uuid, null, function(data){
+			 				getJSON('files/file/' + uuid, null, function(data){
 			 					if(data.success) {
 				 					if($('#' + id + 'Info').length){
 				 						$('#' + id + 'Separator').hide();
@@ -3146,7 +3149,7 @@ $.fn.logoInput = function(data) {
  			},
  			download: function(){
  				uuid = $('#' + id + 'Info').data('uuid');
- 				window.location = basePath + '/api/fileUpload/file/' + uuid;
+ 				window.location = basePath + '/api/files/download/' + uuid;
  			},
  			options: function() {
  				return options;
@@ -3244,7 +3247,7 @@ $.fn.multipleFileUpload = function(data) {
 				showDownloadButton: true,
 				showRemoveLine: true,
 				isArrayValue: true,
-				url: 'fileUpload/file'
+				url: 'files/file'
 			}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "MultipleFileUpload");
@@ -3357,6 +3360,15 @@ $.fn.multipleFileUpload = function(data) {
  						$(this).data('widget').upload();
  					}
  				});
+ 			},
+ 			needsUpload: function() {
+ 				var needs = false;
+ 				$('#' + id).find('.fileUploadInput').each(function(){
+ 					if(!needs) {
+ 						needs = $(this).data('widget').needsUpload();
+ 					}
+ 				});
+ 				return needs;
  			},
  			options: function() {
  				return options;
