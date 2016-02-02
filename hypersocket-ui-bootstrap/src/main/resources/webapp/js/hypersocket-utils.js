@@ -334,9 +334,10 @@ function showMessage(text, icon, alertClass, fade, fadeCallback) {
 function getJSON(url, params, callback, errorCallback) {
 	log("GET: " + url);
 	
-	if(!url.startsWith('/')) {
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
 		url = basePath + '/api/' + url;
 	}
+	
 	$.ajax({
 		type: "GET",
 	    url:  url + (params ? (url.endsWith('?') ? '' : '?') + $.param(params) : ''),
@@ -366,9 +367,10 @@ function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 	
 	log("POST: " + url);
 	
-	if(!url.startsWith('/')) {
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
 		url = basePath + '/api/' + url;
 	}
+	
 	$.ajax({
 		type: "POST",
 	    url:  url,
@@ -404,7 +406,7 @@ function deleteJSON(url, params, callback, errorCallback) {
 	
 	log("DELETE: " + url);
 	
-	if(!url.startsWith('/')) {
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
 		url = basePath + '/api/' + url;
 	}
 	
