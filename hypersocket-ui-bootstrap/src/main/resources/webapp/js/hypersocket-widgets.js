@@ -768,6 +768,8 @@ $.fn.autoComplete = function(data) {
 			}
 			return;
 		}
+		$('#' + id).val('');
+		thisWidget.data('selectedObject', null);
 		if($('#input_' + id).data('values')) {
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
