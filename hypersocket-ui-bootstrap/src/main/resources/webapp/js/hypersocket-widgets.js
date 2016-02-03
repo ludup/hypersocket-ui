@@ -1984,7 +1984,6 @@ $.fn.switchInput = function(options) {
 	
 	$(this).append('<label class="switch"><input type="checkbox" class="switch-input" id="'
 						+ id + '" name="chk_' + name + '" value="true"' 
-						+ (stripNull(obj.value) == true ? ' checked' : '') 
 						+ '><span class="switch-label" data-on="' 
 						+ getResource(obj.onResourceKey) + '" data-off="' 
 						+ getResource(obj.offResourceKey) + '"></span> <span class="switch-handle"></span></label>');
@@ -2027,6 +2026,9 @@ $.fn.switchInput = function(options) {
 		callback.disable();
 	}
 	
+	if(obj.value) {
+		callback.setValue(true);
+	}
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
