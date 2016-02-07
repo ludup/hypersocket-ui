@@ -16,8 +16,15 @@ h2 {
 	text-align: center;
 }
 
-input:disabled, .form-control[disabled] {
+input:disabled, input:readonly {
     background-color: #fff;
+}
+
+.form-control[disabled] {
+	background-color: #fff;
+}
+.form-control[readonly] {
+	background-color: #fff;
 }
 
 /*
@@ -1478,4 +1485,23 @@ span.input-group-addon {
 
 .logo-icon {
 	display: inline-table;
+}
+
+.tableToolbar {
+	margin-right: 10px;
+}
+
+.toolbarWidget {
+	float: left;
+	width: 150px;
+}
+
+.tableToolbar label {
+	float: left;
+	width: auto;
+	height: 34px;
+	line-height: 34px;
+	valign: middle;
+	padding-right: 10px;
+	padding-left: 10px;
 }

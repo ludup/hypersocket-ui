@@ -467,6 +467,7 @@ $.fn.selectButton = function(data) {
 				+ obj.emptySelectionText + '</a></li>');
 	}
 	
+	var loading = true;
 	var callback = {
 			setValue: function(val) {
 				$('#' + id).val(val);
@@ -478,8 +479,10 @@ $.fn.selectButton = function(data) {
 				}
 			},
 			changed: function() {
-				if(obj.changed) {
-					obj.changed(callback);
+				if(!loading) {
+					if(obj.changed) {
+						obj.changed(callback);
+					}
 				}
 			},
 			getValue: function() {
@@ -523,7 +526,9 @@ $.fn.selectButton = function(data) {
 						});
 						
 						if(selected==null) {
+							loading = true;
 							var val = $('.selectButton_' + id).first().trigger('click');
+							loading = false;
 						}
 						
 					if(loadCallback) {
@@ -534,7 +539,7 @@ $.fn.selectButton = function(data) {
 
 					getJSON(obj.url, null,
 						function(data) {
-						debugger;
+						
 							$.each(obj.getUrlData(data), function(idx, option) {
 								listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']];
 								
@@ -555,13 +560,15 @@ $.fn.selectButton = function(data) {
 										var selected = $(this).attr('data-value');
 										$('#' + id).val(selected);
 										$('#select_button_' + id).text($(this).attr('data-label'));
-										if(obj.changed) {
+										if(obj.changed && !loading) {
 											obj.changed(callback);
 										}
 							});
 							
 							if(selected==null && !obj.emptySelectionAllowed) {
+								loading = true;
 								var val = $('.selectButton_' + id).first().trigger('click');
+								loading = false;
 							}
 							
 							if(loadCallback) {
@@ -626,6 +633,7 @@ $.fn.selectButton = function(data) {
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	loading = false;
 	return callback;
 }
 
@@ -652,7 +660,7 @@ $.fn.autoComplete = function(data) {
 	var thisWidget = $(this);
 	
 	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
-			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : '') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>' 
+			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : 'class="form-control"') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>' 
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>' 
 			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"') + '><a href="#" id="click_' + id + '"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
 	
@@ -823,6 +831,28 @@ $.fn.autoComplete = function(data) {
 	$('#input_' + id).keyup(function() {
 		var text = $(this).val();
 		doDropdown(text);
+	});
+	
+	var remoteDropdown = false;
+	
+	$('#input_' + id).parent().mouseenter(function() {
+		removeDropdown = false;
+		if(!$('[data-toggle="dropdown"]').parent().hasClass('open')) {
+			var text = $(this).val();
+			doDropdown(text);
+		}
+	});
+	
+	
+	$('#input_' + id).parent().mouseleave(function() {
+		removeDropdown = true;
+		setTimeout(function() {
+			if(removeDropdown) {
+				$('[data-toggle="dropdown"]').parent().removeClass('open');
+			}
+			removeDropdown = false;
+		}, 500);
+		
 	});
 	
 	callback = {
@@ -1774,6 +1804,12 @@ $.fn.dateInput = function(options) {
  			}
 	};
 
+	$('#' + id).datepicker().on('changeDate', function() {
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
+	
 	if(options.disabled) {
 		callback.disable();
 	}

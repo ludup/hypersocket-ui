@@ -98,7 +98,7 @@ function internalValidate(widget, value) {
 			return true;
 		}
 	} else if(obj.inputType == 'fileInput' || obj.inputType == 'multipleFileInput') {
-		debugger;
+		
 		if(!obj.allowEmpty && value == '') {
 			log("validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
@@ -976,7 +976,7 @@ $.fn.saveProperties = function(includeAll, callback) {
 
 			if (includeAll || $(this).data('updated')) {
 				if(meta.isArrayValue) {
-					debugger;
+					
 					items.push(new PropertyItem(meta.resourceKey, widget.getValue().join(']|[')));
 				} else {
 					items.push(new PropertyItem(meta.resourceKey, widget.getValue()));

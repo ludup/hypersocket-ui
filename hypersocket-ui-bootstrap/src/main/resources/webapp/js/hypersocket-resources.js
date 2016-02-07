@@ -135,6 +135,7 @@ $.fn.resourceTable = function(params) {
 
 	var columns = new Array();
 	var columnsDefs = new Array();
+	var sortColumns = new Array();
 	
 	if(options.logo) {
 		var c = { field : 'logo',
@@ -175,11 +176,21 @@ $.fn.resourceTable = function(params) {
 		var c = { field : obj.name,
 				title: getResource(options.resourceKey + "." + obj.name + '.label'),
 				align:'left',
-				sortable: obj.name == options.sortName,
+				sortable: obj.sortable || obj.name === options.sortName,
 				formatter: obj.formatter
 		};
 		columns.push(c);	
 	});
+	
+	if(options.searchFields) {
+		$.each(options.searchFields,function(idx, obj) {
+			var c = { value : obj.name,
+					name: getResource(options.resourceKey + "." + obj.name + '.label')
+			};
+			sortColumns.push(c);	
+		});
+	}
+	
 	
 	if(!$('#additionalActions').length) {
 		$('body').append('<div id="additionalActions"></div>');
@@ -453,12 +464,28 @@ $.fn.resourceTable = function(params) {
 	    	if(options.selected) {
 	    		options.selected(row);
 	    	}
+	    },
+	    queryParams: function(params) {
+	    	if($('#searchColumn').widget()) {
+	    		params.searchColumn = $('#searchColumn').widget().getValue();
+	    	}
+	    	return params;
 	    }
-	    
 	});
 
 	
-	
+	if(sortColumns.length > 0) {
+		$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
+		$('#searchColumn').textDropdown({
+			values: sortColumns,
+			value: sortColumns[0].name,
+			changed: function(widget) {
+				$('.search input[placeholder="Search"]').val('');
+				$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
+				$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+			}
+		});
+	}
 	if(options.toolbarButtons) {
 		$.each(options.toolbarButtons, function(idx, action) {
 			$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
