@@ -1505,3 +1505,7 @@ span.input-group-addon {
 	padding-right: 10px;
 	padding-left: 10px;
 }
+
+.warning {
+	color: orange;
+}
