@@ -3495,7 +3495,7 @@ $.fn.wizardPage = function(data) {
 		
 		$('.wizardPage').first().show();
 		
-		$('#content').localize();
+		$(this).localize();
 		
 		$('.nextButton').click(function() {
 		

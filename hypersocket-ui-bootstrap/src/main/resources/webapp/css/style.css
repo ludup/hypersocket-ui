@@ -981,6 +981,14 @@ table {
 	padding: 10px;
 }
 
+.pad-below-10px {
+	padding-bottom: 10px;
+}
+
+.pad-above-10px {
+	padding-top: 10px;
+}
+
 .logonLink {
 	margin-top: 10px;
 }
