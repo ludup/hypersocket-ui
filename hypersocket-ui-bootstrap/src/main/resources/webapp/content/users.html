@@ -70,7 +70,7 @@
 								fields : [ {
 									name : "name",
 									formatter: function(value, obj, index) {
-										return obj.isSuspended ? '<i class="fa fa-warning user-warning"></i>' : '<i class="fa fa-check user-success"></i>' + '&nbsp;' + obj.principalName;
+										return obj.principalName;
 									}
 								}, {
 									name : "principalDesc",
