@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import com.hypersocket.server.handlers.impl.ContentFilter;
+import com.hypersocket.server.handlers.impl.RedirectException;
 import com.hypersocket.utils.ITokenResolver;
 import com.hypersocket.utils.TokenReplacementReader;
 
@@ -26,6 +27,7 @@ public class IndexPageFilter implements ContentFilter {
 	List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
 	List<FilterExtender> extenders = new ArrayList<FilterExtender>();
 	Set<String> filterPages = new HashSet<String>();
+	String redirectPage =  null;
 	
 	@PostConstruct
 	private void postConstruct() {
@@ -33,7 +35,11 @@ public class IndexPageFilter implements ContentFilter {
 	}
 	
 	@Override
-	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) {
+	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) throws RedirectException {
+		
+		if(redirectPage!=null) {
+			throw new RedirectException(redirectPage);
+		}
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("stylesheets", generateStylesheets());
 		resolver.addToken("scripts", generateScripts());
@@ -47,6 +53,10 @@ public class IndexPageFilter implements ContentFilter {
 		
 		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)), resolvers);
 		return new ReaderInputStream(r, Charset.forName("UTF-8"));
+	}
+	
+	public void setRedirectPage(String redirectPage) {
+		this.redirectPage = redirectPage;
 	}
 
 	private String generateScripts() {
