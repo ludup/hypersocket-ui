@@ -13,8 +13,6 @@
 <!-- Bootstrap core CSS -->
 <link href="${uiPath}/css/bootstrap.min.css" rel="stylesheet">
 
-<link href="${uiPath}/css/dataTables.bootstrap.css" rel="stylesheet">
-<link href="${uiPath}/css/dataTables.tableTools.css" rel="stylesheet">
 <link href="${uiPath}/css/font-awesome.min.css" rel="stylesheet">
 <!-- Custom styles for this template -->
 <link href="${uiPath}/css/style.css" rel="stylesheet">
@@ -253,6 +251,17 @@ ${stylesheets}
 			<div class="propertyItem form-group credsDiv">
 				<div id="stepForm"></div>
 			</div>
+
+			<div class="propertyItem form-group credsDiv">
+				<label class="col-md-3 control-label"
+					localize="mount.password.label"></label>
+				<div class="propertyValue col-md-9">
+					<div id="example22"></div>
+					<div>
+						<span class="help-block" localize="mount.password.info"></span>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -275,9 +284,6 @@ ${stylesheets}
 	<script src="${uiPath}/js/bootstrap.min.js"></script>
 	<script src="${uiPath}/js/bootbox.min.js"></script>
 	<script src="${uiPath}/js/jquery.bootpag.min.js"></script>
-	<script src="${uiPath}/js/jquery.dataTables.min.js"></script>
-	<script src="${uiPath}/js/dataTables.bootstrap.js"></script>
-	<script src="${uiPath}/js/dataTables.tableTools.js"></script>
 	<script src="${uiPath}/js/spin-min.js"></script>
 	<script src="${uiPath}/js/jquery.hotkeys.js"></script>
 	<script src="${uiPath}/js/bootstrap-wysiwyg.js"></script>
@@ -330,13 +336,13 @@ ${stylesheets}
 				});
 				$('#example8').selectButton({
 					url : uiPath + "widgets/objects.json",
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false
 				});
 				
 				$('#example9').selectButton({
 					url : uiPath + "widgets/objects2.json",
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false,
 					getUrlData: function(data) {
 						return data.resources;
@@ -345,7 +351,7 @@ ${stylesheets}
 				
 				$('#example10').autoComplete({
 					url : uiPath + "widgets/objects2.json",
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false
 				});
 				
@@ -361,14 +367,14 @@ ${stylesheets}
 				$('#example13').multipleSelect({
 					url: uiPath + "widgets/objects2.json",
 					selected: splitFix("1]|[3"),
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false
 				});
 				
 				$('#example14').multipleTextInput({
 					values: ["1", "2", "3"],
 					variables: [ "one", "two", "three"],
-					idAttr: "value",
+					valueAttr: "value",
 					nameIsResourceKey: false
 				});
 				
@@ -399,7 +405,15 @@ ${stylesheets}
 					{
 						title: 'Step Two'
 					}]
-				})
+				});
+				
+				
+				$('#example22').textAndSelect({
+					selectOptions: [{ name: "Days", value: "d" },
+					{ name: "Weeks", value: "w" },
+					{ name: "Months", value: "m" },
+					{ name: "Years", value: "y" }]
+				});
 			});
 		});
 	</script>

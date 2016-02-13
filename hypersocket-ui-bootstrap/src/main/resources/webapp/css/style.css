@@ -16,6 +16,17 @@ h2 {
 	text-align: center;
 }
 
+input:disabled, input:readonly {
+    background-color: #fff;
+}
+
+.form-control[disabled] {
+	background-color: #fff;
+}
+.form-control[readonly] {
+	background-color: #fff;
+}
+
 /*
  * Global add-ons
  */
@@ -279,7 +290,7 @@ pre {
 /* 	border: 1px solid #e1e6ef; */
 /* 	background: #f2f4f8; */
 	margin-bottom: 10px;
-	padding: 5px 0px 0px 0px;
+	padding: 10px 0px 0px 0px;
 	display: block;
 	text-align: center;
 	cursor: pointer;
@@ -334,6 +345,10 @@ pre {
 
 .large-button i {
 	font-size: 32px;
+}
+
+.padded-row {
+	padding: 25px;
 }
 
 .alert-danger {
@@ -966,6 +981,14 @@ table {
 	padding: 10px;
 }
 
+.pad-below-10px {
+	padding-bottom: 10px;
+}
+
+.pad-above-10px {
+	padding-top: 10px;
+}
+
 .logonLink {
 	margin-top: 10px;
 }
@@ -1394,4 +1417,103 @@ span.input-group-addon {
 
 .clear {
 	clear: both;
+}
+
+#browserLaunchablePlaceholder td:first-child {
+	width: 64px;
+}
+
+/* Logo */
+
+.resource-logo {
+	max-height: 32px;
+}
+
+.logo-preview {
+	float: left;
+	margin-right: 1em;
+	padding: 2px;
+}
+
+.logo-preview img {
+	max-height: 56px;
+}
+
+.logo-container .logo-text {
+	width: 4em;
+	display: inline;
+	margin: 0 1em;
+}
+
+.logo-container .logo-shape {
+	width: 10em;
+	display: inline;
+	margin: 0 1em;
+}
+
+.logo-separator {
+	text-align: center;	
+	clear: both;
+	width: 100%;
+}
+
+.logo-row .help-block {
+	display: inline-block;
+	width: 50px;
+}
+
+.logo-row {
+	width: 100%;
+	margin: 0px 34px 0 72px;
+}
+
+.logo-generator {
+	margin-bottom: 1em;
+	display: inline;
+	line-height: 32px;
+}
+
+.logo-colour-label {
+}
+
+.logo-colour input[type=text], .logo-icon input[type=text] {
+	float: none;
+	display: inline;
+}
+
+.logo-colour-outer {
+	display: inline-table;
+}
+
+.logo-colour {
+	width: 10em;
+	float: none;
+	position: inherit;
+}
+
+.logo-icon {
+	display: inline-table;
+}
+
+.tableToolbar {
+	margin-right: 10px;
+}
+
+.toolbarWidget {
+	float: left;
+	width: 150px;
+}
+
+.tableToolbar label {
+	float: left;
+	width: auto;
+	height: 34px;
+	line-height: 34px;
+	valign: middle;
+	padding-right: 10px;
+	padding-left: 10px;
+}
+
+.warning {
+	color: orange;
 }

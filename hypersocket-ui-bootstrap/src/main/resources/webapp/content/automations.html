@@ -72,7 +72,7 @@
 						if(widget.getObject() && widget.getObject().value != '') {
 							if(!displaying) {
 								$('#automationProperties').propertyPage({ 
-									url : 'automations/template/' +  widget.getObject().name, 
+									url : 'automations/template/' +  widget.getObject().name + '/', 
 									showButtons : false, 
 									i18nNamespace: 'automations',
 									canUpdate : currentMenu.canUpdate, 
@@ -123,8 +123,22 @@
 							canCreate: currentMenu.canCreate,
 							canUpdate: currentMenu.canUpdate,
 							canDelete: currentMenu.canDelete,
+							additionalActions: [{
+								resourceKey : 'automationRunNow',
+								iconClass : 'fa-play',
+								action : function(resource, callback) {
+
+									getJSON('automations/run/' + resource.id, null, function(data) {
+										if(data.success) {
+											showSuccess(data.message);
+										} else {
+											showError(data.message);
+										}
+									});
+								},
+								enabled : true
+							}],
 							validate : function() {
-								
 								if ($('#resourceName').val() == '') {
 									showError("error.nameRequired");
 									return false;
@@ -224,7 +238,6 @@
         	createTriggerList(automation.childTriggers);
         	var top = 125;
         	var left = 200;
-        	
         	if(triggerList.length > 0) {
 	        	getJSON('interfaceState/state/false/' + triggerList, null, function(data) {
 	        		resourceList = data.resources;

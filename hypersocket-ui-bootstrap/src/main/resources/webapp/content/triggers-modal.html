@@ -107,7 +107,6 @@
 	
     function addConditionRow(divId, condition) {
     	
-    	
     	var event = $('#triggerModal').data('selectedEvent');
     	var parentEvents = $('#triggerModal').data('parentEvents');
     	
@@ -318,7 +317,7 @@
 				$('#triggerResourceId').val('');
 				$('#allTabs').hide();
 				triggerEvent.clear();
-				triggerEvent.reset();
+// 				triggerEvent.reset();
 				triggerEvent.enable();
 				triggerTask.clear();
 				triggerTask.enable();
@@ -340,7 +339,7 @@
 				$('#tabProperties').empty();
 			},
 			loadParent: function(parentResource, parentEvents, triggerType) {
-				
+
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);

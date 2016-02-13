@@ -166,7 +166,9 @@ function makeBooleanSafe(options) {
 					options[property] = true;
 				} else if(options[property] == 'false') {
 					options[property] = false;
-				} 
+				} else if(options[property] != "" && !isNaN(options[property])) {
+					options[property] = parseInt(options[property]);
+				}
 			}
 		}
 	}
@@ -332,9 +334,10 @@ function showMessage(text, icon, alertClass, fade, fadeCallback) {
 function getJSON(url, params, callback, errorCallback) {
 	log("GET: " + url);
 	
-	if(!url.startsWith('/')) {
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
 		url = basePath + '/api/' + url;
 	}
+	
 	$.ajax({
 		type: "GET",
 	    url:  url + (params ? (url.endsWith('?') ? '' : '?') + $.param(params) : ''),
@@ -364,9 +367,10 @@ function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 	
 	log("POST: " + url);
 	
-	if(!url.startsWith('/')) {
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
 		url = basePath + '/api/' + url;
 	}
+	
 	$.ajax({
 		type: "POST",
 	    url:  url,
@@ -402,7 +406,7 @@ function deleteJSON(url, params, callback, errorCallback) {
 	
 	log("DELETE: " + url);
 	
-	if(!url.startsWith('/')) {
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
 		url = basePath + '/api/' + url;
 	}
 	
@@ -543,6 +547,18 @@ function isValidURL(url) {
 	return url.search(urlRegex) == 0;
 }
 
+function isValidEmail(email){
+	return validateRegex("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",email);
+}
+
+function isValidCIDR(cdir){
+	return validateRegex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$",cdir);
+}
+
+function isNotGmail(email){
+	return validateRegex("^(.(?!@gmail\.com))*$",email);
+}
+
 function isReplacementVariable(value) {
 	if(typeof value == 'string') {
 		return value.trim().startsWith('${') && value.trim().endsWith('}');
@@ -558,6 +574,7 @@ function looksLikeMail(str) {
 }
 
 function splitFix(value) {
+	value = value.toString();
 	if(value==null) {
 		return [];
 	}

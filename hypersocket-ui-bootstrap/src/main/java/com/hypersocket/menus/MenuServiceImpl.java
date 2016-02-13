@@ -42,6 +42,7 @@ import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
+import com.hypersocket.server.interfaces.HTTPInterfaceResourcePermission;
 import com.hypersocket.session.SessionPermission;
 import com.hypersocket.triggers.TriggerResourcePermission;
 import com.hypersocket.triggers.TriggerResourceServiceImpl;
@@ -157,6 +158,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"fa-database", "realms", 1, RealmPermission.READ,
 				RealmPermission.CREATE, RealmPermission.UPDATE,
 				RealmPermission.DELETE), MenuService.MENU_SYSTEM_CONFIGURATION);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				"httpInterfaces", "fa-sitemap", "httpInterfaces", 100,
+				HTTPInterfaceResourcePermission.READ,
+				HTTPInterfaceResourcePermission.CREATE,
+				HTTPInterfaceResourcePermission.UPDATE,
+				HTTPInterfaceResourcePermission.DELETE), MenuService.MENU_SYSTEM_CONFIGURATION);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MENU_DIAGNOSTICS, "fa-wrench", null, 100, null,
@@ -323,6 +331,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null) {
 			public boolean canRead() {
 				try {
+					if(!realmService.canChangePassword(getCurrentPrincipal())) {
+						return false;
+					}
 					assertPermission(PasswordPermission.CHANGE);
 					return true;
 				} catch (AccessDeniedException e) {

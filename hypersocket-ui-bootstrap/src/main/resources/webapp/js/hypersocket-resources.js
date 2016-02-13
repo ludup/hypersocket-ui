@@ -14,6 +14,64 @@ $.fn.ajaxResourcePage = function(params) {
 	
 }
 
+$.fn.iconPage = function(params) {
+	
+	var divName = $(this).attr('id');
+	
+	$('#' + divName).append('<div class="panel panel-default"><div id="' + divName + 'Icons" class="panel-body"></div></div>');
+	divName = '#' + divName + 'Icons';
+	
+	var options = $.extend({
+		
+	}, params);
+	
+	getJSON(options.url, null, function(data) {
+		var row = 6;
+		
+		$(divName).append('<div class="row"></div>');
+		$.each(data.resources, function(idx, resource) {
+			
+			row--;
+			
+			if(row==0) {
+				$(divName).append('<div class="row"></div>');
+				row = 12;
+			}
+			$(divName).children('.row').last().append('<div class="col-xs-2" style="height: 100px; margin: 10px;"></div>');
+			
+			var prefix = "logo://";
+			var value = resource.logo;
+			var itype = options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default';
+			if(!resource) {
+				return;
+			}
+			if(!value) {
+				value = 'logo://100_autotype_autotype_auto.png';
+			}
+			
+			if(value.slice(0, prefix.length) == prefix) {
+				var txt = resource.name;
+				if(!txt || txt == '')
+					txt = 'Default';
+				var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
+				$(divName).children('.row').children('.col-xs-2').last().append('<img width="100" height="100" src="' + uri + '"/>');
+			}
+			else {
+				var idx = value.indexOf('/');
+				if(idx == -1) {
+					$(divName).children('.row').children('.col-xs-1').last().append(
+							'<img width="100" height="100" src="' + (basePath + '/api/files/download/' + value)+ '"/>');
+				} else {
+					$(divName).children('.row').children('.col-xs-2').last().append('<img width="100" height="100" src="' + (basePath + '/api/' + value)+ '"/>');
+				}
+			}
+		});
+		
+		if(options.complete) {
+			options.complete();
+		}
+	});
+};
 
 $.fn.resourceDialog = function(params, params2) {
 	$(this).bootstrapResourceDialog(params, params2);
@@ -43,10 +101,14 @@ $.fn.resourceTable = function(params) {
 		canUpdate : false,
 		canDelete : false,
 		icon : 'fa-cog',
+		sortName: 'name',
+		sortOrder: 'asc',
 		disableDecoration: false,
 		disableActionsDropdown: false,
 		createButtonText: "text.add",
-		createButtonIcon: "fa-plus-circle"
+		createButtonIcon: "fa-plus-circle",
+		logo: false,
+		logoResourceTypeCallback: false
 		},params);
 
 	$(this).data('options', options);
@@ -73,16 +135,62 @@ $.fn.resourceTable = function(params) {
 
 	var columns = new Array();
 	var columnsDefs = new Array();
+	var sortColumns = new Array();
+	
+	if(options.logo) {
+		var c = { field : 'logo',
+				title: getResource(options.resourceKey + '.logo.label'),
+				align:'left',
+				sortable: false,
+				formatter: function(value, row, index) {
+					var prefix = "logo://";
+					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[index];
+					var itype = options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default';
+					if(!resource) {
+						return '';
+					}
+					if(!value) {
+						value = 'logo://32_autotype_autotype_auto.png';
+					}
+					
+					if(value.slice(0, prefix.length) == prefix) {
+						var txt = resource.name;
+						if(!txt || txt == '')
+							txt = 'Default';
+						var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
+						return '<img class="resource-logo" src="' + uri + '"/>';
+					}
+					else {
+						var idx = value.indexOf('/');
+						if(idx == -1)
+							return '<img class="resource-logo" src="' + (basePath + '/api/files/download/' + value)+ '"/>';
+						else
+							return '<img class="resource-logo" src="' + (basePath + '/api/' + value)+ '"/>';
+					}
+				}
+		};
+		columns.push(c);	
+	}
 
 	$.each(options.fields,function(idx, obj) {
 		var c = { field : obj.name,
 				title: getResource(options.resourceKey + "." + obj.name + '.label'),
 				align:'left',
-				sortable: true,
+				sortable: obj.sortable || obj.name === options.sortName,
 				formatter: obj.formatter
 		};
 		columns.push(c);	
 	});
+	
+	if(options.searchFields) {
+		$.each(options.searchFields,function(idx, obj) {
+			var c = { value : obj.name,
+					name: getResource(options.resourceKey + "." + obj.name + '.label')
+			};
+			sortColumns.push(c);	
+		});
+	}
+	
 	
 	if(!$('#additionalActions').length) {
 		$('body').append('<div id="additionalActions"></div>');
@@ -299,7 +407,6 @@ $.fn.resourceTable = function(params) {
 	
 	columns.push({ field : "actions",
 		align:'right',
-		sortable: false,
 		formatter: renderActions,
 		width: 125
 	});
@@ -338,29 +445,47 @@ $.fn.resourceTable = function(params) {
 	    sidePagination: 'server',
 	    url: basePath + '/api/' + options.tableUrl,
 	    columns: columns,
-	    onSort: function (name, order) {
-	    	var sortColumn;
-	    	$.each(options.fields,function(idx, obj) {
-	    		if(obj.name == name){
-	    			sortColumn = idx;
-	    			return false;
-	    		}
+	    sortName: options.sortName,
+	    sortOrder: options.sortOrder,
+	    sortable: true,
+	    cache: false,
+	    onSort: function(name, order) {
+
+	    	$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
+	    		sortName: name,
+	    		sortOrder: order
 	    	});
-	    	if(sortColumn != undefined){
-	    		this.sortName = sortColumn;
-	    	}
-	    	return false;
+	    	
+	    	$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 	    },
+	    detailView: options.detailFormatter != undefined,
+	    detailFormatter: options.detailFormatter,
 	    onClickRow: function(row) {
 	    	if(options.selected) {
 	    		options.selected(row);
 	    	}
+	    },
+	    queryParams: function(params) {
+	    	if($('#searchColumn').widget()) {
+	    		params.searchColumn = $('#searchColumn').widget().getValue();
+	    	}
+	    	return params;
 	    }
-	    
 	});
 
 	
-	
+	if(sortColumns.length > 0) {
+		$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
+		$('#searchColumn').textDropdown({
+			values: sortColumns,
+			value: sortColumns[0].name,
+			changed: function(widget) {
+				$('.search input[placeholder="Search"]').val('');
+				$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
+				$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+			}
+		});
+	}
 	if(options.toolbarButtons) {
 		$.each(options.toolbarButtons, function(idx, action) {
 			$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 

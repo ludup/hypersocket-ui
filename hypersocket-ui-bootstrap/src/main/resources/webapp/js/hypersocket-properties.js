@@ -98,6 +98,17 @@ function internalValidate(widget, value) {
 			return true;
 		}
 	} else if(obj.inputType == 'fileInput' || obj.inputType == 'multipleFileInput') {
+		
+		if(!obj.allowEmpty && value == '') {
+			log("validation failed for " + obj.resourceKey + " and value " + value);
+			return false;
+		} else if(obj.allowEmpty && value == '') {
+			return true;
+		} else if(widget.needsUpload()) {
+			log("File upload widget needs upload");
+			return false;
+		}
+	} else if(obj.inputType == 'logoInput') {
 		if(!obj.allowEmpty && value == '') {
 			log("validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
@@ -105,7 +116,7 @@ function internalValidate(widget, value) {
 			return true;
 		} 
 		else if(widget.needsUpload()) {
-			log("File upload widget needs upload");
+			log("Logo widget needs upload");
 			return false;
 		}
 	}
@@ -157,9 +168,12 @@ function validateInputType(type){
 		case 'autoComplete' :
 		case 'countries' :
 		case 'fileInput' :
+		case 'logoInput' :
 		case 'multipleFileInput' :
 		case 'textarea' :
 		case 'text' :
+		case 'textAndSelect' :
+		case 'timeAndAutoComplete':
 		case 'select' :
 		case 'password' :
 		case 'multipleSelect' :
@@ -317,22 +331,10 @@ function validateAll(option,value){
     }
 }
 
-function isValidEmail(email){
-	return validateRegex("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",email);
-}
-
-function isValidCIDR(cdir){
-	return validateRegex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$",cdir);
-}
-
-function isNotGmail(email){
-	return validateRegex("^(.(?!@gmail\.com))*$",email);
-}
-
 function validateRegex(regex,value){
 	if(value) {
 		var patt = new RegExp(regex) ;
-		return value.match(patt);
+		return patt.test(value);
 	} else {
 		return false;
 	}
@@ -346,8 +348,12 @@ $.fn.propertyPage = function(opts) {
 	
 	var options = $
 			.extend(
-				{ showButtons : true, 
+				{ resourceNameField: false, 
+				  resourceNameCallback: false, 
+				  typeCallback: false, 
+				  showButtons : true, 
 				  displayMode: '', 
+				  editMode: '',
 				  canUpdate : false, 
 				  title : '', 
 				  icon : 'fa-th', 
@@ -507,17 +513,37 @@ $.fn.propertyPage = function(opts) {
 	
 								$.each(toSort, function() {
 
+										
+										makeBooleanSafe(this);
+										makeBooleanSafe(this.attributes);
+										
 										obj = JSON.parse(this.metaData);
 										makeBooleanSafe(obj);
 										
-										obj = $.extend(obj, this);
-										makeBooleanSafe(obj);
+										obj = $.extend(this, obj);
+										obj = $.extend(this, this.attributes);
+									
+										if(obj.options && !Array.isArray(obj.options)) {
+											var tmp = obj.options.split(",");
+											var arr = new Array();
+											$.each(tmp, function(idx, obj) {
+												arr.push({ name: obj, value: obj});
+											});
+											obj.options = arr;
+										}
 										
 										var widget; 
 										var inputId = this.id;
 										var inputTab = tab;
 										var inputObj = this;
 										
+										var allowEdit = options.canUpdate;
+										
+										if(allowEdit && obj.editMode && obj.editMode != '') {
+											if(!options.displayMode.contains(obj.editMode)) {
+												allowEdit = false;
+											}
+										}
 										obj = $.extend({
 											changed : function(widget) {
 												if(!validateWidget(widget)) {
@@ -531,8 +557,10 @@ $.fn.propertyPage = function(opts) {
 														$(revertButton).attr('disabled', false);
 														$(applyButton).attr('disabled', false);
 													}
-													if(widget.options().visibilityCallback) {
-														widget.options().visibilityCallback();
+													if(widget.options().visibilityCallbacks) {
+														$.each(widget.options().visibilityCallbacks, function(idx, func) {
+															func();
+														});
 													}
 												}
 											},
@@ -540,10 +568,11 @@ $.fn.propertyPage = function(opts) {
 											getUrlData: function(data) {
 												return data.resources;
 											},
-											disabled : !options.canUpdate  || obj.readOnly || obj.disabled,
+											disabled : !allowEdit  || obj.readOnly || obj.disabled,
 											variables: options.variables,
 											errorElementId: '#' + tab + '_helpspan' + inputId,
-											i18nNamespace: options.i18nNamespace
+											i18nNamespace: options.i18nNamespace,
+											resourceKeyTemplate: (options.i18nNamespace != '' ? (options.i18nNamespace + '.{0}') : '{0}')
 										}, obj);
 										
 										makeBooleanSafe(obj);
@@ -569,7 +598,7 @@ $.fn.propertyPage = function(opts) {
 										}
 										
 										if(obj.inputType!='hidden') {
-											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '" id="' + tab + '_item' + this.id + '"/>');
+											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + this.id + '"/></div>');
 											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResourceWithNamespace(options.i18nNamespace, this.resourceKey) + '</label>');
 											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
 										} 
@@ -611,6 +640,23 @@ $.fn.propertyPage = function(opts) {
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).selectButton(obj);
 
+										} else if (obj.inputType == 'textAndSelect') {
+
+											obj = $.extend(obj, {
+												selectOptions: obj.options
+											});
+											
+											var values;
+											if(obj.value) {
+												values = obj.value.split('=');
+											
+												obj.textValue = decodeURIComponent(values[0]);
+												obj.selectValue = decodeURIComponent(values[1]);
+											}
+											
+									    	obj.valueTemplate = '{0}={1}';
+									    	widget = $('#' + tab + '_value' + this.id).textAndSelect(obj);
+
 										} else if (obj.inputType == 'autoComplete') {
 
 											var url;
@@ -637,10 +683,28 @@ $.fn.propertyPage = function(opts) {
 											
 											widget = $('#' + tab + '_value' + this.id).autoComplete(widgetOptions);
 
+										} else if (obj.inputType == 'logoInput') { 
+											var widgetOptions = $.extend(obj, {
+												url : basePath + '/api/files/file',
+												typeCallback: function() {
+													return options.typeCallback ? options.typeCallback() : 'default';
+												},
+												defaultTextCallback : function() {
+													return options.resourceNameCallback ? options.resourceNameCallback() : ( options.resourceNameField ? $(options.resourceNameField).val() : 'X X' );
+												}
+											});
+											
+											widget = $('#' + tab + '_value' + this.id).logoInput(obj);
+											if(options.resourceNameField) {
+												$(options.resourceNameField).on('input', function(){
+													widget.defaultTextChanged();
+												});
+											}
+
 										} else if (obj.inputType == 'fileInput') { 
 											
 											var widgetOptions = $.extend(obj, {
-												url : basePath + '/api/fileUpload/file'
+												url : basePath + '/api/files/file'
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).fileUploadInput(obj);
@@ -650,7 +714,7 @@ $.fn.propertyPage = function(opts) {
 											var widgetOptions = $.extend(obj, {
 												isArrayValue: true,
 												values: splitFix(obj.value),
-												url : basePath + '/api/fileUpload/file'
+												url : basePath + '/api/files/file'
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).multipleFileUpload(widgetOptions);
@@ -720,16 +784,21 @@ $.fn.propertyPage = function(opts) {
 										}
 										
 										if(obj.inputType != 'hidden') {
-											widget.getInput().addClass('propertyInput');
-											widget.getInput().data('widget', widget);
 											
-											$(document).data(this.resourceKey, widget);
-											widgets.push(widget);
-											
-											$('#' + tab + '_value' + this.id).append(
-													'<div><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
-													+  getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') 
-													+ '</span></div>');
+											if(!widget) {
+												log("Cannot find input for widget " + obj.inputType);
+											} else {
+												widget.getInput().addClass('propertyInput');
+												widget.getInput().data('widget', widget);
+												
+												$(document).data(this.resourceKey, widget);
+												widgets.push(widget);
+												
+												$('#' + tab + '_value' + this.id).append(
+														'<div class="clear"><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
+														+  getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') 
+														+ '</span></div>');
+											}
 										}
 										
 									});
@@ -742,16 +811,22 @@ $.fn.propertyPage = function(opts) {
 						if(!w2) {
 							log("WARNING: " + w.options().resourceKey + " visibility depends on " + w.options().visibilityDependsOn + " but a property with that resource key does not exist");
 						} else {
-							w2.options().visibilityCallback = function() {
+							w.getInput().parents('.propertyItem').hide();
+							var visibilityCallback = function() {
 								if(w2.getValue() == w.options().visibilityDependsValue) {
-									w.enable();
+									w.getInput().parents('.propertyItem').show();
 								} else {
 									if(w.options().clearOnVisibilityChange) {
 										w.clear();
 									}
-									w.disable();
+									w.getInput().parents('.propertyItem').hide();
 								}
 							}
+							visibilityCallback();
+							if(!w2.options().visibilityCallbacks) {
+								w2.options().visibilityCallbacks = new Array();
+							}
+							w2.options().visibilityCallbacks.push(visibilityCallback);
 						}
 					}
 				});
@@ -901,6 +976,7 @@ $.fn.saveProperties = function(includeAll, callback) {
 
 			if (includeAll || $(this).data('updated')) {
 				if(meta.isArrayValue) {
+					
 					items.push(new PropertyItem(meta.resourceKey, widget.getValue().join(']|[')));
 				} else {
 					items.push(new PropertyItem(meta.resourceKey, widget.getValue()));

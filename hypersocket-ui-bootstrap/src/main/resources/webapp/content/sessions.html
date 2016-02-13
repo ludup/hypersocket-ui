@@ -24,9 +24,21 @@
 							name : "remoteAddress"
 						 },
 						 {
+							 name: "createDate",
+							 formatter: function(value, obj, index) {
+								 return new Date(value).format("mmm dd HH:MM");
+							 }
+						 },
+						 {
 							 name: "lastUpdated",
 							 formatter: function(value, obj, index) {
 								 return new Date(value).format("mmm dd HH:MM");
+							 }
+						 },
+						 {
+							 name: "connectedFor",
+							 formatter: function(value, row, index) {
+								 return parseFloat(row.totalSeconds / 60).toFixed(1);
 							 }
 						 },
 						 {
@@ -37,6 +49,8 @@
 						 }
 						],
 					resourceKey : "session",
+					sortName: 'createDate',
+					sortOrder: 'desc',
 					canCreate: false,
 					canUpdate: false,
 					canDelete: currentMenu.canDelete,

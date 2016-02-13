@@ -497,9 +497,9 @@ function shutdown(option, autoLogoff){
 	$('#shutdownServer').find('.modal-body').empty();
 	$('#shutdownServer').find('.modal-body').append(
 			'<p style="width: 100%; text-align: center;">' + getResource("power.wait.shutdown") + '</p>' +
-			'<i class="fa fa-spinner fa-spin" style="font-size: 40px; width: 100%; text-align: center"></i>')
+			'<i class="fa fa-spinner fa-spin" style="font-size: 40px; width: 100%; text-align: center"></i>');
 	
-	getJSON('server/' + option + '/5', function(data) {
+	getJSON('server/' + option + '/5', null, function(data) {
 	
 		if(data.success) {
 			
@@ -625,8 +625,6 @@ function loadComplete(pageChange) {
 }
 
 function loadWait() {
-
-	log("Waiting for page load");
 
 	if($('#mainContent').data('pageChange')) {
 		$('#mainContent').data('pageChange')();
