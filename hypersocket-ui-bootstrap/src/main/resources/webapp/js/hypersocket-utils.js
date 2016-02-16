@@ -587,6 +587,18 @@ function splitFix(value) {
 	return result;
 }
 
+function splitNamePairs(value) {
+	debugger;
+	var values = splitFix(value);
+	var result = new Array();
+	$.each(values, function(idx, obj) {
+		v = obj.split('=');
+		result.push({ value: v[0],
+			name: decodeURIComponent(v[1])});
+	});
+	return result;
+}
+
 function fixSplit(value) {
 	return value.join(']|[');
 }

@@ -746,9 +746,11 @@ $.fn.propertyPage = function(opts) {
 											widget = $('#' + tab + '_value' + this.id).multipleTextInput(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSearchInput') {
-											
+											debugger
 											var widgetOptions = $.extend(obj, {
-												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url)
+												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url),
+												isNamePairValue: true,
+												values: splitNamePairs(obj.value)
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).multipleSearchInput(widgetOptions);
