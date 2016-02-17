@@ -1524,13 +1524,17 @@ $.fn.multipleSearchInput = function(data) {
 	}
 
 	if (options.values) {
-		$.each(options.values, function(idx, obj) {
-			toSelect.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
-		});
+		if(options.isNamePairValue) {
+			$.each(options.values, function(idx, obj) {
+				toSelect.append('<option ' + 'value="' + obj.value + '">' + obj.name + "</option>");
+			});
+		} else {
+			$.each(options.values, function(idx, obj) {
+				toSelect.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
+			});
+		}
 	}
 	
-	
-
 	if(options.disabled) {
 		callback.disable();
 	}
