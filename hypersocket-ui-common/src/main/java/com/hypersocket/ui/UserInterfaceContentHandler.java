@@ -195,4 +195,9 @@ public class UserInterfaceContentHandler implements ContentHandler, ApplicationL
 		}
 	}
 
+	@Override
+	public void removeAlias(String alias) {
+		actualHandler.removeAlias(alias);
+	}
+
 }

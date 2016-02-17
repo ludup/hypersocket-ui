@@ -993,6 +993,11 @@ table {
 	margin-top: 10px;
 }
 
+.uploadProgress {
+	padding-left: 0px;
+	padding-top: 5px;
+}
+
 .spacer20px {
 	height: 20px;
 }
@@ -1516,4 +1521,46 @@ span.input-group-addon {
 
 .warning {
 	color: orange;
+}
+
+.feedback-row {
+	margin-bottom: 5px;
+}
+
+.feedback-row div {
+	valign: middle; 
+	padding-right: 0px;
+	padding-left: 25px;
+}
+
+.feedback-success {
+	color: green;
+}
+
+.feedback-success span {
+	color: #333;
+}
+
+.feedback-warning {
+	color: orange;
+}
+
+.feedback-warning span {
+	color: #333;
+}
+
+.feedback-error {
+	color: red;
+}
+
+.feedback-error span {
+	color: #333;
+}
+
+.feedback-info {
+	color: blue;
+}
+
+.feedback-info span {
+	color: #333;
 }

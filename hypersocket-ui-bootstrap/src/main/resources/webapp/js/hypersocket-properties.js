@@ -435,6 +435,10 @@ $.fn.propertyPage = function(opts) {
 				$.each(	data.resources,
 							function() {
 
+								if(this.hidden) {
+									return;
+								}
+								
 								if(this.displayMode && this.displayMode != '') {
 									if(!options.displayMode.contains(this.displayMode)) {
 										return;
@@ -516,11 +520,6 @@ $.fn.propertyPage = function(opts) {
 										
 										makeBooleanSafe(this);
 										makeBooleanSafe(this.attributes);
-										
-										obj = JSON.parse(this.metaData);
-										makeBooleanSafe(obj);
-										
-										obj = $.extend(this, obj);
 										obj = $.extend(this, this.attributes);
 									
 										if(obj.options && !Array.isArray(obj.options)) {

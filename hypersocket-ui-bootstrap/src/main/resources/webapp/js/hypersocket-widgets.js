@@ -2448,7 +2448,7 @@ $.fn.fileUploadInput = function(data) {
 				disabled : false,
 				showUploadButton: true,
 				showDownloadButton: true,
-				url: 'files/file',
+				url: basePath + '/api/files/file',
 				detailedView: true,
 				getUrlData: function(data) {
 					return data;
@@ -2462,7 +2462,7 @@ $.fn.fileUploadInput = function(data) {
 			+	'<div class="propertyValue col-xs-4 dialogActions">'
 			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
 			+	'</div>'
-			+	'<div class="col-xs-8">'
+			+	'<div class="col-xs-8 uploadProgress">'
 			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
 			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
 			+	'	</div>'
@@ -3499,6 +3499,10 @@ $.fn.wizardPage = function(data) {
 		
 		$('.nextButton').click(function() {
 		
+			if(options.pageDone) {
+				options.done();
+				return;
+			}
 			var page = $(this).closest('.panel').data('page');
 			var idx = $(this).closest('.panel').data('index');
 		
@@ -3517,15 +3521,26 @@ $.fn.wizardPage = function(data) {
 					clicked = true;
 					
 					$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
-					$('#button' + idx).find('i').addClass(page.buttonIcon);
-					
+
 					if(options.steps.length > idx + 1) {
+						$('#button' + idx).find('i').addClass(page.buttonIcon);
 						var nextPage = idx + 1;
 							$('.pageState' + idx).attr('disabled', true);
 						
 						$('#panel' + nextPage).show();
 						$('#collapse' + idx).collapse('hide');
 						$('#collapse' + nextPage).collapse('show');
+					} else {
+						if(options.done) {
+							options.pageDone = true;
+							$('#button' + idx).find('i').addClass(options.doneIcon);
+							$('#button' + idx).find('span').text(getResource(options.doneText));
+						} else {
+							$('#button' + idx).attr('disabled', true);
+							if(options.hideResetOnComplete) {
+								$('#resetForm').hide();
+							}
+						}
 					}
 				}, function() {
 					$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
@@ -3633,6 +3648,78 @@ $.fn.textAndSelect = function(data) {
 	return callback;
 }
 
+$.fn.feedbackPanel = function(data) {
+	
+	var options = $.extend({  
+	}, data);
+	
+	var div = $(this);
+	div.empty();
+	
+	var processFeedback = function(feedback) {
+		var last;
+		$.each(feedback, function(idx, result) {
+			last = result;
+			var id = "f" + idx;
+			if($('#' + id).length > 0) {
+				return;
+			}
+			debugger;
+			if(result.status === 'SUCCESS') {
+				div.append('<div id="' + id + '" class="row feedback-row">'
+				 + '<div class="col-xs-12 feedback-success"><i class="fa fa-check-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
+			} else if(result.status === 'INFO') {
+				div.append('<div id="' + id + '" class="row feedback-row">'
+						 + '<div class="col-xs-12 feedback-info"><i class="fa fa-info-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
+			} else if(result.status === 'WARNING') {
+				div.append('<div id="' + id + '" class="row feedback-row">'
+						 + '<div class="col-xs-12 feedback-warning"><i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
+			} else {
+				div.append('<div class="row feedback-row">'
+						 + '<div class="col-xs-12 feedback-error"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span>'
+						 + '</div></div>');
+			}
+		});
+		
+		return last && last.finished;
+	}
+	
+	$.ajax({
+		method: 'post',
+		url: basePath + '/api/' + options.startUrl, 
+		data: $.param(options.startParameters), 
+		dataType: 'json',
+		success: function(data) {
+			if(!data.success) {
+				showError(data.message);
+			} else {
+				processFeedback(data.resource.feedback);
+				var updateFunc = function() {
+					getJSON(options.progressUrl + "/" + data.resource.uuid, null, function(data) {
+						if(!data.success) {
+							showError(data.message);
+							if(options.onError) {
+								options.onError();
+							}
+						} else {
+							if(!processFeedback(data.resource.feedback)) {
+								setTimeout(updateFunc, 500);
+							} else {
+								if(options.finished) {
+									options.finished();
+								}
+							}
+							
+						}
+					});
+				}
+				
+				setTimeout(updateFunc, 500);
+			}
+		}
+	});
+};
+
 $.fn.accordionPage = function(data) {
 	
 	var options = $.extend(
@@ -3690,6 +3777,11 @@ $.fn.accordionPage = function(data) {
 		
 		$('.nextButton').click(function() {
 		
+			if(options.pageDone) {
+				options.done();
+				return;
+			}
+			
 			var page = $(this).closest('.panel').data('page');
 			var idx = $(this).closest('.panel').data('index');
 		
@@ -3717,6 +3809,18 @@ $.fn.accordionPage = function(data) {
 						$('#panel' + nextPage).show();
 						$('#collapse' + idx).collapse('hide');
 						$('#collapse' + nextPage).collapse('show');
+					} else {
+						debugger;
+						options.pageDone = true;
+						if(options.done) {
+							$('#button' + idx).find('i').addClass(options.doneIcon);
+							$('#button' + idx).find('span').addClass(options.doneText);
+						} else {
+							$('#button' + idx).attr('disabled', true);
+						}
+						if(options.hideReset) {
+							$('#resetForm').hide();
+						}
 					}
 				}, function() {
 					$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
