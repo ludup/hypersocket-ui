@@ -3685,7 +3685,13 @@ $.fn.feedbackPanel = function(data) {
 			}
 		});
 		
-		return last && last.finished;
+		var ret = last && last.finished;
+		if(ret) {
+			if(options.finished) {
+				options.finished(last.status === 'SUCCESS');
+			}
+		}
+		return ret;
 	}
 	
 	$.ajax({
@@ -3708,11 +3714,7 @@ $.fn.feedbackPanel = function(data) {
 						} else {
 							if(!processFeedback(data.resource.feedback)) {
 								setTimeout(updateFunc, 500);
-							} else {
-								if(options.finished) {
-									options.finished();
-								}
-							}
+							} 
 							
 						}
 					});
