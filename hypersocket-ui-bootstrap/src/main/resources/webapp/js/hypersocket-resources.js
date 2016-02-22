@@ -97,6 +97,7 @@ $.fn.resourceTable = function(params) {
 		showColumns : true,
 		showRefresh : true,
 	    showToggle : false,
+	    grid: false,
 		canCreate : false,
 		canUpdate : false,
 		canDelete : false,
@@ -470,9 +471,53 @@ $.fn.resourceTable = function(params) {
 	    		params.searchColumn = $('#searchColumn').widget().getValue();
 	    	}
 	    	return params;
+	    },
+	    onLoadSuccess: function(){
+	    	if (options.grid) {
+	    		$('#' + divName + 'ToggleGrid').remove();
+	    		$('#' + divName + 'Grid').remove();
+		    	$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.pull-right').append('<button id="' + divName + 'ToggleGrid" class="btn btn-default" type="button" name="grid" title="Toggle Grid"><i class="glyphicon fa fa-list"></button>');
+		    	$('#' + divName + 'ToggleGrid').click(function(){
+		    		debugger;
+		    		$('#' + divName + 'Placeholder').toggle();
+		    		$('#' + divName + 'Grid').toggle();
+		    	});
+				
+		    	$('#' + divName + 'Placeholder').hide();
+		    	$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px;"></div>');
+		    	var gridResourceList = $('#' + divName + 'Placeholder').bootstrapTable('getData');
+				$.each(gridResourceList, function(index, resource){
+					
+					
+					var prefix = "logo://";
+					var value = resource.logo;
+					var itype = options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default';
+					if(!resource) {
+						return;
+					}
+					if(!value) {
+						value = 'logo://100_autotype_autotype_auto.png';
+					}
+					
+					if(value.slice(0, prefix.length) == prefix) {
+						var txt = resource.name;
+						if(!txt || txt == '')
+							txt = 'Default';
+						var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
+						$('#' + divName + 'Grid').append('<div class="template" style="float:left;"><img width="100" height="100" src="' + uri + '"/></div>');
+					}
+					else {
+						var idx = value.indexOf('/');
+						if(idx == -1) {
+							$('#' + divName + 'Grid').append('<div class="template" style="float:left;"><img width="100" height="100" src="' + (basePath + '/api/files/download/' + value)+ '"/></div>');
+						} else {
+							$('#' + divName + 'Grid').append('<div class="template" style="float:left;"><img width="100" height="100" src="' + (basePath + '/api/' + value)+ '"/></div>');
+						}
+					}
+				});
+	    	}
 	    }
 	});
-
 	
 	if(sortColumns.length > 0) {
 		$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
