@@ -36,7 +36,7 @@ import com.hypersocket.server.handlers.impl.FileContentHandler;
 import com.hypersocket.utils.FileUtils;
 
 @Service
-public class UserInterfaceContentHandler implements ContentHandler, ApplicationListener<HypersocketServerEvent> {
+public class UserInterfaceContentHandler implements ContentHandler {
 
 	static Logger log = LoggerFactory.getLogger(UserInterfaceContentHandler.class);
 
@@ -185,14 +185,6 @@ public class UserInterfaceContentHandler implements ContentHandler, ApplicationL
 	@Override
 	public void addFilter(ContentFilter filter) {
 		actualHandler.addFilter(filter);
-	}
-
-	@Override
-	public void onApplicationEvent(HypersocketServerEvent event) {
-		
-		if(event.getResourceKey().equals(WebappCreatedEvent.EVENT_RESOURCE_KEY)) {
-			
-		}
 	}
 
 	@Override
