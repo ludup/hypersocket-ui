@@ -1564,3 +1564,12 @@ span.input-group-addon {
 .feedback-info span {
 	color: #333;
 }
+
+.gridOptions a{
+	margin-right: 5px;
+	color: #fff;
+}
+
+.gridOptions .btn i{
+	margin: 0;
+}
