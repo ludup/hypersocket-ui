@@ -470,6 +470,25 @@ $.fn.resourceTable = function(params) {
 	    		params.searchColumn = $('#searchColumn').widget().getValue();
 	    	}
 	    	return params;
+	    },
+	    onPageChange: function(number, size){
+	    	if(options.id){
+	    		var sortColumn = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortName;
+	    		var sortOrder = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortOrder;
+	    		var tableState = {'name': options.id, 'preferences': JSON.stringify({'tableSize': size, 'sortColumn': sortColumn, 'sortOrder': sortOrder})};
+	    		postJSON('interfaceState/tableState', tableState, function(data) {
+	    			debugger;	    			
+	    		});
+	    	}
+	    },
+	    onSort: function(name, order){
+	    	if(options.id){
+	    		var size = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').pageSize;
+	    		var tableState = {'name': options.id, 'preferences': JSON.stringify({'tableSize': size, 'sortColumn': name, 'sortOrder': order})};
+	    		postJSON('interfaceState/tableState', tableState, function(data) {
+	    			debugger;	    			
+	    		});
+	    	}
 	    }
 	});
 
