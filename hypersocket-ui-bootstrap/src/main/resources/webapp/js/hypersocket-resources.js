@@ -109,7 +109,8 @@ $.fn.resourceTable = function(params) {
 		createButtonIcon: "fa-plus-circle",
 		logo: false,
 		defaultView: 'table',
-		logoResourceTypeCallback: false
+		logoResourceTypeCallback: false,
+		firstLoad: true
 		},params);
 
 	$(this).data('options', options);
@@ -476,18 +477,36 @@ $.fn.resourceTable = function(params) {
 	    	if(options.id){
 	    		var sortColumn = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortName;
 	    		var sortOrder = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortOrder;
-	    		var tableState = {'name': options.id, 'preferences': JSON.stringify({'tableSize': size, 'sortColumn': sortColumn, 'sortOrder': sortOrder})};
-	    		postJSON('interfaceState/tableState', tableState, function(data) {
-	    			debugger;	    			
+	    		var tableState = {'name': options.id, 'preferences': JSON.stringify({'pageSize': size, 'sortColumn': sortColumn, 'sortOrder': sortOrder})};
+	    		postJSON('interfaceState/tableState', tableState, function(data) {			
 	    		});
 	    	}
 	    },
 	    onSort: function(name, order){
 	    	if(options.id){
 	    		var size = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').pageSize;
-	    		var tableState = {'name': options.id, 'preferences': JSON.stringify({'tableSize': size, 'sortColumn': name, 'sortOrder': order})};
+	    		var tableState = {'name': options.id, 'preferences': JSON.stringify({'pageSize': size, 'sortColumn': name, 'sortOrder': order})};
 	    		postJSON('interfaceState/tableState', tableState, function(data) {
-	    			debugger;	    			
+	    		});
+	    	}
+	    },
+	    onPreBody: function(args){
+	    	if(options.firstLoad && options.id && args.length){
+	    		options.firstLoad = false;
+	    		$.ajax({
+	    			type: 'GET',
+	    			url: basePath + '/api/interfaceState/tableState/' + options.id,
+	    			cache: false,
+	    			async: false,
+	    			success: function(data) {
+	    				if(data.success){
+	    					var preferences = JSON.parse(data.resource.preferences);
+		    				$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', preferences);
+	    				}
+	    			},
+	    			error: function(jqXHR, textStatus, errorThrown) {
+	    				
+	    			}
 	    		});
 	    	}
 	    },
