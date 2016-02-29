@@ -192,4 +192,9 @@ public class UserInterfaceContentHandler implements ContentHandler {
 		actualHandler.removeAlias(alias);
 	}
 
+	@Override
+	public void addDynamicPage(String path) {
+		actualHandler.addDynamicPage(path);
+	}
+
 }
