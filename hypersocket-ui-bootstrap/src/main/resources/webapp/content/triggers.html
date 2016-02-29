@@ -348,7 +348,7 @@
         	createTriggerList(trigger.childTriggers);
         	var top = 25;
         	var left = 200;
-        	getJSON('interfaceState/state/false/' + triggerList, null, function(data){
+        	getJSON('interfaceState/stateList/false/' + triggerList, null, function(data){
         		resourceList = data.resources;
         		addTask(trigger, null, top+50, left+50);
             	jsPlumb.connect({
@@ -366,21 +366,21 @@
 				$('.triggerDraggable').draggable({
 			        stop: function(e){
 			            if($(this).data('trigger')){
+			            	var preferences = {};
 			            	state = new Object();
-				            state.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
-				            state.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
-				            state.resourceId = $(this).data('trigger').id;
+			            	preferences.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
+			            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
+				            state.bindResourceId = $(this).data('trigger').id;
 				            state.name = $(this).attr('id');
 				            state.specific = false;
-				            
-				            if(state.leftpx < 0) {
-				            	state.leftpx = 0;
+				            if(preferences.leftpx < 0) {
+				            	preferences.leftpx = 0;
 				            }
 				            
-				            if(state.top < 0) {
-				            	state.top = 0;
+				            if(preferences.top < 0) {
+				            	preferences.top = 0;
 				            }
-				            
+				            state.preferences = JSON.stringify(preferences);
 				            postJSON('interfaceState/state', state, function(data){
 				            	
 				            });
@@ -525,9 +525,10 @@
 			triggerClass = "greenTrigger";
 		}
 		$.each(resourceList, function(index, value){
-			if(value.resourceId == trigger.id){
-				top = value.top;
-				left = value.leftpx;
+			var preferences = JSON.parse(value.preferences);
+			if(value.bindResourceId == trigger.id){
+				top = preferences.top;
+				left = preferences.leftpx;
 				return false;
 			}
 		});

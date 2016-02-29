@@ -477,16 +477,16 @@ $.fn.resourceTable = function(params) {
 	    	if(options.id){
 	    		var sortColumn = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortName;
 	    		var sortOrder = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortOrder;
-	    		var tableState = {'name': options.id, 'preferences': JSON.stringify({'pageSize': size, 'sortColumn': sortColumn, 'sortOrder': sortOrder})};
-	    		postJSON('interfaceState/tableState', tableState, function(data) {			
+	    		var tableState = {'name': options.id, 'specific': true, 'preferences': JSON.stringify({'pageSize': size, 'sortColumn': sortColumn, 'sortOrder': sortOrder})};
+	    		postJSON('interfaceState/state', tableState, function(data) {			
 	    		});
 	    	}
 	    },
 	    onSort: function(name, order){
 	    	if(options.id){
 	    		var size = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').pageSize;
-	    		var tableState = {'name': options.id, 'preferences': JSON.stringify({'pageSize': size, 'sortColumn': name, 'sortOrder': order})};
-	    		postJSON('interfaceState/tableState', tableState, function(data) {
+	    		var tableState = {'name': options.id, 'specific': true, 'preferences': JSON.stringify({'pageSize': size, 'sortColumn': name, 'sortOrder': order})};
+	    		postJSON('interfaceState/state', tableState, function(data) {
 	    		});
 	    	}
 	    },
