@@ -43,8 +43,12 @@ public class IndexPageFilter implements ContentFilter {
 	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) throws RedirectException {
 		
 		String uri = request.getRequestURI();
-		if(redirectPage!=null && !uri.equals(redirectPage)) {
-			throw new RedirectException(redirectPage);
+		String redirectUri = redirectPage;
+		if(redirectUri!=null && !redirectUri.startsWith("/")) {
+			redirectUri = server.getUiPath() + "/" + redirectUri;
+		}
+		if(redirectUri!=null && !uri.equals(redirectUri)) {
+			throw new RedirectException(redirectUri);
 		}
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("stylesheets", generateStylesheets());
@@ -62,11 +66,7 @@ public class IndexPageFilter implements ContentFilter {
 	}
 	
 	public void setRedirectPage(String redirectPage) {
-		if(redirectPage.startsWith("/")) {
-			this.redirectPage = redirectPage;
-		} else {
-			this.redirectPage = server.getUiPath() + "/" + redirectPage;
-		}
+		this.redirectPage = redirectPage;
 	}
 
 	private String generateScripts() {
