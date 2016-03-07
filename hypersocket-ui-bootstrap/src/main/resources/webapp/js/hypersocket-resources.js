@@ -120,9 +120,13 @@ $.fn.resourceTable = function(params) {
 	if(!options.disableDecoration) {
 		html += '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
 			+ options.icon + '"></i><span class="break">' 
-			+ options.title + '</span></h2></div>';
+			+ options.title + '</span></h2><i id="messageDismiss" class="fa fa-question dismiss-icon"></i></div>';
 	}
 	
+	if(options.infoHtml) {
+		html += '<div class="col-xs-12" style="margin-top: 10px"><div class="alert alert-info"><i class="fa fa-3x fa-info"></i><i id="messageDismiss" '
+			+ 'class="fa fa-times" style="float: right; cursor: pointer;"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>';
+	}
 	html += '<table id="' + divName + 'Placeholder"></table>';
 
 	html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"></div>';

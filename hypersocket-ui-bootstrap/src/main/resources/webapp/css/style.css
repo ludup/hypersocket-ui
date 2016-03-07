@@ -1002,6 +1002,13 @@ table {
 	height: 20px;
 }
 
+.dismiss-icon {
+	margin: 0 auto; 
+	height: 40px; 
+	float: right; 
+	cursor: pointer;
+}
+
 .editor {
 	max-height: 250px;
 	height: 250px;
