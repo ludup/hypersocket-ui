@@ -485,9 +485,16 @@ $.fn.resourceTable = function(params) {
 	    onLoadSuccess: function(){
 	    	if (options.logo) {
 	    		if(!$('#' + divName + 'ToggleGrid').length){
-	    			$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.pull-right').append('<button id="' + divName + 'ToggleGrid" class="btn btn-default" type="button" name="grid" title="' + getResource('text.toggleViewMode') + '"><i class="glyphicon fa fa-picture-o"></button>');
+	    			$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.pull-right').append('<button id="' + divName + 'ToggleGrid" class="btn btn-default" type="button" name="grid" title="' + getResource('text.toggleViewMode') + '"><i id="tableViewIcon" class="glyphicon fa fa-picture-o"></button>');
 	    			$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px;"></div>');
 			    	$('#' + divName + 'ToggleGrid').click(function(){
+			    		if($('#tableViewIcon').hasClass('fa-picture-o')) {
+			    			$('#tableViewIcon').removeClass('fa-picture-o');
+			    			$('#tableViewIcon').addClass('fa-list-alt');
+			    		} else {
+			    			$('#tableViewIcon').removeClass('fa-list-alt');
+			    			$('#tableViewIcon').addClass('fa-picture-o');
+			    		}
 			    		$('#' + divName + 'Placeholder').toggle();
 			    		$('#' + divName + 'Grid').toggle();
 			    	});
