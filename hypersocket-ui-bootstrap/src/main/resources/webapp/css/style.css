@@ -1003,10 +1003,12 @@ table {
 }
 
 .dismiss-icon {
-	margin: 0 auto; 
-	height: 40px; 
 	float: right; 
 	cursor: pointer;
+}
+
+#infoPanel {
+	margin-top: 10px;
 }
 
 .editor {
