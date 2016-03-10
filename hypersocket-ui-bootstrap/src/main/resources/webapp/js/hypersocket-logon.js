@@ -147,7 +147,7 @@ function processLogon(data, opts, message) {
 			if(data.formTemplate.showLogonButton) {
 				$('#logonForm').append(
 						'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
-							+ (data.last ? getResource("text.logon") : getResource("text.next")) 
+							+ (data.last ? getResource(data.lastButtonResourceKey) : getResource("text.next")) 
 							+ '&nbsp;<i style="padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
 			}
 		}

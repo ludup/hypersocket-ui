@@ -3445,15 +3445,17 @@ $.fn.wizardPage = function(data) {
 	
 	var options = $.extend(
 			{  
-				
+				allowReset: true
 			}, data);
 	
 	
-	$(this).append('<div class="propertyItem form-group buttonBar">' +
+	if(options.allowReset) {
+		$(this).append('<div class="propertyItem form-group buttonBar">' +
 						'<a id="resetForm" href="#" localize="text.reset"></a>' +
-					'</div>' +
-						'<div id="wizardPages" class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">' +
 					'</div>');
+	}
+	
+	$(this).append('<div id="wizardPages" class="panel-group" id="accordion" role="tablist" aria-multiselectable="false"></div>');
 
 	$.each(options.steps, function(index, obj) {
 	
@@ -3465,17 +3467,36 @@ $.fn.wizardPage = function(data) {
 		}, obj);
 		
 		
-		var html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
+		var html;
+		
+		if(options.useNumberIcons) {
+			
+			html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
 			+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
-			+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
+			+ ' 	<h5 class="panel-title wizardTitle"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i>'
+			+ '<i class="fa fa-stack-1x" style="color: white"><strong>' + (index+1) + '</strong></i></span>'
 			+ '		    <a data-toggle="collapse" data-parent="#accordion"'
 			+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
 			+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
-			+ '	    </h4>'
+			+ '	    </h5>'
 			+ '</div>'
 			+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
 			+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 			+ '	<div class="panel-body"><div id="page' + index + '"></div>';
+			
+		} else {
+			html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
+				+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
+				+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
+				+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+				+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
+				+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
+				+ '	    </h4>'
+				+ '</div>'
+				+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
+				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
+				+ '	<div class="panel-body"><div id="page' + index + '"></div>';
+		}
 			
 		if(page.onNext) {
 			html += '		<div class="propertyItem form-group buttonBar">'
@@ -3662,13 +3683,17 @@ $.fn.feedbackPanel = function(data) {
 	
 	var processFeedback = function(feedback) {
 		var last;
+		
+		$('#feedbackNext').remove();
 		$.each(feedback, function(idx, result) {
 			last = result;
 			var id = "f" + idx;
 			if($('#' + id).length > 0) {
 				return;
 			}
-			debugger;
+			if($('#' + id).length) {
+				$('#' + id).remove();
+			}
 			if(result.status === 'SUCCESS') {
 				div.append('<div id="' + id + '" class="row feedback-row">'
 				 + '<div class="col-xs-12 feedback-success"><i class="fa fa-check-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
@@ -3679,7 +3704,7 @@ $.fn.feedbackPanel = function(data) {
 				div.append('<div id="' + id + '" class="row feedback-row">'
 						 + '<div class="col-xs-12 feedback-warning"><i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
 			} else {
-				div.append('<div class="row feedback-row">'
+				div.append('<div id="' + id + '" class="row feedback-row">'
 						 + '<div class="col-xs-12 feedback-error"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span>'
 						 + '</div></div>');
 			}
@@ -3690,6 +3715,9 @@ $.fn.feedbackPanel = function(data) {
 			if(options.finished) {
 				options.finished(last.status === 'SUCCESS');
 			}
+		} else {
+			div.append('<div id="feedbackNext" class="row feedback-row">'
+					 + '<div class="col-xs-12"><i class="fa fa-spinner fa-spin"></i></div></div>');
 		}
 		return ret;
 	}
