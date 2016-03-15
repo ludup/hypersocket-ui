@@ -199,7 +199,7 @@
 						});
 		});
 
-			});
+	});
 	
 	function renderDiagram(automation, resourcePage) {
 		
@@ -212,7 +212,7 @@
 			$('#rootTrigger').data('automation', automation);
 			
 			$('#rootTrigger').append(
-					"<div style='top: 25px; left: 25px; position: absolute;' class='triggerShape trigger-same-row' id='trigger" + automation.id + "'>"
+					"<div style='top: 25px; left: 25px; position: absolute;' class='triggerShape trigger-same-row' id='automationDiagram_" + automation.id + "'>"
 				+	"	<div class='triggerContent'>"
 				+	"		<span class='triggerText'>"	+ automation.name + "</span>"
 				+	"		<a data-trigger='"+ automation.id + "' class='addTriggerIcon triggerIcon' href=''>"
@@ -239,28 +239,20 @@
         	var top = 125;
         	var left = 200;
         	if(triggerList.length > 0) {
-	        	getJSON('interfaceState/state/false/' + triggerList, null, function(data) {
-	        		resourceList = data.resources;
-	        		
-	        		$.each(automation.childTriggers, function(idx, obj) {
+        		getState(triggerList, false, function(data){
+					resourceList = data.resources;
+					$.each(automation.childTriggers, function(idx, obj) {
 	        			addTask(obj, automation, top+50, left+50);	
 	        		});
-	        	
-	            	
 					jsPlumb.draggable($('.triggerShape'));
 					
 					$('.triggerShape').draggable({
 				        stop: function(e){
 				            if($(this).data('trigger')){
-				            	state = new Object();
-					            state.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
-					            state.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
-					            state.resourceId = $(this).data('trigger').id;
-					            state.name = $(this).attr('id');
-					            state.specific = false;
-					            postJSON('interfaceState/state', state, function(data){
-					            	
-					            });
+				            	preferences = new Object();
+				            	preferences.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
+				            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
+					            saveState($(this).attr('id'), preferences, false);
 				            }
 				        }
 				    });
@@ -333,13 +325,9 @@
 								  }
 							}); 
 						}
-						
 					});
-	        	});
+        		});
         	}
-			
-			
-			
 		} else {
 			$('#contentTrigger').hide();
 		}
@@ -388,7 +376,7 @@
 	function createTriggerList(childTriggers){
 		if(childTriggers) {
 			$.each(childTriggers, function(index, triggerValue){
-				triggerList.push(triggerValue.id);
+				triggerList.push('automationDiagram_' + triggerValue.id);
 				if(triggerValue.childTriggers && triggerValue.childTriggers.length){
 					createTriggerList(triggerValue.childTriggers);
 				}
@@ -397,6 +385,7 @@
 	}
 	
 	function addTask(trigger, parent, top, left) {
+		
 		var triggerClass = "blueTrigger";
 		if(trigger.result == 'EVENT_FAILURE') {
 			triggerClass = "redTrigger";
@@ -406,15 +395,15 @@
 			triggerClass = "greenTrigger";
 		}
 		$.each(resourceList, function(index, value){
-			if(value.resourceId == trigger.id){
-				top = value.top;
-				left = value.leftpx;
+			var preferences = JSON.parse(value.preferences);
+			if(value.name == 'automationDiagram_' + trigger.id){
+				top = preferences.top;
+				left = preferences.leftpx;
 				return false;
 			}
 		});
-
 		$('#triggerView').append(
-					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape " + triggerClass + " trigger-same-row' id='trigger" + trigger.id + "'>"
+					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape " + triggerClass + " trigger-same-row' id='automationDiagram_" + trigger.id + "'>"
 				+	"	<div class='triggerContent'>"
 				+	"		<span class='triggerText'>"	+ trigger.name + "</span>"
 				+	"		<a data-trigger='"+ trigger.id + "' class='addIcon triggerIcon' href=''>"
@@ -429,19 +418,19 @@
 				+	"	</div>"
 				+	"</div>");
 		
-		$('#trigger' + trigger.id).data('trigger', trigger);
-		$('#trigger' + trigger.id).data('parent', parent);
+		$('#automationDiagram_' + trigger.id).data('trigger', trigger);
+		$('#automationDiagram_' + trigger.id).data('parent', parent);
 		
 		if(parent) {
 			jsPlumb.connect({
-	            source:"trigger" + parent.id,
-	            target:"trigger" + trigger.id,
-	            connector: 'Flowchart',
-	            anchor: "AutoDefault",
-	            endpoint:"Blank",
-	            detachable:false,
-	            overlays:[["Arrow", {location: 1}]]
-	        });	
+		           source:"automationDiagram_" + parent.id,
+		           target:"automationDiagram_" + trigger.id,
+		           connector: 'Flowchart',
+		           anchor: "AutoDefault",
+		           endpoint:"Blank",
+		           detachable:false,
+		           overlays:[["Arrow", {location: 1}]]
+		       });	
 		}
 		
 		top+= 50;
@@ -451,8 +440,6 @@
 				addTask(childTrigger, trigger, top, left);
 			});
 		}
-        
-        
 	}
 </script>
 <script src="${uiPath}/js/jquery.jsPlumb-1.7.5.min.js"></script>

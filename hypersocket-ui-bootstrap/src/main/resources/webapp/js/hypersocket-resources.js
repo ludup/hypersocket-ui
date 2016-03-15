@@ -97,7 +97,6 @@ $.fn.resourceTable = function(params) {
 		showColumns : true,
 		showRefresh : true,
 	    showToggle : false,
-	    defaultView: 'table',
 		canCreate : false,
 		canUpdate : false,
 		canDelete : false,
@@ -122,12 +121,7 @@ $.fn.resourceTable = function(params) {
 			+ options.icon + '"></i><span class="break">' 
 			+ options.title + '</span></h2></div>';
 	}
-	
-	if(options.infoHtml) {
-		html += '<div id="infoPanel" class="col-xs-12"><div class="alert alert-info"><i class="fa fa-3x fa-info"></i><i id="messageDismiss" '
-			+ 'class="fa fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>';
-	}
-	
+
 	html += '<table id="' + divName + 'Placeholder"></table>';
 
 	html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"></div>';
@@ -137,10 +131,25 @@ $.fn.resourceTable = function(params) {
 	}
 	
 	$(this).append(html);
-
-	$('.dismiss-icon').click(function(e) {
-		$('#infoPanel').fadeOut(1000);
-	});
+	
+	if(options.infoHtml) {
+		var theDiv = $(this).find('.panel-heading');
+		getState(divName+'-infoPanel', true, function(data) {
+			if(data.resources.length == 0 || data.resources[0].show) {
+				theDiv.after('<div id="infoPanel" class="col-xs-12"><div class="alert alert-info"><i class="fa fa-2x fa-info"></i><i id="messageDismiss" '
+						+ 'class="fa fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
+			
+				$('.dismiss-icon').click(function(e) {
+					var prefs = new Object();
+					prefs.show = false;
+					saveState(divName+'-infoPanel', prefs, true, function() {
+						$('#infoPanel').fadeOut(1000);
+					});
+				});
+			}
+			
+		});
+	}
 	
 	$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options);
 
@@ -438,229 +447,249 @@ $.fn.resourceTable = function(params) {
 	$('#' + divName + 'Placeholder').on('post-body.bs.table', function() {
 		$('[data-toggle="tooltip"]').tooltip();
 	});
-	
-	$('#' + divName + 'Placeholder').bootstrapTable({
-	    pagination: options.pagination,
-	    checkbox: options.checkbox,
-	    radio: options.radio,
-	    showHeader: true,
-	    page : options.page,
-	    pageSize: options.pageSize,
-	    pageList: options.pageList,
-	    search: options.search,
-	    showColumns : columns.length > 2 && options.showColumns,
-		showRefresh : options.showRefresh,
-	    method: options.method,
-	    striped: options.striped,
-	    showToggle : options.showToggle,
-	    sidePagination: 'server',
-	    url: basePath + '/api/' + options.tableUrl,
-	    columns: columns,
-	    sortName: options.sortName,
-	    sortOrder: options.sortOrder,
-	    sortable: true,
-	    cache: false,
-	    onSort: function(name, order) {
+	getState(options.id, true, function(data){
+		if(data.success && data.resources.length && data.resources[0].preferences){
+			var preferences = JSON.parse(data.resources[0].preferences);
+			if(preferences && preferences.sortName){
+				options.sortName = preferences.sortName;				
+			}
+			if(preferences && preferences.sortOrder){
+				options.sortOrder = preferences.sortOrder;
+			}
+			if(preferences && preferences.pageSize){
+				options.pageSize = preferences.pageSize;
+			}
+		}
+		$('#' + divName + 'Placeholder').bootstrapTable({
+		    pagination: options.pagination,
+		    checkbox: options.checkbox,
+		    radio: options.radio,
+		    showHeader: true,
+		    page : options.page,
+		    pageSize: options.pageSize,
+		    pageList: options.pageList,
+		    search: options.search,
+		    showColumns : columns.length > 2 && options.showColumns,
+			showRefresh : options.showRefresh,
+		    method: options.method,
+		    striped: options.striped,
+		    showToggle : options.showToggle,
+		    sidePagination: 'server',
+		    url: basePath + '/api/' + options.tableUrl,
+		    columns: columns,
+		    sortName: options.sortName,
+		    sortOrder: options.sortOrder,
+		    sortable: true,
+		    cache: false,
+		    onSort: function(name, order) {
 
-	    	$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
-	    		sortName: name,
-	    		sortOrder: order
-	    	});
-	    	
-	    	$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-	    },
-	    detailView: options.detailFormatter != undefined,
-	    detailFormatter: options.detailFormatter,
-	    onClickRow: function(row) {
-	    	if(options.selected) {
-	    		options.selected(row);
-	    	}
-	    },
-	    queryParams: function(params) {
-	    	if($('#searchColumn').widget()) {
-	    		params.searchColumn = $('#searchColumn').widget().getValue();
-	    	}
-	    	return params;
-	    },
-	    onLoadSuccess: function(){
-	    	if (options.logo) {
-	    		if(!$('#' + divName + 'ToggleGrid').length){
-	    			$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.pull-right').append('<button id="' + divName + 'ToggleGrid" class="btn btn-default" type="button" name="grid" title="' + getResource('text.toggleViewMode') + '"><i id="tableViewIcon" class="glyphicon fa fa-picture-o"></button>');
-	    			$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px;"></div>');
-			    	$('#' + divName + 'ToggleGrid').click(function(){
-			    		if($('#tableViewIcon').hasClass('fa-picture-o')) {
-			    			$('#tableViewIcon').removeClass('fa-picture-o');
-			    			$('#tableViewIcon').addClass('fa-list-alt');
-			    		} else {
-			    			$('#tableViewIcon').removeClass('fa-list-alt');
-			    			$('#tableViewIcon').addClass('fa-picture-o');
-			    		}
-			    		$('#' + divName + 'Placeholder').toggle();
-			    		$('#' + divName + 'Grid').toggle();
-			    	});
-	    		}else{
-	    			$('#' + divName + 'Grid').empty();
-	    		}
-	    		if(options.defaultView && options.defaultView == 'logo'){
-	    			$('#' + divName + 'Placeholder').hide();
-	    			$('#' + divName + 'Grid').show();
-	    		}else{
-	    			$('#' + divName + 'Placeholder').show();
-	    			$('#' + divName + 'Grid').hide();
-	    		}
-	    		var gridResourceList = $('#' + divName + 'Placeholder').bootstrapTable('getData');
-	    		if(!gridResourceList.length){
-	    			$('#' + divName + 'Grid').append('<div class="no-records-found">' + getResource('text.noMatchingRecords') + '</div>');
-	    		}else{
-	    			$.each(gridResourceList, function(index, resource){
-						var prefix = "logo://";
-						var value = resource.logo;
-						var itype = options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default';
-						if(!resource) {
-							return;
-						}
-						if(!value) {
-							value = 'logo://100_autotype_autotype_auto.png';
-						}
-						
-						if(value.slice(0, prefix.length) == prefix) {
-							var txt = resource.name;
-							if(!txt || txt == '')
-								txt = 'Default';
-							var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
-							$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + uri + '"/></div><span>' + resource.name + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
-						}
-						else {
-							var idx = value.indexOf('/');
-							if(idx == -1) {
-								$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + (basePath + '/api/files/download/' + value)+ '"/></div><span>' + resource.name + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
-							} else {
-								$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + (basePath + '/api/' + value)+ '"/></div><span>' + resource.name + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
+		    	$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
+		    		sortName: name,
+		    		sortOrder: order
+		    	});
+		    	
+		    	$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+		    },
+		    detailView: options.detailFormatter != undefined,
+		    detailFormatter: options.detailFormatter,
+		    onClickRow: function(row) {
+		    	if(options.selected) {
+		    		options.selected(row);
+		    	}
+		    },
+		    queryParams: function(params) {
+		    	if($('#searchColumn').widget()) {
+		    		params.searchColumn = $('#searchColumn').widget().getValue();
+		    	}
+		    	return params;
+		    },
+		    onPageChange: function(number, size){
+		    	if(options.id){
+		    		var sortName = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortName;
+		    		var sortOrder = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortOrder;
+		    		saveState(options.id, {'pageSize': size, 'sortOrder': sortOrder, 'sortName': sortName}, true);
+		    	}
+		    },
+		    onSort: function(name, order){
+		    	if(options.id){
+		    		var size = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').pageSize;
+		    		saveState(options.id, {'pageSize': size, 'sortOrder': order, 'sortName': name}, true);
+		    	}
+		    },
+		    onLoadSuccess: function(){
+		    	if (options.logo) {
+		    		if(!$('#' + divName + 'ToggleGrid').length){
+		    			$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.pull-right').append('<button id="' + divName + 'ToggleGrid" class="btn btn-default" type="button" name="grid" title="' + getResource('text.toggleViewMode') + '"><i class="glyphicon fa fa-picture-o"></button>');
+		    			$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px;"></div>');
+				    	$('#' + divName + 'ToggleGrid').click(function(){
+				    		$('#' + divName + 'Placeholder').toggle();
+				    		$('#' + divName + 'Grid').toggle();
+				    	});
+		    		}else{
+		    			$('#' + divName + 'Grid').empty();
+		    		}
+		    		if(options.defaultView && options.defaultView == 'logo'){
+		    			$('#' + divName + 'Placeholder').hide();
+		    			$('#' + divName + 'Grid').show();
+		    		}else{
+		    			$('#' + divName + 'Placeholder').show();
+		    			$('#' + divName + 'Grid').hide();
+		    		}
+		    		var gridResourceList = $('#' + divName + 'Placeholder').bootstrapTable('getData');
+		    		if(!gridResourceList.length){
+		    			$('#' + divName + 'Grid').append('<div class="no-records-found">' + getResource('text.noMatchingRecords') + '</div>');
+		    		}else{
+		    			$.each(gridResourceList, function(index, resource){
+							var prefix = "logo://";
+							var value = resource.logo;
+							var itype = options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default';
+							if(!resource) {
+								return;
 							}
-						}
-						$('#' + resource.id + 'GridOptions').hide();
-						$('#' + resource.id + 'GridDiv').hover(function() {
-							$('#' + resource.id + 'GridOptions').show();
-						}, function() {
-							$('#' + resource.id + 'GridOptions').hide();
-						});
-						var renderedActions = '';
-						if (options.additionalActions) {
-
-							if(!options.disableActionsDropdown && options.additionalActions.length > 1) {
-								renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
-								renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
-								$.each(options.additionalActions, function(x, act) {
-									if (act.enabled) {
-										renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><span>' + getResource(act.resourceKey + ".label") + '</span>&nbsp;&nbsp;<i class="fa ' + act.iconClass + '"></i></a></li>';
-					
-										$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
-										$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
-											act.action(resource, function(resource) {
-												$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-											});
-										});
-									}
-								});
-								renderedActions += '</ul></div>';
-								
-								$(document).on('show.bs.dropdown', '#' + divName + 'GridActions' + resource.id, function () {
-									var dropdown = $(this);
-									$.each(options.additionalActions, function(x, act) {
-										if(act.enabled) {
-											if(act.displayFunction && act.displayFunction != '') {
-												var display = window[act.displayFunction].apply(null, [resource, act]);
-												var el = $('.row-' + act.resourceKey, dropdown);   
-												if(display) {
-													el.show();
-												} else {
-													el.hide();
-												}
-											}
-											if(act.enableFunction && act.enableFunction != '') {
-												if(!window[act.enableFunction].apply(null, [resource, act])) {
-													var el = $('.row-' + act.resourceKey, dropdown);    
-													el.parent().addClass('disabled');
-													el.attr('disabled', true);
-												}
-											} 
-										}
-									});
-								});
-							}else{
-								$.each(options.additionalActions, function(x, act) {
-									if (act.enabled) {
-										renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' 
-												+ act.resourceKey + ' btn-action" href="#" data-toggle="tooltip" data-placement="top" title="' 
-												+ getResource(act.resourceKey + ".label") + '"><i class="fa ' + act.iconClass + '"></i></a>';
-										$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
-										$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
-											act.action(resource, function(resource) {
-												$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-											});
-										});
-									}
-								});
-							}
-						}
-						var canUpdate = options.canUpdate;
-						if(options.checkUpdate) {
-							canUpdate = options.checkUpdate(resource);
-						}
-
-						if(!options.disableEditView) {
-							renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
-							$(document).off('click', '#' + resource.id + 'GridOptions .row-edit');
-							$(document).on('click', '#' + resource.id + 'GridOptions .row-edit', function() {
-								$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read', { row : index, resource : resource });
-							});
-							$(document).off('click', '#' + resource.id + 'GridDiv img');
-							$(document).on('click', '#' + resource.id + 'GridDiv img', function() {
-								$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read', { row : index, resource : resource });
-							});
-							$('#' + resource.id + 'GridDiv img').css('cursor', 'pointer');
-						}
-
-						if (options.canDelete) {
-							var canDelete = !resource.system;
-							if(options.checkDelete) {
-								canDelete = !resource.system && options.checkDelete(resource);
+							if(!value) {
+								value = 'logo://100_autotype_autotype_auto.png';
 							}
 							
-							if(canDelete) {
-								renderedActions += '<a class="btn btn-danger row-delete btn-action" href="#"><i class="fa fa-trash-o"></i></a>';
-								$(document).off('click', '#' + resource.id + 'GridOptions .row-delete');
-								$(document).on('click', '#' + resource.id + 'GridOptions .row-delete', function() {
-									log("Entering resource delete for id " + resource.id);
-									bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(resource.name), function(confirmed) {
-										if (confirmed) {
-											deleteJSON(options.resourceUrl + "/" + resource.id, null, function(data) {
-												if (data.success) {
-													if (options.resourceDeleted) {
-														options.resourceDeleted(resource, data.message);
-													}
-													$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
+							if(value.slice(0, prefix.length) == prefix) {
+								var txt = resource.name;
+								if(!txt || txt == '')
+									txt = 'Default';
+								var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
+								$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + uri + '"/></div><span>' + resource.name + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
+							}
+							else {
+								var idx = value.indexOf('/');
+								if(idx == -1) {
+									$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + (basePath + '/api/files/download/' + value)+ '"/></div><span>' + resource.name + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
+								} else {
+									$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + (basePath + '/api/' + value)+ '"/></div><span>' + resource.name + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
+								}
+							}
+							$('#' + resource.id + 'GridOptions').hide();
+							$('#' + resource.id + 'GridDiv').hover(function() {
+								$('#' + resource.id + 'GridOptions').show();
+							}, function() {
+								$('#' + resource.id + 'GridOptions').hide();
+							});
+							var renderedActions = '';
+							if (options.additionalActions) {
+
+								if(!options.disableActionsDropdown && options.additionalActions.length > 1) {
+									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
+									renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
+									$.each(options.additionalActions, function(x, act) {
+										if (act.enabled) {
+											renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><span>' + getResource(act.resourceKey + ".label") + '</span>&nbsp;&nbsp;<i class="fa ' + act.iconClass + '"></i></a></li>';
+						
+											$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
+											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
+												act.action(resource, function(resource) {
 													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-													showSuccess(data.message);
-												} else {
-													showError(data.message);
-												}
+												});
 											});
 										}
 									});
-								});
-							} else {
-								renderedActions += '<a class="btn btn-disabled btn-action" href="#"><i class="fa fa-trash-o"></i></a>';
+									renderedActions += '</ul></div>';
+									
+									$(document).on('show.bs.dropdown', '#' + divName + 'GridActions' + resource.id, function () {
+										var dropdown = $(this);
+										$.each(options.additionalActions, function(x, act) {
+											if(act.enabled) {
+												if(act.displayFunction && act.displayFunction != '') {
+													var display = window[act.displayFunction].apply(null, [resource, act]);
+													var el = $('.row-' + act.resourceKey, dropdown);   
+													if(display) {
+														el.show();
+													} else {
+														el.hide();
+													}
+												}
+												if(act.enableFunction && act.enableFunction != '') {
+													if(!window[act.enableFunction].apply(null, [resource, act])) {
+														var el = $('.row-' + act.resourceKey, dropdown);    
+														el.parent().addClass('disabled');
+														el.attr('disabled', true);
+													}
+												} 
+											}
+										});
+									});
+								}else{
+									$.each(options.additionalActions, function(x, act) {
+										if (act.enabled) {
+											renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' 
+													+ act.resourceKey + ' btn-action" href="#" data-toggle="tooltip" data-placement="top" title="' 
+													+ getResource(act.resourceKey + ".label") + '"><i class="fa ' + act.iconClass + '"></i></a>';
+											$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
+											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
+												act.action(resource, function(resource) {
+													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+												});
+											});
+										}
+									});
+								}
 							}
-						}
-						$('#' + resource.id + 'GridOptions').append(renderedActions);
-					});
-					$('#' + divName + 'Grid').append('<div class="template" style="float:left; width:100%; height:0px;"></div>');
-	    		}
-				
-	    	}
-	    }
+							var canUpdate = options.canUpdate;
+							if(options.checkUpdate) {
+								canUpdate = options.checkUpdate(resource);
+							}
+
+							if(!options.disableEditView) {
+								renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
+								$(document).off('click', '#' + resource.id + 'GridOptions .row-edit');
+								$(document).on('click', '#' + resource.id + 'GridOptions .row-edit', function() {
+									$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read', { row : index, resource : resource });
+								});
+								$(document).off('click', '#' + resource.id + 'GridDiv img');
+								$(document).on('click', '#' + resource.id + 'GridDiv img', function() {
+									$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read', { row : index, resource : resource });
+								});
+								$('#' + resource.id + 'GridDiv img').css('cursor', 'pointer');
+							}
+
+							if (options.canDelete) {
+								var canDelete = !resource.system;
+								if(options.checkDelete) {
+									canDelete = !resource.system && options.checkDelete(resource);
+								}
+								
+								if(canDelete) {
+									renderedActions += '<a class="btn btn-danger row-delete btn-action" href="#"><i class="fa fa-trash-o"></i></a>';
+									$(document).off('click', '#' + resource.id + 'GridOptions .row-delete');
+									$(document).on('click', '#' + resource.id + 'GridOptions .row-delete', function() {
+										log("Entering resource delete for id " + resource.id);
+										bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(resource.name), function(confirmed) {
+											if (confirmed) {
+												deleteJSON(options.resourceUrl + "/" + resource.id, null, function(data) {
+													if (data.success) {
+														if (options.resourceDeleted) {
+															options.resourceDeleted(resource, data.message);
+														}
+														$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
+														$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+														showSuccess(data.message);
+													} else {
+														showError(data.message);
+													}
+												});
+											}
+										});
+									});
+								} else {
+									renderedActions += '<a class="btn btn-disabled btn-action" href="#"><i class="fa fa-trash-o"></i></a>';
+								}
+							}
+							$('#' + resource.id + 'GridOptions').append(renderedActions);
+						});
+						$('#' + divName + 'Grid').append('<div class="template" style="float:left; width:100%; height:0px;"></div>');
+		    		}
+				}
+		    }
+		});
 	});
+		
+	
 	
 	if(sortColumns.length > 0) {
 		$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');

@@ -343,17 +343,17 @@
 			$('#contentTrigger').show();
 			$('#rootEvent').text(getResource(trigger.event));
 
-        	triggerList.push(trigger.id);
+        	triggerList.push('triggerDiagram_' + trigger.id);
         	triggerMap[trigger.id] = trigger;
         	createTriggerList(trigger.childTriggers);
         	var top = 25;
         	var left = 200;
-        	getJSON('interfaceState/state/false/' + triggerList, null, function(data){
+        	getState(triggerList, false, function(data){
         		resourceList = data.resources;
         		addTask(trigger, null, top+50, left+50);
             	jsPlumb.connect({
     	            source: 'rootTrigger',
-    	            target:"trigger" + trigger.id,
+    	            target:"triggerDiagram_" + trigger.id,
     	            connector: 'Flowchart',
     	            anchor: "AutoDefault",
     	            endpoint:"Blank",
@@ -366,24 +366,18 @@
 				$('.triggerDraggable').draggable({
 			        stop: function(e){
 			            if($(this).data('trigger')){
+			            	var preferences = {};
 			            	state = new Object();
-				            state.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
-				            state.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
-				            state.resourceId = $(this).data('trigger').id;
-				            state.name = $(this).attr('id');
-				            state.specific = false;
-				            
-				            if(state.leftpx < 0) {
-				            	state.leftpx = 0;
+			            	preferences.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
+			            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
+				            if(preferences.leftpx < 0) {
+				            	preferences.leftpx = 0;
+				            }
+				            if(preferences.top < 0) {
+				            	preferences.top = 0;
 				            }
 				            
-				            if(state.top < 0) {
-				            	state.top = 0;
-				            }
-				            
-				            postJSON('interfaceState/state', state, function(data){
-				            	
-				            });
+				            saveState('triggerDiagram_' + $(this).data('trigger').id, preferences, false);
 			            }
 			        }
 			    });
@@ -507,7 +501,7 @@
 	
 	function createTriggerList(childTriggers){
 		$.each(childTriggers, function(index, triggerValue){
-			triggerList.push(triggerValue.id);
+			triggerList.push('triggerDiagram_' + triggerValue.id);
 			triggerMap[triggerValue.id] = triggerValue;
 			if(triggerValue.childTriggers && triggerValue.childTriggers.length){
 				createTriggerList(triggerValue.childTriggers);
@@ -525,14 +519,15 @@
 			triggerClass = "greenTrigger";
 		}
 		$.each(resourceList, function(index, value){
-			if(value.resourceId == trigger.id){
-				top = value.top;
-				left = value.leftpx;
+			var preferences = JSON.parse(value.preferences);
+			if(value.name == 'triggerDiagram_' + trigger.id){
+				top = preferences.top;
+				left = preferences.leftpx;
 				return false;
 			}
 		});
 		$('#triggerView').append(
-					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape triggerDraggable " + triggerClass + " trigger-same-row' id='trigger" + trigger.id + "'>"
+					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape triggerDraggable " + triggerClass + " trigger-same-row' id='triggerDiagram_" + trigger.id + "'>"
 				+	"	<div class='triggerContent'>"
 				+	"		<span class='triggerText'>"	+ trigger.name + "</span>"
 				+	"		<a data-trigger='"+ trigger.id + "' class='addIcon triggerIcon' href=''>"
@@ -547,13 +542,13 @@
 				+	"	</div>"
 				+	"</div>");
 		
-		$('#trigger' + trigger.id).data('trigger', trigger);
-		$('#trigger' + trigger.id).data('parent', parent);
+		$('#triggerDiagram_' + trigger.id).data('trigger', trigger);
+		$('#triggerDiagram_' + trigger.id).data('parent', parent);
 		
 		if(parent) {
 			jsPlumb.connect({
-	            source:"trigger" + parent.id,
-	            target:"trigger" + trigger.id,
+	            source:"triggerDiagram_" + parent.id,
+	            target:"triggerDiagram_" + trigger.id,
 	            connector: 'Flowchart',
 	            anchor: "AutoDefault",
 	            endpoint:"Blank",

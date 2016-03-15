@@ -20,13 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.server.HypersocketServer;
-import com.hypersocket.server.events.HypersocketServerEvent;
-import com.hypersocket.server.events.WebappCreatedEvent;
 import com.hypersocket.server.handlers.HttpResponseProcessor;
 import com.hypersocket.server.handlers.impl.ClasspathContentHandler;
 import com.hypersocket.server.handlers.impl.ContentFilter;
