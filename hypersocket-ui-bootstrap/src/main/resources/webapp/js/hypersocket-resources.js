@@ -428,9 +428,9 @@ $.fn.resourceTable = function(params) {
 	$('#' + divName + 'Placeholder').on('post-body.bs.table', function() {
 		$('[data-toggle="tooltip"]').tooltip();
 	});
-	getJSON('interfaceState/tableState/' + options.id, null, function(data) {
-		if(data.success && data.resource && data.resource.preferences){
-			var preferences = JSON.parse(data.resource.preferences);
+	getState(options.id, true, function(data){
+		if(data.success && data.resources.length && data.resources[0].preferences){
+			var preferences = JSON.parse(data.resources[0].preferences);
 			if(preferences && preferences.sortName){
 				options.sortName = preferences.sortName;				
 			}
@@ -441,7 +441,6 @@ $.fn.resourceTable = function(params) {
 				options.pageSize = preferences.pageSize;
 			}
 		}
-		
 		$('#' + divName + 'Placeholder').bootstrapTable({
 		    pagination: options.pagination,
 		    checkbox: options.checkbox,
@@ -489,17 +488,13 @@ $.fn.resourceTable = function(params) {
 		    	if(options.id){
 		    		var sortName = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortName;
 		    		var sortOrder = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortOrder;
-		    		var tableState = {'name': options.id, 'specific': true, 'preferences': JSON.stringify({'pageSize': size, 'sortOrder': sortOrder, 'sortName': sortName})};
-		    		postJSON('interfaceState/state', tableState, function(data) {			
-		    		});
+		    		saveState(options.id, {'pageSize': size, 'sortOrder': sortOrder, 'sortName': sortName}, true);
 		    	}
 		    },
 		    onSort: function(name, order){
 		    	if(options.id){
 		    		var size = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').pageSize;
-		    		var tableState = {'name': options.id, 'specific': true, 'preferences': JSON.stringify({'pageSize': size, 'sortName': name, 'sortOrder': order})};
-		    		postJSON('interfaceState/state', tableState, function(data) {
-		    		});
+		    		saveState(options.id, {'pageSize': size, 'sortOrder': order, 'sortName': name}, true);
 		    	}
 		    },
 		    onLoadSuccess: function(){
@@ -674,6 +669,7 @@ $.fn.resourceTable = function(params) {
 		    }
 		});
 	});
+		
 	
 	
 	if(sortColumns.length > 0) {

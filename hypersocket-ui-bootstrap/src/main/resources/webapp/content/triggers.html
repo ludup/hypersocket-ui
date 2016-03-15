@@ -348,7 +348,7 @@
         	createTriggerList(trigger.childTriggers);
         	var top = 25;
         	var left = 200;
-        	getJSON('interfaceState/stateList/false/' + triggerList, null, function(data){
+        	getState(triggerList, false, function(data){
         		resourceList = data.resources;
         		addTask(trigger, null, top+50, left+50);
             	jsPlumb.connect({
@@ -370,19 +370,14 @@
 			            	state = new Object();
 			            	preferences.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
 			            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
-				            state.name = 'triggerDiagram_' + $(this).data('trigger').id;
-				            state.specific = false;
 				            if(preferences.leftpx < 0) {
 				            	preferences.leftpx = 0;
 				            }
-				            
 				            if(preferences.top < 0) {
 				            	preferences.top = 0;
 				            }
-				            state.preferences = JSON.stringify(preferences);
-				            postJSON('interfaceState/state', state, function(data){
-				            	
-				            });
+				            
+				            saveState('triggerDiagram_' + $(this).data('trigger').id, preferences, false);
 			            }
 			        }
 			    });
