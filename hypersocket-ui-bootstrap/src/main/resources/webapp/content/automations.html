@@ -199,7 +199,7 @@
 						});
 		});
 
-			});
+	});
 	
 	function renderDiagram(automation, resourcePage) {
 		
@@ -241,8 +241,7 @@
         	if(triggerList.length > 0) {
         		getState(triggerList, false, function(data){
 					resourceList = data.resources;
-	        		
-	        		$.each(automation.childTriggers, function(idx, obj) {
+					$.each(automation.childTriggers, function(idx, obj) {
 	        			addTask(obj, automation, top+50, left+50);	
 	        		});
 					jsPlumb.draggable($('.triggerShape'));
@@ -386,6 +385,7 @@
 	}
 	
 	function addTask(trigger, parent, top, left) {
+		
 		var triggerClass = "blueTrigger";
 		if(trigger.result == 'EVENT_FAILURE') {
 			triggerClass = "redTrigger";
@@ -394,6 +394,7 @@
 		} else if(trigger.result == 'EVENT_SUCCESS') {
 			triggerClass = "greenTrigger";
 		}
+		$.each(resourceList, function(index, value){
 			var preferences = JSON.parse(value.preferences);
 			if(value.name == 'automationDiagram_' + trigger.id){
 				top = preferences.top;
@@ -401,7 +402,6 @@
 				return false;
 			}
 		});
-
 		$('#triggerView').append(
 					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape " + triggerClass + " trigger-same-row' id='automationDiagram_" + trigger.id + "'>"
 				+	"	<div class='triggerContent'>"
@@ -423,14 +423,14 @@
 		
 		if(parent) {
 			jsPlumb.connect({
-	            source:"automationDiagram_" + parent.id,
-	            target:"automationDiagram_" + trigger.id,
-	            connector: 'Flowchart',
-	            anchor: "AutoDefault",
-	            endpoint:"Blank",
-	            detachable:false,
-	            overlays:[["Arrow", {location: 1}]]
-	        });	
+		           source:"automationDiagram_" + parent.id,
+		           target:"automationDiagram_" + trigger.id,
+		           connector: 'Flowchart',
+		           anchor: "AutoDefault",
+		           endpoint:"Blank",
+		           detachable:false,
+		           overlays:[["Arrow", {location: 1}]]
+		       });	
 		}
 		
 		top+= 50;
@@ -440,8 +440,6 @@
 				addTask(childTrigger, trigger, top, left);
 			});
 		}
-        
-        
 	}
 </script>
 <script src="${uiPath}/js/jquery.jsPlumb-1.7.5.min.js"></script>
