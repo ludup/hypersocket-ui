@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +52,7 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("brandIcon", brandIcon);
 		resolver.addToken("brandCompany", brandCompany);
 		resolver.addToken("brandLicense", license);
+		resolver.addToken("year", String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
 		resolver.addToken("companyUrl", companyUrl);
 		resolver.addToken("supportContact", supportContact);
 		resolver.addToken("supportName", supportName);
