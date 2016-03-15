@@ -253,7 +253,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			
 			@Override
 			public boolean canUpdate() {
-				return !realmService.isReadOnly(getCurrentRealm());
+				return true;
 			}
 		}, MenuService.MENU_ACCESS_CONTROL);
 
