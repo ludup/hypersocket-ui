@@ -122,6 +122,11 @@ $.fn.resourceTable = function(params) {
 			+ options.title + '</span></h2></div>';
 	}
 	
+	if(options.infoHtml) {
+		html += '<div id="infoPanel" class="col-xs-12"><div class="alert alert-info"><i class="fa fa-3x fa-info"></i><i id="messageDismiss" '
+			+ 'class="fa fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>';
+	}
+	
 	html += '<table id="' + divName + 'Placeholder"></table>';
 
 	html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"></div>';
@@ -132,6 +137,10 @@ $.fn.resourceTable = function(params) {
 	
 	$(this).append(html);
 
+	$('.dismiss-icon').click(function(e) {
+		$('#infoPanel').fadeOut(1000);
+	});
+	
 	$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options);
 
 	var columns = new Array();

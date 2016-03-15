@@ -1002,6 +1002,15 @@ table {
 	height: 20px;
 }
 
+.dismiss-icon {
+	float: right; 
+	cursor: pointer;
+}
+
+#infoPanel {
+	margin-top: 10px;
+}
+
 .editor {
 	max-height: 250px;
 	height: 250px;

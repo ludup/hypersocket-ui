@@ -529,6 +529,8 @@ $.fn.propertyPage = function(opts) {
 												arr.push({ name: obj, value: obj});
 											});
 											obj.options = arr;
+											obj.nameAttr = 'name';
+											obj.valueAttr = 'value';
 										}
 										
 										var widget; 
@@ -726,7 +728,7 @@ $.fn.propertyPage = function(opts) {
 											} else { 
 												url = obj.url;
 											}
-
+											
 											var widgetOptions = $.extend(obj, {
 												selected : splitFix(obj.value), 
 												isArrayValue: true,
