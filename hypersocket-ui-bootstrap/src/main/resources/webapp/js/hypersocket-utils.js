@@ -345,6 +345,7 @@ function getJSON(url, params, callback, errorCallback) {
 	    dataType: 'json',
 	    success: callback
 	}).fail(function(xmlRequest) {
+		
 		if(errorCallback) {
 			if(!errorCallback(xmlRequest)) {
 				return;
@@ -588,7 +589,7 @@ function splitFix(value) {
 }
 
 function splitNamePairs(value) {
-	debugger;
+	
 	var values = splitFix(value);
 	var result = new Array();
 	$.each(values, function(idx, obj) {

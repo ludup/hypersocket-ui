@@ -169,6 +169,9 @@ pre {
 	margin: 0 auto;
 }
 
+.logonInput {
+	position: relative;
+}
 .excludedList {
 	float: left;
 	width: 40%;

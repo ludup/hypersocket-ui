@@ -3844,7 +3844,7 @@ $.fn.accordionPage = function(data) {
 						$('#collapse' + idx).collapse('hide');
 						$('#collapse' + nextPage).collapse('show');
 					} else {
-						debugger;
+						
 						options.pageDone = true;
 						if(options.done) {
 							$('#button' + idx).find('i').addClass(options.doneIcon);

@@ -56,14 +56,13 @@ function processLogon(data, opts, message) {
 		}
 		
 		log("Logon form present");
-
+		removeMessage();
+		
 		opts.formContent.append(
 			'<form id="logonForm" class="' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/>');
 
 		if (data['errorMsg']) {
-			$('#logonForm')
-					.append(
-						'<h2 class="form-signin-heading error">' + (data.lastErrorIsResourceKey ? getResource(data['errorMsg']) : data['errorMsg']) + '</h2>');
+			showError(data['errorMsg']);
 		} else if (message) {
 			$('#logonForm').append(
 				'<h2 class="form-signin-heading">' + message + '</h2>');
@@ -107,8 +106,8 @@ function processLogon(data, opts, message) {
 				}
 	
 				if (this.type == 'select') {
-					$('#logonForm').append('<select class="logonSelect" name="' 
-							+ this.resourceKey + '" id="' + this.resourceKey + '"/>');
+					$('#logonForm').append('<div><select class="logonSelect" name="' 
+							+ this.resourceKey + '" id="' + this.resourceKey + '"/></div>');
 					currentKey = this.resourceKey;
 					$.each(
 						this.options,
@@ -127,10 +126,10 @@ function processLogon(data, opts, message) {
 				} else {
 					$('#logonForm')
 							.append(
-								'<input class="form-control" type="' + this.type + '" name="' 
+								'<div class="logonInput"><input class="form-control" type="' + this.type + '" name="' 
 								+ this.resourceKey + '" placeholder="'
 								+ (this.label != null ? this.label : getResource(this.resourceKey + ".label")) 
-								+ '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>');
+								+ '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/></div>');
 				}
 	
 			});
@@ -189,14 +188,13 @@ function processLogon(data, opts, message) {
 
 						evt.preventDefault();
 						credentials = 'action=logon';
-						$
-								.each(
-									data['formTemplate']['inputFields'],
-									function() {
-										var name = encodeURIComponent(this.resourceKey);
-										var value = encodeURIComponent($('#' + this.resourceKey).val());
-										credentials = credentials + '&' + name + '=' + value;
-									});
+						$.each(
+							data['formTemplate']['inputFields'],
+							function() {
+								var name = encodeURIComponent(this.resourceKey);
+								var value = encodeURIComponent($('#' + this.resourceKey).val());
+								credentials = credentials + '&' + name + '=' + value;
+							});
 
 						logon(credentials, opts);
 					});
