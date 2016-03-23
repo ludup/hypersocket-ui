@@ -687,58 +687,58 @@ $.fn.resourceTable = function(params) {
 				}
 		    }
 		});
+		
+		if(sortColumns.length > 0) {
+			$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
+			$('#searchColumn').textDropdown({
+				values: sortColumns,
+				value: sortColumns[0].name,
+				changed: function(widget) {
+					$('.search input[placeholder="Search"]').val('');
+					$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
+					$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+				}
+			});
+		}
+		if(options.toolbarButtons) {
+			$.each(options.toolbarButtons, function(idx, action) {
+				$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
+						+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
+						+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
+						+ action.icon + '"></i></button>');
+				
+				$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
+					if(action.action) {
+						action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
+							$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+						});
+					}
+				});
+			});
+		}
+		
+		if(options.additionalButtons) {
+			
+			$.each(options.additionalButtons, function() {
+				$('#' + divName + 'Actions').append(
+					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>' + getResource(this.resourceKey + '.label') + '</button>');
+				var button = this;
+				$('#' + this.resourceKey).click(function() {
+					if(button.action) {
+						button.action(function() {
+							$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+						});
+					}
+				});
+			});
+		}
+		
+		if (options.complete) {
+			options.complete();
+		}
+		
 	});
 		
-	
-	
-	if(sortColumns.length > 0) {
-		$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
-		$('#searchColumn').textDropdown({
-			values: sortColumns,
-			value: sortColumns[0].name,
-			changed: function(widget) {
-				$('.search input[placeholder="Search"]').val('');
-				$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
-				$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-			}
-		});
-	}
-	if(options.toolbarButtons) {
-		$.each(options.toolbarButtons, function(idx, action) {
-			$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
-					+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
-					+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
-					+ action.icon + '"></i></button>');
-			
-			$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
-				if(action.action) {
-					action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
-						$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-					});
-				}
-			});
-		});
-	}
-	
-	if(options.additionalButtons) {
-		
-		$.each(options.additionalButtons, function() {
-			$('#' + divName + 'Actions').append(
-				'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>' + getResource(this.resourceKey + '.label') + '</button>');
-			var button = this;
-			$('#' + this.resourceKey).click(function() {
-				if(button.action) {
-					button.action(function() {
-						$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-					});
-				}
-			});
-		});
-	}
-	
-	if (options.complete) {
-		options.complete();
-	}
 	
 	var callback = {
 		refresh: function() {
