@@ -1,4 +1,4 @@
-function validateWidget(widget) {
+function validateWidget(widget, widgetsByResourceKey) {
 	var meta = widget.options();
 	
 	var invalid = false;
@@ -8,19 +8,19 @@ function validateWidget(widget) {
 		var values = widget.getValue();
 		if(values.length > 0) {
 			$.each(values, function(idx, v) {
-				if(!validate(widget, v)) {
+				if(!validate(widget, v, widgetsByResourceKey)) {
 					invalid = true;
 				}
 			});
 		} else {
 			// Attempt an empty validation
-			if(!validate(widget, '')) {
+			if(!validate(widget, '', widgetsByResourceKey)) {
 				invalid = true;
 			}
 		}
 		
 	} else {
-		if(!validate(widget, widget.getValue())) {
+		if(!validate(widget, widget.getValue(), widgetsByResourceKey)) {
 			invalid = true;
 		}
 	}
@@ -28,10 +28,10 @@ function validateWidget(widget) {
 	return !invalid;
 }
 
-function validate(widget, value) {
+function validate(widget, value, widgetsByResourceKey) {
 	
 	var options = widget.options();
-	if(!internalValidate(widget, value)) {
+	if(!internalValidate(widget, value, widgetsByResourceKey)) {
 		$(options.errorElementId).addClass('error');
 		$(options.errorElementId).text(getResource(options.invalidResourceKey ? options.invalidResourceKey : "text.invalid"));
 		return false;
@@ -42,7 +42,15 @@ function validate(widget, value) {
 	}
 }
 
-function internalValidate(widget, value) {
+function checkReplacement(value, widgetsByResourceKey) {
+	if(isReplacementVariable(value)) {
+		var name = getVariableName(value);
+		value = widgetsByResourceKey.get(name).getValue();
+	}
+	return value;
+}
+
+function internalValidate(widget, value, widgetsByResourceKey) {
 	obj = widget.options();
 	
 	obj = $.extend({ allowEmpty: true, allowAttribute: true }, obj);
@@ -60,19 +68,35 @@ function internalValidate(widget, value) {
 		}
 	}
 	
+	if(isReplacementVariable(value)) {
+		value = widgetsByResourceKey[getVariableName(value)];
+	}
+	
 	if(!obj.allowEmpty && value=='') {
+		log("Validation failed for " + obj.resourceKey + " with empty value");
+		return false;
+	}
+	
+	if(obj.requiredField && value=='') {
+		log("Validation failed for " + obj.resourceKey + " with empty value");
 		return false;
 	}
 	
 	if (obj.inputType == 'number') {
-		return !isNaN(parseFloat(value)) && isFinite(value);
+		if(!(!isNaN(parseFloat(value)) && isFinite(value))) {
+			return false;
+		}
+		if(parseFloat(checkReplacement(obj.minValue, widgetsByResourceKey)) > parseFloat(value) || parseFloat(checkReplacement(obj.maxValue, widgetsByResourceKey)) < parseFloat(value)){
+			log("Validation failed for " + obj.resourceKey + " and value " + value);
+			return false;
+		}
 	} if (obj.inputType == 'integer') {
 		// Validate for integer
 		if(!validateRegex('^[0-9]+$',value)){
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
-		if(parseInt(obj.minValue) > parseInt(value) || parseInt(obj.maxValue) < parseInt(value)){
+		if(parseInt(checkReplacement(obj.minValue, widgetsByResourceKey)) > parseInt(value) || parseInt(checkReplacement(obj.maxValue, widgetsByResourceKey)) < parseInt(value)){
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
@@ -340,6 +364,93 @@ function validateRegex(regex,value){
 	}
 }
 
+$.fn.resetProperties = function() {
+	$('.propertyInput', '#' + $(this).attr('id')).each(function(i, obj) {
+		var widget = $(this).data('widget');
+		widget.reset();
+	});
+};
+
+$.fn.clearProperties = function() {
+	$('.propertyInput', '#' + $(this).attr('id')).each(function(i, obj) {
+		var widget = $(this).data('widget');
+		widget.clear();
+	});
+};
+
+$.fn.validateProperties = function() {
+
+	var invalid = false;
+	var widgetsByResourceKey = new Map();
+	var invalidWidgets = new Array();
+	
+	$(this).find('.propertyInput').each(
+		function(i, obj) {
+			var widget = $(this).data('widget');
+			widgetsByResourceKey.set(widget.options().resourceKey, widget);
+	});
+	
+	$(this).find('.propertyInput').each(
+		function(i, obj) {
+			var widget = $(this).data('widget');
+			
+			if(!validateWidget(widget, widgetsByResourceKey)) {
+				invalidWidgets.push(widget);
+				invalid = true;
+			}
+			
+		});
+
+	if(invalid) {
+		invalidWidgets[0].showTab();
+	}
+	
+	return !invalid;
+
+};
+
+$.fn.validateProperty = function(widget) {
+
+	var widgetsByResourceKey = new Map();
+	
+	$(this).find('.propertyInput').each(
+		function(i, obj) {
+			var widget = $(this).data('widget');
+			widgetsByResourceKey.set(widget.options().resourceKey, widget);
+	});
+
+	return validateWidget(widget, widgetsByResourceKey);
+
+};
+
+$.fn.saveProperties = function(includeAll, callback) {
+
+	var items = new Array();
+	var files = new Array();
+
+	$(this).find('.propertyInput').each(
+		function(i, obj) {
+
+			var widget = $(this).data('widget');
+			
+			var meta = widget.options();
+			
+			log("Checking property " + meta.resourceKey);
+
+			if (includeAll || $(this).data('updated')) {
+				if(meta.isArrayValue) {
+					
+					items.push(new PropertyItem(meta.resourceKey, widget.getValue().join(']|[')));
+				} else {
+					items.push(new PropertyItem(meta.resourceKey, widget.getValue()));
+				}
+			}
+		});
+
+	callback(items);
+
+};
+
 $.fn.propertyPage = function(opts) {
 
 	log("Creating property page for div " + $(this).attr('id'));
@@ -492,6 +603,7 @@ $.fn.propertyPage = function(opts) {
 								
 								
 								var tabfilterClass = "class_default";
+								var categoryKey = this.categoryKey;
 								
 								if(options.useFilters) {
 									if(this.filter && this.filter != 'default') {
@@ -504,8 +616,8 @@ $.fn.propertyPage = function(opts) {
 								
 								$(contentTabs)
 										.append(
-											'<li class="' + tabfilterClass + '" name="tab_'+getResource(this.categoryKey + '.label')+'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
-											+ ' href="#' + tab + '"  name="link_' + getResource(this.categoryKey + '.label') + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
+											'<li class="' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
+											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
 								
 								
 								
@@ -547,7 +659,7 @@ $.fn.propertyPage = function(opts) {
 										}
 										obj = $.extend({
 											changed : function(widget) {
-												if(!validateWidget(widget)) {
+												if(!$('#' + propertyDiv).validateProperty(widget)) {
 													if (options.showButtons) {
 														$(revertButton).attr('disabled', true);
 														$(applyButton).attr('disabled', true);
@@ -600,7 +712,7 @@ $.fn.propertyPage = function(opts) {
 										
 										if(obj.inputType!='hidden') {
 											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + this.id + '"/></div>');
-											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label">' + getResourceWithNamespace(options.i18nNamespace, this.resourceKey) + '</label>');
+											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">' + getResourceWithNamespace(options.i18nNamespace, this.resourceKey) + '</label>');
 											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
 										} 
 
@@ -791,6 +903,12 @@ $.fn.propertyPage = function(opts) {
 											if(!widget) {
 												log("Cannot find input for widget " + obj.inputType);
 											} else {
+										
+												widget = $.extend({
+													showTab: function() {
+														$('a[name="link_' + categoryKey + '"]').tab('show');
+													}
+												}, widget);
 												widget.getInput().addClass('propertyInput');
 												widget.getInput().data('widget', widget);
 												
@@ -927,67 +1045,5 @@ $.fn.propertyPage = function(opts) {
 		});
 };
 
-$.fn.resetProperties = function() {
-	$('.propertyInput', '#' + $(this).attr('id')).each(function(i, obj) {
-		var widget = $(this).data('widget');
-		widget.reset();
-	});
-};
 
-$.fn.clearProperties = function() {
-	$('.propertyInput', '#' + $(this).attr('id')).each(function(i, obj) {
-		var widget = $(this).data('widget');
-		widget.clear();
-	});
-};
-
-$.fn.validateProperties = function() {
-
-	var items = new Array();
-	var files = new Array();
-
-	var invalid = false;
-
-	$(this).find('.propertyInput').each(
-		function(i, obj) {
-
-			var widget = $(this).data('widget');
-			
-			if(!validateWidget(widget)) {
-				invalid = true;
-			}
-			
-		});
-
-	return !invalid;
-
-};
-
-$.fn.saveProperties = function(includeAll, callback) {
-
-	var items = new Array();
-	var files = new Array();
-
-	$(this).find('.propertyInput').each(
-		function(i, obj) {
-
-			var widget = $(this).data('widget');
-			
-			var meta = widget.options();
-			
-			log("Checking property " + meta.resourceKey);
-
-			if (includeAll || $(this).data('updated')) {
-				if(meta.isArrayValue) {
-					
-					items.push(new PropertyItem(meta.resourceKey, widget.getValue().join(']|[')));
-				} else {
-					items.push(new PropertyItem(meta.resourceKey, widget.getValue()));
-				}
-			}
-		});
-
-	callback(items);
-
-};
 

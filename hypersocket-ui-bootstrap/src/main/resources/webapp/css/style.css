@@ -164,6 +164,16 @@ pre {
 	color: #900000 !important;
 }
 
+.requiredField {
+	color: #424242;
+	font-weight: bold;
+}
+
+.optionalField {
+	color: #616161;
+	font-weight: normal;
+}
+
 #logonBanner {
 	text-align: center;
 	margin: 0 auto;

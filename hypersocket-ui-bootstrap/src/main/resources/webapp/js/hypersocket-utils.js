@@ -568,6 +568,10 @@ function isReplacementVariable(value) {
 	}
 }
 
+function getVariableName(value) {
+	return value.trim().substring(2, value.trim().length - 1);
+}
+
 function looksLikeMail(str) {
     var lastAtPos = str.lastIndexOf('@');
     var lastDotPos = str.lastIndexOf('.');
