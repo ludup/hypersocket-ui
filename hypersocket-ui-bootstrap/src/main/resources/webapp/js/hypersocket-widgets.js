@@ -2832,7 +2832,7 @@ $.fn.logoInput = function(data) {
 		else {
 			var idx = val.indexOf('/');
 			if(idx == -1)
-				$('#' + id + 'Preview').attr('src', options.url + '/' + val);
+				$('#' + id + 'Preview').attr('src', basePath + '/api/files/download/' + val);
 			else
 				$('#' + id + 'Preview').attr('src', basePath + '/api/' + val);
 		}
