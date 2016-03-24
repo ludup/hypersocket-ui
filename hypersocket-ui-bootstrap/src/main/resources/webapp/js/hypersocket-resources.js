@@ -115,7 +115,7 @@ $.fn.resourceTable = function(params) {
 	$(this).data('options', options);
 
 	var html = '';
-
+	var currentView = options.defaultView;
 	if(!options.disableDecoration) {
 		html += '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
 			+ options.icon + '"></i><span class="break">' 
@@ -524,11 +524,16 @@ $.fn.resourceTable = function(params) {
 				    	$('#' + divName + 'ToggleGrid').click(function(){
 				    		$('#' + divName + 'Placeholder').toggle();
 				    		$('#' + divName + 'Grid').toggle();
+				    		if(currentView && currentView == 'table'){
+				    			currentView = 'logo';
+				    		}else{
+				    			currentView = 'table';
+				    		}
 				    	});
 		    		}else{
 		    			$('#' + divName + 'Grid').empty();
 		    		}
-		    		if(options.defaultView && options.defaultView == 'logo'){
+		    		if(currentView && currentView == 'logo'){
 		    			$('#' + divName + 'Placeholder').hide();
 		    			$('#' + divName + 'Grid').show();
 		    		}else{
