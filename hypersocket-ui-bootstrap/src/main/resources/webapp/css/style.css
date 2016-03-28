@@ -471,7 +471,7 @@ div.tablePages ul.pagination {
 	overflow: visible;
 }
 
-#propertyFilter {
+.propertyFilter {
 	text-align: right;
 	margin-bottom: 10px;
 }
@@ -848,6 +848,10 @@ table {
 
 .panel-body {
 	padding: 15px 0px 0px 0px;
+}
+
+.panel-group {
+	margin-bottom: 100px;
 }
 
 .panel {
