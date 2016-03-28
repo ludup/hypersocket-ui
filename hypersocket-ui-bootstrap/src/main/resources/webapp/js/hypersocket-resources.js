@@ -134,6 +134,9 @@ $.fn.resourceTable = function(params) {
 	
 	if(options.infoHtml) {
 		var theDiv = $(this).find('.panel-heading');
+		if(!theDiv.length) {
+			theDiv = $(this).find('.modal');
+		}
 		getState(divName+'-infoPanel', true, function(data) {
 			if(data.resources.length == 0 || data.resources[0].show) {
 				theDiv.after('<div id="infoPanel" class="col-xs-12"><div class="alert alert-info"><i class="fa fa-2x fa-info"></i><i id="messageDismiss" '
