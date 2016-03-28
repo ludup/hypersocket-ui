@@ -42,7 +42,7 @@ import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
-import com.hypersocket.server.interfaces.HTTPInterfaceResourcePermission;
+import com.hypersocket.server.interfaces.http.HTTPInterfaceResourcePermission;
 import com.hypersocket.session.SessionPermission;
 import com.hypersocket.triggers.TriggerResourcePermission;
 import com.hypersocket.triggers.TriggerResourceServiceImpl;
@@ -160,7 +160,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RealmPermission.DELETE), MenuService.MENU_SYSTEM_CONFIGURATION);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				"httpInterfaces", "fa-sitemap", "httpInterfaces", 100,
+				"interfaces", "fa-sitemap", "interfaces", 100,
 				HTTPInterfaceResourcePermission.READ,
 				HTTPInterfaceResourcePermission.CREATE,
 				HTTPInterfaceResourcePermission.UPDATE,
@@ -170,9 +170,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MENU_DIAGNOSTICS, "fa-wrench", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
 		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_SCHEDULERS,
-				"fa-clock-o", "schedulers", Integer.MAX_VALUE, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
-				MENU_SYSTEM_CONFIGURATION);
+//		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_SCHEDULERS,
+//				"fa-clock-o", "schedulers", Integer.MAX_VALUE, SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
+//				MENU_SYSTEM_CONFIGURATION);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
