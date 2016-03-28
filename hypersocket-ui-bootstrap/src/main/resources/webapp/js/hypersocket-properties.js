@@ -506,7 +506,7 @@ $.fn.propertyPage = function(opts) {
 
 			$('#' + propertyDiv)
 						.append(
-							'<div class="row"><div class="col-xs-12" id="propertyFilter"></div></div>'
+							'<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
 							+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
 							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
@@ -953,11 +953,11 @@ $.fn.propertyPage = function(opts) {
 				});
 				
 				if(filters.length > 0 && options.useFilters) {
-					$('#propertyFilter').append('<a href="#" class="click_default">' + getResource('default.label') + '</a>');
+					$('#' + propertyDiv + 'PropertyFilter').append('<a href="#" class="click_default">' + getResource('default.label') + '</a>');
 					filters.push('default');
 					$.each(filters, function(idx, filter) {
 						if(filter!='default') {
-							$('#propertyFilter').append(' | <a href="#" class="click_' + filter + '">' + getResource(filter + '.label') + '</a>');
+							$('#' + propertyDiv + 'PropertyFilter').append(' | <a href="#" class="click_' + filter + '">' + getResource(filter + '.label') + '</a>');
 							$('.class_' + filter).hide();
 						}
 						$('.click_' + filter).on('click', function(e) {
@@ -969,7 +969,7 @@ $.fn.propertyPage = function(opts) {
 								}
 							});
 							$('.class_' + filter).show();
-							$('.class_' + filter + ':first a').tab('show');
+							$('li.class_' + filter + ':first a').tab('show');
 						});
 					});
 				}
