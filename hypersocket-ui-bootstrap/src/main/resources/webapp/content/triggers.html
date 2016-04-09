@@ -313,8 +313,11 @@
 										$(document).data('triggerModalCallback').loadParent(null, null, 0);
 										$(document).data('triggerModalCallback').displayResource(resource);
 									} else {
-										$(document).data('triggerModalCallback').loadParent(resource, null, 0);
-										$(document).data('triggerModalCallback').displayResource(resource);	
+										getJSON('triggers/parentEvents/' + resource.id, null, function(data) {
+											$(document).data('triggerModalCallback').loadParent(resource, data.resources, 0);
+											$(document).data('triggerModalCallback').displayResource(resource);	
+										});
+										
 									}
 								},
 								complete : function() {
@@ -386,7 +389,10 @@
 				$('.addIcon').on('click', function(e) {
 					e.preventDefault();
 					var trigger = $(this).closest('.triggerShape').data('trigger');
-					$(document).data('triggerModalCallback').loadParent(trigger, null, 0);
+					getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
+						$(document).data('triggerModalCallback').loadParent(trigger, data.resources, 0);
+					});
+					
 					$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
 						resourceCreated: function(resource) {
 							renderDiagram(resource, resourcePage);
