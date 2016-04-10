@@ -484,6 +484,7 @@ $.fn.resourceTable = function(params) {
 		    sortOrder: options.sortOrder,
 		    sortable: true,
 		    cache: false,
+		    uniqueId: 'id',
 		    onSort: function(name, order) {
 
 		    	$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
@@ -756,6 +757,37 @@ $.fn.resourceTable = function(params) {
 			$('#'+divName).data('createCallback', callback);
 			$('#' + divName + 'Add').trigger('click');
 			
+		},
+		showEdit: function(resource, callback) {
+			$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate ? 'edit' : 'read', { resource : resource });
+		},
+		deleteResource: function(resource, callback) {
+			if (options.canDelete) {
+				var canDelete = !resource.system;
+				if(options.checkDelete) {
+					canDelete = !resource.system && options.checkDelete(resource);
+				}
+				
+				if(canDelete) {
+					log("Entering resource delete for id " + resource.id);
+					bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(resource.name), function(confirmed) {
+						if (confirmed) {
+							deleteJSON(options.resourceUrl + "/" + resource.id, null, function(data) {
+								if (data.success) {
+									if (options.resourceDeleted) {
+										options.resourceDeleted(resource, data.message);
+									}
+									$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
+									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+									showSuccess(data.message);
+								} else {
+									showError(data.message);
+								}
+							});
+						}
+					});
+				}
+			}
 		}
 	}
 	
@@ -866,8 +898,8 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						
 						dialog.bootstrapResourceDialog('close');
 						if (dialogOptions.hasResourceTable) {
-							updateRow = {index: params2.row, row: data.resource}
-							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateRow',	updateRow);
+							updateRow = {id: data.resource.id, row: data.resource}
+							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateByUniqueId',	updateRow);
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
 						if (dialogOptions.resourceUpdated) {
