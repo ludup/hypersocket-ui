@@ -1,11 +1,41 @@
 <div id="dynamicDashboardMessages"></div>
 <div id="overviewContent" class="panel">
+	<div id="showHelpZoneInfo" class="col-xs-12">
+		<div class="alert alert-info">
+			<i class="fa fa-2x fa-info"></i>
+			<i id="messageDismiss" class="fa fa-times dismiss-icon"></i>
+			&nbsp;&nbsp;
+			<span localize="helpzone.showHelpZone"></span>
+			&nbsp;&nbsp;
+			<div id="showHelpZoneSwitch" style="display: inline-block;"></div>
+		</div>
+	</div>
 	<div id="feedLarge" class="col-md-8"></div>
 	<div id="feedSmall" class="col-md-4"></div>
 </div>
 <div id="invisibleWidgets" style="display: none"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$('#overviewContent').localize();
+		getState('showHelpZone', false, function(state){
+			var showHelpZone = true;
+			if(state.resources && state.resources.length){
+				var showHelpZone = JSON.parse(state.resources[0].preferences).showHelpZone;
+			}
+			$('#showHelpZoneSwitch').switchInput({
+				value: showHelpZone,
+				changed: function(widget){
+					saveState('showHelpZone', {'showHelpZone': widget.getValue()}, false, function(state){
+						window.location.reload();
+					});
+				}
+			});
+		});
+		
+		$('#messageDismiss').click(function(e) {
+			$('#showHelpZoneInfo').fadeOut(1000);
+		});
+		
 		getJSON('overview/widgets/helpzone', null, function(data) {
 			$.each(data.resources, function(index, value){
 			
