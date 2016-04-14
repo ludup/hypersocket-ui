@@ -185,7 +185,7 @@ pre {
 .excludedList {
 	float: left;
 	width: 40%;
-	padding-left: 10px;
+/* 	padding-left: 10px; */
 	padding-right: 5px;
 }
 
