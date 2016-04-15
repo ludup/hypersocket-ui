@@ -199,6 +199,7 @@ function validateInputType(type){
 		case 'textAndSelect' :
 		case 'timeAndAutoComplete':
 		case 'select' :
+		case 'dropdown':
 		case 'password' :
 		case 'multipleSelect' :
 		case 'multipleTextInput' :
@@ -463,11 +464,15 @@ $.fn.propertyPage = function(opts) {
 				  resourceNameCallback: false, 
 				  typeCallback: false, 
 				  showButtons : true, 
+				  showAdditionalTabButtons: false,
+				  maintainButtonState: true,
 				  displayMode: '', 
 				  editMode: '',
 				  canUpdate : false, 
 				  title : '', 
 				  icon : 'fa-th', 
+				  revertText: 'text.revert',
+				  applyText: 'text.apply',
 				  propertyTabsLast: true, 
 				  i18nNamespace: '',
 				  useFilters: false,
@@ -516,9 +521,9 @@ $.fn.propertyPage = function(opts) {
 				$(panel)
 						.append(
 							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' 
-							+ propertyDiv + 'Revert"><i class="fa fa-ban"></i>' + getResource('text.revert')
+							+ propertyDiv + 'Revert"><i class="fa fa-ban"></i>' + getResource(options.revertText)
 							+ '</button><button class="btn btn-small btn-primary" id="' + propertyDiv 
-							+ 'Apply"><i class="fa fa-check"></i>' + getResource('text.apply') + '</button></div>');
+							+ 'Apply"><i class="fa fa-save"></i>' + getResource(options.applyText) + '</button></div>');
 			}
 
 			var first = true;
@@ -659,14 +664,15 @@ $.fn.propertyPage = function(opts) {
 										}
 										obj = $.extend({
 											changed : function(widget) {
+												debugger;
 												if(!$('#' + propertyDiv).validateProperty(widget)) {
-													if (options.showButtons) {
+													if (options.showButtons && options.maintainButtonState) {
 														$(revertButton).attr('disabled', true);
 														$(applyButton).attr('disabled', true);
 													}
 												} else {
 													widget.getInput().data('updated', true);
-													if (options.showButtons) {
+													if (options.showButtons && options.maintainButtonState) {
 														$(revertButton).attr('disabled', false);
 														$(applyButton).attr('disabled', false);
 													}
@@ -711,9 +717,17 @@ $.fn.propertyPage = function(opts) {
 										}
 										
 										if(obj.inputType!='hidden') {
+											var sizeClass = 'col-md-9';
+											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
+												sizeClass = 'col-md-' + obj.numCols;
+											}
 											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + this.id + '"/></div>');
 											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">' + getResourceWithNamespace(options.i18nNamespace, this.resourceKey) + '</label>');
-											$('#' + tab + '_item' + this.id).append('<div class="propertyValue col-md-9" id="' + tab + '_value' + this.id + '"></div>');
+											$('#' + tab + '_item' + this.id).append('<div class="propertyValue ' + sizeClass + '" id="' + tab + '_value' + this.id + '"></div>');
+											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
+												sizeClass = 'col-md-' + (9 - obj.numCols);
+												$('#' + tab + '_item' + this.id).append('<div class="' + sizeClass + '">&nbsp;</div>');
+											}
 										} 
 
 
@@ -752,6 +766,15 @@ $.fn.propertyPage = function(opts) {
 											});
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).selectButton(obj);
+
+										} else if (obj.inputType == 'dropdown') {
+
+									    	var widgetOptions = $.extend(obj, {
+									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
+									    		emptySelectionText: getResource(obj.emptySelectionResourceKey)
+											});
+									    	
+									    	widget = $('#' + tab + '_value' + this.id).textDropdown(obj);
 
 										} else if (obj.inputType == 'textAndSelect') {
 
@@ -983,10 +1006,12 @@ $.fn.propertyPage = function(opts) {
 
 			$('.' +  propertyDiv + 'Tab').click(function(e) {
 				e.preventDefault();
-				if($(this).hasClass(propertyDiv + 'Tab2')) {
-					$('#' + propertyDiv + 'Actions').hide();
-				} else {
-					$('#' + propertyDiv + 'Actions').show();
+				if(!options.showAdditionalTabButtons) {
+					if($(this).hasClass(propertyDiv + 'Tab2')) {
+						$('#' + propertyDiv + 'Actions').hide();
+					} else {
+						$('#' + propertyDiv + 'Actions').show();
+					}
 				}
 				$(this).tab('show');
 				$('.code').each(function() {
@@ -1000,41 +1025,57 @@ $.fn.propertyPage = function(opts) {
 			});
 			
 			if (options.showButtons) {
-				$(revertButton).attr('disabled', true);
-				$(applyButton).attr('disabled', true);
-
-				$(revertButton).click(function() {
-					$('.propertyInput').each(function(i, obj) {
-						widget = $(this).data('widget');
-						widget.reset();
-					});
+				
+				if(options.maintainButtonState) {
 					$(revertButton).attr('disabled', true);
 					$(applyButton).attr('disabled', true);
+				}
+				
+				$(revertButton).click(function() {
+					
+					if(options.revertButtonClick) {
+						options.revertButtonClick($(revertButton));
+					} else {
+						$('.propertyInput').each(function(i, obj) {
+							widget = $(this).data('widget');
+							widget.reset();
+						});
+						if(options.maintainButtonState) {
+							$(revertButton).attr('disabled', true);
+							$(applyButton).attr('disabled', true);
+						}
+					}
 				});
 				$(applyButton).click(function() {
 
-					if(!$('#' + propertyDiv).validateProperties()) {
-						showError("error.correctValidationErrors");
-						return;
-					}
-					
-					$('#' + propertyDiv).saveProperties(false, function(items) {
-						postJSON(options.url, items, function(data) {
-
-							if (data.success) {
-								showSuccess(data.message);
-								
-								$('.propertyInput', '#' + propertyDiv).each(function(i, obj) {
-									var item = $('#' + obj.id);
-									item.data('updated', false);
-								});
-							} else {
-								showError(data.message);
-							}
-							$(revertButton).attr('disabled', true);
-							$(applyButton).attr('disabled', true);
+					if(options.applyButtonClick) {
+						options.applyButtonClick($(applyButton));
+					} else {
+						if(!$('#' + propertyDiv).validateProperties()) {
+							showError("error.correctValidationErrors");
+							return;
+						}
+						
+						$('#' + propertyDiv).saveProperties(false, function(items) {
+							postJSON(options.url, items, function(data) {
+	
+								if (data.success) {
+									showSuccess(data.message);
+									
+									$('.propertyInput', '#' + propertyDiv).each(function(i, obj) {
+										var item = $('#' + obj.id);
+										item.data('updated', false);
+									});
+								} else {
+									showError(data.message);
+								}
+								if(options.maintainButtonState) {
+									$(revertButton).attr('disabled', true);
+									$(applyButton).attr('disabled', true);
+								}
+							});
 						});
-					});
+					}
 
 				});
 			}

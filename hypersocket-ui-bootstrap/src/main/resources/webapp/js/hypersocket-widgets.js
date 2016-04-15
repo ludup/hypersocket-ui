@@ -682,7 +682,6 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	var createDropdown = function(text, show) {
-
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
@@ -954,7 +953,7 @@ $.fn.autoComplete = function(data) {
 }
 
 $.fn.textDropdown = function(data) {
-	$(this).autoComplete($.extend(data, {
+	return $(this).autoComplete($.extend(data, {
 		alwaysDropdown: true,
 		icon: 'fa-caret-down'
 	}));
@@ -3292,6 +3291,7 @@ $.fn.multipleFileUpload = function(data) {
 				showDownloadButton: true,
 				showRemoveLine: true,
 				isArrayValue: true,
+				showEmptyRow: false,
 				url: 'files/file'
 			}, data);
 	
@@ -3441,6 +3441,10 @@ $.fn.multipleFileUpload = function(data) {
  	
 	if(options.disabled || options.readOnly) {
 		callback.disable();
+	}
+	
+	if(rowNum==0 && options.showEmptyRow) {
+		callback.addRows(1);
 	}
 	
 	$(this).data('widget', callback);
