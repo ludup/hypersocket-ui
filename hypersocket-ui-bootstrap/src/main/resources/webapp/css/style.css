@@ -1599,3 +1599,7 @@ span.input-group-addon {
 .gridOptions .btn i{
 	margin: 0;
 }
+
+.fixed-table-toolbar {
+	margin-right: 20px;
+}

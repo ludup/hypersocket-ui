@@ -94,9 +94,12 @@ function saveResource(resource, buttonElement, options, closeCallback) {
 	log("Created resource object for posting");
 
 	postJSON(options.resourceUrl, resource, function(data) {
+
 		if (data.success) {
 			log("Resource object created");
-			closeCallback();
+			if(closeCallback) {
+				closeCallback();
+			}
 			if (options.resourceCreated) {
 				options.resourceCreated(data.resource);
 			}
@@ -145,6 +148,8 @@ $.fn.resourceTable = function(params) {
 		hasResourceTable: true
 		},params);
 
+	options.tableView = $('#' + divName);
+	
 	$(this).data('options', options);
 
 	var html = '';
@@ -187,36 +192,10 @@ $.fn.resourceTable = function(params) {
 		});
 	}
 	
-	if(options.useDialog) {
-		$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options);
+	if(options.resourceView === 'samePage') {
+		options.view = $('div[dialog-for="' + divName + '"]').samePageResourceView(options);
 	} else {
-		$('div[dialog-for="' + divName + '"]').hide();
-//		$('#' + divName).after('<div id="' + divName + 'Panel"></div>');
-//		$('#' + divName + 'Panel').append($('div[dialog-for="' + divName + '"]').remove());
-//		$('#' + divName + 'Panel').append(
-//				'<div class="panel-footer"><button id="' + divName + 'SaveButton" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Save</button>'
-//				+ 	'<button id="' + divName + 'CancelButton" class="btn btn-danger"><i class="fa fa-ban"></i>&nbsp;Cancel</button></div>');
-//		$('#' + divName + 'CancelButton').click(function(e) {
-//			e.preventDefault();
-//			
-//			options.clearDialog();
-//			
-//			$('div[dialog-for="' + divName + '"]').hide();
-//			$('#' + divName).show();
-//		});
-//		
-//		$('#' + divName + 'SaveButton').click(function(e) {
-//			e.preventDefault();
-//			
-//			saveResource($(this), options, function() {
-//				if (options.hasResourceTable) {
-//					$('#' + options.divName + 'Placeholder').bootstrapTable('refresh');
-//				}
-//				$('div[dialog-for="' + divName + '"]').hide();
-//				$('#' + divName).show();
-//			});
-//		});
-		
+		options.view = $('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options);
 	}
 
 	var columns = new Array();
@@ -228,6 +207,7 @@ $.fn.resourceTable = function(params) {
 				title: getResource(options.resourceKey + '.logo.label'),
 				align:'left',
 				sortable: false,
+				width: 40,
 				formatter: function(value, row, index) {
 					var prefix = "logo://";
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[index];
@@ -410,15 +390,10 @@ $.fn.resourceTable = function(params) {
 										});
 								});
 						}
-
 					});
-				
-	
 				}
-
 		}
 
-			
 		var canUpdate = options.canUpdate;
 		if(options.checkUpdate) {
 			canUpdate = options.checkUpdate(row);
@@ -433,16 +408,10 @@ $.fn.resourceTable = function(params) {
 				function() {
 					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-					if(options.useDialog) {
-						$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
-								{ row : curRow, resource : resource });
+					if(options.canUpdate && canUpdate) {
+						options.view.editResource(resource);
 					} else {
-						
-						options.clearDialog(false);
-						options.displayResource(resource);
-						$('#' + divName).hide();
-						$('div[dialog-for="' + divName + '"]').show();
-						
+						options.view.viewResource(resource);
 					}
 			});
 			renderedActions += '<a class="btn btn-primary row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
@@ -453,19 +422,7 @@ $.fn.resourceTable = function(params) {
 				function() {
 					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-					if(options.useDialog) {
-						$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog('copy',
-								{ row : curRow, resource : resource });
-					} else {
-						
-						options.clearDialog(false);
-						resource.id = null;
-						resource.name = resource.name + ' (' + getResource('text.copy') + ')';
-						options.displayResource(resource);
-						$('#' + divName).hide();
-						$('div[dialog-for="' + divName + '"]').show();
-						
-					}
+					options.view.copyResource(resource);
 			});
 		}
 
@@ -525,7 +482,7 @@ $.fn.resourceTable = function(params) {
 	columns.push({ field : "actions",
 		align:'right',
 		formatter: renderActions,
-		width: 125
+		width: 150
 	});
 
 	if (options.canCreate) {
@@ -535,13 +492,7 @@ $.fn.resourceTable = function(params) {
 			if (options.showCreate) {
 				options.showCreate();
 			}
-			if(options.useDialog) {
-				$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog('create', $('#'+divName).data('createCallback'));
-			} else {
-				options.clearDialog(true);
-				$('#' + divName).hide();
-				$('div[dialog-for="' + divName + '"]').show();	
-			}
+			options.view.createResource($('#'+divName).data('createCallback'));
 		});
 	}
 
@@ -627,8 +578,13 @@ $.fn.resourceTable = function(params) {
 				    		$('#' + divName + 'Grid').toggle();
 				    		if(currentView && currentView == 'table'){
 				    			currentView = 'logo';
-				    		}else{
+				    			$(this).find('i').removeClass('fa-picture-o');
+				    			$(this).find('i').addClass('fa-list');
+				    			
+				    		} else {
 				    			currentView = 'table';
+				    			$(this).find('i').removeClass('fa-list');
+				    			$(this).find('i').addClass('fa-picture-o');
 				    		}
 				    	});
 		    		}else{
@@ -748,11 +704,8 @@ $.fn.resourceTable = function(params) {
 									if(options.showEdit) {
 										options.showEdit(resource);
 									}
-									if(options.useDialog) {
-										$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read', { row : index, resource : resource });
-									} else {
-										$('#' + divName).hide();
-										$('div[dialog-for="' + divName + '"]').show();	
+									if(options.canUpdate && canUpdate) {
+										options.view.editResource(resource);
 									}
 								});
 								$(document).off('click', '#' + resource.id + 'GridDiv img');
@@ -760,11 +713,10 @@ $.fn.resourceTable = function(params) {
 									if(options.showEdit) {
 										options.showEdit(resource);
 									}
-									if(options.useDialog) {
-										$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read', { row : index, resource : resource });
+									if(options.canUpdate && canUpdate) {
+										options.view.editResource(resource);
 									} else {
-										$('#' + divName).hide();
-										$('div[dialog-for="' + divName + '"]').show();	
+										options.view.viewResource(resource);
 									}
 								});
 								
@@ -774,23 +726,17 @@ $.fn.resourceTable = function(params) {
 									if(options.showCopy) {
 										options.showCopy(resource);
 									}
-									if(options.useDialog) {
-										$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog('copy', { row : index, resource : resource });
-									} else {
-										$('#' + divName).hide();
-										$('div[dialog-for="' + divName + '"]').show();	
-									}
+									options.view.copyResource(resource);
 								});
 								$(document).off('click', '#' + resource.id + 'GridDiv img');
 								$(document).on('click', '#' + resource.id + 'GridDiv img', function() {
 									if(options.showEdit) {
 										options.showEdit(resource);
 									}
-									if(options.useDialog) {
-										$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read', { row : index, resource : resource });
+									if(options.canUpdate && canUpdate) {
+										options.view.editResource(resource);
 									} else {
-										$('#' + divName).hide();
-										$('div[dialog-for="' + divName + '"]').show();	
+										options.view.viewResource(resource);
 									}
 								});
 								$('#' + resource.id + 'GridDiv img').css('cursor', 'pointer');
@@ -892,21 +838,32 @@ $.fn.resourceTable = function(params) {
 		refresh: function() {
 			$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 		},
+		close: function() {
+			options.view.closeResource();
+		},
 		showCreate: function(callback) {
-			$('#'+divName).data('createCallback', callback);
-			$('#' + divName + 'Add').trigger('click');
-			
+			if(options.showCreate) {
+				options.showCreate();
+			}
+			options.view.createResource(callback);
 		},
 		showEdit: function(resource, callback) {
 			if(options.showEdit) {
 				options.showEdit(resource);
 			}
-			if(options.useDialog) {
-				$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate ? 'edit' : 'read', { resource : resource });
-			} else {
-				$('#' + divName).hide();
-				$('div[dialog-for="' + divName + '"]').show();
+			options.view.editResource(resource);
+		},
+		showRead: function(resource, callback) {
+			if(options.showView) {
+				options.showView(resource);
 			}
+			options.view.viewResource(resource);
+		},
+		showCopy: function(resource, callback) {
+			if(options.showCopy) {
+				options.showCopy(resource);
+			}
+			options.view.copyResource(resource);
 		},
 		saveResource: function(buttonElement, closeCallback) {
 			saveResource(options.createResource(), buttonElement, options, closeCallback);
@@ -944,6 +901,185 @@ $.fn.resourceTable = function(params) {
 	return callback;
 };
 
+$.fn.samePageResourceView = function(params, params2) {
+
+	var dialog = $(this);
+	var dialogOptions = $(this).data('options');
+	
+	var addActions = function(save, copy) {
+		var html = '<div class="panel-footer">';
+		html+= '<button id="' + dialog.attr('id') + 'Cancel" + class="btn btn-danger"><i class="fa fa-ban"></i>' + getResource('text.cancel') + '</button>';
+		if(save) {
+			html += '<button id="' + dialog.attr('id') + 'Save" + class="btn btn-primary"><i class="fa fa-save"></i>' + getResource('text.save') + '</button>';
+		}
+		html += '</div>';
+		dialog.find('.panel-body').after(html);
+		
+		if(save) {
+			$('#' + dialog.attr('id') + 'Save').click(function() {
+				var resource = dialogOptions.createResource();
+				if(copy) {
+					resource.id = null;
+				}
+				saveResource(resource, dialog, dialogOptions, function() {
+					dialog.samePageResourceView('close');
+					if (dialogOptions.hasResourceTable) {
+						$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+					}
+				});
+			});
+		}
+		$('#' + dialog.attr('id') + 'Cancel').click(function() {
+			dialog.samePageResourceView('close');
+		});
+		
+	}
+	if (params === 'create') {
+		
+		dialogOptions.clearDialog(true);
+		if(dialogOptions.propertyOptions) {
+			var propertyOptions = $.extend({},
+					dialogOptions.propertyOptions,
+					{ url: dialogOptions.propertyOptions.templateUrl,
+				      title: getResource(dialogOptions.resourceKey + '.create.title'),
+				      icon: dialogOptions.icon,
+					  complete: function() {
+						  dialogOptions.tableView.hide();
+						  dialog.show();
+						  if(dialogOptions.propertyOptions.complete) {
+							  dialogOptions.propertyOptions.complete();
+						  }
+						  addActions(true);
+						  
+					  }	
+			});
+			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		} 
+		
+		return;
+		
+	} else if(params === 'edit') {
+		
+		dialogOptions.clearDialog(false);
+		dialogOptions.displayResource(params2);
+		
+		if(dialogOptions.propertyOptions) {
+			var propertyOptions = $.extend({},
+					dialogOptions.propertyOptions,
+					{ url: dialogOptions.propertyOptions.templateUrl,
+					  title: getResource(dialogOptions.resourceKey + '.update.title'),
+					  icon: dialogOptions.icon,
+				  	  complete: function() {
+						  dialogOptions.tableView.hide();
+						  dialog.show();
+						  if(dialogOptions.propertyOptions.complete) {
+							  dialogOptions.propertyOptions.complete(params2);
+						  }
+						  addActions(true);
+						  
+					  }	
+			});
+			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		}
+		
+		return;
+		
+	} else if(params === 'read') {
+		
+		dialogOptions.clearDialog(false);
+		dialogOptions.displayResource(params2, true);
+		if(dialogOptions.propertyOptions) {
+			var propertyOptions = $.extend({},
+					dialogOptions.propertyOptions,
+					{ url: dialogOptions.propertyOptions.templateUrl,
+				      title: getResource(dialogOptions.resourceKey + '.view.title'),
+				      icon: dialogOptions.icon,
+					  complete: function() {
+						  dialogOptions.tableView.hide();
+						  dialog.show();
+						  if(dialogOptions.propertyOptions.complete) {
+							  dialogOptions.propertyOptions.complete(params2);
+						  }
+						  addActions(false);
+						  
+					  }	
+			});
+			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		}
+		
+		return;
+		
+	} else if(params === 'copy') {
+		
+		dialogOptions.clearDialog(false);
+		params2.name = params2.name + " (" + getResource('text.copy') + ")";
+		dialogOptions.displayResource(params2);
+		if(dialogOptions.propertyOptions) {
+			var propertyOptions = $.extend({},
+					dialogOptions.propertyOptions,
+					{ url: dialogOptions.propertyOptions.templateUrl,
+				      title: getResource(dialogOptions.resourceKey + '.create.title'),
+				      icon: dialogOptions.icon,
+					  complete: function() {
+						  dialogOptions.tableView.hide();
+						  dialog.show();
+						  if(dialogOptions.propertyOptions.complete) {
+							  dialogOptions.propertyOptions.complete(params2);
+						  }
+						  addActions(true, true);
+						  
+					  }	
+			});
+			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		}
+		
+		return;
+	} else if(params === 'close') {
+		
+		if(dialogOptions) {
+			dialog.hide();
+			
+			if(dialogOptions.onClose) {
+				dialogOptions.onClose();
+			}
+			
+			dialogOptions.parent.show();
+		}
+		
+		window.scrollTo(0,0);
+		return;
+	}
+	
+	var parent = $(this).parent();
+	dialog.hide();
+	parent.after(dialog.detach());
+	
+	var options = $.extend(
+			{ hasResourceTable : true,
+			  parent: parent, },
+			  params);
+	
+	dialog.data('options', options);
+	
+	return {
+		createResource: function(callback) {
+			dialog.samePageResourceView('create', callback);
+		},
+		editResource: function(resource) {
+			dialog.samePageResourceView('edit', resource);
+		},
+		viewResource: function(resource) {
+			dialog.samePageResourceView('read', resource);
+		},
+		copyResource: function(resource) {
+			dialog.samePageResourceView('copy', resource);
+		},
+		closeResource: function() {
+			dialog.samePageResourceView('close');
+		}
+	};
+};
+
 $.fn.bootstrapResourceDialog = function(params, params2) {
 
 	var dialog = $(this);
@@ -974,13 +1110,11 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 				if (dialogOptions.hasResourceTable) {
 					$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 				}
-				if(params2 && params2.resourceCreated) {
-					params2.resourceCreated(data.resource);
-				}
 			});
 
 		});
 		dialog.modal('show');
+		return;
 
 	} else if (params === 'edit' || params === 'read' || params === 'copy') {
 		var readOnly = params==='read';
@@ -988,9 +1122,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		removeMessage();
 		
 		if(params === 'copy') {
-			params2.resource.name = params2.resource.name + ' (' + getResource('text.copy') + ')';
+			params2.name = params2.name + ' (' + getResource('text.copy') + ')';
 		}
-		dialogOptions.displayResource(params2.resource, readOnly);
+		dialogOptions.displayResource(params2, readOnly);
 		
 		if(readOnly) {
 			$(this).find('.modal-title').text(
@@ -1015,23 +1149,19 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						if (dialogOptions.hasResourceTable) {
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
-						if(params2 && params2.resourceCreated) {
-							params2.resourceCreated(data.resource);
-						}
 					});
 				} else {
 					saveResource(resource, $(this), dialogOptions, function() {
 						dialog.bootstrapResourceDialog('close');
 						if (dialogOptions.hasResourceTable) {
-							updateRow = {index: params2.row, row: data.resource}
-							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateRow',	updateRow);
+							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateRow',	resource);
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
 						if (dialogOptions.resourceUpdated) {
-							dialogOptions.resourceUpdated(data.resource);
+							dialogOptions.resourceUpdated(resource);
 						}
 						if(params2.resourceUpdated) {
-							params2.resourceUpdated(data.resource);
+							params2.resourceUpdated(resource);
 						}
 					});
 				}
@@ -1040,15 +1170,18 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		}
 		
 		dialog.modal('show');
+		return;
 
 	} else if (params === 'close') {
 		dialog.modal('hide');
+		return;
 	} else if (params === 'error') {
 		if(params2 == 'reset') {
 			removeMessage();
 		} else {
 			showError(params2);
 		}
+		return;
 	} else {
 		if (!options.resourceKey) {
 			alert("Bad usage, resourceKey not set");
@@ -1056,4 +1189,22 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			$(this).data('options', options);
 		}
 	}
+	
+	return {
+		createResource: function(callback) {
+			dialog.bootstrapResourceDialog('create', callback);
+		},
+		editResource: function(resource) {
+			dialog.bootstrapResourceDialog('edit', resource);
+		},
+		viewResource: function(resource) {
+			dialog.bootstrapResourceDialog('read', resource);
+		},
+		copyResource: function(resource) {
+			dialog.bootstrapResourceDialog('copy', resource);
+		},
+		closeResource: function() {
+			dialog.bootstrapResourceDialog('close');
+		}
+	};
 };

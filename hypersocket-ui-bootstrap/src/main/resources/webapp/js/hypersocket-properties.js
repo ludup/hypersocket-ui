@@ -457,7 +457,7 @@ $.fn.propertyPage = function(opts) {
 	log("Creating property page for div " + $(this).attr('id'));
 
 	var propertyDiv = $(this).attr('id');
-	
+
 	var options = $
 			.extend(
 				{ resourceNameField: false, 
@@ -664,7 +664,6 @@ $.fn.propertyPage = function(opts) {
 										}
 										obj = $.extend({
 											changed : function(widget) {
-												debugger;
 												if(!$('#' + propertyDiv).validateProperty(widget)) {
 													if (options.showButtons && options.maintainButtonState) {
 														$(revertButton).attr('disabled', true);
