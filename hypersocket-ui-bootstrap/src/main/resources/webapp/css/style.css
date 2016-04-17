@@ -185,7 +185,7 @@ pre {
 .excludedList {
 	float: left;
 	width: 40%;
-	padding-left: 10px;
+/* 	padding-left: 10px; */
 	padding-right: 5px;
 }
 
@@ -1598,4 +1598,8 @@ span.input-group-addon {
 
 .gridOptions .btn i{
 	margin: 0;
+}
+
+.fixed-table-toolbar {
+	margin-right: 20px;
 }

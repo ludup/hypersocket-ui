@@ -682,7 +682,6 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	var createDropdown = function(text, show) {
-
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
@@ -954,7 +953,7 @@ $.fn.autoComplete = function(data) {
 }
 
 $.fn.textDropdown = function(data) {
-	$(this).autoComplete($.extend(data, {
+	return $(this).autoComplete($.extend(data, {
 		alwaysDropdown: true,
 		icon: 'fa-caret-down'
 	}));
@@ -3287,10 +3286,12 @@ $.fn.multipleFileUpload = function(data) {
 				maxRows : 0,
 				disabled : false, 
 				values: [],
+				showEmptyRow: false,
 				showUploadButton: true,
 				showDownloadButton: true,
 				showRemoveLine: true,
 				isArrayValue: true,
+				showEmptyRow: false,
 				url: 'files/file'
 			}, data);
 	
@@ -3305,14 +3306,14 @@ $.fn.multipleFileUpload = function(data) {
 	}
 	
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
-			+	'	<div id="' + id + 'FileUploads" ></div>'
+			+	'	<div id="' + id + 'FileUploads"></div>'
 			+	'	<div id="' + id + 'NewRow">'
 			+	'		<div class="col-xs-12" style="padding-left: 0px; padding-right: 0px;">'
-			+	'			<div class="propertyValue col-xs-10" style="padding-left: 0px;">'
+			+	'			<div class="propertyValue col-xs-8" style="padding-left: 0px;">'
 			+	'				<span class="help-block">' + options.text + '</span>'
 			+	'			</div>'
-			+	'			<div class="propertyValue col-xs-2 dialogActions">'
-			+	'				<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
+			+	'			<div class="propertyValue col-xs-4 dialogActions">'
+			+	'				<a id="' + id + 'AddRow" href="#" class="btn btn-primary addButton">'
 			+	'					<i class="fa fa-plus"></i>'
 			+	'				</a>'
 			+	'			</div>'
@@ -3432,8 +3433,18 @@ $.fn.multipleFileUpload = function(data) {
  		callback.setValue(options.values);
  	}
  	
+ 	if(options.showEmptyRow) {
+		if($('#' + id + 'FileUploads').children().length == 0) {
+			callback.addRows(1);
+		}
+	}
+ 	
 	if(options.disabled || options.readOnly) {
 		callback.disable();
+	}
+	
+	if(rowNum==0 && options.showEmptyRow) {
+		callback.addRows(1);
 	}
 	
 	$(this).data('widget', callback);
