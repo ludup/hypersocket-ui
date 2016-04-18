@@ -919,7 +919,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
-					{ url: dialogOptions.propertyOptions.propertiesUrl + params.id,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
 					  title: getResource(dialogOptions.resourceKey + '.update.title'),
 					  icon: dialogOptions.icon,
 				  	  complete: function() {
@@ -945,7 +945,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
-					{ url: dialogOptions.propertyOptions.propertiesUrl + params.id,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
 				      title: getResource(dialogOptions.resourceKey + '.view.title'),
 				      icon: dialogOptions.icon,
 					  complete: function() {
@@ -972,7 +972,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
-					{ url: dialogOptions.propertyOptions.propertiesUrl + params.id,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
 				      title: getResource(dialogOptions.resourceKey + '.create.title'),
 				      icon: dialogOptions.icon,
 					  complete: function() {
