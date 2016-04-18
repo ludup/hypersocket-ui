@@ -14,65 +14,6 @@ $.fn.ajaxResourcePage = function(params) {
 	
 }
 
-$.fn.iconPage = function(params) {
-	
-	var divName = $(this).attr('id');
-	
-	$('#' + divName).append('<div class="panel panel-default"><div id="' + divName + 'Icons" class="panel-body"></div></div>');
-	divName = '#' + divName + 'Icons';
-	
-	var options = $.extend({
-		
-	}, params);
-	
-	getJSON(options.url, null, function(data) {
-		var row = 6;
-		
-		$(divName).append('<div class="row"></div>');
-		$.each(data.resources, function(idx, resource) {
-			
-			row--;
-			
-			if(row==0) {
-				$(divName).append('<div class="row"></div>');
-				row = 12;
-			}
-			$(divName).children('.row').last().append('<div class="col-xs-2" style="height: 100px; margin: 10px;"></div>');
-			
-			var prefix = "logo://";
-			var value = resource.logo;
-			var itype = options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default';
-			if(!resource) {
-				return;
-			}
-			if(!value) {
-				value = 'logo://100_autotype_autotype_auto.png';
-			}
-			
-			if(value.slice(0, prefix.length) == prefix) {
-				var txt = resource.name;
-				if(!txt || txt == '')
-					txt = 'Default';
-				var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
-				$(divName).children('.row').children('.col-xs-2').last().append('<img width="100" height="100" src="' + uri + '"/>');
-			}
-			else {
-				var idx = value.indexOf('/');
-				if(idx == -1) {
-					$(divName).children('.row').children('.col-xs-1').last().append(
-							'<img width="100" height="100" src="' + (basePath + '/api/files/download/' + value)+ '"/>');
-				} else {
-					$(divName).children('.row').children('.col-xs-2').last().append('<img width="100" height="100" src="' + (basePath + '/api/' + value)+ '"/>');
-				}
-			}
-		});
-		
-		if(options.complete) {
-			options.complete();
-		}
-	});
-};
-
 $.fn.resourceDialog = function(params, params2) {
 	$(this).bootstrapResourceDialog(params, params2);
 };
@@ -932,8 +873,19 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#' + dialog.attr('id') + 'Cancel').click(function() {
 			dialog.samePageResourceView('close');
 		});
-		
+	
 	}
+	
+	var showView = function() {
+		$('#mainContainer').removeClass('col-md-10');
+		$('#mainContainer').addClass('col-md-12');
+		$('#mainContainer').removeClass('col-sm-11');
+		$('#mainContainer').addClass('col-sm-12');
+		$('#main-menu').hide();
+		dialogOptions.tableView.hide();
+		dialog.show();
+	}
+	
 	if (params === 'create') {
 		
 		dialogOptions.clearDialog(true);
@@ -944,8 +896,7 @@ $.fn.samePageResourceView = function(params, params2) {
 				      title: getResource(dialogOptions.resourceKey + '.create.title'),
 				      icon: dialogOptions.icon,
 					  complete: function() {
-						  dialogOptions.tableView.hide();
-						  dialog.show();
+						  showView();
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete();
 						  }
@@ -954,7 +905,9 @@ $.fn.samePageResourceView = function(params, params2) {
 					  }	
 			});
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
-		} 
+		} else {
+			showView();
+		}
 		
 		return;
 		
@@ -966,12 +919,11 @@ $.fn.samePageResourceView = function(params, params2) {
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
-					{ url: dialogOptions.propertyOptions.templateUrl,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + params.id,
 					  title: getResource(dialogOptions.resourceKey + '.update.title'),
 					  icon: dialogOptions.icon,
 				  	  complete: function() {
-						  dialogOptions.tableView.hide();
-						  dialog.show();
+						  showView();
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(params2);
 						  }
@@ -980,6 +932,8 @@ $.fn.samePageResourceView = function(params, params2) {
 					  }	
 			});
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		} else {
+			showView();
 		}
 		
 		return;
@@ -991,12 +945,11 @@ $.fn.samePageResourceView = function(params, params2) {
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
-					{ url: dialogOptions.propertyOptions.templateUrl,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + params.id,
 				      title: getResource(dialogOptions.resourceKey + '.view.title'),
 				      icon: dialogOptions.icon,
 					  complete: function() {
-						  dialogOptions.tableView.hide();
-						  dialog.show();
+						  showView();
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(params2);
 						  }
@@ -1005,6 +958,8 @@ $.fn.samePageResourceView = function(params, params2) {
 					  }	
 			});
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		} else {
+			showView();
 		}
 		
 		return;
@@ -1017,12 +972,11 @@ $.fn.samePageResourceView = function(params, params2) {
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
-					{ url: dialogOptions.propertyOptions.templateUrl,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + params.id,
 				      title: getResource(dialogOptions.resourceKey + '.create.title'),
 				      icon: dialogOptions.icon,
 					  complete: function() {
-						  dialogOptions.tableView.hide();
-						  dialog.show();
+						  showView()
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(params2);
 						  }
@@ -1031,6 +985,8 @@ $.fn.samePageResourceView = function(params, params2) {
 					  }	
 			});
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		} else {
+			showView();
 		}
 		
 		return;
@@ -1046,6 +1002,11 @@ $.fn.samePageResourceView = function(params, params2) {
 			dialogOptions.parent.show();
 		}
 		
+		$('#mainContainer').removeClass('col-md-12');
+		$('#mainContainer').addClass('col-md-10');
+		$('#mainContainer').removeClass('col-sm-12');
+		$('#mainContainer').addClass('col-sm-11');
+		$('#main-menu').show();
 		window.scrollTo(0,0);
 		return;
 	}
