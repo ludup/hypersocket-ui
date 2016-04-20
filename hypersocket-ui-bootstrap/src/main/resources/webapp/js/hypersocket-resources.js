@@ -914,7 +914,7 @@ $.fn.samePageResourceView = function(params, params2) {
 	} else if(params === 'edit') {
 		
 		dialogOptions.clearDialog(false);
-		dialogOptions.displayResource(params2);
+		dialogOptions.displayResource(params2, false);
 		
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
@@ -968,7 +968,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		dialogOptions.clearDialog(false);
 		params2.name = params2.name + " (" + getResource('text.copy') + ")";
-		dialogOptions.displayResource(params2);
+		dialogOptions.displayResource(params2, false, true);
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
@@ -1085,7 +1085,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		if(params === 'copy') {
 			params2.name = params2.name + ' (' + getResource('text.copy') + ')';
 		}
-		dialogOptions.displayResource(params2, readOnly);
+		dialogOptions.displayResource(params2, readOnly, params === 'copy');
 		
 		if(readOnly) {
 			$(this).find('.modal-title').text(

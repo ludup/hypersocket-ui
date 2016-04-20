@@ -162,17 +162,35 @@
 								deleted : function(resource) {
 
 								},
-								displayResource : function(resource, readOnly) {
+								displayResource : function(resource, readOnly, copy) {
 
 									$('#userName').val(resource.name);
-									$('#userName').attr('disabled', readOnly || $('#userName').attr('disabled'));
+									if(copy) {
+										$('#userName').attr('disabled', false);
+									} else {
+										$('#userName').attr('disabled', readOnly || $('#userName').attr('disabled'));
+									}
 									$('#userId').val(resource.id);
+									
+									$('#tabPassword').hide();
+									
+									var tabs = [];
+									tabs.push({
+												id : "tabUserGroups",
+												name : getResource("label.groups")
+									});
+									if(copy) {
+										tabs.push({
+												id : "tabPassword",
+												name : getResource("label.password")
+											});
+									}
 									
 									getJSON('currentRealm/groups/user/' + resource.id, null, function(data) {
 										
 										$('#userProperties').parent().append($('#tabUserGroups').detach());
 										$('#userProperties').parent().append($('#tabPassword').detach());
-										$('#tabPassword').hide();
+										
 										$('#userProperties').empty();
 										$('#userProperties').propertyPage({
 											url : 'currentRealm/user/properties/' + resource.id,
@@ -181,10 +199,12 @@
 											canUpdate : true,
 											propertyTabsLast: false,
 											useFilters: true,
-											additionalTabs : [ {
-												id : "tabUserGroups",
-												name : getResource("label.groups")
-											} ]
+											additionalTabs : tabs,
+											complete: function() {
+												if(tabs.length > 1) {
+													$('#tabPassword').removeAttr("style");
+												}
+											}
 										});
 
 										$('#tabUserGroups').multipleSearchInput({
