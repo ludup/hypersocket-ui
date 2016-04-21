@@ -166,10 +166,9 @@ $.fn.htmlInput = function(data) {
 			  lineNumbers: true}, 
 		data);
 		
-	var id = (options.id ? options.id : $(this).attr('id') +  'HtmlInput');
+	var id = "_" + (options.id ? options.id : $(this).attr('id')) +  'HtmlInput';
 	
 	$(this).append('<div class="code form-control" id="' + id + '"></div>');
-	
 	
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
@@ -2497,7 +2496,8 @@ $.fn.fileUploadInput = function(data) {
 					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>';
 		if(options.detailedView) {
 			formattedHtml +=	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
-			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>';			
+			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span></br>'
+			+   '   <span>' + getResource('text.url') + '</span>';			
 		}
 
 		formattedHtml +=	'</div>'
@@ -2506,7 +2506,8 @@ $.fn.fileUploadInput = function(data) {
 		
 		if(options.detailedView) {
 			formattedHtml +=	'	<span>' + fileSize + '</span></br>'
-						+	'	<span>' + data.md5Sum + '</span>';			
+						+	'	<span>' + data.md5Sum + '</span></br>'
+						+   '   <span><a href="' + basePath + '/api/files/download/' + data.name + '">' + basePath + '/api/files/download/' + data.name + '</a></span>';			
 		}
 					
 		formattedHtml +=	'</div>';
