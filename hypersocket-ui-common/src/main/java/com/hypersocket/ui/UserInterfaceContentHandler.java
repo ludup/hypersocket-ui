@@ -79,10 +79,7 @@ public class UserInterfaceContentHandler implements ContentHandler {
 		i18nService.registerBundle("ui");
 		
 		actualHandler.setServer(server);	
-		
-		String basePath = FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath());
-		
-		actualHandler.setBasePath(basePath);
+
 		actualHandler.addAlias("", "redirect:/");
 		actualHandler.addAlias("/", "/index.html");
 		actualHandler.addAlias("/home", "/index.html");
@@ -91,13 +88,18 @@ public class UserInterfaceContentHandler implements ContentHandler {
 		actualHandler.addFilter(htmlContentFilter);
 		actualHandler.addFilter(includeContentFilter);
 		
-		server.addCompressablePath(server.resolvePath(basePath));
+		server.addCompressablePath(server.resolvePath(
+				FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath())));
 		server.registerHttpHandler(actualHandler);
 	}
 	
 
 	private void loadClasspathHandler() {
-		actualHandler = new ClasspathContentHandler("/webapp", 1000);
+		actualHandler = new ClasspathContentHandler("/webapp", 1000) {
+			public String getBasePath() {
+				return FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath());
+			}
+		};
 	}
 
 	private void loadFileHandler() {
@@ -124,7 +126,11 @@ public class UserInterfaceContentHandler implements ContentHandler {
 					}
 					if(handler==null) {
 						handler = new FileContentHandler("webapp", 1000,
-								webappFolder);
+								webappFolder) {
+							public String getBasePath() {
+								return FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath());
+							}
+						};
 					} else {
 						handler.addBaseDir(webappFolder);
 					}
