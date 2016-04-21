@@ -24,7 +24,7 @@ $.fn.clipboardCopy = function(data) {
 	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
 	
 	$(this).on('click', function() {
-		$(this).append('<input style="XXXdisplay: none;" type="text" id="' + id + 'Text" name="' + id + 'Text" value="' + options.text + '"/>');
+		$(this).append('<input type="text" id="' + id + 'Text" name="' + id + 'Text" value="' + options.text + '"/>');
 		$('#' + id + 'Text').select();
 		try {
 			var successful = document.execCommand('copy');
@@ -435,7 +435,7 @@ $.fn.richInput = function(data) {
 				  if(tagName == 'textarea' || tagName == 'input' || tagName == 'TEXTAREA' || tagName == 'INPUT') 
 					  newval = $('#' + id).val();
 				  else
-					  newval = $('#' + id).text();
+					  newval = $('#' + id).html();
 			  }
 			  
 			  callback.originalValue = newval;
