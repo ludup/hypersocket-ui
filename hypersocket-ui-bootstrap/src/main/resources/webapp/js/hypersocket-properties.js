@@ -757,6 +757,10 @@ $.fn.propertyPage = function(opts) {
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).editor(obj);
 									    	
+									    } else if(obj.inputType == 'rich') {
+									    	
+									    	widget = $('#' + tab + '_value' + this.id).richInput(obj);
+									    	
 									    } else if (obj.inputType == 'select') {
 
 									    	var widgetOptions = $.extend(obj, {
