@@ -2578,7 +2578,20 @@ $.fn.fileUploadInput = function(data) {
  				});
  			},
  			clear: function() {
- 				 // How to clear file input?
+ 				if(callback.hasFile()) {
+	 				$('#' + id + 'Info').parent().append('<input type="file" id="' + id + 'File"/>');
+					$('#' + id + 'Info').remove();
+					$('#' + id + 'RemoveButton').parent().append('<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>');
+					$('#' + id + 'RemoveButton').remove();
+					$('#' + id + 'DownloadButton').remove();
+					$('#' + id + 'UpdateProgressHolder').hide();
+					$('#' + id + 'UploadButton').click(function(){
+						callback.upload();
+					});
+					if(options.disabled) {
+						callback.disable();
+					}
+ 				}
  			},
  			disable: function() {
  				$('#' + id + 'File').attr('disabled', 'disabled');
