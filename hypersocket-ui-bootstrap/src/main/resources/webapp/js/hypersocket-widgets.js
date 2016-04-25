@@ -166,10 +166,9 @@ $.fn.htmlInput = function(data) {
 			  lineNumbers: true}, 
 		data);
 		
-	var id = (options.id ? options.id : $(this).attr('id') +  'HtmlInput');
+	var id = "_" + (options.id ? options.id : $(this).attr('id')) +  'HtmlInput';
 	
 	$(this).append('<div class="code form-control" id="' + id + '"></div>');
-	
 	
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
@@ -682,7 +681,6 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	var createDropdown = function(text, show) {
-
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
@@ -954,7 +952,7 @@ $.fn.autoComplete = function(data) {
 }
 
 $.fn.textDropdown = function(data) {
-	$(this).autoComplete($.extend(data, {
+	return $(this).autoComplete($.extend(data, {
 		alwaysDropdown: true,
 		icon: 'fa-caret-down'
 	}));
@@ -2498,7 +2496,8 @@ $.fn.fileUploadInput = function(data) {
 					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>';
 		if(options.detailedView) {
 			formattedHtml +=	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
-			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>';			
+			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span></br>'
+			+   '   <span>' + getResource('text.url') + '</span>';			
 		}
 
 		formattedHtml +=	'</div>'
@@ -2507,7 +2506,8 @@ $.fn.fileUploadInput = function(data) {
 		
 		if(options.detailedView) {
 			formattedHtml +=	'	<span>' + fileSize + '</span></br>'
-						+	'	<span>' + data.md5Sum + '</span>';			
+						+	'	<span>' + data.md5Sum + '</span></br>'
+						+   '   <span><a href="' + basePath + '/api/files/download/' + data.name + '">' + basePath + '/api/files/download/' + data.name + '</a></span>';			
 		}
 					
 		formattedHtml +=	'</div>';
@@ -2578,7 +2578,20 @@ $.fn.fileUploadInput = function(data) {
  				});
  			},
  			clear: function() {
- 				 // How to clear file input?
+ 				if(callback.hasFile()) {
+	 				$('#' + id + 'Info').parent().append('<input type="file" id="' + id + 'File"/>');
+					$('#' + id + 'Info').remove();
+					$('#' + id + 'RemoveButton').parent().append('<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>');
+					$('#' + id + 'RemoveButton').remove();
+					$('#' + id + 'DownloadButton').remove();
+					$('#' + id + 'UpdateProgressHolder').hide();
+					$('#' + id + 'UploadButton').click(function(){
+						callback.upload();
+					});
+					if(options.disabled) {
+						callback.disable();
+					}
+ 				}
  			},
  			disable: function() {
  				$('#' + id + 'File').attr('disabled', 'disabled');
@@ -3287,10 +3300,12 @@ $.fn.multipleFileUpload = function(data) {
 				maxRows : 0,
 				disabled : false, 
 				values: [],
+				showEmptyRow: false,
 				showUploadButton: true,
 				showDownloadButton: true,
 				showRemoveLine: true,
 				isArrayValue: true,
+				showEmptyRow: false,
 				url: 'files/file'
 			}, data);
 	
@@ -3305,14 +3320,14 @@ $.fn.multipleFileUpload = function(data) {
 	}
 	
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
-			+	'	<div id="' + id + 'FileUploads" ></div>'
+			+	'	<div id="' + id + 'FileUploads"></div>'
 			+	'	<div id="' + id + 'NewRow">'
 			+	'		<div class="col-xs-12" style="padding-left: 0px; padding-right: 0px;">'
-			+	'			<div class="propertyValue col-xs-10" style="padding-left: 0px;">'
+			+	'			<div class="propertyValue col-xs-8" style="padding-left: 0px;">'
 			+	'				<span class="help-block">' + options.text + '</span>'
 			+	'			</div>'
-			+	'			<div class="propertyValue col-xs-2 dialogActions">'
-			+	'				<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
+			+	'			<div class="propertyValue col-xs-4 dialogActions">'
+			+	'				<a id="' + id + 'AddRow" href="#" class="btn btn-primary addButton">'
 			+	'					<i class="fa fa-plus"></i>'
 			+	'				</a>'
 			+	'			</div>'
@@ -3432,8 +3447,18 @@ $.fn.multipleFileUpload = function(data) {
  		callback.setValue(options.values);
  	}
  	
+ 	if(options.showEmptyRow) {
+		if($('#' + id + 'FileUploads').children().length == 0) {
+			callback.addRows(1);
+		}
+	}
+ 	
 	if(options.disabled || options.readOnly) {
 		callback.disable();
+	}
+	
+	if(rowNum==0 && options.showEmptyRow) {
+		callback.addRows(1);
 	}
 	
 	$(this).data('widget', callback);

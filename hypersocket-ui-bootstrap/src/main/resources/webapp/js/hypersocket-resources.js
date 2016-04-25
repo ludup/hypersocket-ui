@@ -14,68 +14,43 @@ $.fn.ajaxResourcePage = function(params) {
 	
 }
 
-$.fn.iconPage = function(params) {
-	
-	var divName = $(this).attr('id');
-	
-	$('#' + divName).append('<div class="panel panel-default"><div id="' + divName + 'Icons" class="panel-body"></div></div>');
-	divName = '#' + divName + 'Icons';
-	
-	var options = $.extend({
-		
-	}, params);
-	
-	getJSON(options.url, null, function(data) {
-		var row = 6;
-		
-		$(divName).append('<div class="row"></div>');
-		$.each(data.resources, function(idx, resource) {
-			
-			row--;
-			
-			if(row==0) {
-				$(divName).append('<div class="row"></div>');
-				row = 12;
-			}
-			$(divName).children('.row').last().append('<div class="col-xs-2" style="height: 100px; margin: 10px;"></div>');
-			
-			var prefix = "logo://";
-			var value = resource.logo;
-			var itype = options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default';
-			if(!resource) {
-				return;
-			}
-			if(!value) {
-				value = 'logo://100_autotype_autotype_auto.png';
-			}
-			
-			if(value.slice(0, prefix.length) == prefix) {
-				var txt = resource.name;
-				if(!txt || txt == '')
-					txt = 'Default';
-				var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
-				$(divName).children('.row').children('.col-xs-2').last().append('<img width="100" height="100" src="' + uri + '"/>');
-			}
-			else {
-				var idx = value.indexOf('/');
-				if(idx == -1) {
-					$(divName).children('.row').children('.col-xs-1').last().append(
-							'<img width="100" height="100" src="' + (basePath + '/api/files/download/' + value)+ '"/>');
-				} else {
-					$(divName).children('.row').children('.col-xs-2').last().append('<img width="100" height="100" src="' + (basePath + '/api/' + value)+ '"/>');
-				}
-			}
-		});
-		
-		if(options.complete) {
-			options.complete();
-		}
-	});
-};
-
 $.fn.resourceDialog = function(params, params2) {
 	$(this).bootstrapResourceDialog(params, params2);
 };
+
+function saveResource(resource, buttonElement, options, mode, closeCallback) {
+	var icon = buttonElement.find('i');
+	startSpin(icon, 'fa-save');
+	
+	log("Creating resource");
+
+	if (options.validate) {
+		if (!options.validate(mode === 'create' || mode === 'copy')) {
+			stopSpin(icon, 'fa-save');
+			log("Resource validation failed");
+			return;
+		}
+	}
+
+	log("Created resource object for posting");
+
+	postJSON(options.resourceUrl, resource, function(data) {
+
+		if (data.success) {
+			log("Resource object created");
+			if(closeCallback) {
+				closeCallback();
+			}
+			if (options.resourceCreated) {
+				options.resourceCreated(data.resource);
+			}
+			showSuccess(data.message);
+		} else {
+			log("Resource object creation failed " + data.message);
+			showError(data.message);
+		}
+	}, null, function() { stopSpin(icon, 'fa-save');});
+}
 
 $.fn.resourceTable = function(params) {
 	
@@ -100,6 +75,7 @@ $.fn.resourceTable = function(params) {
 		canCreate : false,
 		canUpdate : false,
 		canDelete : false,
+		useDialog: true,
 		icon : 'fa-cog',
 		sortName: 'name',
 		sortOrder: 'asc',
@@ -109,9 +85,12 @@ $.fn.resourceTable = function(params) {
 		createButtonIcon: "fa-plus-circle",
 		logo: false,
 		defaultView: 'table',
-		logoResourceTypeCallback: false
+		logoResourceTypeCallback: false,
+		hasResourceTable: true
 		},params);
 
+	options.tableView = $('#' + divName);
+	
 	$(this).data('options', options);
 
 	var html = '';
@@ -154,7 +133,11 @@ $.fn.resourceTable = function(params) {
 		});
 	}
 	
-	$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options);
+	if(options.resourceView === 'samePage') {
+		options.view = $('div[dialog-for="' + divName + '"]').samePageResourceView(options);
+	} else {
+		options.view = $('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options);
+	}
 
 	var columns = new Array();
 	var columnsDefs = new Array();
@@ -165,6 +148,7 @@ $.fn.resourceTable = function(params) {
 				title: getResource(options.resourceKey + '.logo.label'),
 				align:'left',
 				sortable: false,
+				width: 40,
 				formatter: function(value, row, index) {
 					var prefix = "logo://";
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[index];
@@ -347,15 +331,10 @@ $.fn.resourceTable = function(params) {
 										});
 								});
 						}
-
 					});
-				
-	
 				}
-
 		}
 
-			
 		var canUpdate = options.canUpdate;
 		if(options.checkUpdate) {
 			canUpdate = options.checkUpdate(row);
@@ -370,8 +349,21 @@ $.fn.resourceTable = function(params) {
 				function() {
 					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-					$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read',
-						{ row : curRow, resource : resource });
+					if(options.canUpdate && canUpdate) {
+						options.view.editResource(resource);
+					} else {
+						options.view.viewResource(resource);
+					}
+			});
+			renderedActions += '<a class="btn btn-primary row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
+			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-copy');
+			$(document).on(
+				'click',
+				'#' + divName + 'Actions' + id + ' .row-copy',
+				function() {
+					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
+					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+					options.view.copyResource(resource);
 			});
 		}
 
@@ -431,19 +423,17 @@ $.fn.resourceTable = function(params) {
 	columns.push({ field : "actions",
 		align:'right',
 		formatter: renderActions,
-		width: 125
+		width: 150
 	});
 
 	if (options.canCreate) {
 
-		$('#' + divName + 'Actions')
-				.append(
-					'<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa ' + options.createButtonIcon + '"></i>' + getResource(options.createButtonText) + '</button>');
+		$('#' + divName + 'Actions').append('<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa ' + options.createButtonIcon + '"></i>' + getResource(options.createButtonText) + '</button>');
 		$('#' + divName + 'Add').click(function() {
 			if (options.showCreate) {
 				options.showCreate();
 			}
-			$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog('create', $('#'+divName).data('createCallback'));
+			options.view.createResource($('#'+divName).data('createCallback'));
 		});
 	}
 
@@ -529,8 +519,13 @@ $.fn.resourceTable = function(params) {
 				    		$('#' + divName + 'Grid').toggle();
 				    		if(currentView && currentView == 'table'){
 				    			currentView = 'logo';
-				    		}else{
+				    			$(this).find('i').removeClass('fa-picture-o');
+				    			$(this).find('i').addClass('fa-list');
+				    			
+				    		} else {
 				    			currentView = 'table';
+				    			$(this).find('i').removeClass('fa-list');
+				    			$(this).find('i').addClass('fa-picture-o');
 				    		}
 				    	});
 		    		}else{
@@ -647,11 +642,43 @@ $.fn.resourceTable = function(params) {
 								renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
 								$(document).off('click', '#' + resource.id + 'GridOptions .row-edit');
 								$(document).on('click', '#' + resource.id + 'GridOptions .row-edit', function() {
-									$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read', { row : index, resource : resource });
+									if(options.showEdit) {
+										options.showEdit(resource);
+									}
+									if(options.canUpdate && canUpdate) {
+										options.view.editResource(resource);
+									}
 								});
 								$(document).off('click', '#' + resource.id + 'GridDiv img');
 								$(document).on('click', '#' + resource.id + 'GridDiv img', function() {
-									$('div[dialog-for="' + divName + '"]').bootstrapResourceDialog(options.canUpdate && canUpdate ? 'edit' : 'read', { row : index, resource : resource });
+									if(options.showEdit) {
+										options.showEdit(resource);
+									}
+									if(options.canUpdate && canUpdate) {
+										options.view.editResource(resource);
+									} else {
+										options.view.viewResource(resource);
+									}
+								});
+								
+								renderedActions += '<a class="btn btn-info row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
+								$(document).off('click', '#' + resource.id + 'GridOptions .row-copy');
+								$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function() {
+									if(options.showCopy) {
+										options.showCopy(resource);
+									}
+									options.view.copyResource(resource);
+								});
+								$(document).off('click', '#' + resource.id + 'GridDiv img');
+								$(document).on('click', '#' + resource.id + 'GridDiv img', function() {
+									if(options.showEdit) {
+										options.showEdit(resource);
+									}
+									if(options.canUpdate && canUpdate) {
+										options.view.editResource(resource);
+									} else {
+										options.view.viewResource(resource);
+									}
 								});
 								$('#' + resource.id + 'GridDiv img').css('cursor', 'pointer');
 							}
@@ -752,14 +779,270 @@ $.fn.resourceTable = function(params) {
 		refresh: function() {
 			$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 		},
+		close: function() {
+			options.view.closeResource();
+		},
 		showCreate: function(callback) {
-			$('#'+divName).data('createCallback', callback);
-			$('#' + divName + 'Add').trigger('click');
-			
+			options.currentView = 'create';
+			if(options.showCreate) {
+				options.showCreate();
+			}
+			options.view.createResource(callback);
+		},
+		showEdit: function(resource, callback) {
+			options.currentView = 'edit';
+			if(options.showEdit) {
+				options.showEdit(resource);
+			}
+			options.view.editResource(resource);
+		},
+		showRead: function(resource, callback) {
+			options.currentView = 'read';
+			if(options.showView) {
+				options.showView(resource);
+			}
+			options.view.viewResource(resource);
+		},
+		showCopy: function(resource, callback) {
+			options.currentView = 'copy';
+			if(options.showCopy) {
+				options.showCopy(resource);
+			}
+			options.view.copyResource(resource);
+		},
+		saveResource: function(buttonElement, closeCallback) {
+			saveResource(options.createResource(), buttonElement, options, options.currentView, closeCallback);
+		},
+		deleteResource: function(resource, callback) {
+			if (options.canDelete) {
+				var canDelete = !resource.system;
+				if(options.checkDelete) {
+					canDelete = !resource.system && options.checkDelete(resource);
+				}
+				
+				if(canDelete) {
+					log("Entering resource delete for id " + resource.id);
+					bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(resource.name), function(confirmed) {
+						if (confirmed) {
+							deleteJSON(options.resourceUrl + "/" + resource.id, null, function(data) {
+								if (data.success) {
+									if (options.resourceDeleted) {
+										options.resourceDeleted(resource, data.message);
+									}
+									$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
+									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+									showSuccess(data.message);
+								} else {
+									showError(data.message);
+								}
+							});
+						}
+					});
+				}
+			}
 		}
 	}
 	
 	return callback;
+};
+
+$.fn.samePageResourceView = function(params, params2) {
+
+	var dialog = $(this);
+	var dialogOptions = $(this).data('options');
+	
+	var addActions = function(save, copy) {
+		var html = '<div class="panel-footer">';
+		html+= '<button id="' + dialog.attr('id') + 'Cancel" + class="btn btn-danger"><i class="fa fa-ban"></i>' + getResource('text.cancel') + '</button>';
+		if(save) {
+			html += '<button id="' + dialog.attr('id') + 'Save" + class="btn btn-primary"><i class="fa fa-save"></i>' + getResource('text.save') + '</button>';
+		}
+		html += '</div>';
+		dialog.find('.panel-body').after(html);
+		
+		if(save) {
+			$('#' + dialog.attr('id') + 'Save').click(function() {
+				var resource = dialogOptions.createResource();
+				if(copy) {
+					resource.id = null;
+				}
+				saveResource(resource, dialog, dialogOptions, params, function() {
+					dialog.samePageResourceView('close');
+					if (dialogOptions.hasResourceTable) {
+						$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+					}
+				});
+			});
+		}
+		$('#' + dialog.attr('id') + 'Cancel').click(function() {
+			dialog.samePageResourceView('close');
+		});
+	
+	}
+	
+	var showView = function() {
+		$('#mainContainer').removeClass('col-md-10');
+		$('#mainContainer').addClass('col-md-12');
+		$('#mainContainer').removeClass('col-sm-11');
+		$('#mainContainer').addClass('col-sm-12');
+		$('#main-menu').hide();
+		dialogOptions.tableView.hide();
+		dialog.show();
+	}
+	
+	if (params === 'create') {
+		
+		dialogOptions.clearDialog(true);
+		if(dialogOptions.propertyOptions) {
+			var propertyOptions = $.extend({},
+					dialogOptions.propertyOptions,
+					{ url: dialogOptions.propertyOptions.templateUrl,
+				      title: getResource(dialogOptions.resourceKey + '.create.title'),
+				      icon: dialogOptions.icon,
+					  complete: function() {
+						  showView();
+						  if(dialogOptions.propertyOptions.complete) {
+							  dialogOptions.propertyOptions.complete();
+						  }
+						  addActions(true);
+						  
+					  }	
+			});
+			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		} else {
+			showView();
+		}
+		
+		return;
+		
+	} else if(params === 'edit') {
+		
+		dialogOptions.clearDialog(false);
+		dialogOptions.displayResource(params2, false);
+		
+		if(dialogOptions.propertyOptions) {
+			var propertyOptions = $.extend({},
+					dialogOptions.propertyOptions,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
+					  title: getResource(dialogOptions.resourceKey + '.update.title'),
+					  icon: dialogOptions.icon,
+				  	  complete: function() {
+						  showView();
+						  if(dialogOptions.propertyOptions.complete) {
+							  dialogOptions.propertyOptions.complete(params2);
+						  }
+						  addActions(true);
+						  
+					  }	
+			});
+			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		} else {
+			showView();
+		}
+		
+		return;
+		
+	} else if(params === 'read') {
+		
+		dialogOptions.clearDialog(false);
+		dialogOptions.displayResource(params2, true);
+		if(dialogOptions.propertyOptions) {
+			var propertyOptions = $.extend({},
+					dialogOptions.propertyOptions,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
+				      title: getResource(dialogOptions.resourceKey + '.view.title'),
+				      icon: dialogOptions.icon,
+					  complete: function() {
+						  showView();
+						  if(dialogOptions.propertyOptions.complete) {
+							  dialogOptions.propertyOptions.complete(params2);
+						  }
+						  addActions(false);
+						  
+					  }	
+			});
+			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		} else {
+			showView();
+		}
+		
+		return;
+		
+	} else if(params === 'copy') {
+		
+		dialogOptions.clearDialog(false);
+		params2.name = params2.name + " (" + getResource('text.copy') + ")";
+		dialogOptions.displayResource(params2, false, true);
+		if(dialogOptions.propertyOptions) {
+			var propertyOptions = $.extend({},
+					dialogOptions.propertyOptions,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
+				      title: getResource(dialogOptions.resourceKey + '.create.title'),
+				      icon: dialogOptions.icon,
+					  complete: function() {
+						  showView()
+						  if(dialogOptions.propertyOptions.complete) {
+							  dialogOptions.propertyOptions.complete(params2);
+						  }
+						  addActions(true, true);
+						  
+					  }	
+			});
+			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		} else {
+			showView();
+		}
+		
+		return;
+	} else if(params === 'close') {
+		
+		if(dialogOptions) {
+			dialog.hide();
+			
+			if(dialogOptions.onClose) {
+				dialogOptions.onClose();
+			}
+			
+			dialogOptions.parent.show();
+		}
+		
+		$('#mainContainer').removeClass('col-md-12');
+		$('#mainContainer').addClass('col-md-10');
+		$('#mainContainer').removeClass('col-sm-12');
+		$('#mainContainer').addClass('col-sm-11');
+		$('#main-menu').show();
+		window.scrollTo(0,0);
+		return;
+	}
+	
+	var parent = $(this).parent();
+	dialog.hide();
+	parent.after(dialog.detach());
+	
+	var options = $.extend(
+			{ hasResourceTable : true,
+			  parent: parent, },
+			  params);
+	
+	dialog.data('options', options);
+	
+	return {
+		createResource: function(callback) {
+			dialog.samePageResourceView('create', callback);
+		},
+		editResource: function(resource) {
+			dialog.samePageResourceView('edit', resource);
+		},
+		viewResource: function(resource) {
+			dialog.samePageResourceView('read', resource);
+		},
+		copyResource: function(resource) {
+			dialog.samePageResourceView('copy', resource);
+		},
+		closeResource: function() {
+			dialog.samePageResourceView('close');
+		}
+	};
 };
 
 $.fn.bootstrapResourceDialog = function(params, params2) {
@@ -787,50 +1070,26 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		$('#' + $(this).attr('id') + "Action").off('click');
 		$('#' + $(this).attr('id') + "Action").on('click', function() {
 				
-				var icon = $(this).find('i');
-				startSpin(icon, 'fa-save');
-				
-				log("Creating resource");
-
-				if (dialogOptions.validate) {
-					if (!dialogOptions.validate(true)) {
-						stopSpin(icon, 'fa-save');
-						log("Resource validation failed");
-						return;
-					}
+			saveResource(dialogOptions.createResource(), $(this), dialogOptions, 'create', function() {
+				dialog.bootstrapResourceDialog('close');
+				if (dialogOptions.hasResourceTable) {
+					$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 				}
-				
-				var resource = dialogOptions.createResource();
-
-				log("Created resource object for posting");
-
-				postJSON(dialogOptions.resourceUrl, resource, function(data) {
-					if (data.success) {
-						log("Resource object created");
-						dialog.bootstrapResourceDialog('close');
-						if (dialogOptions.hasResourceTable) {
-							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
-						}
-						if (dialogOptions.resourceCreated) {
-							dialogOptions.resourceCreated(data.resource);
-						}
-						if(params2 && params2.resourceCreated) {
-							params2.resourceCreated(data.resource);
-						}
-						showSuccess(data.message);
-					} else {
-						log("Resource object creation failed " + data.message);
-						showError(data.message);
-					}
-				}, null, function() { stopSpin(icon, 'fa-save');});
 			});
-		dialog.modal('show');
 
-	} else if (params === 'edit' || params === 'read') {
+		});
+		dialog.modal('show');
+		return;
+
+	} else if (params === 'edit' || params === 'read' || params === 'copy') {
 		var readOnly = params==='read';
 		dialogOptions.clearDialog(false);
 		removeMessage();
-		dialogOptions.displayResource(params2.resource, readOnly);
+		
+		if(params === 'copy') {
+			params2.name = params2.name + ' (' + getResource('text.copy') + ')';
+		}
+		dialogOptions.displayResource(params2, readOnly, params === 'copy');
 		
 		if(readOnly) {
 			$(this).find('.modal-title').text(
@@ -847,54 +1106,47 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			$('#' + $(this).attr('id') + "Action").off('click');
 			$('#' + $(this).attr('id') + "Action").on('click', function() {
 
-				var icon = $(this).find('i');
-				startSpin(icon, 'fa-save');
-				
-				log('Updating resource');
-				
-				if (dialogOptions.validate) {
-					if (!dialogOptions.validate(false)) {
-						stopSpin(icon, 'fa-save');
-						return;
-					}
-				}
-				
 				var resource = dialogOptions.createResource();
-
-				postJSON(dialogOptions.resourceUrl, resource, function(data) {
-					if (data.success) {
-						
+				if(params === 'copy') {
+					resource.id = null;
+					saveResource(resource, $(this), dialogOptions, params, function() {
 						dialog.bootstrapResourceDialog('close');
 						if (dialogOptions.hasResourceTable) {
-							updateRow = {index: params2.row, row: data.resource}
-							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateRow',	updateRow);
+							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+						}
+					});
+				} else {
+					saveResource(resource, $(this), dialogOptions, params, function() {
+						dialog.bootstrapResourceDialog('close');
+						if (dialogOptions.hasResourceTable) {
+							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateRow',	resource);
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
 						if (dialogOptions.resourceUpdated) {
-							dialogOptions.resourceUpdated(data.resource);
+							dialogOptions.resourceUpdated(resource);
 						}
 						if(params2.resourceUpdated) {
-							params2.resourceUpdated(data.resource);
+							params2.resourceUpdated(resource);
 						}
-						showSuccess(data.message);
-					} else {
-						showError(data.message);
-					}
-				}, null, function() { stopSpin(icon, 'fa-save');});
+					});
+				}
 
 			});
 		}
 		
 		dialog.modal('show');
+		return;
 
 	} else if (params === 'close') {
 		dialog.modal('hide');
+		return;
 	} else if (params === 'error') {
 		if(params2 == 'reset') {
 			removeMessage();
 		} else {
 			showError(params2);
 		}
+		return;
 	} else {
 		if (!options.resourceKey) {
 			alert("Bad usage, resourceKey not set");
@@ -902,4 +1154,22 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			$(this).data('options', options);
 		}
 	}
+	
+	return {
+		createResource: function(callback) {
+			dialog.bootstrapResourceDialog('create', callback);
+		},
+		editResource: function(resource) {
+			dialog.bootstrapResourceDialog('edit', resource);
+		},
+		viewResource: function(resource) {
+			dialog.bootstrapResourceDialog('read', resource);
+		},
+		copyResource: function(resource) {
+			dialog.bootstrapResourceDialog('copy', resource);
+		},
+		closeResource: function() {
+			dialog.bootstrapResourceDialog('close');
+		}
+	};
 };

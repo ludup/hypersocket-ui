@@ -147,7 +147,7 @@ function processLogon(data, opts, message) {
 				$('#logonForm').append(
 						'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
 							+ (data.last ? getResource(data.lastButtonResourceKey) : getResource("text.next")) 
-							+ '&nbsp;<i style="padding: 4px 10px 0px 0px" class="fa fa-sign-in"></i></button>');
+							+ '&nbsp;<i class="fa fa-sign-in"></i></button>');
 			}
 		}
 		
@@ -184,6 +184,7 @@ function processLogon(data, opts, message) {
 				.click(
 					function(evt) {
 
+						startSpin($('#logonButton i'), 'fa-sign-in');
 						log("Submitting logon");
 
 						evt.preventDefault();
@@ -221,4 +222,5 @@ function processLogon(data, opts, message) {
 		opts.hideBusy();
 	}
 
+	stopSpin($('#logonButton i'), 'fa-sign-in');
 }
