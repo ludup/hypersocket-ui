@@ -123,25 +123,25 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				HashMap<String, Boolean> preferences = new ObjectMapper().readValue(state.getPreferences(), HashMap.class);
 				if(preferences.get("showHelpZone") == null || preferences.get("showHelpZone")){
 					registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-							MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
+							MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", System.getProperty("hypersocket.id", "hypersocket-prime"), -200,
 							SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 							MenuService.MENU_DASHBOARD);
 				}else{
 					registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-							MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", 0,
+							MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", System.getProperty("hypersocket.id", "hypersocket-prime"), 0,
 							SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 							MenuService.MENU_DASHBOARD);
 				}
 			}else{
 				registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-						MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
+						MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", System.getProperty("hypersocket.id", "hypersocket-prime"), -200,
 						SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 						MenuService.MENU_DASHBOARD);
 			}
 			
 		} catch (IOException e) {
 			registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-					MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
+					MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", System.getProperty("hypersocket.id", "hypersocket-prime"), -200,
 					SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 					MenuService.MENU_DASHBOARD);
 		}
@@ -774,13 +774,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 										if(preferences.get("showHelpZone")){
 											System.setProperty("showHelpZone", "true");
 											registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-													MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
+													MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", System.getProperty("hypersocket.id", "hypersocket-prime"), -200,
 													SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 													MenuService.MENU_DASHBOARD);
 										}else{
 											System.setProperty("showHelpZone", "false");
 											registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-													MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", 0,
+													MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", System.getProperty("hypersocket.id", "hypersocket-prime"), 0,
 													SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 													MenuService.MENU_DASHBOARD);
 										}
@@ -793,7 +793,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		} catch (IOException e) {
 			registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-					MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
+					MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", System.getProperty("hypersocket.id", "hypersocket-prime"), -200,
 					SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 					MenuService.MENU_DASHBOARD);
 		}
