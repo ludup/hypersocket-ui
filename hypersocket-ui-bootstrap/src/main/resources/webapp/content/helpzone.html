@@ -47,7 +47,9 @@
 						$('#feedLarge').append('<div id="' + value.contentPath + '" style="margin-bottom: 30px;"></div>');
 						$('#' + value.contentPath).load('content/' + value.contentPath + '.html',
 								function(){
-									$(this).prepend('<h4 class="overviewTitle"><span>' + getResource(value.resourceKey) + '</span></h4>');
+									if(getResourceNoDefault(value.resourceKey)){
+										$(this).prepend('<h4 class="overviewTitle"><span>' + getResource(value.resourceKey) + '</span></h4>');
+									}
 								});
 					}else{
 						$('#feedSmall').append('<div id="' + value.contentPath + '" class="small-overview-widget"></div>');
