@@ -1398,7 +1398,8 @@ $.fn.multipleSearchInput = function(data) {
 				nameAttr: options.nameAttr,
 				valueAttr: options.valueAttr,
 				selectedIsObjectList: true,
-				disabled: options.disabled
+				disabled: options.disabled,
+				nameIsResourceKey: options.nameIsResourceKey
 			});
 
 		$(this).append('<div class="multipleTextInputButtons" id="' + id + 'Buttons"/>');
@@ -1493,8 +1494,7 @@ $.fn.multipleSearchInput = function(data) {
 						if (!selectedObj) {
 							return;
 						}
-
-						toSelect.append('<option ' + 'value="' + selectedObj[options.valueAttr] + '">' + selectedObj[options.nameAttr] + "</option>");
+						toSelect.append('<option value="' + selectedObj[options.valueAttr] + '">' + (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr])  + '</option>');
 						searchInput.clear();
 						toSelect.data('updated', true);
 						if (options.changed) {
@@ -1528,7 +1528,7 @@ $.fn.multipleSearchInput = function(data) {
 			});
 		} else {
 			$.each(options.values, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
+				toSelect.append('<option ' + 'value="' + obj + '">' + (options.nameIsResourceKey ? getResource(obj) : obj) + "</option>");
 			});
 		}
 	}
