@@ -3821,6 +3821,11 @@ $.fn.accordionPage = function(data) {
 		$('#' + id).append(html);
 		$('#' + id + 'Panel' + index).data('page', page);
 		$('#' + id + 'Panel' + index).data('index', index);
+		$('#' + id + 'Heading' + index).click(function(){
+			if($('#' + id).find('.collapsing').length){
+				return false;
+			}
+		});
 
 		$('#' + page.pageDiv).detach().appendTo('#' + id + 'Page' + index).show();
 		
