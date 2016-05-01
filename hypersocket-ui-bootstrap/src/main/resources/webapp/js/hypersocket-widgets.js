@@ -363,14 +363,14 @@ $.fn.richInput = function(data) {
 		  height: 500,
 		  inline: false,
 		  focus: false,
+		  menubar: false,
 		  plugins: [
 				    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
 				    'searchreplace wordcount visualblocks visualchars code fullscreen',
 				    'insertdatetime media nonbreaking save table contextmenu directionality',
 				    'emoticons template paste textcolor colorpicker textpattern imagetools'
 				  ],
-		  toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-		  toolbar2: 'print preview media | forecolor backcolor emoticons' },
+		  toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor emoticons' },
 	data);
 	
 	var id = (options.id ? options.id : $(this).attr('id'));
@@ -414,6 +414,7 @@ $.fn.richInput = function(data) {
 		  selector: '#' + id,
 		  height: options.height,
 		  theme: 'modern',
+		  menubar: options.menubar,
 		  inline: options.inline,
 		  plugins: options.plugins,
 		  toolbar1: options.toolbar1,

@@ -125,7 +125,9 @@ $.fn.resourceTable = function(params) {
 		logo: false,
 		defaultView: 'table',
 		logoResourceTypeCallback: false,
-		hasResourceTable: true
+		hasResourceTable: true,
+		onSave : false,
+		stayOnPageAfterSave: false
 		},params);
 
 	options.tableView = $('#' + divName);
@@ -883,10 +885,18 @@ $.fn.samePageResourceView = function(params, params2) {
 				if(copy) {
 					resource.id = null;
 				}
-				saveResource(resource, dialog, dialogOptions, function() {
-					dialog.samePageResourceView('close');
-					if (dialogOptions.hasResourceTable) {
-						$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+				saveResource(resource, $('#' + dialog.attr('id') + 'Save'), dialogOptions, function() {
+					
+					if(dialogOptions.stayOnPageAfterSave) {
+						// TODO reload resource?
+						if(dialogOptions.onSave)
+							dialogOptions.onSave(resource);
+					}
+					else {
+						dialog.samePageResourceView('close');
+						if (dialogOptions.hasResourceTable) {
+							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+						}
 					}
 				});
 			});
@@ -1086,7 +1096,6 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.create") + '</button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
 		$('#' + $(this).attr('id') + "Action").on('click', function() {
-				
 			saveResource(dialogOptions.createResource(), $(this), dialogOptions, function() {
 				dialog.bootstrapResourceDialog('close');
 				if (dialogOptions.hasResourceTable) {

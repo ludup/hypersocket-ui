@@ -363,13 +363,15 @@
 				triggerResult.setValue(resource.result);
 				triggerAllRealms.setValue(resource.allRealms);
 				
-				$.each(resource.allConditions, function(idx, obj) {
-					addConditionRow('rowAll', obj);
-				});
+				if(resource.allConditions)
+					$.each(resource.allConditions, function(idx, obj) {
+						addConditionRow('rowAll', obj);
+					});
 				
-				$.each(resource.anyConditions, function(idx, obj) {
-					addConditionRow('rowAny', obj);
-				});
+				if(resource.anyConditions)
+					$.each(resource.anyConditions, function(idx, obj) {
+						addConditionRow('rowAny', obj);
+					});
 				
 				triggerTask.disable();
 				triggerTask.setValue(resource.resourceKey);

@@ -314,7 +314,7 @@
 						} else {
 							bootbox.confirm(getResource("confirm.deleteTrigger").format(trigger.name), function(result) {
 								  if(result) {
-									  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+									  deleteJSON('automations/trigger/' + automation.id + '/' + trigger.id, null, function(data) {
 											if(data.success) {
 												showSuccess(data.message);
 												renderDiagram(null, resourcePage);
