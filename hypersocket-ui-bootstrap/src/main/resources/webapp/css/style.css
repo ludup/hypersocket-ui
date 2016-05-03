@@ -851,7 +851,7 @@ table {
 }
 
 .panel-group {
-	margin-bottom: 100px;
+	margin-bottom: 50px;
 }
 
 .panel {
@@ -1611,7 +1611,7 @@ span.input-group-addon {
 
 .lightbox-block{
 	float: right;
-	width: 200px;
+	padding-right: 10px;
 }
 
 .lightbox-text{
