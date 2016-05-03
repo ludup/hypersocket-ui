@@ -174,7 +174,8 @@ $.fn.htmlInput = function(data) {
 		  value: options.value,
 		  htmlMode: options.inputType=='html',
 		  mode:  options.inputType=='html' ? 'text/html' : 'application/xml',
-		  lineNumbers: options.lineNumbers
+		  lineNumbers: options.lineNumbers,
+		  lineWrapping: true
 	});
 	
 	var callback = {

@@ -73,6 +73,7 @@ $.fn.resourceTable = function(params) {
 		showRefresh : true,
 	    showToggle : false,
 		canCreate : false,
+		canCopy : true,
 		canUpdate : false,
 		canDelete : false,
 		useDialog: true,
@@ -355,16 +356,18 @@ $.fn.resourceTable = function(params) {
 						options.view.viewResource(resource);
 					}
 			});
-			renderedActions += '<a class="btn btn-primary row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
-			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-copy');
-			$(document).on(
-				'click',
-				'#' + divName + 'Actions' + id + ' .row-copy',
-				function() {
-					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
-					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-					options.view.copyResource(resource);
-			});
+			if(options.canCopy) {
+				renderedActions += '<a class="btn btn-primary row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
+				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-copy');
+				$(document).on(
+					'click',
+					'#' + divName + 'Actions' + id + ' .row-copy',
+					function() {
+						var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
+						var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+						options.view.copyResource(resource);
+				});
+			}
 		}
 
 		if (options.canDelete) {
@@ -661,14 +664,17 @@ $.fn.resourceTable = function(params) {
 									}
 								});
 								
-								renderedActions += '<a class="btn btn-info row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
-								$(document).off('click', '#' + resource.id + 'GridOptions .row-copy');
-								$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function() {
-									if(options.showCopy) {
-										options.showCopy(resource);
-									}
-									options.view.copyResource(resource);
-								});
+								if(options.canCopy) {
+									renderedActions += '<a class="btn btn-info row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
+									$(document).off('click', '#' + resource.id + 'GridOptions .row-copy');
+									$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function() {
+										if(options.showCopy) {
+											options.showCopy(resource);
+										}
+										options.view.copyResource(resource);
+									});
+								}
+								
 								$(document).off('click', '#' + resource.id + 'GridDiv img');
 								$(document).on('click', '#' + resource.id + 'GridDiv img', function() {
 									if(options.showEdit) {
@@ -971,21 +977,21 @@ $.fn.samePageResourceView = function(params, params2) {
 	} else if(params === 'copy') {
 		
 		dialogOptions.clearDialog(false);
-		params2.name = params2.name + " (" + getResource('text.copy') + ")";
-		dialogOptions.displayResource(params2, false, true);
+		var copiedResource = $.extend(true, {}, params2);
+		copiedResource.name = copiedResource.name + " (" + getResource('text.copy') + ")";
+		dialogOptions.displayResource(copiedResource, false, true);
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
-					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
+					{ url: dialogOptions.propertyOptions.propertiesUrl + copiedResource.id,
 				      title: getResource(dialogOptions.resourceKey + '.create.title'),
 				      icon: dialogOptions.icon,
 					  complete: function() {
 						  showView()
 						  if(dialogOptions.propertyOptions.complete) {
-							  dialogOptions.propertyOptions.complete(params2);
+							  dialogOptions.propertyOptions.complete(copiedResource);
 						  }
 						  addActions(true, true);
-						  
 					  }	
 			});
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
@@ -1087,9 +1093,12 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		removeMessage();
 		
 		if(params === 'copy') {
-			params2.name = params2.name + ' (' + getResource('text.copy') + ')';
+			var copiedResource = $.extend(true, {}, params2);
+			copiedResource.name = copiedResource.name + ' (' + getResource('text.copy') + ')';
+			dialogOptions.displayResource(copiedResource, readOnly, true);
+		} else {
+			dialogOptions.displayResource(params2, readOnly, false);
 		}
-		dialogOptions.displayResource(params2, readOnly, params === 'copy');
 		
 		if(readOnly) {
 			$(this).find('.modal-title').text(
