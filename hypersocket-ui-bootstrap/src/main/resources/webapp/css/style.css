@@ -1644,7 +1644,14 @@ span.input-group-addon {
 .help-button button i{
     font-size: 18px;
     padding-right: 5px;
-
+}
 .fixed-table-toolbar {
 	margin-right: 20px;
+}
+.animated-accordion{
+	transition: 0.6s ease-in-out;
+    opacity: 0;
+}
+.accordion-header{
+	cursor: pointer;
 }

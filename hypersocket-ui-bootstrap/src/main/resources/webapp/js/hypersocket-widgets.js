@@ -3785,7 +3785,8 @@ $.fn.accordionPage = function(data) {
 	var options = $.extend(
 			{  
 				open: true,
-				openOne: true
+				openOne: true,
+				closeable: true
 			}, data);
 	
 	var id = (options.id ? options.id : $(this).attr('id') + "AccordionPage");
@@ -3804,16 +3805,14 @@ $.fn.accordionPage = function(data) {
 		}
 		var html = 
 				'<div id="' + id + 'Panel' + index + '" class="accordion-group panel panel-default wizardPage">'
-			+	'	<div data-toggle="collapse" data-parent="' + parent + '" data-target="#' + id + 'Collapse' + index + '"'
-			+	'			class="panel-heading" role="tab" id="' + id + 'Heading' + index + '" aria-expanded="' + ((options.open && index == 0) ? "true" : "false") + '"'
-			+ 	'			aria-controls="collapse' + index + '">'
+			+	'	<div class="panel-heading accordion-header" role="tab" id="' + id + 'Heading' + index + '">'
 			+	' 		<h4 class="panel-title wizardTitle">'
 			+	'			<i class="fa ' + page.titleIcon + '"></i>&nbsp;'
-			+	'		    <a href="#collapse' + index + '">' + getResourceOrText(page.titleText) + '</a>'
+			+	'		    <span>' + getResourceOrText(page.titleText) + '</span>'
 			+ 	'	    </h4>'
 			+ 	'	</div>'
 			+ 	'	<div id="' + id + 'Collapse' + index + '" class="panel-collapse collapse' + ((options.open && index == 0) ? ' in' : '') + '"'
-			+ 	'		role="tabpanel" aria-labelledby="heading' + index + '">'
+			+ 	'		role="tabpanel">'
 			+ 	'		<div class="panel-body">'
 			+	'			<div id="' + id + 'Page' + index + '"></div>'
 			+	'		</div>'
@@ -3823,11 +3822,24 @@ $.fn.accordionPage = function(data) {
 		$('#' + id + 'Panel' + index).data('page', page);
 		$('#' + id + 'Panel' + index).data('index', index);
 		$('#' + id + 'Heading' + index).click(function(){
-			if($('#' + id).find('.collapsing').length){
-				return false;
+			if($('#' + id + 'Collapse' + index + ':hidden').length){
+				if(options.openOne){
+					$('#' + id).find('.panel-collapse:visible').animate({
+						  height: "toggle",
+						  opacity: "toggle"
+						}, "fast" );
+				}
+				$('#' + id + 'Collapse' + index).animate({
+					  height: "toggle",
+					  opacity: "toggle"
+					}, "fast" );
+			}else if(options.closeable){
+				$('#' + id + 'Collapse' + index).animate({
+					  height: "toggle",
+					  opacity: "toggle"
+					}, "fast" );
 			}
 		});
-
 		$('#' + page.pageDiv).detach().appendTo('#' + id + 'Page' + index).show();
 		
 	});
