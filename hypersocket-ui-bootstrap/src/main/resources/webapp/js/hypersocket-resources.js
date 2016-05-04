@@ -57,14 +57,14 @@ $.fn.resourceDialog = function(params, params2) {
 	$(this).bootstrapResourceDialog(params, params2);
 };
 
-function saveResource(resource, buttonElement, options, closeCallback) {
+function saveResource(resource, buttonElement, options, mode, closeCallback) {
 	var icon = buttonElement.find('i');
 	startSpin(icon, 'fa-save');
 	
 	log("Creating resource");
 
 	if (options.validate) {
-		if (!options.validate(true)) {
+		if (!options.validate(mode === 'create' || mode === 'copy')) {
 			stopSpin(icon, 'fa-save');
 			log("Resource validation failed");
 			return;
@@ -806,31 +806,35 @@ $.fn.resourceTable = function(params) {
 			options.view.closeResource();
 		},
 		showCreate: function(callback) {
+			options.currentView = 'create';
 			if(options.showCreate) {
 				options.showCreate();
 			}
 			options.view.createResource(callback);
 		},
 		showEdit: function(resource, callback) {
+			options.currentView = 'edit';
 			if(options.showEdit) {
 				options.showEdit(resource);
 			}
 			options.view.editResource(resource);
 		},
 		showRead: function(resource, callback) {
+			options.currentView = 'read';
 			if(options.showView) {
 				options.showView(resource);
 			}
 			options.view.viewResource(resource);
 		},
 		showCopy: function(resource, callback) {
+			options.currentView = 'copy';
 			if(options.showCopy) {
 				options.showCopy(resource);
 			}
 			options.view.copyResource(resource);
 		},
 		saveResource: function(buttonElement, closeCallback) {
-			saveResource(options.createResource(), buttonElement, options, closeCallback);
+			saveResource(options.createResource(), buttonElement, options, options.currentView, closeCallback);
 		},
 		deleteResource: function(resource, callback) {
 			if (options.canDelete) {
@@ -885,8 +889,7 @@ $.fn.samePageResourceView = function(params, params2) {
 				if(copy) {
 					resource.id = null;
 				}
-				saveResource(resource, $('#' + dialog.attr('id') + 'Save'), dialogOptions, function() {
-					
+				saveResource(resource, $('#' + dialog.attr('id') + 'Save'), dialogOptions, params, function() {
 					if(dialogOptions.stayOnPageAfterSave) {
 						// TODO reload resource?
 						if(dialogOptions.onSave)
@@ -1095,8 +1098,8 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		$(this).find('.modal-footer').append(
 					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.create") + '</button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
-		$('#' + $(this).attr('id') + "Action").on('click', function() {
-			saveResource(dialogOptions.createResource(), $(this), dialogOptions, function() {
+		$('#' + $(this).attr('id') + "Action").on('click', function() {				
+			saveResource(dialogOptions.createResource(), $(this), dialogOptions, 'create', function() {
 				dialog.bootstrapResourceDialog('close');
 				if (dialogOptions.hasResourceTable) {
 					$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
@@ -1135,14 +1138,14 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 				var resource = dialogOptions.createResource();
 				if(params === 'copy') {
 					resource.id = null;
-					saveResource(resource, $(this), dialogOptions, function() {
+					saveResource(resource, $(this), dialogOptions, params, function() {
 						dialog.bootstrapResourceDialog('close');
 						if (dialogOptions.hasResourceTable) {
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
 					});
 				} else {
-					saveResource(resource, $(this), dialogOptions, function() {
+					saveResource(resource, $(this), dialogOptions, params, function() {
 						dialog.bootstrapResourceDialog('close');
 						if (dialogOptions.hasResourceTable) {
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateRow',	resource);
