@@ -35,8 +35,8 @@ public class RobotsTxtHandler extends HttpRequestHandler {
 	}
 
 	@Override
-	public boolean handlesRequest(HttpServletRequest request) {
-		return request.getRequestURI().equals("/robots.txt");
+	public boolean handlesRequest(String path) {
+		return path.equals("/robots.txt");
 	}
 
 	@Override

@@ -1,11 +1,38 @@
 <div id="dynamicDashboardMessages"></div>
 <div id="overviewContent" class="panel">
+	
 	<div id="feedLarge" class="col-md-8"></div>
-	<div id="feedSmall" class="col-md-4"></div>
+	<div id="feedSmall" class="col-md-4">
+	<div id="showHelpZoneInfo">
+		<div>
+			<input type="checkbox" id="showHelpZoneSwitch">
+			<span localize="helpzone.showHelpZone"></span>
+		</div>
+	</div>
+	</div>
+	
 </div>
 <div id="invisibleWidgets" style="display: none"></div>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$('#overviewContent').localize();
+		getState('showHelpZone', false, function(state){
+			var showHelpZone = true;
+			if(state.resources && state.resources.length){
+				var showHelpZone = JSON.parse(state.resources[0].preferences).showHelpZone;
+			}
+			$('#showHelpZoneSwitch').attr('checked', showHelpZone);
+			$('#showHelpZoneSwitch').change(function() {
+				saveState('showHelpZone', {'showHelpZone': $(this).is(':checked') }, false, function(state){
+					window.location.reload();
+				});
+			});
+		});
+		
+		$('#messageDismiss').click(function(e) {
+			$('#showHelpZoneInfo').fadeOut(1000);
+		});
+		
 		getJSON('overview/widgets/helpzone', null, function(data) {
 			$.each(data.resources, function(index, value){
 			
@@ -17,10 +44,12 @@
 						$('#feedLarge').append('<div id="' + value.contentPath + '" style="margin-bottom: 30px;"></div>');
 						$('#' + value.contentPath).load('content/' + value.contentPath + '.html',
 								function(){
-									$(this).prepend('<h4 class="overviewTitle"><span>' + getResource(value.resourceKey) + '</span></h4>');
+									if(getResourceNoDefault(value.resourceKey)){
+										$(this).prepend('<h4 class="overviewTitle"><span>' + getResource(value.resourceKey) + '</span></h4>');
+									}
 								});
 					}else{
-						$('#feedSmall').append('<div id="' + value.contentPath + '" class="small-overview-widget"></div>');
+						$('#feedSmall').prepend('<div id="' + value.contentPath + '" class="small-overview-widget"></div>');
 						$('#' + value.contentPath).load('content/' + value.contentPath + '.html',
 								function(){
 									$(this).prepend('<h4><span>' + getResource(value.resourceKey) + '</span></h4>');						
