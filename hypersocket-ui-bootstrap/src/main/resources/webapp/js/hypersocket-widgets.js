@@ -157,6 +157,16 @@ $.fn.textInput = function(data) {
 	return callback;
 }
 
+function getCodeMirrorWidth() {
+	if($(window).width() > 990) {
+		return 600;
+	} else if($(window).width() > 770) {
+		return 500;
+	} else {
+		return ($(window).width() - 100);
+	}
+}
+
 $.fn.htmlInput = function(data) {
 	
 	var options = $.extend(
@@ -168,14 +178,13 @@ $.fn.htmlInput = function(data) {
 		
 	var id = "_" + (options.id ? options.id : $(this).attr('id')) +  'HtmlInput';
 	
-	$(this).append('<div class="code form-control" id="' + id + '"></div>');
+	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px;"></div>');
 	
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
 		  htmlMode: options.inputType=='html',
 		  mode:  options.inputType=='html' ? 'text/html' : 'application/xml',
 		  lineNumbers: options.lineNumbers,
-		  lineWrapping: true
 	});
 	
 	var callback = {
@@ -224,6 +233,10 @@ $.fn.htmlInput = function(data) {
 	    myCodeMirror.refresh();
 	},1);
 	
+	$(window).resize(function() {
+		$('#' + id).width(getCodeMirrorWidth());
+	});
+	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -240,7 +253,7 @@ $.fn.codeInput = function(data) {
 		
 	var id = (options.id ? options.id : $(this).attr('id') +  'CodeInput');
 	
-	$(this).append('<div class="code form-control" id="' + id + '"></div>');
+	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px;"></div>');
 	
 	
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
@@ -292,6 +305,10 @@ $.fn.codeInput = function(data) {
 	setTimeout(function() {
 	    myCodeMirror.refresh();
 	},1);
+	
+	$(window).resize(function() {
+		$('#' + id).width(getCodeMirrorWidth());
+	});
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');

@@ -486,7 +486,7 @@ div.tablePages ul.pagination {
 }
 
 .propertyValue {
-	display: table-row;
+	/** display: table-row;**/
 }
 
 .modal-open {
