@@ -702,7 +702,8 @@ $.fn.selectButton = function(data) {
 						loadCallback();
 					}
 
-				} else if (obj.url) {
+				} 
+				else if (obj.url) {
 
 					getJSON(obj.url, null,
 						function(data) {
@@ -742,7 +743,7 @@ $.fn.selectButton = function(data) {
 								loadCallback();
 							}
 						});
-				}
+				} 
 			},
 			disable: function() {
 				$('#button_' + id).removeAttr('data-toggle');

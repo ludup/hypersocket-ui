@@ -1091,8 +1091,11 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		dialogOptions.clearDialog(true);
 		removeMessage();
 
-		$(this).find('.modal-title').text(
-			getResource(dialogOptions.resourceKey + '.create.title'));
+		if(dialogOptions.propertyOptions)
+			$(this).find('.modal-title').text(
+					getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs));
+		else
+			$(this).find('.modal-title').text(getResource(dialogOptions.resourceKey + '.create.title'));
 
 		$(this).find('.modal-footer').empty();
 		$(this).find('.modal-footer').append(
@@ -1119,13 +1122,19 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			params2.name = params2.name + ' (' + getResource('text.copy') + ')';
 		}
 		dialogOptions.displayResource(params2, readOnly, params === 'copy');
-		
-		if(readOnly) {
-			$(this).find('.modal-title').text(
-					getResource(dialogOptions.resourceKey + '.view.title'));
-		} else {
-			$(this).find('.modal-title').text(
-					getResource(dialogOptions.resourceKey + '.update.title'));
+
+		if(dialogOptions.propertyOptions)
+			if(readOnly)
+				$(this).find('.modal-title').text(
+						getResource(dialogOptions.resourceKey + '.view.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs));
+			else
+				$(this).find('.modal-title').text(
+						getResource(dialogOptions.resourceKey + '.update.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs));
+		else {
+			if(readOnly)
+				$(this).find('.modal-title').text(getResource(dialogOptions.resourceKey + '.view.title'));
+			else 
+				$(this).find('.modal-title').text(getResource(dialogOptions.resourceKey + '.update.title'));
 		}
 
 		$(this).find('.modal-footer').empty();
