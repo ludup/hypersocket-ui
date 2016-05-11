@@ -272,10 +272,13 @@
 						
 						if(trigger.parentId==null) {
 							$(document).data('triggerModalCallback').loadParent(automation, null, 1);	
+							$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
 						} else {
-							$(document).data('triggerModalCallback').loadParent(trigger.parentId, null, 0);	
+							getJSON('triggers/trigger/' + trigger.parentId, null, function(data) {
+								$(document).data('triggerModalCallback').loadParent(data, null, 0);	
+									$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
+							});
 						}
-						$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
 					});
 					
 					$('.deleteTriggerIcon').off('click');
