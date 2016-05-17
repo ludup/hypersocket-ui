@@ -66,6 +66,8 @@ public interface MenuService extends AuthenticatedService {
 
 	static final String MENU_LICENSES = "licenses";
 	
+	static final String MENU_DASHBOARD_HELPZONE = "helpzone"; 
+	
 	
 	List<Menu> getMenus();
 

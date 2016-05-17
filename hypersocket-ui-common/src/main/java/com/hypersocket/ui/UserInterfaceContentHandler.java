@@ -30,6 +30,7 @@ import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.server.handlers.impl.ContentHandler;
 import com.hypersocket.server.handlers.impl.ContentHandlerImpl;
 import com.hypersocket.server.handlers.impl.FileContentHandler;
+import com.hypersocket.server.handlers.impl.RedirectException;
 import com.hypersocket.utils.FileUtils;
 
 @Service
@@ -164,13 +165,13 @@ public class UserInterfaceContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public int getResourceStatus(String path) {
+	public int getResourceStatus(String path) throws RedirectException {
 		return actualHandler.getResourceStatus(path);
 	}
 
 	@Override
-	public boolean handlesRequest(HttpServletRequest request) {
-		return actualHandler.handlesRequest(request);
+	public boolean handlesRequest(String path) {
+		return actualHandler.handlesRequest(path);
 	}
 
 	@Override

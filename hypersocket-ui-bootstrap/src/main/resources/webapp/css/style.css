@@ -185,7 +185,7 @@ pre {
 .excludedList {
 	float: left;
 	width: 40%;
-/* 	padding-left: 10px; */
+	padding-left: 10px;
 	padding-right: 5px;
 }
 
@@ -486,7 +486,7 @@ div.tablePages ul.pagination {
 }
 
 .propertyValue {
-	display: table-row;
+	/** display: table-row;**/
 }
 
 .modal-open {
@@ -613,7 +613,7 @@ table {
 	content: '';
 	background: #e7e7e7;
 	width: 100%;
-	height: 10000px;
+	height: 5000px;
 	left: 0;
 }
 
@@ -851,7 +851,7 @@ table {
 }
 
 .panel-group {
-	margin-bottom: 100px;
+	margin-bottom: 50px;
 }
 
 .panel {
@@ -1600,6 +1600,88 @@ span.input-group-addon {
 	margin: 0;
 }
 
+.help-wizard-page{
+	display: none;
+}
+
+.help-wizard-page .lightbox{
+	height: auto;
+	overflow: hidden;
+}
+
+.lightbox-block{
+	float: right;
+	padding-right: 10px;
+}
+
+.lightbox-text{
+	float: none;
+	width: auto;
+	overflow: hidden;
+}
+
+.help-text-block{
+	display: table;
+}
+
+.help-text-block div{
+	display: table-cell;
+	float: none;
+	padding: 10px 25px 5px 25px;
+}
+
+.help-button{
+	text-align: center;
+	height: 32px;
+}
+
+.help-button button{
+	background: #e7e7e7;
+	color: #333;
+	width: 200px;
+}
+
+.help-button button i{
+    font-size: 18px;
+    padding-right: 5px;
+}
 .fixed-table-toolbar {
 	margin-right: 20px;
+}
+.animated-accordion{
+	transition: 0.6s ease-in-out;
+    opacity: 0;
+}
+.accordion-header{
+	cursor: pointer;
+}
+
+.custom-counter {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+   counter-reset: step-counter;
+}
+
+.custom-counter li {
+  padding-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+.custom-counter li::before {
+    background-color: rgb(0, 200, 200);
+    border-radius: 16px;
+    color: white;
+    content: counter(step-counter, decimal);
+    counter-increment: step-counter;
+    font-size: 150%;
+    font-weight: bold;
+    margin-right: 5px;
+    padding: 5px 10px;
+    position:relative;
+    top:10px;
+}
+
+.custom-counter li p {
+    margin-left:35px;
 }
