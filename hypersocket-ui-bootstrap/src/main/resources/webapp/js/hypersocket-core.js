@@ -395,7 +395,7 @@ function home(data) {
 
 			// Load current page
 			$(contentDiv).append(
-				'<div class="col-md-10 col-sm-11 main"><div id="informationBar"/><div id="mainContent"/></div>');
+				'<div id="mainContainer" class="col-md-10 col-sm-11 main"><div id="informationBar"/><div id="mainContent"/></div>');
 
 			
 			// Setup header actions

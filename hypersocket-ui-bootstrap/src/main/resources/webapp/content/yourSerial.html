@@ -3,7 +3,7 @@
  </div>
 <script type="text/javascript">
     $(document).ready(function() {
-        getJSON('server/version', null, function(data) {
+    	getJSON('server/version', null, function(data) {
             var inf = data.message.split(';');
             $('#serialNumber').append(inf[1]);
         });
