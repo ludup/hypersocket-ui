@@ -850,6 +850,10 @@ table {
 	padding: 15px 0px 0px 0px;
 }
 
+.panel-group .panel {
+	overflow: visible;
+}
+
 .panel-group {
 	margin-bottom: 50px;
 }
@@ -1685,3 +1689,9 @@ span.input-group-addon {
 .custom-counter li p {
     margin-left:35px;
 }
+.greenColor{
+	color: #3c763d;
+} 
+.redColor{
+	color: #a94442;
+} 
