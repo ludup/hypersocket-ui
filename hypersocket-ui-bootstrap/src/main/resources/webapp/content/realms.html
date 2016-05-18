@@ -62,6 +62,7 @@
 							url : 'realms/template/' + widget.getSelectedObject().module, 
 							showButtons : false, 
 							resource: widget.getSelectedObject().module,
+							i18nNamespace: widget.getSelectedObject().module,
 							canUpdate : currentMenu.canUpdate, 
 							displayMode: "admin,create",
 							useTemplates : true 
@@ -164,6 +165,7 @@
 								{ url : 'realms/realm/properties/' + resource.id, 
 									showButtons : false, 
 									resource: resource,
+									i18nNamespace: widget.getSelectedObject().module,
 									displayMode: 'admin,update',
 									canUpdate : currentMenu.canUpdate && !readOnly,
 									
