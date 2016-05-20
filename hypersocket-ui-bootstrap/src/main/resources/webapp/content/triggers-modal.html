@@ -340,8 +340,8 @@
 				triggerAllRealms.reset();
 				
 				var parentResource = $('#triggerModal').data('parentResource');
-				debugger;
-				if(parentResource) {
+
+				if(parentResource && create) {
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						triggerEvent.setValue(data.resources[0].resourceKey);
 						triggerEvent.disable();	
