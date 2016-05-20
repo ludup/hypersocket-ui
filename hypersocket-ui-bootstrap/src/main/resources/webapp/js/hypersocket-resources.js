@@ -95,7 +95,6 @@ $.fn.resourceTable = function(params) {
 	$(this).data('options', options);
 
 	var html = '';
-	var currentView = options.defaultView;
 	if(!options.disableDecoration) {
 		html += '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
 			+ options.icon + '"></i><span class="break">' 
@@ -515,33 +514,8 @@ $.fn.resourceTable = function(params) {
 		    },
 		    onLoadSuccess: function(){
 		    	if (options.logo) {
-		    		if(!$('#' + divName + 'ToggleGrid').length){
-		    			$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.pull-right').append('<button id="' + divName + 'ToggleGrid" class="btn btn-default" type="button" name="grid" title="' + getResource('text.toggleViewMode') + '"><i class="glyphicon fa fa-picture-o"></button>');
-		    			$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px;"></div>');
-				    	$('#' + divName + 'ToggleGrid').click(function(){
-				    		$('#' + divName + 'Placeholder').toggle();
-				    		$('#' + divName + 'Grid').toggle();
-				    		if(currentView && currentView == 'table'){
-				    			currentView = 'logo';
-				    			$(this).find('i').removeClass('fa-picture-o');
-				    			$(this).find('i').addClass('fa-list');
-				    			
-				    		} else {
-				    			currentView = 'table';
-				    			$(this).find('i').removeClass('fa-list');
-				    			$(this).find('i').addClass('fa-picture-o');
-				    		}
-				    	});
-		    		}else{
-		    			$('#' + divName + 'Grid').empty();
-		    		}
-		    		if(currentView && currentView == 'logo'){
-		    			$('#' + divName + 'Placeholder').hide();
-		    			$('#' + divName + 'Grid').show();
-		    		}else{
-		    			$('#' + divName + 'Placeholder').show();
-		    			$('#' + divName + 'Grid').hide();
-		    		}
+		    		$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px; display: none;"></div>');
+		    		
 		    		var gridResourceList = $('#' + divName + 'Placeholder').bootstrapTable('getData');
 		    		if(!gridResourceList.length){
 		    			$('#' + divName + 'Grid').append('<div class="no-records-found">' + getResource('text.noMatchingRecords') + '</div>');
@@ -742,6 +716,7 @@ $.fn.resourceTable = function(params) {
 				}
 			});
 		}
+		
 		if(options.toolbarButtons) {
 			$.each(options.toolbarButtons, function(idx, action) {
 				$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
@@ -774,6 +749,69 @@ $.fn.resourceTable = function(params) {
 				});
 			});
 		}
+		
+		var views = [];
+		views.push({ id: 'table', div: '#' + divName + 'Placeholder', icon: 'fa-list'});
+		if(options.logo) {
+			views.push({ id: 'icon', div: '#' + divName + 'Grid', icon: 'fa-picture-o'});
+		}
+		debugger;
+		if(options.additionalViews) {
+			
+			$.each(options.additionalViews, function(idx, view) {
+				
+				var viewDiv = divName + view.name;
+				$('#' + divName + 'Placeholder').parent().append('<div id="' + viewDiv + '" class="fixed-table-container" style="padding-bottom: 0px;"></div>');
+				$(view.div).detach().appendTo('#' + viewDiv);
+				
+				views.push({ id: view.id, div: '#' + viewDiv, icon: view.icon, onShow: view.onShow, onHide: view.onHide});
+	
+			});
+		}
+		
+		var currentView;
+		$.each(views, function(idx, obj) {
+			if(obj.id === options.defaultView) {
+				currentView = obj;
+			}
+			$(obj.div).hide();
+			if(obj.onHide) {
+				obj.onHide();
+			}
+		});
+		
+		if(!currentView) {
+			currentView = views[0];
+		}
+	
+		var i = 0;
+		while(currentView.id !== views[0].id && i < views.length) {
+			var v = views.pop();
+			views.unshift(v);
+			i++
+		}
+
+		$(views[0].div).show();
+		if(views[0].onShow) {
+			views[0].onShow();
+		}
+		$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.pull-right').append('<button id="' 
+				+ divName + 'ToggleGrid" class="btn btn-default" type="button" name="grid" title="' 
+				+ getResource('text.toggleViewMode') + '"><i class="glyphicon fa ' + currentView.icon + '"></button>');
+		
+		
+    	$('#' + divName + 'ToggleGrid').click(function(){
+    		var prev = views[0];
+    		var v = views.pop();
+    		views.unshift(v);
+    		$(this).find('i').removeClass(prev.icon);
+    		$(this).find('i').addClass(views[0].icon);
+    		$(prev.div).hide();
+    		$(views[0].div).show();
+    		if(views[0].onShow) {
+    			views[0].onShow();
+    		}
+    	});
 		
 		if (options.complete) {
 			options.complete();

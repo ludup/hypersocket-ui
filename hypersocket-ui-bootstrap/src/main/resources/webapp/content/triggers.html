@@ -391,20 +391,16 @@
 				$('.addIcon').on('click', function(e) {
 					e.preventDefault();
 					var trigger = $(this).closest('.triggerShape').data('trigger');
-<<<<<<< HEAD
 					getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
 						$(document).data('triggerModalCallback').loadParent(trigger, data.resources, 0);
+						$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
+							resourceCreated: function(resource) {
+								renderDiagram(resource, resourcePage);
+							}
+						});
 					});
-					
-					$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
-						resourceCreated: function(resource) {
-							renderDiagram(resource, resourcePage);
-						}
-					});
-=======
-					$(document).data('triggerModalCallback').loadParent(trigger, null, 0);
-					$('div[dialog-for="contentTriggers"]').resourceDialog('create');
->>>>>>> origin/branch_1.2.x
+// 					$(document).data('triggerModalCallback').loadParent(trigger, null, 0);
+// 					$('div[dialog-for="contentTriggers"]').resourceDialog('create');
 				});
 				
 				$('.editIcon').off('click');
