@@ -478,8 +478,8 @@ $.fn.selectButton = function(data) {
 
 	var selected = null;
 	
-	if(obj.emptySelectionAllowed == 'true') {
-		$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_'
+	if(obj.emptySelectionAllowed) {
+		$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
 				+ id + '" href="#" name="link_' + obj.emptySelectionText + '" data-value="" data-label="' + obj.emptySelectionText + '">' 
 				+ obj.emptySelectionText + '</a></li>');
 	}
@@ -494,6 +494,7 @@ $.fn.selectButton = function(data) {
 				} else {
 					$('#select_button_' + id).text(getResource(options.notSetText));
 				}
+				
 			},
 			changed: function() {
 				if(!loading) {
@@ -515,6 +516,11 @@ $.fn.selectButton = function(data) {
 			},
 			load: function(loadCallback) {
 				$('#select_' + id).empty();
+				if(obj.emptySelectionAllowed) {
+					$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
+							+ id + '" href="#" name="link_' + obj.emptySelectionText + '" data-value="" data-label="' + obj.emptySelectionText + '">' 
+							+ obj.emptySelectionText + '</a></li>');
+				}
 				var listItem;
 				if (obj.options) {
 					
