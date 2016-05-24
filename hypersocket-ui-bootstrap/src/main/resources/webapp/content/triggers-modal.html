@@ -127,27 +127,40 @@
     			 + '        <select ' + conditionId.format('attribute') + ' class="form-control attributeKey">';
     	
     	html += '<option disabled>' + getResource("text.sourceEvent") + '</option>'
-    	var tmp = new Array();
-    	var tmp2 = new Array();
+    	var tmp = [];
+    	var tmp2 = [];
     	$.each(event.attributeNames, function(idx, obj) {
     		var resource = event.i18nNamespace != '' && !obj.startsWith('attr.') && !obj.startsWith('currentUser.') ? getResource(event.i18nNamespace + '.' + obj) : getResource(obj);
     		tmp[resource] = obj;
     		tmp2.push(resource);
     	});
 
+    	$.each(tmp2.sort(), function(idx, obj) {
+    		html += '<option value="' + tmp[obj] + '">' + obj + '</option>';
+    	});   
+    	
+    	
     	if(parentEvents) {
+    		
     		$.each(parentEvents, function(i, parentEvent) {
+    	
+    			tmp2 = [];
+    			html += '<option disabled>' + getResource(parentEvent.resourceKey) + '</option>';
 		    	$.each(parentEvent.attributeNames, function(idx, obj) {
+		    		if(obj.startsWith('currentUser.')) {
+		    			return;
+		    		}
 		    		var resource = parentEvent.i18nNamespace != '' && !obj.startsWith('attr.') && !obj.startsWith('currentUser.') ? getResource(parentEvent.i18nNamespace + '.' + obj) : getResource(obj);
 		    		tmp[resource] = obj;
 		    		tmp2.push(resource);
 		    	});
+		    	$.each(tmp2.sort(), function(idx, obj) {
+		    		html += '<option value="event' + (parentEvents.length - i - 1) + ":" + tmp[obj] + '">' + obj + '</option>';
+		    	});   
     		});
     	}
     	
-		$.each(tmp2.sort(), function(idx, obj) {
-    		html += '<option value="' + tmp[obj] + '">' + obj + '</option>';
-    	});    	
+		 	
     	
    		html += '        </select>'
    			 + '    </div>'
@@ -206,8 +219,11 @@
     	var variables = $('#triggerModal').data('selectedEvent').attributeNames;
     	
     	if($('#triggerModal').data('parentEvents')) {
-    		$.each($('#triggerModal').data('parentEvents'), function(idx, obj) {
-    			variables = variables.concat(obj.attributeNames);
+    		var parentEvents = $('#triggerModal').data('parentEvents');
+    		$.each(parentEvents, function(idx, obj) {
+    			$.each(obj.attributeNames, function(i, attr) {
+    				variables.push("event" + (parentEvents.length - idx - 1) + ":" + attr);
+    			});
     		});
     	}
     	
@@ -324,8 +340,8 @@
 				triggerAllRealms.reset();
 				
 				var parentResource = $('#triggerModal').data('parentResource');
-				debugger;
-				if(parentResource) {
+
+				if(parentResource && create) {
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						triggerEvent.setValue(data.resources[0].resourceKey);
 						triggerEvent.disable();	
