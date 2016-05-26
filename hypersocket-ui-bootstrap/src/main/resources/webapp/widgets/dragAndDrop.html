@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<link href="${uiPath}/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="${uiPath}/css/font-awesome.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="${uiPath}/css/style.css" rel="stylesheet">
+<link href="${uiPath}/css/switch.css" rel="stylesheet">
+<link href="${uiPath}/css/codemirror.css" rel="stylesheet">
+<link href="${uiPath}/css/bootstrap-slider.min.css" rel="stylesheet">
+<link href="${uiPath}/css/datepicker3.css" rel="stylesheet">
+<style id="holderjs-style" type="text/css"></style>
+</head>
+
+<body style="overflow: auto">
+
+	<div class="container-fluid content" style="height: 5000px;">
+		<div id="content" class="row">
+			<div class="propertyItem form-group credsDiv">
+				<div class="propertyValue col-md-6">
+					<div id="example1"></div>
+				</div>
+			</div>
+		</div>
+		<button class="btn btn-small btn-primary" id="buttonDisable">Disable</button>
+		<button class="btn btn-small btn-primary" id="buttonEnable">Enable</button>
+		<button class="btn btn-small btn-primary" id="buttonClear">Clear</button>
+		<button class="btn btn-small btn-primary" id="buttonGetValue">GetValue</button>
+	</div>
+
+	<script src="${uiPath}/js/jquery.min.js"></script>
+	<script src="${uiPath}/js/jquery-ui.min.js"></script>
+	<script src="${uiPath}/js/bootstrap.min.js"></script>
+	<script src="${uiPath}/js/bootbox.min.js"></script>
+	<script src="${uiPath}/js/jquery.bootpag.min.js"></script>
+	<script src="${uiPath}/js/spin-min.js"></script>
+	<script src="${uiPath}/js/jquery.hotkeys.js"></script>
+	<script src="${uiPath}/js/bootstrap-wysiwyg.js"></script>
+	<script src="${uiPath}/js/codemirror.js"></script>
+	<script src="${uiPath}/js/bootstrap-slider.min.js"></script>
+	<script src="${uiPath}/js/bootstrap-datepicker.js"></script>
+	<script src="${uiPath}/js/notify.min.js"></script>
+	<script src="${uiPath}/js/hypersocket-utils.js"></script>
+	<script src="${uiPath}/js/hypersocket-widgets.js"></script>
+	<script src="${uiPath}/js/hypersocket-properties.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			loadResources(function() {
+
+				$('#example1').fileDragAndDrop({
+					maxFiles : 3,
+					disabled : false, 
+					values: [],
+					showFileInputLink: true,
+					showDownload: true,
+					showRemove: true,
+					showCancel: true,
+					showPercent: true,
+					url: 'files/file'
+				});
+			});
+		});
+		
+		$('#buttonDisable').click(function(){
+			$('#example1').data('widget').disable();
+		});
+		
+		$('#buttonEnable').click(function(){
+			$('#example1').data('widget').enable();
+		});
+		
+		$('#buttonGetValue').click(function(){
+			alert($('#example1').data('widget').getValue());
+		});
+		
+		$('#buttonClear').click(function(){
+			$('#example1').data('widget').clear();
+		});
+	</script>
+</body>
+</html>

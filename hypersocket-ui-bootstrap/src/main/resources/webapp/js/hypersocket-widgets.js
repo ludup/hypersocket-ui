@@ -3490,6 +3490,323 @@ $.fn.multipleFileUpload = function(data) {
 	return callback;
 }
 
+$.fn.fileDragAndDrop = function(data) {
+	var options = $.extend(
+		{  
+			text: data.showFileInputLink ? getResource('dragAndDrop.fileInput.text') : getResource('dragAndDrop.text'),
+			maxFiles: 0,
+			disabled: false,
+			values: [],
+			showFileInputLink: false,
+			showCancel: true,
+			showDownload: true,
+			showRemove: true,
+			showPercent: true,
+			isArrayValue: true,
+			url: 'files/file',
+		}, data);
+	var fileIndex = 0;
+	var id = (options.id ? options.id : $(this).attr('id') + "FileDragAndDrop");
+	var html = 	'<div id="' + id + 'Div">'
+			+	'	<div id="' + id + 'Area" class="fileDragAndDrop" style="text-align: center;padding-top:50px;padding-bottom:50px;">'
+			+	'		<span"><i class="fa fa-paperclip" aria-hidden="true"></i>' + options.text + '</span>'
+			+	'	</div>'
+			+	'	<table id="' + id + 'List" class="dragAndDrop-table"></table>';
+	if(options.showFileInputLink){
+		html = html + '		<input type="file" id="' + id + 'FileInput" style="display: none" multiple>'
+	}
+	html = html + '</div>';
+	$(this).append(html);
+	if(options.showFileInputLink){
+		$('#' + id + 'Area a').click(function(){
+			if(!options.disabled){
+				$('#' + id + 'FileInput').click();
+			}
+		});
+		$('#' + id + 'FileInput').change(function () {
+		    callback.upload($(this)[0].files);
+		});		
+	}
+	
+	var dropArea = $('#' + id + 'Area');
+	dropArea.on('dragenter', function (e){
+		e.stopPropagation();
+	    e.preventDefault();
+		if(!options.disabled){
+		    $(this).removeClass('fileDragAndDrop').addClass('fileDragAndDrop-hover');
+		}
+	});
+	dropArea.on('dragover', function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		if(!options.disabled){
+			$(this).removeClass('fileDragAndDrop').addClass('fileDragAndDrop-hover');
+		}
+	});
+	dropArea.on('dragleave', function (e) {
+		if(!options.disabled){
+			$(this).removeClass('fileDragAndDrop-hover').addClass('fileDragAndDrop');
+		}
+	});
+	dropArea.on('drop', function (e){
+		e.preventDefault();
+		var files = e.originalEvent.dataTransfer.files;
+		callback.upload(files);
+		if(!options.disabled){
+			$(this).removeClass('fileDragAndDrop-hover').addClass('fileDragAndDrop');
+		}
+	});
+	
+	var drawRow = function(fileName, fileSize, uuid){
+		if(fileSize > 1024 * 1024){
+			fileSize = (Math.round((fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
+		}else if(fileSize > 1024){
+			fileSize = (Math.round((fileSize / 1024) * 100)/100).toFixed(2) + ' KB';
+		}else{
+			fileSize = fileSize + ' B';
+		}
+		
+		var fileRow = 	'<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;">'
+				+	'	<td class="dragAndDrop-info dragAndDrop-name" style="padding:5px;">'
+				+	'		<span>' + fileName + '</span>'
+				+	'	</td>'
+				+	'	<td class="dragAndDrop-info dragAndDrop-size">'
+				+	'		<span>' + fileSize + '</span>'
+				+	'	</td>'
+				+	'	<td class="dragAndDrop-progress">'
+				+	'		<div class="progress">'
+				+	'			<div id="' + id + 'UpdateProgress_' + fileIndex + '" class="progress-bar" role="progressbar"></div>'
+				+	'		</div>'
+				+	'	</td>'
+				+	'	<td>'
+				+	'		<div id="' + id + 'Buttons_' + fileIndex + '">';
+		if(options.showCancel){
+			fileRow = fileRow +	
+					'			<a class="btn btn-danger dragAndDrop-cancel" href="#" id="' + id + 'Cancel_' + fileIndex + '"><i class="fa fa-ban"></i></a>';
+		}
+		if(options.showDownload){
+			fileRow = fileRow +
+					'			<a class="btn btn-primary dragAndDrop-download" href="#" id="' + id + 'Download_' + fileIndex + '" disabled="disabled"><i class="fa fa-download"></i></a>';
+		}
+		if(options.showRemove){
+			fileRow = fileRow +
+				'			<a class="btn btn-danger dragAndDrop-remove" href="#" id="' + id + 'Remove_' + fileIndex + '" disabled="disabled"><i class="fa fa-trash-o"></i></a>';
+		}
+		fileRow = fileRow	
+				+	'		</div>'
+				+	'	</td>'
+				+	'</tr>';
+		$('#' + id + 'List').append(fileRow);
+		$('#' + id + 'Buttons_' + fileIndex).css('width', ($('#' + id + 'Buttons_' + fileIndex).find('a').length * 50) + 'px');
+		$('#' + id + 'ListElementDiv_' + fileIndex).data('fileIndex', fileIndex);
+		if(uuid){
+			$('#' + id + 'ListElementDiv_' + fileIndex).data('uuid', uuid);
+			if(options.showCancel){
+        		$('#' + id + 'Cancel_' + fileIndex).attr('disabled', 'disabled');
+        	}
+        	if(options.showDownload){
+        		$('#' + id + 'Download_' + fileIndex).removeAttr('disabled');
+        		$('#' + id + 'Download_' + fileIndex).click(function(){
+        			callback.download(fileIndex);
+        		});
+        	}
+        	if(options.showRemove){
+        		$('#' + id + 'Remove_' + fileIndex).removeAttr('disabled');
+        		$('#' + id + 'Remove_' + fileIndex).click(function(){
+        			callback.remove(fileIndex);
+        		});
+        	}
+        	$('#' + id + 'UpdateProgress_' + fileIndex).css("width",  100 + "%");
+			if(options.showPercent){
+				$('#' + id + 'UpdateProgress_' + fileIndex).html(100 + '%');
+			}
+		}
+		fileIndex++;
+	}
+	
+	var callback = {
+ 			getValue: function() {
+ 				values = [];
+ 				if(!$('#' + id + 'List').find('tr').length){
+ 					return '';
+ 				}
+ 				$('#' + id + 'List').find('tr').each(function(){
+ 					values.push($(this).data('uuid'));
+ 				});
+ 				return values;
+ 			},
+ 			
+ 			setValue: function(val) {
+ 				if(!(val instanceof Array)){
+ 					val = [val];
+ 				}
+ 				$.each(val, function(index, uuid){
+ 					getJSON('files/file/' + uuid, null, function(data){
+ 	 					if(data.success) {
+ 	 						drawRow(data.resource.fileName, data.resource.fileSize, data.resource.name);
+ 	 					}
+ 	 				});
+ 				});
+ 			},
+ 			
+ 			disable: function() {
+ 				$('#' + id + 'List').find('a').each(function(){
+ 					$(this).attr('disabled', 'disabled');
+ 				});
+ 				$('#' + id + 'Area').addClass('dragAndDrop-backrgound-disabled');
+ 				options.disabled = true;
+ 			},
+ 			enable: function() {
+ 				$('#' + id + 'List').find('tr').each(function(){
+ 					if($(this).data('uuid')){
+ 						$(this).find('a.dragAndDrop-cancel').attr('disabled', 'disabled');
+ 						$(this).find('a.dragAndDrop-download').removeAttr('disabled');
+ 						$(this).find('a.dragAndDrop-remove').removeAttr('disabled');
+ 					}else{
+ 						$(this).find('a.dragAndDrop-cancel').removeAttr('disabled');
+ 						$(this).find('a.dragAndDrop-download').attr('disabled', 'disabled');
+ 						$(this).find('a.dragAndDrop-remove').attr('disabled', 'disabled');
+ 					}
+ 				});
+ 				$('#' + id + 'Area').removeClass('dragAndDrop-backrgound-disabled');
+ 				options.disabled = false;
+ 			},
+			cancel: function(index, jqXHR){
+				jqXHR.abort();
+				$('#' + id + 'ListElementDiv_' + index).remove();
+			},
+ 			clear: function() {
+ 				$('#' + id + 'List').find('tr').each(function(index, file){
+ 					callback.remove($(this).data('fileIndex'));
+ 				});
+ 			},
+ 			upload: function(files){
+ 				if(!options.disabled){
+ 	 				if(!files instanceof Array){
+ 	 					files = [files];
+ 	 				}
+ 	 				var uploadedFileNum = $('#' + id + 'List').find('.progress').length;
+ 	 				$.each(files, function(index, file){
+ 	 					var formData = new FormData();
+ 	 					formData.append('file', files[index]);
+ 	 					var progressFileIndex = fileIndex;
+ 	 					if(options.maxFiles > 0 && $('#' + id + 'List').find('.progress').length >= options.maxFiles){
+ 	 	 					showError(getResource('dragAndDrop.maxFileNum.error').replace('{0}', options.maxFiles));
+ 	 	 					return;
+ 	 	 				}
+ 	 					drawRow(file.name, file.size);
+ 	 				    var jqXHR=$.ajax({
+ 	 				    	xhr: function() {
+ 	 				    		var xhrobj = $.ajaxSettings.xhr();
+ 	 				    		if (xhrobj.upload) {
+ 	 				    			xhrobj.upload.addEventListener('progress', function(event) {
+ 	 				    				var percent = 0;
+ 	 				    				var position = event.loaded || event.position;
+ 	 				    				var total = event.total;
+ 	 				    				if (event.lengthComputable) {
+ 	 				    					percent = Math.ceil(position / total * 100);
+ 	 				    				}
+ 	 				    				$('#' + id + 'UpdateProgress_' + progressFileIndex).css("width", percent + "%");
+ 	 				    				if(options.showPercent){
+ 	 				    					$('#' + id + 'UpdateProgress_' + progressFileIndex).html(percent + '%');
+ 	 				    				}
+ 	 				    			}, false);
+ 	 				    		}
+ 	 				            return xhrobj;
+ 	 				        },
+ 	 				        url: basePath + '/api/' + options.url,
+ 	 				        type: "POST",
+ 	 				        contentType:false,
+ 	 				        processData: false,
+ 	 				        cache: false,
+ 	 				        data: formData,
+ 	 				        success: function(data){
+ 	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('uuid', data.resource.name);
+ 	 				            if(options.showCancel){
+ 	 				        		$('#' + id + 'Cancel_' + progressFileIndex).attr('disabled', 'disabled');
+ 	 				        	}
+ 	 				        	if(options.showDownload){
+ 	 				        		$('#' + id + 'Download_' + progressFileIndex).removeAttr('disabled');
+ 	 				        		$('#' + id + 'Download_' + progressFileIndex).click(function(){
+ 	 				        			callback.download(progressFileIndex);
+ 	 				        		});
+ 	 				        	}
+ 	 				        	if(options.showRemove){
+ 	 				        		$('#' + id + 'Remove_' + progressFileIndex).removeAttr('disabled');
+ 	 				        		$('#' + id + 'Remove_' + progressFileIndex).click(function(){
+ 	 				        			callback.remove(progressFileIndex);
+ 	 				        		});
+ 	 				        	}
+ 	 				        },
+ 	 				        error: function(jqXHR, textStatus, errorThrown) {
+ 	 				        	$('#' + id + 'UpdateProgress_' + progressFileIndex).css("background", '#ffd4d4');
+ 	 				        	$('#' + id + 'UpdateProgress_' + progressFileIndex).css("width", '100%');
+			    				if(options.showPercent){
+			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).html('');
+			    				}
+			    				if(jqXHR.status == 401){
+			    					showError((getResource('dragAndDrop.genericError') + getResource('dragAndDrop.unauthorisedError')).replace('{0}', file.name));
+			    				}else if(jqXHR.status == 500){
+			    					showError((getResource('dragAndDrop.genericError') + getResource('dragAndDrop.serverError')).replace('{0}', file.name));
+			    				}else if(jqXHR.statusText == 'abort'){
+			    					showInformation(getResource('dragAndDrop.uploadCanceled'));
+			    				}else{
+			    					showError(getResource('dragAndDrop.genericError').replace('{0}', file.name));
+			    				}
+ 	 				        }
+ 	 				    });
+ 	 				    $('#' + id + 'Cancel_' + progressFileIndex).click(function(){
+ 	 				    	callback.cancel(progressFileIndex, jqXHR);
+ 						});
+ 	 				});
+ 				}
+ 				
+ 			},
+ 			download: function(index){
+ 				var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
+ 				window.location = basePath + '/api/files/download/' + uuid;
+ 			},
+ 			remove: function(index) {
+ 				if(!$('#' + id + 'List').length){
+ 					return;
+ 				}
+ 				if($('#' + id + 'ListElementDiv_' + index).data('uuid')){
+ 					var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
+ 	 				deleteJSON(options.url + '/' + uuid, null, function(data){
+ 	 					$('#' + id + 'ListElementDiv_' + index).remove();
+ 	 				});
+ 				}else{
+ 					$('#' + id + 'ListElementDiv_' + index).remove();
+ 				}
+ 				
+ 			},
+ 			options: function() {
+ 				return options;
+ 			},
+ 			getInput: function() {
+ 				return $('#' + id);
+ 			}
+ 		};
+
+ 	$('#' + id).change(function(e) {
+ 		if(options.changed) {
+ 			options.changed(callback);
+ 		}
+ 	});
+ 	
+ 	if(options.values) {
+ 		callback.setValue(options.values);
+ 	}
+ 	
+	if(options.disabled || options.readOnly) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+}
+
 $.fn.wizardPage = function(data) {
 	
 	var options = $.extend(
