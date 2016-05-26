@@ -3490,7 +3490,7 @@ $.fn.multipleFileUpload = function(data) {
 	return callback;
 }
 
-$.fn.fileDragAndDrop = function(data) {
+$.fn.html5Upload = function(data) {
 	var options = $.extend(
 		{  
 			text: data.showFileInputLink == false ? getResource('dragAndDrop.text') : getResource('dragAndDrop.fileInput.text'),
