@@ -132,6 +132,17 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 			log("File upload widget needs upload");
 			return false;
 		}
+	} else if(obj.inputType == 'fileDragAndDrop'){
+		
+		if(!obj.allowEmpty && value == '') {
+			log("validation failed for " + obj.resourceKey + " and value " + value);
+			return false;
+		} else if(obj.allowEmpty && value == '') {
+			return true;
+		} else if(widget.needsUpload()) {
+			log("File drag and drop widget needs upload");
+			return false;
+		}
 	} else if(obj.inputType == 'logoInput') {
 		if(!obj.allowEmpty && value == '') {
 			log("validation failed for " + obj.resourceKey + " and value " + value);
@@ -853,6 +864,15 @@ $.fn.propertyPage = function(opts) {
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).multipleFileUpload(widgetOptions);
+										} else if (obj.inputType == 'fileDragAndDrop') { 
+											
+											var widgetOptions = $.extend(obj, {
+												isArrayValue: true,
+												values: splitFix(obj.value),
+												url : basePath + '/api/files/file'
+											});
+											
+											widget = $('#' + tab + '_value' + this.id).fileDragAndDrop(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSelect') {
 

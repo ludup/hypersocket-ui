@@ -1690,12 +1690,13 @@ span.input-group-addon {
     border-width: 5px;	
     border-style: dashed;
     border-color: grey;
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 .fileDragAndDrop-hover {
-    border-width: 5px;	
-    border-style: dashed;
-    border-color: black;
+    border-color: black !important;
 }
 
 .dragAndDrop-table{
@@ -1707,8 +1708,7 @@ span.input-group-addon {
 	margin: 0px;
 }
 .dragAndDrop-info{
-	padding-left:5px;
-	padding-right: 5px;
+	padding:5px;
 }
 .dragAndDrop-name{
 	width: 20%;

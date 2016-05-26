@@ -3493,23 +3493,24 @@ $.fn.multipleFileUpload = function(data) {
 $.fn.fileDragAndDrop = function(data) {
 	var options = $.extend(
 		{  
-			text: data.showFileInputLink ? getResource('dragAndDrop.fileInput.text') : getResource('dragAndDrop.text'),
+			text: data.showFileInputLink == false ? getResource('dragAndDrop.text') : getResource('dragAndDrop.fileInput.text'),
 			maxFiles: 0,
+			maxBytes: 0,
 			disabled: false,
 			values: [],
-			showFileInputLink: false,
+			showFileInputLink: true,
 			showCancel: true,
 			showDownload: true,
 			showRemove: true,
 			showPercent: true,
 			isArrayValue: true,
-			url: 'files/file',
+			url: basePath + '/api/files/file',
 		}, data);
 	var fileIndex = 0;
 	var id = (options.id ? options.id : $(this).attr('id') + "FileDragAndDrop");
 	var html = 	'<div id="' + id + 'Div">'
-			+	'	<div id="' + id + 'Area" class="fileDragAndDrop" style="text-align: center;padding-top:50px;padding-bottom:50px;">'
-			+	'		<span"><i class="fa fa-paperclip" aria-hidden="true"></i>' + options.text + '</span>'
+			+	'	<div id="' + id + 'Area" class="fileDragAndDrop">'
+			+	'		<span class="optionalField">' + options.text + '</span>'
 			+	'	</div>'
 			+	'	<table id="' + id + 'List" class="dragAndDrop-table"></table>';
 	if(options.showFileInputLink){
@@ -3533,19 +3534,19 @@ $.fn.fileDragAndDrop = function(data) {
 		e.stopPropagation();
 	    e.preventDefault();
 		if(!options.disabled){
-		    $(this).removeClass('fileDragAndDrop').addClass('fileDragAndDrop-hover');
+		    $(this).addClass('fileDragAndDrop-hover');
 		}
 	});
 	dropArea.on('dragover', function (e) {
 		e.stopPropagation();
 		e.preventDefault();
 		if(!options.disabled){
-			$(this).removeClass('fileDragAndDrop').addClass('fileDragAndDrop-hover');
+			$(this).addClass('fileDragAndDrop-hover');
 		}
 	});
 	dropArea.on('dragleave', function (e) {
 		if(!options.disabled){
-			$(this).removeClass('fileDragAndDrop-hover').addClass('fileDragAndDrop');
+			$(this).removeClass('fileDragAndDrop-hover');
 		}
 	});
 	dropArea.on('drop', function (e){
@@ -3553,7 +3554,7 @@ $.fn.fileDragAndDrop = function(data) {
 		var files = e.originalEvent.dataTransfer.files;
 		callback.upload(files);
 		if(!options.disabled){
-			$(this).removeClass('fileDragAndDrop-hover').addClass('fileDragAndDrop');
+			$(this).removeClass('fileDragAndDrop-hover');
 		}
 	});
 	
@@ -3567,11 +3568,11 @@ $.fn.fileDragAndDrop = function(data) {
 		}
 		
 		var fileRow = 	'<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;">'
-				+	'	<td class="dragAndDrop-info dragAndDrop-name" style="padding:5px;">'
-				+	'		<span>' + fileName + '</span>'
+				+	'	<td class="dragAndDrop-info dragAndDrop-name">'
+				+	'		<span class="optionalField">' + fileName + '</span>'
 				+	'	</td>'
 				+	'	<td class="dragAndDrop-info dragAndDrop-size">'
-				+	'		<span>' + fileSize + '</span>'
+				+	'		<span class="optionalField">' + fileSize + '</span>'
 				+	'	</td>'
 				+	'	<td class="dragAndDrop-progress">'
 				+	'		<div class="progress">'
@@ -3590,7 +3591,7 @@ $.fn.fileDragAndDrop = function(data) {
 		}
 		if(options.showRemove){
 			fileRow = fileRow +
-				'			<a class="btn btn-danger dragAndDrop-remove" href="#" id="' + id + 'Remove_' + fileIndex + '" disabled="disabled"><i class="fa fa-trash-o"></i></a>';
+					'			<a class="btn btn-danger dragAndDrop-remove" href="#" id="' + id + 'Remove_' + fileIndex + '" disabled="disabled"><i class="fa fa-trash-o"></i></a>';
 		}
 		fileRow = fileRow	
 				+	'		</div>'
@@ -3687,13 +3688,19 @@ $.fn.fileDragAndDrop = function(data) {
  	 				}
  	 				var uploadedFileNum = $('#' + id + 'List').find('.progress').length;
  	 				$.each(files, function(index, file){
- 	 					var formData = new FormData();
- 	 					formData.append('file', files[index]);
- 	 					var progressFileIndex = fileIndex;
  	 					if(options.maxFiles > 0 && $('#' + id + 'List').find('.progress').length >= options.maxFiles){
  	 	 					showError(getResource('dragAndDrop.maxFileNum.error').replace('{0}', options.maxFiles));
  	 	 					return;
  	 	 				}
+ 	 					
+ 	 					if(options.maxBytes > 0 && file.size > options.maxBytes){
+ 	 	 					showError(getResource('dragAndDrop.maxBytes.error').replace('{0}', options.maxBytes));
+ 	 	 					return;
+ 	 	 				}
+ 	 					var formData = new FormData();
+ 	 					formData.append('file', files[index]);
+ 	 					var progressFileIndex = fileIndex;
+ 	 					
  	 					drawRow(file.name, file.size);
  	 				    var jqXHR=$.ajax({
  	 				    	xhr: function() {
@@ -3714,7 +3721,7 @@ $.fn.fileDragAndDrop = function(data) {
  	 				    		}
  	 				            return xhrobj;
  	 				        },
- 	 				        url: basePath + '/api/' + options.url,
+ 	 				        url: options.url,
  	 				        type: "POST",
  	 				        contentType:false,
  	 				        processData: false,
