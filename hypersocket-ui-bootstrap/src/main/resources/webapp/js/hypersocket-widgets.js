@@ -3774,8 +3774,8 @@ $.fn.html5Upload = function(data) {
  			},
  			download: function(index){
  				var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
- 				//window.location = basePath + '/api/files/download/' + uuid;
- 				window.location = basePath + '/api/fs/download/' + uuid;
+ 				window.location = basePath + '/api/files/download/' + uuid;
+ 				//window.location = basePath + '/api/fs/download/' + uuid;
  			},
  			remove: function(index) {
  				if(!$('#' + id + 'List').length){
@@ -3783,8 +3783,8 @@ $.fn.html5Upload = function(data) {
  				}
  				if($('#' + id + 'ListElementDiv_' + index).data('uuid')){
  					var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
- 	 				//deleteJSON(options.url + '/' + uuid, null, function(data){
- 	 				getJSON(basePath + '/api/fs/delete/', null, function(data){
+ 	 				deleteJSON(options.url + '/' + uuid, null, function(data){
+ 	 				//getJSON(basePath + '/api/fs/delete/', null, function(data){
  	 					$('#' + id + 'ListElementDiv_' + index).remove();
  	 				});
  				}else{
