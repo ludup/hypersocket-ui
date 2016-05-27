@@ -3504,7 +3504,7 @@ $.fn.html5Upload = function(data) {
 			showRemove: true,
 			showPercent: true,
 			isArrayValue: true,
-			url: basePath + '/api/files/file',
+			url: basePath + '/api/fs/upload'
 		}, data);
 	var fileIndex = 0;
 	var id = (options.id ? options.id : $(this).attr('id') + "FileDragAndDrop");
@@ -3744,6 +3744,9 @@ $.fn.html5Upload = function(data) {
  	 				        			callback.remove(progressFileIndex);
  	 				        		});
  	 				        	}
+ 	 				        	if(options.uploadCallback){
+ 	 				        		options.uploadCallback();
+ 	 				        	}
  	 				        },
  	 				        error: function(jqXHR, textStatus, errorThrown) {
  	 				        	$('#' + id + 'UpdateProgress_' + progressFileIndex).css("background", '#ffd4d4');
@@ -3771,7 +3774,8 @@ $.fn.html5Upload = function(data) {
  			},
  			download: function(index){
  				var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
- 				window.location = basePath + '/api/files/download/' + uuid;
+ 				//window.location = basePath + '/api/files/download/' + uuid;
+ 				window.location = basePath + '/api/fs/download/' + uuid;
  			},
  			remove: function(index) {
  				if(!$('#' + id + 'List').length){
@@ -3779,7 +3783,8 @@ $.fn.html5Upload = function(data) {
  				}
  				if($('#' + id + 'ListElementDiv_' + index).data('uuid')){
  					var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
- 	 				deleteJSON(options.url + '/' + uuid, null, function(data){
+ 	 				//deleteJSON(options.url + '/' + uuid, null, function(data){
+ 	 				getJSON(basePath + '/api/fs/delete/', null, function(data){
  	 					$('#' + id + 'ListElementDiv_' + index).remove();
  	 				});
  				}else{
@@ -3789,6 +3794,9 @@ $.fn.html5Upload = function(data) {
  			},
  			options: function() {
  				return options;
+ 			},
+ 			setOptions: function(newOptions){
+ 				options = $.extend(options, newOptions);
  			},
  			getInput: function() {
  				return $('#' + id);
