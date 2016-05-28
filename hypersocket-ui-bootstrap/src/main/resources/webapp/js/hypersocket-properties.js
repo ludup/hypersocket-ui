@@ -531,12 +531,16 @@ $.fn.propertyPage = function(opts) {
 			var createAdditionalTabs = function() {
 				$.each(options.additionalTabs,
 						function(idx, o) {
-							$(contentTabs)
-									.append(
-										'<li class="class_default" id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
-							$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
-							$('#' + this.id).addClass('tab-pane');
-						});
+					var hide = false;
+					if(o.checkDisplay && !o.checkDisplay()) {
+						hide = true;
+					}
+					$(contentTabs)
+							.append(
+								'<li class="class_default" id="' + this.id + 'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + '><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
+					$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
+					$('#' + this.id).addClass('tab-pane');
+				});
 			};
 			
 			if (options.additionalTabs && options.propertyTabsLast) {
@@ -599,6 +603,7 @@ $.fn.propertyPage = function(opts) {
 									return 0;
 								});
 								
+							
 								if(toSort.length  == 0) {
 									// Do not display this category because
 									// there are no properties to show.
