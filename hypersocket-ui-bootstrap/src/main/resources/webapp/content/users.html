@@ -86,17 +86,16 @@
 								canDelete : currentMenu.canDelete,
 								additionalActions : actions,
 								validate : function(create) {
-									if ($('#userName').val() == '') {
+									if ($('#userName').val().trim() == '') {
 										showError("error.nameRequired");
 										return false;
 									}
-									debugger;
 									if(create) {
-										if($('#userPassword').val() == '') {
+										if($('#userPassword').val().trim() == '') {
 											showError("error.passwordEmpty");
 											return false;
 										}
-										if($('#userPassword').val() != $('#userConfirmPassword').val()) {
+										if($('#userPassword').val().trim() != $('#userConfirmPassword').val().trim()) {
 											showError("error.passwordsNotMatched");
 											return false;
 										}
@@ -147,9 +146,9 @@
 								createResource : function() {
 
 									user = new Object();
-									user.id = $('#userId').val();
-									user.name = $('#userName').val();
-									user.password = $('#userPassword').val();
+									user.id = $('#userId').val().trim();
+									user.name = $('#userName').val().trim();
+									user.password = $('#userPassword').val().trim();
 									user.forceChange = $('#userForceChange').prop('checked') ? true : false;
 									
 									$('#userProperties').saveProperties(true,
