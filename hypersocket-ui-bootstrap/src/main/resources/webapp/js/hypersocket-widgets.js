@@ -3522,7 +3522,6 @@ $.fn.html5Upload = function(data) {
 			showPercent: true,
 			fadeBars: true,
 			isArrayValue: true,
-			onProgressHide: false,
 			url: basePath + '/api/fs/upload'
 		}, data);
 	var fileIndex = 0;
@@ -3586,13 +3585,9 @@ $.fn.html5Upload = function(data) {
 		}else{
 			fileSize = fileSize + ' B';
 		}
-		var fileRow = '';
-		if(options.onProgressHide){
-			fileRow = '<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;" class="' + id + 'ListEventDiv" hidden>';
-		}else{
-			fileRow = '<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;" class="' + id + 'ListEventDiv">';
-		}
-		var fileRow = fileRow
+		
+		var fileRow = 
+					'<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;" class="' + id + 'ListEventDiv">'
 				+	'	<td class="dragAndDrop-info dragAndDrop-name">'
 				+	'		<span class="optionalField">' + fileName + '</span>'
 				+	'	</td>'
@@ -3777,18 +3772,18 @@ $.fn.html5Upload = function(data) {
  	 				        		}else{
  	 				        			$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.genericError').replace('{0}', file.name) + '</span>');
  	 				        		}
- 	 				        		
+ 	 				        		$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().parent().append('<button id="' + id + 'CloseUpdateProgress_' + progressFileIndex + '" type="button" class="close" aria-hidden="true">&times;</button>');
+ 	 				        		$('#' + id + 'CloseUpdateProgress_' + progressFileIndex).click(function(){
+ 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).fadeTo(1000 , 0, function() {
+ 	 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).remove();
+ 	 	 	 							});
+ 	 				        		});
  				    				if(options.showPercent){
  				    					$('#' + id + 'UpdateProgress_' + progressFileIndex).html('');
  				    				}
- 				    				if(options.onProgressHide){
- 	 	 				        		$('#' + id + 'ListElementDiv_' + progressFileIndex).show();
- 	 	 				        	}
  	 				        		return;
  	 				        	}
- 	 				        	if(options.onProgressHide){
- 	 				        		$('#' + id + 'ListElementDiv_' + progressFileIndex).show();
- 	 				        	}
+ 	 				        	
  	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('uuid', data.resource.name);
  	 				            if(options.showCancel){
  	 				        		$('#' + id + 'Cancel_' + progressFileIndex).attr('disabled', 'disabled');
@@ -3819,7 +3814,6 @@ $.fn.html5Upload = function(data) {
  	 				        error: function(jqXHR, textStatus, errorThrown) {
  	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('finished', true);
  	 				        	checkUploadsFinished();
-
 			    				if(jqXHR.status == 401){
 			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.unauthorisedError').replace('{0}', file.name) + '</span>');
 			    				}else if(jqXHR.status == 500){
@@ -3829,9 +3823,12 @@ $.fn.html5Upload = function(data) {
 			    				}else{
 			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.genericError').replace('{0}', file.name) + '</span>');
 			    				}
-			    				if(options.onProgressHide){
- 	 				        		$('#' + id + 'ListElementDiv_' + progressFileIndex).show();
- 	 				        	}
+			    				$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().parent().append('<button id="' + id + 'CloseUpdateProgress_' + progressFileIndex + '" type="button" class="close" aria-hidden="true">&times;</button>');
+ 				        		$('#' + id + 'CloseUpdateProgress_' + progressFileIndex).click(function(){
+ 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).fadeTo(1000 , 0, function() {
+ 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).remove();
+ 	 	 							});
+ 				        		});
  	 				        }
  	 				    });
  	 				    $('#' + id + 'Cancel_' + progressFileIndex).click(function(){
