@@ -3520,18 +3520,21 @@ $.fn.html5Upload = function(data) {
 			showDownload: true,
 			showRemove: true,
 			showPercent: true,
+			fadeBars: true,
 			isArrayValue: true,
+			onProgressHide: false,
 			url: basePath + '/api/fs/upload'
 		}, data);
 	var fileIndex = 0;
 	var id = (options.id ? options.id : $(this).attr('id') + "FileDragAndDrop");
-	var html = 	'<div id="' + id + 'Div">'
+	var html = 	'<div id="' + id + 'Div" style="padding:20px;">'
 			+	'	<div id="' + id + 'Area" class="fileDragAndDrop">'
-			+	'		<span class="optionalField">' + options.text + '</span>'
+			+	'		<span class="optionalField" id="' + id + 'ProgressText" hidden><i class="fa fa-spinner fa-spin" aria-hidden="true"></i>&nbsp;' + getResource('dragAndDrop.progresText') + '</span>'
+			+	'		<span class="optionalField" id="' + id + 'StandByText">' + options.text + '</span>'
 			+	'	</div>'
 			+	'	<table id="' + id + 'List" class="dragAndDrop-table"></table>';
 	if(options.showFileInputLink){
-		html = html + '		<input type="file" id="' + id + 'FileInput" style="display: none" multiple>'
+		html = html + '		<input type="file" id="' + id + 'FileInput" style="display: none;" multiple>'
 	}
 	html = html + '</div>';
 	$(this).append(html);
@@ -3583,8 +3586,13 @@ $.fn.html5Upload = function(data) {
 		}else{
 			fileSize = fileSize + ' B';
 		}
-		
-		var fileRow = 	'<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;">'
+		var fileRow = '';
+		if(options.onProgressHide){
+			fileRow = '<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;" class="' + id + 'ListEventDiv" hidden>';
+		}else{
+			fileRow = '<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;" class="' + id + 'ListEventDiv">';
+		}
+		var fileRow = fileRow
 				+	'	<td class="dragAndDrop-info dragAndDrop-name">'
 				+	'		<span class="optionalField">' + fileName + '</span>'
 				+	'	</td>'
@@ -3617,8 +3625,10 @@ $.fn.html5Upload = function(data) {
 		$('#' + id + 'List').append(fileRow);
 		$('#' + id + 'Buttons_' + fileIndex).css('width', ($('#' + id + 'Buttons_' + fileIndex).find('a').length * 50) + 'px');
 		$('#' + id + 'ListElementDiv_' + fileIndex).data('fileIndex', fileIndex);
+		$('#' + id + 'ListElementDiv_' + fileIndex).data('finished', false);
 		if(uuid){
 			$('#' + id + 'ListElementDiv_' + fileIndex).data('uuid', uuid);
+			$('#' + id + 'ListElementDiv_' + fileIndex).data('finished', true);
 			if(options.showCancel){
         		$('#' + id + 'Cancel_' + fileIndex).attr('disabled', 'disabled');
         	}
@@ -3640,6 +3650,19 @@ $.fn.html5Upload = function(data) {
 			}
 		}
 		fileIndex++;
+	}
+	
+	var checkUploadsFinished = function(){
+		var uploadsFinished = true;
+      	$('.' + id + 'ListEventDiv').each(function(){
+      		if(!$(this).data('finished')){
+      			uploadsFinished = false;
+      			return false;
+      		}
+      	});
+      	if(uploadsFinished){
+      		$('#' + id + 'ProgressText').hide();
+      	}
 	}
 	
 	var callback = {
@@ -3719,6 +3742,7 @@ $.fn.html5Upload = function(data) {
  	 					var progressFileIndex = fileIndex;
  	 					
  	 					drawRow(file.name, file.size);
+ 	 					$('#' + id + 'ProgressText').show();
  	 				    var jqXHR=$.ajax({
  	 				    	xhr: function() {
  	 				    		var xhrobj = $.ajaxSettings.xhr();
@@ -3745,14 +3769,25 @@ $.fn.html5Upload = function(data) {
  	 				        cache: false,
  	 				        data: formData,
  	 				        success: function(data){
+ 	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('finished', true);
+ 	 				        	checkUploadsFinished();
  	 				        	if(!data.success) {
- 	 				        		showError(data.message);
- 	 				        		$('#' + id + 'UpdateProgress_' + progressFileIndex).css("background", '#ffd4d4');
- 	 	 				        	$('#' + id + 'UpdateProgress_' + progressFileIndex).css("width", '100%');
+ 	 				        		if(data.message && data.message != null && data.message != ''){
+ 	 				        			$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + data.message + '</span>');
+ 	 				        		}else{
+ 	 				        			$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.genericError').replace('{0}', file.name) + '</span>');
+ 	 				        		}
+ 	 				        		
  				    				if(options.showPercent){
  				    					$('#' + id + 'UpdateProgress_' + progressFileIndex).html('');
  				    				}
+ 				    				if(options.onProgressHide){
+ 	 	 				        		$('#' + id + 'ListElementDiv_' + progressFileIndex).show();
+ 	 	 				        	}
  	 				        		return;
+ 	 				        	}
+ 	 				        	if(options.onProgressHide){
+ 	 				        		$('#' + id + 'ListElementDiv_' + progressFileIndex).show();
  	 				        	}
  	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('uuid', data.resource.name);
  	 				            if(options.showCancel){
@@ -3773,22 +3808,30 @@ $.fn.html5Upload = function(data) {
  	 				        	if(options.uploadCallback){
  	 				        		options.uploadCallback();
  	 				        	}
+ 	 				        	if(options.fadeBars){
+ 	 				        		setTimeout(function() {
+ 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).fadeTo(2000 , 0, function() {
+ 	 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).remove();
+ 	 	 	 							});
+	 	 				  			}, 3000);
+ 	 				        	}
  	 				        },
  	 				        error: function(jqXHR, textStatus, errorThrown) {
- 	 				        	$('#' + id + 'UpdateProgress_' + progressFileIndex).css("background", '#ffd4d4');
- 	 				        	$('#' + id + 'UpdateProgress_' + progressFileIndex).css("width", '100%');
-			    				if(options.showPercent){
-			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).html('');
-			    				}
+ 	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('finished', true);
+ 	 				        	checkUploadsFinished();
+
 			    				if(jqXHR.status == 401){
-			    					showError((getResource('dragAndDrop.genericError') + getResource('dragAndDrop.unauthorisedError')).replace('{0}', file.name));
+			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.unauthorisedError').replace('{0}', file.name) + '</span>');
 			    				}else if(jqXHR.status == 500){
-			    					showError((getResource('dragAndDrop.genericError') + getResource('dragAndDrop.serverError')).replace('{0}', file.name));
+			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.serverError').replace('{0}', file.name) + '</span>');
 			    				}else if(jqXHR.statusText == 'abort'){
-			    					showInformation(getResource('dragAndDrop.uploadCanceled'));
+			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.uploadCanceled') + '</span>');
 			    				}else{
-			    					showError(getResource('dragAndDrop.genericError').replace('{0}', file.name));
+			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.genericError').replace('{0}', file.name) + '</span>');
 			    				}
+			    				if(options.onProgressHide){
+ 	 				        		$('#' + id + 'ListElementDiv_' + progressFileIndex).show();
+ 	 				        	}
  	 				        }
  	 				    });
  	 				    $('#' + id + 'Cancel_' + progressFileIndex).click(function(){

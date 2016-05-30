@@ -1695,6 +1695,11 @@ span.input-group-addon {
     padding-bottom: 50px;
     margin: 10px;
 }
+.fileDragAndDrop i{
+	font-size: 30px;
+	margin-top: -40px;
+	margin-bottom: -10px;
+}
 
 .fileDragAndDrop-hover {
     border-color: black !important;
@@ -1702,6 +1707,7 @@ span.input-group-addon {
 
 .dragAndDrop-table{
 	width: 100%;
+	margin: 5px;
 }
 
 .dragAndDrop-table .progress{
