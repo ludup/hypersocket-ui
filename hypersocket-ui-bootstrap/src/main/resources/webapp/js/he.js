@@ -138,6 +138,12 @@
 	/*--------------------------------------------------------------------------*/
 
 	var encode = function(string, options) {
+		if(!string) {
+			return;
+		}
+		if(typeof string !== 'string') {
+			string = string.toString();
+		}
 		options = merge(options, encode.options);
 		var strict = options.strict;
 		if (strict && regexInvalidRawCodePoint.test(string)) {
@@ -224,6 +230,12 @@
 	};
 
 	var decode = function(html, options) {
+		if(!html) {
+			return;
+		}
+		if(typeof html !== 'string') {
+			html = html.toString();
+		}
 		options = merge(options, decode.options);
 		var strict = options.strict;
 		if (strict && regexInvalidEntity.test(html)) {
