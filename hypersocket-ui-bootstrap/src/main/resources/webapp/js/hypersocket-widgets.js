@@ -1148,7 +1148,7 @@ $.fn.multipleSelect = function(data) {
 					result = new Array();
 
 					$('#' + id + 'IncludedSelect option').each(function() {
-						result.push($he.decode((this).val()));
+						result.push(he.decode($(this).val()));
 					});
 					return result;
 				},
