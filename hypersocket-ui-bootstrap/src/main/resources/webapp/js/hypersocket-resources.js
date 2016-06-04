@@ -76,7 +76,6 @@ $.fn.resourceTable = function(params) {
 		canCopy : true,
 		canUpdate : false,
 		canDelete : false,
-		useDialog: true,
 		icon : 'fa-cog',
 		sortName: 'name',
 		sortOrder: 'asc',
