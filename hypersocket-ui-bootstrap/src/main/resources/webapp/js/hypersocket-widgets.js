@@ -2186,7 +2186,7 @@ $.fn.imageInput = function(options) {
 $.fn.sliderInput = function(options) {
 	
 	var id = (options && options.id ? options.id : $(this).attr('id') + "SliderInput");
-	var obj = $.extend(options,
+	var obj = $.extend(
 			{   min: parseInt(options.min),
 			    max: parseInt(options.max),
 			    step: options.step ? parseInt(options.step) : 1,
@@ -2194,9 +2194,9 @@ $.fn.sliderInput = function(options) {
 			    tooltip: options.tooltip ? options.tooltip : 'show',
 			    value: parseInt(options.value),
 			    formater: function(value) {
-			    	return value + ' ' + getResource(obj.labelResourceKey);
+			    	return getResource(obj.labelResourceKey).format(value);
 			    }
-			});
+			}, options);
 	
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 	
