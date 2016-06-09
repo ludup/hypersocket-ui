@@ -132,6 +132,17 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 			log("File upload widget needs upload");
 			return false;
 		}
+	} else if(obj.inputType == 'html5Upload'){
+		
+		if(!obj.allowEmpty && value == '') {
+			log("validation failed for " + obj.resourceKey + " and value " + value);
+			return false;
+		} else if(obj.allowEmpty && value == '') {
+			return true;
+		} else if(widget.needsUpload()) {
+			log("File drag and drop widget needs upload");
+			return false;
+		}
 	} else if(obj.inputType == 'logoInput') {
 		if(!obj.allowEmpty && value == '') {
 			log("validation failed for " + obj.resourceKey + " and value " + value);
@@ -531,12 +542,16 @@ $.fn.propertyPage = function(opts) {
 			var createAdditionalTabs = function() {
 				$.each(options.additionalTabs,
 						function(idx, o) {
-							$(contentTabs)
-									.append(
-										'<li class="class_default" id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
-							$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
-							$('#' + this.id).addClass('tab-pane');
-						});
+					var hide = false;
+					if(o.checkDisplay && !o.checkDisplay()) {
+						hide = true;
+					}
+					$(contentTabs)
+							.append(
+								'<li class="class_default" id="' + this.id + 'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + '><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
+					$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
+					$('#' + this.id).addClass('tab-pane');
+				});
 			};
 			
 			if (options.additionalTabs && options.propertyTabsLast) {
@@ -599,6 +614,7 @@ $.fn.propertyPage = function(opts) {
 									return 0;
 								});
 								
+							
 								if(toSort.length  == 0) {
 									// Do not display this category because
 									// there are no properties to show.
@@ -853,6 +869,15 @@ $.fn.propertyPage = function(opts) {
 											});
 											
 											widget = $('#' + tab + '_value' + this.id).multipleFileUpload(widgetOptions);
+										} else if (obj.inputType == 'html5Upload') { 
+											
+											var widgetOptions = $.extend(obj, {
+												isArrayValue: true,
+												values: splitFix(obj.value),
+												url : basePath + '/api/files/file'
+											});
+											
+											widget = $('#' + tab + '_value' + this.id).html5Upload(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSelect') {
 

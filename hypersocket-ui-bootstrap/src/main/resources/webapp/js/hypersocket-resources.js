@@ -76,7 +76,6 @@ $.fn.resourceTable = function(params) {
 		canCopy : true,
 		canUpdate : false,
 		canDelete : false,
-		useDialog: true,
 		icon : 'fa-cog',
 		sortName: 'name',
 		sortOrder: 'asc',
@@ -931,7 +930,8 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#mainContainer').removeClass('col-sm-11');
 		$('#mainContainer').addClass('col-sm-12');
 		$('#main-menu').hide();
-		dialogOptions.tableView.hide();
+		$('#mainContent').hide();
+		//dialogOptions.tableView.hide();
 		dialog.show();
 	}
 	
@@ -1056,13 +1056,14 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#mainContainer').removeClass('col-sm-12');
 		$('#mainContainer').addClass('col-sm-11');
 		$('#main-menu').show();
+		$('#mainContent').show();
 		window.scrollTo(0,0);
 		return;
 	}
 	
 	var parent = $(this).parent();
 	dialog.hide();
-	parent.after(dialog.detach());
+	$('#mainContent').after(dialog.detach());
 	
 	var options = $.extend(
 			{ hasResourceTable : true,
