@@ -524,6 +524,14 @@ $.fn.selectButton = function(data) {
 				var listItem;
 				if (obj.options) {
 					
+					obj.options.sort(function(a,b) {
+						if(obj.nameIsResourceKey) {
+							return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
+						} else {
+							return a[obj.nameAttr] > b[obj.nameAttr];
+						}
+					});
+					
 					for (var i = 0; i < obj.options.length; i++) {
 						listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
 						$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
@@ -563,41 +571,50 @@ $.fn.selectButton = function(data) {
 					getJSON(obj.url, null,
 						function(data) {
 						
-							$.each(obj.getUrlData(data), function(idx, option) {
-								listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']];
-								
-								$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
-										+ stripNull(option[obj['valueAttr']]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">' 
-										+ listItem + '</a></li>');
-								if (option[obj['valueAttr']] == obj.value) {
-									selected = option;
-									$('#select_button_' + id).text(listItem);
-								}
-								$('#data_' + id + "_" + idx).data('resource', option);
-							});
-
-							$('.selectButton_' + id).on(
-									'click',
-									function(evt) {
-										evt.preventDefault();
-										var selected = $(this).attr('data-value');
-										$('#' + id).val(selected);
-										$('#select_button_' + id).text($(this).attr('data-label'));
-										if(obj.changed && !loading) {
-											obj.changed(callback);
-										}
-							});
-							
-							if(selected==null && !obj.emptySelectionAllowed) {
-								loading = true;
-								var val = $('.selectButton_' + id).first().trigger('click');
-								loading = false;
-							}
-							
-							if(loadCallback) {
-								loadCallback();
+						var items = obj.getUrlData(data);
+						items.sort(function(a,b) {
+							if(obj.nameIsResourceKey) {
+								return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
+							} else {
+								return a[obj.nameAttr] > b[obj.nameAttr];
 							}
 						});
+						
+						$.each(items, function(idx, option) {
+							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']];
+							
+							$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
+									+ stripNull(option[obj['valueAttr']]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">' 
+									+ listItem + '</a></li>');
+							if (option[obj['valueAttr']] == obj.value) {
+								selected = option;
+								$('#select_button_' + id).text(listItem);
+							}
+							$('#data_' + id + "_" + idx).data('resource', option);
+						});
+
+						$('.selectButton_' + id).on(
+								'click',
+								function(evt) {
+									evt.preventDefault();
+									var selected = $(this).attr('data-value');
+									$('#' + id).val(selected);
+									$('#select_button_' + id).text($(this).attr('data-label'));
+									if(obj.changed && !loading) {
+										obj.changed(callback);
+									}
+						});
+							
+						if(selected==null && !obj.emptySelectionAllowed) {
+							loading = true;
+							var val = $('.selectButton_' + id).first().trigger('click');
+							loading = false;
+						}
+						
+						if(loadCallback) {
+							loadCallback();
+						}
+					});
 				}
 			},
 			disable: function() {
@@ -1018,9 +1035,9 @@ $.fn.multipleSelect = function(data) {
 				function(idx, id) {
 					var selectedOpt;
 					if (options.selectedIsObjectList) {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
 					} else {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
 					}
 					if (selectedOpt) {
 						toSelect.append($(selectedOpt).clone());
@@ -1033,9 +1050,9 @@ $.fn.multipleSelect = function(data) {
 			$.each(
 				data.insert,
 				function(idx, obj) {
-					select.append('<option ' + 'value="' + obj[options.valueAttr] + '">' 
+					select.append('<option ' + 'value="' + he.encode(obj[options.valueAttr]) + '">' 
 							+ (options.nameIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined 
-									? obj[options.nameAttr] : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
+									? he.encode(obj[options.nameAttr]) : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + "</option>");
 				});
 		}
 
@@ -1044,14 +1061,14 @@ $.fn.multipleSelect = function(data) {
 				data.remove,
 				function(idx, obj) {
 					if (options.selectedIsObjectList) {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj[options.valueAttr] + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(obj[options.valueAttr]) + '"]');
 						if (!selectedOpt) {
-							selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj[options.valueAttr] + '"]');
+							selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + he.encode(obj[options.valueAttr]) + '"]');
 						}
 					} else {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + obj + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(obj) + '"]');
 						if (!selectedOpt) {
-							selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + obj + '"]');
+							selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + he.encode(obj) + '"]');
 						}
 					}
 					if (selectedOpt) {
@@ -1066,9 +1083,9 @@ $.fn.multipleSelect = function(data) {
 				function(idx, id) {
 					var selectedOpt;
 					if (options.selectedIsObjectList) {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
 					} else {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
 					}
 					if (selectedOpt) {
 						toSelect.append($(selectedOpt).clone());
@@ -1116,9 +1133,9 @@ $.fn.multipleSelect = function(data) {
 							function(idx, id) {
 								var selectedOpt;
 								if (options.selectedIsObjectList) {
-									selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
+									selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
 								} else {
-									selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+									selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
 								}
 								if (selectedOpt) {
 									toSelect.append($(selectedOpt).clone());
@@ -1131,7 +1148,7 @@ $.fn.multipleSelect = function(data) {
 					result = new Array();
 
 					$('#' + id + 'IncludedSelect option').each(function() {
-						result.push($(this).val());
+						result.push(he.decode($(this).val()));
 					});
 					return result;
 				},
@@ -1277,13 +1294,13 @@ $.fn.multipleSelect = function(data) {
 				var selectItem = options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0) ? toSelect : select;
 				
 				if(options.valuesIsObjectList) {
-					selectItem.append('<option ' + 'value="' + obj[options.valueAttr] + '">' + (options.nameIsResourceKey 
-							? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] 
-								: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
+					selectItem.append('<option ' + 'value="' + he.encode(obj[options.valueAttr]) + '">' + (options.nameIsResourceKey 
+							? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+								: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + "</option>");
 				} else {
 					selectItem.append('<option ' + 'value="' + obj + '">' + (options.nameIsResourceKey 
-							? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? obj
-								: getResource(options.resourceKeyTemplate.format(obj))) : obj) + "</option>");
+							? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+								: getResource(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + "</option>");
 				}
 		});
 
@@ -1292,9 +1309,9 @@ $.fn.multipleSelect = function(data) {
 				function(idx, id) {
 					var selectedOpt;
 					if (options.selectedIsObjectList) {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
 					} else {
-						selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+						selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
 					}
 					if (selectedOpt) {
 						toSelect.append($(selectedOpt).clone());
@@ -1313,13 +1330,13 @@ $.fn.multipleSelect = function(data) {
 					
 					var selectItem = ((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty ? toSelect : select);
 					if(options.valuesIsObjectList) {
-						selectItem.append('<option ' + 'value="' + obj[options.valueAttr] + '">' + (options.nameIsResourceKey 
-								? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? obj[options.nameAttr] 
-									: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : obj[options.nameAttr]) + "</option>");
+						selectItem.append('<option ' + 'value="' + he.encode(obj[options.valueAttr]) + '">' + (options.nameIsResourceKey 
+								? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+									: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + "</option>");
 					} else {
-						selectItem.append('<option ' + 'value="' + obj + '">' + (options.nameIsResourceKey 
-								? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? obj
-									: getResource(options.resourceKeyTemplate.format(obj))) : obj) + "</option>");
+						selectItem.append('<option ' + 'value="' + he.encode(obj) + '">' + (options.nameIsResourceKey 
+								? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+									: getResource(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + "</option>");
 					}
 				});
 
@@ -1328,9 +1345,9 @@ $.fn.multipleSelect = function(data) {
 						function(idx, id) {
 							var selectedOpt;
 							if (options.selectedIsObjectList) {
-								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id[options.valueAttr] + '"]');
+								selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
 							} else {
-								selectedOpt = $('#' + select.attr('id') + ' option[value="' + id + '"]');
+								selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
 							}
 							if (selectedOpt) {
 								toSelect.append($(selectedOpt).clone());
@@ -1592,7 +1609,7 @@ $.fn.multipleTextInput = function(data) {
 		
 		if (options.values) {
 			$.each(options.values, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
+				toSelect.append('<option ' + 'value="' + he.encode(obj) + '">' + he.encode(obj) + "</option>");
 			});
 		}
 
@@ -1682,7 +1699,7 @@ $.fn.multipleTextInput = function(data) {
 					result = new Array();
 
 					$('#' + id + 'IncludedSelect option').each(function() {
-						result.push($(this).val());
+						result.push(he.decode($(this).val()));
 					});
 					return result;
 				},
@@ -1721,7 +1738,7 @@ $.fn.multipleTextInput = function(data) {
 						}
 
 						toSelect
-								.append('<option ' + 'value="' + selectedText + '">' + selectedText + "</option>");
+								.append('<option ' + 'value="' + he.encode(selectedText) + '">' + he.encode(selectedText) + "</option>");
 						textInput.setValue('');
 						toSelect.data('updated', true);
 						if (options.changed) {
@@ -1736,7 +1753,7 @@ $.fn.multipleTextInput = function(data) {
 				return;
 			}
 
-			textInput.setValue($(selectedOpts).val());
+			textInput.setValue(he.decode($(selectedOpts).val()));
 			$(selectedOpts).remove();
 
 			toSelect.data('updated', true);
@@ -1750,7 +1767,7 @@ $.fn.multipleTextInput = function(data) {
 
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
-			toSelect.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
+			toSelect.append('<option ' + 'value="' + he.encode(obj) + '">' + he.encode(obj) + "</option>");
 		});
 	}
 	
@@ -2169,7 +2186,7 @@ $.fn.imageInput = function(options) {
 $.fn.sliderInput = function(options) {
 	
 	var id = (options && options.id ? options.id : $(this).attr('id') + "SliderInput");
-	var obj = $.extend(options,
+	var obj = $.extend(
 			{   min: parseInt(options.min),
 			    max: parseInt(options.max),
 			    step: options.step ? parseInt(options.step) : 1,
@@ -2177,9 +2194,9 @@ $.fn.sliderInput = function(options) {
 			    tooltip: options.tooltip ? options.tooltip : 'show',
 			    value: parseInt(options.value),
 			    formater: function(value) {
-			    	return value + ' ' + getResource(obj.labelResourceKey);
+			    	return getResource(obj.labelResourceKey).format(value);
 			    }
-			});
+			}, options);
 	
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 	
@@ -3483,6 +3500,387 @@ $.fn.multipleFileUpload = function(data) {
 	
 	if(rowNum==0 && options.showEmptyRow) {
 		callback.addRows(1);
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+}
+
+$.fn.html5Upload = function(data) {
+	var options = $.extend(
+		{  
+			text: data.showFileInputLink == false ? getResource('dragAndDrop.text') : getResource('dragAndDrop.fileInput.text'),
+			maxFiles: 0,
+			maxBytes: 0,
+			disabled: false,
+			values: [],
+			showFileInputLink: true,
+			showCancel: true,
+			showDownload: true,
+			showRemove: true,
+			showPercent: true,
+			fadeBars: true,
+			isArrayValue: true,
+			url: basePath + '/api/fs/upload'
+		}, data);
+	var fileIndex = 0;
+	var id = (options.id ? options.id : $(this).attr('id') + "FileDragAndDrop");
+	var html = 	'<div id="' + id + 'Div" style="padding:20px;">'
+			+	'	<div id="' + id + 'Area" class="fileDragAndDrop">'
+			+	'		<span class="optionalField" id="' + id + 'ProgressText" hidden><i class="fa fa-spinner fa-spin" aria-hidden="true"></i>&nbsp;' + getResource('dragAndDrop.progresText') + '</span>'
+			+	'		<span class="optionalField" id="' + id + 'StandByText">' + options.text + '</span>'
+			+	'	</div>'
+			+	'	<table id="' + id + 'List" class="dragAndDrop-table"></table>';
+	if(options.showFileInputLink){
+		html = html + '		<input type="file" id="' + id + 'FileInput" style="display: none;" multiple>'
+	}
+	html = html + '</div>';
+	$(this).append(html);
+	if(options.showFileInputLink){
+		$('#' + id + 'Area a').click(function(){
+			if(!options.disabled){
+				$('#' + id + 'FileInput').click();
+			}
+		});
+		$('#' + id + 'FileInput').change(function () {
+		    callback.upload($(this)[0].files);
+		});		
+	}
+	
+	var dropArea = $('#' + id + 'Area');
+	dropArea.on('dragenter', function (e){
+		e.stopPropagation();
+	    e.preventDefault();
+		if(!options.disabled){
+		    $(this).addClass('fileDragAndDrop-hover');
+		}
+	});
+	dropArea.on('dragover', function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		if(!options.disabled){
+			$(this).addClass('fileDragAndDrop-hover');
+		}
+	});
+	dropArea.on('dragleave', function (e) {
+		if(!options.disabled){
+			$(this).removeClass('fileDragAndDrop-hover');
+		}
+	});
+	dropArea.on('drop', function (e){
+		e.preventDefault();
+		var files = e.originalEvent.dataTransfer.files;
+		callback.upload(files);
+		if(!options.disabled){
+			$(this).removeClass('fileDragAndDrop-hover');
+		}
+	});
+	
+	var drawRow = function(fileName, fileSize, uuid){
+		if(fileSize > 1024 * 1024){
+			fileSize = (Math.round((fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
+		}else if(fileSize > 1024){
+			fileSize = (Math.round((fileSize / 1024) * 100)/100).toFixed(2) + ' KB';
+		}else{
+			fileSize = fileSize + ' B';
+		}
+		
+		var fileRow = 
+					'<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;" class="' + id + 'ListEventDiv">'
+				+	'	<td class="dragAndDrop-info dragAndDrop-name">'
+				+	'		<span class="optionalField">' + fileName + '</span>'
+				+	'	</td>'
+				+	'	<td class="dragAndDrop-info dragAndDrop-size">'
+				+	'		<span class="optionalField">' + fileSize + '</span>'
+				+	'	</td>'
+				+	'	<td class="dragAndDrop-progress">'
+				+	'		<div class="progress">'
+				+	'			<div id="' + id + 'UpdateProgress_' + fileIndex + '" class="progress-bar" role="progressbar"></div>'
+				+	'		</div>'
+				+	'	</td>'
+				+	'	<td>'
+				+	'		<div id="' + id + 'Buttons_' + fileIndex + '">';
+		if(options.showCancel){
+			fileRow = fileRow +	
+					'			<a class="btn btn-danger dragAndDrop-cancel" href="#" id="' + id + 'Cancel_' + fileIndex + '"><i class="fa fa-ban"></i></a>';
+		}
+		if(options.showDownload){
+			fileRow = fileRow +
+					'			<a class="btn btn-primary dragAndDrop-download" href="#" id="' + id + 'Download_' + fileIndex + '" disabled="disabled"><i class="fa fa-download"></i></a>';
+		}
+		if(options.showRemove){
+			fileRow = fileRow +
+					'			<a class="btn btn-danger dragAndDrop-remove" href="#" id="' + id + 'Remove_' + fileIndex + '" disabled="disabled"><i class="fa fa-trash-o"></i></a>';
+		}
+		fileRow = fileRow	
+				+	'		</div>'
+				+	'	</td>'
+				+	'</tr>';
+		$('#' + id + 'List').append(fileRow);
+		$('#' + id + 'Buttons_' + fileIndex).css('width', ($('#' + id + 'Buttons_' + fileIndex).find('a').length * 50) + 'px');
+		$('#' + id + 'ListElementDiv_' + fileIndex).data('fileIndex', fileIndex);
+		$('#' + id + 'ListElementDiv_' + fileIndex).data('finished', false);
+		if(uuid){
+			$('#' + id + 'ListElementDiv_' + fileIndex).data('uuid', uuid);
+			$('#' + id + 'ListElementDiv_' + fileIndex).data('finished', true);
+			if(options.showCancel){
+        		$('#' + id + 'Cancel_' + fileIndex).attr('disabled', 'disabled');
+        	}
+        	if(options.showDownload){
+        		$('#' + id + 'Download_' + fileIndex).removeAttr('disabled');
+        		$('#' + id + 'Download_' + fileIndex).click(function(){
+        			callback.download(fileIndex);
+        		});
+        	}
+        	if(options.showRemove){
+        		$('#' + id + 'Remove_' + fileIndex).removeAttr('disabled');
+        		$('#' + id + 'Remove_' + fileIndex).click(function(){
+        			callback.remove(fileIndex);
+        		});
+        	}
+        	$('#' + id + 'UpdateProgress_' + fileIndex).css("width",  100 + "%");
+			if(options.showPercent){
+				$('#' + id + 'UpdateProgress_' + fileIndex).html(100 + '%');
+			}
+		}
+		fileIndex++;
+	}
+	
+	var checkUploadsFinished = function(){
+		var uploadsFinished = true;
+      	$('.' + id + 'ListEventDiv').each(function(){
+      		if(!$(this).data('finished')){
+      			uploadsFinished = false;
+      			return false;
+      		}
+      	});
+      	if(uploadsFinished){
+      		$('#' + id + 'ProgressText').hide();
+      	}
+	}
+	
+	var callback = {
+ 			getValue: function() {
+ 				values = [];
+ 				if(!$('#' + id + 'List').find('tr').length){
+ 					return '';
+ 				}
+ 				$('#' + id + 'List').find('tr').each(function(){
+ 					values.push($(this).data('uuid'));
+ 				});
+ 				return values;
+ 			},
+ 			
+ 			setValue: function(val) {
+ 				if(!(val instanceof Array)){
+ 					val = [val];
+ 				}
+ 				$.each(val, function(index, uuid){
+ 					getJSON('files/file/' + uuid, null, function(data){
+ 	 					if(data.success) {
+ 	 						drawRow(data.resource.fileName, data.resource.fileSize, data.resource.name);
+ 	 					}
+ 	 				});
+ 				});
+ 			},
+ 			
+ 			disable: function() {
+ 				$('#' + id + 'List').find('a').each(function(){
+ 					$(this).attr('disabled', 'disabled');
+ 				});
+ 				$('#' + id + 'Area').addClass('dragAndDrop-backrgound-disabled');
+ 				options.disabled = true;
+ 			},
+ 			enable: function() {
+ 				$('#' + id + 'List').find('tr').each(function(){
+ 					if($(this).data('uuid')){
+ 						$(this).find('a.dragAndDrop-cancel').attr('disabled', 'disabled');
+ 						$(this).find('a.dragAndDrop-download').removeAttr('disabled');
+ 						$(this).find('a.dragAndDrop-remove').removeAttr('disabled');
+ 					}else{
+ 						$(this).find('a.dragAndDrop-cancel').removeAttr('disabled');
+ 						$(this).find('a.dragAndDrop-download').attr('disabled', 'disabled');
+ 						$(this).find('a.dragAndDrop-remove').attr('disabled', 'disabled');
+ 					}
+ 				});
+ 				$('#' + id + 'Area').removeClass('dragAndDrop-backrgound-disabled');
+ 				options.disabled = false;
+ 			},
+			cancel: function(index, jqXHR){
+				jqXHR.abort();
+				$('#' + id + 'ListElementDiv_' + index).remove();
+			},
+ 			clear: function() {
+ 				$('#' + id + 'List').find('tr').each(function(index, file){
+ 					callback.remove($(this).data('fileIndex'));
+ 				});
+ 			},
+ 			upload: function(files){
+ 				if(!options.disabled){
+ 	 				if(!files instanceof Array){
+ 	 					files = [files];
+ 	 				}
+ 	 				var uploadedFileNum = $('#' + id + 'List').find('.progress').length;
+ 	 				$.each(files, function(index, file){
+ 	 					if(options.maxFiles > 0 && $('#' + id + 'List').find('.progress').length >= options.maxFiles){
+ 	 	 					showError(getResource('dragAndDrop.maxFileNum.error').replace('{0}', options.maxFiles));
+ 	 	 					return;
+ 	 	 				}
+ 	 					
+ 	 					if(options.maxBytes > 0 && file.size > options.maxBytes){
+ 	 	 					showError(getResource('dragAndDrop.maxBytes.error').replace('{0}', options.maxBytes));
+ 	 	 					return;
+ 	 	 				}
+ 	 					var formData = new FormData();
+ 	 					formData.append('file', files[index]);
+ 	 					var progressFileIndex = fileIndex;
+ 	 					
+ 	 					drawRow(file.name, file.size);
+ 	 					$('#' + id + 'ProgressText').show();
+ 	 				    var jqXHR=$.ajax({
+ 	 				    	xhr: function() {
+ 	 				    		var xhrobj = $.ajaxSettings.xhr();
+ 	 				    		if (xhrobj.upload) {
+ 	 				    			xhrobj.upload.addEventListener('progress', function(event) {
+ 	 				    				var percent = 0;
+ 	 				    				var position = event.loaded || event.position;
+ 	 				    				var total = event.total;
+ 	 				    				if (event.lengthComputable) {
+ 	 				    					percent = Math.ceil(position / total * 100);
+ 	 				    				}
+ 	 				    				$('#' + id + 'UpdateProgress_' + progressFileIndex).css("width", percent + "%");
+ 	 				    				if(options.showPercent){
+ 	 				    					$('#' + id + 'UpdateProgress_' + progressFileIndex).html(percent + '%');
+ 	 				    				}
+ 	 				    			}, false);
+ 	 				    		}
+ 	 				            return xhrobj;
+ 	 				        },
+ 	 				        url: options.url,
+ 	 				        type: "POST",
+ 	 				        contentType:false,
+ 	 				        processData: false,
+ 	 				        cache: false,
+ 	 				        data: formData,
+ 	 				        success: function(data){
+ 	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('finished', true);
+ 	 				        	checkUploadsFinished();
+ 	 				        	if(!data.success) {
+ 	 				        		if(data.message && data.message != null && data.message != ''){
+ 	 				        			$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + data.message + '</span>');
+ 	 				        		}else{
+ 	 				        			$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.genericError').replace('{0}', file.name) + '</span>');
+ 	 				        		}
+ 	 				        		$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().parent().append('<button id="' + id + 'CloseUpdateProgress_' + progressFileIndex + '" type="button" class="close" aria-hidden="true">&times;</button>');
+ 	 				        		$('#' + id + 'CloseUpdateProgress_' + progressFileIndex).click(function(){
+ 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).fadeTo(1000 , 0, function() {
+ 	 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).remove();
+ 	 	 	 							});
+ 	 				        		});
+ 				    				if(options.showPercent){
+ 				    					$('#' + id + 'UpdateProgress_' + progressFileIndex).html('');
+ 				    				}
+ 	 				        		return;
+ 	 				        	}
+ 	 				        	
+ 	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('uuid', data.resource.name);
+ 	 				            if(options.showCancel){
+ 	 				        		$('#' + id + 'Cancel_' + progressFileIndex).attr('disabled', 'disabled');
+ 	 				        	}
+ 	 				        	if(options.showDownload){
+ 	 				        		$('#' + id + 'Download_' + progressFileIndex).removeAttr('disabled');
+ 	 				        		$('#' + id + 'Download_' + progressFileIndex).click(function(){
+ 	 				        			callback.download(progressFileIndex);
+ 	 				        		});
+ 	 				        	}
+ 	 				        	if(options.showRemove){
+ 	 				        		$('#' + id + 'Remove_' + progressFileIndex).removeAttr('disabled');
+ 	 				        		$('#' + id + 'Remove_' + progressFileIndex).click(function(){
+ 	 				        			callback.remove(progressFileIndex);
+ 	 				        		});
+ 	 				        	}
+ 	 				        	if(options.uploadCallback){
+ 	 				        		options.uploadCallback();
+ 	 				        	}
+ 	 				        	if(options.fadeBars){
+ 	 				        		setTimeout(function() {
+ 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).fadeTo(2000 , 0, function() {
+ 	 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).remove();
+ 	 	 	 							});
+	 	 				  			}, 3000);
+ 	 				        	}
+ 	 				        },
+ 	 				        error: function(jqXHR, textStatus, errorThrown) {
+ 	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('finished', true);
+ 	 				        	checkUploadsFinished();
+			    				if(jqXHR.status == 401){
+			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.unauthorisedError').replace('{0}', file.name) + '</span>');
+			    				}else if(jqXHR.status == 500){
+			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.serverError').replace('{0}', file.name) + '</span>');
+			    				}else if(jqXHR.statusText == 'abort'){
+			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.uploadCanceled') + '</span>');
+			    				}else{
+			    					$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().hide().parent().append('<span>' + getResource('dragAndDrop.uploadError') + '&nbsp;' + getResource('dragAndDrop.genericError').replace('{0}', file.name) + '</span>');
+			    				}
+			    				$('#' + id + 'UpdateProgress_' + progressFileIndex).parent().parent().append('<button id="' + id + 'CloseUpdateProgress_' + progressFileIndex + '" type="button" class="close" aria-hidden="true">&times;</button>');
+ 				        		$('#' + id + 'CloseUpdateProgress_' + progressFileIndex).click(function(){
+ 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).fadeTo(1000 , 0, function() {
+ 	 				        			$('#' + id + 'ListElementDiv_' + progressFileIndex).remove();
+ 	 	 							});
+ 				        		});
+ 	 				        }
+ 	 				    });
+ 	 				    $('#' + id + 'Cancel_' + progressFileIndex).click(function(){
+ 	 				    	callback.cancel(progressFileIndex, jqXHR);
+ 						});
+ 	 				});
+ 				}
+ 				
+ 			},
+ 			download: function(index){
+ 				var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
+ 				window.location = basePath + '/api/files/download/' + uuid;
+ 				//window.location = basePath + '/api/fs/download/' + uuid;
+ 			},
+ 			remove: function(index) {
+ 				if(!$('#' + id + 'List').length){
+ 					return;
+ 				}
+ 				if($('#' + id + 'ListElementDiv_' + index).data('uuid')){
+ 					var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
+ 	 				deleteJSON(options.url + '/' + uuid, null, function(data){
+ 	 				//getJSON(basePath + '/api/fs/delete/', null, function(data){
+ 	 					$('#' + id + 'ListElementDiv_' + index).remove();
+ 	 				});
+ 				}else{
+ 					$('#' + id + 'ListElementDiv_' + index).remove();
+ 				}
+ 				
+ 			},
+ 			options: function() {
+ 				return options;
+ 			},
+ 			setOptions: function(newOptions){
+ 				options = $.extend(options, newOptions);
+ 			},
+ 			getInput: function() {
+ 				return $('#' + id);
+ 			}
+ 		};
+
+ 	$('#' + id).change(function(e) {
+ 		if(options.changed) {
+ 			options.changed(callback);
+ 		}
+ 	});
+ 	
+ 	if(options.values) {
+ 		callback.setValue(options.values);
+ 	}
+ 	
+	if(options.disabled || options.readOnly) {
+		callback.disable();
 	}
 	
 	$(this).data('widget', callback);
