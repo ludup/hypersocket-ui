@@ -5,6 +5,17 @@ var hasShutdown = false;
 var polling = false;
 var basePath = '${appPath}';
 var uiPath = '${uiPath}';
+/**
+ * In case of a reverse proxy let's try to automatically
+ * work out what the paths are.
+ */
+if(!window.location.pathname.startsWith(basePath)) {
+	var idx = window.location.pathname.indexOf('/', 1);
+	basePath = window.location.pathname.substring(0, idx);
+	var idx2 = window.location.pathname.indexOf('/', idx+1);
+	uiPath = window.location.pathname.substring(0,idx2);
+}
+
 
 String.prototype.format = function() {
     var args = arguments;
