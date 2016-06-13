@@ -3511,6 +3511,7 @@ $.fn.html5Upload = function(data) {
 	var options = $.extend(
 		{  
 			text: data.showFileInputLink == false ? getResource('dragAndDrop.text') : getResource('dragAndDrop.fileInput.text'),
+			disabledText: getResource('dragAndDrop.disabledText'),
 			maxFiles: 0,
 			maxBytes: 0,
 			disabled: false,
@@ -3690,6 +3691,7 @@ $.fn.html5Upload = function(data) {
  					$(this).attr('disabled', 'disabled');
  				});
  				$('#' + id + 'Area').addClass('dragAndDrop-backrgound-disabled');
+// 				$('#' + id + 'StandByText').html(options.disabledText);
  				options.disabled = true;
  			},
  			enable: function() {
@@ -3705,6 +3707,7 @@ $.fn.html5Upload = function(data) {
  					}
  				});
  				$('#' + id + 'Area').removeClass('dragAndDrop-backrgound-disabled');
+// 				$('#' + id + 'StandByText').html(options.text);
  				options.disabled = false;
  			},
 			cancel: function(index, jqXHR){
