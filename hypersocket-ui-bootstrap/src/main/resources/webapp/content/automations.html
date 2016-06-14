@@ -287,20 +287,35 @@
 						var triggerShape = $(this).closest('.triggerShape');
 						var trigger = triggerShape.data('trigger');
 	
-						bootbox.confirm(getResource("confirm.deleteTriggerItem").format(trigger.name), function(result) {
-							  if(result) {
-								  deleteJSON('automations/trigger/' + trigger.id, null, function(data) {
-										if(data.success) {
-											showSuccess(data.message);
-											renderDiagram(data.resource, resourcePage);
-											resourcePage.refresh();
-										} else {
-											showError(data.message)
-										}
-									});
-							  }
-						}); 
-						
+						if(!trigger.isRoot) {
+							bootbox.confirm(getResource("confirm.deleteTriggerItem").format(trigger.name), function(result) {
+								  if(result) {
+									  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+											if(data.success) {
+												showSuccess(data.message);
+												renderDiagram(data.resource, resourcePage);
+												resourcePage.refresh();
+											} else {
+												showError(data.message)
+											}
+										});
+								  }
+							}); 
+						} else {
+							bootbox.confirm(getResource("confirm.deleteTrigger").format(trigger.name), function(result) {
+								  if(result) {
+									  deleteJSON('automations/trigger/' + automation.id + '/' + trigger.id, null, function(data) {
+											if(data.success) {
+												showSuccess(data.message);
+												renderDiagram(null, resourcePage);
+												resourcePage.refresh();
+											} else {
+												showError(data.message)
+											}
+										});
+								  }
+							}); 
+						}
 					});
         		});
         	}

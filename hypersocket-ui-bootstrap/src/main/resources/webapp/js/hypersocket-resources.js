@@ -14,6 +14,45 @@ $.fn.ajaxResourcePage = function(params) {
 	
 }
 
+$.fn.iconPage = function(params) {
+	
+	var divName = $(this).attr('id');
+	
+	$('#' + divName).append('<div class="panel panel-default"><div id="' + divName + 'Icons" class="panel-body"></div></div>');
+	divName = '#' + divName + 'Icons';
+	
+	var options = $.extend({
+		
+	}, params);
+	
+	getJSON(options.url, null, function(data) {
+		var row = 6;
+		
+		$(divName).append('<div class="row"></div>');
+		$.each(data.resources, function(idx, resource) {
+			
+			row--;
+			
+			if(row==0) {
+				$(divName).append('<div class="row"></div>');
+				row = 12;
+			}
+			$(divName).children('.row').last().append('<div class="col-xs-2" style="height: 100px; margin: 10px;"></div>');
+			
+			if(!resource) {
+				return;
+			}
+
+			var uri = getLogoPath(options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default', resource.logo, resource.name);
+			$(divName).children('.row').children('.col-xs-2').last().append('<img width="100" height="100" src="' + uri + '"/>');
+		});
+		
+		if(options.complete) {
+			options.complete();
+		}
+	});
+};
+
 $.fn.resourceDialog = function(params, params2) {
 	$(this).bootstrapResourceDialog(params, params2);
 };
@@ -86,7 +125,9 @@ $.fn.resourceTable = function(params) {
 		logo: false,
 		defaultView: 'table',
 		logoResourceTypeCallback: false,
-		hasResourceTable: true
+		hasResourceTable: true,
+		onSave : false,
+		stayOnPageAfterSave: false
 		},params);
 
 	options.tableView = $('#' + divName);
@@ -151,28 +192,10 @@ $.fn.resourceTable = function(params) {
 				formatter: function(value, row, index) {
 					var prefix = "logo://";
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[index];
-					var itype = options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default';
 					if(!resource) {
 						return '';
 					}
-					if(!value) {
-						value = 'logo://32_autotype_autotype_auto.png';
-					}
-					
-					if(value.slice(0, prefix.length) == prefix) {
-						var txt = resource.name;
-						if(!txt || txt == '')
-							txt = 'Default';
-						var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
-						return '<img class="resource-logo" src="' + uri + '"/>';
-					}
-					else {
-						var idx = value.indexOf('/');
-						if(idx == -1)
-							return '<img class="resource-logo" src="' + (basePath + '/api/files/download/' + value)+ '"/>';
-						else
-							return '<img class="resource-logo" src="' + (basePath + '/api/' + value)+ '"/>';
-					}
+					return '<img class="resource-logo" src="' + ( getLogoPath(options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default', value, resource.name) ) + '"/>';
 				}
 		};
 		columns.push(c);	
@@ -910,10 +933,16 @@ $.fn.samePageResourceView = function(params, params2) {
 				if(copy) {
 					resource.id = null;
 				}
-				saveResource(resource, dialog, dialogOptions, params, function() {
-					dialog.samePageResourceView('close');
-					if (dialogOptions.hasResourceTable) {
-						$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+				saveResource(resource, $('#' + dialog.attr('id') + 'Save'), dialogOptions, params, function() {
+					if(dialogOptions.stayOnPageAfterSave) {
+						if(dialogOptions.onSave)
+							dialogOptions.onSave(resource);
+					}
+					else {
+						dialog.samePageResourceView('close');
+						if (dialogOptions.hasResourceTable) {
+							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+						}
 					}
 				});
 			});
@@ -942,7 +971,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
 					{ url: dialogOptions.propertyOptions.templateUrl,
-				      title: getResource(dialogOptions.resourceKey + '.create.title'),
+				      title: getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
 				      icon: dialogOptions.icon,
 					  complete: function() {
 						  showView();
@@ -969,7 +998,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
 					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
-					  title: getResource(dialogOptions.resourceKey + '.update.title'),
+					  title: getResource(dialogOptions.resourceKey + '.update.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
 					  icon: dialogOptions.icon,
 				  	  complete: function() {
 						  showView();
@@ -1107,15 +1136,18 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		dialogOptions.clearDialog(true);
 		removeMessage();
 
-		$(this).find('.modal-title').text(
-			getResource(dialogOptions.resourceKey + '.create.title'));
+		if(dialogOptions.propertyOptions)
+			$(this).find('.modal-title').text(
+					getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs));
+		else
+			$(this).find('.modal-title').text(getResource(dialogOptions.resourceKey + '.create.title'));
 
 		$(this).find('.modal-footer').empty();
 		$(this).find('.modal-footer').append(
 					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.create") + '</button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
-		$('#' + $(this).attr('id') + "Action").on('click', function() {
-				
+
+		$('#' + $(this).attr('id') + "Action").on('click', function() {				
 			saveResource(dialogOptions.createResource(), $(this), dialogOptions, 'create', function() {
 				dialog.bootstrapResourceDialog('close');
 				if (dialogOptions.hasResourceTable) {
@@ -1146,6 +1178,23 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		} else {
 			$(this).find('.modal-title').text(
 					getResource(dialogOptions.resourceKey + '.update.title'));
+
+		dialogOptions.displayResource(params2, readOnly, params === 'copy');
+
+		if(dialogOptions.propertyOptions) {
+			if(readOnly)
+				$(this).find('.modal-title').text(
+						getResource(dialogOptions.resourceKey + '.view.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs));
+			else
+				$(this).find('.modal-title').text(
+						getResource(dialogOptions.resourceKey + '.update.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs));
+		
+		} else {
+			if(readOnly)
+				$(this).find('.modal-title').text(getResource(dialogOptions.resourceKey + '.view.title'));
+			else 
+				$(this).find('.modal-title').text(getResource(dialogOptions.resourceKey + '.update.title'));
+
 		}
 
 		$(this).find('.modal-footer').empty();

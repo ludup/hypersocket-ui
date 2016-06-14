@@ -3,6 +3,61 @@ $.fn.widget = function() {
 }
 
 /**
+ * Attach an event handler to an element, so that when clicked, it will
+ * copy some text to the clipboard. 
+ * 
+ * Options:
+ * 		text: The text to copy to the clipboard
+ * 
+ * TODO 
+ * 1. Provide an option to use a callback instead of fixed text
+ */
+$.fn.clipboardCopy = function(data) {
+	var options = $.extend(
+	{  
+		text: false, 
+		disabled : false 
+	}, data);
+	
+	
+	var id = (options && options.id ? options.id : $(this).attr('id') + "ClipboardCopy");
+	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
+	
+	$(this).on('click', function() {
+		$(this).append('<input type="text" id="' + id + 'Text" name="' + id + 'Text" value="' + options.text + '"/>');
+		$('#' + id + 'Text').select();
+		try {
+			var successful = document.execCommand('copy');
+			var msg = successful ? 'successful' : 'unsuccessful';
+			console.log('Copying text command was ' + msg);
+		} catch (err) {
+			console.log('Oops, unable to copy');
+		}		
+		$('#' + id + 'Text').remove();
+	});
+	
+	var callback = {
+ 			disable: function() {
+ 				$('#' + id).attr('disabled', true);
+ 			},
+ 			enable: function() {
+ 				$('#' + id).attr('disabled', false);
+ 			},
+ 			options: function() {
+ 				return options;
+ 			}
+ 		};
+
+	if(options.disabled || options.readOnly) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+}
+
+/**
 * Displays a text input with button to insert a set of variables.
 * 
 * Options:
@@ -177,9 +232,9 @@ $.fn.htmlInput = function(data) {
 		data);
 		
 	var id = "_" + (options.id ? options.id : $(this).attr('id')) +  'HtmlInput';
-	
+
 	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px;"></div>');
-	
+
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
 		  htmlMode: options.inputType=='html',
@@ -312,6 +367,119 @@ $.fn.codeInput = function(data) {
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	return callback;
+}
+
+/**
+* Displays a rich text editor (TinyMCE)
+**/
+
+$.fn.richInput = function(data) {
+	var options = $.extend(
+		{ disabled : false,
+		  height: 500,
+		  inline: false,
+		  focus: false,
+		  menubar: false,
+		  plugins: [
+				    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+				    'searchreplace wordcount visualblocks visualchars code fullscreen',
+				    'insertdatetime media nonbreaking save table contextmenu directionality',
+				    'emoticons template paste textcolor colorpicker textpattern imagetools'
+				  ],
+		  toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor emoticons' },
+	data);
+	
+	var id = (options.id ? options.id : $(this).attr('id'));
+
+	var callback = {
+			editor: false,
+			originalValue: '',
+ 			setValue: function(val) {
+ 				this.editor.setContent(val);
+ 				if(options.changed) {
+ 					options.changed(callback);
+ 				}
+ 			},
+ 			getValue: function() {
+ 				return this.editor.getContent();
+ 			},
+ 			removeWidget: function() {
+ 				this.editor.remove();
+ 			},
+ 			reset: function() {
+ 				this.editor.setContent(this.originalValue);
+ 			},
+ 			disable: function() {
+ 				$('#' + id).attr('disabled', true);
+ 			},
+ 			enable: function() {
+ 				$('#' + id).attr('disabled', false);
+ 			},
+ 			options: function() {
+ 				return options;
+ 			},
+ 			getInput: function() {
+ 				return $('#' + id);
+ 			},
+ 			clear: function() {
+ 				this.editor.setContent('');
+ 			}
+ 		};
+	
+	tinymce.init({
+		  selector: '#' + id,
+		  height: options.height,
+		  theme: 'modern',
+		  menubar: options.menubar,
+		  inline: options.inline,
+		  plugins: options.plugins,
+		  toolbar1: options.toolbar1,
+		  toolbar2: options.toolbar2,
+		  image_advtab: true,
+		  templates: [
+		    { title: 'Test template 1', content: 'Test 1' },
+		    { title: 'Test template 2', content: 'Test 2' }
+		  ],
+		  content_css: [
+		    '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+		    '//www.tinymce.com/css/codepen.min.css'
+		  ],
+		  init_instance_callback : function(editor) {
+			  callback.editor = editor;
+			  var newval = options.value;
+			  if(!newval) {
+				  var tagName = $('#' + id).prop('tagName'); 
+				  if(tagName == 'textarea' || tagName == 'input' || tagName == 'TEXTAREA' || tagName == 'INPUT') 
+					  newval = $('#' + id).val();
+				  else
+					  newval = $('#' + id).html();
+			  }
+			  
+			  callback.originalValue = newval;
+			  editor.setContent(newval);
+			  
+			  if(options.focus) {
+			      this.editor.execCommand('mceFocus', true, id);                   
+			  }
+			  
+			  editor.on('change', function(e) {
+				  var tagName = $('#' + id).prop('tagName'); 
+				  if(tagName == 'textarea' || tagName == 'input' || tagName == 'TEXTAREA' || tagName == 'INPUT') {
+					  $('#' + id).val(callback.getValue());
+				  }
+				  if(options.changed) {
+					  options.changed(callback);
+				  }
+			  });
+			  
+			  // TODO Whats this?
+			  /* $('.tabPropertiesTab').first().trigger('click'); */
+		  }		  
+	});	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	
 	return callback;
 }
 
@@ -566,7 +734,8 @@ $.fn.selectButton = function(data) {
 						loadCallback();
 					}
 
-				} else if (obj.url) {
+				} 
+				else if (obj.url) {
 
 					getJSON(obj.url, null,
 						function(data) {

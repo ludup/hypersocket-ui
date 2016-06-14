@@ -17,6 +17,46 @@ if(!window.location.pathname.startsWith(basePath)) {
 }
 
 
+//This is the function.
+String.prototype.formatAll = function (args) {
+	var str = this;
+	return str.replace(String.prototype.formatAll.regex, function(item) {
+		var intVal = parseInt(item.substring(1, item.length - 1));
+		var replace;
+		if (intVal >= 0) {
+			replace = args[intVal];
+		} else if (intVal === -1) {
+			replace = "{";
+		} else if (intVal === -2) {
+			replace = "}";
+		} else {
+			replace = "";
+		}
+		return replace;
+	});
+};
+String.prototype.formatAll.regex = new RegExp("{-?[0-9]+}", "g");
+
+if (!String.prototype.encodeHTML) {
+	  String.prototype.encodeHTML = function () {
+	    return this.replace(/&/g, '&amp;')
+	               .replace(/</g, '&lt;')
+	               .replace(/>/g, '&gt;')
+	               .replace(/"/g, '&quot;')
+	               .replace(/'/g, '&apos;');
+	  };
+	}
+
+if (!String.prototype.decodeHTML) {
+	  String.prototype.decodeHTML = function () {
+	    return this.replace(/&apos;/g, "'")
+	               .replace(/&quot;/g, '"')
+	               .replace(/&gt;/g, '>')
+	               .replace(/&lt;/g, '<')
+	               .replace(/&amp;/g, '&');
+	  };
+	}
+
 String.prototype.format = function() {
     var args = arguments;
 
@@ -229,6 +269,26 @@ function loadResourcesUrl(url, callback) {
 	});
 
 };
+
+function getLogoPath(itype, value, resourceName) {
+	var prefix = "logo://";
+	if(!value) {
+		value = 'logo://32_autotype_autotype_auto.png';
+	}
+	if(value.slice(0, prefix.length) == prefix) {
+		var txt = resourceName;
+		if(!txt || txt == '')
+			txt = 'Default';
+		return basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
+	}
+	else {
+		var idx = value.indexOf('/');
+		if(idx == -1)
+			return basePath + '/api/files/download/' + value;
+		else
+			return basePath + '/api/' + value;
+	}
+}
 
 function getResource(key) {
 	var result = $(document).data('i18n')[key];

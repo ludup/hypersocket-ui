@@ -463,6 +463,77 @@ $.fn.saveProperties = function(includeAll, callback) {
 
 };
 
+$.fn.tabPage = function(opts) {
+
+	log("Creating tab page for div " + $(this).attr('id'));
+
+	var propertyDiv = $(this).attr('id');
+
+	var options = $
+			.extend(
+				{ tabs: [],
+				  title : '', 
+				  icon : 'fa-th', 
+				  showAdditionalTabButtons: false,
+				  i18nNamespace: ''},
+				opts);
+	
+	makeBooleanSafe(options);
+	
+	contentTabs = '#' + propertyDiv + 'Tabs';
+	panel = '#' + propertyDiv + 'Panel';
+	
+	$('body').append('<div id="tabTemp' + propertyDiv + '"/>');
+	$('#tabTemp' + propertyDiv).hide();
+	$.each(options.tabs, function(idx, obj) {
+		$('#' + obj.id).appendTo('#tabTemp' + propertyDiv);
+	});
+	$(this).empty();
+	
+	$('#' + propertyDiv)
+	.append(
+		'<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
+		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
+		+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
+		+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
+		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
+	
+	$.each(options.tabs,
+		function(idx, o) {
+			$(contentTabs)
+					.append(
+						'<li class="class_default" id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
+			$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
+			$('#' + this.id).addClass('tab-pane');
+		});
+	
+	$('#tabTemp' + propertyDiv).remove();
+
+	$('.' +  propertyDiv + 'Tab').click(function(e) {
+		e.preventDefault();
+		if(!options.showAdditionalTabButtons) {
+			if($(this).hasClass(propertyDiv + 'Tab2')) {
+				$('#' + propertyDiv + 'Actions').hide();
+			} else {
+				$('#' + propertyDiv + 'Actions').show();
+			}
+		}
+		$(this).tab('show');
+		$('.code').each(function() {
+			$(this).data('codeMirror').refresh();
+		});
+	});
+
+	$('.' +  propertyDiv + 'Tab').first().tab('show');
+	$('.code').each(function() {
+		$(this).data('codeMirror').refresh();
+	});
+
+	if (options.complete) {
+		options.complete();
+	}
+}
+
 $.fn.propertyPage = function(opts) {
 
 	log("Creating property page for div " + $(this).attr('id'));
@@ -638,7 +709,7 @@ $.fn.propertyPage = function(opts) {
 								$(contentTabs)
 										.append(
 											'<li class="' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
-											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + getResource(this.categoryKey + '.label') + '</span></a></li>');
+											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + ( this.name ? this.name : getResource(this.categoryKey + '.label') ) + '</span></a></li>');
 								
 								
 								
@@ -737,7 +808,7 @@ $.fn.propertyPage = function(opts) {
 												sizeClass = 'col-md-' + obj.numCols;
 											}
 											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + this.id + '"/></div>');
-											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">' + getResourceWithNamespace(options.i18nNamespace, this.resourceKey) + '</label>');
+											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">' + ( this.name ? this.name : getResourceWithNamespace(options.i18nNamespace, this.resourceKey) ) + '</label>');
 											$('#' + tab + '_item' + this.id).append('<div class="propertyValue ' + sizeClass + '" id="' + tab + '_value' + this.id + '"></div>');
 											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
 												sizeClass = 'col-md-' + (9 - obj.numCols);
@@ -772,6 +843,10 @@ $.fn.propertyPage = function(opts) {
 									    } else if(obj.inputType == 'editor') {
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).editor(obj);
+									    	
+									    } else if(obj.inputType == 'rich') {
+									    	
+									    	widget = $('#' + tab + '_value' + this.id).richInput(obj);
 									    	
 									    } else if (obj.inputType == 'select') {
 
@@ -963,7 +1038,7 @@ $.fn.propertyPage = function(opts) {
 												
 												$('#' + tab + '_value' + this.id).append(
 														'<div class="clear"><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
-														+  getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') 
+														+  ( this.description ? this.description : getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') ) 
 														+ '</span></div>');
 											}
 										}
