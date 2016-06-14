@@ -906,12 +906,11 @@ $.fn.propertyPage = function(opts) {
 											widget = $('#' + tab + '_value' + this.id).multipleTextInput(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSearchInput') {
-											
-											var widgetOptions = $.extend(obj, {
+											var widgetOptions = $.extend({
 												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url),
 												isNamePairValue: true,
-												values: splitNamePairs(obj.value)
-											});
+												values: obj.isNamePairValue == false ? splitFix(obj.value) : splitNamePairs(obj.value)
+											}, obj);
 											
 											widget = $('#' + tab + '_value' + this.id).multipleSearchInput(widgetOptions);
 
