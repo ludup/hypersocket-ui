@@ -5,17 +5,6 @@ var hasShutdown = false;
 var polling = false;
 var basePath = '${appPath}';
 var uiPath = '${uiPath}';
-/**
- * In case of a reverse proxy let's try to automatically
- * work out what the paths are.
- */
-if(!window.location.pathname.startsWith(basePath)) {
-	var idx = window.location.pathname.indexOf('/', 1);
-	basePath = window.location.pathname.substring(0, idx);
-	var idx2 = window.location.pathname.indexOf('/', idx+1);
-	uiPath = window.location.pathname.substring(0,idx2);
-}
-
 
 String.prototype.format = function() {
     var args = arguments;
@@ -42,6 +31,32 @@ if (!('contains' in String.prototype)) {
 	    return ''.indexOf.call(this, str, startIndex) !== -1;
 	 };
 }
+
+/**
+ * In case of a reverse proxy let's try to automatically
+ * work out what the paths are.
+ */
+$('script').each(function(idx, script) {
+	if($(this).attr('src').length > 0) {
+		if($(this).attr('src').endsWith('hypersocket-utils.js')) {
+			var src = $(this).attr('src');
+			var idx = 1;
+			if(!src.startsWith('/') || src.startsWith('//')) {
+				src = src.replace('https://', '');
+				src = src.replace('http://', '');
+				src = src.replace('//', '');
+				idx = src.indexOf('/');
+				src = src.substring(idx);
+			}
+			idx = src.indexOf('/', 1);
+			basePath = src.substring(0, idx);
+			var idx2 = src.indexOf('/', idx+1);
+			uiPath =src.substring(0,idx2);
+		}
+	}
+});
+
+
 /*
  * Date Format 1.2.3
  * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
