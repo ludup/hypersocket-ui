@@ -777,7 +777,6 @@ $.fn.resourceTable = function(params) {
 		if(options.logo) {
 			views.push({ id: 'icon', div: '#' + divName + 'Grid', icon: 'fa-picture-o'});
 		}
-		debugger;
 		if(options.additionalViews) {
 			
 			$.each(options.additionalViews, function(idx, view) {
@@ -1171,14 +1170,13 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		} else {
 			dialogOptions.displayResource(params2, readOnly, false);
 		}
-		
 		if(readOnly) {
 			$(this).find('.modal-title').text(
 					getResource(dialogOptions.resourceKey + '.view.title'));
 		} else {
 			$(this).find('.modal-title').text(
 					getResource(dialogOptions.resourceKey + '.update.title'));
-
+		}
 		dialogOptions.displayResource(params2, readOnly, params === 'copy');
 
 		if(dialogOptions.propertyOptions) {
