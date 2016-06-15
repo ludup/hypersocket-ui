@@ -1749,8 +1749,15 @@ span.input-group-addon {
 	padding-right: 10px;
 }
 
-
 .dragAndDrop-backrgound-disabled{
     background-image: linear-gradient(-45deg, #D3D3D3 25%, transparent 25%, transparent 50%, #D3D3D3 50%, #D3D3D3 75%, transparent 75%, transparent);
     background-size: 100px 100px;
+}
+
+.audit-log-filter-div{
+	padding-top: 20px;
+}
+
+.audit-log-filter{
+	width: 300px;
 }
