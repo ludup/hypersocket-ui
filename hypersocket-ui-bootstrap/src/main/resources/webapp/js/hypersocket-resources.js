@@ -1177,7 +1177,6 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			$(this).find('.modal-title').text(
 					getResource(dialogOptions.resourceKey + '.update.title'));
 		}
-		dialogOptions.displayResource(params2, readOnly, params === 'copy');
 
 		if(dialogOptions.propertyOptions) {
 			if(readOnly)
