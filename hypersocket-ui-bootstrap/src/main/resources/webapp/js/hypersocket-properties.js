@@ -90,13 +90,23 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
-	} if (obj.inputType == 'integer') {
+	} else if (obj.inputType == 'integer') {
 		// Validate for integer
 		if(!validateRegex('^[0-9]+$',value)){
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
 		if(parseInt(checkReplacement(obj.minValue, widgetsByResourceKey)) > parseInt(value) || parseInt(checkReplacement(obj.maxValue, widgetsByResourceKey)) < parseInt(value)){
+			log("Validation failed for " + obj.resourceKey + " and value " + value);
+			return false;
+		}
+	} else if (obj.inputType == 'long') {
+		// Validate for integer
+		if(!validateRegex('^[0-9]+$',value)){
+			log("Validation failed for " + obj.resourceKey + " and value " + value);
+			return false;
+		}
+		if(parseLong(checkReplacement(obj.minValue, widgetsByResourceKey)) > parseLong(value) || parseLong(checkReplacement(obj.maxValue, widgetsByResourceKey)) < parseLong(value)){
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
@@ -200,6 +210,7 @@ function validateInputType(type){
 	switch(type){
 		case 'number' :
 		case 'integer' :
+		case 'long' :
 		case 'autoComplete' :
 		case 'countries' :
 		case 'fileInput' :
@@ -829,6 +840,7 @@ $.fn.propertyPage = function(opts) {
 											|| obj.inputType == 'text' 
 											|| obj.inputType == 'password' 
 											|| obj.inputType == 'number' 
+											|| obj.inputType == 'long'
 											|| obj.inputType == 'integer') {
 											widget = $('#' + tab + '_value' + this.id).textInput(obj);
 			

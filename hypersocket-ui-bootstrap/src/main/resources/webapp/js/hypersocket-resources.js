@@ -777,6 +777,7 @@ $.fn.resourceTable = function(params) {
 		if(options.logo) {
 			views.push({ id: 'icon', div: '#' + divName + 'Grid', icon: 'fa-picture-o'});
 		}
+
 		if(options.additionalViews) {
 			
 			$.each(options.additionalViews, function(idx, view) {

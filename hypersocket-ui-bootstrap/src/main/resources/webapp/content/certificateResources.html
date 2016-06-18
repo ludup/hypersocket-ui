@@ -47,7 +47,7 @@
 						$.each(data.resources, function(idx, action) {
 							var div = action.resourceKey + 'Div';
 							$('#additionalActions').append('<div id="' + div + '"></div>');
-							$('#' + div).load('content/' + action.url + '.html');
+							$('#' + div).load(uiPath + '/content/' + action.url + '.html');
 							actions.push({
 								resourceKey : action.resourceKey,
 								iconClass : action.iconClass,
@@ -73,7 +73,7 @@
 					var additionalButtons = new Array();
 					
 // 					$('#additionalActions').append('<div id="pemUploadDiv"></div>');
-// 					$('#pemUploadDiv').load('content/pemUpload.html');
+// 					$('#pemUploadDiv').load(uiPath + '/content/pemUpload.html');
 					
 // 					additionalButtons.push({
 // 						resourceKey: 'pemImport',
@@ -87,7 +87,7 @@
 // 					});
 					
 // 					$('#additionalActions').append('<div id="pfxUploadDiv"></div>');
-// 					$('#pfxUploadDiv').load('content/pfxUpload.html');
+// 					$('#pfxUploadDiv').load(uiPath + '/content/pfxUpload.html');
 					
 // 					additionalButtons.push({
 // 						resourceKey: 'pfxImport',
