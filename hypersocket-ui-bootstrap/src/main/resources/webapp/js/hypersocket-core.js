@@ -111,8 +111,11 @@ function clearContent() {
 };
 
 
-function startLogon() {
-	logon(null, {
+function startLogon(opts) {
+	
+	
+	opts = $.extend({
+		scheme: 'basic',
 		showBusy: showBusy,
 		hideBusy: hideBusy,
 		logonStarted: function() {
@@ -169,7 +172,8 @@ function startLogon() {
 			
 		},
 		formContent: $(contentDiv)
-	});
+	}, opts);
+	logon(null, opts);
 }
 
 function logoff() {
@@ -724,7 +728,7 @@ function loadMenu(menu) {
 	} else {
 	
 		loadWait();
-		$('#mainContent').load('content/' + menu.resourceName + '.html', function() {
+		$('#mainContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
 			window.location.hash = "menu=" + menu.resourceKey;
 		});
 	}
@@ -736,7 +740,7 @@ function loadSubPage(menu, element) {
 	element.parent().parent().find('.large-button[id="button_' + element.data().value + '"]').addClass('large-button-active');
 	element.parent().parent().find('.small-button[id="button_' + element.data().value + '"]').addClass('small-button-active');
 	loadWait();
-	$('#menuContent').load('content/' + menu.resourceName + '.html', function() {
+	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
 		window.location.hash = "menu=" + menu.resourceKey;
 	});
 }

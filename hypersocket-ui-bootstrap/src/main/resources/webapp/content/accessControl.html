@@ -45,7 +45,7 @@
 		
 		$('#accessControlContent').find('.large-button-active').removeClass('large-button-active');
 		element.addClass('large-button-active');
-		$('#buttonContent').load('content/' + page + '.html', function() {
+		$('#buttonContent').load(uiPath + '/content/' + page + '.html', function() {
 			loadWait();
 		});
 	}

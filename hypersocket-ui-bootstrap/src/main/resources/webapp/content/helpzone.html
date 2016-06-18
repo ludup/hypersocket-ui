@@ -38,11 +38,11 @@
 			
 			    if(!value.visible) {
 			   		 $('#invisibleWidgets').append('<div id="' + value.contentPath + '"></div>');
-					 $('#' + value.contentPath).load('content/' + value.contentPath + '.html');
+					 $('#' + value.contentPath).load(uiPath + '/content/' + value.contentPath + '.html');
 			    } else {
 					if(value.large){
 						$('#feedLarge').append('<div id="' + value.contentPath + '" style="margin-bottom: 30px;"></div>');
-						$('#' + value.contentPath).load('content/' + value.contentPath + '.html',
+						$('#' + value.contentPath).load(uiPath + '/content/' + value.contentPath + '.html',
 								function(){
 									if(getResourceNoDefault(value.resourceKey)){
 										$(this).prepend('<h4 class="overviewTitle"><span>' + getResource(value.resourceKey) + '</span></h4>');
@@ -50,7 +50,7 @@
 								});
 					}else{
 						$('#feedSmall').prepend('<div id="' + value.contentPath + '" class="small-overview-widget"></div>');
-						$('#' + value.contentPath).load('content/' + value.contentPath + '.html',
+						$('#' + value.contentPath).load(uiPath + '/content/' + value.contentPath + '.html',
 								function(){
 									$(this).prepend('<h4><span>' + getResource(value.resourceKey) + '</span></h4>');						
 								});
