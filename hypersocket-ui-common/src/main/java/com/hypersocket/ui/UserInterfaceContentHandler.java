@@ -89,8 +89,7 @@ public class UserInterfaceContentHandler implements ContentHandler {
 		actualHandler.addFilter(htmlContentFilter);
 		actualHandler.addFilter(includeContentFilter);
 		
-		server.addCompressablePath(server.resolvePath(
-				FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath())));
+		server.addCompressablePath(server.getUiPath());
 		server.registerHttpHandler(actualHandler);
 	}
 	
