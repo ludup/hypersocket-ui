@@ -639,7 +639,7 @@ function loadRoles(roles) {
 	};
 	
 	if(roles.length > 1) {
-		$('#main-menu-toggle').parent().after('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-users"></i></a></li>');
+		$('#main-menu-toggle').parent().after('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-user-md"></i></a></li>');
 
 		$('#currentRole').append('<ul id="roles" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu2"></ul>');
 		$.each(roles, function() {
