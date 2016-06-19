@@ -2,6 +2,7 @@
 var contentDiv = '#content';
 var currentMenu = null;
 var currentRealm = null;
+var currentRole = null;
 var countries = null;
 var restartAutoLogoff = false;
 var allMenus = new Array();
@@ -159,17 +160,14 @@ function startLogon(opts) {
 			}
 		},
 		logonCompleted: function(data) {
-			$('#userInf').empty();
-			$('#userInf').append(getResource('text.loggedIn').format(
-					data.session.currentPrincipal.name, data.session.currentRealm.name));
-			
-			
 			if(data.homePage != '') {
 				window.open(data.homePage, "_self", false);
 			} else {
 				home(data);
 			}
-			
+			$('#userInf').empty();
+			$('#userInf').append(getResource('text.loggedIn').format(
+					data.session.currentPrincipal.name, data.session.currentRealm.name, currentRole.name));
 		},
 		formContent: $(contentDiv)
 	}, opts);
@@ -190,7 +188,7 @@ function logoff() {
 
 }
 
-function home(data) {
+function home(result) {
 
 	log("Entering home");
 
@@ -203,20 +201,16 @@ function home(data) {
 	$('#main-menu').remove();
 
 	$(contentDiv).empty();
-	$(contentDiv)
-			.append(
-				'<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
+	$(contentDiv).append('<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
 
 	removeMessage();
 	
-	currentRealm = data.session.currentRealm;
+	currentRealm = result.session.currentRealm;
+	currentRole = result.currentRole;
 	currentMenu = null;
-	var message = data.bannerMsg;
-	var showLocales = data.showLocales;
-	getJSON(
-		'menus',
-		null,
-		function(data) {
+	var message = result.bannerMsg;
+	var showLocales = result.showLocales;
+	getJSON('menus', null, function(data) {
 
 			log("Received menus");
 
@@ -295,6 +289,13 @@ function home(data) {
 				if(data.realms.length > 1) {
 					loadRealms(data.realms);
 				}
+			}
+			
+			$('#currentRole').remove();
+			if(result.currentRole) {
+				getJSON('roles/personal', null, function(roles) {
+					loadRoles(roles.resources);
+				});
 			}
 			
 			$(window).resize(function() {
@@ -608,6 +609,54 @@ function loadRealms(realms) {
 	
 	if (deletedCurrentRealm) {
 		func(currentRealm.id);
+	}
+}
+
+function loadRoles(roles) {
+
+	$('#currentRole').remove();
+	
+	var deletedCurrentRole = true;
+	$.each(roles, function() {
+		if (currentRole.id === this.id) {
+			deletedCurrentRole = false;
+		}
+	});
+
+	if (deletedCurrentRole) {
+		currentRole = roles[0];
+	}
+	
+	var func = function(role) {
+		getJSON('session/switchRole/' + role, null,
+			function(data) {
+				if (!data.success) {
+					showError(data.errorMsg);
+				} else {
+					document.location.reload();
+				}
+			});
+	};
+	
+	if(roles.length > 1) {
+		$('#main-menu-toggle').parent().after('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-users"></i></a></li>');
+
+		$('#currentRole').append('<ul id="roles" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu2"></ul>');
+		$.each(roles, function() {
+			$('#roles').append(
+				'<li role="presentation"><a class="roleSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
+		});
+	
+		$('.roleSelect').on(
+			'click', function(evt) {
+				evt.preventDefault();
+				func($(this).attr('data-value'));
+			}
+		);
+	}
+	
+	if (deletedCurrentRole) {
+		func(currentRole.id);
 	}
 }
 
