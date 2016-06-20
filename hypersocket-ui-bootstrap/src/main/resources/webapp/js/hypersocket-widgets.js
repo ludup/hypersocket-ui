@@ -535,9 +535,9 @@ $.fn.selectButton = function(data) {
 					for (var i = 0; i < obj.options.length; i++) {
 						listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
 						$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
-								+ stripNull(obj.options[i][obj['valueAttr']]) + '" data-label="' + listItem + '" name="link_' + listItem + '">' 
+								+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">' 
 								+ listItem + '</a></li>');
-						if (obj.value == obj.options[i][obj.valueAttr]) {
+						if (obj.value === obj.options[i][obj.valueAttr]) {
 							selected = obj.options[i];
 							$('#select_button_' + id).text(listItem);
 						} 
@@ -581,12 +581,12 @@ $.fn.selectButton = function(data) {
 						});
 						
 						$.each(items, function(idx, option) {
-							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj['nameAttr']])) : option[obj['nameAttr']];
+							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj.nameAttr])) : option[obj.nameAttr];
 							
 							$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
-									+ stripNull(option[obj['valueAttr']]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">' 
+									+ stripNull(option[obj.valueAttr]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">' 
 									+ listItem + '</a></li>');
-							if (option[obj['valueAttr']] == obj.value) {
+							if (option[obj.valueAttr] === obj.value) {
 								selected = option;
 								$('#select_button_' + id).text(listItem);
 							}
