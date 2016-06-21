@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hypersocket.attributes.role.RoleAttributePermission;
 import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.browser.BrowserLaunchableService;
@@ -328,6 +329,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RolePermission.CREATE, RolePermission.UPDATE,
 				RolePermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "roleAttributes",
+						"fa-briefcase", "roleAttributeTabs", 5000,
+						RoleAttributePermission.READ,
+						RoleAttributePermission.CREATE,
+						RoleAttributePermission.UPDATE,
+						RoleAttributePermission.DELETE),
+				MenuService.MENU_ACCESS_CONTROL);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
 				null));

@@ -1,0 +1,79 @@
+<div id="attributeCategoryContent">
+	<div id="additionalActions"></div>
+</div>
+
+<script type="text/javascript">
+	$(document)
+			.ready(
+					function() {
+
+						$('#attributeCategoryContent').localize();
+						
+						
+						var categoryPage = $('#attributeCategoryContent').ajaxResourcePage(
+						{
+							id : "attributeCategory",
+							title : getResource('attributeCategory.title'),
+							icon : 'fa-list-ul',
+							tableUrl : "roleAttributeCategories/table",
+							resourceUrl : "roleAttributeCategories/roleAttributeCategory",
+							fields : [
+								{name : "name"}
+								],
+							resourceKey : "attributeCategory",
+							disableDecoration: true,
+							canCreate : true,
+							canDelete : true,
+							canUpdate : true,
+							disableActionsDropdown: true,
+							validate : function() {
+								if ($('#attributeCategoryNameInput').val() == '') {
+									showError('attributeCategory.nameRequired.error');
+									return false;
+								}
+								if ($('#attributeCategoryWeightInput').val() == '') {
+									showError('attributeCategory.weightRequired.error');
+									return false;
+								}
+								return true;
+							},
+							clearDialog : function() {
+								$('#attributeCategoryNameInput').val('');
+								$('#attributeCategoryWeightInput').val('0');
+								$('#attributeCategoryIdInput').val('');
+							},
+							createResource : function() {
+								resource = new Object();
+								resource.name = $('#attributeCategoryNameInput').val();
+								resource.weight = $('#attributeCategoryWeightInput').val();
+								resource.id = $('#attributeCategoryIdInput').val();
+								return resource;
+							},
+							displayResource : function(
+									resource) {
+								$('#attributeCategoryNameInput').val(resource.name);
+								$('#attributeCategoryWeightInput').val(resource.weight);
+								$('#attributeCategoryIdInput').val(resource.id);
+							},
+							complete : function() {
+								loadComplete();
+							},
+							resourceCreated: function() {
+								loadResources();
+								$('#attributeCategoryAutocomplete').widget().reset();
+							},
+							resourceDeleted: function() {
+								loadResources();
+								$('#attributeCategoryAutocomplete').widget().reset();
+							},
+							resourceUpdated: function() {
+								loadResources();
+								$('#attributeCategoryAutocomplete').widget().reset();
+							}
+						});
+						
+						$('#attributeTabContent').data('categoryPage', categoryPage);
+						
+						
+					});
+</script>
