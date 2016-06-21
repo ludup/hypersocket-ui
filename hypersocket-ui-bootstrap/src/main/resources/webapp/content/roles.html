@@ -66,22 +66,7 @@
 		});
 	
 		
-		$('#roleProperties').propertyPage({
-			url : 'roles/template',
-			showButtons : false,
-			useTemplates : true,
-			canUpdate : currentMenu.canUpdate,
-			additionalTabs : [ {
-				id : "tabRoleUsers",
-				name : getResource("label.users")
-			},{
-				id : "tabRoleGroups",
-				name : getResource("label.groups")
-			},{
-				id : "tabRolePermissions",
-				name : getResource("label.permissions")
-			} ]
-		});
+		
 		
 		$('#contentRoles').ajaxResourcePage(
 				{
@@ -100,6 +85,11 @@
 						showError("error.nameRequired");
 						return false;
 					}
+					if(!$('#roleProperties').validateProperties()) {
+						showError("error.correctValidationErrors");
+						return false;
+					}
+					
 					return true;
 				},
 				clearDialog : function(create) {
@@ -108,6 +98,25 @@
 					$('#tabRoleUsers').multipleSearchInput();
 					$('#tabRoleGroups').multipleSearchInput();
 					$('#tabRolePermissions').multipleSelect();
+					
+					if(create) {
+						$('#roleProperties').propertyPage({
+							url : 'roles/template',
+							showButtons : false,
+							useTemplates : true,
+							canUpdate : currentMenu.canUpdate,
+							additionalTabs : [ {
+								id : "tabRoleUsers",
+								name : getResource("label.users")
+							},{
+								id : "tabRoleGroups",
+								name : getResource("label.groups")
+							},{
+								id : "tabRolePermissions",
+								name : getResource("label.permissions")
+							} ]
+						});
+					}
 
 				},
 				createResource : function() {
@@ -117,6 +126,11 @@
 					role.users = $('#tabRoleUsers').widget().getValue();
 					role.groups = $('#tabRoleGroups').widget().getValue();
 					role.permissions = $('#tabRolePermissions').widget().getValue();
+					
+					$('#roleProperties').saveProperties(true,
+							function(items) {
+								role.properties = items;
+					});
 					return role;
 				},
 				resourceCreated : function(resource) {
@@ -149,6 +163,23 @@
  					$('#tabRolePermissions').multipleSelect({
  						selected : resource.permissions,
  						disabled: resource.allPermissions || readOnly
+ 					});
+ 					
+ 					$('#roleProperties').propertyPage({
+ 						url : 'roles/properties/' + resource.id,
+ 						showButtons : false,
+ 						useTemplates : true,
+ 						canUpdate : currentMenu.canUpdate,
+ 						additionalTabs : [ {
+ 							id : "tabRoleUsers",
+ 							name : getResource("label.users")
+ 						},{
+ 							id : "tabRoleGroups",
+ 							name : getResource("label.groups")
+ 						},{
+ 							id : "tabRolePermissions",
+ 							name : getResource("label.permissions")
+ 						} ]
  					});
 				},
 				complete: function() {
