@@ -1762,6 +1762,6 @@ span.input-group-addon {
 	width: 300px;
 }
 
-.has-error select {
+.has-error .includedList select {
 	border-color: #a94442 !important;
 }
