@@ -2,6 +2,164 @@ $.fn.widget = function() {
 	return $(this).data('widget');
 }
 
+var RemoteValidator = function(widget, changers){
+	
+	var callback = widget.data('widget');
+	var options = callback.options();
+	
+	changers = $.extend({
+			'displayRemoteMessage' : false,
+			'highlightColor' : '#FCF8E3',
+			'messageErrorClass' : 'error',
+			'messageWarningClass' : 'warning',
+			'widgetParentErrorClass' : 'has-error',
+			'widgetParentSuccessClass' : 'has-success',
+			'widgetJqId' :  '#' + callback.getId(),
+			'widgetJqIdParent' : $('#' + callback.getId()).parent()
+		},changers);
+	
+	
+	var jqId = changers.widgetJqId;
+	var jqIdParent = changers.widgetJqIdParent;
+	
+	var spinner = (function(){
+		var idCache = null;
+		
+		function id(){
+			if(idCache == null){
+				return (idCache = $(options.errorElementId).attr('id') + '_spinner');
+			}
+			return idCache;
+		}
+		
+		function jqId(){
+			return '#' + id();
+		}
+		
+		return {
+			'id'   : id,
+			'jqId' : jqId
+		}
+	})();
+	
+	
+	function highlightWidget(){
+		$(jqId).effect('highlight',{'color' : changers.highlightColor}, 2000);
+	}
+	
+	function setUrlValidationData(data) {
+		return widget.data('urlValidationData',data);
+	}
+	
+	function showSpinner(){
+		if($(spinner.jqId()).length == 0){
+			$(options.errorElementId).before('<i id="' + spinner.id() + '"class="fa fa-spinner fa-pulse fa-fw warning"></i>');
+		}else{
+			$(spinner.jqId()).show();
+		}
+	}
+	
+	function hideSpinner(){
+		$(spinner.jqId()).hide();
+	}
+	
+	function changeClassOnComponent(component,add,remove){
+		$.each(add.split(","),function(idx,a){component.addClass(a);});
+		$.each(remove.split(","),function(idx,r){component.removeClass(r)});
+	}
+	
+	function changeClassOnErrorMessageDisplayElement(add,remove){
+		changeClassOnComponent($(options.errorElementId),add,remove);
+	}
+
+	function changeClassOnWidgetParent(add,remove){
+		changeClassOnComponent(jqIdParent,add,remove);
+	}
+	
+	function setTextOnErrorMessageDisplayElement(isNamespace,key){
+		var text = null;
+		if(isNamespace){
+			text = getResourceWithNamespace(options.i18nNamespace, options.resourceKey + key)
+		}else{
+			text = getResource(options.invalidResourceKey ? options.invalidResourceKey : key);
+		}
+		$(options.errorElementId).text(text);
+	}
+	
+	function inProgress(){
+		setUrlValidationData(RemoteValidator.IN_PROGRESS);
+		changeClassOnWidgetParent('',[changers.widgetParentErrorClass, changers.widgetParentSuccessClass].join(','));
+		changeClassOnErrorMessageDisplayElement(changers.messageWarningClass, changers.messageErrorClass);
+		setTextOnErrorMessageDisplayElement(false,'validation.inprogress');
+		showSpinner();
+	}
+	
+	function errorMessages(){
+		changeClassOnWidgetParent(changers.widgetParentErrorClass,changers.widgetParentSuccessClass);
+		highlightWidget();
+		changeClassOnErrorMessageDisplayElement(changers.messageErrorClass, changers.messageWarningClass);
+		setTextOnErrorMessageDisplayElement(false,'text.invalid');
+		hideSpinner();
+	}
+	
+	function successMessages(){
+		changeClassOnWidgetParent(changers.widgetParentSuccessClass,changers.widgetParentErrorClass);
+		highlightWidget();
+		changeClassOnErrorMessageDisplayElement('',[changers.messageErrorClass,changers.messageWarningClass].join(','));
+		setTextOnErrorMessageDisplayElement(true,'.info');
+		hideSpinner();
+		setTimeout(function(){changeClassOnWidgetParent('',changers.widgetParentSuccessClass);}, 4000);
+	}
+	
+	function performAjax(){
+		$.ajax({
+            type: "POST",
+            url:  basePath + '/api' + options.validateUrl,
+            dataType: 'json',
+            data: callback.getValue(),
+            cache : false,
+            contentType : 'application/json',
+            error: function(e) {
+            	showError("Remote validation failed.");
+             },
+            success: function(data) {
+            	setUrlValidationData(data.resource);
+            	if(data.resource === 'true'){
+            		successMessages();
+            		callback.getInput().data('updated', true);
+            	}else{
+            		errorMessages();
+            	}
+ 				
+            }
+       });
+	}
+	
+	function remoteValidation(){
+		if(supportsUrlValidation()){
+			inProgress();
+			performAjax();
+ 		}
+	}
+	
+	function supportsUrlValidation() {
+		return options.validateUrl && options.validateUrl !== '';
+	}
+		
+	function getUrlValidationData() {
+		return widget.data('urlValidationData');
+	}
+	
+	return {
+		supportsUrlValidation: supportsUrlValidation,
+		getUrlValidationData: getUrlValidationData,
+		remoteValidation: remoteValidation
+	};
+	
+};
+
+RemoteValidator.IN_PROGRESS = "inprogress";
+
 /**
  * Attach an event handler to an element, so that when clicked, it will
  * copy some text to the clipboard. 
@@ -194,10 +352,17 @@ $.fn.textInput = function(data) {
  			},
  			clear: function() {
  				$('#' + id).val('');
+ 			},
+ 			getId: function(){
+ 				return id;
+ 			},
+ 			getRemoteValidatator: function(){
+ 				return remoteValidator;
  			}
  		};
 
  	$('#' + id).change(function(e) {
+ 		remoteValidator.remoteValidation();
  		if(options.changed) {
  			options.changed(callback);
  		}
@@ -209,6 +374,7 @@ $.fn.textInput = function(data) {
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	var remoteValidator = new RemoteValidator($(this));
 	return callback;
 }
 
@@ -1380,6 +1546,12 @@ $.fn.multipleSelect = function(data) {
 				},
 	 			clear: function() {
 	 				$('#' + id).multipleSelect();
+	 			},
+	 			getId: function(){
+	 				return id;
+	 			},
+	 			getRemoteValidatator: function(){
+	 				return remoteValidator;
 	 			}
 		};
 		
@@ -1464,6 +1636,7 @@ $.fn.multipleSelect = function(data) {
 			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
+			remoteValidator.remoteValidation();
 		});
 
 		$('#' + id + 'RemoveButton').click(function(e) {
@@ -1478,6 +1651,7 @@ $.fn.multipleSelect = function(data) {
 			if (options.changed) {
 				options.changed(callback);
 			}
+			remoteValidator.remoteValidation();
 		});
 
 	}
@@ -1571,6 +1745,7 @@ $.fn.multipleSelect = function(data) {
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	var remoteValidator = new RemoteValidator($(this), {'widgetJqIdParent' :  callback.getInput()});
 	return callback;
 
 };

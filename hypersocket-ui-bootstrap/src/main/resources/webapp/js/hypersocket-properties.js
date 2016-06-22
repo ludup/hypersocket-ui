@@ -29,15 +29,22 @@ function validateWidget(widget, widgetsByResourceKey) {
 }
 
 function validate(widget, value, widgetsByResourceKey) {
-	
 	var options = widget.options();
-	if(!internalValidate(widget, value, widgetsByResourceKey)) {
-		$(options.errorElementId).addClass('error');
-		$(options.errorElementId).text(getResource(options.invalidResourceKey ? options.invalidResourceKey : "text.invalid"));
-		return false;
-	} else {
-		$(options.errorElementId).removeClass('error');
-		$(options.errorElementId).text(getResourceWithNamespace(options.i18nNamespace, options.resourceKey + '.info'));
+	var validationState = internalValidate(widget, value, widgetsByResourceKey);
+	if((typeof validationState) === "boolean"){
+		if(!validationState) {
+			$(options.errorElementId).addClass('error');
+			$(options.errorElementId).text(getResource(options.invalidResourceKey ? options.invalidResourceKey : "text.invalid"));
+			return false;
+		} else {
+			$(options.errorElementId).removeClass('error');
+			$(options.errorElementId).text(getResourceWithNamespace(options.i18nNamespace, options.resourceKey + '.info'));
+			return true;
+		}
+	}else if((typeof validationState) === "string"){
+		if(validationState === RemoteValidator.IN_PROGRESS){
+			return false;
+		}
 		return true;
 	}
 }
@@ -56,6 +63,17 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 	obj = $.extend({ allowEmpty: true, allowAttribute: true }, obj);
 	
 	log("Validating " + obj.resourceKey + ' value ' + value);
+	
+	if(widget.getRemoteValidatator){
+		var remoteValidatator = widget.getRemoteValidatator();
+		if(remoteValidatator.supportsUrlValidation() && RemoteValidator.IN_PROGRESS === remoteValidatator.getUrlValidationData()){
+			return RemoteValidator.IN_PROGRESS;
+		}else if(remoteValidatator.supportsUrlValidation() && (typeof remoteValidatator.getUrlValidationData()) !== 'undefined'){
+			return "true" === remoteValidatator.getUrlValidationData();
+		}else{
+			return true;
+		}
+	}
 	
 	if(!validateInputType(obj.inputType)){
 		log("Validation failed for " + obj.resourceKey + " and value " + value);

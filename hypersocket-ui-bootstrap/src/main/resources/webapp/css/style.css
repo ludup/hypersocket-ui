@@ -1761,3 +1761,7 @@ span.input-group-addon {
 .audit-log-filter{
 	width: 300px;
 }
+
+.has-error select {
+	border-color: #a94442 !important;
+}
