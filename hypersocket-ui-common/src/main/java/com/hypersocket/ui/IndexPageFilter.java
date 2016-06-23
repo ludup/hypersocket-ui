@@ -130,4 +130,8 @@ public class IndexPageFilter implements ContentFilter {
 	public Integer getWeight() {
 		return 0;
 	}
+
+	public void removePage(String page) {
+		filterPages.remove(page);
+	}
 }
