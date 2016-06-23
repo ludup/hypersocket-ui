@@ -47,10 +47,12 @@ import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
+import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.interfaces.http.HTTPInterfaceResourcePermission;
 import com.hypersocket.session.SessionPermission;
 import com.hypersocket.triggers.TriggerResourcePermission;
 import com.hypersocket.triggers.TriggerResourceServiceImpl;
+import com.hypersocket.ui.IndexPageFilter;
 
 @Service
 public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
@@ -78,14 +80,26 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	@Autowired
 	UserInterfaceStateService userInterfaceStateService;
-
+	
+	@Autowired
+	HypersocketServer server;
+	
+	@Autowired
+	IndexPageFilter indexFilter;
+	
 	Set<MenuFilter> filters = new HashSet<MenuFilter>();
 
+	
 	@PostConstruct
 	private void postConstruct() {
 
 		i18nService.registerBundle(MenuService.RESOURCE_BUNDLE);
 
+		server.addAlias("${basePath}/recover", "redirect:${basePath}/recover/");
+		server.addAlias("${basePath}/recover/", "${uiPath}/recover-index.html");
+		
+		indexFilter.addPage("content/recover-index.html");
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_PERSONAL, "", null, 0, null, null, null, null));
 
@@ -405,6 +419,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		}, MenuService.MENU_DASHBOARD);
 		userInterfaceStateService.registerListener(this);
+		
+		
 	}
 
 	@Override

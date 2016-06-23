@@ -162,14 +162,16 @@ function startLogon(opts) {
 			$('#userInf').empty();
 			$('#userInf').append(getResource('text.loggedIn').format(
 					data.session.currentPrincipal.name, data.session.currentRealm.name));
-			
-			
-			if(data.homePage != '') {
+			debugger;
+			if(data.homePage) {
 				window.open(data.homePage, "_self", false);
 			} else {
-				home(data);
-			}
-			
+				if(!window.location.pathname.includes('${uiPath}')) {
+					window.location = '${uiPath}';
+				} else {
+					home(data);
+				}
+			}			
 		},
 		formContent: $(contentDiv)
 	}, opts);
