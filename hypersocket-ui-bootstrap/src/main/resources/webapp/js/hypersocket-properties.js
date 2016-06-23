@@ -42,7 +42,7 @@ function validate(widget, value, widgetsByResourceKey) {
 			return true;
 		}
 	}else if((typeof validationState) === "string"){
-		if(validationState === RemoteValidator.IN_PROGRESS){
+		if(validationState === Validator.Remote.IN_PROGRESS){
 			return false;
 		}
 		return true;
@@ -66,8 +66,8 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 	
 	if(widget.getRemoteValidatator){
 		var remoteValidatator = widget.getRemoteValidatator();
-		if(remoteValidatator.supportsUrlValidation() && RemoteValidator.IN_PROGRESS === remoteValidatator.getUrlValidationData()){
-			return RemoteValidator.IN_PROGRESS;
+		if(remoteValidatator.supportsUrlValidation() && Validator.Remote.IN_PROGRESS === remoteValidatator.getUrlValidationData()){
+			return Validator.Remote.IN_PROGRESS;
 		}else if(remoteValidatator.supportsUrlValidation() && (typeof remoteValidatator.getUrlValidationData()) !== 'undefined'){
 			return "true" === remoteValidatator.getUrlValidationData();
 		}else{

@@ -2,163 +2,169 @@ $.fn.widget = function() {
 	return $(this).data('widget');
 }
 
-var RemoteValidator = function(widget, changers){
-	
-	var callback = widget.data('widget');
-	var options = callback.options();
-	
-	changers = $.extend({
-			'displayRemoteMessage' : false,
-			'highlightColor' : '#FCF8E3',
-			'messageErrorClass' : 'error',
-			'messageWarningClass' : 'warning',
-			'widgetParentErrorClass' : 'has-error',
-			'widgetParentSuccessClass' : 'has-success',
-			'widgetJqId' :  '#' + callback.getId(),
-			'widgetJqIdParent' : $('#' + callback.getId()).parent()
-		},changers);
-	
-	
-	var jqId = changers.widgetJqId;
-	var jqIdParent = changers.widgetJqIdParent;
-	
-	var spinner = (function(){
-		var idCache = null;
+var Validator = (function(){
+	function Remote(widget, changers){
 		
-		function id(){
-			if(idCache == null){
-				return (idCache = $(options.errorElementId).attr('id') + '_spinner');
+		var that = this;
+		
+		this.widget = widget;
+		this.callback = widget.data('widget');
+		this.options = this.callback.options();
+		
+		this.changers = $.extend({
+				'displayRemoteMessage' : false,
+				'highlightColor' : '#FCF8E3',
+				'messageErrorClass' : 'error',
+				'messageWarningClass' : 'warning',
+				'widgetParentErrorClass' : 'has-error',
+				'widgetParentSuccessClass' : 'has-success',
+				'widgetJqId' :  '#' + this.callback.getId(),
+				'widgetParent' : $('#' + this.callback.getId()).parent()
+			},changers);
+		
+		
+		this.jqId = this.changers.widgetJqId;
+		this.widgetParent = this.changers.widgetParent;
+		
+		this.spinner = (function(){
+			var idCache = null;
+			
+			function id(){
+				if(idCache == null){
+					return (idCache = $(that.options.errorElementId).attr('id') + '_spinner');
+				}
+				return idCache;
 			}
-			return idCache;
-		}
-		
-		function jqId(){
-			return '#' + id();
-		}
-		
-		return {
-			'id'   : id,
-			'jqId' : jqId
-		}
-	})();
-	
-	
-	function highlightWidget(){
-		$(jqId).effect('highlight',{'color' : changers.highlightColor}, 2000);
+			
+			function jqId(){
+				return '#' + id();
+			}
+			
+			return {
+				'id'   : id,
+				'jqId' : jqId
+			}
+		})();
 	}
 	
-	function setUrlValidationData(data) {
-		return widget.data('urlValidationData',data);
+	Remote.IN_PROGRESS = "inprogress";
+	
+	
+	Remote.prototype.highlightWidget = function(){
+		$(this.jqId).effect('highlight',{'color' : this.changers.highlightColor}, 2000);
 	}
 	
-	function showSpinner(){
-		if($(spinner.jqId()).length == 0){
-			$(options.errorElementId).before('<i id="' + spinner.id() + '"class="fa fa-spinner fa-pulse fa-fw warning"></i>');
+	Remote.prototype.setUrlValidationData = function(data) {
+		return this.widget.data('urlValidationData',data);
+	}
+	
+	Remote.prototype.showSpinner = function(){
+		if($(this.spinner.jqId()).length == 0){
+			$(this.options.errorElementId).before('<i id="' + this.spinner.id() + '"class="fa fa-spinner fa-pulse fa-fw warning"></i>');
 		}else{
-			$(spinner.jqId()).show();
+			$(this.spinner.jqId()).show();
 		}
 	}
 	
-	function hideSpinner(){
-		$(spinner.jqId()).hide();
+	Remote.prototype.hideSpinner = function(){
+		$(this.spinner.jqId()).hide();
 	}
 	
-	function changeClassOnComponent(component,add,remove){
+	Remote.prototype.changeClassOnComponent = function(component,add,remove){
 		$.each(add.split(","),function(idx,a){component.addClass(a);});
 		$.each(remove.split(","),function(idx,r){component.removeClass(r)});
 	}
 	
-	function changeClassOnErrorMessageDisplayElement(add,remove){
-		changeClassOnComponent($(options.errorElementId),add,remove);
+	Remote.prototype.changeClassOnErrorMessageDisplayElement = function(add,remove){
+		this.changeClassOnComponent($(this.options.errorElementId),add,remove);
 	}
 
-	function changeClassOnWidgetParent(add,remove){
-		changeClassOnComponent(jqIdParent,add,remove);
+	Remote.prototype.changeClassOnWidgetParent = function(add,remove){
+		this.changeClassOnComponent(this.widgetParent,add,remove);
 	}
 	
-	function setTextOnErrorMessageDisplayElement(isNamespace,key){
+	Remote.prototype.setTextOnErrorMessageDisplayElement = function(isNamespace,key){
 		var text = null;
 		if(isNamespace){
-			text = getResourceWithNamespace(options.i18nNamespace, options.resourceKey + key)
+			text = getResourceWithNamespace(this.options.i18nNamespace, this.options.resourceKey + key)
 		}else{
-			text = getResource(options.invalidResourceKey ? options.invalidResourceKey : key);
+			text = getResource(this.options.invalidResourceKey ? this.options.invalidResourceKey : key);
 		}
-		$(options.errorElementId).text(text);
+		$(this.options.errorElementId).text(text);
 	}
 	
-	function inProgress(){
-		setUrlValidationData(RemoteValidator.IN_PROGRESS);
-		changeClassOnWidgetParent('',[changers.widgetParentErrorClass, changers.widgetParentSuccessClass].join(','));
-		changeClassOnErrorMessageDisplayElement(changers.messageWarningClass, changers.messageErrorClass);
-		setTextOnErrorMessageDisplayElement(false,'validation.inprogress');
-		showSpinner();
+	Remote.prototype.inProgress = function(){
+		this.setUrlValidationData(Remote.IN_PROGRESS);
+		this.changeClassOnWidgetParent('',[this.changers.widgetParentErrorClass, this.changers.widgetParentSuccessClass].join(','));
+		this.changeClassOnErrorMessageDisplayElement(this.changers.messageWarningClass, this.changers.messageErrorClass);
+		this.setTextOnErrorMessageDisplayElement(false,'validation.inprogress');
+		this.showSpinner();
 	}
 	
-	function errorMessages(){
-		changeClassOnWidgetParent(changers.widgetParentErrorClass,changers.widgetParentSuccessClass);
-		highlightWidget();
-		changeClassOnErrorMessageDisplayElement(changers.messageErrorClass, changers.messageWarningClass);
-		setTextOnErrorMessageDisplayElement(false,'text.invalid');
-		hideSpinner();
+	Remote.prototype.errorMessages = function(){
+		this.changeClassOnWidgetParent(this.changers.widgetParentErrorClass, this.changers.widgetParentSuccessClass);
+		this.highlightWidget();
+		this.changeClassOnErrorMessageDisplayElement(this.changers.messageErrorClass, this.changers.messageWarningClass);
+		this.setTextOnErrorMessageDisplayElement(false,'text.invalid');
+		this.hideSpinner();
 	}
 	
-	function successMessages(){
-		changeClassOnWidgetParent(changers.widgetParentSuccessClass,changers.widgetParentErrorClass);
-		highlightWidget();
-		changeClassOnErrorMessageDisplayElement('',[changers.messageErrorClass,changers.messageWarningClass].join(','));
-		setTextOnErrorMessageDisplayElement(true,'.info');
-		hideSpinner();
-		setTimeout(function(){changeClassOnWidgetParent('',changers.widgetParentSuccessClass);}, 4000);
+	Remote.prototype.successMessages = function(){
+		var that = this;
+		this.changeClassOnWidgetParent(this.changers.widgetParentSuccessClass, this.changers.widgetParentErrorClass);
+		this.highlightWidget();
+		this.changeClassOnErrorMessageDisplayElement('',[this.changers.messageErrorClass, this.changers.messageWarningClass].join(','));
+		this.setTextOnErrorMessageDisplayElement(true,'.info');
+		this.hideSpinner();
+		setTimeout(function(){that.changeClassOnWidgetParent('',that.changers.widgetParentSuccessClass);}, 4000);
 	}
 	
-	function performAjax(){
+	Remote.prototype.performAjax = function(){
+		var that = this;
 		$.ajax({
             type: "POST",
-            url:  basePath + '/api' + options.validateUrl,
+            url:  basePath + '/api' + this.options.validateUrl,
             dataType: 'json',
-            data: callback.getValue(),
+            data: this.callback.getValue(),
             cache : false,
             contentType : 'application/json',
             error: function(e) {
             	showError("Remote validation failed.");
              },
             success: function(data) {
-            	setUrlValidationData(data.resource);
+            	that.setUrlValidationData(data.resource);
             	if(data.resource === 'true'){
-            		successMessages();
-            		callback.getInput().data('updated', true);
+            		that.successMessages();
+            		that.callback.getInput().data('updated', true);
             	}else{
-            		errorMessages();
+            		that.errorMessages();
             	}
  				
             }
        });
 	}
 	
-	function remoteValidation(){
-		if(supportsUrlValidation()){
-			inProgress();
-			performAjax();
+	Remote.prototype.remoteValidation = function(){
+		if(this.supportsUrlValidation()){
+			this.inProgress();
+			this.performAjax();
  		}
 	}
 	
-	function supportsUrlValidation() {
-		return options.validateUrl && options.validateUrl !== '';
+	Remote.prototype.supportsUrlValidation = function() {
+		return this.options.validateUrl && this.options.validateUrl !== '';
 	}
 		
-	function getUrlValidationData() {
-		return widget.data('urlValidationData');
+	Remote.prototype.getUrlValidationData = function() {
+		return this.widget.data('urlValidationData');
 	}
 	
 	return {
-		supportsUrlValidation: supportsUrlValidation,
-		getUrlValidationData: getUrlValidationData,
-		remoteValidation: remoteValidation
-	};
+		Remote: Remote
+	}
 	
-};
+}());
 
-RemoteValidator.IN_PROGRESS = "inprogress";
 
 /**
  * Attach an event handler to an element, so that when clicked, it will
@@ -374,7 +380,7 @@ $.fn.textInput = function(data) {
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
-	var remoteValidator = new RemoteValidator($(this));
+	var remoteValidator = new Validator.Remote($(this));
 	return callback;
 }
 
@@ -1745,7 +1751,7 @@ $.fn.multipleSelect = function(data) {
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
-	var remoteValidator = new RemoteValidator($(this), {'widgetJqIdParent' :  callback.getInput()});
+	var remoteValidator = new Validator.Remote($(this), {'widgetParent' :  callback.getInput()});
 	return callback;
 
 };
