@@ -160,10 +160,14 @@ function startLogon(opts) {
 			}
 		},
 		logonCompleted: function(data) {
-			if(data.homePage != '') {
+			if(data.homePage) {
 				window.open(data.homePage, "_self", false);
 			} else {
-				home(data);
+				if(!window.location.pathname.includes('${uiPath}')) {
+					window.location = '${uiPath}';
+				} else {
+					home(data);
+				}
 			}
 			$('#userInf').empty();
 			$('#userInf').append(getResource('text.loggedIn').format(
