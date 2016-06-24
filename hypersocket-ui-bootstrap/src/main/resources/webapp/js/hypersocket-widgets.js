@@ -5,14 +5,22 @@ $.fn.widget = function() {
 var Validator = (function(){
 	function Remote(widget, changers){
 		
-		var that = this;
+		var _this = this;
+		//check in case widget is not sending data 'widget'
+		this.isWidgetMissing = false;
+		
+		if(typeof(widget.data('widget')) === 'undefined'){
+			this.isWidgetMissing = true;
+			return;
+		}
 		
 		this.widget = widget;
 		this.callback = widget.data('widget');
 		this.options = this.callback.options();
 		
 		this.changers = $.extend({
-				'displayRemoteMessage' : false,
+				'addCssClassOnEvents' : true,
+				'highlightElementJqId' : '#' + this.callback.getId(),
 				'highlightColor' : '#FCF8E3',
 				'messageErrorClass' : 'error',
 				'messageWarningClass' : 'warning',
@@ -22,6 +30,20 @@ var Validator = (function(){
 				'widgetParent' : $('#' + this.callback.getId()).parent()
 			},changers);
 		
+		this.changers = $.extend(this.changers,{
+			'displayRemoteMessage' : this.options.displayRemoteMessage,
+			'highlightElementJqId' : this.options.highlightElementJqId,
+			'highlightColor' : this.options.highlightColor,
+			'messageErrorClass' : this.options.messageErrorClass,
+			'messageWarningClass' : this.options.messageWarningClass,
+			'widgetParentErrorClass' : this.options.widgetParentErrorClass,
+			'widgetParentSuccessClass' : this.options.widgetParentSuccessClass,
+			'widgetJqId' :  this.options.widgetJqId,
+			'widgetParent' : this.options.widgetParent,
+			'errorElementId' : this.options.errorElementId,
+			'validateUrl' : this.options.validateUrl,
+			'addCssClassOnEvents' : this.options.addCssClassOnEvents
+		});
 		
 		this.jqId = this.changers.widgetJqId;
 		this.widgetParent = this.changers.widgetParent;
@@ -31,7 +53,7 @@ var Validator = (function(){
 			
 			function id(){
 				if(idCache == null){
-					return (idCache = $(that.options.errorElementId).attr('id') + '_spinner');
+					return (idCache = $(_this.changers.errorElementId).attr('id') + '_spinner');
 				}
 				return idCache;
 			}
@@ -49,9 +71,12 @@ var Validator = (function(){
 	
 	Remote.IN_PROGRESS = "inprogress";
 	
+	Remote.prototype.errorElementPresent = function(){
+		return $(this.changers.errorElementId).length > 0;
+	}
 	
 	Remote.prototype.highlightWidget = function(){
-		$(this.jqId).effect('highlight',{'color' : this.changers.highlightColor}, 2000);
+		$(this.changers.highlightElementJqId).effect('highlight',{'color' : this.changers.highlightColor}, 2000);
 	}
 	
 	Remote.prototype.setUrlValidationData = function(data) {
@@ -60,7 +85,7 @@ var Validator = (function(){
 	
 	Remote.prototype.showSpinner = function(){
 		if($(this.spinner.jqId()).length == 0){
-			$(this.options.errorElementId).before('<i id="' + this.spinner.id() + '"class="fa fa-spinner fa-pulse fa-fw warning"></i>');
+			$(this.changers.errorElementId).before('<i id="' + this.spinner.id() + '"class="fa fa-spinner fa-pulse fa-fw warning"></i>');
 		}else{
 			$(this.spinner.jqId()).show();
 		}
@@ -76,68 +101,109 @@ var Validator = (function(){
 	}
 	
 	Remote.prototype.changeClassOnErrorMessageDisplayElement = function(add,remove){
-		this.changeClassOnComponent($(this.options.errorElementId),add,remove);
+		this.changeClassOnComponent($(this.changers.errorElementId),add,remove);
 	}
 
 	Remote.prototype.changeClassOnWidgetParent = function(add,remove){
 		this.changeClassOnComponent(this.widgetParent,add,remove);
 	}
 	
-	Remote.prototype.setTextOnErrorMessageDisplayElement = function(isNamespace,key){
+	Remote.prototype.getTextOnErrorMessageDisplayElement = function(isNamespace,key){
 		var text = null;
 		if(isNamespace){
 			text = getResourceWithNamespace(this.options.i18nNamespace, this.options.resourceKey + key)
 		}else{
 			text = getResource(this.options.invalidResourceKey ? this.options.invalidResourceKey : key);
 		}
-		$(this.options.errorElementId).text(text);
+		return text;
+	}
+	
+	Remote.prototype.setTextOnErrorMessageDisplayElement = function(text){
+		$(this.changers.errorElementId).text(text);
+	}
+	
+	Remote.prototype.restoreInfoMessage = function(){
+		if(this.changers.addCssClassOnEvents){
+			this.changeClassOnWidgetParent('',this.changers.widgetParentSuccessClass);
+		}
+		if(this.errorElementPresent()){
+			this.setTextOnErrorMessageDisplayElement(this.getTextOnErrorMessageDisplayElement(true,'.info'));
+		}else{
+			removeMessage();
+		}
 	}
 	
 	Remote.prototype.inProgress = function(){
 		this.setUrlValidationData(Remote.IN_PROGRESS);
-		this.changeClassOnWidgetParent('',[this.changers.widgetParentErrorClass, this.changers.widgetParentSuccessClass].join(','));
-		this.changeClassOnErrorMessageDisplayElement(this.changers.messageWarningClass, this.changers.messageErrorClass);
-		this.setTextOnErrorMessageDisplayElement(false,'validation.inprogress');
-		this.showSpinner();
+		if(this.changers.addCssClassOnEvents){
+			this.changeClassOnWidgetParent('',[this.changers.widgetParentErrorClass, this.changers.widgetParentSuccessClass].join(','));
+			this.changeClassOnErrorMessageDisplayElement(this.changers.messageWarningClass, this.changers.messageErrorClass);
+		}
+		var text = this.getTextOnErrorMessageDisplayElement(false,'validation.inprogress');
+		if(this.errorElementPresent()){
+			this.setTextOnErrorMessageDisplayElement(text);
+			this.showSpinner();
+		}else{
+			removeMessage();
+			showBusy();
+		}
+		
 	}
 	
-	Remote.prototype.errorMessages = function(){
-		this.changeClassOnWidgetParent(this.changers.widgetParentErrorClass, this.changers.widgetParentSuccessClass);
+	Remote.prototype.errorMessages = function(msg){
 		this.highlightWidget();
-		this.changeClassOnErrorMessageDisplayElement(this.changers.messageErrorClass, this.changers.messageWarningClass);
-		this.setTextOnErrorMessageDisplayElement(false,'text.invalid');
-		this.hideSpinner();
+		if(this.changers.addCssClassOnEvents){
+			this.changeClassOnWidgetParent(this.changers.widgetParentErrorClass, this.changers.widgetParentSuccessClass);
+			this.changeClassOnErrorMessageDisplayElement(this.changers.messageErrorClass, this.changers.messageWarningClass);
+		}
+		var text = (typeof(msg) === 'undefined' || msg == null) ? this.getTextOnErrorMessageDisplayElement(false,'text.invalid') : msg;
+		if(this.errorElementPresent()){
+			this.setTextOnErrorMessageDisplayElement(text);
+			this.hideSpinner();
+		}else{
+			hideBusy();
+			showError(text);
+		}
 	}
 	
-	Remote.prototype.successMessages = function(){
-		var that = this;
-		this.changeClassOnWidgetParent(this.changers.widgetParentSuccessClass, this.changers.widgetParentErrorClass);
+	Remote.prototype.successMessages = function(msg){
+		var _this = this;
 		this.highlightWidget();
-		this.changeClassOnErrorMessageDisplayElement('',[this.changers.messageErrorClass, this.changers.messageWarningClass].join(','));
-		this.setTextOnErrorMessageDisplayElement(true,'.info');
-		this.hideSpinner();
-		setTimeout(function(){that.changeClassOnWidgetParent('',that.changers.widgetParentSuccessClass);}, 4000);
+		if(this.changers.addCssClassOnEvents){
+			this.changeClassOnWidgetParent(this.changers.widgetParentSuccessClass, this.changers.widgetParentErrorClass);
+			this.changeClassOnErrorMessageDisplayElement('',[this.changers.messageErrorClass, this.changers.messageWarningClass].join(','));
+		}
+		var text = (typeof(msg) === 'undefined' || msg == null) ? this.getTextOnErrorMessageDisplayElement(true,'.info') : msg;
+		if(this.errorElementPresent()){
+			this.setTextOnErrorMessageDisplayElement(text);
+			this.hideSpinner();
+		}else{
+			hideBusy();
+			showSuccess(text);
+		}
+		setTimeout(function(){_this.restoreInfoMessage()}, 4000);
 	}
 	
 	Remote.prototype.performAjax = function(){
-		var that = this;
+		var _this = this;
+
 		$.ajax({
             type: "POST",
-            url:  basePath + '/api' + this.options.validateUrl,
+            url:  basePath + '/api' + this.changers.validateUrl,
             dataType: 'json',
-            data: this.callback.getValue(),
+            data: JSON.stringify(this.callback.getValue()),
             cache : false,
             contentType : 'application/json',
             error: function(e) {
             	showError("Remote validation failed.");
              },
             success: function(data) {
-            	that.setUrlValidationData(data.resource);
+            	_this.setUrlValidationData(data.resource);
             	if(data.resource === 'true'){
-            		that.successMessages();
-            		that.callback.getInput().data('updated', true);
+            		_this.successMessages(data.message);
+            		_this.callback.getInput().data('updated', true);
             	}else{
-            		that.errorMessages();
+            		_this.errorMessages(data.message);
             	}
  				
             }
@@ -145,14 +211,14 @@ var Validator = (function(){
 	}
 	
 	Remote.prototype.remoteValidation = function(){
-		if(this.supportsUrlValidation()){
+		if(this.supportsUrlValidation() && !this.isWidgetMissing){
 			this.inProgress();
 			this.performAjax();
  		}
 	}
 	
 	Remote.prototype.supportsUrlValidation = function() {
-		return this.options.validateUrl && this.options.validateUrl !== '';
+		return this.changers.validateUrl && this.changers.validateUrl !== '';
 	}
 		
 	Remote.prototype.getUrlValidationData = function() {
@@ -894,6 +960,9 @@ $.fn.selectButton = function(data) {
 							if(obj.changed) {
 								obj.changed(callback);
 							}
+							if(!loading){
+								remoteValidator.remoteValidation();
+							}
 						});
 						
 						if(selected==null) {
@@ -943,6 +1012,9 @@ $.fn.selectButton = function(data) {
 									$('#select_button_' + id).text($(this).attr('data-label'));
 									if(obj.changed && !loading) {
 										obj.changed(callback);
+									}
+									if(!loading){
+										remoteValidator.remoteValidation();
 									}
 						});
 							
@@ -997,6 +1069,12 @@ $.fn.selectButton = function(data) {
 			},
  			selectFirst: function() {
  				$('.selectButton_' + id).first().trigger('click');
+ 			},
+ 			getId: function(){
+ 				return id;
+ 			},
+ 			getRemoteValidatator: function(){
+ 				return remoteValidator;
  			}
 		};
 	
@@ -1015,6 +1093,10 @@ $.fn.selectButton = function(data) {
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	loading = false;
+	var remoteValidator = new Validator.Remote($(this), {
+			'widgetParent' : $(callback.getInput()).parent().parent(),
+			'highlightElementJqId' :  ('#' + $(callback.getInput()).parent().parent().attr('id'))
+		});
 	return callback;
 }
 
@@ -1523,7 +1605,10 @@ $.fn.multipleSelect = function(data) {
 
 					$('#' + id + 'IncludedSelect option').each(function() {
 						result.push(he.decode($(this).val()));
+						log('value:: ' + $(this).val());
+						log('he value:: ' + he.decode($(this).val()));
 					});
+					
 					return result;
 				},
 				reset: function() {
@@ -1642,7 +1727,10 @@ $.fn.multipleSelect = function(data) {
 			if (options.changed && selectedOpts.length != 0) {
 				options.changed(callback);
 			}
-			remoteValidator.remoteValidation();
+			if(selectedOpts.length != 0){
+				remoteValidator.remoteValidation();
+			}
+			
 		});
 
 		$('#' + id + 'RemoveButton').click(function(e) {
@@ -1768,6 +1856,8 @@ $.fn.multipleSelectValues = function() {
 $.fn.multipleSearchInput = function(data) {
 	
 	var id = $(this).attr('id');
+	
+	log('::multipleSearchInput ' + id);
 	
 	if ($(this).data('created')) {
 
@@ -1911,6 +2001,12 @@ $.fn.multipleSearchInput = function(data) {
 				},
 	 			clear: function() {
 	 				$('#' + id).multipleTextInput();
+	 			},
+	 			getId: function(){
+	 				return id;
+	 			},
+	 			getRemoteValidatator: function(){
+	 				return remoteValidator;
 	 			}
 		};
 
@@ -1928,6 +2024,7 @@ $.fn.multipleSearchInput = function(data) {
 						if (options.changed) {
 							options.changed(callback);
 						}
+						remoteValidator.remoteValidation();
 					});
 
 		$('#' + id + 'RemoveButton').click(function(e) {
@@ -1945,6 +2042,7 @@ $.fn.multipleSearchInput = function(data) {
 			if (options.changed) {
 				options.changed(callback);
 			}
+			remoteValidator.remoteValidation();
 		});
 
 	}
@@ -1968,6 +2066,7 @@ $.fn.multipleSearchInput = function(data) {
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	var remoteValidator = new Validator.Remote($(this));
 	return callback;
 }
 /**
@@ -2111,6 +2210,12 @@ $.fn.multipleTextInput = function(data) {
 				},
 	 			clear: function() {
 	 				$('#' + id).multipleTextInput();
+	 			},
+	 			getId: function(){
+	 				return id;
+	 			},
+	 			getRemoteValidatator: function(){
+	 				return remoteValidator;
 	 			}
 		};
 
@@ -2131,6 +2236,7 @@ $.fn.multipleTextInput = function(data) {
 						if (options.changed) {
 							options.changed(callback);
 						}
+						remoteValidator.remoteValidation();
 					});
 
 		$('#' + id + 'RemoveButton').click(function(e) {
@@ -2148,6 +2254,7 @@ $.fn.multipleTextInput = function(data) {
 			if (options.changed) {
 				options.changed(callback);
 			}
+			remoteValidator.remoteValidation();
 		});
 
 	}
@@ -2167,6 +2274,7 @@ $.fn.multipleTextInput = function(data) {
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	var remoteValidator = new Validator.Remote($(this),{'widgetParent' :  callback.getInput()});
 	return callback;
 };
 
@@ -2479,6 +2587,12 @@ $.fn.switchInput = function(options) {
 			},
  			clear: function() {
  				$('#' + id).prop('checked', false);
+ 			},
+ 			getId: function(){
+ 				return id;
+ 			},
+ 			getRemoteValidatator: function(){
+ 				return remoteValidator;
  			}
 	};
 
@@ -2486,6 +2600,7 @@ $.fn.switchInput = function(options) {
 		if(options.changed) {
 			options.changed(callback);
 		}
+		remoteValidator.remoteValidation();
 	});
 	
 	if(options.disabled || options.readOnly) {
@@ -2497,6 +2612,10 @@ $.fn.switchInput = function(options) {
 	}
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	var remoteValidator = new Validator.Remote($(this), {
+		'widgetParent' : $(callback.getInput()).parent().parent(),
+		'highlightElementJqId' :  ('#' + $(callback.getInput()).parent().parent().attr('id'))
+	});
 	return callback;
 };
 
@@ -2615,7 +2734,13 @@ $.fn.sliderInput = function(options) {
 			}, 
 			clear: function() {
 				$('#' + id).slider('setValue', obj.value);
-			}
+			},
+			getId: function(){
+ 				return id;
+ 			},
+ 			getRemoteValidatator: function(){
+ 				return remoteValidator;
+ 			}
 	};
 
 	slider.on('slide', function(ev){
@@ -2624,12 +2749,20 @@ $.fn.sliderInput = function(options) {
 		   }
 	});
 	
+	slider.on('slideStop', function(e){
+		remoteValidator.remoteValidation();
+	});
+	
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	var remoteValidator = new Validator.Remote($(this), {
+		'widgetParent' : $(callback.getInput()).parent().parent(),
+		'highlightElementJqId' :  ('#' + $(callback.getInput()).parent().parent().attr('id'))
+	});
 	return callback;
 };
 
