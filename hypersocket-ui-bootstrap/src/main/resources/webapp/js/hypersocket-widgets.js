@@ -875,14 +875,16 @@ $.fn.autoComplete = function(data) {
 	
 	var buildData = function(values) {
 		var map = [];
-		$.each(values, function(idx, obj) {
-			map[obj[options.valueAttr]] = obj;
-			if(obj[options.valueAttr]==options.value) {
-				thisWidget.data('selectedObject', obj);
-				$('#' + id).val(options.value);
-				$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-			}
-		});
+		if(values) {
+			$.each(values, function(idx, obj) {
+				map[obj[options.valueAttr]] = obj;
+				if(obj[options.valueAttr]==options.value) {
+					thisWidget.data('selectedObject', obj);
+					$('#' + id).val(options.value);
+					$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+				}
+			});
+		}
 		$('#input_' + id).data('values', values);
 		$('#input_' + id).data('map', map);
 		if(options.selectedValue){
@@ -892,34 +894,37 @@ $.fn.autoComplete = function(data) {
 	
 	var createDropdown = function(text, show) {
 		var selected = new Array();
-		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
-			$.each($('#input_' + id).data('values'), function(idx, obj) {
-				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-				selected.push(obj);
-			});
-		} else if(text.startsWith('*')){
-			var searchText = text.substring(1, text.length - 1);
-			$.each($('#input_' + id).data('values'), function(idx, obj) {
-				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-				if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
+		var values = $('#input_' + id).data('values');
+		if(values) {
+			if(options.alwaysDropdown || (text == '*') || (text == ' ')){
+				$.each(values, function(idx, obj) {
+					var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
 					selected.push(obj);
-				}
-			});
-		} else if(text.endsWith('*')){
-			var searchText = text.substring(0, text.length - 1);
-			$.each($('#input_' + id).data('values'), function(idx, obj) {
-				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-				if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
-					selected.push(obj);
-				}
-			});
-		} else{
-			$.each($('#input_' + id).data('values'), function(idx, obj) {
-				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-				if(name.toLowerCase().indexOf(text.toLowerCase()) == 0) {
-					selected.push(obj);
-				}
-			});
+				});
+			} else if(text.startsWith('*')){
+				var searchText = text.substring(1, text.length - 1);
+				$.each(values, function(idx, obj) {
+					var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+					if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
+						selected.push(obj);
+					}
+				});
+			} else if(text.endsWith('*')){
+				var searchText = text.substring(0, text.length - 1);
+				$.each(values, function(idx, obj) {
+					var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+					if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
+						selected.push(obj);
+					}
+				});
+			} else{
+				$.each(values, function(idx, obj) {
+					var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+					if(name.toLowerCase().indexOf(text.toLowerCase()) == 0) {
+						selected.push(obj);
+					}
+				});
+			}
 		}
 		selected.sort(function(a, b) {
 			var nameA = options.nameIsResourceKey ? getResource(a[options.nameAttr]) : a[options.nameAttr];

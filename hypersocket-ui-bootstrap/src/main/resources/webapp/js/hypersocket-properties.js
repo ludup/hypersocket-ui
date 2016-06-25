@@ -1061,28 +1061,51 @@ $.fn.propertyPage = function(opts) {
 				
 				$.each(widgets, function(idx, w) {
 					if(w.options().visibilityDependsOn) {
-						var w2 = $(document).data(w.options().visibilityDependsOn);
-						if(!w2) {
-							log("WARNING: " + w.options().resourceKey + " visibility depends on " + w.options().visibilityDependsOn + " but a property with that resource key does not exist");
-						} else {
-							w.getInput().parents('.propertyItem').hide();
-							var visibilityCallback = function() {
-								if(w2.getValue() == w.options().visibilityDependsValue) {
-									w.getInput().parents('.propertyItem').show();
+						var props = w.options().visibilityDependsOn.split(',');
+						var w2 = [];
+						for(i=0;i<props.length;i++) {
+							w2.push($(document).data(props[i]));
+							if(!w2[i]) {
+								log("WARNING: " + w.options().resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
+								return;
+							}
+						}
+
+						w.getInput().parents('.propertyItem').hide();
+						var visibilityCallback = function() {
+							
+							var dependsValue = w.options().visibilityDependsValue.split(',');
+							var show = false;
+							for(i=0;i<w2.length;i++) {
+								if(show) {
+									break;
+								}
+								if(dependsValue[i].startsWith('!')) {
+									dependsValue[i] = dependsValue[i].substring(1);
+									show = w2[i].getValue() != dependsValue[i];
 								} else {
-									if(w.options().clearOnVisibilityChange) {
-										w.clear();
-									}
-									w.getInput().parents('.propertyItem').hide();
+									show = w2[i].getValue() == dependsValue[i];
 								}
 							}
-							visibilityCallback();
-							if(!w2.options().visibilityCallbacks) {
-								w2.options().visibilityCallbacks = new Array();
+							
+							if(show) {
+								w.getInput().parents('.propertyItem').show();
+							} else {
+								if(w.options().clearOnVisibilityChange) {
+									w.clear();
+								}
+								w.getInput().parents('.propertyItem').hide();
 							}
-							w2.options().visibilityCallbacks.push(visibilityCallback);
+						}
+						visibilityCallback();
+						for(i=0;i<w2.length;i++) {
+							if(!w2[i].options().visibilityCallbacks) {
+								w2[i].options().visibilityCallbacks = new Array();
+							}
+							w2[i].options().visibilityCallbacks.push(visibilityCallback);
 						}
 					}
+					
 				});
 				
 				if(filters.length > 0 && options.useFilters) {
