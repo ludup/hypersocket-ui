@@ -218,6 +218,7 @@ function validateInputType(type){
 		case 'multipleFileInput' :
 		case 'textarea' :
 		case 'text' :
+		case 'color' :
 		case 'textAndSelect' :
 		case 'timeAndAutoComplete':
 		case 'select' :
@@ -644,9 +645,10 @@ $.fn.propertyPage = function(opts) {
 			if(data.resources) {
 				
 				var widgets = new Array();
+				var tabs = new Array();
 				var filters = new Array();
 				$.each(	data.resources,
-							function() {
+							function(idx) {
 
 								if(this.hidden) {
 									return;
@@ -719,7 +721,7 @@ $.fn.propertyPage = function(opts) {
 								
 								$(contentTabs)
 										.append(
-											'<li class="' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
+											'<li class="tab' + idx + ' ' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
 											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + ( this.name ? this.name : getResource(this.categoryKey + '.label') ) + '</span></a></li>');
 								
 								
@@ -729,7 +731,8 @@ $.fn.propertyPage = function(opts) {
 								$('#' + propertyDiv + 'Content').append(
 									'<div id="' + tab + '" class="tab-pane"/>');
 								
-	
+								tabs.push(this);
+								
 								$.each(toSort, function() {
 
 										
@@ -851,6 +854,10 @@ $.fn.propertyPage = function(opts) {
 									    } else if(obj.inputType == 'xml' || obj.inputType == 'html') {
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).htmlInput(obj);
+									    	
+									    } else if(obj.inputType == 'color') {
+									    	
+									    	widget = $('#' + tab + '_value' + this.id).colorInput(obj);
 									    	
 									    } else if(obj.inputType == 'editor') {
 									    	
@@ -1058,6 +1065,56 @@ $.fn.propertyPage = function(opts) {
 									});
 	
 							});
+				
+				$.each(tabs, function(idx, t) {
+					if(t.visibilityDependsOn) {
+						debugger;
+						var props = t.visibilityDependsOn.split(',');
+						var w2 = [];
+						for(i=0;i<props.length;i++) {
+							w2.push($(document).data(props[i]));
+							if(!w2[i]) {
+								log("WARNING: " + t.resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
+								return;
+							}
+						}
+						
+						// Hide tab
+						$('.tab' + idx).hide();
+						var visibilityCallback = function() {
+							
+							var dependsValue = t.visibilityDependsValue.split(',');
+							var show = false;
+							for(i=0;i<w2.length;i++) {
+								if(show) {
+									break;
+								}
+								if(dependsValue[i].startsWith('!')) {
+									dependsValue[i] = dependsValue[i].substring(1);
+									show = w2[i].getValue() != dependsValue[i];
+								} else {
+									show = w2[i].getValue() == dependsValue[i];
+								}
+							}
+							
+							if(show) {
+								// Show tab
+								$('.tab' + idx).show();
+//								$('li.tab' + idx + ':first a').tab('show');
+							} else {
+								// Hide tab
+								$('.tab' + idx).hide();
+							}
+						}
+						visibilityCallback();
+						for(i=0;i<w2.length;i++) {
+							if(!w2[i].options().visibilityCallbacks) {
+								w2[i].options().visibilityCallbacks = new Array();
+							}
+							w2[i].options().visibilityCallbacks.push(visibilityCallback);
+						}
+					}
+				});
 				
 				$.each(widgets, function(idx, w) {
 					if(w.options().visibilityDependsOn) {

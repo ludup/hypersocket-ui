@@ -2324,6 +2324,66 @@ $.fn.switchInput = function(options) {
 	return callback;
 };
 
+$.fn.colorInput = function(options) {
+	
+	var id = (options && options.id ? options.id : $(this).attr('id') + "ColorInput");
+	
+	var obj = $.extend(
+			{   format: 'hex',
+				color: options.value,
+			},  options);
+
+
+	$(this).append('<div id="' + id  + '" class="input-group colorpicker-component"><input type="text" value="' 
+			+ obj.value + '" class="form-control"/><span class="input-group-addon"><i></i></span></div>');
+
+	$('#' + id).colorpicker(obj);
+	
+	var callback = {
+			setValue: function(val) {
+				$('#' + id).colorpicker('getValue', val);
+			},
+			getValue: function() {
+				return $('#' + id).colorpicker('getValue', options.value);
+			},
+			reset: function() {
+				$('#' + id).colorpicker('setValue', options.value);
+			},
+			disable: function() {
+				$('#' + id).colorpicker('disable', options.value);
+			},
+			enable: function() {
+				$('#' + id).colorpicker('enable', options.value);
+			},
+			options: function() {
+				return obj;
+			},
+			getInput: function() {
+				return $('#' + id);
+			},
+ 			clear: function() {
+ 				$('#' + id).colorpicker('setValue', options.value);
+ 			}
+	};
+
+	$('#' + id).on('changeColor', function() {
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
+	
+	if(options.disabled || options.readOnly) {
+		callback.disable();
+	}
+	
+	if(obj.value) {
+		callback.setValue(obj.value);
+	}
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+};
+
 
 $.fn.imageInput = function(options) {
 	

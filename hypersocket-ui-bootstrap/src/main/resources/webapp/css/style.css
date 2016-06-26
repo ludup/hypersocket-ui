@@ -9,6 +9,10 @@ body {
     font: 12px "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Verdana,Tahoma,sans-serif;
 }
 
+*:focus {
+    outline: none;
+}
+
 h2 {
 	font-size: 14px;
 	line-height: 14px;

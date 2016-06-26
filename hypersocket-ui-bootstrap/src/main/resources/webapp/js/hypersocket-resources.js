@@ -142,7 +142,7 @@ $.fn.resourceTable = function(params) {
 	}
 
 	html += '<table id="' + divName + 'Placeholder"></table>';
-
+	
 	html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"></div>';
 	
 	if(!options.disableDecoration) {
@@ -849,6 +849,9 @@ $.fn.resourceTable = function(params) {
 		close: function() {
 			options.view.closeResource();
 		},
+		openPage: function(page) {
+			options.view.openPage(page);
+		},
 		showCreate: function(callback) {
 			options.currentView = 'create';
 			if(options.showCreate) {
@@ -953,7 +956,7 @@ $.fn.samePageResourceView = function(params, params2) {
 	
 	}
 	
-	var showView = function() {
+	var showView = function(view) {
 		$('#mainContainer').removeClass('col-md-10');
 		$('#mainContainer').addClass('col-md-12');
 		$('#mainContainer').removeClass('col-sm-11');
@@ -961,10 +964,16 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#main-menu').hide();
 		$('#mainContent').hide();
 		//dialogOptions.tableView.hide();
-		dialog.show();
+		view.show();
 	}
 	
-	if (params === 'create') {
+	if(params === 'open') {
+		
+		$('#mainContainer').append('<div id="pageContent"></div>');
+		$('#pageContent').load(params2);
+		showView($('#pageContent'));
+		
+	} else if (params === 'create') {
 		
 		dialogOptions.clearDialog(true);
 		if(dialogOptions.propertyOptions) {
@@ -974,7 +983,7 @@ $.fn.samePageResourceView = function(params, params2) {
 				      title: getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
 				      icon: dialogOptions.icon,
 					  complete: function() {
-						  showView();
+						  showView(dialog);
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete();
 						  }
@@ -984,7 +993,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			});
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
-			showView();
+			showView(dialog);
 		}
 		
 		return;
@@ -1001,7 +1010,7 @@ $.fn.samePageResourceView = function(params, params2) {
 					  title: getResource(dialogOptions.resourceKey + '.update.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
 					  icon: dialogOptions.icon,
 				  	  complete: function() {
-						  showView();
+						  showView(dialog);
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(params2);
 						  }
@@ -1011,7 +1020,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			});
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
-			showView();
+			showView(dialog);
 		}
 		
 		return;
@@ -1027,7 +1036,7 @@ $.fn.samePageResourceView = function(params, params2) {
 				      title: getResource(dialogOptions.resourceKey + '.view.title'),
 				      icon: dialogOptions.icon,
 					  complete: function() {
-						  showView();
+						  showView(dialog);
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(params2);
 						  }
@@ -1037,7 +1046,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			});
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
-			showView();
+			showView(dialog);
 		}
 		
 		return;
@@ -1055,7 +1064,7 @@ $.fn.samePageResourceView = function(params, params2) {
 				      title: getResource(dialogOptions.resourceKey + '.create.title'),
 				      icon: dialogOptions.icon,
 					  complete: function() {
-						  showView()
+						  showView(dialog)
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(copiedResource);
 						  }
@@ -1064,7 +1073,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			});
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
-			showView();
+			showView(dialog);
 		}
 		
 		return;
@@ -1102,6 +1111,9 @@ $.fn.samePageResourceView = function(params, params2) {
 	dialog.data('options', options);
 	
 	return {
+		openPage: function(page) {
+			dialog.samePageResourceView('open', page);
+		},
 		createResource: function(callback) {
 			dialog.samePageResourceView('create', callback);
 		},

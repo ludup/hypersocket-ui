@@ -33,25 +33,49 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
+		
+		var apiUrl = apiUrl + 'currentRealm';
+		var disableDecoration = false;
+		var groupRealm = $(document).data('groupRealm');
+		var title = getResource('groups.title');
+		var buttons = [];
+		if(groupRealm) {
+			apiUrl = 'ownerRealm/' + groupRealm.id;
+			disableDecoration = true;
+			buttons.push({ 
+				resourceKey: 'backButton',
+				buttonClass: 'btn-danger',
+				icon: 'fa-step-backward',
+				action: function(callback) {
+					window.location = '${uiPath}#menu=proxy';
+				}
+			});
+			title = getResource('ownerRealm.groups.title').format(groupRealm.name);
+		} else {
+			groupRealm = currentRealm;
+		}
+		
+		$(document).data('groupRealm', null);
+		
 		$('#contentGroups').localize();
 
 		$('#tabGroupUsers').multipleSearchInput({
 			nameAttr : 'principalName',
 			selectedIsObjectList: false,
 			valueAttr: 'id',
-			url: 'currentRealm/users/table'
+			url: apiUrl + '/users/table'
 		});
 		
 		$('#tabGroupGroups').multipleSearchInput({
 			nameAttr : 'principalName',
 			selectedIsObjectList: false,
 			valueAttr: 'id',
-			url: 'currentRealm/groups/table'
+			url: apiUrl + '/groups/table'
 		});
 	
 		
 		$('#groupProperties').propertyPage({
-			url : 'currentRealm/group/template/' + currentRealm.resourceCategory,
+			url : apiUrl + '/group/template/' + currentRealm.resourceCategory,
 			showButtons : false,
 			useTemplates : true,
 			canUpdate : currentMenu.canUpdate,
@@ -68,15 +92,17 @@
 		$('#contentGroups').ajaxResourcePage(
 				{
 				id: 'Group',
-				tableUrl : "currentRealm/groups/table",
-				title: getResource('groups.title'),
+				tableUrl : apiUrl + "/groups/table",
+				title: title,
 				icon: 'fa-users',
-				resourceUrl : "currentRealm/group",
+				resourceUrl : apiUrl + "/group",
 				fields : [ { name: "name"} ],
 				resourceKey : 'group',
+				disableDecoration: disableDecoration,
 				canCreate: currentMenu.canCreate,
 				canUpdate: currentMenu.canUpdate,
 				canDelete: currentMenu.canDelete,
+				additionalButtons: buttons,
 				validate : function() {
 					if ($('#groupName').val() == '') {
 						showError("error.nameRequired");
@@ -94,7 +120,7 @@
 					
 					if(create) {
 						$('#groupProperties').propertyPage({
-							url : 'currentRealm/group/template/' + currentRealm.resourceCategory,
+							url : apiUrl + '/group/template/' + currentRealm.resourceCategory,
 							showButtons : false,
 							useTemplates : true,
 							canUpdate : currentMenu.canUpdate,
@@ -131,13 +157,13 @@
 					$('#groupId').val(resource.id);
 					$('#groupName').val(resource.name);
 					$('#groupName').attr('disabled', readOnly);
-					getJSON("currentRealm/users/group/" + resource.id, null, function(data) {
+					getJSON(apiUrl + "/users/group/" + resource.id, null, function(data) {
 						$('#tabGroupUsers').multipleSearchInput({
 	 						selected : data.resources,
 	 						disabled : readOnly
 	 					});
 					});
-					getJSON("currentRealm/groups/group/" + resource.id, null, function(data) {
+					getJSON(apiUrl + "/groups/group/" + resource.id, null, function(data) {
 						$('#tabGroupGroups').multipleSearchInput({
 	 						selected : data.resources,
 	 						disabled : readOnly
@@ -147,7 +173,7 @@
 					$('#groupProperties').parent().append($('#tabGroupGroups').detach());
 					$('#groupProperties').empty();
 					$('#groupProperties').propertyPage({
-						url : 'currentRealm/group/properties/' + resource.id,
+						url : apiUrl + '/group/properties/' + resource.id,
 						showButtons : false,
 						useTemplates : true,
 						canUpdate : currentMenu.canUpdate,

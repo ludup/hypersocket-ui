@@ -5,6 +5,29 @@
 <script type="text/javascript">
 	$(document).ready(
 			function() {
+				debugger;
+				var apiUrl = 'currentRealm';
+				var disableDecoration = false;
+				var buttons = [];
+				var userRealm = $(document).data('userRealm');
+				var title = getResource('users.title');
+				if(userRealm) {
+					apiUrl = 'ownerRealm/' + userRealm.id;
+					disableDecoration = true;
+					buttons.push({ 
+						resourceKey: 'backButton',
+						buttonClass: 'btn-danger',
+						icon: 'fa-step-backward',
+						action: function(callback) {
+							window.location = '${uiPath}#menu=proxy';
+						}
+					});
+					title = getResource('ownerRealm.users.title').format(userRealm.name);
+				} else {
+					userRealm = currentRealm;
+				}
+				
+				$(document).data('userRealm', null);
 				
 				$('#userDialog').load(uiPath + '/content/userDialog.html', function() {
 				
@@ -15,7 +38,7 @@
 					disabled: !currentMenu.canUpdate,
 					selectedIsObjectList: true,
 					valueAttr: 'id',
-					url: "currentRealm/groups/table"
+					url: apiUrl + "/groups/table"
 				});
 		
 
@@ -44,12 +67,12 @@
 					 }
 					
 					$('#userProperties').propertyPage({
-						url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
+						url : apiUrl + '/user/template/' + userRealm.resourceCategory,
 						showButtons : false,
 						displayMode: 'create,admin',
 						useTemplates : true,
 						propertyTabsLast: false,
-						i18nNamespace: currentRealm.resourceCategory,
+						i18nNamespace: userRealm.resourceCategory,
 						canUpdate : true,
 						displayMode: 'admin,create',
 						useFilters: true,
@@ -65,10 +88,11 @@
 					$('#contentUsers').ajaxResourcePage(
 							{
 								id: 'User',
-								tableUrl : "currentRealm/users/table",
-								title : getResource('users.title'),
+								tableUrl : apiUrl + "/users/table",
+								title : title,
 								icon : 'fa-user',
-								resourceUrl : "currentRealm/user",
+								resourceUrl : apiUrl + "/user",
+								disableDecoration: disableDecoration,
 								fields : [ {
 									name : "name",
 									formatter: function(value, obj, index) {
@@ -84,6 +108,7 @@
 								canCreate : currentMenu.canCreate,
 								canUpdate : currentMenu.canUpdate,
 								canDelete : currentMenu.canDelete,
+								additionalButtons: buttons,
 								additionalActions : actions,
 								validate : function(create) {
 									if ($('#userName').val().trim() == '') {
@@ -126,12 +151,12 @@
 										$('#userProperties').empty();
 										
 										$('#userProperties').propertyPage({
-											url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
+											url : apiUrl + '/user/template/' + userRealm.resourceCategory,
 											showButtons : false,
 											displayMode: 'admin,create',
 											useTemplates : true,
 											propertyTabsLast: false,
-											i18nNamespace: currentRealm.resourceCategory,
+											i18nNamespace: userRealm.resourceCategory,
 											canUpdate : true,
 											useFilters: true,
 											additionalTabs : [ {
@@ -189,19 +214,19 @@
 											});
 									}
 									
-									getJSON('currentRealm/groups/user/' + resource.id, null, function(data) {
+									getJSON(apiUrl + '/groups/user/' + resource.id, null, function(data) {
 										
 										$('#userProperties').parent().append($('#tabUserGroups').detach());
 										$('#userProperties').parent().append($('#tabPassword').detach());
 										
 										$('#userProperties').empty();
 										$('#userProperties').propertyPage({
-											url : 'currentRealm/user/properties/' + resource.id,
+											url : apiUrl + '/user/properties/' + resource.id,
 											showButtons : false,
 											displayMode: 'admin,update',
 											canUpdate : true,
 											propertyTabsLast: false,
-											i18nNamespace: currentRealm.resourceCategory,
+											i18nNamespace: userRealm.resourceCategory,
 											useFilters: true,
 											additionalTabs : tabs,
 											complete: function() {
