@@ -116,7 +116,6 @@ function startLogon(opts) {
 	
 	
 	opts = $.extend({
-		scheme: 'basic',
 		showBusy: showBusy,
 		hideBusy: hideBusy,
 		logonStarted: function() {
