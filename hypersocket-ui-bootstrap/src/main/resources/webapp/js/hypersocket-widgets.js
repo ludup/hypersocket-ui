@@ -460,7 +460,6 @@ $.fn.selectButton = function(data) {
 			resourceKeyTemplate: '{0}', 
 			disabled : false, 
 			value: '', 
-			nameIsResourceKey: false,
 			notSetResourceKey: 'text.notSet',
 			getUrlData: function(data) {
 				return data;
