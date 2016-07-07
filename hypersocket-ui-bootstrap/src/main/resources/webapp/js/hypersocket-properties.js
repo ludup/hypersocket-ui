@@ -75,6 +75,8 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 	if(!obj.allowEmpty && value=='') {
 		log("Validation failed for " + obj.resourceKey + " with empty value");
 		return false;
+	} else if(obj.allowEmpty && value=='') {
+		return true;
 	}
 	
 	if(obj.requiredField && value=='') {

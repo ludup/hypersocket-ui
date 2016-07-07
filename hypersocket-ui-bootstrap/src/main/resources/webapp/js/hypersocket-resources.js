@@ -185,6 +185,9 @@ $.fn.resourceTable = function(params) {
 				sortable: obj.sortable || obj.name === options.sortName,
 				formatter: obj.formatter
 		};
+		if(obj.width) {
+			c.width = obj.width;
+		}
 		columns.push(c);	
 	});
 	
