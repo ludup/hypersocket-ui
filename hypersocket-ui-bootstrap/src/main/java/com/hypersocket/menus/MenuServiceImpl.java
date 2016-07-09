@@ -130,36 +130,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				}
 			}
 		}, MenuService.MENU_MY_PROFILE);
-		
-		UserInterfaceState state = userInterfaceStateService.getStateByName("showHelpZone", realmService.getSystemRealm());
-		try {
-			if(state != null){
-				@SuppressWarnings("unchecked")
-				HashMap<String, Boolean> preferences = new ObjectMapper().readValue(state.getPreferences(), HashMap.class);
-				if(preferences.get("showHelpZone") == null || preferences.get("showHelpZone")){
-					registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-							MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
-							SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
-							MenuService.MENU_DASHBOARD);
-				}else{
-					registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-							MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", 99999,
-							SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
-							MenuService.MENU_DASHBOARD);
-				}
-			}else{
-				registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-						MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
-						SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
-						MenuService.MENU_DASHBOARD);
-			}
-			
-		} catch (IOException e) {
-			registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-					MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
-					SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
-					MenuService.MENU_DASHBOARD);
-		}
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_MY_RESOURCES, "fa-share-alt", null, 300, null,
