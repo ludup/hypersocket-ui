@@ -331,6 +331,11 @@ $.fn.resourceTable = function(params) {
 									el.attr('disabled', true);
 								}
 							} 
+							if(act.isEnabled && !act.isEnabled(resource)) {
+								var el = $('.row-' + act.resourceKey, dropdown);    
+								el.parent().addClass('disabled');
+								el.attr('disabled', true);
+							} 
 						}
 						
 					});

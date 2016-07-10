@@ -2,6 +2,9 @@
 
 </div>
 <script type="text/javascript">
+function canImpersonateUser(resource) {
+	return resource.primaryAccount;
+}
 
 $('#impersonateUser').data('action', function(resource) {
 	$('#impersonateUser').data('resource', resource);
