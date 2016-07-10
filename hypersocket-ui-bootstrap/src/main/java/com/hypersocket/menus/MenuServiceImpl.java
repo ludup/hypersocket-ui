@@ -180,8 +180,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RealmPermission.UPDATE, RealmPermission.DELETE),
 				MenuService.MENU_SYSTEM_CONFIGURATION);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "interfaces",
-				"fa-sitemap", "interfaces", 100,
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "interfacesMenu",
+				"fa-sitemap", "interfacesMenu", 100,
 				HTTPInterfaceResourcePermission.READ,
 				HTTPInterfaceResourcePermission.CREATE,
 				HTTPInterfaceResourcePermission.UPDATE,
