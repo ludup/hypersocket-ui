@@ -460,6 +460,7 @@ $.fn.selectButton = function(data) {
 			resourceKeyTemplate: '{0}', 
 			disabled : false, 
 			value: '', 
+			sortOptions: true,
 			notSetResourceKey: 'text.notSet',
 			getUrlData: function(data) {
 				return data;
@@ -523,13 +524,15 @@ $.fn.selectButton = function(data) {
 				var listItem;
 				if (obj.options) {
 					
-					obj.options.sort(function(a,b) {
-						if(obj.nameIsResourceKey) {
-							return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
-						} else {
-							return a[obj.nameAttr] > b[obj.nameAttr];
-						}
-					});
+					if(obj.sortOptions) {
+						obj.options.sort(function(a,b) {
+							if(obj.nameIsResourceKey) {
+								return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
+							} else {
+								return a[obj.nameAttr] > b[obj.nameAttr];
+							}
+						});
+					}
 					
 					for (var i = 0; i < obj.options.length; i++) {
 						listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
@@ -571,13 +574,15 @@ $.fn.selectButton = function(data) {
 						function(data) {
 						
 						var items = obj.getUrlData(data);
-						items.sort(function(a,b) {
-							if(obj.nameIsResourceKey) {
-								return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
-							} else {
-								return a[obj.nameAttr] > b[obj.nameAttr];
-							}
-						});
+						if(obj.sortOptions) {
+							items.sort(function(a,b) {
+								if(obj.nameIsResourceKey) {
+									return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
+								} else {
+									return a[obj.nameAttr] > b[obj.nameAttr];
+								}
+							});
+						}
 						
 						$.each(items, function(idx, option) {
 							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj.nameAttr])) : option[obj.nameAttr];
