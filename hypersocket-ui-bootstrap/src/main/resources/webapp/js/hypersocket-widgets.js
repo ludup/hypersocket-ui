@@ -539,7 +539,7 @@ $.fn.selectButton = function(data) {
 						$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
 								+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">' 
 								+ listItem + '</a></li>');
-						if (obj.value === obj.options[i][obj.valueAttr]) {
+						if (obj.value == obj.options[i][obj.valueAttr]) {
 							selected = obj.options[i];
 							$('#select_button_' + id).text(listItem);
 						} 
@@ -564,6 +564,7 @@ $.fn.selectButton = function(data) {
 							loading = false;
 						}
 						
+				
 					if(loadCallback) {
 						loadCallback();
 					}
@@ -590,7 +591,10 @@ $.fn.selectButton = function(data) {
 							$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
 									+ stripNull(option[obj.valueAttr]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">' 
 									+ listItem + '</a></li>');
-							if (option[obj.valueAttr] === obj.value) {
+							/**
+							 * Use == NOT === because types may vary but we still want string "1" to equal 1
+							 */
+							if (option[obj.valueAttr] == obj.value) {
 								selected = option;
 								$('#select_button_' + id).text(listItem);
 							}
@@ -667,12 +671,6 @@ $.fn.selectButton = function(data) {
 	
 	if(obj.disabled) {
 		callback.disable();
-	}
-	
-	if(obj.value && obj.value!='') {
-		callback.setValue(obj.value);
-	} else {
-		callback.selectFirst();
 	}
 	
 	$(this).data('widget', callback);
