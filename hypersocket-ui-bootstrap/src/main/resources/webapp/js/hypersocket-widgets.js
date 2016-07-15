@@ -628,6 +628,7 @@ $.fn.selectButton = function(data) {
 			resourceKeyTemplate: '{0}', 
 			disabled : false, 
 			value: '', 
+			sortOptions: true,
 			notSetResourceKey: 'text.notSet',
 			getUrlData: function(data) {
 				return data;
@@ -691,20 +692,22 @@ $.fn.selectButton = function(data) {
 				var listItem;
 				if (obj.options) {
 					
-					obj.options.sort(function(a,b) {
-						if(obj.nameIsResourceKey) {
-							return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
-						} else {
-							return a[obj.nameAttr] > b[obj.nameAttr];
-						}
-					});
+					if(obj.sortOptions) {
+						obj.options.sort(function(a,b) {
+							if(obj.nameIsResourceKey) {
+								return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
+							} else {
+								return a[obj.nameAttr] > b[obj.nameAttr];
+							}
+						});
+					}
 					
 					for (var i = 0; i < obj.options.length; i++) {
 						listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
 						$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
 								+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">' 
 								+ listItem + '</a></li>');
-						if (obj.value === obj.options[i][obj.valueAttr]) {
+						if (obj.value == obj.options[i][obj.valueAttr]) {
 							selected = obj.options[i];
 							$('#select_button_' + id).text(listItem);
 						} 
@@ -729,6 +732,7 @@ $.fn.selectButton = function(data) {
 							loading = false;
 						}
 						
+				
 					if(loadCallback) {
 						loadCallback();
 					}
@@ -740,13 +744,15 @@ $.fn.selectButton = function(data) {
 						function(data) {
 						
 						var items = obj.getUrlData(data);
-						items.sort(function(a,b) {
-							if(obj.nameIsResourceKey) {
-								return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
-							} else {
-								return a[obj.nameAttr] > b[obj.nameAttr];
-							}
-						});
+						if(obj.sortOptions) {
+							items.sort(function(a,b) {
+								if(obj.nameIsResourceKey) {
+									return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
+								} else {
+									return a[obj.nameAttr] > b[obj.nameAttr];
+								}
+							});
+						}
 						
 						$.each(items, function(idx, option) {
 							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj.nameAttr])) : option[obj.nameAttr];
@@ -754,7 +760,10 @@ $.fn.selectButton = function(data) {
 							$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
 									+ stripNull(option[obj.valueAttr]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">' 
 									+ listItem + '</a></li>');
-							if (option[obj.valueAttr] === obj.value) {
+							/**
+							 * Use == NOT === because types may vary but we still want string "1" to equal 1
+							 */
+							if (option[obj.valueAttr] == obj.value) {
 								selected = option;
 								$('#select_button_' + id).text(listItem);
 							}
@@ -831,12 +840,6 @@ $.fn.selectButton = function(data) {
 	
 	if(obj.disabled) {
 		callback.disable();
-	}
-	
-	if(obj.value && obj.value!='') {
-		callback.setValue(obj.value);
-	} else {
-		callback.selectFirst();
 	}
 	
 	$(this).data('widget', callback);

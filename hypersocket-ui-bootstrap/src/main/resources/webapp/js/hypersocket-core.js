@@ -162,7 +162,7 @@ function startLogon(opts) {
 			if(data.homePage) {
 				window.open(data.homePage, "_self", false);
 			} else {
-				if(!window.location.pathname.includes('${uiPath}')) {
+				if(window.location.pathname.indexOf('${uiPath}')==-1) {
 					window.location = '${uiPath}';
 				} else {
 					home(data);
@@ -747,12 +747,12 @@ function loadMenu(menu) {
 			if(!this.hidden) {
 				$('#subMenuIconPanel').append(
 						'<div class="col-xs-2 hidden-xs hidden-sm subMenuLarge">'
-					+	'	<a class="large-button subMenu" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+					+	'	<a class="large-button subMenu" data-value="' + this.resourceName + '" id="buttonLarge_' + this.resourceName + '">'
 					+	'		<i class="fa ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
 					+	'	</a>'
 					+	'</div>'
 					+	'<div class="col-xs-2 visible-xs visible-sm" style="padding-bottom: 10px">'
-					+	'	<a class="small-button subMenuSmall" data-value="' + this.resourceName + '" id="button_' + this.resourceKey + '">'
+					+	'	<a class="small-button subMenuSmall" data-value="' + this.resourceName + '" id="buttonSmall_' + this.resourceName + '">'
 					+	'		<i class="fa ' + this.icon + '"></i>'
 					+	'	</a>'
 					+ 	'</div>');
@@ -774,7 +774,7 @@ function loadMenu(menu) {
 		if(subPage==null) {
 			$('.subMenu').first().trigger('click');
 		} else {
-			$('#button_' + subPage).trigger('click');
+			$('#buttonLarge_' + subPage).trigger('click');
 		}
 		
 	} else {
@@ -789,8 +789,9 @@ function loadMenu(menu) {
 function loadSubPage(menu, element) {
 	$('#subMenuIconPanel').find('.large-button-active').removeClass('large-button-active');
 	$('#subMenuIconPanel').find('.small-button-active').removeClass('small-button-active');
-	element.parent().parent().find('.large-button[id="button_' + element.data().value + '"]').addClass('large-button-active');
-	element.parent().parent().find('.small-button[id="button_' + element.data().value + '"]').addClass('small-button-active');
+	log(element.data().value);
+	element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').addClass('large-button-active');
+	element.parent().parent().find('.small-button[id="buttonSmall_' + element.data().value + '"]').addClass('small-button-active');
 	loadWait();
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
 		window.location.hash = "menu=" + menu.resourceKey;
