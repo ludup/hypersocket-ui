@@ -323,6 +323,14 @@ $.fn.resourceTable = function(params) {
 								} else {
 									el.hide();
 								}
+							} 
+							if(act.isDisplayable) {
+								var el = $('.row-' + act.resourceKey, dropdown);   
+								if(act.isDisplayable(resource)) {
+									el.show();
+								} else {
+									el.hide();
+								}
 							}
 							if(act.enableFunction && act.enableFunction != '') {
 								if(!window[act.enableFunction].apply(null, [resource, act])) {
@@ -921,8 +929,13 @@ $.fn.resourceTable = function(params) {
 		}
 	}
 	
+	$(this).data('callback', callback);
 	return callback;
 };
+
+$.fn.resourcePage = function() {
+	return $(this).data('callback');
+}
 
 $.fn.samePageResourceView = function(params, params2) {
 

@@ -1024,10 +1024,13 @@ $.fn.autoComplete = function(data) {
 						var map = [];
 						$.each(data.rows, function(idx, obj) {
 							map[obj[options.valueAttr]] = obj;
-							if(obj[options.valueAttr]==options.value) {
-								thisWidget.data('selectedObject', obj);
-								$('#' + id).val(options.value);
-								$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+							if(options.value) {
+								if(obj[options.valueAttr]==options.value) {
+									log("Found value with " + options.value);
+									thisWidget.data('selectedObject', obj);
+									$('#' + id).val(options.value);
+									$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+								}
 							}
 						});
 						$('#input_' + id).data('values', data.rows);

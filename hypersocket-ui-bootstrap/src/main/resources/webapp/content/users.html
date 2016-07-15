@@ -2,6 +2,32 @@
 	<div id="userDialog"></div>
 	<div id="additionalActions"></div>
 </div>
+<div id="linkDialog" class="modal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 localize="linkAccount.label"></h4>
+			</div>
+			<div class="modal-body">
+				<div class="propertyItem form-group">
+						<label for="file" class="col-md-3 control-label"
+							localize="primaryAccount.label"></label>
+						<div class="propertyValue col-md-9">
+							<div id="primaryAccount"></div>
+							<div>
+								<span class="help-block" localize="primaryAccount.info"></span>
+							</div>
+						</div>
+					</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i><span localize="text.cancel"></span></button>
+        		<button id="saveLinkedAccount" type="button" class="btn btn-primary"><i class="fa fa-save"></i><span localize="text.save"></span></button>
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 	$(document).ready(
 			function() {
@@ -10,6 +36,10 @@
 				var disableDecoration = false;
 				var buttons = [];
 				var userRealm = $(document).data('userRealm');
+				var ownerRealm;
+				if(userRealm) {
+					ownerRealm = true;
+				}
 				var title = getResource('users.title');
 				if(userRealm) {
 					apiUrl = 'ownerRealm/' + userRealm.id;
@@ -32,7 +62,8 @@
 				$('#userDialog').load(uiPath + '/content/userDialog.html', function() {
 				
 				$('#contentUsers').localize();
-
+				$('#linkDialog').localize();
+				
 				$('#tabUserGroups').multipleSearchInput({
 					nameAttr : 'principalName',
 					disabled: !currentMenu.canUpdate,
@@ -41,10 +72,75 @@
 					url: apiUrl + "/groups/table"
 				});
 		
-
-				getJSON('menus/tableActions/userActions', null, function(data) {
+				$('#primaryAccount').autoComplete({
+					url:'currentRealm/users/table',
+					remoteSearch: true,
+					valueAttr: 'id'
+				});
+				
+				$('#saveLinkedAccount').click(function(e) {
+					e.preventDefault();
+					removeMessage();
+					var account = $('#linkDialog').data('account');
+					var callback = $('#linkDialog').data('callback');
 					
+					if(!$('#primaryAccount').widget().getValue()) {
+						showError(getResource("text.selectAccount"));
+					} else {
+						getJSON(apiUrl + '/linkAccount/' + account.id + '/' + $('#primaryAccount').widget().getValue(), null, function(data) {
+							if(data.success) {
+								showInformation(data.message);
+								$('#contentUsers').resourcePage().refresh();
+								$('#linkDialog').modal('hide');
+							} else {
+								showError(data.message);
+							}
+						});
+					}
+				});
+				
+				getJSON('menus/tableActions/userActions', null, function(data) {
+					debugger;
 					var actions = new Array();
+					
+					if(ownerRealm) {
+						actions.push({
+							resourceKey: 'linkAccount',
+							iconClass: 'fa-link',
+							action: function(resource, callback) {
+								$('#linkDialog').data('account', resource);
+								$('#linkDialog').data('callback', callback);
+								$('#linkDialog').find('h4').text(getResource('linkedTo.text').format(resource.principalName));
+								$('#linkDialog').modal('show');
+							},
+							enabled: true,
+							isDisplayable: function(resource) {
+								return !resource.linked;
+							}
+						});
+						actions.push({
+							resourceKey: 'unlinkAccount',
+							iconClass: 'fa-chain-broken',
+							action: function(resource, callback) {
+								bootbox.confirm(getResource('unlinkTo.text').format(resource.principalName, resource.parentPrincipal.principalName), function(result) {
+									if(result) {
+										getJSON(apiUrl + '/unlinkAccount/' + resource.id, null, function(data) {
+											if(data.success) {
+												showInformation(data.message);
+												$('#contentUsers').resourcePage().refresh();
+											} else {
+												showError(data.message);
+											}
+										});
+									}
+								});
+							},
+							enabled: true,
+							isDisplayable: function(resource) {
+								return resource.linked;
+							}
+						});
+					}
 					
 					if(data.resources.length > 0) {
 						$.each(data.resources, function(idx, action) {
@@ -85,7 +181,33 @@
 						} ]
 					});
 					
-					$('#contentUsers').ajaxResourcePage(
+					var fields = [ {
+						name : "name",
+						formatter: function(value, obj, index) {
+							return obj.principalName;
+						}
+					}, {
+						name : "principalDesc",
+						formatter: function(value, obj, index) {
+							return obj.principalDescription;
+						}
+					}];
+					
+					if(ownerRealm) {
+						fields.push({
+							name: 'parentPrincipal',
+							formatter: function(value, obj, index) {
+								if(!obj.parentPrincipal) {
+									return null;
+								}
+								if(obj.parentPrincipal.principalDesc) {
+									return obj.parentPrincipal.principalDesc;
+								}
+								return obj.parentPrincipal.principalName;
+							}
+						});
+					}
+					var resourcePage = $('#contentUsers').ajaxResourcePage(
 							{
 								id: 'User',
 								tableUrl : apiUrl + "/users/table",
@@ -93,17 +215,7 @@
 								icon : 'fa-user',
 								resourceUrl : apiUrl + "/user",
 								disableDecoration: disableDecoration,
-								fields : [ {
-									name : "name",
-									formatter: function(value, obj, index) {
-										return obj.principalName;
-									}
-								}, {
-									name : "principalDesc",
-									formatter: function(value, obj, index) {
-										return obj.principalDescription;
-									}
-								}],
+								fields : fields,
 								resourceKey : 'user',
 								canCreate : currentMenu.canCreate,
 								canUpdate : currentMenu.canUpdate,
