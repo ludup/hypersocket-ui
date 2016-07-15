@@ -165,7 +165,7 @@ function startLogon(opts) {
 			if(data.homePage) {
 				window.open(data.homePage, "_self", false);
 			} else {
-				if(!window.location.pathname.includes('${uiPath}')) {
+				if(window.location.pathname.indexOf('${uiPath}')==-1) {
 					window.location = '${uiPath}';
 				} else {
 					home(data);
