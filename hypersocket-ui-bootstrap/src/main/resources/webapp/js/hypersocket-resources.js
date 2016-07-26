@@ -444,6 +444,7 @@ $.fn.resourceTable = function(params) {
 	$('#' + divName + 'Placeholder').on('post-body.bs.table', function() {
 		$('[data-toggle="tooltip"]').tooltip();
 	});
+	
 	getState(options.id, true, function(data){
 		if(data.success && data.resources.length && data.resources[0].preferences){
 			var preferences = JSON.parse(data.resources[0].preferences);
@@ -514,7 +515,41 @@ $.fn.resourceTable = function(params) {
 		    		saveState(options.id, {'pageSize': size, 'sortOrder': order, 'sortName': name}, true);
 		    	}
 		    },
-		    onLoadSuccess: function(){
+		    onLoadSuccess: function() {
+				
+		    	if($('#searchRendered').length==0) {
+			    	if(sortColumns.length > 0) {
+						$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
+						$('#searchColumn').textDropdown({
+							values: sortColumns,
+							value: sortColumns[0].name,
+							changed: function(widget) {
+								debugger;
+								$('.search input[placeholder="Search"]').val('');
+								//$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
+								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+							}
+						});
+					}
+					
+					if(options.toolbarButtons) {
+						$.each(options.toolbarButtons, function(idx, action) {
+							$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
+									+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
+									+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
+									+ action.icon + '"></i></button>');
+							
+							$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
+								if(action.action) {
+									action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
+										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+									});
+								}
+							});
+						});
+					}
+					$('#' + divName).find('.fixed-table-toolbar').last().append('<div id="searchRendered"></div>');
+		    	}
 		    	if (options.logo) {
 		    		$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px; display: none;"></div>');
 		    		
@@ -705,36 +740,7 @@ $.fn.resourceTable = function(params) {
 				}
 		    }
 		});
-		
-		if(sortColumns.length > 0) {
-			$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
-			$('#searchColumn').textDropdown({
-				values: sortColumns,
-				value: sortColumns[0].name,
-				changed: function(widget) {
-					$('.search input[placeholder="Search"]').val('');
-					$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
-					$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-				}
-			});
-		}
-		
-		if(options.toolbarButtons) {
-			$.each(options.toolbarButtons, function(idx, action) {
-				$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
-						+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
-						+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
-						+ action.icon + '"></i></button>');
-				
-				$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
-					if(action.action) {
-						action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
-							$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-						});
-					}
-				});
-			});
-		}
+
 		
 		if(options.additionalButtons) {
 			
