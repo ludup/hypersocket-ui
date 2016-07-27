@@ -2264,7 +2264,8 @@ $.fn.namePairInput = function(data) {
 				variables: [],
 				onlyName: false,
 				isArrayValue: true,
-				showEmptyRow: false
+				showEmptyRow: false,
+				password: false
 			}, data);
 	
 	var id =  $(this).attr('id');
@@ -2427,9 +2428,14 @@ $.fn.namePairInput = function(data) {
 	 	 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), undefined);
  	 						}
  	 					} else {
+ 	 						var inputType = 'text';
+ 	 	 					if(options.password){
+ 	 	 						inputType = 'password';
+ 	 	 					}
 	 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
 	 	 	 					variables: valueVariables,
 	 	 	 					url: options.valueVariablesUrl,
+	 	 	 					inputType: inputType,
 	 	 	 					getUrlData: function(data) {
 	 	 	 						return data.resources;
 	 	 	 					},
