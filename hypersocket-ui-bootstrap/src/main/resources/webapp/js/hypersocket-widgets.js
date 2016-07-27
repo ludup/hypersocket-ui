@@ -542,6 +542,7 @@ $.fn.selectButton = function(data) {
 						if (obj.value == obj.options[i][obj.valueAttr]) {
 							selected = obj.options[i];
 							$('#select_button_' + id).text(listItem);
+							$('#' + id).val(obj.value);
 						} 
 						$('#data_' + id + "_" + i).data('resource', obj.options[i]);
 					}
@@ -597,6 +598,7 @@ $.fn.selectButton = function(data) {
 							if (option[obj.valueAttr] == obj.value) {
 								selected = option;
 								$('#select_button_' + id).text(listItem);
+								$('#' + id).val(option[obj.valueAttr]);
 							}
 							$('#data_' + id + "_" + idx).data('resource', option);
 						});
@@ -808,11 +810,11 @@ $.fn.autoComplete = function(data) {
 		$('#spin_' + id).addClass('fa-search');
 	}
 	
-	var updateValue = function(val) {
+	var updateValue = function(val, event) {
 		if(val && val.toString().startsWith('${') && val.toString().endsWith('}')) {
 			$('#' + id).val(val);
 			$('#input_' + id).val(val);
-			if(options.changed) {
+			if(event && options.changed) {
 				options.changed(callback);
 			}
 			return;
@@ -825,7 +827,7 @@ $.fn.autoComplete = function(data) {
 					thisWidget.data('selectedObject', obj);
 					$('#' + id).val(obj[options.valueAttr]);
 					$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-					if(options.changed) {
+					if(event && options.changed) {
 						options.changed(callback);
 					}
 				}
@@ -834,7 +836,7 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	$('#input_' + id).change(function() {
-		updateValue($(this).val());
+		updateValue($(this).val(), true);
 	});
 	
 	var doDropdown = function(text) {
@@ -898,7 +900,7 @@ $.fn.autoComplete = function(data) {
 	
 	callback = {
 			setValue: function(val) {
-				updateValue(val);
+				updateValue(val, true);
 			},
 			getValue: function() {
 				return $('#' + id).val();
@@ -985,7 +987,18 @@ $.fn.autoComplete = function(data) {
 		callback.disable();
 	}
 	
-	callback.reset();
+	if(options.url && !options.remoteSearch) {
+		getJSON(
+			options.url,
+			null,
+			function(data) {
+				buildData(options.isResourceList ? data.resources : data);
+				updateValue(options.value, false);
+			});
+	} else if(options.values && !options.remoteSearch) {
+		buildData(options.values);
+		updateValue(options.value, false);
+	} 
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
