@@ -349,14 +349,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_BUSINESS_RULES,
 				"", null, 8888, null, null, null, null, null));
 
-		registerMenu(new MenuRegistration(
-				TriggerResourceServiceImpl.RESOURCE_BUNDLE, "triggers",
-				"fa-flash", "triggers", 200, TriggerResourcePermission.READ,
-				TriggerResourcePermission.CREATE,
-				TriggerResourcePermission.UPDATE,
-				TriggerResourcePermission.DELETE),
-				MenuService.MENU_BUSINESS_RULES);
-
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));
 

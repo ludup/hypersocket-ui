@@ -313,6 +313,10 @@ function getResource(key) {
 	return result;
 };
 
+function replacePaths(value) {
+	return value.replace("${basePath}", basePath).replace("${uiPath}", uiPath);
+}
+
 function getTooltip(key, element) {
 	return getResourceNoDefault(key + '.' + element + '.tooltip');
 }
@@ -341,9 +345,9 @@ function getResourceWithNamespace(namespace, key) {
 	if(withNamespace == undefined && withoutNamespace == undefined) {
 		return getResource(key);
 	} else if(withNamespace != undefined) {
-		return withNamespace;
+		return replacePaths(withNamespace);
 	} else {
-		return withoutNamespace;
+		return replacePaths(withoutNamespace);
 	}
 }
 
@@ -355,7 +359,7 @@ $.fn.localizeTooltip = function() {
 $.fn.localize = function() {
 
 	$('[localize]', '#' + $(this).attr('id')).each(function(i,obj) {
-		text = getResource([$(obj).attr('localize')]);
+		text = replacePaths(getResource([$(obj).attr('localize')]));
 		if($(this).attr('allowHtml')) {
 			$(obj).html(text);
 		} else {

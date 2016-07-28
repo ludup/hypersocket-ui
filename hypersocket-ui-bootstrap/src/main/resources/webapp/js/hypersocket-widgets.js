@@ -710,7 +710,7 @@ $.fn.selectButton = function(data) {
 						if (obj.value == obj.options[i][obj.valueAttr]) {
 							selected = obj.options[i];
 							$('#select_button_' + id).text(listItem);
-							$('#' + id).val(stripNull(obj.options[i][obj.valueAttr]));
+							$('#' + id).val(obj.value);
 						} 
 						$('#data_' + id + "_" + i).data('resource', obj.options[i]);
 					}
@@ -767,7 +767,7 @@ $.fn.selectButton = function(data) {
 							if (option[obj.valueAttr] == obj.value) {
 								selected = option;
 								$('#select_button_' + id).text(listItem);
-								$('#' + id).val(stripNull(option[obj.valueAttr]));
+								$('#' + id).val(option[obj.valueAttr]);
 							}
 							$('#data_' + id + "_" + idx).data('resource', option);
 						});
