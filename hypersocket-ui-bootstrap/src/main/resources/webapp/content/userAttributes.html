@@ -272,6 +272,11 @@ $(document).ready(function() {
 							showError('attribute.variableNameRequired.error');
 							return false;
 						}
+						
+						if (!isNaN($('#attributeVariableName').val())) {
+							showError('attribute.variableNameNumeric.error');
+							return false;
+						}
 					return true;
 				},
 				clearDialog : function() {
