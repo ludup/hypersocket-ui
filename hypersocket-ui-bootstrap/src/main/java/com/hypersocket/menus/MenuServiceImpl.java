@@ -98,7 +98,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		server.addAlias("${basePath}/recover", "redirect:${basePath}/recover/");
 		server.addAlias("${basePath}/recover/", "${uiPath}/recover-index.html");
 		
-		indexFilter.addPage("content/recover-index.html");
+		indexFilter.addPage("recover-index.html");
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_PERSONAL, "", null, 0, null, null, null, null));
