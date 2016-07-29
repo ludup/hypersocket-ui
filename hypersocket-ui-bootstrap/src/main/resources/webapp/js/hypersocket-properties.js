@@ -791,7 +791,7 @@ $.fn.propertyPage = function(opts) {
 
 									    	var widgetOptions = $.extend(obj, {
 									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
-									    		emptySelectionText: getResource(obj.emptySelectionResourceKey)
+									    		notSetResourceKey: obj.emptySelectionResourceKey
 											});
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).selectButton(obj);
@@ -800,7 +800,7 @@ $.fn.propertyPage = function(opts) {
 
 									    	var widgetOptions = $.extend(obj, {
 									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
-									    		emptySelectionText: getResource(obj.emptySelectionResourceKey)
+									    		notSetResourceKey: obj.emptySelectionResourceKey
 											});
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).textDropdown(obj);

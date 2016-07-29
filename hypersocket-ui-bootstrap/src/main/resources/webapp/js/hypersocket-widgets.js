@@ -480,8 +480,8 @@ $.fn.selectButton = function(data) {
 	
 	if(obj.emptySelectionAllowed) {
 		$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
-				+ id + '" href="#" name="link_' + obj.emptySelectionText + '" data-value="" data-label="' + obj.emptySelectionText + '">' 
-				+ obj.emptySelectionText + '</a></li>');
+				+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + getResource(obj.notSetResourceKey) + '">' 
+				+ getResource(obj.notSetResourceKey) + '</a></li>');
 	}
 	
 	var loading = true;
@@ -518,8 +518,8 @@ $.fn.selectButton = function(data) {
 				$('#select_' + id).empty();
 				if(obj.emptySelectionAllowed) {
 					$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
-							+ id + '" href="#" name="link_' + obj.emptySelectionText + '" data-value="" data-label="' + obj.emptySelectionText + '">' 
-							+ obj.emptySelectionText + '</a></li>');
+							+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + getResource(obj.notSetResourceKey) + '">' 
+							+ getResource(obj.notSetResourceKey) + '</a></li>');
 				}
 				var listItem;
 				if (obj.options) {
