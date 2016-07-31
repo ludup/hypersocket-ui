@@ -1750,3 +1750,15 @@ span.input-group-addon {
     background-image: linear-gradient(-45deg, #D3D3D3 25%, transparent 25%, transparent 50%, #D3D3D3 50%, #D3D3D3 75%, transparent 75%, transparent);
     background-size: 100px 100px;
 }
+
+#footerActions {
+	padding-top: 15px;
+}
+
+#themeSelect {
+	width: 100px;
+}
+
+select[multiple] {
+	height: 150px;
+}

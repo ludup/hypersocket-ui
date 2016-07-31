@@ -2065,39 +2065,42 @@ $.fn.booleanInput = function(options) {
 
 $.fn.switchInput = function(options) {
 	
-	var id = (options && options.id ? options.id : $(this).attr('id') + "BooleanInput");
+	var id = $(this).attr('id') + "BooleanInput";
 	
 	var obj = $.extend(
 			{   readOnly: false,
 			    disabled: false,
-			    onResourceKey: 'text.on',
-			    offResourceKey: 'text.off'
+			    onResourceKey: 'text.on.upper',
+			    offResourceKey: 'text.off.upper'
 			},  options);
+	obj.onText = getResource(obj.onResourceKey);
+	obj.offText = getResource(obj.offResourceKey);
+	obj.state = obj.value;
+	obj.size = 'small';
+
+	$("body").append('<div id="colorTest" class="btn-primary"/>');
+	var backgroundColor = $('#colorTest').css('background-color');
+	var color = $('#colorTest').css('color');
+	obj.onColor = "primary";
+	$('#colorTest').remove();
 
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
-	
-	$(this).append('<label class="switch"><input type="checkbox" class="switch-input" id="'
-						+ id + '" name="chk_' + name + '" value="true"' 
-						+ '><span class="switch-label" data-on="' 
-						+ getResource(obj.onResourceKey) + '" data-off="' 
-						+ getResource(obj.offResourceKey) + '"></span> <span class="switch-handle"></span></label>');
-
-	
+		
 	var callback = {
 			setValue: function(val) {
-				$('#' + id).prop('checked', val ? 'checked' : '');
+				$('#' + id).bootstrapSwitch('state', val);
 			},
 			getValue: function() {
 				return $('#' + id).is(':checked');
 			},
 			reset: function() {
-				$('#' + id).prop('checked', obj.value ? 'checked' : '');
+				$('#' + id).bootstrapSwitch('state', obj.value);
 			},
 			disable: function() {
-				$('#' + id).attr('disabled', true);
+				$('#' + id).bootstrapSwitch('disabled', true);
 			},
 			enable: function() {
-				$('#' + id).attr('disabled', false);
+				$('#' + id).bootstrapSwitch('disabled', false);
 			},
 			options: function() {
 				return obj;
@@ -2110,11 +2113,24 @@ $.fn.switchInput = function(options) {
  			}
 	};
 
-	$('#' + id).change(function() {
+	obj.onSwitchChange = function(event, state) {
 		if(options.changed) {
 			options.changed(callback);
 		}
-	});
+	};
+	
+	$(this).append('<label class="switch"><input type="checkbox" class="switch-input" id="'
+			+ id + '" name="chk_' + name + '" value="true"' 
+			+ '><span class="switch-label" data-on="' 
+			+ getResource(obj.onResourceKey) + '" data-off="' 
+			+ getResource(obj.offResourceKey) + '"></span> <span class="switch-handle"></span></label>');
+
+	$('#' + id).bootstrapSwitch(obj);
+	
+	$(this).find('.bootstrap-switch-primary').addClass('btn-primary');
+	$(this).find('.bootstrap-switch-default').addClass('btn-default');
+	$(this).find('.bootstrap-switch-primary').removeClass('bootstrap-switch-primary');
+	$(this).find('.bootstrap-switch-default').removeClass('bootstrap-switch-default');
 	
 	if(options.disabled || options.readOnly) {
 		callback.disable();

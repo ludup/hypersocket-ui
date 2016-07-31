@@ -723,6 +723,10 @@ $.fn.propertyPage = function(opts) {
 										}, obj);
 										
 										makeBooleanSafe(obj);
+										if(obj.url) {
+											debugger;
+											obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
+										}
 										
 										if(obj.displayMode && obj.displayMode != '') {
 											if(!options.displayMode.contains(obj.displayMode)) {

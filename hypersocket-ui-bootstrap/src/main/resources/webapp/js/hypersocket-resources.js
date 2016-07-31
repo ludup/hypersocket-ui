@@ -427,7 +427,7 @@ $.fn.resourceTable = function(params) {
 	columns.push({ field : "actions",
 		align:'right',
 		formatter: renderActions,
-		width: 150
+		width: 175
 	});
 
 	if (options.canCreate) {

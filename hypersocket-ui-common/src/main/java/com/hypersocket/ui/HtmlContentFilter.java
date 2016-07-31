@@ -45,6 +45,7 @@ public class HtmlContentFilter implements ContentFilter {
 
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("appPath", server.getApplicationPath());
+		resolver.addToken("basePath", server.getBasePath());
 		resolver.addToken("uiPath", server.getUiPath());
 		resolver.addToken("apiPath", server.getApiPath());
 		resolver.addToken("appName", server.getApplicationName());
