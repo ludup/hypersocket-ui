@@ -415,7 +415,7 @@ function home(data) {
 
 			
 			var loadThisMenu = getAnchorByName("menu");
-			if(loadThisMenu) {
+			if(loadThisMenu !== '') {
 				currentMenu = allMenus[loadThisMenu];;
 			}
 			
