@@ -724,7 +724,7 @@ $.fn.propertyPage = function(opts) {
 										
 										makeBooleanSafe(obj);
 										if(obj.url) {
-											debugger;
+											
 											obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
 										}
 										

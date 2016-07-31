@@ -226,7 +226,14 @@ $.fn.getCursorPosition = function () {
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(location.search);
+    results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function getAnchorByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\#&]" + name + "=([^&]*)"),
+    results = regex.exec(location.hash);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 

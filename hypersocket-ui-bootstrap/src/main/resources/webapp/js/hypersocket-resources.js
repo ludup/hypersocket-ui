@@ -524,7 +524,7 @@ $.fn.resourceTable = function(params) {
 							values: sortColumns,
 							value: sortColumns[0].name,
 							changed: function(widget) {
-								debugger;
+								
 								$('.search input[placeholder="Search"]').val('');
 								//$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
 								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
