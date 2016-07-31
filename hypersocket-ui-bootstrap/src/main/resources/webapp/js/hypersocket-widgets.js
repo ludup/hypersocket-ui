@@ -2078,12 +2078,6 @@ $.fn.switchInput = function(options) {
 	obj.state = obj.value;
 	obj.size = 'small';
 
-	$("body").append('<div id="colorTest" class="btn-primary"/>');
-	var backgroundColor = $('#colorTest').css('background-color');
-	var color = $('#colorTest').css('color');
-	obj.onColor = "primary";
-	$('#colorTest').remove();
-
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 		
 	var callback = {
