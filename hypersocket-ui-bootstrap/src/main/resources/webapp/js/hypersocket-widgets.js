@@ -1021,6 +1021,22 @@ $.fn.multipleSelect = function(data) {
 
 	var id = $(this).attr('id');
 
+	var sortMultipleSelect = function(){
+		var selectOptions = $('#' + id + 'ExcludedSelect option');
+		selectOptions.sort(function(a,b) {
+		    if (a.text > b.text) return 1;
+		    if (a.text < b.text) return -1;
+		    return 0;
+		});
+		var toSelectOption = $('#' + id + 'IncludedSelect option');
+		toSelectOption.sort(function(a,b) {
+		    if (a.text > b.text) return 1;
+		    if (a.text < b.text) return -1;
+		    return 0;
+		});
+		$('#' + id + 'ExcludedSelect').empty().append(selectOptions);
+		$('#' + id + 'IncludedSelect').empty().append(toSelectOption);
+	};
 	if ($(this).data('created')) {
 
 		options = $(this).widget().options();
@@ -1038,9 +1054,9 @@ $.fn.multipleSelect = function(data) {
 				$('#' + id + 'ExcludedSelect').append(
 					$(allIncludedOptions).clone());
 				$(allIncludedOptions).remove();
-			}
-			;
+			};
 		}
+		
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
 		
@@ -1108,6 +1124,8 @@ $.fn.multipleSelect = function(data) {
 					}
 				});
 		}
+		
+		sortMultipleSelect();
 
 		if(data && data.disabled || options.disabled) {
 			$(this).widget().disable();
@@ -1334,6 +1352,8 @@ $.fn.multipleSelect = function(data) {
 					}
 				});
 		}
+		
+		sortMultipleSelect();
 
 	} else if (options.url) {
 		getJSON(
@@ -1370,6 +1390,7 @@ $.fn.multipleSelect = function(data) {
 							}
 						});
 				}
+				sortMultipleSelect();
 			});
 	}
 
