@@ -1016,6 +1016,28 @@ $.fn.propertyPage = function(opts) {
 						}
 					}
 				});
+			
+				
+				$.each(widgets, function(idx, w) {
+					if(w.options().valueChanges) {
+						var w2 = $(document).data(w.options().valueChanges);
+						if(!w2) {
+							log("WARNING: " + w.options().resourceKey + " value changes " + w.options().valueChanges + " but a property with that resource key does not exist");
+						} else {
+							var visibilityCallback = function() {
+								var val = w.options().attributes["value" + w.getValue()];
+								if(val) {
+									w2.setValue(val);
+								}
+							}
+							visibilityCallback();
+							if(!w.options().visibilityCallbacks) {
+								w.options().visibilityCallbacks = new Array();
+							}
+							w.options().visibilityCallbacks.push(visibilityCallback);
+						}
+					}
+				});
 				
 				if(filters.length > 0 && options.useFilters) {
 					$('#' + propertyDiv + 'PropertyFilter').append('<a href="#" class="click_default">' + getResource('default.label') + '</a>');
