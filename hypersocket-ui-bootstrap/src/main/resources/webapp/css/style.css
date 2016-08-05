@@ -340,6 +340,12 @@ pre {
 	margin: 10px 0;
 }
 
+.dropdown-menu {
+    max-height: 200px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
 .dropdown-menu > .disabled{
  cursor: not-allowed; 
 }
@@ -1758,10 +1764,14 @@ span.input-group-addon {
     background-size: 100px 100px;
 }
 
-.audit-log-filter-div{
-	padding-bottom: 20px;
+#footerActions {
+	padding-top: 15px;
 }
 
-.audit-log-filter{
-	width: 300px;
+#themeSelect {
+	width: 100px;
+}
+
+select[multiple] {
+	height: 150px;
 }

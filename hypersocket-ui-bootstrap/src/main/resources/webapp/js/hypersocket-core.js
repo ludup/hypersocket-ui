@@ -159,6 +159,7 @@ function startLogon(opts) {
 			}
 		},
 		logonCompleted: function(data) {
+
 			if(data.homePage) {
 				window.open(data.homePage, "_self", false);
 			} else {
@@ -416,11 +417,10 @@ function home(result) {
 				logoff();
 			});
 
-			if(window.location.hash.startsWith('#menu=')) {
-				var loadThisMenu = allMenus[window.location.hash.substring(6)];
-				if(loadThisMenu!=null) {
-					currentMenu = loadThisMenu;
-				}
+			
+			var loadThisMenu = getAnchorByName("menu");
+			if(loadThisMenu !== '') {
+				currentMenu = allMenus[loadThisMenu];;
 			}
 			
 			if(!currentMenu) {

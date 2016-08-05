@@ -797,6 +797,10 @@ $.fn.propertyPage = function(opts) {
 										}, obj);
 										
 										makeBooleanSafe(obj);
+										if(obj.url) {
+											
+											obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
+										}
 										
 										if(obj.displayMode && obj.displayMode != '') {
 											if(!options.displayMode.contains(obj.displayMode)) {
@@ -873,7 +877,7 @@ $.fn.propertyPage = function(opts) {
 
 									    	var widgetOptions = $.extend(obj, {
 									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
-									    		emptySelectionText: getResource(obj.emptySelectionResourceKey)
+									    		notSetResourceKey: obj.emptySelectionResourceKey
 											});
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).selectButton(obj);
@@ -882,7 +886,7 @@ $.fn.propertyPage = function(opts) {
 
 									    	var widgetOptions = $.extend(obj, {
 									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
-									    		emptySelectionText: getResource(obj.emptySelectionResourceKey)
+									    		notSetResourceKey: obj.emptySelectionResourceKey
 											});
 									    	
 									    	widget = $('#' + tab + '_value' + this.id).textDropdown(obj);
@@ -1165,6 +1169,28 @@ $.fn.propertyPage = function(opts) {
 						}
 					}
 					
+				});
+			
+				
+				$.each(widgets, function(idx, w) {
+					if(w.options().valueChanges) {
+						var w2 = $(document).data(w.options().valueChanges);
+						if(!w2) {
+							log("WARNING: " + w.options().resourceKey + " value changes " + w.options().valueChanges + " but a property with that resource key does not exist");
+						} else {
+							var visibilityCallback = function() {
+								var val = w.options().attributes["value" + w.getValue()];
+								if(val) {
+									w2.setValue(val);
+								}
+							}
+							visibilityCallback();
+							if(!w.options().visibilityCallbacks) {
+								w.options().visibilityCallbacks = new Array();
+							}
+							w.options().visibilityCallbacks.push(visibilityCallback);
+						}
+					}
 				});
 				
 				if(filters.length > 0 && options.useFilters) {

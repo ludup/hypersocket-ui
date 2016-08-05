@@ -463,7 +463,7 @@ $.fn.resourceTable = function(params) {
 	columns.push({ field : "actions",
 		align:'right',
 		formatter: renderActions,
-		width: 150
+		width: 175
 	});
 
 	if (options.canCreate) {
@@ -560,7 +560,7 @@ $.fn.resourceTable = function(params) {
 							values: sortColumns,
 							value: sortColumns[0].name,
 							changed: function(widget) {
-								debugger;
+								
 								$('.search input[placeholder="Search"]').val('');
 								//$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
 								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
