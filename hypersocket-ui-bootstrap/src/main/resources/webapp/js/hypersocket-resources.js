@@ -500,6 +500,9 @@ $.fn.resourceTable = function(params) {
 		    	if($('#searchColumn').widget()) {
 		    		params.searchColumn = $('#searchColumn').widget().getValue();
 		    	}
+		    	if(options.queryParams) {
+		    		options.queryParams(params);
+		    	}
 		    	return params;
 		    },
 		    onPageChange: function(number, size){

@@ -217,8 +217,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				CertificateResourcePermission.DELETE),
 				MenuService.MENU_CONFIGURATION);
 
-		registerExtendableTable(MenuService.ACTIONS_CERTIFICATES);
-
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
 				new AbstractTableAction("downloadCSR", "fa-certificate",
 						"downloadCSR", CertificateResourcePermission.UPDATE, 0,
@@ -316,8 +314,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
 				null));
 
-		registerExtendableTable(MenuService.ACTIONS_USERS);
-
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"setPassword", "fa-key", "password", UserPermission.UPDATE, 0,
 				null, null) {
@@ -329,8 +325,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"impersonateUser", "fa-male", "impersonateUser",
 				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, null));
-
-		registerExtendableTable(MenuService.ACTIONS_REALMS);
 
 		registerTableAction(MenuService.ACTIONS_REALMS,
 				new AbstractTableAction("defaultRealm", "fa-tag",
@@ -436,20 +430,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	}
 
 	@Override
-	public void registerExtendableTable(String extendableTable) {
-		if (registeredActions.containsKey(extendableTable)) {
-			throw new IllegalStateException(extendableTable
-					+ " is already registered");
-		}
-		registeredActions.put(extendableTable,
-				new ArrayList<AbstractTableAction>());
-	}
-
-	@Override
 	public void registerTableAction(String table, AbstractTableAction action) {
 		if (!registeredActions.containsKey(table)) {
-			throw new IllegalStateException(table
-					+ " is not a registered table");
+			registeredActions.put(table, new ArrayList<AbstractTableAction>());
 		}
 		registeredActions.get(table).add(action);
 	}

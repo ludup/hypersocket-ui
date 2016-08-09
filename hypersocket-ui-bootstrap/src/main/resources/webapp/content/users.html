@@ -10,15 +10,6 @@
 				
 				$('#contentUsers').localize();
 
-				$('#tabUserGroups').multipleSearchInput({
-					nameAttr : 'principalName',
-					disabled: !currentMenu.canUpdate,
-					selectedIsObjectList: true,
-					valueAttr: 'id',
-					url: "currentRealm/groups/table"
-				});
-		
-
 				getJSON('menus/tableActions/userActions', null, function(data) {
 					
 					var actions = new Array();
@@ -62,7 +53,7 @@
 						} ]
 					});
 					
-					$('#contentUsers').ajaxResourcePage(
+					var contentUsers = $('#contentUsers').ajaxResourcePage(
 							{
 								id: 'User',
 								tableUrl : "currentRealm/users/table",
@@ -70,6 +61,12 @@
 								icon : 'fa-user',
 								resourceUrl : "currentRealm/user",
 								fields : [ {
+									name : "icon",
+									width: "50px",
+									formatter: function(value, obj, index) {
+										return '<i class="fa fa-2x ' + obj.icon + '"></i>';
+									}
+								},{
 									name : "name",
 									formatter: function(value, obj, index) {
 										return obj.principalName;
@@ -115,31 +112,56 @@
 									$('#userPassword').val('');
 									$('#userConfirmPassword').val('');
 									$('#userProperties').clearProperties();
-									$('#tabUserGroups').multipleSearchInput();
+									$('#tabUserGroups').remove();
 									
 									if(create) {
 										
-										$('#userProperties').parent().append($('#tabUserGroups').detach());
+										var resourceCategory = currentRealm.resourceCategory;
+										if($('#principalType').length > 0) {
+											if($('#principalType').widget().getValue() !== '') {
+												resourceCategory = $('#principalType').widget().getValue();
+											}
+										}
+										
+										
 										$('#userProperties').parent().append($('#tabPassword').detach());
 										$('#tabPassword').removeAttr("style");
 										$('#userProperties').empty();
 										
+										var tabs = [];
+										if(currentRealm.resourceCategory === resourceCategory) {
+											
+											$('#userProperties').parent().append('<div id="tabUserGroups"></div>');
+											
+											$('#tabUserGroups').multipleSearchInput({
+												nameAttr : 'principalName',
+												disabled: !currentMenu.canUpdate,
+												selectedIsObjectList: true,
+												valueAttr: 'id',
+												url: "currentRealm/groups/table"
+											});
+											
+											tabs.push({
+														id : "tabUserGroups",
+														name : getResource("label.groups")
+											});
+										}
+								
+										tabs.push({
+												id : "tabPassword",
+												name : getResource("label.password")
+										});
+										
 										$('#userProperties').propertyPage({
-											url : 'currentRealm/user/template/' + currentRealm.resourceCategory,
+											url : 'currentRealm/user/template/' + resourceCategory,
 											showButtons : false,
 											displayMode: 'admin,create',
 											useTemplates : true,
 											propertyTabsLast: false,
-											i18nNamespace: currentRealm.resourceCategory,
+											i18nNamespace: resourceCategory,
 											canUpdate : true,
 											useFilters: true,
-											additionalTabs : [ {
-												id : "tabUserGroups",
-												name : getResource("label.groups")
-											},{
-												id : "tabPassword",
-												name : getResource("label.password")
-											} ]
+											additionalTabs : tabs
 										});
 									} 
 								},
@@ -164,8 +186,20 @@
 								deleted : function(resource) {
 
 								},
+								queryParams: function(params) {
+									if($('#principalType').length > 0) {
+										params.module = $('#principalType').widget().getValue();
+									}
+								},
 								displayResource : function(resource, readOnly, copy) {
 
+									var resourceCategory = currentRealm.resourceCategory;
+									if($('#principalType').length > 0) {
+										if($('#principalType').widget().getValue() !== '') {
+											resourceCategory = $('#principalType').widget().getValue();
+										}
+									}
+									
 									$('#userName').val(resource.name);
 									if(copy) {
 										$('#userName').attr('disabled', false);
@@ -175,22 +209,36 @@
 									$('#userId').val(resource.id);
 									
 									$('#tabPassword').hide();
-									
-									var tabs = [];
-									tabs.push({
-												id : "tabUserGroups",
-												name : getResource("label.groups")
-									});
-									if(copy) {
-										tabs.push({
-												id : "tabPassword",
-												name : getResource("label.password")
-											});
-									}
-									
+									$('#tabUserGroups').remove();
+																		
 									getJSON('currentRealm/groups/user/' + resource.id, null, function(data) {
+									
+										var tabs = [];
+										if(currentRealm.resourceCategory === resourceCategory) {
+											$('#userProperties').parent().append('<div id="tabUserGroups"></div>');
+											debugger;
+											$('#tabUserGroups').multipleSearchInput({
+												nameAttr : 'principalName',
+												disabled: !currentMenu.canUpdate,
+												selectedIsObjectList: true,
+												selected : data.resources,
+												valueAttr: 'id',
+												url: "currentRealm/groups/table"
+											});
+											
+											tabs.push({
+														id : "tabUserGroups",
+														name : getResource("label.groups")
+											});
+											
+										} 
+										if(copy) {
+											tabs.push({
+													id : "tabPassword",
+													name : getResource("label.password")
+												});
+										}
 										
-										$('#userProperties').parent().append($('#tabUserGroups').detach());
 										$('#userProperties').parent().append($('#tabPassword').detach());
 										
 										$('#userProperties').empty();
@@ -200,7 +248,7 @@
 											displayMode: 'admin,update',
 											canUpdate : true,
 											propertyTabsLast: false,
-											i18nNamespace: currentRealm.resourceCategory,
+											i18nNamespace: resourceCategory,
 											useFilters: true,
 											additionalTabs : tabs,
 											complete: function() {
@@ -210,17 +258,35 @@
 											}
 										});
 
-										$('#tabUserGroups').multipleSearchInput({
-											selected : data.resources,
-											disabled: !currentMenu.canUpdate || readOnly,
-										});
-
 										$('#addUserModal').modal('show');
 
 									});
 									
 								},
 								complete : function() {
+									
+									if(currentRealm.resourceCategory !== 'local') {
+										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><div class="principalType" id="principalType"></div></div>');
+											$('#principalType').textDropdown({
+											values: [{
+												value: '',
+												name: getResource('all.accounts')
+											},{
+												value: 'local',
+												name: getResource('local.accounts')
+											}, {
+												value: currentRealm.resourceCategory,
+												name: getResource(currentRealm.resourceCategory + '.accounts')
+											}],
+											value: '',
+											changed: function(widget) {
+												$('.search input[placeholder="Search"]').val('');
+												contentUsers.refresh();
+											},
+											sortOptions: false
+										});
+									}
+									
 									loadComplete();
 								}
 							});
