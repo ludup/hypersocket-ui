@@ -225,7 +225,6 @@ Date.prototype.format = function (mask, utc) {
 
 function makeBooleanSafe(options) {
 	for(var property in options) {
-		log(property);
 		if(options.hasOwnProperty(property)) {
 			if(typeof options[property] == 'string') {
 				if(options[property] == 'true') {

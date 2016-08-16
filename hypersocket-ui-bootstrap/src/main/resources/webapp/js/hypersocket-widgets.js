@@ -855,7 +855,6 @@ $.fn.selectButton = function(data) {
  */
 $.fn.autoComplete = function(data) {
 	
-	
 	var options = $.extend(
 		{ valueAttr : 'value', 
 			nameAttr : 'name', 
@@ -865,7 +864,8 @@ $.fn.autoComplete = function(data) {
 			disabled : false, 
 			remoteSearch: false,
 			resourceKeyTemplate: '{0}',
-			icon: 'fa-search'
+			icon: 'fa-search',
+			sortOptions: true
 		}, data);
 	
 	var callback;
@@ -930,18 +930,20 @@ $.fn.autoComplete = function(data) {
 				});
 			}
 		}
-		selected.sort(function(a, b) {
-			var nameA = options.nameIsResourceKey ? getResource(a[options.nameAttr]) : a[options.nameAttr];
-			var nameB = options.nameIsResourceKey ? getResource(b[options.nameAttr]) : b[options.nameAttr];
-			
-			if(nameA > nameB) {
-				return 1;
-			}
-			if(nameB > nameA) {
-				return -1;
-			}
-			return 0;
-		});
+		if(options.sortOptions) {
+			selected.sort(function(a, b) {
+				var nameA = options.nameIsResourceKey ? getResource(a[options.nameAttr]) : a[options.nameAttr];
+				var nameB = options.nameIsResourceKey ? getResource(b[options.nameAttr]) : b[options.nameAttr];
+				
+				if(nameA > nameB) {
+					return 1;
+				}
+				if(nameB > nameA) {
+					return -1;
+				}
+				return 0;
+			});
+		}
 		
 		$('#auto_' + id).empty();
 		if(selected.length > 0 && (text != '' || options.alwaysDropdown)) {
@@ -1801,6 +1803,10 @@ $.fn.multipleSearchInput = function(data) {
 				toSelect.append('<option ' + 'value="' + obj + '">' + (options.nameIsResourceKey ? getResource(obj) : obj) + "</option>");
 			});
 		}
+	} else if(options.selected) {
+		$.each(options.selected, function(idx, obj) {
+				toSelect.append('<option ' + 'value="' + obj[options.valueAttr] + '">' + obj[options.nameAttr] + "</option>");
+		});
 	}
 	
 	if(options.disabled) {

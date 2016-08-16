@@ -1775,3 +1775,8 @@ span.input-group-addon {
 select[multiple] {
 	height: 150px;
 }
+
+.principalType {
+	float: left;
+	width: 200px;
+}
