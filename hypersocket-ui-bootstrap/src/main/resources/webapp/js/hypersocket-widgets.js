@@ -1200,21 +1200,23 @@ $.fn.multipleSelect = function(data) {
 
 	var id = $(this).attr('id');
 
-	var sortItems = function(items){
-		items.sort(function(a,b) {
-			var nameA = options.nameIsResourceKey ? getResource(options.resourceKeyTemplate.format(a[options.nameAttr])) : a[options.nameAttr];
-			var nameB = options.nameIsResourceKey ? getResource(options.resourceKeyTemplate.format(b[options.nameAttr])) : b[options.nameAttr];
-			
-			if(nameA > nameB) {
-				return 1;
-			}
-			if(nameB > nameA) {
-				return -1;
-			}
-			return 0;
+	var sortMultipleSelect = function(){
+		var selectOptions = $('#' + id + 'ExcludedSelect option');
+		selectOptions.sort(function(a,b) {
+		    if (a.text > b.text) return 1;
+		    if (a.text < b.text) return -1;
+		    return 0;
 		});
-	}
-	
+		var toSelectOption = $('#' + id + 'IncludedSelect option');
+		toSelectOption.sort(function(a,b) {
+		    if (a.text > b.text) return 1;
+		    if (a.text < b.text) return -1;
+		    return 0;
+		});
+		$('#' + id + 'ExcludedSelect').empty().append(selectOptions);
+		$('#' + id + 'IncludedSelect').empty().append(toSelectOption);
+	};
+
 	if ($(this).data('created')) {
 
 		options = $(this).widget().options();
@@ -1232,31 +1234,14 @@ $.fn.multipleSelect = function(data) {
 				$('#' + id + 'ExcludedSelect').append(
 					$(allIncludedOptions).clone());
 				$(allIncludedOptions).remove();
-			}
-			;
+			};
 		}
-		var allExcludedOptions = $('#' + id + 'ExcludedSelect option');
-		if(allExcludedOptions && allExcludedOptions.length){
-			allExcludedOptions.sort(function(a,b) {
-				var nameA = a.text;
-				var nameB = b.text;
-				
-				if(nameA > nameB) {
-					return 1;
-				}
-				if(nameB > nameA) {
-					return -1;
-				}
-				return 0;
-			});
-			$('#' + id + 'ExcludedSelect').empty();
-			$('#' + id + 'ExcludedSelect').append($(allExcludedOptions).clone());
-		}
+
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
 		
 		if (options.selected) {
-			sortItems(options.selected);
+
 			$.each(
 				options.selected,
 				function(idx, id) {
@@ -1320,6 +1305,8 @@ $.fn.multipleSelect = function(data) {
 					}
 				});
 		}
+		
+		sortMultipleSelect();
 
 		if(data && data.disabled || options.disabled) {
 			$(this).widget().disable();
@@ -1516,7 +1503,7 @@ $.fn.multipleSelect = function(data) {
 		if(options.values) {
 			options.options = options.values;
 		}
-		sortItems(options.options);
+
 		$.each(options.options,
 			function(idx, obj) {
 				var selectItem = options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0) ? toSelect : select;
@@ -1533,7 +1520,7 @@ $.fn.multipleSelect = function(data) {
 		});
 
 		if (options.selected) {
-			sortItems(options.selected);
+
 			$.each(options.selected,
 				function(idx, id) {
 					var selectedOpt;
@@ -1548,6 +1535,8 @@ $.fn.multipleSelect = function(data) {
 					}
 				});
 		}
+		
+		sortMultipleSelect();
 
 	} else if (options.url) {
 		getJSON(
@@ -1555,7 +1544,7 @@ $.fn.multipleSelect = function(data) {
 			null,
 			function(data) {
 				var items = options.getUrlData(data);
-				sortItems(items);
+
 				$.each(items,
 					function(idx, obj) {
 					
@@ -1571,7 +1560,7 @@ $.fn.multipleSelect = function(data) {
 					}
 				});
 				if (options.selected) {
-					sortItems(options.selected);
+
 					$.each(options.selected,
 						function(idx, id) {
 							var selectedOpt;
@@ -1586,6 +1575,7 @@ $.fn.multipleSelect = function(data) {
 							}
 						});
 				}
+				sortMultipleSelect();
 			});
 	}
 
