@@ -51,8 +51,6 @@ import com.hypersocket.realm.UserPermission;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.interfaces.http.HTTPInterfaceResourcePermission;
 import com.hypersocket.session.SessionPermission;
-import com.hypersocket.triggers.TriggerResourcePermission;
-import com.hypersocket.triggers.TriggerResourceServiceImpl;
 import com.hypersocket.ui.IndexPageFilter;
 
 @Service
