@@ -440,9 +440,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Override
 	public List<AbstractTableAction> getTableActions(String table) {
 		if (!registeredActions.containsKey(table)) {
-			throw new IllegalStateException(table
-					+ " is not a registered table");
+			return new ArrayList<AbstractTableAction>();
 		}
+		
 		List<AbstractTableAction> results = new ArrayList<AbstractTableAction>();
 
 		for (AbstractTableAction action : registeredActions.get(table)) {
