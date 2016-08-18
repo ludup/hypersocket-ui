@@ -1767,3 +1767,10 @@ select[multiple] {
 	float: left;
 	width: 200px;
 }
+
+.imageReset {
+	font-weight: normal;
+	font-size: small;
+	float: right;
+	margin-top: 10px;
+}
