@@ -1,3 +1,4 @@
+
 $.fn.widget = function() {
 	return $(this).data('widget');
 }

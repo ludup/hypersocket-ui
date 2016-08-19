@@ -80,4 +80,6 @@ public interface MenuService extends AuthenticatedService {
 	List<AbstractTableAction> getTableActions(String table);
 
 	void registerFilter(MenuFilter filter);
+
+	Menu getMenu(String resourceKey);
 }

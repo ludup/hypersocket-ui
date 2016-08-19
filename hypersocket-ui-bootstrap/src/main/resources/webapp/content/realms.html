@@ -40,7 +40,6 @@
 </div>
 	<script type="text/javascript">
 	
-		
 		$(document).ready(function() {
 			$('#realmsContent').localize();
 
@@ -151,11 +150,12 @@
 						}, checkUpdate: function(resource) {
 							return true;
 						}, showCreate : function() {
-							
+
 							typeButton.enable();
 							typeButton.selectFirst();
 
 						}, displayResource : function(resource, readOnly) {
+
 							$('#id').val(resource.id);
 							$('#name').val(resource.name);
 							$('#name').attr('disabled', resource.system || readOnly);
@@ -174,10 +174,28 @@
 							loadComplete();
 						}, resourceCreated : function(resource) {
 							reloadRealms();
+							getJSON('menus/realms', null, function(data) {
+								if(data.success) {
+									if(data.resource.canCreate) {
+										$('#realmsContentAdd').show();
+									} else {
+										$('#realmsContentAdd').hide();
+									}
+								}
+							});
 						}, resourceUpdated : function(resource) {
 							reloadRealms();
 						}, resourceDeleted : function(resource) {
 							reloadRealms();
+							getJSON('menus/realms', null, function(data) {
+								if(data.success) {
+									if(data.resource.canCreate) {
+										$('#realmsContentAdd').show();
+									} else {
+										$('#realmsContentAdd').hide();
+									}
+								}
+							});
 						} });
 
 					});

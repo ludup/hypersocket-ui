@@ -23,7 +23,9 @@ import com.hypersocket.auth.json.AuthenticatedController;
 import com.hypersocket.auth.json.AuthenticationRequired;
 import com.hypersocket.auth.json.UnauthorizedException;
 import com.hypersocket.json.ResourceList;
+import com.hypersocket.json.ResourceStatus;
 import com.hypersocket.menus.AbstractTableAction;
+import com.hypersocket.menus.Menu;
 import com.hypersocket.menus.MenuService;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionService;
@@ -57,6 +59,23 @@ public class MenuController extends AuthenticatedController {
 				sessionUtils.getLocale(request));
 		try {
 			return getModuleList(request);
+		} finally {
+			clearAuthenticatedContext();
+		}
+	}
+	
+	@AuthenticationRequired
+	@RequestMapping(value = "menus/{resourceKey}", method = RequestMethod.GET, produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResourceStatus<Menu> getModules(HttpServletRequest request,
+			HttpServletResponse response, @PathVariable String resourceKey) throws AccessDeniedException,
+			UnauthorizedException, SessionTimeoutException {
+
+		setupAuthenticatedContext(sessionUtils.getSession(request),
+				sessionUtils.getLocale(request));
+		try {
+			return new ResourceStatus<Menu>(menuService.getMenu(resourceKey));
 		} finally {
 			clearAuthenticatedContext();
 		}

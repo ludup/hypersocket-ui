@@ -50,8 +50,6 @@ import com.hypersocket.realm.UserPermission;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.interfaces.http.HTTPInterfaceResourcePermission;
 import com.hypersocket.session.SessionPermission;
-import com.hypersocket.triggers.TriggerResourcePermission;
-import com.hypersocket.triggers.TriggerResourceServiceImpl;
 import com.hypersocket.ui.IndexPageFilter;
 
 @Service
@@ -88,7 +86,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	IndexPageFilter indexFilter;
 	
 	Set<MenuFilter> filters = new HashSet<MenuFilter>();
-
+	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
 	
 	@PostConstruct
 	private void postConstruct() {
@@ -398,10 +396,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 			pendingMenus.remove(module.getResourceKey());
 		}
+		
+		allMenus.put(module.getResourceKey(), module);
+		
 		if (parentModule != null) {
 			if (rootMenus.containsKey(parentModule)) {
 				MenuRegistration parent = rootMenus.get(parentModule);
 				parent.addMenu(module);
+				
 				return true;
 			} else {
 				for (MenuRegistration m : rootMenus.values()) {
@@ -468,6 +470,19 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		});
 
 		return results;
+	}
+	
+	public Menu getMenu(String resourceKey) {
+		
+		MenuRegistration m = allMenus.get(resourceKey);
+		
+		return new Menu(
+				m,
+				hasPermission(m.getCreatePermission()) && m.canCreate(),
+				hasPermission(m.getUpdatePermission()) && m.canUpdate(),
+				hasPermission(m.getDeletePermission()) && m.canDelete(),
+				m.getIcon(), m.getData(), m.isHidden());
+
 	}
 
 	@Override
