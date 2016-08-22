@@ -977,6 +977,9 @@ $.fn.samePageResourceView = function(params, params2) {
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
 					}
+					if(dialogOptions.resourceSaved) {
+						dialogOptions.resourceSaved(resource);
+					}
 				});
 			});
 		}
@@ -1195,6 +1198,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 				if (dialogOptions.hasResourceTable) {
 					$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 				}
+				if(dialogOptions.resourceSaved) {
+					dialogOptions.resourceSaved(resource);
+				}
 			});
 
 		});
@@ -1252,6 +1258,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						if (dialogOptions.hasResourceTable) {
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
+						if(dialogOptions.resourceSaved) {
+							dialogOptions.resourceSaved(resource);
+						}
 					});
 				} else {
 					saveResource(resource, $(this), dialogOptions, params, function() {
@@ -1262,6 +1271,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						}
 						if (dialogOptions.resourceUpdated) {
 							dialogOptions.resourceUpdated(resource);
+						}
+						if(dialogOptions.resourceSaved) {
+							dialogOptions.resourceSaved(resource);
 						}
 						if(params2.resourceUpdated) {
 							params2.resourceUpdated(resource);

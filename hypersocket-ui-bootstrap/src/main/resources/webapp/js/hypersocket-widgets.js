@@ -1,3 +1,4 @@
+
 $.fn.widget = function() {
 	return $(this).data('widget');
 }
@@ -2421,25 +2422,39 @@ $.fn.imageInput = function(options) {
 	
 
 	$(this).append('<input type="file" class="form-control" id="' + id + '" name="input' + id + '"/>');
-	$(this).append('<img class="imagePreview" src="' + obj.value + '">');
+	$(this).append('<a id="reset' + id + '" href="#" style="display: none" class="imageReset">Reset</a><br>');	
+	
+	if(obj.value && obj.value !== '') {
+		$('#reset' + id).show();
+		$(this).append('<img id="image' + id + '" class="imagePreview" src="' + obj.value + '">');
+	}
 	
 	var input = $('#' + id);
 
 	var callback = {
 			setValue: function(val) {
-				input.val('');
+				input.val(val);
+				if(val && val !=='') {
+					$('#reset' + id).show();
+				} else {
+					$('#reset' + id).hide();
+					$('#image' + id).remove();
+				}
+				
 			},
 			getValue: function() {
 				return input.data('encoded');
 			},
 			reset: function() {
-				
+				this.setValue(obj.value);
 			},
 			disable: function() {
 				$('#' + id).attr('disabled', true);
+				$('#reset' + id).attr('disabled', true);
 			},
 			enable: function() {
 				$('#' + id).attr('disabled', false);
+				$('#reset' + id).attr('disabled', false);
 			},
 			options: function() {
 				return obj;
@@ -2448,9 +2463,17 @@ $.fn.imageInput = function(options) {
 				return $('#' + id);
 			},
  			clear: function() {
- 				input.val('');
+ 				this.setValue('');
  			}
 	};
+	
+	$('#reset' + id).click(function(e) {
+		e.preventDefault();
+		callback.setValue('');
+		if(options.changed) {
+			options.changed(callback);
+		}
+	});
 	
 	input.change(function() {
 		var reader = new FileReader();

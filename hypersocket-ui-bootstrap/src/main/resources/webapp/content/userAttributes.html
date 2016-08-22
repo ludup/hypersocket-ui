@@ -333,13 +333,10 @@ $(document).ready(function() {
 				complete : function() {
 					loadComplete();
 				},
-				resourceCreated: function() {
+				resourceSaved: function() {
 					loadResources();
 				},
 				resourceDeleted: function() {
-					loadResources();
-				},
-				resourceUpdated: function() {
 					loadResources();
 				}
 	});

@@ -671,7 +671,7 @@ $.fn.propertyPage = function(opts) {
 										return;
 									}
 								}
-								var tab = "tab" + this.id;
+								var tab = propertyDiv + "Tab" + Math.abs(this.id);
 
 								// Overwrite template values with any items
 								// passed in options
@@ -754,7 +754,7 @@ $.fn.propertyPage = function(opts) {
 										}
 										
 										var widget; 
-										var inputId = this.id;
+										var inputId = Math.abs(this.id);
 										var inputTab = tab;
 										var inputObj = this;
 										
