@@ -241,6 +241,9 @@ $.fn.htmlInput = function(data) {
 		  htmlMode: options.inputType=='html',
 		  mode:  options.inputType=='html' ? 'text/html' : 'application/xml',
 		  lineNumbers: options.lineNumbers,
+		  relative_urls: false,
+		  convert_urls: false,
+		  remove_script_host : false
 	});
 	
 	var callback = {
@@ -434,6 +437,9 @@ $.fn.richInput = function(data) {
 		  theme: 'modern',
 		  menubar: options.menubar,
 		  inline: options.inline,
+		  relative_urls: false,
+		  convert_urls: false,
+		  remove_script_host : false,
 		  plugins: options.plugins,
 		  toolbar1: options.toolbar1,
 		  toolbar2: options.toolbar2,
