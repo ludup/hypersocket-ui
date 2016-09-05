@@ -853,7 +853,7 @@ $.fn.propertyPage = function(opts) {
 											|| obj.inputType == 'integer') {
 											widget = $('#' + tab + '_value' + this.id).textInput(obj);
 			
-										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java') {
+										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java' || obj.inputType=='sql') {
 									    	
 											widget = $('#' + tab + '_value' + this.id).codeInput(obj);
 									    								    	
