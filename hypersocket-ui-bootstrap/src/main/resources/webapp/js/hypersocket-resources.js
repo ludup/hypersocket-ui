@@ -554,11 +554,15 @@ $.fn.resourceTable = function(params) {
 		    		saveState(options.id, {'pageSize': size, 'sortOrder': order, 'sortName': name}, true);
 		    	}
 		    },
-		    onLoadSuccess: function() {
-				
-		    	if($('#searchRendered').length==0) {
-			    	if(sortColumns.length > 0) {
-						$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
+		    classes: 'table table-hover ' + divName,
+		    onPostHeader: function() {
+		    	
+		    	if($('#searchRendered' + divName).length==0) {
+		    		
+		    		log("Rendering search");
+		    		
+		    		if(sortColumns.length > 0) {
+						$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
 						$('#searchColumn').textDropdown({
 							values: sortColumns,
 							value: sortColumns[0].name,
@@ -573,7 +577,7 @@ $.fn.resourceTable = function(params) {
 					
 					if(options.toolbarButtons) {
 						$.each(options.toolbarButtons, function(idx, action) {
-							$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
+							$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
 									+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
 									+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
 									+ action.icon + '"></i></button>');
@@ -587,9 +591,15 @@ $.fn.resourceTable = function(params) {
 							});
 						});
 					}
-					$('#' + divName).find('.fixed-table-toolbar').last().append('<div id="searchRendered"></div>');
+					$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').last().append('<div id="searchRendered' + divName + '"></div>');
 		    	}
+		    },
+		    onLoadSuccess: function() {
+		    	
 		    	if (options.logo) {
+		    		
+		    		log("Rendering logo");
+		    		
 		    		$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px; display: none;"></div>');
 		    		
 		    		var gridResourceList = $('#' + divName + 'Placeholder').bootstrapTable('getData');
@@ -876,6 +886,9 @@ $.fn.resourceTable = function(params) {
 		},
 		openPage: function(page) {
 			options.view.openPage(page);
+		},
+		options: function() {
+			return options;
 		},
 		showCreate: function(callback) {
 			options.currentView = 'create';
@@ -1245,8 +1258,26 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 
 		$(this).find('.modal-footer').empty();
 		if(!readOnly) {
-			$(this).find('.modal-footer').append(
-						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.update") + '</button>');
+			
+			if(!dialogOptions.disableUpdateButton) {
+				$(this).find('.modal-footer').append(
+						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' 
+						+ getResource("text.update") + '</button>');
+			}
+			
+			if(dialogOptions.buildUpdateButtons) {
+				dialogOptions.buildUpdateButtons(params2, function(button, onclick) {
+					dialog.find('.modal-footer').append(
+							'<button type="button" id="' + button.id + 'Action" class="updateButton btn ' 
+							+ button.cssClass + '"><i class="fa ' 
+							+ button.icon + '"></i>' 
+							+ getResource(button.resourceKey) + '</button>');
+					$('#' + button.id + 'Action').click(function() {
+						onclick(button, $('#' + button.id + 'Action'));
+					});
+				});
+			}
+			
 			$('#' + $(this).attr('id') + "Action").off('click');
 			$('#' + $(this).attr('id') + "Action").on('click', function() {
 
