@@ -1097,7 +1097,7 @@ $.fn.propertyPage = function(opts) {
 						$('.tab' + idx).hide();
 						var visibilityCallback = function() {
 							
-							var dependsValue = t.visibilityDependsValue.split(',');
+							var dependsValue = t.visibilityDependsValue.toString().split(',');
 							var show = false;
 							for(i=0;i<w2.length;i++) {
 								if(show) {
@@ -1145,7 +1145,7 @@ $.fn.propertyPage = function(opts) {
 						w.getInput().parents('.propertyItem').hide();
 						var visibilityCallback = function() {
 							
-							var dependsValue = w.options().visibilityDependsValue.split(',');
+							var dependsValue = w.options().visibilityDependsValue.toString().split(',');
 							var show = false;
 							for(i=0;i<w2.length;i++) {
 								if(show) {
