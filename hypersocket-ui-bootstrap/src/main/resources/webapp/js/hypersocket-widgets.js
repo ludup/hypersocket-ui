@@ -780,12 +780,13 @@ $.fn.autoComplete = function(data) {
 				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
 						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
 			});
-			$('.optionSelect').off('click');
-			$('.optionSelect').on('click', function() {
+			$('#auto_' + id + ' .optionSelect').off('click');
+			$('#auto_' + id + ' .optionSelect').on('click', function() {
+				debugger;
 				var value = $(this).data('value');
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
-				$(this).data('selectedObject', obj);
+				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value);
 				$('#input_' + id).val($(this).text());
 				$('[data-toggle="dropdown"]').parent().removeClass('open');
@@ -1459,7 +1460,8 @@ $.fn.multipleSearchInput = function(data) {
 				nameAttr: options.nameAttr,
 				valueAttr: options.valueAttr,
 				selectedIsObjectList: true,
-				disabled: options.disabled
+				disabled: options.disabled,
+				nameIsResourceKey: options.nameIsResourceKey
 			});
 
 		$(this).append('<div class="multipleTextInputButtons" id="' + id + 'Buttons"/>');
@@ -1555,7 +1557,8 @@ $.fn.multipleSearchInput = function(data) {
 							return;
 						}
 
-						toSelect.append('<option ' + 'value="' + selectedObj[options.valueAttr] + '">' + selectedObj[options.nameAttr] + "</option>");
+						toSelect.append('<option ' + 'value="' + selectedObj[options.valueAttr] + '">' 
+								+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + "</option>");
 						searchInput.clear();
 						toSelect.data('updated', true);
 						if (options.changed) {
@@ -1571,6 +1574,7 @@ $.fn.multipleSearchInput = function(data) {
 			}
 
 			select.val($(selectedOpts).val());
+			searchInput.setValue($(selectedOpts).val());
 			$(selectedOpts).remove();
 
 			toSelect.data('updated', true);
