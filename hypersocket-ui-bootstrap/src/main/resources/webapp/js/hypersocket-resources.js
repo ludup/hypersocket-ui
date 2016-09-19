@@ -106,7 +106,7 @@ $.fn.resourceTable = function(params) {
 		pagination : true,
 		page : 1,
 		pageSize: 5,
-		pageList: [5, 10, 25],
+		pageList : [ 5, 10, 20, 50, 100 ],
 		search: true,
 		showColumns : true,
 		showRefresh : true,

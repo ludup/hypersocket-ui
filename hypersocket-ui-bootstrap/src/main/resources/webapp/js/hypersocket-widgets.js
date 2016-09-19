@@ -198,9 +198,11 @@ $.fn.textInput = function(data) {
  			}
  		};
 
- 	$('#' + id).change(function(e) {
- 		if(options.changed) {
- 			options.changed(callback);
+ 	$('#' + id).keyup(function(e) {
+ 		if(options.value !== $('#' + id).val()) {
+	 		if(options.changed) {
+	 			options.changed(callback);
+	 		}
  		}
  	});
  	
@@ -958,12 +960,13 @@ $.fn.autoComplete = function(data) {
 				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
 						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
 			});
-			$('.optionSelect').off('click');
-			$('.optionSelect').on('click', function() {
+			$('#auto_' + id + ' .optionSelect').off('click');
+			$('#auto_' + id + ' .optionSelect').on('click', function() {
+				debugger;
 				var value = $(this).data('value');
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
-				$(this).data('selectedObject', obj);
+				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value);
 				$('#input_' + id).val($(this).text());
 				$('[data-toggle="dropdown"]').parent().removeClass('open');
@@ -1763,7 +1766,10 @@ $.fn.multipleSearchInput = function(data) {
 						if (!selectedObj) {
 							return;
 						}
-						toSelect.append('<option value="' + selectedObj[options.valueAttr] + '">' + (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr])  + '</option>');
+
+						toSelect.append('<option ' + 'value="' + selectedObj[options.valueAttr] + '">' 
+								+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + "</option>");
+
 						searchInput.clear();
 						toSelect.data('updated', true);
 						if (options.changed) {
@@ -1779,6 +1785,7 @@ $.fn.multipleSearchInput = function(data) {
 			}
 
 			select.val($(selectedOpts).val());
+			searchInput.setValue($(selectedOpts).val());
 			$(selectedOpts).remove();
 
 			toSelect.data('updated', true);
@@ -2832,7 +2839,7 @@ $.fn.fileUploadInput = function(data) {
 	var html =	'<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
-			+	'<div class="propertyValue col-xs-4 dialogActions">'
+			+	'<div class="propertyValue col-xs-4 dialogActions" id="' + id + 'Buttons">'
 			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
 			+	'</div>'
 			+	'<div class="col-xs-8 uploadProgress">'
@@ -2847,8 +2854,8 @@ $.fn.fileUploadInput = function(data) {
 	$('#' + id + 'UpdateProgressHolder').hide();
 	
 	if(!options.showUploadButton){
-		$('#' + id + 'UploadButton').parent().hide();
-		$('#' + id + 'File').parent().removeClass('col-xs-11').addClass('col-xs-12');
+		$('#' + id + 'UploadButton').hide();
+		//$('#' + id + 'File').parent().removeClass('col-xs-11').addClass('col-xs-12');
 	}
 	
 	var uploadProgress = function(evt){
@@ -2893,8 +2900,8 @@ $.fn.fileUploadInput = function(data) {
 		}
 		$('#' + id + 'File').parent().append(
 				'<div id="' + id + 'Info">' + showInfoFormat(data) + '</div>');
-		$('#' + id + 'File').remove();
-		$('#' + id + 'UploadButton').parent().append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
+		$('#' + id + 'File').hide();
+		$('#' + id + 'Buttons').append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
 		if(options.showDownloadButton){
 			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
 		}
@@ -2905,6 +2912,9 @@ $.fn.fileUploadInput = function(data) {
 			function(confirmed) {
 				if(confirmed){
 					callback.remove();
+				}
+				if(options.changed) {
+					options.changed(callback);
 				}
 			});
 		});
@@ -2919,6 +2929,14 @@ $.fn.fileUploadInput = function(data) {
  					return '';
  				}
  				return $('#' + id + 'Info').data('uuid');
+ 			},
+ 			reset: function() {
+ 				debugger;
+ 				if(options.value == '') {
+ 					this.clear();
+ 				} else {
+ 					this.setValue(options.value);
+ 				}
  			},
  			setValue: function(uuid) {
  				getJSON('files/file/' + uuid, null, function(data){
@@ -2950,9 +2968,14 @@ $.fn.fileUploadInput = function(data) {
  			},
  			clear: function() {
  				if(callback.hasFile()) {
-	 				$('#' + id + 'Info').parent().append('<input type="file" id="' + id + 'File"/>');
+	 				
+ 					$('#' + id + 'File').val('');
+ 					$('#' + id + 'File').show();
 					$('#' + id + 'Info').remove();
-					$('#' + id + 'RemoveButton').parent().append('<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>');
+					$('#' + id + 'Buttons').append('<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>');
+					if(!options.showUploadButton) {
+						$('#' + id + 'UploadButton').hide();
+					}
 					$('#' + id + 'RemoveButton').remove();
 					$('#' + id + 'DownloadButton').remove();
 					$('#' + id + 'UpdateProgressHolder').hide();
@@ -3036,9 +3059,12 @@ $.fn.fileUploadInput = function(data) {
  				}
  				$('#' + id + 'UpdateProgressHolder').hide();
  				deleteJSON(options.url + '/' + $('#' + id + 'Info').data('uuid'), null, function(data){
- 					$('#' + id + 'Info').parent().append('<input type="file" id="' + id + 'File"/>');
+ 					$('#' + id + 'File').show();
 					$('#' + id + 'Info').remove();
-					$('#' + id + 'RemoveButton').parent().append('<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>');
+					$('#' + id + 'Buttons').append('<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>');
+					if(!options.showUploadButton) {
+						$('#' + id + 'UploadButton').hide();
+					}
 					$('#' + id + 'RemoveButton').remove();
 					$('#' + id + 'DownloadButton').remove();
 					$('#' + id + 'UploadButton').click(function(){
@@ -3069,8 +3095,8 @@ $.fn.fileUploadInput = function(data) {
 
 	$('#' + id + 'File').change(function() {
 		$(this).data('needsUpload', true);
-		if(options.changed) {
-			options.changed(callback);
+		if(options.automaticUpload) {
+			callback.upload();
 		}
 	});
 	
@@ -3908,14 +3934,19 @@ $.fn.html5Upload = function(data) {
 		}
 	});
 	
-	var drawRow = function(fileName, fileSize, uuid){
+	var getFileSize = function(fileSize) {
 		if(fileSize > 1024 * 1024){
-			fileSize = (Math.round((fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
-		}else if(fileSize > 1024){
-			fileSize = (Math.round((fileSize / 1024) * 100)/100).toFixed(2) + ' KB';
-		}else{
-			fileSize = fileSize + ' B';
+			fileSize = (Math.round((fileSize / (1024 * 1024)) * 100)/100).toFixed(0) + ' MB';
+		} else if(fileSize > 1024){
+			fileSize = (Math.round((fileSize / 1024) * 100)/100).toFixed(1) + ' KB';
+		} else{
+			fileSize = parseFloat(fileSize).toFixed(2) + ' B';
 		}
+		return fileSize;
+	}
+	
+	var drawRow = function(fileName, fileSize, uuid){
+		fileSize = getFileSize(fileSize);
 		
 		var fileRow = 
 					'<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;" class="' + id + 'ListEventDiv">'
@@ -3923,7 +3954,7 @@ $.fn.html5Upload = function(data) {
 				+	'		<span class="optionalField">' + fileName + '</span>'
 				+	'	</td>'
 				+	'	<td class="dragAndDrop-info dragAndDrop-size">'
-				+	'		<span class="optionalField">' + fileSize + '</span>'
+				+	'		<span class="optionalField" id="' + id + 'UpdateSize_' + fileIndex + '">0B of ' + fileSize + '</span>'
 				+	'	</td>'
 				+	'	<td class="dragAndDrop-progress">'
 				+	'		<div class="progress">'
@@ -4086,6 +4117,7 @@ $.fn.html5Upload = function(data) {
  	 				    				if(options.showPercent){
  	 				    					$('#' + id + 'UpdateProgress_' + progressFileIndex).html(percent + '%');
  	 				    				}
+ 	 				    				$('#' + id + 'UpdateSize_' + progressFileIndex).text(getFileSize(position) + ' of ' + getFileSize(total));
  	 				    			}, false);
  	 				    		}
  	 				            return xhrobj;

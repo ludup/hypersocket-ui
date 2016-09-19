@@ -835,12 +835,14 @@ $.fn.propertyPage = function(opts) {
 											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
 												sizeClass = 'col-md-' + obj.numCols;
 											}
-											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + this.id + '"/></div>');
-											$('#' + tab + '_item' + this.id).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">' + ( this.name ? this.name : getResourceWithNamespace(options.i18nNamespace, this.resourceKey) ) + '</label>');
-											$('#' + tab + '_item' + this.id).append('<div class="propertyValue ' + sizeClass + '" id="' + tab + '_value' + this.id + '"></div>');
+
+											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + inputId + '"/></div>');
+											$('#' + tab + '_item' + inputId).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">' + ( this.name ? this.name : getResourceWithNamespace(options.i18nNamespace, this.resourceKey) ) + '</label>');
+											$('#' + tab + '_item' + inputId).append('<div class="propertyValue ' + sizeClass + '" id="' + tab + '_value' + inputId + '"></div>');
+
 											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
 												sizeClass = 'col-md-' + (9 - obj.numCols);
-												$('#' + tab + '_item' + this.id).append('<div class="' + sizeClass + '">&nbsp;</div>');
+												$('#' + tab + '_item' + inputId).append('<div class="' + sizeClass + '">&nbsp;</div>');
 											}
 										} 
 
@@ -851,7 +853,7 @@ $.fn.propertyPage = function(opts) {
 												isArrayValue: true
 											});
 											
-											widget = $('#' + tab + '_value' + this.id).namePairInput(obj);
+											widget = $('#' + tab + '_value' + inputId).namePairInput(obj);
 			
 										} else if (obj.inputType == 'textarea' 
 											|| obj.inputType == 'text' 
@@ -859,15 +861,15 @@ $.fn.propertyPage = function(opts) {
 											|| obj.inputType == 'number' 
 											|| obj.inputType == 'long'
 											|| obj.inputType == 'integer') {
-											widget = $('#' + tab + '_value' + this.id).textInput(obj);
+											widget = $('#' + tab + '_value' + inputId).textInput(obj);
 			
 										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java' || obj.inputType=='sql') {
 									    	
-											widget = $('#' + tab + '_value' + this.id).codeInput(obj);
+											widget = $('#' + tab + '_value' + inputId).codeInput(obj);
 									    								    	
 									    } else if(obj.inputType == 'xml' || obj.inputType == 'html') {
 									    	
-									    	widget = $('#' + tab + '_value' + this.id).htmlInput(obj);
+									    	widget = $('#' + tab + '_value' + inputId).htmlInput(obj);
 									    	
 									    } else if(obj.inputType == 'color') {
 									    	
@@ -875,7 +877,7 @@ $.fn.propertyPage = function(opts) {
 									    	
 									    } else if(obj.inputType == 'editor') {
 									    	
-									    	widget = $('#' + tab + '_value' + this.id).editor(obj);
+									    	widget = $('#' + tab + '_value' + inputId).editor(obj);
 									    	
 									    } else if(obj.inputType == 'rich') {
 									    	
@@ -888,7 +890,7 @@ $.fn.propertyPage = function(opts) {
 									    		notSetResourceKey: obj.emptySelectionResourceKey
 											});
 									    	
-									    	widget = $('#' + tab + '_value' + this.id).selectButton(obj);
+									    	widget = $('#' + tab + '_value' + inputId).selectButton(obj);
 
 										} else if (obj.inputType == 'dropdown') {
 
@@ -897,7 +899,7 @@ $.fn.propertyPage = function(opts) {
 									    		notSetResourceKey: obj.emptySelectionResourceKey
 											});
 									    	
-									    	widget = $('#' + tab + '_value' + this.id).textDropdown(obj);
+									    	widget = $('#' + tab + '_value' + inputId).textDropdown(obj);
 
 										} else if (obj.inputType == 'textAndSelect') {
 
@@ -914,7 +916,7 @@ $.fn.propertyPage = function(opts) {
 											}
 											
 									    	obj.valueTemplate = '{0}={1}';
-									    	widget = $('#' + tab + '_value' + this.id).textAndSelect(obj);
+									    	widget = $('#' + tab + '_value' + inputId).textAndSelect(obj);
 
 										} else if (obj.inputType == 'autoComplete') {
 
@@ -929,7 +931,7 @@ $.fn.propertyPage = function(opts) {
 												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
 											});
 											
-											widget = $('#' + tab + '_value' + this.id).autoComplete(widgetOptions);
+											widget = $('#' + tab + '_value' + inputId).autoComplete(widgetOptions);
 											
 
 										} else if (obj.inputType == 'countries') { 
@@ -940,7 +942,7 @@ $.fn.propertyPage = function(opts) {
 												valueAttr: 'code'
 											});
 											
-											widget = $('#' + tab + '_value' + this.id).autoComplete(widgetOptions);
+											widget = $('#' + tab + '_value' + inputId).autoComplete(widgetOptions);
 
 										} else if (obj.inputType == 'logoInput') { 
 											var widgetOptions = $.extend(obj, {
@@ -953,7 +955,7 @@ $.fn.propertyPage = function(opts) {
 												}
 											});
 											
-											widget = $('#' + tab + '_value' + this.id).logoInput(obj);
+											widget = $('#' + tab + '_value' + inputId).logoInput(obj);
 											if(options.resourceNameField) {
 												$(options.resourceNameField).on('input', function(){
 													widget.defaultTextChanged();
@@ -966,7 +968,7 @@ $.fn.propertyPage = function(opts) {
 												url : basePath + '/api/files/file'
 											});
 											
-											widget = $('#' + tab + '_value' + this.id).fileUploadInput(obj);
+											widget = $('#' + tab + '_value' + inputId).fileUploadInput(obj);
 
 										} else if (obj.inputType == 'multipleFileInput') { 
 											
@@ -976,7 +978,7 @@ $.fn.propertyPage = function(opts) {
 												url : basePath + '/api/files/file'
 											});
 											
-											widget = $('#' + tab + '_value' + this.id).multipleFileUpload(widgetOptions);
+											widget = $('#' + tab + '_value' + inputId).multipleFileUpload(widgetOptions);
 										} else if (obj.inputType == 'html5Upload') { 
 											
 											var widgetOptions = $.extend(obj, {
@@ -985,7 +987,7 @@ $.fn.propertyPage = function(opts) {
 												url : basePath + '/api/files/file'
 											});
 											
-											widget = $('#' + tab + '_value' + this.id).html5Upload(widgetOptions);
+											widget = $('#' + tab + '_value' + inputId).html5Upload(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSelect') {
 
@@ -1002,7 +1004,7 @@ $.fn.propertyPage = function(opts) {
 												url: url
 											});
 											
-											widget = $('#' + tab + '_value' + this.id).multipleSelect(widgetOptions);
+											widget = $('#' + tab + '_value' + inputId).multipleSelect(widgetOptions);
 												
 										} else if (obj.inputType == 'multipleTextInput') {
 											
@@ -1011,7 +1013,7 @@ $.fn.propertyPage = function(opts) {
 												isArrayValue: true
 											});
 	
-											widget = $('#' + tab + '_value' + this.id).multipleTextInput(widgetOptions);
+											widget = $('#' + tab + '_value' + inputId).multipleTextInput(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSearchInput') {
 											var widgetOptions = $.extend({
@@ -1020,35 +1022,35 @@ $.fn.propertyPage = function(opts) {
 												values: obj.isNamePairValue == false ? splitFix(obj.value) : splitNamePairs(obj.value)
 											}, obj);
 											
-											widget = $('#' + tab + '_value' + this.id).multipleSearchInput(widgetOptions);
+											widget = $('#' + tab + '_value' + inputId).multipleSearchInput(widgetOptions);
 
 										} else if (obj.inputType == 'date') {
 											
-											widget = $('#' + tab + '_value' + this.id).dateInput(obj);
+											widget = $('#' + tab + '_value' + inputId).dateInput(obj);
 											
 										} else if (obj.inputType == 'time') {
 											
-											widget = $('#' + tab + '_value' + this.id).timeInput(obj);
+											widget = $('#' + tab + '_value' + inputId).timeInput(obj);
 											
 										} else if (obj.inputType == 'button') {
 											
-											widget = $('#' + tab + '_value' + this.id).buttonAction(obj);
+											widget = $('#' + tab + '_value' + inputId).buttonAction(obj);
 											
 										} else if (obj.inputType == 'boolean') {
 											
-											widget = $('#' + tab + '_value' + this.id).booleanInput(obj);
+											widget = $('#' + tab + '_value' + inputId).booleanInput(obj);
 											
 										} else if (obj.inputType == 'switch') {
 
-											widget = $('#' + tab + '_value' + this.id).switchInput(obj);
+											widget = $('#' + tab + '_value' + inputId).switchInput(obj);
 											
 										} else if (obj.inputType == 'image') {
 											
-											widget = $('#' + tab + '_value' + this.id).imageInput(obj);
+											widget = $('#' + tab + '_value' + inputId).imageInput(obj);
 
 										} else if (obj.inputType == 'slider') {
 
-											widget = $('#' + tab + '_value' + this.id).sliderInput(obj);
+											widget = $('#' + tab + '_value' + inputId).sliderInput(obj);
 
 										}
 										
@@ -1069,9 +1071,10 @@ $.fn.propertyPage = function(opts) {
 												$(document).data(this.resourceKey, widget);
 												widgets.push(widget);
 												
-												$('#' + tab + '_value' + this.id).append(
-														'<div class="clear"><span id="' + tab + '_helpspan' + this.id + '" class="help-block">' 
+												$('#' + tab + '_value' + inputId).append(
+														'<div class="clear"><span id="' + tab + '_helpspan' + inputId + '" class="help-block">' 
 														+  ( this.description ? this.description : getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') ) 
+
 														+ '</span></div>');
 											}
 										}

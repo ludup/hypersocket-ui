@@ -777,6 +777,10 @@ function loadMenu(menu) {
 			$('#buttonLarge_' + subPage).trigger('click');
 		}
 		
+		if ($(window).width() < 959) {
+			$('#main-menu').addClass('hidden-xs');
+		}
+		
 	} else {
 	
 		loadWait();
@@ -795,6 +799,9 @@ function loadSubPage(menu, element) {
 	loadWait();
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
 		window.location.hash = "menu=" + menu.resourceKey;
+		if ($(window).width() < 959) {
+			$('#main-menu').addClass('hidden-xs');
+		}
 	});
 }
 
