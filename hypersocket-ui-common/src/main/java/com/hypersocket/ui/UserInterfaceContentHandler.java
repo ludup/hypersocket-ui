@@ -169,7 +169,7 @@ public class UserInterfaceContentHandler implements ContentHandler {
 	}
 
 	@Override
-	public boolean handlesRequest(String request) {
+	public boolean handlesRequest(HttpServletRequest request) {
 		return actualHandler.handlesRequest(request);
 	}
 

@@ -38,11 +38,11 @@ public class RedirectHandler extends HttpRequestHandler {
 	}
 	
 	@Override
-	public boolean handlesRequest(String request) {
-		return request.equals("")
-				|| request.equals("/")
-				|| request.equals(server.getBasePath())
-				|| request.equals(server.getBasePath() + "/");
+	public boolean handlesRequest(HttpServletRequest request) {
+		return request.getRequestURI().equals("")
+				|| request.getRequestURI().equals("/")
+				|| request.getRequestURI().equals(server.getBasePath())
+				|| request.getRequestURI().equals(server.getBasePath() + "/");
 	}
 
 	@Override
