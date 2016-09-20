@@ -1730,7 +1730,7 @@ $.fn.multipleSearchInput = function(data) {
 					result = new Array();
 
 					$('#' + id + 'IncludedSelect option').each(function() {
-						result.push($(this).val());
+						result.push(he.encode($(this).val()) + "=" + he.encode($(this).text()));
 					});
 					return result;
 				},
@@ -1800,7 +1800,7 @@ $.fn.multipleSearchInput = function(data) {
 	if (options.values) {
 		if(options.isNamePairValue) {
 			$.each(options.values, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + obj.value + '">' + obj.name + "</option>");
+				toSelect.append('<option ' + 'value="' + he.decode(obj.value) + '">' + he.decode(obj.name) + "</option>");
 			});
 		} else {
 			$.each(options.values, function(idx, obj) {
