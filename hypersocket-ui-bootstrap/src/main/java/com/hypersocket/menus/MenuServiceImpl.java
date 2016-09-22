@@ -9,6 +9,7 @@ package com.hypersocket.menus;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -64,6 +65,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	Map<String, List<AbstractTableAction>> registeredActions = new HashMap<String, List<AbstractTableAction>>();
 
+	List<BadgeProvider> badgeProviders = new ArrayList<BadgeProvider>();
+	
 	@Autowired
 	I18NService i18nService;
 
@@ -380,6 +383,20 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Override
 	public void registerFilter(MenuFilter filter) {
 		filters.add(filter);
+	}
+	
+	@Override
+	public void registerBadgeProvider(BadgeProvider provider) {
+		badgeProviders.add(provider);
+	}
+	
+	@Override
+	public Collection<Badge> getCurrentBadges() {
+		List<Badge> badges = new ArrayList<Badge>();
+		for(BadgeProvider provider : badgeProviders) {
+			badges.addAll(provider.getBadges(getCurrentPrincipal()));
+		}
+		return badges;
 	}
 
 	@Override
