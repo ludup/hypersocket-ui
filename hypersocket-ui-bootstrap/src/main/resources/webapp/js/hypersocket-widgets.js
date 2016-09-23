@@ -21,7 +21,7 @@ $.fn.clipboardCopy = function(data) {
 	}, data);
 	
 	
-	var id = (options && options.id ? options.id : $(this).attr('id') + "ClipboardCopy");
+	var id = $(this).attr('id') + "ClipboardCopy";
 	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
 	
 	$(this).on('click', function() {
@@ -91,7 +91,7 @@ $.fn.textInput = function(data) {
 				}
 			}, data);
 	
-	var id = 'input' + (options && options.id ? options.id : $(this).attr('id') + "TextInput");
+	var id = 'input' + $(this).attr('id') + "TextInput";
 	var hasVariables = (options.variables && options.variables.length > 0);
 	if(hasVariables && options.variables.constructor !== Array) {
 		options.variables = options.variables.split(',');
@@ -231,12 +231,19 @@ $.fn.htmlInput = function(data) {
 			{ disabled : false, 
 			  value: '',
 			  inputType: 'html',
-			  lineNumbers: true}, 
+			  lineNumbers: true,
+			  size: 'normal'}, 
 		data);
 		
-	var id = "_" + (options.id ? options.id : $(this).attr('id')) +  'HtmlInput';
+	var id = $(this).attr('id') +  'HtmlInput';
 
-	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px;"></div>');
+	var heightCss = '';
+	if(options.size==='small') {
+		heightCss = 'height: 75px';
+	} else if(options.size==='large') {
+		heightCss = 'height: 600px';
+	}
+	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px; ' + heightCss + '"></div>');
 
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
@@ -309,12 +316,20 @@ $.fn.codeInput = function(data) {
 			{ disabled : false, 
 			  value: '',
 			  inputType: 'html',
-			  lineNumbers: true}, 
+			  lineNumbers: true,
+			  size: 'normal'}, 
 		data);
 		
-	var id = (options.id ? options.id : $(this).attr('id') +  'CodeInput');
+	var id = $(this).attr('id') +  'CodeInput';
 	
-	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px;"></div>');
+	var heightCss = '';
+	if(options.size==='small') {
+		heightCss = 'height: 75px';
+	} else if(options.size==='large') {
+		heightCss = 'height: 600px';
+	}
+
+	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px; ' + heightCss + '"></div>');
 	
 	
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
@@ -396,7 +411,7 @@ $.fn.richInput = function(data) {
 		  toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor emoticons' },
 	data);
 	
-	var id = (options.id ? options.id : $(this).attr('id'));
+	var id = $(this).attr('id');
 
 	var callback = {
 			editor: false,
@@ -503,7 +518,7 @@ $.fn.editor = function(data) {
 		  value: ''}, 
 	data);
 	
-	var id = (options.id ? options.id : $(this).attr('id') + 'Editor');
+	var id =$(this).attr('id') + 'Editor';
 	
 	$(this).append( '<div class="btn-toolbar" data-role="editor-toolbar" data-target="#' + id + '">'
   + '  <div class="btn-group">'
@@ -644,7 +659,7 @@ $.fn.selectButton = function(data) {
 			}
 		}, data);
 	
-	var id = (obj && obj.id ? obj.id : $(this).attr('id') + "SelectButton");
+	var id = $(this).attr('id') + "SelectButton";
 	
 	var name = (obj && obj.resourceKey != null ) ? formatResourceKey(obj.resourceKey) : $(this).attr('id') ;
 
@@ -692,6 +707,7 @@ $.fn.selectButton = function(data) {
 				return selected.data('resource');
 			},
 			load: function(loadCallback) {
+				debugger;
 				$('#select_' + id).empty();
 				if(obj.emptySelectionAllowed) {
 					$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
@@ -720,6 +736,9 @@ $.fn.selectButton = function(data) {
 							selected = obj.options[i];
 							$('#select_button_' + id).text(listItem);
 							$('#' + id).val(obj.value);
+							if(obj.initialized) {
+								obj.initialized(callback);
+							}
 						} 
 						$('#data_' + id + "_" + i).data('resource', obj.options[i]);
 					}
@@ -878,7 +897,7 @@ $.fn.autoComplete = function(data) {
 		}, data);
 	
 	var callback;
-	var id = (options.id ? options.id : $(this).attr('id') + "AutoComplete");
+	var id = $(this).attr('id') + "AutoComplete";
 	var thisWidget = $(this);
 	
 	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
@@ -1208,7 +1227,7 @@ $.fn.textDropdown = function(data) {
  */
 $.fn.multipleSelect = function(data) {
 
-	var id = $(this).attr('id');
+	var id = $(this).attr('id') + "MultipleSelect";
 
 	var sortMultipleSelect = function(){
 		var selectOptions = $('#' + id + 'ExcludedSelect option');
@@ -1611,7 +1630,7 @@ $.fn.multipleSelectValues = function() {
 
 $.fn.multipleSearchInput = function(data) {
 	
-	var id = $(this).attr('id');
+	var id = $(this).attr('id') + "MultipleSearchInput";
 	
 	if ($(this).data('created')) {
 
@@ -1827,7 +1846,7 @@ $.fn.multipleSearchInput = function(data) {
  */
 $.fn.multipleTextInput = function(data) {
 
-	var id = $(this).attr('id');
+	var id = $(this).attr('id') + "MultipleSearchText";
 	
 	if ($(this).data('created')) {
 
@@ -2030,7 +2049,7 @@ $.fn.multipleTextInput = function(data) {
 
 $.fn.dateInput = function(options) {
 	
-	var id = (options && options.id ? options.id : $(this).attr('id') + "DateInput");
+	var id = $(this).attr('id') + "DateInput";
  
     var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
     
@@ -2106,7 +2125,7 @@ $.fn.dateInput = function(options) {
  */
 $.fn.timeInput = function(options) {
 
-	var id = (options && options.id ? options.id : $(this).attr('id') + "TimeInput");
+	var id = $(this).attr('id') + "TimeInput";
 	
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 	
@@ -2182,7 +2201,7 @@ $.fn.timeInput = function(options) {
 
 $.fn.buttonAction = function(options) {
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "ButtonAction");
+	var id = $(this).attr('id') + "ButtonAction";
 	
 	var obj = $.extend(
 			{   readOnly: false,
@@ -2241,7 +2260,7 @@ $.fn.buttonAction = function(options) {
 
 $.fn.booleanInput = function(options) {
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "BooleanInput");
+	var id =  $(this).attr('id') + "BooleanInput";
 	
 	var obj = $.extend(
 			{   readOnly: false,
@@ -2289,7 +2308,7 @@ $.fn.booleanInput = function(options) {
 
 $.fn.switchInput = function(options) {
 	
-	var id = $(this).attr('id') + "BooleanInput";
+	var id = $(this).attr('id') + "SwitchInput";
 	
 	var obj = $.extend(
 			{   readOnly: false,
@@ -2309,7 +2328,7 @@ $.fn.switchInput = function(options) {
 				$('#' + id).bootstrapSwitch('state', val);
 			},
 			getValue: function() {
-				return $('#' + id).is(':checked');
+				return $('#' + id).bootstrapSwitch('state');
 			},
 			reset: function() {
 				$('#' + id).bootstrapSwitch('state', obj.value);
@@ -2364,7 +2383,7 @@ $.fn.switchInput = function(options) {
 
 $.fn.colorInput = function(options) {
 	
-	var id = (options && options.id ? options.id : $(this).attr('id') + "ColorInput");
+	var id = $(this).attr('id') + "ColorInput";
 	
 	var obj = $.extend(
 			{   format: 'hex',
@@ -2425,7 +2444,7 @@ $.fn.colorInput = function(options) {
 
 $.fn.imageInput = function(options) {
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "ImageInput");
+	var id = $(this).attr('id') + "ImageInput";
 	
 	var obj = $.extend(
 			{   readOnly: false,
@@ -2516,7 +2535,7 @@ $.fn.imageInput = function(options) {
 
 $.fn.sliderInput = function(options) {
 	
-	var id = (options && options.id ? options.id : $(this).attr('id') + "SliderInput");
+	var id = $(this).attr('id') + "SliderInput";
 	var obj = $.extend(
 			{   min: parseInt(options.min),
 			    max: parseInt(options.max),
@@ -2597,11 +2616,7 @@ $.fn.namePairInput = function(data) {
 				password: false
 			}, data);
 	
-	var id =  $(this).attr('id');
-	if(id==undefined) {
-		id = new Date().getTime();
-	}
-	id = (options.id ? options.id : "_" + id + "NamePairInput");
+	var id =  $(this).attr('id') + "NamePairInput";
 	
 	if(!rowNum){
 		var rowNum = 0;
@@ -2835,7 +2850,7 @@ $.fn.fileUploadInput = function(data) {
 				}
 			}, data);
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "FileUpload");
+	var id = $(this).attr('id') + "FileUpload";
 	var html =	'<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
@@ -3132,7 +3147,7 @@ $.fn.logoInput = function(data) {
 	
 	var imagePath = basePath + "/api/logo/default/default/" + options.previewSize + "_auto_auto_auto.png";
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "FileUpload");
+	var id = $(this).attr('id') + "FileUpload";
 	
 	var generatorHtml =	'<div id="' + id + 'Generator" class="logo-generator">'
 		+	'<div class="logo-text-container logo-row">'
@@ -3706,7 +3721,7 @@ $.fn.multipleFileUpload = function(data) {
 				url: 'files/file'
 			}, data);
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "MultipleFileUpload");
+	var id = $(this).attr('id') + "MultipleFileUpload";
 	
 	if(!rowNum){
 		var rowNum = 0;
@@ -3882,7 +3897,7 @@ $.fn.html5Upload = function(data) {
 			url: basePath + '/api/fs/upload'
 		}, data);
 	var fileIndex = 0;
-	var id = (options.id ? options.id : $(this).attr('id') + "FileDragAndDrop");
+	var id = $(this).attr('id') + "FileDragAndDrop";
 	var html = 	'<div id="' + id + 'Div" style="padding:20px;">'
 			+	'	<div id="' + id + 'Area" class="fileDragAndDrop">'
 			+	'		<span class="optionalField" id="' + id + 'ProgressText" hidden><i class="fa fa-spinner fa-spin" aria-hidden="true"></i>&nbsp;' + getResource('dragAndDrop.progresText') + '</span>'
@@ -4575,7 +4590,7 @@ $.fn.accordionPage = function(data) {
 				closeable: true
 			}, data);
 	
-	var id = (options.id ? options.id : $(this).attr('id') + "AccordionPage");
+	var id = $(this).attr('id') + "AccordionPage";
 	$(this).append('<div id="' + id + '" class="panel-group" role="tablist" aria-multiselectable="false"></div>');
 
 	$.each(options.steps, function(index, obj) {

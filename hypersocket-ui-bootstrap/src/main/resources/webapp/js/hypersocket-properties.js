@@ -793,6 +793,9 @@ $.fn.propertyPage = function(opts) {
 													}
 												}
 											},
+											initialized: function(widget) {
+												this.changed(widget);
+											},
 											displayMode: '',
 											getUrlData: function(data) {
 												return data.resources;
@@ -1083,55 +1086,6 @@ $.fn.propertyPage = function(opts) {
 	
 							});
 				
-				$.each(tabs, function(idx, t) {
-					if(t.visibilityDependsOn) {
-						debugger;
-						var props = t.visibilityDependsOn.split(',');
-						var w2 = [];
-						for(i=0;i<props.length;i++) {
-							w2.push($(document).data(props[i]));
-							if(!w2[i]) {
-								log("WARNING: " + t.resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
-								return;
-							}
-						}
-						
-						// Hide tab
-						$('.tab' + idx).hide();
-						var visibilityCallback = function() {
-							
-							var dependsValue = t.visibilityDependsValue.toString().split(',');
-							var show = false;
-							for(i=0;i<w2.length;i++) {
-								if(show) {
-									break;
-								}
-								if(dependsValue[i].startsWith('!')) {
-									dependsValue[i] = dependsValue[i].substring(1);
-									show = w2[i].getValue() != dependsValue[i];
-								} else {
-									show = w2[i].getValue() == dependsValue[i];
-								}
-							}
-							
-							if(show) {
-								// Show tab
-								$('.tab' + idx).show();
-//								$('li.tab' + idx + ':first a').tab('show');
-							} else {
-								// Hide tab
-								$('.tab' + idx).hide();
-							}
-						}
-						visibilityCallback();
-						for(i=0;i<w2.length;i++) {
-							if(!w2[i].options().visibilityCallbacks) {
-								w2[i].options().visibilityCallbacks = new Array();
-							}
-							w2[i].options().visibilityCallbacks.push(visibilityCallback);
-						}
-					}
-				});
 				
 				$.each(widgets, function(idx, w) {
 					if(w.options().visibilityDependsOn) {
@@ -1151,14 +1105,15 @@ $.fn.propertyPage = function(opts) {
 							var dependsValue = w.options().visibilityDependsValue.toString().split(',');
 							var show = false;
 							for(i=0;i<w2.length;i++) {
-								if(show) {
+								if(i > 0 && !show) {
 									break;
 								}
 								if(dependsValue[i].startsWith('!')) {
 									dependsValue[i] = dependsValue[i].substring(1);
-									show = w2[i].getValue() != dependsValue[i];
+									show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);
 								} else {
-									show = w2[i].getValue() == dependsValue[i];
+									var v = w2[i].getValue();
+									show = (v == makeVariableSafe(dependsValue[i]));
 								}
 							}
 							
@@ -1180,6 +1135,57 @@ $.fn.propertyPage = function(opts) {
 						}
 					}
 					
+				});
+				
+				$.each(tabs, function(idx, t) {
+					if(t.visibilityDependsOn) {
+						debugger;
+						var props = t.visibilityDependsOn.split(',');
+						var w2 = [];
+						for(i=0;i<props.length;i++) {
+							w2.push($(document).data(props[i]));
+							if(!w2[i]) {
+								log("WARNING: " + t.resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
+								return;
+							}
+						}
+						
+						// Hide tab
+						$('.tab' + idx).hide();
+						var visibilityCallback = function() {
+							
+							var dependsValue = t.visibilityDependsValue.toString().split(',');
+							var show = false;
+							for(i=0;i<w2.length;i++) {
+								if(i > 0 && !show) {
+									break;
+								}
+								if(dependsValue[i].startsWith('!')) {
+									dependsValue[i] = dependsValue[i].substring(1);
+									show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);
+								} else {
+									var v = w2[i].getValue();
+									show = v == makeVariableSafe(dependsValue[i]);
+								}
+							}
+							
+							if(show) {
+								// Show tab
+								$('.tab' + idx).show();
+//								$('li.tab' + idx + ':first a').tab('show');
+							} else {
+								// Hide tab
+								$('.tab' + idx).hide();
+							}
+						}
+						visibilityCallback();
+						for(i=0;i<w2.length;i++) {
+							if(!w2[i].options().visibilityCallbacks) {
+								w2[i].options().visibilityCallbacks = new Array();
+							}
+							w2[i].options().visibilityCallbacks.push(visibilityCallback);
+						}
+					}
 				});
 			
 				

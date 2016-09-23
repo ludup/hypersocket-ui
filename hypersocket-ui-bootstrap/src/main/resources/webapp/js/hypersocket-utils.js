@@ -223,7 +223,21 @@ Date.prototype.format = function (mask, utc) {
     return dateFormat(this, mask, utc);
 };
 
+function makeVariableSafe(v) {
+	if(typeof v == 'string') {
+		if(v === 'true') {
+			return true;
+		} else if(v === 'false') {
+			return false;
+		} else if(v !== "" && !isNaN(v)) {
+			return parseInt(v);
+		}
+	}
+	return v;
+}
+
 function makeBooleanSafe(options) {
+	
 	for(var property in options) {
 		if(options.hasOwnProperty(property)) {
 			if(typeof options[property] == 'string') {
