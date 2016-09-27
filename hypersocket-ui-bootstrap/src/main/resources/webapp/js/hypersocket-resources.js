@@ -76,6 +76,7 @@ function saveResource(resource, buttonElement, options, mode, closeCallback) {
 	postJSON(options.resourceUrl, resource, function(data) {
 
 		if (data.success) {
+			debugger;
 			log("Resource object created");
 			if(closeCallback) {
 				closeCallback();
@@ -83,6 +84,7 @@ function saveResource(resource, buttonElement, options, mode, closeCallback) {
 			if (options.resourceCreated) {
 				options.resourceCreated(data.resource);
 			}
+			checkBadges(false);
 			showSuccess(data.message);
 		} else {
 			log("Resource object creation failed " + data.message);
@@ -301,6 +303,7 @@ $.fn.resourceTable = function(params) {
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 										act.action(resource, function(resource) {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+											checkBadges(false);
 										});
 									});
 							}
@@ -366,6 +369,7 @@ $.fn.resourceTable = function(params) {
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 										act.action(resource, function(resource) {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+											checkBadges(false);
 										});
 								});
 						}
@@ -443,6 +447,7 @@ $.fn.resourceTable = function(params) {
 						                    values: [resource.id]
 						                });
 										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+										checkBadges(false);
 										showSuccess(data.message);
 									} else {
 										showError(data.message);
@@ -569,7 +574,6 @@ $.fn.resourceTable = function(params) {
 							changed: function(widget) {
 								
 								$('.search input[placeholder="Search"]').val('');
-								//$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
 								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 							}
 						});
@@ -586,6 +590,7 @@ $.fn.resourceTable = function(params) {
 								if(action.action) {
 									action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
 										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+										checkBadges(false);
 									});
 								}
 							});
@@ -652,6 +657,7 @@ $.fn.resourceTable = function(params) {
 											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
 												act.action(resource, function(resource) {
 													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+													checkBadges(false);
 												});
 											});
 										}
@@ -691,6 +697,7 @@ $.fn.resourceTable = function(params) {
 											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
 												act.action(resource, function(resource) {
 													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+													checkBadges(false);
 												});
 											});
 										}
@@ -770,6 +777,7 @@ $.fn.resourceTable = function(params) {
 														}
 														$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
 														$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+														checkBadges(false);
 														showSuccess(data.message);
 													} else {
 														showError(data.message);
@@ -801,6 +809,7 @@ $.fn.resourceTable = function(params) {
 					if(button.action) {
 						button.action(function() {
 							$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+							checkBadges(false);
 						});
 					}
 				});
@@ -880,6 +889,7 @@ $.fn.resourceTable = function(params) {
 	var callback = {
 		refresh: function() {
 			$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+			checkBadges(false);
 		},
 		close: function() {
 			options.view.closeResource();
@@ -940,6 +950,7 @@ $.fn.resourceTable = function(params) {
 									$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
 									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 									showSuccess(data.message);
+									checkBadges(false);
 								} else {
 									showError(data.message);
 								}

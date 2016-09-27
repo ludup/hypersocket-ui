@@ -1787,3 +1787,8 @@ select[multiple] {
 	float: right;
 	margin-top: 10px;
 }
+
+.badge {
+	margin-left: 5px;
+	background-color: #B71C1C;
+}
