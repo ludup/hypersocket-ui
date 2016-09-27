@@ -7,6 +7,7 @@
  ******************************************************************************/
 package com.hypersocket.menus;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.hypersocket.auth.AuthenticatedService;
@@ -82,4 +83,8 @@ public interface MenuService extends AuthenticatedService {
 	void registerFilter(MenuFilter filter);
 
 	Menu getMenu(String resourceKey);
+
+	Collection<Badge> getCurrentBadges();
+
+	void registerBadgeProvider(BadgeProvider provider);
 }
