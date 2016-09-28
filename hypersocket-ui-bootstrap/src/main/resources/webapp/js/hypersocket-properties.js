@@ -1139,7 +1139,7 @@ $.fn.propertyPage = function(opts) {
 				
 				$.each(tabs, function(idx, t) {
 					if(t.visibilityDependsOn) {
-						debugger;
+						
 						var props = t.visibilityDependsOn.split(',');
 						var w2 = [];
 						for(i=0;i<props.length;i++) {

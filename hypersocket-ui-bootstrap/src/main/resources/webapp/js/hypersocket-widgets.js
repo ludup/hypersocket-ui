@@ -707,7 +707,7 @@ $.fn.selectButton = function(data) {
 				return selected.data('resource');
 			},
 			load: function(loadCallback) {
-				debugger;
+				
 				$('#select_' + id).empty();
 				if(obj.emptySelectionAllowed) {
 					$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
@@ -981,7 +981,7 @@ $.fn.autoComplete = function(data) {
 			});
 			$('#auto_' + id + ' .optionSelect').off('click');
 			$('#auto_' + id + ' .optionSelect').on('click', function() {
-				debugger;
+				
 				var value = $(this).data('value');
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
@@ -2900,7 +2900,7 @@ $.fn.fileUploadInput = function(data) {
 		if(options.detailedView) {
 			formattedHtml +=	'	<span>' + fileSize + '</span></br>'
 						+	'	<span>' + data.md5Sum + '</span></br>'
-						+   '   <span><a href="' + basePath + '/api/files/download/' + data.name + '">' + basePath + '/api/files/download/' + data.name + '</a></span>';			
+						+   '   <span><a href="' + basePath + '/api/files/public/' + data.shortCode + '/' + data.filename + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.filename + '</a></span>';			
 		}
 					
 		formattedHtml +=	'</div>';
@@ -2946,7 +2946,7 @@ $.fn.fileUploadInput = function(data) {
  				return $('#' + id + 'Info').data('uuid');
  			},
  			reset: function() {
- 				debugger;
+ 				
  				if(options.value == '') {
  					this.clear();
  				} else {
@@ -3093,7 +3093,7 @@ $.fn.fileUploadInput = function(data) {
  			},
  			download: function(){
  				uuid = $('#' + id + 'Info').data('uuid');
- 				window.location = basePath + '/api/files/download/' + uuid;
+ 				window.location = basePath + '/api/files/public/' + uuid;
  			},
  			options: function() {
  				return options;
@@ -4552,7 +4552,7 @@ $.fn.feedbackPanel = function(data) {
 	$.ajax({
 		method: 'post',
 		url: basePath + '/api/' + options.startUrl, 
-		data: $.param(options.startParameters), 
+		data: options.startParameters ? $.param(options.startParameters) : null, 
 		dataType: 'json',
 		success: function(data) {
 			if(!data.success) {

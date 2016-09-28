@@ -209,7 +209,7 @@ function checkBadges(schedule) {
 	});
 };
 
-function home(data) {
+function home(result) {
 
 	log("Entering home");
 

@@ -76,7 +76,7 @@ function saveResource(resource, buttonElement, options, mode, closeCallback) {
 	postJSON(options.resourceUrl, resource, function(data) {
 
 		if (data.success) {
-			debugger;
+			
 			log("Resource object created");
 			if(closeCallback) {
 				closeCallback();
@@ -291,7 +291,7 @@ $.fn.resourceTable = function(params) {
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-								renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><span>' + getResource(act.resourceKey + ".label") + '</span>&nbsp;&nbsp;<i class="fa ' + act.iconClass + '"></i></a></li>';
+								renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a></li>';
 			
 								$(document).off('click',
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
@@ -802,6 +802,10 @@ $.fn.resourceTable = function(params) {
 		if(options.additionalButtons) {
 			
 			$.each(options.additionalButtons, function() {
+				debugger;
+				if(this.showButton && !this.showButton()) {
+					return;
+				}
 				$('#' + divName + 'Actions').append(
 					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>' + getResource(this.resourceKey + '.label') + '</button>');
 				var button = this;

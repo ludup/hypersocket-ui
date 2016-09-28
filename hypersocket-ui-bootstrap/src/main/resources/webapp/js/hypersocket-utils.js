@@ -8,7 +8,7 @@ var uiPath = '${uiPath}';
 
 //This is the function.
 String.prototype.formatAll = function (args) {
-	var str = this;
+	var str = this.toString();
 	return str.replace(String.prototype.formatAll.regex, function(item) {
 		var intVal = parseInt(item.substring(1, item.length - 1));
 		var replace;
@@ -24,11 +24,13 @@ String.prototype.formatAll = function (args) {
 		return replace;
 	});
 };
+
 String.prototype.formatAll.regex = new RegExp("{-?[0-9]+}", "g");
 
 if (!String.prototype.encodeHTML) {
 	  String.prototype.encodeHTML = function () {
-	    return this.replace(/&/g, '&amp;')
+		var str = this.toString();
+	    return str.replace(/&/g, '&amp;')
 	               .replace(/</g, '&lt;')
 	               .replace(/>/g, '&gt;')
 	               .replace(/"/g, '&quot;')
@@ -38,7 +40,8 @@ if (!String.prototype.encodeHTML) {
 
 if (!String.prototype.decodeHTML) {
 	  String.prototype.decodeHTML = function () {
-	    return this.replace(/&apos;/g, "'")
+		  var str = this.toString();
+		    return str.replace(/&apos;/g, "'")
 	               .replace(/&quot;/g, '"')
 	               .replace(/&gt;/g, '>')
 	               .replace(/&lt;/g, '<')
@@ -48,9 +51,14 @@ if (!String.prototype.decodeHTML) {
 
 String.prototype.format = function() {
     var args = arguments;
-
-    return this.replace(/\{(\d+)\}/g, function() {
-        return args[arguments[1]];
+    var str = this.toString();
+    return str.replace(/\{(\d+)\}/g, function() {
+        var idx = parseInt(arguments[1]);
+        if(Array.isArray(args[0])) {
+        	return args[0][idx];
+        } else {
+        	return args[idx];
+        }
     });
 };
 
