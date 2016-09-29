@@ -383,7 +383,8 @@ $.fn.resourceTable = function(params) {
 		}
 
 		if(!options.disableEditView) {
-			renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
+			debugger;
+			renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate && !row.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 			$(document).on(
 				'click',
@@ -391,7 +392,7 @@ $.fn.resourceTable = function(params) {
 				function() {
 					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-					if(options.canUpdate && canUpdate) {
+					if(options.canUpdate && canUpdate && !resource.readOnly) {
 						options.view.editResource(resource);
 					} else {
 						options.view.viewResource(resource);
@@ -710,14 +711,17 @@ $.fn.resourceTable = function(params) {
 							}
 
 							if(!options.disableEditView) {
-								renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate ? 'fa-edit' : 'fa-search') + '"></i></a>';
+								debugger;
+								renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate && !resource.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
 								$(document).off('click', '#' + resource.id + 'GridOptions .row-edit');
 								$(document).on('click', '#' + resource.id + 'GridOptions .row-edit', function() {
 									if(options.showEdit) {
 										options.showEdit(resource);
 									}
-									if(options.canUpdate && canUpdate) {
+									if(options.canUpdate && canUpdate && !resource.readOnly) {
 										options.view.editResource(resource);
+									} else {
+										options.view.viewResource(resource);
 									}
 								});
 								$(document).off('click', '#' + resource.id + 'GridDiv img');
@@ -725,7 +729,7 @@ $.fn.resourceTable = function(params) {
 									if(options.showEdit) {
 										options.showEdit(resource);
 									}
-									if(options.canUpdate && canUpdate) {
+									if(options.canUpdate && canUpdate && !resource.readOnly) {
 										options.view.editResource(resource);
 									} else {
 										options.view.viewResource(resource);
@@ -1090,12 +1094,14 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		dialogOptions.clearDialog(false);
 		dialogOptions.displayResource(params2, true);
+		debugger;
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
 					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
 				      title: getResource(dialogOptions.resourceKey + '.view.title'),
 				      icon: dialogOptions.icon,
+				      canUpdate: false,
 					  complete: function() {
 						  showView(dialog);
 						  if(dialogOptions.propertyOptions.complete) {

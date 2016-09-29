@@ -244,7 +244,7 @@ $.fn.htmlInput = function(data) {
 		heightCss = 'height: 600px';
 	}
 	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px; ' + heightCss + '"></div>');
-
+	debugger;
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
 		  htmlMode: options.inputType=='html',
@@ -252,7 +252,8 @@ $.fn.htmlInput = function(data) {
 		  lineNumbers: options.lineNumbers,
 		  relative_urls: false,
 		  convert_urls: false,
-		  remove_script_host : false
+		  remove_script_host : false,
+		  readOnly: options.disabled
 	});
 	
 	var callback = {
@@ -331,11 +332,12 @@ $.fn.codeInput = function(data) {
 
 	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px; ' + heightCss + '"></div>');
 	
-	
+	debugger;
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
 		  mode:  options.inputType=='java' ? 'text/x-java' : options.inputType,
-		  lineNumbers: options.lineNumbers
+		  lineNumbers: options.lineNumbers,
+		  readOnly: options.disabled
 	});
 	
 	var callback = {
@@ -2900,7 +2902,7 @@ $.fn.fileUploadInput = function(data) {
 		if(options.detailedView) {
 			formattedHtml +=	'	<span>' + fileSize + '</span></br>'
 						+	'	<span>' + data.md5Sum + '</span></br>'
-						+   '   <span><a href="' + basePath + '/api/files/public/' + data.shortCode + '/' + data.filename + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.filename + '</a></span>';			
+						+   '   <span><a href="' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '</a></span>';			
 		}
 					
 		formattedHtml +=	'</div>';
@@ -2916,7 +2918,10 @@ $.fn.fileUploadInput = function(data) {
 		$('#' + id + 'File').parent().append(
 				'<div id="' + id + 'Info">' + showInfoFormat(data) + '</div>');
 		$('#' + id + 'File').hide();
-		$('#' + id + 'Buttons').append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
+		if(!options.disabled) {
+			$('#' + id + 'Buttons').append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
+		}
+		
 		if(options.showDownloadButton){
 			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
 		}
@@ -3738,14 +3743,17 @@ $.fn.multipleFileUpload = function(data) {
 			+	'			<div class="propertyValue col-xs-8" style="padding-left: 0px;">'
 			+	'				<span class="help-block">' + options.text + '</span>'
 			+	'			</div>'
-			+	'			<div class="propertyValue col-xs-4 dialogActions">'
-			+	'				<a id="' + id + 'AddRow" href="#" class="btn btn-primary addButton">'
-			+	'					<i class="fa fa-plus"></i>'
-			+	'				</a>'
-			+	'			</div>'
-			+	'		</div>'
-			+	'	</div>'
-			+	'</div>';
+			+	'			<div class="propertyValue col-xs-4 dialogActions">';
+	if(!options.disabled) {
+			html +=	'				<a id="' + id + 'AddRow" href="#" class="btn btn-primary addButton">'
+				+	'					<i class="fa fa-plus"></i>'
+				+   '				</a>';
+	}
+	
+	html +=	'			</div>'
+	+	'		</div>'
+	+	'	</div>'
+	+	'</div>';
 	
 	
 	$(this).append(html);
@@ -3801,7 +3809,7 @@ $.fn.multipleFileUpload = function(data) {
  	 					showDownloadButton: options.showDownloadButton,
  	 					showUploadButton: options.showUploadButton
  	 				});
- 	 				if(options.showRemoveLine){
+ 	 				if(options.showRemoveLine && !options.disabled){
  	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').before('<a href="#" class="btn btn-danger" id="' + id + 'RemoveButton' + rowNum + '"><i class="fa fa-minus"></i></a>');
  	 					$('#' + id + 'RemoveButton' + rowNum).click(function(){
  	 						$(this).closest('.fileUpload').remove();
