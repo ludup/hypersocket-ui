@@ -134,4 +134,8 @@ public class HtmlContentFilter implements ContentFilter {
 	public Integer getWeight() {
 		return Integer.MAX_VALUE;
 	}
+
+	public void removeExtender(FilterExtender extender) {
+		extenders.remove(extender);
+	}
 }
