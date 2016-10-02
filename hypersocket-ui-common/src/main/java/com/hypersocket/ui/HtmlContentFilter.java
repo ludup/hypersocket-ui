@@ -27,7 +27,8 @@ public class HtmlContentFilter implements ContentFilter {
 	HypersocketServer server;
 
 	List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
-
+	List<FilterExtender> extenders = new ArrayList<FilterExtender>();
+	
 	String brandCompany = "Hypersocket Limited";
 	String companyUrl = "https://www.hypersocket.com/";
 	String brandIcon = "/images/favicon.ico";
@@ -40,6 +41,10 @@ public class HtmlContentFilter implements ContentFilter {
 	public HtmlContentFilter() throws IOException {
 	}
 
+	public void addExtender(FilterExtender extender) {
+		extenders.add(extender);
+	}
+	
 	@Override
 	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) {
 
@@ -67,10 +72,15 @@ public class HtmlContentFilter implements ContentFilter {
 		if (license != null) {
 			resolver.addToken("license", license);
 		}
+		
+		for(FilterExtender extender : extenders) {
+			resolver.addAll(extender.getAdditionalResolvers(request));
+		}
 
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
 
+		
 		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)),
 				resolvers);
 		return new ReaderInputStream(r, Charset.forName("UTF-8"));
