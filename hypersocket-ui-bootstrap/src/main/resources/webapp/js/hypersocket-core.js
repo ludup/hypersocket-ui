@@ -209,7 +209,7 @@ function checkBadges(schedule) {
 	});
 };
 
-function home(result) {
+function home(data) {
 
 	log("Entering home");
 
@@ -226,11 +226,11 @@ function home(result) {
 
 	removeMessage();
 	
-	currentRealm = result.session.currentRealm;
-	currentRole = result.currentRole;
+	currentRealm = data.session.currentRealm;
+	currentRole = data.currentRole;
 	currentMenu = null;
-	var message = result.bannerMsg;
-	var showLocales = result.showLocales;
+	var message = data.bannerMsg;
+	var showLocales = data.showLocales;
 	getJSON('menus', null, function(data) {
 
 			log("Received menus");
@@ -315,7 +315,7 @@ function home(result) {
 			}
 			
 			$('#currentRole').remove();
-			if(result.currentRole) {
+			if(data.currentRole) {
 				getJSON('roles/personal', null, function(roles) {
 					loadRoles(roles.resources);
 				});
