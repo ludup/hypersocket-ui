@@ -1056,6 +1056,12 @@ $.fn.samePageResourceView = function(params, params2) {
 						  
 					  }	
 			});
+			if(dialogOptions.propertyOptions.additionalTabs) {
+				$.each(dialogOptions.propertyOptions.additionalTabs, function(idx, obj) {
+					$('body').append($('#' + obj.id).detach());
+				});
+			}
+			$(dialogOptions.propertyOptions.propertySelector).empty();
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
@@ -1083,6 +1089,12 @@ $.fn.samePageResourceView = function(params, params2) {
 						  
 					  }	
 			});
+			if(dialogOptions.propertyOptions.additionalTabs) {
+				$.each(dialogOptions.propertyOptions.additionalTabs, function(idx, obj) {
+					$('body').append($('#' + obj.id).detach());
+				});
+			}
+			$(dialogOptions.propertyOptions.propertySelector).empty();
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
@@ -1111,6 +1123,12 @@ $.fn.samePageResourceView = function(params, params2) {
 						  
 					  }	
 			});
+			if(dialogOptions.propertyOptions.additionalTabs) {
+				$.each(dialogOptions.propertyOptions.additionalTabs, function(idx, obj) {
+					$('body').append($('#' + obj.id).detach());
+				});
+			}
+			$(dialogOptions.propertyOptions.propertySelector).empty();
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
@@ -1120,27 +1138,48 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 	} else if(params === 'copy') {
 		
-		dialogOptions.clearDialog(false);
-		var copiedResource = $.extend(true, {}, params2);
-		copiedResource.name = copiedResource.name + " (" + getResource('text.copy') + ")";
-		dialogOptions.displayResource(copiedResource, false, true);
-		if(dialogOptions.propertyOptions) {
-			var propertyOptions = $.extend({},
-					dialogOptions.propertyOptions,
-					{ url: dialogOptions.propertyOptions.propertiesUrl + copiedResource.id,
-				      title: getResource(dialogOptions.resourceKey + '.create.title'),
-				      icon: dialogOptions.icon,
-					  complete: function() {
-						  showView(dialog)
-						  if(dialogOptions.propertyOptions.complete) {
-							  dialogOptions.propertyOptions.complete(copiedResource);
-						  }
-						  addActions(true, true);
-					  }	
+		if(dialogOptions.remoteCopy) {
+			getJSON(dialogOptions.copyUrl + "/" + params2.id, null, function(data) {
+
+				if (data.success) {
+					log("Resource copied");
+					$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+					checkBadges(false);
+					showSuccess(data.message);
+				} else {
+					log(data.message);
+					showError(data.message);
+				}
 			});
-			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
-			showView(dialog);
+			dialogOptions.clearDialog(false);
+			var copiedResource = $.extend(true, {}, params2);
+			copiedResource.name = copiedResource.name + " (" + getResource('text.copy') + ")";
+			dialogOptions.displayResource(copiedResource, false, true);
+			if(dialogOptions.propertyOptions) {
+				var propertyOptions = $.extend({},
+						dialogOptions.propertyOptions,
+						{ url: dialogOptions.propertyOptions.propertiesUrl + copiedResource.id,
+					      title: getResource(dialogOptions.resourceKey + '.create.title'),
+					      icon: dialogOptions.icon,
+						  complete: function() {
+							  showView(dialog)
+							  if(dialogOptions.propertyOptions.complete) {
+								  dialogOptions.propertyOptions.complete(copiedResource);
+							  }
+							  addActions(true, true);
+						  }	
+				});
+				if(dialogOptions.propertyOptions.additionalTabs) {
+					$.each(dialogOptions.propertyOptions.additionalTabs, function(idx, obj) {
+						$('body').append($('#' + obj.id).detach());
+					});
+				}
+				$(dialogOptions.propertyOptions.propertySelector).empty();
+				$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+			} else {
+				showView(dialog);
+			}
 		}
 		
 		return;
@@ -1148,7 +1187,6 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		if(dialogOptions) {
 			dialog.hide();
-			
 			if(dialogOptions.onClose) {
 				dialogOptions.onClose();
 			}
@@ -1247,9 +1285,25 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		removeMessage();
 		
 		if(params === 'copy') {
-			var copiedResource = $.extend(true, {}, params2);
-			copiedResource.name = copiedResource.name + ' (' + getResource('text.copy') + ')';
-			dialogOptions.displayResource(copiedResource, readOnly, true);
+			if(dialogOptions.remoteCopy) {
+				var copiedResource = $.extend(true, {}, params2);
+				postJSON(dialogOptions.resourceUrl + "?updateIsCopy=true", copiedResource, function(data) {
+	
+					if (data.success) {
+						log("Resource copied");
+						$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+						checkBadges(false);
+						showSuccess(data.message);
+					} else {
+						log(data.message);
+						showError(data.message);
+					}
+				});
+			} else {
+				var copiedResource = $.extend(true, {}, params2);
+				copiedResource.name = copiedResource.name + ' (' + getResource('text.copy') + ')';
+				dialogOptions.displayResource(copiedResource, readOnly, true);
+			}
 		} else {
 			dialogOptions.displayResource(params2, readOnly, false);
 		}
