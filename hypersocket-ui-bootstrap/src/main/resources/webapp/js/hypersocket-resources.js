@@ -86,6 +86,30 @@ function saveResource(resource, buttonElement, options, mode, closeCallback) {
 			}
 			checkBadges(false);
 			showSuccess(data.message);
+		} else if(data.confirmation) {
+			
+			bootbox.confirm({
+			    message: data.message.format(data.args),
+			    buttons: {
+			        confirm: {
+			            label: getResource('text.yes'),
+			            className: 'btn-success'
+			        },
+			        cancel: {
+			            label: getResource('text.no'),
+			            className: 'btn-danger'
+			        }
+			    },
+			    callback: function (result) {
+			        if(result) {
+			        	if(options.confirmed) {
+			        		options.confirmed(resource, data.args);
+			        	}
+			        	saveResource(resource, buttonElement, options, mode, closeCallback);
+			        }
+			    }
+			});
+
 		} else {
 			log("Resource object creation failed " + data.message);
 			showError(data.message);
@@ -1287,7 +1311,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		if(params === 'copy') {
 			if(dialogOptions.remoteCopy) {
 				var copiedResource = $.extend(true, {}, params2);
-				postJSON(dialogOptions.resourceUrl + "?updateIsCopy=true", copiedResource, function(data) {
+				postJSON(dialogOptions.copyUrl + '/' + params2.id, null, function(data) {
 	
 					if (data.success) {
 						log("Resource copied");

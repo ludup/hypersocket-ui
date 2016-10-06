@@ -136,7 +136,7 @@
 						}, createResource : function() {
 							realm = new Object();
 							realm.name = $('#name').val();
-							realm.type = $('#type').val();
+							realm.type = typeButton.getValue();
 							realm.id = $('#id').val();
 
 							$('#realmProperties').saveProperties(true,
