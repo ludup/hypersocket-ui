@@ -876,7 +876,7 @@ $.fn.propertyPage = function(opts) {
 									    	
 									    } else if(obj.inputType == 'color') {
 									    	
-									    	widget = $('#' + tab + '_value' + this.id).colorInput(obj);
+									    	widget = $('#' + tab + '_value' + inputId).colorInput(obj);
 									    	
 									    } else if(obj.inputType == 'editor') {
 									    	
@@ -884,7 +884,7 @@ $.fn.propertyPage = function(opts) {
 									    	
 									    } else if(obj.inputType == 'rich') {
 									    	
-									    	widget = $('#' + tab + '_value' + this.id).richInput(obj);
+									    	widget = $('#' + tab + '_value' + inputId).richInput(obj);
 									    	
 									    } else if (obj.inputType == 'select') {
 

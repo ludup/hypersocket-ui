@@ -38,6 +38,8 @@ import com.hypersocket.i18n.I18NService;
 import com.hypersocket.interfaceState.UserInterfaceState;
 import com.hypersocket.interfaceState.UserInterfaceStateListener;
 import com.hypersocket.interfaceState.UserInterfaceStateService;
+import com.hypersocket.message.MessageResourcePermission;
+import com.hypersocket.message.MessageResourceService;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionStrategy;
 import com.hypersocket.permissions.PermissionType;
@@ -88,6 +90,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	
 	@Autowired
 	IndexPageFilter indexFilter;
+	
+	@Autowired
+	MessageResourceService messageService;
 	
 	Set<MenuFilter> filters = new HashSet<MenuFilter>();
 	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
@@ -347,6 +352,24 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				"messages", "fa-envelope-o", "messages", 99999,
+				MessageResourcePermission.READ,
+				MessageResourcePermission.CREATE,
+				MessageResourcePermission.UPDATE,
+				MessageResourcePermission.DELETE) {
+
+					@Override
+					public boolean canRead() {
+						try {
+							return messageService.getResourceCount(getCurrentRealm(), "", "") > 0;
+						} catch (AccessDeniedException e) {
+							return false;
+						}
+					}
+			
+		}, MENU_BUSINESS_RULES);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_TOOLS, "",
 				null, 99999, null, null, null, null, null));
 
