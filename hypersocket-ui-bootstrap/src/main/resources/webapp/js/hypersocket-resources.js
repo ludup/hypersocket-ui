@@ -230,7 +230,7 @@ $.fn.resourceTable = function(params) {
 	$.each(options.fields,function(idx, obj) {
 		var c = { field : obj.name,
 				title: getResource(options.resourceKey + "." + obj.name + '.label'),
-				align:'left',
+				align: obj.align ? obj.align : 'left',
 				sortable: obj.sortable || obj.name === options.sortName,
 				formatter: obj.formatter
 		};
