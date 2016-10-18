@@ -37,6 +37,7 @@ function saveResource(resource, buttonElement, options, mode, closeCallback) {
 	postJSON(options.resourceUrl, resource, function(data) {
 
 		if (data.success) {
+			debugger;
 			log("Resource object created");
 			if(closeCallback) {
 				closeCallback();
@@ -44,6 +45,7 @@ function saveResource(resource, buttonElement, options, mode, closeCallback) {
 			if (options.resourceCreated) {
 				options.resourceCreated(data.resource);
 			}
+			checkBadges(false);
 			showSuccess(data.message);
 		} else {
 			log("Resource object creation failed " + data.message);
@@ -67,7 +69,7 @@ $.fn.resourceTable = function(params) {
 		pagination : true,
 		page : 1,
 		pageSize: 5,
-		pageList: [5, 10, 25],
+		pageList : [ 5, 10, 20, 50, 100 ],
 		search: true,
 		showColumns : true,
 		showRefresh : true,
@@ -86,7 +88,7 @@ $.fn.resourceTable = function(params) {
 		logo: false,
 		defaultView: 'table',
 		logoResourceTypeCallback: false,
-		hasResourceTable: true
+		hasResourceTable: true,
 		},params);
 
 	options.tableView = $('#' + divName);
@@ -278,6 +280,7 @@ $.fn.resourceTable = function(params) {
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 										act.action(resource, function(resource) {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+											checkBadges(false);
 										});
 									});
 							}
@@ -330,6 +333,7 @@ $.fn.resourceTable = function(params) {
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 										act.action(resource, function(resource) {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+											checkBadges(false);
 										});
 								});
 						}
@@ -407,6 +411,7 @@ $.fn.resourceTable = function(params) {
 						                    values: [resource.id]
 						                });
 										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+										checkBadges(false);
 										showSuccess(data.message);
 									} else {
 										showError(data.message);
@@ -518,18 +523,21 @@ $.fn.resourceTable = function(params) {
 		    		saveState(options.id, {'pageSize': size, 'sortOrder': order, 'sortName': name}, true);
 		    	}
 		    },
-		    onLoadSuccess: function() {
-				
-		    	if($('#searchRendered').length==0) {
-			    	if(sortColumns.length > 0) {
-						$('#' + divName).find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
+		    classes: 'table table-hover ' + divName,
+		    onPostHeader: function() {
+		    	
+		    	if($('#searchRendered' + divName).length==0) {
+		    		
+		    		log("Rendering search");
+		    		
+		    		if(sortColumns.length > 0) {
+						$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
 						$('#searchColumn').textDropdown({
 							values: sortColumns,
 							value: sortColumns[0].name,
 							changed: function(widget) {
 								
 								$('.search input[placeholder="Search"]').val('');
-								//$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', { searchText: ''});
 								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 							}
 						});
@@ -537,7 +545,7 @@ $.fn.resourceTable = function(params) {
 					
 					if(options.toolbarButtons) {
 						$.each(options.toolbarButtons, function(idx, action) {
-							$('#' + divName).find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
+							$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
 									+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
 									+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
 									+ action.icon + '"></i></button>');
@@ -546,14 +554,21 @@ $.fn.resourceTable = function(params) {
 								if(action.action) {
 									action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
 										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+										checkBadges(false);
 									});
 								}
 							});
 						});
 					}
-					$('#' + divName).find('.fixed-table-toolbar').last().append('<div id="searchRendered"></div>');
+					$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').last().append('<div id="searchRendered' + divName + '"></div>');
 		    	}
+		    },
+		    onLoadSuccess: function() {
+		    	
 		    	if (options.logo) {
+		    		
+		    		log("Rendering logo");
+		    		
 		    		$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px; display: none;"></div>');
 		    		
 		    		var gridResourceList = $('#' + divName + 'Placeholder').bootstrapTable('getData');
@@ -606,6 +621,7 @@ $.fn.resourceTable = function(params) {
 											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
 												act.action(resource, function(resource) {
 													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+													checkBadges(false);
 												});
 											});
 										}
@@ -645,6 +661,7 @@ $.fn.resourceTable = function(params) {
 											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
 												act.action(resource, function(resource) {
 													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+													checkBadges(false);
 												});
 											});
 										}
@@ -724,6 +741,7 @@ $.fn.resourceTable = function(params) {
 														}
 														$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
 														$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+														checkBadges(false);
 														showSuccess(data.message);
 													} else {
 														showError(data.message);
@@ -755,6 +773,7 @@ $.fn.resourceTable = function(params) {
 					if(button.action) {
 						button.action(function() {
 							$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+							checkBadges(false);
 						});
 					}
 				});
@@ -834,9 +853,13 @@ $.fn.resourceTable = function(params) {
 	var callback = {
 		refresh: function() {
 			$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+			checkBadges(false);
 		},
 		close: function() {
 			options.view.closeResource();
+		},
+		options: function() {
+			return options;
 		},
 		showCreate: function(callback) {
 			options.currentView = 'create';
@@ -888,6 +911,7 @@ $.fn.resourceTable = function(params) {
 									$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
 									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 									showSuccess(data.message);
+									checkBadges(false);
 								} else {
 									showError(data.message);
 								}
@@ -926,6 +950,9 @@ $.fn.samePageResourceView = function(params, params2) {
 					dialog.samePageResourceView('close');
 					if (dialogOptions.hasResourceTable) {
 						$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+					}
+					if(dialogOptions.resourceSaved) {
+						dialogOptions.resourceSaved(resource);
 					}
 				});
 			});
@@ -1131,6 +1158,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 				if (dialogOptions.hasResourceTable) {
 					$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 				}
+				if(dialogOptions.resourceSaved) {
+					dialogOptions.resourceSaved(resource);
+				}
 			});
 
 		});
@@ -1160,8 +1190,26 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 
 		$(this).find('.modal-footer').empty();
 		if(!readOnly) {
-			$(this).find('.modal-footer').append(
-						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.update") + '</button>');
+			
+			if(!dialogOptions.disableUpdateButton) {
+				$(this).find('.modal-footer').append(
+						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' 
+						+ getResource("text.update") + '</button>');
+			}
+			
+			if(dialogOptions.buildUpdateButtons) {
+				dialogOptions.buildUpdateButtons(params2, function(button, onclick) {
+					dialog.find('.modal-footer').append(
+							'<button type="button" id="' + button.id + 'Action" class="updateButton btn ' 
+							+ button.cssClass + '"><i class="fa ' 
+							+ button.icon + '"></i>' 
+							+ getResource(button.resourceKey) + '</button>');
+					$('#' + button.id + 'Action').click(function() {
+						onclick(button, $('#' + button.id + 'Action'));
+					});
+				});
+			}
+			
 			$('#' + $(this).attr('id') + "Action").off('click');
 			$('#' + $(this).attr('id') + "Action").on('click', function() {
 
@@ -1173,6 +1221,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						if (dialogOptions.hasResourceTable) {
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
+						if(dialogOptions.resourceSaved) {
+							dialogOptions.resourceSaved(resource);
+						}
 					});
 				} else {
 					saveResource(resource, $(this), dialogOptions, params, function() {
@@ -1183,6 +1234,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						}
 						if (dialogOptions.resourceUpdated) {
 							dialogOptions.resourceUpdated(resource);
+						}
+						if(dialogOptions.resourceSaved) {
+							dialogOptions.resourceSaved(resource);
 						}
 						if(params2.resourceUpdated) {
 							params2.resourceUpdated(resource);

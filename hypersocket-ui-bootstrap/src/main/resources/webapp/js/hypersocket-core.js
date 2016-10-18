@@ -191,6 +191,23 @@ function logoff() {
 
 }
 
+function checkBadges(schedule) {
+	
+	getJSON('menus/badges', null, function(data) {
+		$('.menuBadge').remove();
+		if(data.success) {
+			$.each(data.resources, function(idx, obj) {
+				if(obj.badge!=null) {
+					$('#' + obj.resourceKey).find('span').after('<span class="menuBadge badge">' + obj.badge + '</span>');
+				}
+			});
+		}
+		if(schedule) {
+			setTimeout(function() { checkBadges(true) }, 10000);
+		}
+	});
+};
+
 function home(data) {
 
 	log("Entering home");
@@ -270,7 +287,9 @@ function home(data) {
 					});
 					
 			});
-
+			
+			checkBadges(true);
+			
 			$('#navMenu')
 					.append(
 						'<li class="navicon"><a id="main-menu-toggle" class="hidden-sm hidden-md hidden-lg" href="#"><i class="fa fa-bars"></i></a></li>');
@@ -725,6 +744,10 @@ function loadMenu(menu) {
 			$('#buttonLarge_' + subPage).trigger('click');
 		}
 		
+		if ($(window).width() < 959) {
+			$('#main-menu').addClass('hidden-xs');
+		}
+		
 	} else {
 	
 		loadWait();
@@ -743,6 +766,9 @@ function loadSubPage(menu, element) {
 	loadWait();
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
 		window.location.hash = "menu=" + menu.resourceKey;
+		if ($(window).width() < 959) {
+			$('#main-menu').addClass('hidden-xs');
+		}
 	});
 }
 

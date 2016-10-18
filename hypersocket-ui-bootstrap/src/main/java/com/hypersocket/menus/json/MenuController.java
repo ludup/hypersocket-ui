@@ -25,6 +25,7 @@ import com.hypersocket.auth.json.UnauthorizedException;
 import com.hypersocket.json.ResourceList;
 import com.hypersocket.json.ResourceStatus;
 import com.hypersocket.menus.AbstractTableAction;
+import com.hypersocket.menus.Badge;
 import com.hypersocket.menus.Menu;
 import com.hypersocket.menus.MenuService;
 import com.hypersocket.permissions.AccessDeniedException;
@@ -126,6 +127,25 @@ public class MenuController extends AuthenticatedController {
 		try {
 			return new ResourceList<AbstractTableAction>(
 					menuService.getTableActions(table));
+		} finally {
+			clearAuthenticatedContext();
+		}
+	}
+	
+	@AuthenticationRequired
+	@RequestMapping(value = "menus/badges", method = RequestMethod.GET, produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResourceList<Badge> getBadges(
+			HttpServletRequest request, HttpServletResponse respone) throws UnauthorizedException,
+			SessionTimeoutException {
+
+		setupAuthenticatedContext(sessionUtils.getSession(request),
+				sessionUtils.getLocale(request));
+
+		try {
+			return new ResourceList<Badge>(
+					menuService.getCurrentBadges());
 		} finally {
 			clearAuthenticatedContext();
 		}
