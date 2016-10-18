@@ -407,7 +407,6 @@ $.fn.resourceTable = function(params) {
 		}
 
 		if(!options.disableEditView) {
-			debugger;
 			renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate && !row.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 			$(document).on(
@@ -735,7 +734,6 @@ $.fn.resourceTable = function(params) {
 							}
 
 							if(!options.disableEditView) {
-								debugger;
 								renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate && !resource.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
 								$(document).off('click', '#' + resource.id + 'GridOptions .row-edit');
 								$(document).on('click', '#' + resource.id + 'GridOptions .row-edit', function() {
@@ -830,7 +828,6 @@ $.fn.resourceTable = function(params) {
 		if(options.additionalButtons) {
 			
 			$.each(options.additionalButtons, function() {
-				debugger;
 				if(this.showButton && !this.showButton()) {
 					return;
 				}
@@ -1130,7 +1127,6 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		dialogOptions.clearDialog(false);
 		dialogOptions.displayResource(params2, true);
-		debugger;
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,

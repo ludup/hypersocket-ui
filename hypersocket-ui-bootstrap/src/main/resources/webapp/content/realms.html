@@ -145,7 +145,17 @@
 							});
 
 							return realm;
-						}, checkDelete: function(resource) {
+						},confirmed: function(resource, args) {
+							if('realm.knownHosts' in resource.properties) {
+								var pr = resource.properties['realm.knownHosts'] ;
+								if(pr.value.length > 0)
+									pr.value += ']|[';
+								pr.value += args[3];
+							}
+							else {						
+								resource.properties.push(new PropertyItem('realm.knownHosts', args[3]));
+							}
+						},checkDelete: function(resource) {
 							return !resource.system;
 						}, checkUpdate: function(resource) {
 							return true;

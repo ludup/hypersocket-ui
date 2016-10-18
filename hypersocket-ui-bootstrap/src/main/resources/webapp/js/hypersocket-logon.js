@@ -36,8 +36,19 @@ function showLogon(credentials, opts, message) {
 	}
 	
 	$.getJSON(url, credentials, function(data) {
-		processLogon(data, opts, message);
+	   	if(!checkRedirect(data))
+	   		processLogon(data, opts, message);
 	});
+}
+
+function checkRedirect(data) {
+	if(data.location) {
+		log('Changing to ' + data.location);
+		window.location = data.location;
+		return true;
+	}
+	else
+		return false;
 }
 
 function processLogon(data, opts, message) {
@@ -158,7 +169,8 @@ function processLogon(data, opts, message) {
 				e.preventDefault();
 				
 				getJSON('logon/reset', null, function(data) {
-					processLogon(data, opts);
+				   	if(!checkRedirect(data))
+				   		processLogon(data, opts);
 				});
 			});
 		}
@@ -171,14 +183,13 @@ function processLogon(data, opts, message) {
 		
 			$('#' + obj.label).click(function(e) {
 				e.preventDefault();
-				
-				getJSON(obj.defaultValue, null, function(data) {
-					processLogon(data, opts);
+				getJSON(obj.defaultValue, null, function(data){
+				   	if(!checkRedirect(data))
+				   		processLogon(data, opts);
 				});
+				
 			});
 		});
-		
-
 		
 		$('#logonButton')
 				.click(

@@ -244,7 +244,6 @@ $.fn.htmlInput = function(data) {
 		heightCss = 'height: 600px';
 	}
 	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px; ' + heightCss + '"></div>');
-	debugger;
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
 		  htmlMode: options.inputType=='html',
@@ -332,7 +331,6 @@ $.fn.codeInput = function(data) {
 
 	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px; ' + heightCss + '"></div>');
 	
-	debugger;
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
 		  mode:  options.inputType=='java' ? 'text/x-java' : options.inputType,
