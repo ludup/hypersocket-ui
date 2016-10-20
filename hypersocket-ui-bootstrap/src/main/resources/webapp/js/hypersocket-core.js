@@ -516,70 +516,77 @@ function showShutdownDialog(option, logoff) {
 }
 
 function shutdown(option, autoLogoff){
-	
-	$('#shutdownServer').find('.modal-body').empty();
-	$('#shutdownServer').find('.modal-body').append(
-			'<p style="width: 100%; text-align: center;">' + getResource("power.wait.shutdown") + '</p>' +
-			'<i class="fa fa-spinner fa-spin" style="font-size: 40px; width: 100%; text-align: center"></i>');
-	
 	getJSON('server/' + option + '/5', null, function(data) {
-	
+		
 		if(data.success) {
-			
-			hasShutdown = true;
-			var serverRunning = true;
-			var hasStopped = false;
-			var restarted = false;
-				
-			var timer = setTimeout(function() {
-				$.ajax({
-					url: basePath + '/api/server/ping',
-					dataType: 'json',
-					success: function(data){
-						if(!serverRunning){
-							hasShutdown = false;
-							restarted = true;
-						}
-					},
-					error: function(data) {
-						serverRunning = false;
-						if(!hasStopped) {
-							hasStopped = true;
-							$('#shutdownServer').find('p').text(getResource("power.finished.shutdown"));
-							setTimeout(function(){
-								if(option == 'restart'){
-									$('#shutdownServer').find('p').text(getResource("power.wait.restart"));
-								}
-							}, 2000);
-						}
-					}
-				});
-				if(serverRunning || (!serverRunning && !restarted && option == 'restart')){
-					timer = setTimeout(arguments.callee, 1000);
-				}else{
-					$('#shutdownServer').find('p').text(getResource('power.finished.' + option));
-					$('#shutdownServer').find('i').removeClass('fa-spin fa-spinner').addClass('fa-check');
-					
-					setTimeout(function() {
-						if(autoLogoff || (option == 'restart' && restartAutoLogoff)) {
-							log('Logging off user');
-							$('#shutdownServer').modal('hide');
-							logoff();
-						} else {
-							if(option == 'restart'){
-								setTimeout(function(){
-									location.reload();
-								}, 2000);
-							}					
-						}
-					}, 2000);
-				}
-			}, 1000);
-			
+			doShutdown(option, autoLogoff);
 		} else {
 			showError(data.error);
 		}
 	});
+}
+
+function doShutdown(option, autoLogoff, url) {
+	
+		$('#shutdownServer').find('.modal-body').empty();
+		$('#shutdownServer').find('.modal-body').append(
+				'<p style="width: 100%; text-align: center;">' + getResource("power.wait.shutdown") + '</p>' +
+				'<i class="fa fa-spinner fa-spin" style="font-size: 40px; width: 100%; text-align: center"></i>');
+		
+		hasShutdown = true;
+		var serverRunning = true;
+		var hasStopped = false;
+		var restarted = false;
+			
+		var timer = setTimeout(function() {
+			$.ajax({
+				url: basePath + '/api/server/ping',
+				dataType: 'json',
+				success: function(data){
+					if(!serverRunning){
+						hasShutdown = false;
+						restarted = true;
+					}
+				},
+				error: function(data) {
+					serverRunning = false;
+					if(!hasStopped) {
+						hasStopped = true;
+						$('#shutdownServer').find('p').text(getResource("power.finished.shutdown"));
+						setTimeout(function(){
+							if(option == 'restart'){
+								$('#shutdownServer').find('p').text(getResource("power.wait.restart"));
+							}
+						}, 2000);
+					}
+				}
+			});
+			if(serverRunning || (!serverRunning && !restarted && option == 'restart')){
+				timer = setTimeout(arguments.callee, 1000);
+			}else{
+				$('#shutdownServer').find('p').text(getResource('power.finished.' + option));
+				$('#shutdownServer').find('i').removeClass('fa-spin fa-spinner').addClass('fa-check');
+				
+				setTimeout(function() {
+					if(autoLogoff || (option == 'restart' && restartAutoLogoff)) {
+						log('Logging off user');
+						$('#shutdownServer').modal('hide');
+						logoff();
+					} else {
+						if(option == 'restart'){
+							setTimeout(function(){
+								if(url) {
+									window.location = url;
+								} else {
+									location.reload();
+								}
+							}, 2000);
+						}					
+					}
+				}, 2000);
+			}
+		}, 1000);
+
 }
 
 function loadRealms(realms) {
