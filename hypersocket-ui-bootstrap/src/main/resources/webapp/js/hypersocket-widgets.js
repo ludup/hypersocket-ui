@@ -728,7 +728,7 @@ $.fn.autoComplete = function(data) {
 		}
 	};
 	
-	var createDropdown = function(text, show) {
+	var createDropdown = function(text, show, prefiltered) {
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
@@ -754,7 +754,7 @@ $.fn.autoComplete = function(data) {
 		} else{
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-				if(name.toLowerCase().indexOf(text.toLowerCase()) == 0) {
+				if(prefiltered || name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
 					selected.push(obj);
 				}
 			});
@@ -851,7 +851,7 @@ $.fn.autoComplete = function(data) {
 		$('#spin_' + id).addClass('fa-spinner');
 		
 		if(!options.remoteSearch) {
-			createDropdown(text, true);
+			createDropdown(text, true, false);
 		} else {
 			getJSON(
 					options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text,
@@ -870,7 +870,7 @@ $.fn.autoComplete = function(data) {
 						$('#input_' + id).data('values', data.rows);
 						$('#input_' + id).data('map', map);
 						
-						createDropdown(text, true);
+						createDropdown(text, true, true);
 					});
 			
 		}
@@ -981,7 +981,7 @@ $.fn.autoComplete = function(data) {
 
 	$('#click_' + id).click(function(e){
 		if(options.alwaysDropdown) {
-			createDropdown("", true);
+			createDropdown("", true, false);
 		} else {
 			if(options.clicked) {
 				options.clicked(callback);
