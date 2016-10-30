@@ -108,7 +108,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
-		if(parseLong(checkReplacement(obj.minValue, widgetsByResourceKey)) > parseLong(value) || parseLong(checkReplacement(obj.maxValue, widgetsByResourceKey)) < parseLong(value)){
+		if(parseInt(checkReplacement(obj.minValue, widgetsByResourceKey)) > parseInt(value) || parseInt(checkReplacement(obj.maxValue, widgetsByResourceKey)) < parseInt(value)){
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
