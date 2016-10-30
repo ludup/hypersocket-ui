@@ -1770,7 +1770,7 @@ $.fn.multipleSearchInput = function(data) {
 					return options;
 				},
 				getInput: function() {
-					return $('#' + id);
+					return $('#' + id + 'IncludedSelect');
 				},
 	 			clear: function() {
 	 				$('#' + id).multipleTextInput();
