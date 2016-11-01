@@ -1792,3 +1792,20 @@ select[multiple] {
 	margin-left: 5px;
 	background-color: #B71C1C;
 }
+
+.setupDownloadProgress {
+	margin-left: 25px;
+}
+
+.setupExtension {
+	color: white; 
+	display: inline-block; 
+	height: 120px; 
+	width: 120px; 
+	margin: 10px; 
+	background-color: #333
+}
+
+.setupExtension span {
+	margin: 10px;
+}

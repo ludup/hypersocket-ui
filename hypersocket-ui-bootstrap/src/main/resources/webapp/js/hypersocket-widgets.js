@@ -2920,6 +2920,10 @@ $.fn.fileUploadInput = function(data) {
 			$('#' + id + 'Buttons').append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
 		}
 		
+		if(options.showDeleteButton) {
+			$('#' + id + 'Buttons').append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
+		}
+
 		if(options.showDownloadButton){
 			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
 		}
@@ -4520,7 +4524,7 @@ $.fn.feedbackPanel = function(data) {
 		$('#feedbackNext').remove();
 		$.each(feedback, function(idx, result) {
 			last = result;
-			var id = "f" + idx;
+			var id = div.attr('id') + "f" + idx;
 			if($('#' + id).length > 0) {
 				return;
 			}

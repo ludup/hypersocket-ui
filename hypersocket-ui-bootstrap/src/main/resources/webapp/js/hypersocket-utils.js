@@ -345,6 +345,15 @@ function replacePaths(value) {
 	return value.replace("$" + "{uiPath}", uiPath).replace("$" + "{basePath}", basePath);
 }
 
+function getResourceOrDefault(key, alt) {
+	var result = $(document).data('i18n')[key];
+	if(!result) {
+		result = alt;
+	}
+	return result;
+};
+
+
 function getTooltip(key, element) {
 	return getResourceNoDefault(key + '.' + element + '.tooltip');
 }
