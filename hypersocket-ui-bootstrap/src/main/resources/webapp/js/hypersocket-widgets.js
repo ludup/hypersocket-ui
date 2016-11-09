@@ -1443,6 +1443,7 @@ $.fn.multipleSearchInput = function(data) {
 						selectAllIfEmpty : false, 
 						selectedIsObjectList : false, 
 						disabled : false,
+						valueIsNamePair: true,
 						isArrayValue: true },
 					data);
 
@@ -1517,9 +1518,16 @@ $.fn.multipleSearchInput = function(data) {
 				getValue: function() {
 					result = new Array();
 
-					$('#' + id + 'IncludedSelect option').each(function() {
-						result.push(he.encode($(this).val()) + "=" + he.encode($(this).text()));
-					});
+					if(options.valueIsNamePair) {
+						$('#' + id + 'IncludedSelect option').each(function() {
+							result.push(he.encode($(this).val()) + "=" + he.encode($(this).text()));
+						});
+					} else {
+						$('#' + id + 'IncludedSelect option').each(function() {
+							result.push(he.encode($(this).val()));
+						});
+						
+					}
 					return result;
 				},
 				reset: function() {
