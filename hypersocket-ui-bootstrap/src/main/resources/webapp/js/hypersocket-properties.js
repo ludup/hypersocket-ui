@@ -631,6 +631,7 @@ $.fn.propertyPage = function(opts) {
 			}
 
 			var first = true;
+			var filterPrefix = "_" + Date.now() + "_";
 			
 			var createAdditionalTabs = function() {
 				$.each(options.additionalTabs,
@@ -641,7 +642,7 @@ $.fn.propertyPage = function(opts) {
 					}
 					$(contentTabs)
 							.append(
-								'<li class="class_default" id="' + this.id + 'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + '><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
+								'<li class="' + filterPrefix + 'default" id="' + this.id + 'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + '><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
 					$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 					$('#' + this.id).addClass('tab-pane');
 				});
@@ -717,7 +718,7 @@ $.fn.propertyPage = function(opts) {
 								}
 								
 								
-								var tabfilterClass = "class_default";
+								var tabfilterClass = filterPrefix + "default";
 								var categoryKey = this.categoryKey;
 								
 								if(options.useFilters) {
@@ -725,7 +726,7 @@ $.fn.propertyPage = function(opts) {
 										if($.inArray(this.filter, filters) == -1) {
 											filters.push(this.filter);
 										}
-										tabfilterClass = "class_" + this.filter;
+										tabfilterClass = filterPrefix + this.filter;
 									}
 								}
 								
@@ -823,12 +824,12 @@ $.fn.propertyPage = function(opts) {
 										var filterClass = tabfilterClass;
 										
 										if(options.useFilters) {
-											if(filterClass=='class_default') {
+											if(filterClass== (filterPrefix + 'default')) {
 												if(obj.filter && obj.filter != 'default') {
 													if($.inArray(obj.filter, filters) == -1) {
 														filters.push(obj.filter);
 													}
-													filterClass = "class_" + obj.filter;
+													filterClass = filterPrefix + obj.filter;
 												}
 											}
 										}
@@ -1151,6 +1152,7 @@ $.fn.propertyPage = function(opts) {
 						}
 						
 						// Hide tab
+						$('.tab' + idx).addClass('visibility');
 						$('.tab' + idx).hide();
 						var visibilityCallback = function() {
 							
@@ -1172,10 +1174,11 @@ $.fn.propertyPage = function(opts) {
 							if(show) {
 								// Show tab
 								$('.tab' + idx).show();
-//								$('li.tab' + idx + ':first a').tab('show');
+								$('.tab' + idx).removeClass('visibility');
 							} else {
 								// Hide tab
 								$('.tab' + idx).hide();
+								$('.tab' + idx).addClass('visibility');
 							}
 						}
 						visibilityCallback();
@@ -1216,18 +1219,20 @@ $.fn.propertyPage = function(opts) {
 					$.each(filters, function(idx, filter) {
 						if(filter!='default') {
 							$('#' + propertyDiv + 'PropertyFilter').append(' | <a href="#" class="click_' + filter + '">' + getResource(filter + '.label') + '</a>');
-							$('.class_' + filter).hide();
+							$('.' + filterPrefix + filter).hide();
 						}
 						$('.click_' + filter).on('click', function(e) {
 							e.preventDefault();
 							$.each(filters, function(i,f) {
 								if(f!=filter) {
 									if(f!='default' || !options.alwaysShowStandardFilter)
-									$('.class_' + f).hide();
+										$('.' + filterPrefix + f).hide();
 								}
 							});
-							$('.class_' + filter).show();
-							$('li.class_' + filter + ':first a').tab('show');
+							log('Filtering to ' + filter);
+							$('.' + filterPrefix + filter).show();
+							$('.visibility').hide();
+							$('li.' + filterPrefix + filter + ':first a').tab('show');
 						});
 					});
 				}
