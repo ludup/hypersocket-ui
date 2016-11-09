@@ -187,10 +187,11 @@ pre {
 	position: relative;
 }
 .excludedList {
+	width: 80%;
 	float: left;
-	width: 40%;
 	padding-left: 10px;
 	padding-right: 5px;
+	padding-bottom: 20px;
 }
 
 .excludedList label {
@@ -199,6 +200,10 @@ pre {
 	float: none;
 }
 
+.searchInputAdd {
+	margin-left: 5px;
+	float: left;
+}
 .excludedList select {
 	margin-right: 5px;
 }
@@ -216,10 +221,14 @@ pre {
 
 .includedList {
 	float: left;
-	width: 40%;
-	padding-left: 0px;
-	padding-right: 0px;
-	margin-right: 10px;
+	width: 80%;
+	padding-left: 5px;
+	padding-right: 10px;
+}
+
+.selectedRemove {
+	margin-left: 5px;
+	float: left;
 }
 
 .includedList label {

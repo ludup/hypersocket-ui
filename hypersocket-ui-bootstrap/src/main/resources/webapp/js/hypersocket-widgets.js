@@ -1432,8 +1432,8 @@ $.fn.multipleSelect = function(data) {
 
 		$(this).addClass('container-fluid');
 		
-		$(this).append('<div class="excludedList col-md-5" id="' + id 
-				+ 'Excluded"><label>' + getResource(options.excludedLabelResourceKey) + '</label></div>');
+		$(this).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><div class="excludedList col-md-5" id="' + id 
+				+ 'Excluded"><label>' + getResource(options.excludedLabelResourceKey) + '</label></div><div id="' + id + 'ExcludedButtons" style="padding-top: 15px;"></div></div>');
 		
 		$('#' + id + 'Excluded').append(
 					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' + id
@@ -1441,15 +1441,15 @@ $.fn.multipleSelect = function(data) {
 
 		$(this).append('<div class="listButtons" id="' + id + 'Buttons"/>');
 		
-		$('#' + id + 'Buttons').append(
-					'<button class="btn-multiple-select btn btn-primary" id="' + id + 'AddButton" name="AddButton_' + name + '"><i class="fa fa-chevron-circle-right"></i></button><br/>');
+		$('#' + id + 'ExcludedButtons').append(
+					'<button class="btn-multiple-select btn btn-primary" id="' + id + 'AddButton" name="AddButton_' + name + '"><i class="fa fa-chevron-circle-down"></i></button><br/>');
 		
-		$('#' + id + 'Buttons').append(
-					'<button class="btn-multiple-select btn btn-primary" id="' + id + 'RemoveButton" name="RemoveButton_' + name + '"><i class="fa fa-chevron-circle-left"></i></button>');
+		$(this).append('<div id="' + id + 'IncludedList"><div class="includedList col-md-5" id="' + id 
+				+ 'Included"><label>' + getResource(options.includedLabelResourceKey) + '</label></div><div id="' + id + 'IncludedButtons" style="padding-top: 15px;"></div></div>');
 		
-		$(this).append('<div class="includedList col-md-5" id="' + id 
-				+ 'Included"><label>' + getResource(options.includedLabelResourceKey) + '</label></div>');
-		
+		$('#' + id + 'IncludedButtons').append(
+				'<button class="btn-multiple-select btn btn-primary" id="' + id + 'RemoveButton" name="RemoveButton_' + name + '"><i class="fa fa-chevron-circle-up"></i></button>');
+	
 		$('#' + id + 'Included').append('<select ' + (!options.disabled ? '' : 'disabled="disabled" ') 
 				+ 'multiple="multiple" id="' + id + 'IncludedSelect" name="IncludedSelect_' + name + '" class="formInput text form-control"/>');
 
@@ -1460,7 +1460,7 @@ $.fn.multipleSelect = function(data) {
 		var toSelect = $('#' + id + 'IncludedSelect');
 
 		if(options.allowOrdering) {
-			$(this).append('<div class="listButtons" id="' + id + 'OrderButtons"/>');
+			$('#' + id + 'IncludedButtons').append('<div class="listButtons" id="' + id + 'OrderButtons"/>');
 			
 			$('#' + id + 'OrderButtons').append(
 					'<button class="btn-multiple-select btn btn-primary" id="' 
@@ -1681,7 +1681,8 @@ $.fn.multipleSearchInput = function(data) {
 		$('#' + id + 'Buttons').remove();
 		$('#' + id + 'Included').remove();
 
-		$(this).append('<div class="excludedList" id="' + id + 'Excluded"></div>');
+		$(this).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div><div class="searchInputAdd" id="' + id + 'SearchAdd"></div></div>');
+		$(this).append('<div id="' + id + 'SelectedItems"><div class="includedList" id="' + id + 'Included"></div><div class="selectedRemove" id="' + id + 'SelectedRemove"></div></div>');
 
 		var searchInput = $('#' + id + 'Excluded').autoComplete({
 				remoteSearch: true,
@@ -1693,19 +1694,16 @@ $.fn.multipleSearchInput = function(data) {
 				nameIsResourceKey: options.nameIsResourceKey
 			});
 
-		$(this).append('<div class="multipleTextInputButtons" id="' + id + 'Buttons"/>');
-		
-		$('#' + id + 'Buttons').append(
+		$('#' + id + 'SearchAdd').append(
 		'<button class="btn-multiple-select btn btn-primary" id="' 
 				+ id 
-				+ 'AddButton" name="AddButton_' + name + '"><i class="fa fa-chevron-circle-right"></i></button><br/>');
+				+ 'AddButton" name="AddButton_' + name + '"><i class="fa fa-plus-square-o"></i></button><br/>');
 		
-		$('#' + id + 'Buttons').append(
+		$('#' + id + 'SelectedRemove').append(
 				'<button class="btn-multiple-select btn btn-primary" id="' 
 						+ id 
-						+ 'RemoveButton" name="RemoveButton_' + name + '"><i class="fa fa-chevron-circle-left"></i></button>');
+						+ 'RemoveButton" name="RemoveButton_' + name + '"><i class="fa fa-trash-o"></i></button>');
 
-		$(this).append('<div class="includedList" id="' + id + 'Included"></div>');
 		$('#' + id + 'Included').append(
 					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
 							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '" class="formInput text form-control"/>');
