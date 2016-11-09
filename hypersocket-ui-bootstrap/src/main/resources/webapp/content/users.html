@@ -214,8 +214,11 @@
 								resourceKey : 'user',
 								canCreate : currentMenu.canCreate,
 								canUpdate : currentMenu.canUpdate,
-								canDelete : currentMenu.canDelete,
 								additionalButtons: buttons,
+								canDelete : true,
+								checkDelete: function(row) {
+									return !row.readOnly;
+								},
 								additionalActions : actions,
 								validate : function(create) {
 									if ($('#userName').val().trim() == '') {

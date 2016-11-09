@@ -924,39 +924,36 @@ $.fn.autoComplete = function(data) {
 		}
 	};
 	
-	var createDropdown = function(text, show) {
+	var createDropdown = function(text, show, prefiltered) {
 		var selected = new Array();
-		var values = $('#input_' + id).data('values');
-		if(values) {
-			if(options.alwaysDropdown || (text == '*') || (text == ' ')){
-				$.each(values, function(idx, obj) {
-					var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+				selected.push(obj);
+			});
+		} else if(text.startsWith('*')){
+			var searchText = text.substring(1, text.length - 1);
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+				if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
 					selected.push(obj);
-				});
-			} else if(text.startsWith('*')){
-				var searchText = text.substring(1, text.length - 1);
-				$.each(values, function(idx, obj) {
-					var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-					if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
-						selected.push(obj);
-					}
-				});
-			} else if(text.endsWith('*')){
-				var searchText = text.substring(0, text.length - 1);
-				$.each(values, function(idx, obj) {
-					var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-					if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
-						selected.push(obj);
-					}
-				});
-			} else{
-				$.each(values, function(idx, obj) {
-					var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-					if(name.toLowerCase().indexOf(text.toLowerCase()) == 0) {
-						selected.push(obj);
-					}
-				});
-			}
+				}
+			});
+		} else if(text.endsWith('*')){
+			var searchText = text.substring(0, text.length - 1);
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+				if(name.toLowerCase().indexOf(searchText.toLowerCase()) > -1) {
+					selected.push(obj);
+				}
+			});
+		} else{
+			$.each($('#input_' + id).data('values'), function(idx, obj) {
+				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+				if(prefiltered || name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
+					selected.push(obj);
+				}
+			});
 		}
 		if(options.sortOptions) {
 			selected.sort(function(a, b) {
@@ -1050,7 +1047,7 @@ $.fn.autoComplete = function(data) {
 		$('#spin_' + id).addClass('fa-spinner');
 		
 		if(!options.remoteSearch) {
-			createDropdown(text, true);
+			createDropdown(text, true, false);
 		} else {
 			getJSON(
 					options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text,
@@ -1072,7 +1069,7 @@ $.fn.autoComplete = function(data) {
 						$('#input_' + id).data('values', data.rows);
 						$('#input_' + id).data('map', map);
 						
-						createDropdown(text, true);
+						createDropdown(text, true, true);
 					});
 			
 		}
@@ -1183,7 +1180,7 @@ $.fn.autoComplete = function(data) {
 
 	$('#click_' + id).click(function(e){
 		if(options.alwaysDropdown) {
-			createDropdown("", true);
+			createDropdown("", true, false);
 		} else {
 			if(options.clicked) {
 				options.clicked(callback);
@@ -1672,6 +1669,7 @@ $.fn.multipleSearchInput = function(data) {
 						selectAllIfEmpty : false, 
 						selectedIsObjectList : false, 
 						disabled : false,
+						valueIsNamePair: true,
 						isArrayValue: true },
 					data);
 
@@ -1746,9 +1744,16 @@ $.fn.multipleSearchInput = function(data) {
 				getValue: function() {
 					result = new Array();
 
-					$('#' + id + 'IncludedSelect option').each(function() {
-						result.push(he.encode($(this).val()) + "=" + he.encode($(this).text()));
-					});
+					if(options.valueIsNamePair) {
+						$('#' + id + 'IncludedSelect option').each(function() {
+							result.push(he.encode($(this).val()) + "=" + he.encode($(this).text()));
+						});
+					} else {
+						$('#' + id + 'IncludedSelect option').each(function() {
+							result.push(he.encode($(this).val()));
+						});
+						
+					}
 					return result;
 				},
 				reset: function() {

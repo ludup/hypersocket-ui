@@ -52,7 +52,6 @@ import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
 import com.hypersocket.server.HypersocketServer;
-import com.hypersocket.server.interfaces.http.HTTPInterfaceResourcePermission;
 import com.hypersocket.session.SessionPermission;
 import com.hypersocket.ui.IndexPageFilter;
 
@@ -189,10 +188,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "interfacesMenu",
 				"fa-sitemap", "interfacesMenu", 100,
-				HTTPInterfaceResourcePermission.READ,
-				HTTPInterfaceResourcePermission.CREATE,
-				HTTPInterfaceResourcePermission.UPDATE,
-				HTTPInterfaceResourcePermission.DELETE),
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION,
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION),
 				MenuService.MENU_SYSTEM_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS,
