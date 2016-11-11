@@ -74,7 +74,9 @@ public class HtmlContentFilter implements ContentFilter {
 		}
 		
 		for(FilterExtender extender : extenders) {
-			resolver.addAll(extender.getAdditionalResolvers(request));
+			MapTokenResolver rez = extender.getAdditionalResolvers(request);
+			if(rez != null)
+				resolver.addAll(rez);
 		}
 
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);

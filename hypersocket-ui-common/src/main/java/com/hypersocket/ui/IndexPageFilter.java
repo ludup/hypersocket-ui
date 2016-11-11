@@ -60,7 +60,9 @@ public class IndexPageFilter implements ContentFilter {
 		resolver.addToken("scripts", generateScripts());
 
 		for(FilterExtender extender : extenders) {
-			resolver.addAll(extender.getAdditionalResolvers(request));
+			MapTokenResolver res = extender.getAdditionalResolvers(request);
+			if(res != null)
+				resolver.addAll(res);
 		}
 		
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
