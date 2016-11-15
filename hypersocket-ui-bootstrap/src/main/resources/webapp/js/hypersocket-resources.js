@@ -37,7 +37,7 @@ function saveResource(resource, buttonElement, options, mode, closeCallback) {
 	postJSON(options.resourceUrl, resource, function(data) {
 
 		if (data.success) {
-			debugger;
+			
 			log("Resource object created");
 			if(closeCallback) {
 				closeCallback();
