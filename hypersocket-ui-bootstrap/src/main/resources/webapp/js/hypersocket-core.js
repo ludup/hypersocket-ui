@@ -299,7 +299,7 @@ function home(data) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
 						if(data.success) {
-							window.location.reload();
+							window.location = '${uiPath}#menu=users';
 						} else {
 							showError(data.message);
 						}
