@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.hypersocket.auth.json.AuthenticatedController;
 import com.hypersocket.auth.json.AuthenticationRequired;
+import com.hypersocket.auth.json.AuthenticationRequiredButDontTouchSession;
 import com.hypersocket.auth.json.UnauthorizedException;
 import com.hypersocket.json.ResourceList;
 import com.hypersocket.json.ResourceStatus;
@@ -132,7 +133,7 @@ public class MenuController extends AuthenticatedController {
 		}
 	}
 	
-	@AuthenticationRequired
+	@AuthenticationRequiredButDontTouchSession
 	@RequestMapping(value = "menus/badges", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
