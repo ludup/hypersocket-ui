@@ -513,7 +513,7 @@ div.tablePages ul.pagination {
 }
 
 .dropdown-menu {
-	z-index: 999999;
+	z-index: 999998;
 }
 
 a.disabled-link,
@@ -569,7 +569,7 @@ table {
 	background-color: #494B4C;
 	color: #fff;
 	bottom: 0;
-	z-index: 99999;
+	z-index: 99998;
 }
 
 #copyright {
@@ -1817,4 +1817,8 @@ select[multiple] {
 
 .setupExtension span {
 	margin: 10px;
+}
+
+.notifyjs-wrapper {
+	z-index: 99999;
 }
