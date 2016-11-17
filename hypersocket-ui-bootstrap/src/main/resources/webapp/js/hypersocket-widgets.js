@@ -1203,7 +1203,26 @@ $.fn.autoComplete = function(data) {
 	} else if(options.values && !options.remoteSearch) {
 		buildData(options.values);
 		updateValue(options.value, false);
-	} 
+	} else if(options.remoteSearch) {
+		if(options.value !== '') {
+			getJSON(options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + options.value + "&searchColumn=" + options.valueAttr,
+					null,
+					function(data) {
+						
+						var map = [];
+						$.each(data.rows, function(idx, obj) {
+							map[obj[options.valueAttr]] = obj;
+							if(obj[options.valueAttr]==options.value) {
+								thisWidget.data('selectedObject', obj);
+								$('#' + id).val(options.value);
+								$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+							}
+						});
+						$('#input_' + id).data('values', data.rows);
+						$('#input_' + id).data('map', map);
+					});
+		}
+	}
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
