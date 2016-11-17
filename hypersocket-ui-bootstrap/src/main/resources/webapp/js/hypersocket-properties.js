@@ -994,7 +994,7 @@ $.fn.propertyPage = function(opts) {
 											widget = $('#' + tab + '_value' + inputId).html5Upload(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSelect') {
-
+											debugger
 											var url;
 											if(obj.url && options.resource) {
 												url = obj.url.replace('{id}', options.resource);
@@ -1063,7 +1063,7 @@ $.fn.propertyPage = function(opts) {
 											if(!widget) {
 												log("Cannot find input for widget " + obj.inputType);
 											} else {
-										
+												debugger;
 												widget = $.extend({
 													showTab: function() {
 														$('a[name="link_' + categoryKey + '"]').tab('show');

@@ -1429,19 +1429,20 @@ $.fn.multipleSelect = function(data) {
 
 		$(this).addClass('container-fluid');
 		
-		$(this).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><div class="excludedList col-md-5" id="' + id 
+		$(this).append('<div id="' + id + '"></div>');
+		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><div class="excludedList col-md-5" id="' + id 
 				+ 'Excluded"><label>' + getResource(options.excludedLabelResourceKey) + '</label></div><div id="' + id + 'ExcludedButtons" style="padding-top: 15px;"></div></div>');
 		
 		$('#' + id + 'Excluded').append(
 					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' + id
 						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '" class="formInput text form-control"/>');
 
-		$(this).append('<div class="listButtons" id="' + id + 'Buttons"/>');
+		$('#' + id).append('<div class="listButtons" id="' + id + 'Buttons"/>');
 		
 		$('#' + id + 'ExcludedButtons').append(
 					'<button class="btn-multiple-select btn btn-primary" id="' + id + 'AddButton" name="AddButton_' + name + '"><i class="fa fa-arrow-down"></i></button><br/>');
 		
-		$(this).append('<div id="' + id + 'IncludedList"><div class="includedList col-md-5" id="' + id 
+		$('#' + id).append('<div id="' + id + 'IncludedList"><div class="includedList col-md-5" id="' + id 
 				+ 'Included"><label>' + getResource(options.includedLabelResourceKey) + '</label></div><div id="' + id + 'IncludedButtons" style="padding-top: 15px;"></div></div>');
 		
 		$('#' + id + 'IncludedButtons').append(
