@@ -57,6 +57,7 @@
 					userRealm = currentRealm;
 				}
 				
+				$(document).data('apiUrl', apiUrl);
 				$(document).data('userRealm', null);
 				
 				$('#userDialog').load(uiPath + '/content/userDialog.html', function() {
