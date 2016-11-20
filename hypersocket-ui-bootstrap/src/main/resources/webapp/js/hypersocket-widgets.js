@@ -1473,8 +1473,9 @@ $.fn.multipleSearchInput = function(data) {
 		$('#' + id + 'Buttons').remove();
 		$('#' + id + 'Included').remove();
 
-		$(this).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div><div class="searchInputAdd" id="' + id + 'SearchAdd"></div></div>');
-		$(this).append('<div id="' + id + 'SelectedItems"><div class="includedList" id="' + id + 'Included"></div><div class="selectedRemove" id="' + id + 'SelectedRemove"></div></div>');
+		$(this).append('<div id="' + id + '"></div>');
+		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div><div class="searchInputAdd" id="' + id + 'SearchAdd"></div></div>');
+		$('#' + id).append('<div id="' + id + 'SelectedItems"><div class="includedList" id="' + id + 'Included"></div><div class="selectedRemove" id="' + id + 'SelectedRemove"></div></div>');
 
 		var searchInput = $('#' + id + 'Excluded').autoComplete({
 				remoteSearch: true,
@@ -1504,7 +1505,7 @@ $.fn.multipleSearchInput = function(data) {
 		var toSelect = $('#' + id + 'IncludedSelect');
 		
 		if(options.allowOrdering) {
-			$(this).append('<div class="multipleTextInputButtons" id="' + id + 'OrderButtons"/>');
+			$('#' + id).append('<div class="multipleTextInputButtons" id="' + id + 'OrderButtons"/>');
 			
 			$('#' + id + 'OrderButtons').append(
 					'<button class="btn-multiple-select btn btn-primary" id="' 
@@ -1688,9 +1689,9 @@ $.fn.multipleTextInput = function(data) {
 		$('#' + id + 'Buttons').remove();
 		$('#' + id + 'Included').remove();
 
-		$(this).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div><div class="searchInputAdd" id="' + id + 'SearchAdd"></div></div>');
-		$(this).append('<div id="' + id + 'SelectedItems"><div class="includedList" id="' + id + 'Included"></div><div class="selectedRemove" id="' + id + 'SelectedRemove"></div></div>');
-
+		$(this).append('<div id="' + id + '"></div>');
+		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div><div class="searchInputAdd" id="' + id + 'SearchAdd"></div></div>');
+		$('#' + id).append('<div id="' + id + 'SelectedItems"><div class="includedList" id="' + id + 'Included"></div><div class="selectedRemove" id="' + id + 'SelectedRemove"></div></div>');
 
 		var textInput = $('#' + id + 'Excluded').textInput({
 				id: id + 'ExcludedSelect',
@@ -1700,7 +1701,7 @@ $.fn.multipleTextInput = function(data) {
 		
 
 
-		$(this).append('<div class="multipleTextInputButtons" id="' + id + 'Buttons"/>');
+		$('#' + id).append('<div class="multipleTextInputButtons" id="' + id + 'Buttons"/>');
 		
 		$('#' + id + 'SearchAdd').append(
 		'<button class="btn-multiple-select btn btn-primary" id="' 
@@ -1712,7 +1713,7 @@ $.fn.multipleTextInput = function(data) {
 						+ id 
 						+ 'RemoveButton" name="RemoveButton_' + name + '"><i class="fa fa-trash"></i></button>');
 
-		$(this).append('<div class="includedList" id="' + id + 'Included"></div>');
+		$('#' + id).append('<div class="includedList" id="' + id + 'Included"></div>');
 		$('#' + id + 'Included').append(
 					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
 							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '" class="formInput text form-control"/>');
