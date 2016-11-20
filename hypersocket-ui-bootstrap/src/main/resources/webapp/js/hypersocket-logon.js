@@ -96,9 +96,17 @@ function processLogon(data, opts, message) {
 					return;
 				} else if (this.type == 'p') {
 					if(this.valueResourceKey) {
-						$('#logonForm').append('<p>' + getResource(this.defaultValue) + '</p>');
+						$('#logonForm').append('<p class="center">' + getResource(this.defaultValue) + '</p>');
 					} else {
-						$('#logonForm').append('<p>' + this.defaultValue + '</p>');
+						$('#logonForm').append('<p class="center">' + this.defaultValue + '</p>');
+					}
+					
+					return;
+				} else if (this.type == 'pre') {
+					if(this.valueResourceKey) {
+						$('#logonForm').append('<pre>' + getResource(this.defaultValue) + '</pre>');
+					} else {
+						$('#logonForm').append('<pre>' + this.defaultValue + '</pre>');
 					}
 					
 					return;
