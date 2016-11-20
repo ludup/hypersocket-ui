@@ -1063,7 +1063,7 @@ $.fn.propertyPage = function(opts) {
 											if(!widget) {
 												log("Cannot find input for widget " + obj.inputType);
 											} else {
-												debugger;
+												
 												widget = $.extend({
 													showTab: function() {
 														$('a[name="link_' + categoryKey + '"]').tab('show');
