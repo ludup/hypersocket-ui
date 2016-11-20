@@ -98,7 +98,7 @@ pre {
 
 .form-signin {
 	width: 330px;
-	padding: 15px;
+	padding-top: 50px;
 	margin: 0 auto;
 }
 
@@ -566,7 +566,7 @@ table {
 	bottom: 0;
 	/* Set the fixed height of the footer here */
 	height: 50px;
-	background-color: #494B4C;
+	background-color: #000;
 	color: #fff;
 	bottom: 0;
 	z-index: 0;
@@ -814,8 +814,8 @@ table {
 }
 
 .navbar-inverse {
-	background-color: #494B4C;
-	border-color: #494B4C;
+	background-color: #000;
+	border-color: #000;
 }
 
 .navbar-header {
