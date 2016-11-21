@@ -906,7 +906,6 @@ $.fn.propertyPage = function(opts) {
 											widget = $('#' + tab + '_value' + inputId).html5Upload(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSelect') {
-
 											var url;
 											if(obj.url && options.resource) {
 												url = obj.url.replace('{id}', options.resource);
