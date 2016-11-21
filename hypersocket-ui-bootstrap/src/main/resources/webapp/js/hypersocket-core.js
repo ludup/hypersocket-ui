@@ -113,6 +113,9 @@ function clearContent() {
 
 function startLogon(opts) {
 	
+	if(!opts) {
+		opts = $(document).data('logonOptions');
+	}
 	
 	opts = $.extend({
 		showBusy: showBusy,
@@ -165,15 +168,19 @@ function startLogon(opts) {
 			if(data.homePage) {
 				window.open(data.homePage, "_self", false);
 			} else {
-				if(window.location.pathname.indexOf('${uiPath}')==-1) {
-					window.location = '${uiPath}';
-				} else {
+//              This change prevents admin logon from returning to ${uiPath} and is intended. All pages
+//				should work regardless of the path in the browser.
+//				if(window.location.pathname.indexOf('${uiPath}')==-1) {
+//					window.location = '${uiPath}';
+//				} else {
 					home(data);
-				}
+//				}
 			}			
 		},
 		formContent: $(contentDiv)
 	}, opts);
+	
+	$(document).data('logonOptions', opts);
 	logon(null, opts);
 }
 
@@ -186,6 +193,7 @@ function logoff() {
 	showBusy();
 
 	$.get(basePath + '/api/logoff', null, function() {
+		
 		startLogon();
 	});
 
