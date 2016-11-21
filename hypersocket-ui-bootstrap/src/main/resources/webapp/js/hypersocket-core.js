@@ -779,12 +779,12 @@ function loadMenu(menu) {
 			if(!this.hidden) {
 				$('#subMenuIconPanel').append(
 						'<div class="col-xs-2 hidden-xs hidden-sm subMenuLarge">'
-					+	'	<a class="large-button subMenu" data-value="' + this.resourceName + '" id="buttonLarge_' + this.resourceName + '">'
+					+	'	<a class="large-button subMenu" data-value="' + this.resourceKey + '" id="buttonLarge_' + this.resourceKey + '">'
 					+	'		<i class="fa ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
 					+	'	</a>'
 					+	'</div>'
 					+	'<div class="col-xs-2 visible-xs visible-sm" style="padding-bottom: 10px">'
-					+	'	<a class="small-button subMenuSmall" data-value="' + this.resourceName + '" id="buttonSmall_' + this.resourceName + '">'
+					+	'	<a class="small-button subMenuSmall" data-value="' + this.resourceKey + '" id="buttonSmall_' + this.resourceKey + '">'
 					+	'		<i class="fa ' + this.icon + '"></i>'
 					+	'	</a>'
 					+ 	'</div>');
@@ -793,13 +793,13 @@ function loadMenu(menu) {
 	
 		for(var i=0;i<menu.menus.length;i++) {
 			$('#subMenuIconPanel').append('<div class="col-xs-2"></div>');
-			$(document).data(menu.menus[i].resourceName, menu.menus[i]);
+			$(document).data(menu.menus[i].resourceKey, menu.menus[i]);
 		}
 		
 		$('.subMenu, .subMenuSmall').click(function(e) {
 			e.preventDefault();
 			menuKey = $(this).attr('data-value');
-			currentMenu = $(document).data(menuKey);
+			currentMenu = allMenus[menuKey];
 			loadSubPage(currentMenu, $(this));
 		});
 		
