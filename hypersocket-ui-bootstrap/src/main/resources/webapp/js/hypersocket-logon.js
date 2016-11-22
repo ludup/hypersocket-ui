@@ -85,7 +85,7 @@ function processLogon(data, opts, message) {
 		
 		var links = new Array();
 		var scripts = new Array();
-		
+		var setFocus = false;
 		if(data.formTemplate) {
 			$.each(data.formTemplate.inputFields, function() {
 				if (this.type == 'hidden') {
@@ -149,6 +149,10 @@ function processLogon(data, opts, message) {
 								+ this.resourceKey + '" placeholder="'
 								+ (this.label != null ? this.label : getResource(this.resourceKey + ".label")) 
 								+ '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/></div>');
+					if(!setFocus) {
+						$('#' + this.resourceKey).focus();
+						setFocus = true;
+					}
 				}
 	
 			});
@@ -220,11 +224,12 @@ function processLogon(data, opts, message) {
 					});
 
 		// Logon banner?
-
-		if (data['bannerMsg']) {
-			opts.formContent
-					.append(
-						'<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + data['bannerMsg'] + '</p></div><div class="col-md-3"></div>');
+		if(!data.postAuthentication) {
+			if (data['bannerMsg']) {
+				opts.formContent
+						.append(
+							'<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + data['bannerMsg'] + '</p></div><div class="col-md-3"></div>');
+			}
 		}
 
 	} else {
