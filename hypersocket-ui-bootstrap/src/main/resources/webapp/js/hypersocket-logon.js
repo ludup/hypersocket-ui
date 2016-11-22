@@ -213,11 +213,12 @@ function processLogon(data, opts, message) {
 					});
 
 		// Logon banner?
-
-		if (data['bannerMsg']) {
-			opts.formContent
-					.append(
-						'<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + data['bannerMsg'] + '</p></div><div class="col-md-3"></div>');
+		if(!data.postAuthentication) {
+			if (data['bannerMsg']) {
+				opts.formContent
+						.append(
+							'<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + data['bannerMsg'] + '</p></div><div class="col-md-3"></div>');
+			}
 		}
 
 	} else {
