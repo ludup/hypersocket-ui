@@ -250,8 +250,8 @@ pre {
 
 .btn-primary {
 	color: white;
-	background: #333;
-	border: 1px solid #333;
+	background: #000;
+	border: 1px solid #000;
 }
 
 .btn-primary:hover {
@@ -291,7 +291,7 @@ pre {
 }
 
 .btn-info {
-	background-color: #333;
+	background-color: #000;
 }
 
 .btn-info:hover {
@@ -481,8 +481,8 @@ div.tablePages ul.pagination {
 }
 .pagination>.active>a,.pagination>.active>span,.pagination>.active>a:hover,.pagination>.active>span:hover,.pagination>.active>a:focus,.pagination>.active>span:focus
 	{
-	background-color: #333;
-	border-color: #333;
+	background-color: #000;
+	border-color: #000;
 }
 
 .tabContent {
@@ -617,7 +617,7 @@ table {
 }
 
 .switch-input:checked ~ .switch-label {
-	background: #333;	
+	background: #000;	
 }
 /* Sidebar
 =================================================================== */
@@ -857,8 +857,8 @@ table {
 }
 
 .slider-handle {
-	background-color: #333;
-	background-image: linear-gradient(to bottom, #333, #444);
+	background-color: #000;
+	background-image: linear-gradient(to bottom, #000, #333);
 }
 
 .panel.panel-default {
@@ -1812,7 +1812,7 @@ select[multiple] {
 	height: 120px; 
 	width: 120px; 
 	margin: 10px; 
-	background-color: #333
+	background-color: #000
 }
 
 .setupExtension span {
