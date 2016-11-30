@@ -471,9 +471,11 @@ function home(data) {
 			log("Checking session timeout");
 			
 			getJSON('session/peek', null, function(data) {
-				setTimeout(checkTimeout, 30000);
+				if(data.success) {
+					setTimeout(checkTimeout, 30000);
+				}
 			}, function() {
-				return !hasShutdown;
+				return false;
 			});
 		};
 		
