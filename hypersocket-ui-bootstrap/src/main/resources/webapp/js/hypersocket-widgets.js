@@ -2244,7 +2244,12 @@ $.fn.buttonAction = function(options) {
 
 	var el = $('#'+ id);
 	el.on('click', function(e) {
-		window[obj.script].apply(null, [el]);
+		if('script' in obj) {
+			window[obj.script].apply(null, [el]);
+		}
+		else if('eval' in obj) {
+			eval(obj.eval) ;
+		}
 	});
 	
 	var callback = {
