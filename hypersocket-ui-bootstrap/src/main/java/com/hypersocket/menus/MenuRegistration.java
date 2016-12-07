@@ -150,8 +150,9 @@ public class MenuRegistration {
 		return hidden;
 	}
 	
-	public void setHidden(boolean hidden) {
+	public MenuRegistration setHidden(boolean hidden) {
 		this.hidden=  hidden;
+		return this;
 	}
 	
 	@Override

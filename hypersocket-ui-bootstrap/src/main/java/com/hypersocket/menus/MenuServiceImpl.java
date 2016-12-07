@@ -212,6 +212,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"realmSettings", 0, ConfigurationPermission.READ, null,
 				ConfigurationPermission.UPDATE, null),
 				MenuService.MENU_CONFIGURATION);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				"fileUploads", "fa-file",
+				"fileUploads", 0, SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION,
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION).setHidden(true),
+				null);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CERTIFICATES, "fa-certificate",

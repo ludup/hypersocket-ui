@@ -1,0 +1,48 @@
+<div id="contentFileUploads">
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+				$('#contentFileUploads').localize();
+
+				$('#contentFileUploads').ajaxResourcePage(
+						{
+							id : "FileUpload",
+							tableUrl : "files/table",
+							resourceUrl: "files/file",
+							exportUrl : "files/export",
+							importUrl : "files/import",
+							title: getResource("files.label"),
+							icon: 'fa-file',
+							fields : [ {
+								name : "fileName"
+							}, {
+								name : "fileSize"
+							}, {
+								name : "md5Sum"
+							}],
+							resourceKey : "fileUpload",
+							canCreate: false,
+							canUpdate: false,
+							canDelete: true,
+							canCopy: false,
+							disableEditView: true,
+							validate : function() {
+								return true;
+							},
+							clearDialog : function(create) {
+								
+							},
+							createResource : function() {
+
+							},
+							displayResource : function(resource, readOnly) {
+								
+							},
+							complete : function() {
+								loadComplete();
+							}
+						});
+
+			});
+</script>
