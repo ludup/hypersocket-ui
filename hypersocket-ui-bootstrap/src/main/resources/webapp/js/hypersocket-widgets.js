@@ -727,20 +727,33 @@ $.fn.selectButton = function(data) {
 						});
 					}
 					
+					var ignoreValues = [];
+					if(obj.ignoreValues) {
+						ignoreValues = obj.ignoreValues.split(',');
+					}
 					for (var i = 0; i < obj.options.length; i++) {
-						listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
-						$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
-								+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">' 
-								+ listItem + '</a></li>');
-						if (obj.value == obj.options[i][obj.valueAttr]) {
-							selected = obj.options[i];
-							$('#select_button_' + id).text(listItem);
-							$('#' + id).val(obj.value);
-							if(obj.initialized) {
-								obj.initialized(callback);
+						
+						var ignore = false;
+						for(var x = 0; x < ignoreValues.length; x++) {
+							if(ignoreValues[x] ==  obj.options[i][obj.valueAttr]) {
+								ignore = true;
 							}
-						} 
-						$('#data_' + id + "_" + i).data('resource', obj.options[i]);
+						}
+						if(!ignore) {
+							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
+							$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
+									+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">' 
+									+ listItem + '</a></li>');
+							if (obj.value == obj.options[i][obj.valueAttr]) {
+								selected = obj.options[i];
+								$('#select_button_' + id).text(listItem);
+								$('#' + id).val(obj.value);
+								if(obj.initialized) {
+									obj.initialized(callback);
+								}
+							} 
+							$('#data_' + id + "_" + i).data('resource', obj.options[i]);
+						}
 					}
 					
 
@@ -783,7 +796,20 @@ $.fn.selectButton = function(data) {
 							});
 						}
 						
-						$.each(items, function(idx, option) {
+						
+						var ignoreValues = [];
+						if(obj.ignoreValues) {
+							ignoreValues = obj.ignoreValues.split(',');
+						}
+						
+						$.each(items, function(idx, option) {	
+									
+							for(var x = 0; x < ignoreValues.length; x++) {
+								if(ignoreValues[x] ==  option[obj.valueAttr]) {
+									return;
+								}
+							}
+							
 							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj.nameAttr])) : option[obj.nameAttr];
 							
 							$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
