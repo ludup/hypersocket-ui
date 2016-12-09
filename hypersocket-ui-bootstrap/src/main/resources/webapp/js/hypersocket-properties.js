@@ -721,7 +721,7 @@ $.fn.propertyPage = function(opts) {
 								var tabfilterClass = filterPrefix + "default";
 								var categoryKey = this.categoryKey;
 								var categoryNamespace = this.categoryNamespace ? this.categoryNamespace : options.i18nNamespace;
-								debugger;
+								
 								if(options.useFilters) {
 									if(this.filter && this.filter != 'default') {
 										if($.inArray(this.filter, filters) == -1) {

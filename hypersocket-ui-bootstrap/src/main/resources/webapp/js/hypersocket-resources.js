@@ -140,6 +140,7 @@ $.fn.resourceTable = function(params) {
 		canCreate : false,
 		canCopy : true,
 		canUpdate : false,
+		checkReadOnly: true,
 		canDelete : false,
 		icon : 'fa-cog',
 		sortName: 'name',
@@ -400,14 +401,14 @@ $.fn.resourceTable = function(params) {
 					});
 				}
 		}
-
+		
 		var canUpdate = options.canUpdate;
 		if(options.checkUpdate) {
 			canUpdate = options.checkUpdate(row);
 		}
 
 		if(!options.disableEditView) {
-			renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate && !row.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
+			renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 			$(document).on(
 				'click',
@@ -415,7 +416,7 @@ $.fn.resourceTable = function(params) {
 				function() {
 					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-					if(options.canUpdate && canUpdate && !resource.readOnly) {
+					if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
 						options.view.editResource(resource);
 					} else {
 						options.view.viewResource(resource);

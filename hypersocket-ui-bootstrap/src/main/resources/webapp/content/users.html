@@ -211,10 +211,10 @@
 								resourceUrl : apiUrl + "/user",
 								disableDecoration: disableDecoration,
 								fields : fields,
-
 								resourceKey : 'user',
 								canCreate : currentMenu.canCreate,
-								canUpdate : currentMenu.canUpdate,
+								canUpdate : true,
+								checkReadOnly: false,
 								additionalButtons: buttons,
 								canDelete : true,
 								checkDelete: function(row) {
