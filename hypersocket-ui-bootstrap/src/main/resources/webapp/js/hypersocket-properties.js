@@ -720,7 +720,8 @@ $.fn.propertyPage = function(opts) {
 								
 								var tabfilterClass = filterPrefix + "default";
 								var categoryKey = this.categoryKey;
-								
+								var categoryNamespace = this.categoryNamespace ? this.categoryNamespace : options.i18nNamespace;
+								debugger;
 								if(options.useFilters) {
 									if(this.filter && this.filter != 'default') {
 										if($.inArray(this.filter, filters) == -1) {
@@ -804,8 +805,8 @@ $.fn.propertyPage = function(opts) {
 											disabled : !allowEdit  || obj.readOnly || obj.disabled,
 											variables: options.variables,
 											errorElementId: '#' + tab + '_helpspan' + inputId,
-											i18nNamespace: options.i18nNamespace,
-											resourceKeyTemplate: (options.i18nNamespace != '' ? (options.i18nNamespace + '.{0}') : '{0}')
+											i18nNamespace: categoryNamespace,
+											resourceKeyTemplate: (categoryNamespace && categoryNamespace != '' ? (categoryNamespace + '.{0}') : '{0}')
 										}, obj);
 										
 										makeBooleanSafe(obj);
@@ -841,7 +842,8 @@ $.fn.propertyPage = function(opts) {
 											}
 
 											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + inputId + '"/></div>');
-											$('#' + tab + '_item' + inputId).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">' + ( this.name ? this.name : getResourceWithNamespace(options.i18nNamespace, this.resourceKey) ) + '</label>');
+											$('#' + tab + '_item' + inputId).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
+													+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');
 											$('#' + tab + '_item' + inputId).append('<div class="propertyValue ' + sizeClass + '" id="' + tab + '_value' + inputId + '"></div>');
 
 											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
@@ -1077,7 +1079,7 @@ $.fn.propertyPage = function(opts) {
 												
 												$('#' + tab + '_value' + inputId).append(
 														'<div class="clear"><span id="' + tab + '_helpspan' + inputId + '" class="help-block">' 
-														+  ( this.description ? this.description : getResourceWithNamespace(options.i18nNamespace, this.resourceKey + '.info') ) 
+														+  ( this.description ? this.description : getResourceWithNamespace(categoryNamespace, this.resourceKey + '.info') ) 
 
 														+ '</span></div>');
 											}

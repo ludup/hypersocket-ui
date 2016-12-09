@@ -71,10 +71,13 @@
 						$('#automationProperties').empty();
 						if(widget.getObject() && widget.getObject().value != '') {
 							if(!displaying) {
+								debugger;
+								var o  =widget.getObject();
 								$('#automationProperties').propertyPage({ 
 									url : 'automations/template/' +  widget.getObject().name + '/', 
 									showButtons : false, 
 									i18nNamespace: 'automations',
+									useFilters: true,
 									canUpdate : currentMenu.canUpdate, 
 									useTemplates : true,
 									propertyTabsLast: false
@@ -184,6 +187,7 @@
 										{ url : 'automations/properties/' + resource.id, 
 											showButtons : false, 
 											i18nNamespace: 'automations',
+											useFilters: true,
 											canUpdate : currentMenu.canUpdate && !readOnly,
 											propertyTabsLast: false
 								});
