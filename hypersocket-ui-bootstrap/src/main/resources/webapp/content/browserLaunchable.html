@@ -17,14 +17,18 @@
 							logoResourceTypeCallback: function(resource) {
 								return 'SSO';
 							},
-							resourceUrl : "browser",
+							resourceUrl : "browser/browser",
 							fields : [ {
 								name : "name"
 							}],
 							resourceKey : "browserLaunchable",
 							canCreate: false,
 							canUpdate: false,
-							canDelete: false,
+							canDelete: true,
+							disableEditView: true,
+							checkDelete: function(resource) {
+								return resource.personal;
+							},
 							canCopy: false,
 							additionalActions : [{ 
 								resourceKey: "launchBrowserLaunchable",
