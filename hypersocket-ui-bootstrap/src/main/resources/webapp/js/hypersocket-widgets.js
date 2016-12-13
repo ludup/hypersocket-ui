@@ -4712,3 +4712,126 @@ $.fn.accordionPage = function(data) {
 		
 	});
 }
+
+$.fn.multipleRows = function(data) {
+	
+	var options = $.extend(
+			{  
+				maxRows: 0,
+				count: 0,
+				showAdd: true,
+				render: function(element, value) {
+					debugger;
+					element.textInput({ }).setValue(value);
+				},
+			}, data);
+	
+	var id = $(this).attr('id') + "Multiple";
+	
+	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
+	+	'	<div>' 
+	+	'	<div class="col-xs-11" id="' + id + 'Header"></div>' 
+	+	'	<div class="col-xs-1"></div>' 
+	+   '   </div>'
+	+	'	<div id="' + id + 'Rows" ></div>'
+	+	'	<div id="' + id + 'NewRow" class="row">'
+	+	'		<div class="propertyValue col-xs-11">'
+	+	'			<span class="help-block">&nbsp;</span>'
+	+	'		</div>'
+	+	'		<div class="propertyValue col-xs-1 dialogActions">'
+	+	'			<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
+	+	'				<i class="fa fa-plus"></i>'
+	+	'			</a>'
+	+	'		</div>'
+	+	'	</div>'
+	+	'</div>';
+	
+	$(this).append(html);
+	
+	if(options.renderHeader) {
+		options.renderHeader($('#' + id + 'Header'));
+	}
+	
+	if(!options.showAdd) {
+		$('#' + id + 'NewRow').hide();
+	}
+	
+	var addRow = function(val) {
+		debugger
+		var elementId = id + options.count++;
+		$('#' + id + 'Rows').append('<div class="row">' 
+				+ '    <div id="' + elementId  + '" class="rowInput col-xs-11">'
+				+ '    </div>'
+				+ '    <div class="col-xs-1 dialogActions">'
+				+	'		<a href="#" class="btn btn-danger delButton">'
+				+	'			<i class="fa fa-minus"></i>'
+				+	'		</a>'
+				+ '    </div>'
+				+ '</div>'); 
+		
+		options.render($('#' + id + 'Rows').find('.rowInput').last(), val);
+		
+		$('.delButton').off('click');
+		$('.delButton').on('click', function() {
+			$(this).closest('.row').remove();
+			if(options.showAdd) {
+				$('#' + id + 'NewRow').show();
+			}
+		});
+		
+		if(options.maxRows != 0 && $('#' + id + 'Rows').children().length == options.maxRows) {
+			$('#' + id + 'NewRow').hide();
+		}
+	};
+	
+	$('#' + id + 'AddRow').click(function() {
+		addRow();
+	});
+	
+	
+	var callback = {
+			setValue: function(val) {
+				$('#' + id + 'Rows').children().remove();
+				$.each(val, function(idx, v) {
+					debugger
+					addRow(v);
+				});
+			},
+			getValue: function() {
+				var res = [];
+				$('#' + id + 'Rows').children().each(function(idx, row) {
+					res.push($(this).find('.rowInput').widget().getValue());
+				});
+				return res;
+			},
+			reset: function() {
+				$('#' + id + 'Rows').children().remove();
+				$('#' + id + 'NewRow').show();
+			},
+			disable: function() {
+				$('#' + id + 'Rows').children().each(function(idx, row) {
+					$(this).find('.rowInput').widget().disable();
+				});
+			},
+			enable: function() {
+				$('#' + id + 'Rows').children().each(function(idx, row) {
+					$(this).find('.rowInput').widget().enable();
+				});
+			},
+			options: function() {
+				return options;
+			},
+			getInput: function() {
+				return $('#' + id);
+			}, 
+			clear: function() {
+				$('#' + id + 'Rows').children().each(function(idx, row) {
+					$(this).find('.rowInput').widget().clear();
+				});
+			}
+	}
+			
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+}
