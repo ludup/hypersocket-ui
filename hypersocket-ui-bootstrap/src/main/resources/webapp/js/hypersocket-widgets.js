@@ -4720,6 +4720,7 @@ $.fn.multipleRows = function(data) {
 				maxRows: 0,
 				count: 0,
 				showAdd: true,
+				isArrayValue: true,
 				render: function(element, value) {
 					debugger;
 					element.textInput({ }).setValue(value);
@@ -4830,7 +4831,10 @@ $.fn.multipleRows = function(data) {
 				});
 			}
 	}
-			
+	debugger;
+	if(options.value) {
+		callback.setValue(splitFix(options.value));
+	}
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;

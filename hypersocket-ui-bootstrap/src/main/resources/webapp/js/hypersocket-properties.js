@@ -195,18 +195,17 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
-	if(obj.validateAny && !validateAny(obj,value)){
+	if(obj.validateAny && !validateAny(widget,value)){
 		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
-	if(obj.validateAll && !validateAll(obj,value)){
+	if(obj.validateAll && !validateAll(widget,value)){
 		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
 	log("Validation success for " + obj.resourceKey + " and value " + value);
 	return true;
 }
-
 
 function validateInputType(type){
 	switch(type){
@@ -243,7 +242,8 @@ function validateInputType(type){
 		case 'date' :
 		case 'time' : 
 		case 'checkbox' : return true;	
-		default : return false;
+		default : 
+			return $('body')[type] != undefined;
 	}
 }
 
@@ -252,7 +252,8 @@ function validateAllowedCharacters(option,value){
 	return !value.match(patt);	
 }
 
-function validateAny(option,value){
+function validateAny(widget,value){
+	var option = widget.options();
 	var conditions = option.validateAny;
 	var arr = conditions.split(',');
 	var matched = false;
@@ -297,8 +298,12 @@ function validateAny(option,value){
 				matched = validateRegex(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i, value);
 				break;
 			default : 
-				matched = false;
-			break;
+				if($('body')[arr[i]] != undefined) {
+					matched = $('body')[arr[i]](widget);
+				} else {
+					matched = false;
+				}
+				break;
 		}
 		if(matched){
 			break;
@@ -311,7 +316,8 @@ function validateAny(option,value){
     }
 }
 
-function validateAll(option,value){
+function validateAll(widget,value){
+	var option = widget.options();
 	var conditions = option.validateAll;
 	var arr = conditions.split(',');
 	var matched = false;
@@ -376,7 +382,13 @@ function validateAll(option,value){
 			case 'uuid':
 				matched = validateRegex(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i, value);
 				break;
-			default : matched = false;
+			default : 
+				if($('body')[arr[i]] != undefined) {
+					matched = $('body')[arr[i]](widget);
+				} else {
+					matched = false;
+				}
+				break;
 		}
 		if(!matched){
 			break;
@@ -396,6 +408,16 @@ function validateRegex(regex,value){
 	} else {
 		return false;
 	}
+}
+
+function getWidget(resourceKey) {
+	var widget = undefined;
+	$('.widget').each(function(idx, obj) {
+		if($(this).widget().options().resourceKey === resourceKey) {
+			widget = $(this).widget();
+		}
+	});
+	return widget;
 }
 
 $.fn.resetProperties = function() {
@@ -1058,6 +1080,12 @@ $.fn.propertyPage = function(opts) {
 
 											widget = $('#' + tab + '_value' + inputId).sliderInput(obj);
 
+										} else {
+											debugger;
+											var func = $('#' + tab + '_value' + inputId)[obj.inputType];
+											if(func) {
+												widget = $('#' + tab + '_value' + inputId)[obj.inputType](obj);
+											}
 										}
 										
 										if(obj.inputType != 'hidden') {
@@ -1074,12 +1102,12 @@ $.fn.propertyPage = function(opts) {
 												widget.getInput().addClass('propertyInput');
 												widget.getInput().data('widget', widget);
 												
-												$(document).data(this.resourceKey, widget);
+												$(document).data(obj.resourceKey, widget);
 												widgets.push(widget);
 												
 												$('#' + tab + '_value' + inputId).append(
 														'<div class="clear"><span id="' + tab + '_helpspan' + inputId + '" class="help-block">' 
-														+  ( this.description ? this.description : getResourceWithNamespace(categoryNamespace, this.resourceKey + '.info') ) 
+														+  ( obj.description ? obj.description : getResourceWithNamespace(categoryNamespace, obj.resourceKey + '.info') ) 
 
 														+ '</span></div>');
 											}
