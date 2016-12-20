@@ -496,14 +496,14 @@ function showShutdownDialog(option, logoff) {
 			'</div>' +
 			'<div class="modal-body row">' +
 				'<div class="col-xs-6" style="text-align: center">' +
-					'<button class="btn btn-small btn-primary" id="buttonShutdown" style="margin-bottom: 15px" data-dismiss="modal">' +
+					'<button class="btn btn-small btn-primary" id="buttonShutdown" style="margin-bottom: 15px">' +
 						'<i class="fa fa-power-off" style="font-size: 40px"></i>' +
 					'</button>' +
 					'</br>' +
 					'<span>' + getResource("shutdown.label") + '</span>' +
 				'</div>' +
 				'<div class="col-xs-6" style="text-align: center">' +
-					'<button class="btn btn-small btn-primary" id="buttonRestart" style="margin-bottom: 15px" data-dismiss="modal">' +
+					'<button class="btn btn-small btn-primary" id="buttonRestart" style="margin-bottom: 15px">' +
 						'<i class="fa fa-repeat" style="font-size: 40px"></i>' +
 					'</button>' +
 					'</br>' +
