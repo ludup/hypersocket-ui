@@ -111,6 +111,9 @@ function processLogon(data, opts, message) {
 						
 					});
 					return;
+				} else if(this.type =='img') {
+					$('#logonForm').append('<div class="center"><img id="' + this.resourceKey + '" src="' + this.defaultValue + '"></img></div>');
+					return;
 				}
 	
 				if (this.type == 'select') {
