@@ -438,7 +438,8 @@ function home(data) {
 						'<li class="navicon"><a id="actionLogoff" href="#"><i class="fa fa-sign-out"></i></a></li>');
 
 			$('#actionLogoff').tooltip();
-			$('#actionLogoff').click(function() {
+			$('#actionLogoff').click(function(e) {
+				e.preventDefault();
 				logoff();
 			});
 
