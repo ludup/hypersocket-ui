@@ -347,6 +347,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"impersonateUser", "fa-male", "impersonateUser",
 				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "canImpersonateUser"));
+		
+//		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
+//				"suspendUser", "fa-ban", "suspendUser",
+//				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isSuspended"));
+//		
+//		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
+//				"resumeUser", "fa-check", "resumeUser",
+//				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isResumed"));
 
 		registerTableAction(MenuService.ACTIONS_REALMS,
 				new AbstractTableAction("defaultRealm", "fa-tag",
