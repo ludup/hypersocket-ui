@@ -1822,3 +1822,8 @@ select[multiple] {
 .notifyjs-wrapper {
 	z-index: 99999;
 }
+
+#feedbackPanel {
+	max-height: 400px;
+    overflow: scroll;
+}
