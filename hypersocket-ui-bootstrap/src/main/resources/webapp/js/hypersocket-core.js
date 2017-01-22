@@ -338,7 +338,8 @@ function home(data) {
 				}
 			})
 
-			$('#main-menu-toggle').click(function() {
+			$('#main-menu-toggle').click(function(e) {
+				e.preventDefault();
 				if ($(window).width() < 959) {
 					$('#main-menu').data('toggled', true);
 					if ($('#main-menu').hasClass('hidden-xs')) {
@@ -349,7 +350,7 @@ function home(data) {
 					}
 				} else {
 					$('#main-menu').data('toggled', false);
-					if (!$('#main-menu').is(':visible')) {
+					if(!$('#main-menu').is(':visible')) {
 						$('#main-menu').show();
 					} else {
 						$('#main-menu').hide();
