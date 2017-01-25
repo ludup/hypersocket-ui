@@ -129,7 +129,9 @@ function processLogon(data, opts, message) {
 	
 				if (this.type == 'select') {
 					$('#logonForm').append('<div><select class="logonSelect" name="' 
-							+ this.resourceKey + '" id="' + this.resourceKey + '"/></div>');
+							+ this.resourceKey + '" id="' + this.resourceKey
+							+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
+							+ '"/></div>');
 					currentKey = this.resourceKey;
 					$.each(
 						this.options,
@@ -151,7 +153,9 @@ function processLogon(data, opts, message) {
                                 '<div class="checkbox"><label id="'+ this.resourceKey +'Label">'
                                 + '<input  type="' + this.type + '" name="'
                                 + this.resourceKey
-                                + '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/>'
+                                + '" id="' + this.resourceKey + '" value="' + this.defaultValue
+                                + '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
+                                + '"/>'
                                 + ((this.label != null && this.label.length > 0) ? this.label : getResource(this.resourceKey + ".label"))
                                 + '</label></div>');
 				}else {
@@ -160,7 +164,9 @@ function processLogon(data, opts, message) {
 								'<div class="logonInput"><input class="form-control" type="' + this.type + '" name="'
 								+ this.resourceKey + '" placeholder="'
 								+ (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
-								+ '" id="' + this.resourceKey + '" value="' + this.defaultValue + '"/></div>');
+								+ '" id="' + this.resourceKey + '" value="' + this.defaultValue
+								+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
+								+ '"/></div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
 						setFocus = true;
@@ -231,7 +237,7 @@ function processLogon(data, opts, message) {
 							    var elem = $('#' + this.resourceKey);
 								var name = encodeURIComponent(this.resourceKey);
 								var value = encodeURIComponent(elem.val());
-
+                                debugger;
 								if(elem.is(':checkbox')) {
 								    credentials = credentials + '&' + name + '=' + elem.is(':checked');
 								} else {
