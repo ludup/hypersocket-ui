@@ -1420,16 +1420,21 @@ $.fn.multipleSelectValues = function() {
 
 
 $.fn.multipleSearchInput = function(data) {
-	
 	var id = $(this).attr('id');
-	
+	var removeElement = function(e){
+		$(e.target).parent().remove();
+		toSelect.data('updated', true);
+		if (options.changed) {
+			options.changed(callback);
+		}
+	}
 	if ($(this).data('created')) {
 
 		options = $(this).widget().options();
 
 		var inputText = $('#' + id + 'ExcludedSelect');
 		inputText.val('');
-		var allIncludedOptions = $('#' + id + 'IncludedSelect option');
+		var allIncludedOptions = $('#' + id + 'IncludedSelect li');
 		if (allIncludedOptions.length > 0) {
 			$(allIncludedOptions).remove();
 		}
@@ -1439,16 +1444,18 @@ $.fn.multipleSearchInput = function(data) {
 		
 		if (data && data.selected) {
 			$.each(data.selected, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + obj[options.valueAttr] + '">' + obj[options.nameAttr] + "</option>");
+				var newElement = $('<li ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + '</span> <i class="fa fa-times"></i></li>');
+				newElement.find('i').click(function(e){
+					removeElement(e);
+				});
+				toSelect.append(newElement);
 			});
 		}
 		
 		if(data && data.disabled) {
 			$('#' + id + 'Excluded').widget().disable();
-			$('#' + id + 'IncludedSelect').attr('disabled', true);
 		} else {
 			$('#' + id + 'Excluded').widget().enable();
-			$('#' + id + 'IncludedSelect').attr('disabled', false);
 		}
 		
 		return;
@@ -1470,162 +1477,182 @@ $.fn.multipleSearchInput = function(data) {
 		var name = ((data && data.resourceKey != null ) ? formatResourceKey(data.resourceKey) : id) ;
 		
 		$('#' + id + 'Excluded').remove();
-		$('#' + id + 'Buttons').remove();
 		$('#' + id + 'Included').remove();
 
 		$(this).append('<div id="' + id + '"></div>');
-		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div><div class="searchInputAdd" id="' + id + 'SearchAdd"></div></div>');
-		$('#' + id).append('<div id="' + id + 'SelectedItems"><div class="includedList" id="' + id + 'Included"></div><div class="selectedRemove" id="' + id + 'SelectedRemove"></div></div>');
-
-		var searchInput = $('#' + id + 'Excluded').autoComplete({
-				remoteSearch: true,
-				url: options.url,
-				nameAttr: options.nameAttr,
-				valueAttr: options.valueAttr,
-				selectedIsObjectList: true,
-				disabled: options.disabled,
-				nameIsResourceKey: options.nameIsResourceKey
-			});
-
-		$('#' + id + 'SearchAdd').append(
-		'<button class="btn-multiple-select btn btn-primary" id="' 
-				+ id 
-				+ 'AddButton" name="AddButton_' + name + '"><i class="fa fa-plus-circle"></i></button><br/>');
+		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div></div>');
+		$('#' + id).append('<div id="' + id + 'SelectedItems"><div class="includedList widget" id="' + id + 'Included"></div></div></div>');
 		
-		$('#' + id + 'SelectedRemove').append(
-				'<button class="btn-multiple-select btn btn-primary" id="' 
-						+ id 
-						+ 'RemoveButton" name="RemoveButton_' + name + '"><i class="fa fa-trash-o"></i></button>');
-
-		$('#' + id + 'Included').append(
-					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
-							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '" class="formInput text form-control"/>');
-
-		var select = $('#' + id + 'ExcludedSelect');
-		var toSelect = $('#' + id + 'IncludedSelect');
+		var dragSrcEl = null;
 		
-		if(options.allowOrdering) {
-			$('#' + id).append('<div class="multipleTextInputButtons" id="' + id + 'OrderButtons"/>');
-			
-			$('#' + id + 'OrderButtons').append(
-					'<button class="btn-multiple-select btn btn-primary" id="' 
-					+ id 
-					+ 'UpButton" name="UpButton_' + name + '"><i class="fa fa-arrow-up"></i></button><br/>');
-			
-			$('#' + id + 'OrderButtons').append(
-					'<button class="btn-multiple-select btn btn-primary" id="' 
-					+ id 
-					+ 'DownButton" name="DownButton_' + name +'"><i class="fa fa-arrow-down"></i></button>');
-			
-			$('#' + id + 'UpButton').click(function(e) {
-					e.preventDefault();
-					$('#' + toSelect.attr('id') + ' option:selected').each(function(){
-						$(this).insertBefore($(this).prev());
-					});
-			});
-			
-			$('#' + id + 'DownButton').click(function(e) {
+		var handleDragStart = function(e){
+			dragSrcEl = this;
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('text/html', this.innerHTML);
+		}
+		
+		var handleDragOver = function(e){
+			if (e.preventDefault) {
 				e.preventDefault();
-				$('#'  + toSelect.attr('id') + ' option:selected').each(function(){
-					$(this).insertAfter($(this).next());
+			}
+			e.dataTransfer.dropEffect = 'move';
+			return false;
+		}
+		
+		var handleDragEnter = function(e) {
+			this.classList.add('overMultipleSearchInput');
+		}
+		
+		var handleDragLeave = function(e) {
+			this.classList.remove('overMultipleSearchInput');
+		}
+		
+		var handleDrop = function (e) {
+			if (e.stopPropagation) {
+				e.stopPropagation();
+			}
+			if (dragSrcEl != this) {
+				dragSrcEl.innerHTML = this.innerHTML;
+				this.innerHTML = e.dataTransfer.getData('text/html');
+				if (options.changed) {
+					options.changed(callback);
+				}
+				
+				$('#' + dragSrcEl.id).find('i').click(function(e){
+					removeElement(e);
 				});
-			});
+				$('#' + this.id).find('i').click(function(e){
+					removeElement(e);
+				});
+			}
+			return false;
 		}
 
-		var callback = {
-				setValue: function(val) {
-					// Cannot be done yet.
-				},
-				getValue: function() {
-					result = new Array();
-
-					if(options.valueIsNamePair) {
-						$('#' + id + 'IncludedSelect option').each(function() {
-							result.push(he.encode($(this).val()) + "=" + he.encode($(this).text()));
-						});
-					} else {
-						$('#' + id + 'IncludedSelect option').each(function() {
-							result.push(he.encode($(this).val()));
-						});
-						
-					}
-					return result;
-				},
-				reset: function() {
-					$('#' + id).multipleTextInput();
-				},
-				disable: function() {
-					$('#' + id + 'AddButton').attr('disabled', true);
-					$('#' + id + 'RemoveButton').attr('disabled', true);
-					$('#' + id + 'IncludedSelect').attr('disabled', true);
-				},
-				enable: function() {
-					$('#' + id + 'AddButton').attr('disabled', false);
-					$('#' + id + 'RemoveButton').attr('disabled', false);
-					$('#' + id + 'IncludedSelect').attr('disabled', false);
-				},
-				options: function() {
-					return options;
-				},
-				getInput: function() {
-					return $('#' + id);
-				},
-	 			clear: function() {
-	 				$('#' + id).multipleTextInput();
-	 			}
-		};
-
-		$('#' + id + 'AddButton')
-				.click(
-					function(e) {
-						e.preventDefault();
-						var selectedObj = searchInput.getObject();
-						if (!selectedObj) {
-							return;
-						}
-
-						toSelect.append('<option ' + 'value="' + selectedObj[options.valueAttr] + '">' 
-								+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + "</option>");
-						searchInput.clear();
-						toSelect.data('updated', true);
-						if (options.changed) {
-							options.changed(callback);
-						}
+		var handleDragEnd = function (e) {
+			$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
+		}
+		
+		var searchInput = $('#' + id + 'Excluded').autoComplete({
+			remoteSearch: true,
+			url: options.url,
+			nameAttr: options.nameAttr,
+			valueAttr: options.valueAttr,
+			selectedIsObjectList: true,
+			disabled: options.disabled,
+			nameIsResourceKey: options.nameIsResourceKey,
+			changed: function(element){
+				var selectedObj = element.getObject();
+				if (!selectedObj) {
+					return;
+				}
+				var newElement = $('<li id="' + id + 'Li' + selectedObj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + selectedObj[options.valueAttr] + '"><span>'
+						+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + '</span> <i class="fa fa-times"></i></li>');
+				newElement.find('i').click(function(e){
+					removeElement(e);
+				});
+				
+				toSelect.append(newElement);
+				searchInput.clear();
+				toSelect.data('updated', true);
+				if (options.changed) {
+					options.changed(callback);
+				}
+				if(options.allowOrdering) {
+					var elementList = document.getElementById(id + 'IncludedSelect').querySelectorAll('li');
+					[].forEach.call(elementList, function(liElement) {
+						liElement.addEventListener('dragstart', handleDragStart, false);
+						liElement.addEventListener('dragenter', handleDragEnter, false);
+						liElement.addEventListener('dragover', handleDragOver, false);
+						liElement.addEventListener('dragleave', handleDragLeave, false);
+						liElement.addEventListener('drop', handleDrop, false);
+						liElement.addEventListener('dragend', handleDragEnd, false);
 					});
-
-		$('#' + id + 'RemoveButton').click(function(e) {
-			e.preventDefault();
-			var selectedOpts = $('#' + toSelect.attr('id') + ' option:selected');
-			if (selectedOpts.length == 0) {
-				return;
-			}
-
-			select.val($(selectedOpts).val());
-			searchInput.setValue($(selectedOpts).val());
-			$(selectedOpts).remove();
-
-			toSelect.data('updated', true);
-
-			if (options.changed) {
-				options.changed(callback);
+				}
 			}
 		});
 
+		$('#' + id + 'Included').append('<div class="formInput form-control includedSelect">' + 
+					'<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + ' id="' 
+							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '" /></div>');
+
+		var select = $('#' + id + 'ExcludedSelect');
+		var toSelect = $('#' + id + 'IncludedSelect');
+
+		var callback = {
+			setValue: function(val) {
+				// Cannot be done yet.
+			},
+			getValue: function() {
+				result = new Array();
+				if(options.valueIsNamePair) {
+					$('#' + id + 'IncludedSelect li').each(function() {
+						result.push(he.encode($(this).val()) + "=" + he.encode($(this).find('span').text()));
+					});
+				} else {
+					$('#' + id + 'IncludedSelect li').each(function() {
+						result.push(he.encode($(this).val()));
+					});
+				}
+				return result;
+			},
+			reset: function() {
+				$('#' + id).multipleTextInput();
+			},
+			disable: function() {
+				$('#' + id + 'Excluded').widget().disable();
+				if(options.allowOrdering){
+					$('#' + id + 'IncludedSelect li').attr('draggable', false);
+					$('#' + id + 'IncludedSelect li').css('cursor', 'default');
+				}
+				$('#' + id + 'IncludedSelect li i').off();
+				$('#' + id + 'IncludedSelect li i').css('cursor', 'default');
+			},
+			enable: function() {
+				$('#' + id + 'Excluded').widget().enable();
+				if(options.allowOrdering){
+					$('#' + id + 'IncludedSelect li').attr('draggable', true);
+					$('#' + id + 'IncludedSelect li').css('cursor', 'move');
+				}
+				$('#' + id + 'IncludedSelect li i').on('click', removeElement);
+				$('#' + id + 'IncludedSelect li i').css('cursor', 'pointer');
+			},
+			options: function() {
+				return options;
+			},
+			getInput: function() {
+				return $('#' + id);
+			},
+ 			clear: function() {
+ 				$('#' + id).multipleTextInput();
+ 			}
+		};
 	}
 
 	if (options.values) {
 		if(options.isNamePairValue) {
 			$.each(options.values, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + he.decode(obj.value) + '">' + he.decode(obj.name) + "</option>");
+				var newElement = $('<li ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + he.decode(obj.value) + '"><span>' + he.decode(obj.name) + '</span> <i class="fa fa-times"></i></li>');
+				newElement.find('i').click(function(e){
+					removeElement(e);
+				});
+				toSelect.append(newElement);
 			});
 		} else {
 			$.each(options.values, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + obj + '">' + obj + "</option>");
+				var newElement = $('<li ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + obj + '"><span>' + obj + '</span> <i class="fa fa-times"></i></li>');
+				newElement.find('i').click(function(e){
+					removeElement(e);
+				});
+				toSelect.append(newElement);
 			});
 		}
 	} else if(options.selected) {
 		$.each(options.selected, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + obj[options.valueAttr] + '">' + obj[options.nameAttr] + "</option>");
+			var newElement = $('<li ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + "</span> <i class='fa fa-times'></i></li>");
+			newElement.find('i').click(function(e){
+				removeElement(e);
+			});
+			toSelect.append(newElement);
 		});
 	}
 	
