@@ -1790,28 +1790,34 @@ select[multiple] {
 }
 
 .overMultipleSearchInput{
-	border: 2px dashed #000;
-	margin: 0px !important;
+	border: 2px dashed #000 !important;
 }
 
-.formInput.form-control.includedSelect{
+.formInput.form-control.includedSelect, .formInput.form-control.excludedSelect{
 	overflow-y:scroll;
 	height:150px;
 }
 
-.formInput.form-control.includedSelect ul{
+.formInput.form-control.includedSelect ul, .formInput.form-control.excludedSelect ul{
 	list-style: none;
 	-webkit-padding-start: 0px;
+	display: table;
+	border-collapse: collapse;
 }
 
-.formInput.form-control.includedSelect ul li{
+.formInput.form-control.includedSelect ul li, .formInput.form-control.excludedSelect ul li{
 	margin: 2px;
+	display: inline-flex;
+	//display: flex;
+	border: 2px solid #e1e6ef;
+	padding: 10px;
+	border-radius: 10px;
 }
 
-.formInput.form-control.includedSelect ul li.draggable{
+.formInput.form-control.includedSelect ul li.draggable, .formInput.form-control.excludedSelect ul li.draggable{
 	cursor: move;
 }
 
-.formInput.form-control.includedSelect ul li i{
+.formInput.form-control.includedSelect ul li i, .formInput.form-control.excludedSelect ul li i{
 	cursor: pointer;
 }
