@@ -103,7 +103,7 @@ pre {
 }
 
 .form-signin a {
-	margin-top: 10px;
+    margin-top: 10px;
 	text-align: center;
 }
 
@@ -145,7 +145,8 @@ pre {
 }
 
 .form-signin button {
-	margin-top: 10px;
+	margin-top: 20px;
+	margin-top: 20px;
 }
 
 .form-horizontal .form-group {

@@ -199,11 +199,15 @@ function processLogon(data, opts, message) {
 		
 			$('#' + obj.label).click(function(e) {
 				e.preventDefault();
-				getJSON(obj.defaultValue, null, function(data){
-				   	if(!checkRedirect(data))
-				   		processLogon(data, opts);
-				});
-				
+
+				if(obj.isLogonApiLink) {
+					getJSON(obj.defaultValue, null, function(data){
+					   	if(!checkRedirect(data))
+					   		processLogon(data, opts);
+					});
+				} else {
+					window.location = obj.defaultValue;
+				}
 			});
 		});
 		
