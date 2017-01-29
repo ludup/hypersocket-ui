@@ -86,6 +86,7 @@ $.fn.textInput = function(data) {
 				readOnly: false, 
 				maxlength: -1, 
 				valueIsResourceKey: false,
+				showVariables: false,
 				getUrlData: function(data) {
 					return data;
 				}
@@ -96,6 +97,10 @@ $.fn.textInput = function(data) {
 	if(hasVariables && options.variables.constructor !== Array) {
 		options.variables = options.variables.split(',');
 	} 
+	if(options.showVariables && !options.url) {
+		options.url = 'currentRealm/user/variableNames';
+	}
+	
 	var html = '';
 
 	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
