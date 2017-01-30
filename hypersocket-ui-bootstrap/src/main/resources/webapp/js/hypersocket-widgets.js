@@ -1043,7 +1043,6 @@ $.fn.textDropdown = function(data) {
  * Shows 2 list boxes so that values can be moved between them.
  */
 $.fn.multipleSelect = function(data) {
-
 	var id = $(this).attr('id');
 	var multipleSelectDisabled = false;
 	var addElement = function(element){
@@ -1057,7 +1056,7 @@ $.fn.multipleSelect = function(data) {
 		$('#' + id + 'IncludedSelect').append(newElement);
 		element.remove();
 		addListeners(newElement);
-		if (options.changed && selectedOpts.length != 0) {
+		if (options.changed) {
 			options.changed(callback);
 		}
 	}
@@ -1073,7 +1072,7 @@ $.fn.multipleSelect = function(data) {
 		element.before(newElement);
 		elementToAdd.remove();
 		addListeners(newElement);
-		if (options.changed && selectedOpts.length != 0) {
+		if (options.changed) {
 			options.changed(callback);
 		}
 	}
@@ -1098,7 +1097,7 @@ $.fn.multipleSelect = function(data) {
 		}
 		addListeners(newElement);
 		element.remove();
-		if (options.changed && selectedOpts.length != 0) {
+		if (options.changed) {
 			options.changed(callback);
 		}
 	}
@@ -1336,7 +1335,7 @@ $.fn.multipleSelect = function(data) {
 					result = new Array();
 
 					$('#' + id + 'IncludedSelect li').each(function() {
-						result.push(he.decode($(this).val()));
+						result.push(he.decode($(this).attr('value')));
 					});
 					return result;
 				},
@@ -1451,7 +1450,7 @@ $.fn.multipleSelect = function(data) {
 				} else {
 					selectedOpt = $('#' + select.attr('id') + ' li[value="' + he.encode(id) + '"]');
 				}
-				if (selectedOpt) {
+				if (selectedOpt && selectedOpt.length) {
 					addElement(selectedOpt);
 				}
 			});
@@ -1489,7 +1488,7 @@ $.fn.multipleSelect = function(data) {
 						} else {
 							selectedOpt = $('#' + select.attr('id') + ' li[value="' + he.encode(id) + '"]');
 						}
-						if (selectedOpt) {
+						if (selectedOpt && selectedOpt.length) {
 							addElement(selectedOpt);
 						}
 					});
@@ -1692,11 +1691,11 @@ $.fn.multipleSearchInput = function(data) {
 				result = new Array();
 				if(options.valueIsNamePair) {
 					$('#' + id + 'IncludedSelect li').each(function() {
-						result.push(he.encode($(this).val()) + "=" + he.encode($(this).find('span').text()));
+						result.push(he.encode($(this).attr('value')) + "=" + he.encode($(this).find('span').text()));
 					});
 				} else {
 					$('#' + id + 'IncludedSelect li').each(function() {
-						result.push(he.encode($(this).val()));
+						result.push(he.encode($(this).attr('value')));
 					});
 				}
 				return result;
