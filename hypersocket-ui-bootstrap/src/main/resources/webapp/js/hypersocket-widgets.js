@@ -1526,6 +1526,74 @@ $.fn.multipleSearchInput = function(data) {
 			options.changed(callback);
 		}
 	}
+	
+	dragSrcEl = null;
+	
+	var handleDragStart = function(e){
+		dragSrcEl = this;
+		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.setData('text/html', this.innerHTML);
+	}
+	
+	var handleDragOver = function(e){
+		if (e.preventDefault) {
+			e.preventDefault();
+		}
+		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
+			e.dataTransfer.dropEffect = 'move';
+		}
+		
+		return false;
+	}
+	
+	var handleDragEnter = function(e) {
+		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
+			this.classList.add('overMultipleSearchInput');
+		}
+	}
+	
+	var handleDragLeave = function(e) {
+		this.classList.remove('overMultipleSearchInput');
+	}
+	
+	var handleDrop = function (e) {
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		}
+		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
+			dragSrcEl.innerHTML = this.innerHTML;
+			this.innerHTML = e.dataTransfer.getData('text/html');
+			if (options.changed) {
+				options.changed(callback);
+			}
+			
+			$('#' + dragSrcEl.id).find('i').click(function(e){
+				removeElement(e);
+			});
+			$('#' + this.id).find('i').click(function(e){
+				removeElement(e);
+			});
+		}
+		return false;
+	}
+
+	var handleDragEnd = function (e) {
+		$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
+		dragSrcEl = null;
+	}
+	
+	var addListeners = function(newElement){
+		if(options.allowOrdering){
+			var element = document.getElementById($(newElement).attr('id'));
+			element.addEventListener('dragstart', handleDragStart, false);
+			element.addEventListener('dragenter', handleDragEnter, false);
+			element.addEventListener('dragover', handleDragOver, false);
+			element.addEventListener('dragleave', handleDragLeave, false);
+			element.addEventListener('drop', handleDrop, false);
+			element.addEventListener('dragend', handleDragEnd, false);
+		}
+	}
+	
 	if ($(this).data('created')) {
 
 		options = $(this).widget().options();
@@ -1539,14 +1607,14 @@ $.fn.multipleSearchInput = function(data) {
 
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
-		
 		if (data && data.selected) {
 			$.each(data.selected, function(idx, obj) {
-				var newElement = $('<li ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + '</span> <i class="fa fa-times"></i></li>');
+				var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				newElement.find('i').click(function(e){
 					removeElement(e);
 				});
 				toSelect.append(newElement);
+				addListeners(newElement);
 			});
 		}
 		
@@ -1581,55 +1649,6 @@ $.fn.multipleSearchInput = function(data) {
 		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div></div>');
 		$('#' + id).append('<div id="' + id + 'SelectedItems"><div class="includedList widget" id="' + id + 'Included"></div></div></div>');
 		
-		var dragSrcEl = null;
-		
-		var handleDragStart = function(e){
-			dragSrcEl = this;
-			e.dataTransfer.effectAllowed = 'move';
-			e.dataTransfer.setData('text/html', this.innerHTML);
-		}
-		
-		var handleDragOver = function(e){
-			if (e.preventDefault) {
-				e.preventDefault();
-			}
-			e.dataTransfer.dropEffect = 'move';
-			return false;
-		}
-		
-		var handleDragEnter = function(e) {
-			this.classList.add('overMultipleSearchInput');
-		}
-		
-		var handleDragLeave = function(e) {
-			this.classList.remove('overMultipleSearchInput');
-		}
-		
-		var handleDrop = function (e) {
-			if (e.stopPropagation) {
-				e.stopPropagation();
-			}
-			if (dragSrcEl != this) {
-				dragSrcEl.innerHTML = this.innerHTML;
-				this.innerHTML = e.dataTransfer.getData('text/html');
-				if (options.changed) {
-					options.changed(callback);
-				}
-				
-				$('#' + dragSrcEl.id).find('i').click(function(e){
-					removeElement(e);
-				});
-				$('#' + this.id).find('i').click(function(e){
-					removeElement(e);
-				});
-			}
-			return false;
-		}
-
-		var handleDragEnd = function (e) {
-			$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
-		}
-		
 		var searchInput = $('#' + id + 'Excluded').autoComplete({
 			remoteSearch: true,
 			url: options.url,
@@ -1643,28 +1662,17 @@ $.fn.multipleSearchInput = function(data) {
 				if (!selectedObj) {
 					return;
 				}
-				var newElement = $('<li id="' + id + 'Li' + selectedObj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + selectedObj[options.valueAttr] + '"><span>'
-						+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + '</span> <i class="fa fa-times"></i></li>');
+				var newElement = $('<li id="' + id + 'Li' + selectedObj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + selectedObj[options.valueAttr] + '"><span>'
+						+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				newElement.find('i').click(function(e){
 					removeElement(e);
 				});
-				
 				toSelect.append(newElement);
+				addListeners(newElement);
 				searchInput.clear();
 				toSelect.data('updated', true);
 				if (options.changed) {
 					options.changed(callback);
-				}
-				if(options.allowOrdering) {
-					var elementList = document.getElementById(id + 'IncludedSelect').querySelectorAll('li');
-					[].forEach.call(elementList, function(liElement) {
-						liElement.addEventListener('dragstart', handleDragStart, false);
-						liElement.addEventListener('dragenter', handleDragEnter, false);
-						liElement.addEventListener('dragover', handleDragOver, false);
-						liElement.addEventListener('dragleave', handleDragLeave, false);
-						liElement.addEventListener('drop', handleDrop, false);
-						liElement.addEventListener('dragend', handleDragEnd, false);
-					});
 				}
 			}
 		});
@@ -1729,28 +1737,31 @@ $.fn.multipleSearchInput = function(data) {
 	if (options.values) {
 		if(options.isNamePairValue) {
 			$.each(options.values, function(idx, obj) {
-				var newElement = $('<li ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + he.decode(obj.value) + '"><span>' + he.decode(obj.name) + '</span> <i class="fa fa-times"></i></li>');
+				var newElement = $('<li id="' + id + 'Li' + he.decode(obj.value) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + he.decode(obj.value) + '"><span>' + he.decode(obj.name) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				newElement.find('i').click(function(e){
 					removeElement(e);
 				});
 				toSelect.append(newElement);
+				addListeners(newElement);
 			});
 		} else {
 			$.each(options.values, function(idx, obj) {
-				var newElement = $('<li ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + obj + '"><span>' + obj + '</span> <i class="fa fa-times"></i></li>');
+				var newElement = $('<li id="' + id + 'Li' + obj + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj + '"><span>' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				newElement.find('i').click(function(e){
 					removeElement(e);
 				});
 				toSelect.append(newElement);
+				addListeners(newElement);
 			});
 		}
 	} else if(options.selected) {
 		$.each(options.selected, function(idx, obj) {
-			var newElement = $('<li ' + (options.allowOrdering ? 'draggable="true" class="draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + "</span> <i class='fa fa-times'></i></li>");
+			var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + "</span>&ensp;<i class='fa fa-times'></i></li>");
 			newElement.find('i').click(function(e){
 				removeElement(e);
 			});
 			toSelect.append(newElement);
+			addListeners(newElement);
 		});
 	}
 	
