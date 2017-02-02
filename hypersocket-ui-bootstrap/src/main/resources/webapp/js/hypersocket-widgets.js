@@ -1167,7 +1167,13 @@ $.fn.multipleSelect = function(data) {
 				addElementBefore($(dragSrcEl), $(this));
 			}else if($(dragSrcEl).hasClass(id + 'includedDraggable') && $(this).hasClass(id + 'includedDraggable') && options.allowOrdering){
 				dragSrcEl.innerHTML = this.innerHTML;
+				var dragId = dragSrcEl.getAttribute('id');
+				var dragValue = dragSrcEl.getAttribute('value');
+				dragSrcEl.setAttribute('id', this.getAttribute('id'));
+				dragSrcEl.setAttribute('value', this.getAttribute('value'));
 				this.innerHTML = e.dataTransfer.getData('text/html');
+				this.setAttribute('id', dragId);
+				this.setAttribute('value', dragValue);
 				
 				if (options.changed) {
 					options.changed(callback);
@@ -1561,7 +1567,13 @@ $.fn.multipleSearchInput = function(data) {
 		}
 		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
 			dragSrcEl.innerHTML = this.innerHTML;
+			var dragId = dragSrcEl.getAttribute('id');
+			var dragValue = dragSrcEl.getAttribute('value');
+			dragSrcEl.setAttribute('id', this.getAttribute('id'));
+			dragSrcEl.setAttribute('value', this.getAttribute('value'));
 			this.innerHTML = e.dataTransfer.getData('text/html');
+			this.setAttribute('id', dragId);
+			this.setAttribute('value', dragValue);
 			if (options.changed) {
 				options.changed(callback);
 			}
@@ -1578,7 +1590,7 @@ $.fn.multipleSearchInput = function(data) {
 
 	var handleDragEnd = function (e) {
 		$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
-		dragSrcEl = null;
+		//dragSrcEl = null;
 	}
 	
 	var addListeners = function(newElement){
@@ -1780,13 +1792,106 @@ $.fn.multipleTextInput = function(data) {
 
 	var id = $(this).attr('id');
 	
+	var removeElement = function(e){
+		$(e.target).parent().remove();
+		toSelect.data('updated', true);
+		if (options.changed) {
+			options.changed(callback);
+		}
+	}
+	
+	dragSrcEl = null;
+	
+	var handleDragStart = function(e){
+		dragSrcEl = this;
+		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.setData('text/html', this.innerHTML);
+	}
+	
+	var handleDragOver = function(e){
+		if (e.preventDefault) {
+			e.preventDefault();
+		}
+		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
+			e.dataTransfer.dropEffect = 'move';
+		}
+		
+		return false;
+	}
+	
+	var handleDragEnter = function(e) {
+		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
+			this.classList.add('overMultipleSearchInput');
+		}
+	}
+	
+	var handleDragLeave = function(e) {
+		this.classList.remove('overMultipleSearchInput');
+	}
+	
+	var handleDrop = function (e) {
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		}
+		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
+			dragSrcEl.innerHTML = this.innerHTML;
+			var dragId = dragSrcEl.getAttribute('id');
+			var dragValue = dragSrcEl.getAttribute('value');
+			dragSrcEl.setAttribute('id', this.getAttribute('id'));
+			dragSrcEl.setAttribute('value', this.getAttribute('value'));
+			this.innerHTML = e.dataTransfer.getData('text/html');
+			this.setAttribute('id', dragId);
+			this.setAttribute('value', dragValue);
+			if (options.changed) {
+				options.changed(callback);
+			}
+			$('[id="' + dragSrcEl.id + '"]').find('i').click(function(e){
+				removeElement(e);
+			});
+			
+			$('[id="' + this.id + '"]').find('i').click(function(e){
+				removeElement(e);
+			});
+		}
+		return false;
+	}
+
+	var handleDragEnd = function (e) {
+		$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
+		dragSrcEl = null;
+	}
+	
+	var addListeners = function(newElement){
+		if(options.allowOrdering){
+			var element = document.getElementById($(newElement).attr('id'));
+			element.addEventListener('dragstart', handleDragStart, false);
+			element.addEventListener('dragenter', handleDragEnter, false);
+			element.addEventListener('dragover', handleDragOver, false);
+			element.addEventListener('dragleave', handleDragLeave, false);
+			element.addEventListener('drop', handleDrop, false);
+			element.addEventListener('dragend', handleDragEnd, false);
+		}
+	}
+	
+	var removeListeners = function(newElement){
+		if(options.allowOrdering){
+			var element = document.getElementById($(newElement).attr('id'));
+			element.removeEventListener('dragstart', handleDragStart, false);
+			element.removeEventListener('dragenter', handleDragEnter, false);
+			element.removeEventListener('dragover', handleDragOver, false);
+			element.removeEventListener('dragleave', handleDragLeave, false);
+			element.removeEventListener('drop', handleDrop, false);
+			element.removeEventListener('dragend', handleDragEnd, false);
+		}
+	}
+	
 	if ($(this).data('created')) {
 
 		options = $(this).widget().options();
 
 		var inputText = $('#' + id + 'ExcludedSelect');
 		inputText.val('');
-		var allIncludedOptions = $('#' + id + 'IncludedSelect option');
+		var allIncludedOptions = $('#' + id + 'IncludedSelect li');
 		if (allIncludedOptions.length > 0) {
 			$(allIncludedOptions).remove();
 		}
@@ -1799,7 +1904,12 @@ $.fn.multipleTextInput = function(data) {
 		
 		if (options.values) {
 			$.each(options.values, function(idx, obj) {
-				toSelect.append('<option ' + 'value="' + he.encode(obj) + '">' + he.encode(obj) + "</option>");
+				var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + he.encode(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+				newElement.find('i.fa.fa-times').click(function(e){
+					removeElement(e);
+				});
+				toSelect.append(newElement);
+				addListeners(newElement);
 			});
 		}
 
@@ -1821,67 +1931,47 @@ $.fn.multipleTextInput = function(data) {
 		var name = ((data && data.resourceKey != null ) ? formatResourceKey(data.resourceKey) : id) ;
 		
 		$('#' + id + 'Excluded').remove();
-		$('#' + id + 'Buttons').remove();
 		$('#' + id + 'Included').remove();
 
 		$(this).append('<div id="' + id + '"></div>');
-		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div><div class="searchInputAdd" id="' + id + 'SearchAdd"></div></div>');
-		$('#' + id).append('<div id="' + id + 'SelectedItems"><div class="includedList" id="' + id + 'Included"></div><div class="selectedRemove" id="' + id + 'SelectedRemove"></div></div>');
+		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div></div>');
 
 		var textInput = $('#' + id + 'Excluded').textInput({
 				id: id + 'ExcludedSelect',
 				isPropertyInput: false,
 				variables: options.variables
 		});
-		
-
-
-		$('#' + id).append('<div class="multipleTextInputButtons" id="' + id + 'Buttons"/>');
-		
-		$('#' + id + 'SearchAdd').append(
-		'<button class="btn-multiple-select btn btn-primary" id="' 
-				+ id 
-				+ 'AddButton" name="AddButton_' + name + '"><i class="fa fa-plus-circle"></i></button><br/>');
-		
-		$('#' + id + 'SelectedRemove').append(
-				'<button class="btn-multiple-select btn btn-primary" id="' 
-						+ id 
-						+ 'RemoveButton" name="RemoveButton_' + name + '"><i class="fa fa-trash"></i></button>');
+		$('#input' + id + 'ExcludedSelect').after('<ul id="auto_' + id + 'ExcludedAutoComplete" class="dropdown-menu scrollable-menu" role="menu"><li><a>' + getResource('pressEnter.text') + '</a></li></ul>');
+		$('#input' + id + 'ExcludedSelect').focus(function(){
+			$('#auto_' + id + 'ExcludedAutoComplete').show();
+		});
+		$('#input' + id + 'ExcludedSelect').blur(function(){
+			$('#auto_' + id + 'ExcludedAutoComplete').hide();
+		});
+		$('#' + id + 'Excluded').keyup(function(e) {
+			var code = e.which;
+		    if(code==13){
+		    	e.preventDefault();
+		    	var selectedText = textInput.getValue();
+				if (selectedText.trim() == '') {
+					return;
+				}
+		    	var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(selectedText)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(selectedText)) + '"><span>' + he.encode(selectedText) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+				newElement.find('i.fa.fa-times').click(function(e){
+					removeElement(e);
+				});
+				toSelect.append(newElement);
+				addListeners(newElement);
+				textInput.clear();
+		    }
+		});
 
 		$('#' + id).append('<div class="includedList" id="' + id + 'Included"></div>');
-		$('#' + id + 'Included').append(
-					'<select ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
-							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '" class="formInput text form-control"/>');
+		$('#' + id + 'Included').append('<div class=" formInput form-control includedSelect">'
+					+ '<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
+							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '"/></div>');
 
 		var toSelect = $('#' + id + 'IncludedSelect');
-		
-		if(options.allowOrdering) {
-			$(this).append('<div class="multipleTextInputButtons" id="' + id + 'OrderButtons"/>');
-			
-			$('#' + id + 'OrderButtons').append(
-					'<button class="btn-multiple-select btn btn-primary" id="' 
-					+ id 
-					+ 'UpButton" name="UpButton_' + name + '"><i class="fa fa-arrow-up"></i></button><br/>');
-			
-			$('#' + id + 'OrderButtons').append(
-					'<button class="btn-multiple-select btn btn-primary" id="' 
-					+ id 
-					+ 'DownButton" name="DownButton_' + name +'"><i class="fa fa-arrow-down"></i></button>');
-			
-			$('#' + id + 'UpButton').click(function(e) {
-					e.preventDefault();
-					$('#' + toSelect.attr('id') + ' option:selected').each(function(){
-						$(this).insertBefore($(this).prev());
-					});
-			});
-			
-			$('#' + id + 'DownButton').click(function(e) {
-				e.preventDefault();
-				$('#'  + toSelect.attr('id') + ' option:selected').each(function(){
-					$(this).insertAfter($(this).next());
-				});
-			});
-		}
 
 		var callback = {
 				setValue: function(val) {
@@ -1890,8 +1980,8 @@ $.fn.multipleTextInput = function(data) {
 				getValue: function() {
 					result = new Array();
 
-					$('#' + id + 'IncludedSelect option').each(function() {
-						result.push(he.decode($(this).val()));
+					$('#' + id + 'IncludedSelect li').each(function() {
+						result.push(decodeURIComponent(he.decode($(this).attr('value'))));
 					});
 					return result;
 				},
@@ -1899,14 +1989,28 @@ $.fn.multipleTextInput = function(data) {
 					$('#' + id).multipleTextInput();
 				},
 				disable: function() {
-					$('#' + id + 'AddButton').attr('disabled', true);
-					$('#' + id + 'RemoveButton').attr('disabled', true);
-					$('#' + id + 'IncludedSelect').attr('disabled', true);
+					$('#' + id + 'Excluded').widget().disable();
+					if(options.allowOrdering){
+						$('#' + id + 'IncludedSelect li').attr('draggable', false);
+						$('#' + id + 'IncludedSelect li').css('cursor', 'default');
+						$('#' + id + 'IncludedSelect li').each(function(){
+							removeListeners($(this));
+						});
+					}
+					$('#' + id + 'IncludedSelect li i').off();
+					$('#' + id + 'IncludedSelect li i').css('cursor', 'default');
 				},
-				enable: function() {
-					$('#' + id + 'AddButton').attr('disabled', false);
-					$('#' + id + 'RemoveButton').attr('disabled', false);
-					$('#' + id + 'IncludedSelect').attr('disabled', false);
+				enable: function() {					
+					$('#' + id + 'Excluded').widget().enable();
+					if(options.allowOrdering){
+						$('#' + id + 'IncludedSelect li').attr('draggable', true);
+						$('#' + id + 'IncludedSelect li').css('cursor', 'move');
+						$('#' + id + 'IncludedSelect li').each(function(){
+							addListeners($(this));
+						});
+					}
+					$('#' + id + 'IncludedSelect li i').on('click', removeElement);
+					$('#' + id + 'IncludedSelect li i').css('cursor', 'pointer');
 				},
 				options: function() {
 					return options;
@@ -1918,53 +2022,20 @@ $.fn.multipleTextInput = function(data) {
 	 				$('#' + id).multipleTextInput();
 	 			}
 		};
-
-		$('#' + id + 'AddButton')
-				.click(
-					function(e) {
-						e.preventDefault();
-						var selectedText = textInput.getValue();
-						if (selectedText == '') {
-
-							return;
-						}
-
-						toSelect
-								.append('<option ' + 'value="' + he.encode(selectedText) + '">' + he.encode(selectedText) + "</option>");
-						textInput.setValue('');
-						toSelect.data('updated', true);
-						if (options.changed) {
-							options.changed(callback);
-						}
-					});
-
-		$('#' + id + 'RemoveButton').click(function(e) {
-			e.preventDefault();
-			var selectedOpts = $('#' + toSelect.attr('id') + ' option:selected');
-			if (selectedOpts.length == 0) {
-				return;
-			}
-
-			textInput.setValue(he.decode($(selectedOpts).val()));
-			$(selectedOpts).remove();
-
-			toSelect.data('updated', true);
-
-			if (options.changed) {
-				options.changed(callback);
-			}
-		});
-
 	}
 
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
-			toSelect.append('<option ' + 'value="' + he.encode(obj) + '">' + he.encode(obj) + "</option>");
+			var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + he.encode(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+			
+			newElement.find('i.fa.fa-times').click(function(e){
+				removeElement(e);
+			});
+			toSelect.append(newElement);
+			addListeners(newElement);
 		});
 	}
 	
-	
-
 	if(options.disabled) {
 		callback.disable();
 	}
