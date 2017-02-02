@@ -141,9 +141,6 @@ function startLogon(opts) {
 		},
 		processForm: function(data) {
 			if (data.showLocales) {
-				$('#navMenu')
-						.append(
-							'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-globe"></i></a></li>');
 				$('#langMenu')
 						.append(
 							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
@@ -261,7 +258,7 @@ function home(data) {
 							
 							allMenus[this.resourceKey] = this;
 							
-							$(menu).append('<li><a id="' + this.id + '" href="#" class="sideMenu"><i class="fa ' 
+							$(menu).append('<li' + (this.hidden ? ' style="display:none"' : '') + '><a id="' + this.id + '" href="#" class="sideMenu"><i class="fa ' 
 									+ this.icon + '"></i><span class="hidden-sm text">' 
 									+ getResource(this.resourceKey + '.label') + '</span></span></a></li>');
 							$('#' + this.id).data('menu', this);
@@ -300,7 +297,7 @@ function home(data) {
 			var session = $(document).data('session');
 			if(session.impersonating) {
 				$('#navMenu').append(
-					'<li class="navicon"><a id="impersonateMenu" href="#"><i class="fa fa-male"></i></a></li>');
+					'<li class="navicon"><a id="impersonateMenu" data-toggle="tooltip" title="' + getResource('text.revertImpersonation') + '" data-placement="bottom" href="#"><i class="fa fa-male"></i></a></li>');
 				$('#impersonateMenu').click(function(e) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
@@ -311,13 +308,6 @@ function home(data) {
 						}
 					});
 				});
-			}
-			
-			$('#currentRealm').remove();
-			if (data.realms) {
-				if(data.realms.length > 1) {
-					loadRealms(data.realms);
-				}
 			}
 			
 			$('#currentRole').remove();
@@ -359,8 +349,32 @@ function home(data) {
 				}
 			});
 
+			if(allMenus['navigation']) {
+				$.each(allMenus['navigation'].menus, function(idx, obj) {
+					
+					if(obj.resourceKey === 'realms') {
+						$('#currentRealm').remove();
+						if (data.realms) {
+							if(data.realms.length > 0) {
+								loadRealms(data.realms);
+							}
+						}
+						return;
+					}
+					
+					$('#navMenu').append('<li class="navicon" id="' + this.id 
+							+ '"><a data-toggle="tooltip" title="' + getResource(this.resourceKey + '.label') 
+							+ '" data-placement="bottom" href="#"><i class="fa ' + this.icon + '"></i></a></li>');
+					
+					$('#' + this.id).data('menu', this);
+					$('#' + this.id).click(function() {
+						loadMenu($('#' + $(this).attr('id')).data('menu'));
+					});
+				});
+			}
+			
 			if(data.systemAdmin) {
-				$('#navMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-power-off"></i></a></li>');
+				$('#navMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="bottom" href="#"><i class="fa fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function(e) {
 					showShutdownDialog();
@@ -368,10 +382,10 @@ function home(data) {
 			}
 			
 			if (showLocales) {
-				
 				$('#navMenu')
 						.append(
-							'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-globe"></i></a></li>');
+						'<li class="navicon" id="langMenu" data-toggle="tooltip" title="' + getResource('text.selectLanguages') + '" data-placement="bottom" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-globe"></i></a></li>');
+		
 				$('#langMenu')
 						.append(
 							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
@@ -436,9 +450,8 @@ function home(data) {
 			// Setup header actions
 			$('#navMenu')
 					.append(
-						'<li class="navicon"><a id="actionLogoff" href="#"><i class="fa fa-sign-out"></i></a></li>');
+						'<li class="navicon"><a id="actionLogoff" data-toggle="tooltip" title="' + getResource('text.signOut') + '" data-placement="bottom" href="#"><i class="fa fa-sign-out"></i></a></li>');
 
-			$('#actionLogoff').tooltip();
 			$('#actionLogoff').click(function(e) {
 				e.preventDefault();
 				logoff();
@@ -629,22 +642,35 @@ function loadRealms(realms) {
 			});
 	};
 	
-	if(realms.length > 1) {
-		$('#main-menu-toggle').parent().after('<li id="currentRealm" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a></li>');
+	//if(realms.length > 1) {
+		$('#main-menu-toggle').parent().after('<li id="currentRealm" class="navicon" data-toggle="tooltip" title="' + getResource('text.userRealms') + '" data-placement="bottom"class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a></li>');
 
 		$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
+		
+		$('#realm').append('<li class="dropdown-header">' + getResource('text.selectRealm') + '</li>')
 		$.each(realms, function() {
 			$('#realm').append(
 				'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
 		});
+		
+		$('#realm').append('<li class="divider"></li>');
+		
+		
+		$('#realm').append(
+				'<li role="presentation"><a id="manageRealms" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + getResource('text.manageRealms') + '</a></li>');
 	
+		$('#manageRealms').click(function(e) {
+			e.preventDefault();
+			loadMenu(allMenus['realms']);
+		});
+		
 		$('.realmSelect').on(
 			'click', function(evt) {
 				evt.preventDefault();
 				func($(this).attr('data-value'));
 			}
 		);
-	}
+	//}
 	
 	if (deletedCurrentRealm) {
 		func(currentRealm.id);
@@ -714,6 +740,8 @@ function loadComplete(pageChange) {
 	log("Signaling load complete");
 	$('#mainContent').data('loadComplete', true);
 	$('#mainContent').data('pageChange', pageChange);
+	debugger;
+    $('[data-toggle="tooltip"]').tooltip(); 
 }
 
 function loadWait() {

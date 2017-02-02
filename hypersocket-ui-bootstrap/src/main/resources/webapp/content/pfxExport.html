@@ -70,8 +70,12 @@
 				processData : false,
 				data : formData,
 				success : function(data) {
-					$('#pfxExport').modal('hide');
-					window.location = basePath + '/api/certificates/downloadPfx/' + $('#pfxExport').data('resource');
+					if(data.success) {
+						$('#pfxExport').modal('hide');
+						window.location = basePath + '/api/certificates/downloadPfx/' + $('#pfxExport').data('resource');
+					} else {
+						showError(data.message);
+					}
 				},
 				error : function(jqXHR,textStatus,errorThrown) {
 					showError(errorThrown);
