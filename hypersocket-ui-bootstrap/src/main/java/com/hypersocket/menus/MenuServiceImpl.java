@@ -107,11 +107,21 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		indexFilter.addPage("recover-index.html");
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				MenuService.MENU_NAV, "", null, 0, null, null, null, null));
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				MenuService.MENU_REALMS, "fa-database", "realms", 1,
+				RealmPermission.READ, RealmPermission.CREATE,
+				RealmPermission.UPDATE, RealmPermission.DELETE), MenuService.MENU_NAV);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				MenuService.MENU_DASHBOARD, "fa-pie-chart", null, 0, null, null,
+				null, null), MenuService.MENU_NAV);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_PERSONAL, "", null, 0, null, null, null, null));
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_DASHBOARD, "fa-home", null, 0, null, null,
-				null, null), MenuService.MENU_PERSONAL);
+		
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
 				"fa-hourglass-start", "sessions", 99999,
@@ -171,19 +181,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_SYSTEM, "", null, 100, null, null, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_SYSTEM_CONFIGURATION, "fa-server", null, 0,
-				null, null, null, null), MenuService.MENU_SYSTEM);
+				MenuService.MENU_SYSTEM_CONFIGURATION, "fa-gears", null, 0,
+				null, null, null, null), MenuService.MENU_NAV);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
-				"fa-cog", "settings", 0,
+				"fa-gears", "settings", 0,
 				SystemPermission.SYSTEM_ADMINISTRATION, null,
 				SystemPermission.SYSTEM_ADMINISTRATION, null),
-				MenuService.MENU_SYSTEM_CONFIGURATION);
-
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_REALMS, "fa-database", "realms", 1,
-				RealmPermission.READ, RealmPermission.CREATE,
-				RealmPermission.UPDATE, RealmPermission.DELETE),
 				MenuService.MENU_SYSTEM_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "interfacesMenu",
@@ -198,18 +202,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"fa-wrench", null, 100, null, null, null, null),
 				MenuService.MENU_SYSTEM);
 
-		// registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-		// MenuService.MENU_SCHEDULERS,
-		// "fa-clock-o", "schedulers", Integer.MAX_VALUE,
-		// SystemPermission.SYSTEM_ADMINISTRATION, null, null, null, null),
-		// MENU_SYSTEM_CONFIGURATION);
-
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_CONFIGURATION, "fa-cog", null, 100, null,
+				MenuService.MENU_CONFIGURATION, "fa-gears", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_REALM_CONFIGURATION, "fa-cogs",
+				MenuService.MENU_REALM_CONFIGURATION, "fa-gears",
 				"realmSettings", 0, ConfigurationPermission.READ, null,
 				ConfigurationPermission.UPDATE, null),
 				MenuService.MENU_CONFIGURATION);
@@ -271,7 +269,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						UserAttributePermission.CREATE,
 						UserAttributePermission.UPDATE,
 						UserAttributePermission.DELETE),
-				MenuService.MENU_ACCESS_CONTROL);
+				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "accessControl",
 				"fa-unlock-alt", null, 200, null, null, null, null),
@@ -330,7 +328,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						RoleAttributePermission.CREATE,
 						RoleAttributePermission.UPDATE,
 						RoleAttributePermission.DELETE),
-				MenuService.MENU_ACCESS_CONTROL);
+				MenuService.MENU_CONFIGURATION);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
@@ -348,13 +346,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"impersonateUser", "fa-male", "impersonateUser",
 				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "canImpersonateUser"));
 		
-//		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
-//				"suspendUser", "fa-ban", "suspendUser",
-//				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isSuspended"));
-//		
-//		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
-//				"resumeUser", "fa-check", "resumeUser",
-//				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isResumed"));
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
+				"suspendUser", "fa-ban", "suspendUser",
+				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isSuspended"));
+		
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
+				"resumeUser", "fa-check", "resumeUser",
+				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isResumed"));
 
 		registerTableAction(MenuService.ACTIONS_REALMS,
 				new AbstractTableAction("defaultRealm", "fa-tag",
@@ -367,8 +365,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageMenu", "fa-envelope-o",
+				null, 9999, null, null, null,
+				null), MENU_BUSINESS_RULES);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				"messages", "fa-envelope-o", "messages", 99999,
+				"messages", "fa-envelope-o", "messages", 0,
 				MessageResourcePermission.READ,
 				MessageResourcePermission.CREATE,
 				MessageResourcePermission.UPDATE,
@@ -383,7 +385,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						}
 					}
 			
-		}, MENU_BUSINESS_RULES);
+		}, "messageMenu");
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageConfiguration", "fa-gears",
+				"messageSettings", Integer.MAX_VALUE, MessageResourcePermission.READ, null, null,
+				null), "messageMenu");
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_TOOLS, "",
 				null, 99999, null, null, null, null, null));
@@ -454,6 +460,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Override
 	public boolean registerMenu(MenuRegistration module, String parentModule) {
 
+		/**
+		 * Top navigation menu is special case and processed differently so just hide any
+		 * modules registered to it.
+		 */
+		if(MENU_NAV.equals(module.getResourceKey()) || MENU_NAV.equals(parentModule)) {
+			module.setHidden(true);
+		}
+		
 		if (pendingMenus.containsKey(module.getResourceKey())) {
 			for (MenuRegistration m : pendingMenus.get(module.getResourceKey())) {
 				module.addMenu(m);
