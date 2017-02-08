@@ -465,7 +465,7 @@ function getJSON(url, params, callback, errorCallback) {
 		url = basePath + '/api/' + url;
 	}
 	
-	$.ajax({
+	return $.ajax({
 		type: "GET",
 	    url:  url + (params ? (url.endsWith('?') ? '' : '?') + $.param(params) : ''),
 	    cache: false,
@@ -499,7 +499,7 @@ function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 		url = basePath + '/api/' + url;
 	}
 	
-	$.ajax({
+	return $.ajax({
 		type: "POST",
 	    url:  url,
 	    dataType: 'json',
@@ -538,7 +538,7 @@ function deleteJSON(url, params, callback, errorCallback) {
 		url = basePath + '/api/' + url;
 	}
 	
-	$.ajax({
+	return $.ajax({
 		type: "DELETE",
 	    url:  url,
 	    dataType: 'json',
