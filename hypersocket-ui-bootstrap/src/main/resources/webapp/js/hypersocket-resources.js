@@ -1006,13 +1006,14 @@ $.fn.samePageResourceView = function(params, params2) {
 	var dialogOptions = $(this).data('options');
 	
 	var addActions = function(save, copy) {
+		debugger;
 		var html = '<div class="panel-footer">';
 		html+= '<button id="' + dialog.attr('id') + 'Cancel" + class="btn btn-danger"><i class="fa fa-ban"></i>' + getResource('text.cancel') + '</button>';
 		if(save) {
 			html += '<button id="' + dialog.attr('id') + 'Save" + class="btn btn-primary"><i class="fa fa-save"></i>' + getResource('text.save') + '</button>';
 		}
 		html += '</div>';
-		dialog.find('.panel-body').after(html);
+		dialog.find('.panel-body').first().after(html);
 		
 		if(save) {
 			$('#' + dialog.attr('id') + 'Save').click(function() {
@@ -1087,6 +1088,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
+			addActions(true);
 		}
 		
 		return;
@@ -1120,6 +1122,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
+			addActions(true);
 		}
 		
 		return;
@@ -1153,6 +1156,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
+			addActions(false);
 		}
 		
 		return;
@@ -1200,6 +1204,7 @@ $.fn.samePageResourceView = function(params, params2) {
 				$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 			} else {
 				showView(dialog);
+				addActions(true, true);
 			}
 		}
 		

@@ -1863,3 +1863,7 @@ select[multiple] {
 .includedList1 {
 	margin-top: 10px;
 }
+
+.checkboxProperty span {
+	display: inline-block;
+}
