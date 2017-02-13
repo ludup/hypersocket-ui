@@ -154,7 +154,8 @@ $.fn.resourceTable = function(params) {
 		logoResourceTypeCallback: false,
 		hasResourceTable: true,
 		onSave : false,
-		stayOnPageAfterSave: false
+		stayOnPageAfterSave: false,
+		bulkAssignment: false
 		},params);
 
 	options.tableView = $('#' + divName);
@@ -162,7 +163,6 @@ $.fn.resourceTable = function(params) {
 	$(this).data('options', options);
 
 	var resourceType  = "";
-	var bulkAssignableTarget = "";
 	if(options.resourceUrl.indexOf("/") != -1) {
 	    var parts = options.resourceUrl.split("/");
 	    resourceType = parts[0];
@@ -611,10 +611,11 @@ $.fn.resourceTable = function(params) {
 						});
 					}
 
-                    debugger;
-                    if($('#bulkAssignable').length != 0 || $('#' + resourceType + 'BulkAssignable').length != 0){
-                        bulkAssignableTarget = $('#bulkAssignable').length != 0 ? 'bulkAssignable' :
-                                        resourceType + 'BulkAssignable';
+                    if(options.bulkAssignment) {
+                        var bulkAssignableTarget = resourceType + 'BulkAssignable';
+                        if($('#' + bulkAssignableTarget).length == 0) {
+                            $('#' + divName).append('<div id="' + bulkAssignableTarget + '"></div>');
+                        }
 
                         $('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="'
                                 + divName + 'BulkTableAction" class="btn btn-default" title="'
@@ -625,7 +626,8 @@ $.fn.resourceTable = function(params) {
 
                         $('#' + divName + 'BulkTableAction').click(function(){
                             var bulkAction = $('#' + bulkAssignableTarget).bulkAssignmentDialog({
-                                resource : resourceType
+                                resource : resourceType,
+                                modalCallback : function(data) {$('#' + divName + 'Placeholder').bootstrapTable('refresh');}
                             });
                             bulkAction.show();
                         });
@@ -664,7 +666,7 @@ $.fn.resourceTable = function(params) {
 		    			$('#' + divName + 'Grid').append('<div class="no-records-found">' + getResource('text.noMatchingRecords') + '</div>');
 		    		}else{
 		    		    var roleTestResource = gridResourceList[0];
-		    		    if(typeof roleTestResource.roles != 'undefined' && $('#' + bulkAssignableTarget).length > 0) {
+		    		    if(options.bulkAssignment && typeof roleTestResource.roles != 'undefined') {
 		    		        $('#' + divName + 'BulkTableAction').show();
 		    		    }
 
@@ -1345,11 +1347,14 @@ $.fn.bulkAssignmentDialog = function(options) {
             bulkAssignment.mode =  mode == '' ? "0" : mode;
 
             if(valid(bulkAssignment)) {
-                postJSON('assignable/bulk', bulkAssignment, function(data) {
+                postJSON(resource + '/bulk', bulkAssignment, function(data) {
                     if(data.success) {
                         showSuccess(data.message);
                     } else {
                         showError(data.message);
+                    }
+                    if(typeof options.modalCallback != "undefined") {
+                        options.modalCallback(data);
                     }
                     $('#' + id + 'Form').modal('hide');
                 });
@@ -1407,7 +1412,7 @@ $.fn.bulkAssignmentDialog = function(options) {
                     values : data.resources
                 });
             }),
-            getJSON('enum/displayable/com.hypersocket.bulk.json.BulkAssignmentMode/', null, function(data) {
+            getJSON('enum/displayable/com.hypersocket.bulk.BulkAssignmentMode/', null, function(data) {
                $('#' + id + 'ModeComponentInput').empty();
                $('#' + id + 'ModeComponentInput').selectButton({options: data.resources,
                     valueAttr : 'id',
