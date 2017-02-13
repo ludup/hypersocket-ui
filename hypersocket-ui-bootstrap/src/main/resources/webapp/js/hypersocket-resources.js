@@ -161,6 +161,13 @@ $.fn.resourceTable = function(params) {
 	
 	$(this).data('options', options);
 
+	var resourceType  = "";
+	var bulkAssignableTarget = "";
+	if(options.resourceUrl.indexOf("/") != -1) {
+	    var parts = options.resourceUrl.split("/");
+	    resourceType = parts[0];
+	}
+
 	var html = '';
 	if(!options.disableDecoration) {
 		html += '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
@@ -604,9 +611,25 @@ $.fn.resourceTable = function(params) {
 						});
 					}
 
-					$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="'
-                    									+ divName + 'BulkTableAction" class="btn btn-default" data-toggle="tooltip" title="'
-                    									+ getResource('bulk' + '.label') + '"><i class="fa fa-exchange"></i></button>');
+                    debugger;
+                    if($('#bulkAssignable').length != 0 || $('#' + resourceType + 'BulkAssignable').length != 0){
+                        bulkAssignableTarget = $('#bulkAssignable').length != 0 ? 'bulkAssignable' :
+                                        resourceType + 'BulkAssignable';
+
+                        $('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="'
+                                + divName + 'BulkTableAction" class="btn btn-default" title="'
+                                + getResource('bulk.assignment.tab.title') + '"><i class="fa fa-exchange"></i></button>');
+
+
+                        $('#' + divName + 'BulkTableAction').hide();
+
+                        $('#' + divName + 'BulkTableAction').click(function(){
+                            var bulkAction = $('#' + bulkAssignableTarget).bulkAssignmentDialog({
+                                resource : resourceType
+                            });
+                            bulkAction.show();
+                        });
+                    }
 
 					if(options.toolbarButtons) {
 						$.each(options.toolbarButtons, function(idx, action) {
@@ -640,6 +663,11 @@ $.fn.resourceTable = function(params) {
 		    		if(!gridResourceList.length){
 		    			$('#' + divName + 'Grid').append('<div class="no-records-found">' + getResource('text.noMatchingRecords') + '</div>');
 		    		}else{
+		    		    var roleTestResource = gridResourceList[0];
+		    		    if(typeof roleTestResource.roles != 'undefined' && $('#' + bulkAssignableTarget).length > 0) {
+		    		        $('#' + divName + 'BulkTableAction').show();
+		    		    }
+
 		    			$.each(gridResourceList, function(index, resource){
 							var prefix = "logo://";
 							var value = resource.logo;
@@ -1261,6 +1289,8 @@ $.fn.samePageResourceView = function(params, params2) {
 		}
 	};
 };
+
+
 $.fn.bulkAssignmentDialog = function(options) {
     var dialog = $(this);
     var parent = $(this).parent();
@@ -1279,6 +1309,29 @@ $.fn.bulkAssignmentDialog = function(options) {
         $(this).data('options', $.extend({init : true}, options));
         var dataOptions = $(this).data('options');
 
+        $(this).empty();
+        var modalForm = '<div class="modal" id="' + id + 'Form" tabindex="-1" role="dialog" dialog-for="' + id + '">' +
+                '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                        '<div class="modal-header">' +
+                            '<button type="button" class="close" data-dismiss="modal"' +
+                                    'aria-hidden="true">&times;</button>' +
+                            '<h4 class="modal-title"></h4>' +
+                        '</div>' +
+                        '<div class="modal-body">' +
+                            '<div id="' + id + 'TabContent">' +
+                                '<div id="' + id + 'Tabs"></div>' +
+                                '<div id="' + id + 'TabResources"><div id="' + id + 'ResourceComponent"></div></div>' +
+                                '<div id="' + id + 'TabRoles"><div id="' + id + 'RoleComponent"></div></div>' +
+                                '<div id="' + id + 'TabMode"></div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="modal-footer"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        $(this).html(modalForm);
+
         $(this).find('.modal-footer').empty();
         $(this).find('.modal-footer').append(
                     '<button type="button" id="' + id + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.update") + '</button>');
@@ -1286,13 +1339,13 @@ $.fn.bulkAssignmentDialog = function(options) {
 
         $('#' + id + "Action").on('click', function() {
             var bulkAssignment = new Object();
-            bulkAssignment.roleIds = $('#' + id + 'ResourceComponent').multipleSelectValues();
-            bulkAssignment.resourceIds = $('#' + id + 'RoleComponent').multipleSelectValues();
+            bulkAssignment.roleIds = $('#' + id + 'RoleComponent').multipleSelectValues();
+            bulkAssignment.resourceIds = $('#' + id + 'ResourceComponent').multipleSelectValues();
             var mode = $('#' + id + 'ModeComponentInput').data('widget').getValue();
             bulkAssignment.mode =  mode == '' ? "0" : mode;
 
             if(valid(bulkAssignment)) {
-                postJSON(resource + '/bulkAssignment', bulkAssignment, function(data) {
+                postJSON('assignable/bulk', bulkAssignment, function(data) {
                     if(data.success) {
                         showSuccess(data.message);
                     } else {
@@ -1354,7 +1407,8 @@ $.fn.bulkAssignmentDialog = function(options) {
                     values : data.resources
                 });
             }),
-            getJSON('enum/displayable/com.hypersocket.json.BulkAssignmentMode/', null, function(data) {
+            getJSON('enum/displayable/com.hypersocket.bulk.json.BulkAssignmentMode/', null, function(data) {
+               $('#' + id + 'ModeComponentInput').empty();
                $('#' + id + 'ModeComponentInput').selectButton({options: data.resources,
                     valueAttr : 'id',
                     nameAttr : 'display'}
@@ -1362,6 +1416,7 @@ $.fn.bulkAssignmentDialog = function(options) {
             })
         ).then(function(){
             $('#' + id + 'Form').modal('show');
+            $('#' + id + ' a:first').tab('show')
         });
     }
 
