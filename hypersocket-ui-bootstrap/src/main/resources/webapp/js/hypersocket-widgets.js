@@ -1085,6 +1085,7 @@ $.fn.autoComplete = function(data) {
 					null,
 					function(data) {
 						
+						if(data.rows && data.rows.length > 0) {
 						var map = [];
 						$.each(data.rows, function(idx, obj) {
 							map[obj[options.valueAttr]] = obj;
@@ -1100,6 +1101,14 @@ $.fn.autoComplete = function(data) {
 						$('#input_' + id).data('values', data.rows);
 						$('#input_' + id).data('map', map);
 						
+						} else {
+							if(text=='') {
+								$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+							} else {
+								$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+							}
+						}
+						
 						createDropdown(text, true, true);
 					});
 			
@@ -1114,25 +1123,25 @@ $.fn.autoComplete = function(data) {
 	
 	var remoteDropdown = false;
 	
-	$('#input_' + id).parent().mouseenter(function() {
-		removeDropdown = false;
-		if(!$('[data-toggle="dropdown"]').parent().hasClass('open')) {
-			var text = $(this).val();
-			doDropdown(text);
-		}
-	});
+//	$('#input_' + id).parent().mouseenter(function() {
+//		removeDropdown = false;
+//		if(!$('[data-toggle="dropdown"]').parent().hasClass('open')) {
+//			var text = $(this).val();
+//			doDropdown(text);
+//		}
+//	});
 	
 	
-	$('#input_' + id).parent().mouseleave(function() {
-		removeDropdown = true;
-		setTimeout(function() {
-			if(removeDropdown) {
-				$('[data-toggle="dropdown"]').parent().removeClass('open');
-			}
-			removeDropdown = false;
-		}, 500);
-		
-	});
+//	$('#input_' + id).parent().mouseleave(function() {
+//		removeDropdown = true;
+//		setTimeout(function() {
+//			if(removeDropdown) {
+//				$('[data-toggle="dropdown"]').parent().removeClass('open');
+//			}
+//			removeDropdown = false;
+//		}, 500);
+//		
+//	});
 	
 	callback = {
 			setValue: function(val) {
@@ -1186,6 +1195,9 @@ $.fn.autoComplete = function(data) {
  			clear: function() {
  				$('#' + id).val('');
 				$('#input_' + id).val('');
+
+				$('#auto_' + id).empty();
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');	
  			},
  			addItem: function(item, select){
  				exists = false;
@@ -1230,12 +1242,15 @@ $.fn.autoComplete = function(data) {
 			function(data) {
 				buildData(options.isResourceList ? data.resources : data);
 				updateValue(options.value, false);
+				createDropdown('', false, false);
 			});
 	} else if(options.values && !options.remoteSearch) {
 		buildData(options.values);
 		updateValue(options.value, false);
+		createDropdown('', false, false);
 	} else if(options.remoteSearch) {
-		if(options.value !== '') {
+		
+		if(options.value && options.value !== '') {
 			getJSON(options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + options.value + "&searchColumn=" + options.valueAttr,
 					null,
 					function(data) {
@@ -1252,6 +1267,8 @@ $.fn.autoComplete = function(data) {
 						$('#input_' + id).data('values', data.rows);
 						$('#input_' + id).data('map', map);
 					});
+		} else {
+			$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');	
 		}
 	}
 	
@@ -4903,7 +4920,7 @@ $.fn.multipleRows = function(data) {
 				showAdd: true,
 				isArrayValue: true,
 				render: function(element, value) {
-					debugger;
+					
 					element.textInput({ }).setValue(value);
 				},
 			}, data);
@@ -4939,7 +4956,7 @@ $.fn.multipleRows = function(data) {
 	}
 	
 	var addRow = function(val) {
-		debugger
+		
 		var elementId = id + options.count++;
 		$('#' + id + 'Rows').append('<div class="row">' 
 				+ '    <div id="' + elementId  + '" class="rowInput col-xs-11">'
@@ -4975,7 +4992,7 @@ $.fn.multipleRows = function(data) {
 			setValue: function(val) {
 				$('#' + id + 'Rows').children().remove();
 				$.each(val, function(idx, v) {
-					debugger
+					
 					addRow(v);
 				});
 			},
@@ -5012,7 +5029,7 @@ $.fn.multipleRows = function(data) {
 				});
 			}
 	}
-	debugger;
+	
 	if(options.value) {
 		callback.setValue(splitFix(options.value));
 	}

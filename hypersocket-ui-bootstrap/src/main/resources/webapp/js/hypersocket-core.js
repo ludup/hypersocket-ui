@@ -740,7 +740,7 @@ function loadComplete(pageChange) {
 	log("Signaling load complete");
 	$('#mainContent').data('loadComplete', true);
 	$('#mainContent').data('pageChange', pageChange);
-	debugger;
+	
     $('[data-toggle="tooltip"]').tooltip(); 
 }
 

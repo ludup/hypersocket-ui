@@ -241,7 +241,7 @@ function processLogon(data, opts, message) {
 							    var elem = $('#' + this.resourceKey);
 								var name = encodeURIComponent(this.resourceKey);
 								var value = encodeURIComponent(elem.val());
-                                debugger;
+                                
 								if(elem.is(':checkbox')) {
 								    credentials = credentials + '&' + name + '=' + elem.is(':checked');
 								} else {

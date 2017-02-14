@@ -1018,7 +1018,7 @@ $.fn.propertyPage = function(opts) {
 											widget = $('#' + tab + '_value' + inputId).html5Upload(widgetOptions);
 
 										} else if (obj.inputType == 'multipleSelect') {
-											debugger
+											
 											var url;
 											if(obj.url && options.resource) {
 												url = obj.url.replace('{id}', options.resource);
@@ -1081,7 +1081,7 @@ $.fn.propertyPage = function(opts) {
 											widget = $('#' + tab + '_value' + inputId).sliderInput(obj);
 
 										} else {
-											debugger;
+											
 											var func = $('#' + tab + '_value' + inputId)[obj.inputType];
 											if(func) {
 												widget = $('#' + tab + '_value' + inputId)[obj.inputType](obj);
