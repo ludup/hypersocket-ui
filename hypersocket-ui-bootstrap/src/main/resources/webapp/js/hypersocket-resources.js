@@ -1644,6 +1644,7 @@ $.fn.extendedResourcePanel = function(params){
             if(tabList == null || tabList.length == 0 || typeof tabList == 'undefined') {
                 return;
             }
+            tabList.sort(function(obj1, obj2){ return obj1.weight - obj2.weight});
             var tabArray = [];
             $.each(tabList,function(index, value){
                 var tabId = 'tabs' + value.resourceKey.charAt(0).toUpperCase() + value.resourceKey.substring(1);
