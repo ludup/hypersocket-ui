@@ -10,6 +10,7 @@ package com.hypersocket.menus.json;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.hypersocket.menus.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -25,10 +26,6 @@ import com.hypersocket.auth.json.AuthenticationRequiredButDontTouchSession;
 import com.hypersocket.auth.json.UnauthorizedException;
 import com.hypersocket.json.ResourceList;
 import com.hypersocket.json.ResourceStatus;
-import com.hypersocket.menus.AbstractTableAction;
-import com.hypersocket.menus.Badge;
-import com.hypersocket.menus.Menu;
-import com.hypersocket.menus.MenuService;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionService;
 import com.hypersocket.permissions.PermissionStrategy;
@@ -147,6 +144,27 @@ public class MenuController extends AuthenticatedController {
 		try {
 			return new ResourceList<Badge>(
 					menuService.getCurrentBadges());
+		} finally {
+			clearAuthenticatedContext();
+		}
+	}
+
+	@AuthenticationRequired
+	@RequestMapping(value = "menus/extendedResourceInfo/{tab}", method = RequestMethod.GET,
+			produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	public ResourceList<TabRegistration> getTabRegistration(
+			HttpServletRequest request, HttpServletResponse respone,
+			@PathVariable String tab) throws UnauthorizedException,
+			SessionTimeoutException {
+
+		setupAuthenticatedContext(sessionUtils.getSession(request),
+				sessionUtils.getLocale(request));
+
+		try {
+			return new ResourceList<TabRegistration>(
+					menuService.getRegisteredTab(tab));
 		} finally {
 			clearAuthenticatedContext();
 		}

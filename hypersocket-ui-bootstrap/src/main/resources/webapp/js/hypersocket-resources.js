@@ -1627,3 +1627,41 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		}
 	};
 };
+
+$.fn.extendedResourcePanel = function(params){
+    var options = $.extend({tabIcon: 'fa-cog'}, params);
+
+    var id = options.resourceKey;
+    var tabContentHolderId = id + 'TabContent';
+    var tabsId = 'tabs' + id.charAt(0).toUpperCase() + id.substring(1);
+    $(this).append('<div id=' + tabContentHolderId + '></div>');
+    var $tabContentHolder = $('#' + tabContentHolderId);
+    $tabContentHolder.append('<div id=' + tabsId + '></div>');
+
+    getJSON('menus/extendedResourceInfo/' + id, null, function(data) {
+        if(data.success) {
+            var tabList = data.resources;
+            if(tabList == null || tabList.length == 0 || typeof tabList == 'undefined') {
+                return;
+            }
+            var tabArray = [];
+            $.each(tabList,function(index, value){
+                var tabId = 'tabs' + value.resourceKey.charAt(0).toUpperCase() + value.resourceKey.substring(1);
+                tabArray.push({id : tabId, name: getResource(value.resourceKey + '.label')});
+                $tabContentHolder.append('<div id=' + tabId + '></div>');
+                $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){
+                    $('#' + value.resourceKey).data('initPage')(options.resource);
+                });
+            });
+
+            $tabContentHolder.tabPage({
+                title : getResource(options.resourceKey + '.label'),
+                icon : options.tabIcon,
+                tabs : tabArray,
+                complete : function() {
+                    loadComplete();
+                }
+            });
+        }
+    });
+};
