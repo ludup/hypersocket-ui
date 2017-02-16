@@ -69,7 +69,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	List<BadgeProvider> badgeProviders = new ArrayList<BadgeProvider>();
 
-	Map<String, List<TabRegistration>> registeredTabs = new HashMap<>();
+	Map<String, List<TabRegistration>> extendedInformationTabs = new HashMap<>();
 
 	@Autowired
 	I18NService i18nService;
@@ -856,15 +856,32 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	}
 
 	@Override
-	public void registerTab(String tab, TabRegistration tabRegistration) {
-		if (!registeredTabs.containsKey(tab)) {
-			registeredTabs.put(tab, new ArrayList<TabRegistration>());
+	public void registerExtendedInformationTab(String tab, TabRegistration tabRegistration) {
+		if (!extendedInformationTabs.containsKey(tab)) {
+			extendedInformationTabs.put(tab, new ArrayList<TabRegistration>());
 		}
-		registeredTabs.get(tab).add(tabRegistration);
+		extendedInformationTabs.get(tab).add(tabRegistration);
 	}
 
 	@Override
-	public List<TabRegistration> getRegisteredTab(String tab) {
-		return registeredTabs.get(tab);
+	public List<TabRegistration> getExtendedInformationTab (String tab) {
+		List<TabRegistration> processedTabRegistration = new ArrayList<>();
+		List<TabRegistration> toProcessTabRegistration = extendedInformationTabs.get(tab);
+		for (TabRegistration tabRegistration :toProcessTabRegistration) {
+			if(tabRegistration.canRead()) {
+				try {
+					assertPermission(tabRegistration.permission);
+					processedTabRegistration.add(tabRegistration);
+				}catch (AccessDeniedException e) {
+					log.debug("{}/{} does not have access to {} tab with permission {}",
+							getCurrentPrincipal().getRealm(),
+							getCurrentPrincipal().getName(),
+							tabRegistration.getResourceKey(),
+							tabRegistration.getPermission()
+					);
+				}
+			}
+		}
+		return processedTabRegistration;
 	}
 }

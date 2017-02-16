@@ -164,7 +164,7 @@ public class MenuController extends AuthenticatedController {
 
 		try {
 			return new ResourceList<TabRegistration>(
-					menuService.getRegisteredTab(tab));
+					menuService.getExtendedInformationTab(tab));
 		} finally {
 			clearAuthenticatedContext();
 		}

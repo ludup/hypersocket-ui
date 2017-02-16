@@ -1642,6 +1642,7 @@ $.fn.extendedResourcePanel = function(params){
         if(data.success) {
             var tabList = data.resources;
             if(tabList == null || tabList.length == 0 || typeof tabList == 'undefined') {
+                $tabContentHolder.empty().html('<div class="well well-sm text-center">' + getResource('tabs.not.found') + '</div>');
                 return;
             }
             tabList.sort(function(obj1, obj2){ return obj1.weight - obj2.weight});

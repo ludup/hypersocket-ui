@@ -90,8 +90,8 @@ public interface MenuService extends AuthenticatedService {
 
 	void registerBadgeProvider(BadgeProvider provider);
 
-	void registerTab(String tab, TabRegistration tabRegistration);
+	void registerExtendedInformationTab(String tab, TabRegistration tabRegistration);
 
-	List<TabRegistration> getRegisteredTab(String tab);
+	List<TabRegistration> getExtendedInformationTab(String tab);
 
 }

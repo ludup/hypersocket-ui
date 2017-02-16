@@ -50,4 +50,8 @@ public class TabRegistration {
     public void setWeight(int weight) {
         this.weight = weight;
     }
+
+    public boolean canRead() {
+        return true;
+    }
 }
