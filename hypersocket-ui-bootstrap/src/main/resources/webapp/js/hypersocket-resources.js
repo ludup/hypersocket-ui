@@ -1631,24 +1631,27 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 $.fn.extendedResourcePanel = function(params){
     var options = $.extend({tabIcon: 'fa-cog'}, params);
 
-    var id = options.resourceKey;
-    var tabContentHolderId = id + 'TabContent';
+    var id = $(this).attr('id');
+    if(id == null || typeof id == 'undefined' || id.trim().length == 0) {
+        id = options.resource.id.toString();
+    }
+    var tabContentHolderId = id + 'Tabs';
     var tabsId = 'tabs' + id.charAt(0).toUpperCase() + id.substring(1);
     $(this).append('<div id=' + tabContentHolderId + '></div>');
     var $tabContentHolder = $('#' + tabContentHolderId);
     $tabContentHolder.append('<div id=' + tabsId + '></div>');
 
-    getJSON('menus/extendedResourceInfo/' + id, null, function(data) {
+    getJSON('menus/extendedResourceInfo/' + options.resourceKey, null, function(data) {
         if(data.success) {
             var tabList = data.resources;
-            if(tabList == null || tabList.length == 0 || typeof tabList == 'undefined') {
+            if(tabList == null || typeof tabList == 'undefined' || tabList.length == 0) {
                 $tabContentHolder.empty().html('<div class="well well-sm text-center">' + getResource('tabs.not.found') + '</div>');
                 return;
             }
             tabList.sort(function(obj1, obj2){ return obj1.weight - obj2.weight});
             var tabArray = [];
             $.each(tabList,function(index, value){
-                var tabId = 'tabs' + value.resourceKey.charAt(0).toUpperCase() + value.resourceKey.substring(1);
+                var tabId = id + value.resourceKey.charAt(0).toUpperCase() + value.resourceKey.substring(1);
                 tabArray.push({id : tabId, name: getResource(value.resourceKey + '.label')});
                 $tabContentHolder.append('<div id=' + tabId + '></div>');
                 $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){

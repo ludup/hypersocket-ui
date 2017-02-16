@@ -867,7 +867,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	public List<TabRegistration> getExtendedInformationTab (String tab) {
 		List<TabRegistration> processedTabRegistration = new ArrayList<>();
 		List<TabRegistration> toProcessTabRegistration = extendedInformationTabs.get(tab);
-		for (TabRegistration tabRegistration :toProcessTabRegistration) {
+		if(toProcessTabRegistration == null || toProcessTabRegistration.isEmpty()) {
+			return processedTabRegistration;
+		}
+		for (TabRegistration tabRegistration : toProcessTabRegistration) {
 			if(tabRegistration.canRead()) {
 				try {
 					assertPermission(tabRegistration.permission);
