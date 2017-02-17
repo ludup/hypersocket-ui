@@ -1825,6 +1825,14 @@ select[multiple] {
     overflow: scroll;
 }
 
+.contentSupportTunnel{
+	padding: 10px 25px;
+	overflow: auto;
+}
+.contentSupportTunnel p{
+	margin-bottom: 30px;
+}
+
 .overMultipleSearchInput {
 	border: 2px dashed #000 !important;
 }
