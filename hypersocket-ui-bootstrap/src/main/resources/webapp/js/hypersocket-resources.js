@@ -154,12 +154,19 @@ $.fn.resourceTable = function(params) {
 		logoResourceTypeCallback: false,
 		hasResourceTable: true,
 		onSave : false,
-		stayOnPageAfterSave: false
+		stayOnPageAfterSave: false,
+		bulkAssignment: false
 		},params);
 
 	options.tableView = $('#' + divName);
 	
 	$(this).data('options', options);
+
+	var resourceType  = "";
+	if(options.resourceUrl.indexOf("/") != -1) {
+	    var parts = options.resourceUrl.split("/");
+	    resourceType = parts[0];
+	}
 
 	var html = '';
 	if(!options.disableDecoration) {
@@ -603,7 +610,29 @@ $.fn.resourceTable = function(params) {
 							}
 						});
 					}
-					
+
+                    if(options.bulkAssignment) {
+                        var bulkAssignableTarget = resourceType + 'BulkAssignable';
+                        if($('#' + bulkAssignableTarget).length == 0) {
+                            $('#' + divName).append('<div id="' + bulkAssignableTarget + '"></div>');
+                        }
+
+                        $('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="'
+                                + divName + 'BulkTableAction" class="btn btn-default" title="'
+                                + getResource('bulk.assignment.tab.title') + '"><i class="fa fa-exchange"></i></button>');
+
+
+                        $('#' + divName + 'BulkTableAction').hide();
+
+                        $('#' + divName + 'BulkTableAction').click(function(){
+                            var bulkAction = $('#' + bulkAssignableTarget).bulkAssignmentDialog({
+                                resource : resourceType,
+                                modalCallback : function(data) {$('#' + divName + 'Placeholder').bootstrapTable('refresh');}
+                            });
+                            bulkAction.show();
+                        });
+                    }
+
 					if(options.toolbarButtons) {
 						$.each(options.toolbarButtons, function(idx, action) {
 							$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
@@ -636,6 +665,11 @@ $.fn.resourceTable = function(params) {
 		    		if(!gridResourceList.length){
 		    			$('#' + divName + 'Grid').append('<div class="no-records-found">' + getResource('text.noMatchingRecords') + '</div>');
 		    		}else{
+		    		    var roleTestResource = gridResourceList[0];
+		    		    if(options.bulkAssignment && typeof roleTestResource.roles != 'undefined') {
+		    		        $('#' + divName + 'BulkTableAction').show();
+		    		    }
+
 		    			$.each(gridResourceList, function(index, resource){
 							var prefix = "logo://";
 							var value = resource.logo;
@@ -1263,6 +1297,144 @@ $.fn.samePageResourceView = function(params, params2) {
 	};
 };
 
+
+$.fn.bulkAssignmentDialog = function(options) {
+    var dialog = $(this);
+    var parent = $(this).parent();
+
+    options = $.extend({tabResourceLabel : 'bulk.assignment.resource.label',
+                        tabRoleLabel : 'bulk.assignment.role.label',
+                        tabModeLabel : 'bulk.assignment.mode.label',
+                        modeInputLabel : 'bulk.assignment.input.mode.label',
+                        modeInputInfo : 'bulk.assignment.input.mode.info',
+                        tabTitle : 'bulk.assignment.tab.title'}, options);
+
+    var id = $(this).attr('id');
+    var resource = options.resource;
+
+    if(typeof $(this).data('options') == 'undefined') {
+        $(this).data('options', $.extend({init : true}, options));
+        var dataOptions = $(this).data('options');
+
+        $(this).empty();
+        var modalForm = '<div class="modal" id="' + id + 'Form" tabindex="-1" role="dialog" dialog-for="' + id + '">' +
+                '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                        '<div class="modal-header">' +
+                            '<button type="button" class="close" data-dismiss="modal"' +
+                                    'aria-hidden="true">&times;</button>' +
+                            '<h4 class="modal-title">' + getResource(dataOptions.tabTitle)  + '</h4>' +
+                        '</div>' +
+                        '<div class="modal-body">' +
+                            '<div id="' + id + 'TabContent">' +
+                                '<div id="' + id + 'Tabs"></div>' +
+                                '<div id="' + id + 'TabResources"><div class="col-xs-12" id="' + id + 'ResourceComponent"></div></div>' +
+                                '<div id="' + id + 'TabRoles"><div class="col-xs-12" id="' + id + 'RoleComponent"></div></div>' +
+                                '<div id="' + id + 'TabMode" class="col-xs-12"></div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="modal-footer"></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        $(this).html(modalForm);
+
+        $(this).find('.modal-footer').empty();
+        $(this).find('.modal-footer').append(
+                    '<button type="button" id="' + id + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.update") + '</button>');
+        $('#' + id + "Action").off('click');
+
+        $('#' + id + "Action").on('click', function() {
+            var bulkAssignment = new Object();
+            bulkAssignment.roleIds = $('#' + id + 'RoleComponent').multipleSelectValues();
+            bulkAssignment.resourceIds = $('#' + id + 'ResourceComponent').multipleSelectValues();
+            var mode = $('#' + id + 'ModeComponentInput').data('widget').getValue();
+            bulkAssignment.mode =  mode == '' ? "0" : mode;
+
+            if(valid(bulkAssignment)) {
+                postJSON(resource + '/bulk', bulkAssignment, function(data) {
+                    if(data.success) {
+                        showSuccess(data.message);
+                    } else {
+                        showError(data.message);
+                    }
+                    if(typeof options.modalCallback != "undefined") {
+                        options.modalCallback(data);
+                    }
+                    $('#' + id + 'Form').modal('hide');
+                });
+            }
+        });
+
+        $('#' + id + 'Tabs').tabPage({
+            title : '',
+            icon : 'fa-cog',
+            tabs : [ {
+                id : id + "TabResources",
+                name : getResource(dataOptions.tabResourceLabel)
+            }, {
+                id : id + "TabRoles",
+                name : getResource(dataOptions.tabRoleLabel)
+            }, {
+                 id : id + "TabMode",
+                 name : getResource(dataOptions.tabModeLabel)
+             }],
+            complete : function() {
+                loadComplete();
+            }
+        });
+
+        var modeComponent = '<div id="' + id + 'ModeComponent" class="propertyItem form-group">' +
+                            '<label id="' + id  + 'ModeComponentInputLabel" for="' + id + 'ModeComponentInput" class="col-md-3 control-label optionalField">' + getResource(dataOptions.modeInputLabel) + '</label>' +
+                            '<div class="propertyValue col-md-9">' +
+                            '<div id="' + id +'ModeComponentInput"></div><div class="clear">'+
+                            '<span class="help-block">' + getResource(dataOptions.modeInputInfo) + '</span></div></div></div>';
+        $('#' + id + 'TabMode').empty().append(modeComponent);
+
+    }
+
+    var valid = function(bulkAssignment) {
+        if(bulkAssignment.roleIds.length == 0) {
+            showError(getResource('bulk.assignment.error.no.resource'));
+            return false;
+        }
+        if(bulkAssignment.resourceIds.length == 0) {
+            showError(getResource('bulk.assignment.error.no.role'));
+            return false;
+        }
+        return true;
+    }
+
+    var show = function() {
+        $.when(
+            getJSON(resource + '/list', null, function(data) {
+                $('#' + id + 'ResourceComponent').multipleSelect({
+                    values : data.resources
+                });
+            }),
+            getJSON('roles/list', null, function(data) {
+               $('#' + id + 'RoleComponent').multipleSelect({
+                    values : data.resources
+                });
+            }),
+            getJSON('enum/displayable/com.hypersocket.bulk.BulkAssignmentMode/', null, function(data) {
+               $('#' + id + 'ModeComponentInput').empty();
+               $('#' + id + 'ModeComponentInput').selectButton({options: data.resources,
+                    valueAttr : 'id',
+                    nameAttr : 'display'}
+               );
+            })
+        ).then(function(){
+            $('#' + id + 'Form').modal('show');
+            $('#' + id + ' a:first').tab('show')
+        });
+    }
+
+    return {
+        show : show
+    }
+
+}
 $.fn.bootstrapResourceDialog = function(params, params2) {
 
 	var dialog = $(this);
