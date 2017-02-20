@@ -1637,6 +1637,7 @@ $.fn.extendedResourcePanel = function(params){
     }
     var tabContentHolderId = id + 'Tabs';
     var tabsId = 'tabs' + id.charAt(0).toUpperCase() + id.substring(1);
+    $(this).empty();
     $(this).append('<div id=' + tabContentHolderId + '></div>');
     var $tabContentHolder = $('#' + tabContentHolderId);
     $tabContentHolder.append('<div id=' + tabsId + '></div>');
@@ -1655,7 +1656,18 @@ $.fn.extendedResourcePanel = function(params){
                 tabArray.push({id : tabId, name: getResource(value.resourceKey + '.label')});
                 $tabContentHolder.append('<div id=' + tabId + '></div>');
                 $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){
-                    $('#' + value.resourceKey).data('initPage')(options.resource);
+                    var elements = $('#' + tabId + ' [data-id]');
+                    var extendedTabContent = 'extendedTabContent' + '_' + options.resource.id;
+                    $.each(elements, function(i, element) {
+                        $(element).attr('id', $(element).attr('data-id') + '_' + options.resource.id);
+                        if($(element).hasClass('extendedTabContent')) {
+                            $(element).removeClass('extendedTabContent')
+                            .addClass(extendedTabContent);
+                        }
+                    });
+                    if($('.' + extendedTabContent).length > 0) {
+                        $('.' + extendedTabContent).data('initPage')(options.resource);
+                    }
                 });
             });
 
