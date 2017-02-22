@@ -270,9 +270,9 @@
 										var tabs = [];
 										if(currentRealm.resourceCategory === resourceCategory) {
 											
-											$('#userProperties').parent().append('<div id="tabUserGroups"></div>');
+											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-xs-12"></div></div>');
 											
-											$('#tabUserGroups').multipleSearchInput({
+											$('#tabUserGroupsContent').multipleSearchInput({
 												nameAttr : 'principalName',
 												disabled: !currentMenu.canUpdate,
 												selectedIsObjectList: true,
@@ -316,7 +316,7 @@
 											function(items) {
 												user.properties = items;
 											});
-									user.groups = $('#tabUserGroups').widget().getValue();
+									user.groups = $('#tabUserGroupsContent').widget().getValue();
 									return user;
 								},
 								resourceCreated : function(resource) {
@@ -354,8 +354,8 @@
 									
 										var tabs = [];
 										if(currentRealm.resourceCategory === resourceCategory) {
-											$('#userProperties').parent().append('<div id="tabUserGroups"></div>');
-											$('#tabUserGroups').multipleSearchInput({
+											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-xs-12"></div></div>');
+											$('#tabUserGroupsContent').multipleSearchInput({
 												nameAttr : 'principalName',
 												disabled: !currentMenu.canUpdate,
 												selectedIsObjectList: true,

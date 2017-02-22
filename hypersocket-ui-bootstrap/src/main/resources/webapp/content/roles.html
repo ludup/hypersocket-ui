@@ -18,9 +18,9 @@
 						</div>
 					</div>
 					<div id="roleProperties"></div>
-					<div id="tabRoleUsers"></div>
-					<div id="tabRoleGroups"></div>
-					<div id="tabRolePermissions"></div>
+					<div id="tabRoleUsers"><div id="tabUsersContent" class="col-xs-12"></div></div>
+					<div id="tabRoleGroups"><div id="tabGroupsContent" class="col-xs-12"></div></div>
+					<div id="tabRolePermissions"><div id="tabPermissionsContent" class="col-xs-12"></div></div>
 					<input name="roleId" id="roleId" type="hidden" class="formInput" />
 
 				</div>
@@ -36,7 +36,7 @@
 	$(document).ready(function() {
 		$('#contentRoles').localize();
 
-		$('#tabRolePermissions').multipleSelect({
+		$('#tabPermissionsContent').multipleSelect({
 			nameIsResourceKey : true,
 			nameAttr : 'resourceKey',
 			selectedIsObjectList: true,
@@ -48,7 +48,7 @@
 		});
 
 
-		$('#tabRoleGroups').multipleSearchInput({
+		$('#tabGroupsContent').multipleSearchInput({
 			nameAttr : 'principalName',
 			valueAttr: 'id',
 			selectedIsObjectList: true,
@@ -57,7 +57,7 @@
 		});
 
 
-		$('#tabRoleUsers').multipleSearchInput({
+		$('#tabUsersContent').multipleSearchInput({
 			nameAttr : 'principalName',
 			valueAttr: 'id',
 			selectedIsObjectList: true,
@@ -73,6 +73,7 @@
 				id: 'Role',
 				tableUrl : "roles/table",
 				title: getResource('roles.title'),
+				infoHtml: getResource('roles.infoHtml'),
 				icon: 'fa-user-md',
 				resourceUrl : "roles/role",
 				fields : [ { name: "name"} ],
@@ -95,10 +96,12 @@
 				clearDialog : function(create) {
 					$('#name').val('');
 					$('#roleId').val('');
-					$('#tabRoleUsers').multipleSearchInput();
-					$('#tabRoleGroups').multipleSearchInput();
-					$('#tabRolePermissions').multipleSelect();
+					$('#tabUsersContent').multipleSearchInput();
+					$('#tabGroupsContent').multipleSearchInput();
+					$('#tabPermissionsContent').multipleSelect();
 					
+					$('#tabGroupsContent').widget().enable();
+					$('#tabUsersContent').widget().enable();
 					if(create) {
 						$('#roleProperties').propertyPage({
 							url : 'roles/template',
@@ -124,9 +127,9 @@
 					role = new Object();
 					role.id = $('#roleId').val();
 					role.name = $('#name').val();
-					role.users = $('#tabRoleUsers').widget().getValue();
-					role.groups = $('#tabRoleGroups').widget().getValue();
-					role.permissions = $('#tabRolePermissions').widget().getValue();
+					role.users = $('#tabUsersContent').widget().getValue();
+					role.groups = $('#tabGroupsContent').widget().getValue();
+					role.permissions = $('#tabPermissionsContent').widget().getValue();
 					
 					$('#roleProperties').saveProperties(true,
 							function(items) {
@@ -153,15 +156,15 @@
 							groups.push(obj);
 						}
 					});
- 	 			  	$('#tabRoleUsers').multipleSearchInput({
+ 	 			  	$('#tabUsersContent').multipleSearchInput({
  						selected : users,
- 						disabled: resource.allUsers || readOnly
+ 						disabled: resource.personalRole || resource.allUsers || readOnly
  					});
- 					$('#tabRoleGroups').multipleSearchInput({
+ 					$('#tabGroupsContent').multipleSearchInput({
  						selected : groups,
- 						disabled: resource.allUsers || readOnly
+ 						disabled: resource.personalRole || resource.allUsers || readOnly
  					});
- 					$('#tabRolePermissions').multipleSelect({
+ 					$('#tabPermissionsContent').multipleSelect({
  						selected : resource.permissions,
  						disabled: resource.allPermissions || readOnly
  					});

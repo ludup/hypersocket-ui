@@ -163,11 +163,7 @@ function startLogon(opts) {
 			if(data.homePage) {
 				window.open(data.homePage, "_self", false);
 			} else {
-//				if(window.location.pathname.indexOf('${uiPath}')==-1) {
-//					window.location = '${uiPath}';
-//				} else {
-					home(data);
-//				}
+				home(data);
 			}
 			$('#userInf').empty();
 			$('#userInf').append(getResource('text.loggedIn').format(
@@ -282,6 +278,7 @@ function home(data) {
 					} 
 
 					$('#' + this.id).click(function() {
+						$(".sideMenu").removeClass("active");
 						$(this).addClass("active");
 						loadMenu($(this).data('menu'));
 					});
@@ -311,7 +308,8 @@ function home(data) {
 			}
 			
 			$('#currentRole').remove();
-			if(data.currentRole) {
+
+			if(currentRole) {
 				getJSON('roles/personal', null, function(roles) {
 					loadRoles(roles.resources);
 				});
@@ -368,6 +366,8 @@ function home(data) {
 					
 					$('#' + this.id).data('menu', this);
 					$('#' + this.id).click(function() {
+						$(".active").removeClass("active");
+						$(this).find('i').addClass("active");
 						loadMenu($('#' + $(this).attr('id')).data('menu'));
 					});
 				});
@@ -464,8 +464,9 @@ function home(data) {
 			}
 			
 			if(!currentMenu) {
-				showError("error.nothingToShow");
+				window.location = '${uiPath}';
 			} else {
+				$('#' + currentMenu.id).addClass('active');
 				loadMenu(currentMenu);
 			
 				if(message != null && message.length > 0) {
@@ -661,6 +662,8 @@ function loadRealms(realms) {
 	
 		$('#manageRealms').click(function(e) {
 			e.preventDefault();
+			$('.active').removeClass('active');
+			$('#currentRealm i').addClass('active');
 			loadMenu(allMenus['realms']);
 		});
 		
@@ -702,7 +705,7 @@ function loadRoles(roles) {
 				}
 			});
 	};
-	
+	debugger;
 	if(roles.length > 1) {
 		$('#main-menu-toggle').parent().after('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-user-md"></i></a></li>');
 
@@ -770,7 +773,7 @@ function loadMenu(menu) {
 	showBusy();
 
 	if (currentMenu) {
-		$('#' + currentMenu.id).removeClass('active');
+		$('.active').removeClass('active');
 	}
 
 	var subPage = null;
@@ -780,6 +783,14 @@ function loadMenu(menu) {
 	}
 	
 	currentMenu = menu;
+	
+	if(currentMenu.id === 'realms') {
+		$('#currentRealm i').addClass('active');
+	} else if(currentMenu.hidden) {
+		$('#' + currentMenu.id + " i").addClass('active');
+	} else {
+		$('#' + currentMenu.id).addClass('active');
+	}
 	
 	$('#mainContent').hide();
 	$('#informationBar').empty();

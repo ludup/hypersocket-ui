@@ -14,7 +14,7 @@ body {
 }
 
 h2 {
-	font-size: 14px;
+	font-size: 14px; 
 	line-height: 14px;
 	font-weight: 400;
 	text-align: center;
@@ -566,7 +566,7 @@ table {
 	background-color: #000;
 	color: #fff;
 	bottom: 0;
-	z-index: 0;
+	z-index: 9999;
 }
 
 #copyright {
@@ -853,6 +853,10 @@ table {
 	position: relative;
 }
 
+.navicon i.active {
+	color: white;
+}
+
 .slider-handle {
 	background-color: #000;
 	background-image: linear-gradient(to bottom, #000, #333);
@@ -886,6 +890,7 @@ table {
 }
 
 .panel.panel-default .panel-heading {
+	overflow: auto;
 	border-color: #e1e6ef;
 	background: #fcfcfd;
 }
@@ -918,8 +923,8 @@ table {
 }
 
 .panel-heading .nav-tabs {
-	border: none;
 	float: right;
+	border: none;
 	margin-right: 5px;
 }
 
@@ -971,6 +976,10 @@ table {
 
 .panel .panel-body {
 	height: auto;
+}
+
+.panel-heading {
+	overlow: auto;
 }
 
 .slider.slider-horizontal {

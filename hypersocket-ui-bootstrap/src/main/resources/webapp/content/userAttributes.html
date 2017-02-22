@@ -150,7 +150,7 @@
 										</div>
 									</div>
 									<div id="tabRoles" role="tabpanel" class="tab-pane">
-										<div id="roles"></div>
+										<div id="attributeRoles" class="col-xs-12"></div>
 									</div>
 								</div>
 							</div>
@@ -195,7 +195,7 @@ $(document).ready(function() {
 	});
 	
 	getJSON('roles/list', null, function(data) {
-			$('#roles').multipleSelect({
+			$('#attributeRoles').multipleSelect({
 				values : data.resources,
 				selectedIsObjectList : true,
 				resourceKey : 'userAttribute',
@@ -291,7 +291,7 @@ $(document).ready(function() {
 					$('#attributeReadOnly').data('widget').setValue(false);
 					$('#attributeEncrypted').data('widget').setValue(false);
 					$('#attributeVariableName').val('');
-					$('#roles').multipleSelect({ disabled: false });
+					$('#attributeRoles').multipleSelect({ disabled: false });
 				},
 				createResource : function() {
 					resource = new Object();
@@ -306,7 +306,7 @@ $(document).ready(function() {
 					resource.readOnly = $('#attributeReadOnly').data('widget').getValue()
 					resource.encrypted = $('#attributeEncrypted').data('widget').getValue();
 					resource.variableName = $('#attributeVariableName').val();
-					resource.roles = $('#roles').multipleSelectValues();
+					resource.roles = $('#attributeRoles').multipleSelectValues();
 					
 					return resource;
 				},
@@ -323,7 +323,7 @@ $(document).ready(function() {
 					$('#attributeEncrypted').data('widget').setValue(resource.encrypted);
 					$('#attributeVariableName').val(resource.variableName);
 					
-					$('#roles').multipleSelect({
+					$('#attributeRoles').multipleSelect({
 						selected : resource.roles,
 						selectedIsObjectList : true,
 						resourceKey : 'userAttribute',
