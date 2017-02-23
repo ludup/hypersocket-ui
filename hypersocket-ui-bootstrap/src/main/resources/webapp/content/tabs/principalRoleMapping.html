@@ -1,0 +1,79 @@
+<div data-id="principalRoleMapping" class="extendedTabContent box20">
+    <div data-id="rolesTab"></div>
+    <div class="row10 help-block">
+        <span localize="principal.role.mapping.info"></span>
+    </div>
+</div>
+<script>
+$(document).ready(function() {
+    $('.extendedTabContent').data('initPage', function(resource, data) {
+        var _$ = function(jq) { return $(jq + '_' + resource.id);}
+        var el = _$('#rolesTab');
+
+        _$('#principalRoleMapping').localize();
+
+        var setUpTab = function(resource, readonly) {
+            getJSON('currentRealm/user/' + resource.id + '/roles', null, function(response){
+                if(response.resources) {
+                    var initObj = {
+                        disabled: readonly,
+                        nameAttr : 'name',
+                        selectedIsObjectList: false,
+                        valueAttr: 'id',
+                        selected: response.resources,
+                        confirmRemove: true,
+                        preAddCallback : function(data){
+                            try{
+                                var roleId = data.id;
+                                patchJSON('roles/' + roleId + '/user/' + resource.id, null, function(data){
+                                    if(data){
+                                        showSuccess(getResource('role.add.to.user'));
+                                    }else{
+                                        showError(getResource('role.add.to.user.error'));
+                                    }
+                                });
+                                return true;
+                            }catch(e){
+                                showError(getResource('role.add.to.user.error'));
+                                return false;
+                            }
+                        },
+                        preRemoveCallback : function(evt) {
+                            try{
+                                var callback = el.data('widget');
+                                var roleId = $(evt.target).data('value').id;
+                                deleteJSON('roles/' + roleId + '/user/' + resource.id, null, function(response){
+                                    if(response){
+                                        showSuccess(getResource('role.remove.from.user'));
+                                    }else{
+                                        showError(getResource('role.remove.from.user.error'));
+                                        el.multipleSearchInput(initObj);
+                                    }
+                                });
+                                return true;
+                            }catch(e) {
+                                showError(getResource('role.remove.from.user.error'));
+                                el.multipleSearchInput(initObj);
+                                return false;
+                            }
+                        },
+                        url : 'roles/filter/user/' + resource.id
+                    };
+                    el.multipleSearchInput(initObj);
+                }
+            });
+        }
+
+        var rolePresent = $(data.parentContainer).data('rolePresent');
+        if(typeof rolePresent == 'undefined') {
+            getJSON('permissions/verify/system.administration,system.permission,role.update/', null, function(response){
+                rolePresent = response.success;
+                $(data.parentContainer).data('rolePresent', rolePresent);
+                setUpTab(resource, !rolePresent);
+            });
+        }else {
+            setUpTab(resource, !rolePresent);
+        }
+    });
+});
+</script>

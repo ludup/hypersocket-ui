@@ -1666,7 +1666,7 @@ $.fn.extendedResourcePanel = function(params){
                         }
                     });
                     if($('.' + extendedTabContent).length > 0) {
-                        $('.' + extendedTabContent).data('initPage')(options.resource);
+                        $('.' + extendedTabContent).data('initPage')(options.resource, options.data);
                     }
                 });
             });
