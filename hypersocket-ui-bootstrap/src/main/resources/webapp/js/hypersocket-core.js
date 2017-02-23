@@ -448,7 +448,7 @@ function home(data) {
 			}
 			
 			if(!currentMenu) {
-				showError("error.nothingToShow");
+				window.location = '${uiPath}';
 			} else {
 				loadMenu(currentMenu);
 			
