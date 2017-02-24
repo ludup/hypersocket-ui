@@ -57,6 +57,9 @@ $(document).ready(function() {
                                 return false;
                             }
                         },
+                        objectDeletable : function(obj){
+                            return !obj.allUsers;
+                        },
                         url : 'roles/filter/user/' + resource.id
                     };
                     el.multipleSearchInput(initObj);

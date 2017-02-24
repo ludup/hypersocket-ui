@@ -1790,6 +1790,17 @@ $.fn.multipleSearchInput = function(data) {
 			options.changed(callback);
 		}
 	}
+
+	var processCrossDeletable = function(cross, obj) {
+	    if(typeof options.objectDeletable == 'undefined' || options.objectDeletable(obj)) {
+            cross.data('value', obj);
+            cross.click(function(e){
+                removeElement(e);
+            });
+        } else {
+            cross.remove();
+        }
+	}
 	
 	dragSrcEl = null;
 	
@@ -1881,10 +1892,7 @@ $.fn.multipleSearchInput = function(data) {
 			$.each(data.selected, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				var cross = newElement.find('i');
-                cross.data('value', obj);
-                cross.click(function(e){
-                    removeElement(e);
-                });
+				processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
 			});
@@ -1942,10 +1950,7 @@ $.fn.multipleSearchInput = function(data) {
 				var newElement = $('<li id="' + id + 'Li' + selectedObj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + selectedObj[options.valueAttr] + '"><span>'
 						+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				var cross = newElement.find('i');
-                cross.data('value', obj);
-                cross.click(function(e){
-                    removeElement(e);
-                });
+                processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
 				searchInput.clear();
@@ -2019,10 +2024,7 @@ $.fn.multipleSearchInput = function(data) {
 			$.each(options.values, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + he.decode(obj.value) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + he.decode(obj.value) + '"><span>' + he.decode(obj.name) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				var cross = newElement.find('i');
-                cross.data('value', obj);
-                cross.click(function(e){
-                    removeElement(e);
-                });
+                processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
 			});
@@ -2030,10 +2032,7 @@ $.fn.multipleSearchInput = function(data) {
 			$.each(options.values, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + obj + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj + '"><span>' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				var cross = newElement.find('i');
-                cross.data('value', obj);
-                cross.click(function(e){
-                    removeElement(e);
-                });
+                processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
 			});
@@ -2042,10 +2041,7 @@ $.fn.multipleSearchInput = function(data) {
 		$.each(options.selected, function(idx, obj) {
 			var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + "</span>&ensp;<i class='fa fa-times'></i></li>");
 			var cross = newElement.find('i');
-			cross.data('value', obj);
-			cross.click(function(e){
-				removeElement(e);
-			});
+			processCrossDeletable(cross, obj);
 			toSelect.append(newElement);
 			addListeners(newElement);
 		});
