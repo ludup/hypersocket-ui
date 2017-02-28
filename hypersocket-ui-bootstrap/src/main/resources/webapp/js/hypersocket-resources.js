@@ -1395,11 +1395,11 @@ $.fn.bulkAssignmentDialog = function(options) {
 
     var valid = function(bulkAssignment) {
         if(bulkAssignment.roleIds.length == 0) {
-            showError(getResource('bulk.assignment.error.no.resource'));
+            showError(getResource('bulk.assignment.error.no.role'));
             return false;
         }
         if(bulkAssignment.resourceIds.length == 0) {
-            showError(getResource('bulk.assignment.error.no.role'));
+            showError(getResource('bulk.assignment.error.no.resource'));
             return false;
         }
         return true;
@@ -1539,7 +1539,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			}
 			
 			if(dialogOptions.buildUpdateButtons) {
-				dialogOptions.buildUpdateButtons(params2, function(button, onclick) {
+				dialogOptions.buildUpdateButtons(function(button, onclick) {
 					dialog.find('.modal-footer').append(
 							'<button type="button" id="' + button.id + 'Action" class="updateButton btn ' 
 							+ button.cssClass + '"><i class="fa ' 
