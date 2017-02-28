@@ -794,9 +794,17 @@ $.fn.selectButton = function(data) {
 						if(obj.sortOptions) {
 							items.sort(function(a,b) {
 								if(obj.nameIsResourceKey) {
-									return getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]));
+									if(getResource(obj.resourceKeyTemplate.format(a[obj.nameAttr])) > getResource(obj.resourceKeyTemplate.format(b[obj.nameAttr]))) {
+										return 1;
+									} else {
+										return -1;
+									}
 								} else {
-									return a[obj.nameAttr] > b[obj.nameAttr];
+									if(a[obj.nameAttr] > b[obj.nameAttr]) {
+										return 1;
+									} else {
+										return -1;
+									}
 								}
 							});
 						}
