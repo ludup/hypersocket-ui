@@ -25,7 +25,8 @@ $.fn.clipboardCopy = function(data) {
 	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
 	
 	$(this).on('click', function() {
-		$(this).append('<input type="text" id="' + id + 'Text" name="' + id + 'Text" value="' + options.text + '"/>');
+		$(this).append('<input type="text" id="' + id + 'Text" name="' + id + 'Text"/>');
+		$('#' + id + 'Text').val(options.text);
 		$('#' + id + 'Text').select();
 		try {
 			var successful = document.execCommand('copy');
@@ -1130,26 +1131,6 @@ $.fn.autoComplete = function(data) {
 	});
 	
 	var remoteDropdown = false;
-	
-//	$('#input_' + id).parent().mouseenter(function() {
-//		removeDropdown = false;
-//		if(!$('[data-toggle="dropdown"]').parent().hasClass('open')) {
-//			var text = $(this).val();
-//			doDropdown(text);
-//		}
-//	});
-	
-	
-//	$('#input_' + id).parent().mouseleave(function() {
-//		removeDropdown = true;
-//		setTimeout(function() {
-//			if(removeDropdown) {
-//				$('[data-toggle="dropdown"]').parent().removeClass('open');
-//			}
-//			removeDropdown = false;
-//		}, 500);
-//		
-//	});
 	
 	callback = {
 			setValue: function(val) {
@@ -4390,7 +4371,7 @@ $.fn.html5Upload = function(data) {
  	 					
  	 					drawRow(file.name, file.size);
  	 					$('#' + id + 'ProgressText').show();
- 	 				    var jqXHR=$.ajax({
+ 	 				    var jqXHR=doAjax({
  	 				    	xhr: function() {
  	 				    		var xhrobj = $.ajaxSettings.xhr();
  	 				    		if (xhrobj.upload) {
@@ -4822,7 +4803,7 @@ $.fn.feedbackPanel = function(data) {
 		return ret;
 	}
 	
-	$.ajax({
+	doAjax({
 		method: 'post',
 		url: basePath + '/api/' + options.startUrl, 
 		data: options.startParameters ? $.param(options.startParameters) : null, 

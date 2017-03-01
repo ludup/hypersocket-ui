@@ -553,6 +553,11 @@ $.fn.resourceTable = function(params) {
 		    sortable: true,
 		    cache: false,
 		    uniqueId: 'id',
+		    ajaxOptions: {
+		    	beforeSend: function(request) {
+		    		request.setRequestHeader("X-Csrf-Token", getCsrfToken());
+				}
+		    },
 		    onSort: function(name, order) {
 
 		    	$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {

@@ -75,7 +75,7 @@
 			$('#uploadPfxIcon').removeClass('fa-upload');
 			$('#uploadPfxIcon').addClass('fa-spinner fa-spin');
 			
-			$.ajax({
+			doAjax({
 				type : 'POST',
 				url : basePath + '/api/certificates/pfx/' + $('#pfxResourceId').val(),
 				dataType : 'json',

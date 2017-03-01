@@ -113,7 +113,7 @@
 			$('#uploadPemIcon').removeClass('fa-upload');
 			$('#uploadPemIcon').addClass('fa-spinner fa-spin');
 			
-			$.ajax({
+			doAjax({
 				type : 'POST',
 				url : basePath + '/api/certificates/pem/' + $('#pemResourceId').val(),
 				dataType : 'json',

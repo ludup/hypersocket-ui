@@ -35,7 +35,7 @@ function showLogon(credentials, opts, message) {
 		url += '/' + opts.scheme;
 	}
 	
-	$.getJSON(url, credentials, function(data) {
+	postFORM(url, credentials, function(data) {
 	   	if(!checkRedirect(data))
 	   		processLogon(data, opts, message);
 	});
