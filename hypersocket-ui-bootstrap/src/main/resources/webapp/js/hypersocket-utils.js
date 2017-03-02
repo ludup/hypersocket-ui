@@ -486,7 +486,11 @@ function getJSON(url, params, callback, errorCallback) {
 	    dataType: 'json',
 	    success: callback
 	}).fail(function(xmlRequest) {
-		
+		if(xmlRequest.status==200) {
+			// Simply no content
+			callback();
+			return;
+		}
 		if(errorCallback) {
 			if(!errorCallback(xmlRequest)) {
 				return;
@@ -521,6 +525,11 @@ function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 	    data: JSON.stringify(params),
 	    success: callback
 	}).fail(function(xmlRequest) {
+		if(xmlRequest.status==200) {
+			// Simply no content
+			callback();
+			return;
+		}
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
@@ -560,6 +569,11 @@ function postFORM(url, params, callback, errorCallback, alwaysCallback) {
 	    data: params,
 	    success: callback
 	}).fail(function(xmlRequest) {
+		if(xmlRequest.status==200) {
+			// Simply no content
+			callback();
+			return;
+		}
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
