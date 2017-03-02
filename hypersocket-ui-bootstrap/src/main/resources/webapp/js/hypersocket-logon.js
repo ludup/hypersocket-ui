@@ -126,13 +126,15 @@ function processLogon(data, opts, message) {
 					$('#logonForm').append('<div class="center"><img id="' + this.resourceKey + '" src="' + this.defaultValue + '"></img></div>');
 					return;
 				}
-	
+			
 				if (this.type == 'select') {
+					
 					$('#logonForm').append('<div><select class="logonSelect" name="' 
 							+ this.resourceKey + '" id="' + this.resourceKey
-							+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
+							+ 'Select" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 							+ '"/></div>');
-					currentKey = this.resourceKey;
+					currentKey = this.resourceKey + 'Select';
+					var changeFunc = this.onChange;
 					$.each(
 						this.options,
 						function() {
@@ -145,8 +147,30 @@ function processLogon(data, opts, message) {
 							}
 							option += '>' + (this.isNameResourceKey ? getResource(this.name) : this.name) + '</option>';
 							$('#' + currentKey).append(option);
-						});
-	
+					});
+					var changeFunc = this.onChange;
+					$('#' + currentKey).change(function() {
+						debugger;
+						if(window[changeFunc]) {
+							window[changeFunc]($(this), opts);
+						}
+					});
+
+//					$('#logonForm').append('<div id="' + this.resourceKey + 'Select"></div>');
+//					this.isWidget = true;
+//					currentKey = this.resourceKey + 'Select';
+//					var changeFunc = this.onChange;
+//					var options = this.options;
+//					debugger;
+//					$('#' + currentKey).textDropdown({
+//						values: options,
+//						selectedIsObjectList: true,
+//						changed: function(widget) {
+//							if(window[changeFunc]) {
+//								window[changeFunc](widget, opts);
+//							}
+//						}
+//					});
 				} else if(this.type == 'checkbox') {
 				    $('#logonForm')
                             .append(
@@ -197,10 +221,9 @@ function processLogon(data, opts, message) {
 				$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 				$('#resetLogon').click(function(e) {
 					e.preventDefault();
-					
-					getJSON('logon/reset', null, function(data) {
-						if(!checkRedirect(data))
-					   		processLogon(data, opts);
+					debugger;
+					getJSON('logon/switchRealm/' + opts.scheme + '/' + data.realm.name, null, function(data) {
+						showLogon(null, opts);
 					});
 				});
 			}
@@ -264,7 +287,7 @@ function processLogon(data, opts, message) {
 	} else {
 		log("User is logged in");
 		$(document).data('session', data.session);
-		
+		debugger;
 		if(opts.logonCompleted) {
 			opts.logonCompleted(data);
 		}
@@ -276,4 +299,12 @@ function processLogon(data, opts, message) {
 	}
 
 	stopSpin($('#logonButton i'), 'fa-sign-in');
+}
+
+
+function changeLogonRealm(selectButton, opts) {
+	debugger;
+	getJSON('logon/switchRealm/' + opts.scheme + '/' + selectButton.val(), null, function(data) {
+		showLogon(null, opts);
+	})
 }

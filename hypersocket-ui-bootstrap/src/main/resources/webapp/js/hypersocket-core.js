@@ -188,13 +188,15 @@ function logoff() {
 
 	log("Logging off");
 
-	$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
-	$(document).data('session', null);
+	
 	
 	showBusy();
 
-	$.get(basePath + '/api/logoff', null, function() {
-		
+	getJSON(basePath + '/api/logoff', null, function() {	
+		if($(document).data('session')) {
+			$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
+		}
+		$(document).data('session', null);
 		startLogon();
 	});
 
