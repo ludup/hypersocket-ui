@@ -150,7 +150,7 @@ function processLogon(data, opts, message) {
 					});
 					var changeFunc = this.onChange;
 					$('#' + currentKey).change(function() {
-						debugger;
+						
 						if(window[changeFunc]) {
 							window[changeFunc]($(this), opts);
 						}
@@ -161,7 +161,7 @@ function processLogon(data, opts, message) {
 //					currentKey = this.resourceKey + 'Select';
 //					var changeFunc = this.onChange;
 //					var options = this.options;
-//					debugger;
+//					
 //					$('#' + currentKey).textDropdown({
 //						values: options,
 //						selectedIsObjectList: true,
@@ -221,8 +221,7 @@ function processLogon(data, opts, message) {
 				$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 				$('#resetLogon').click(function(e) {
 					e.preventDefault();
-					debugger;
-					getJSON('logon/switchRealm/' + opts.scheme + '/' + data.realm.name, null, function(data) {
+					getJSON('logon/switchRealm/' + opts.scheme + '/' + encodeURIComponent(data.realm.name) + '/', null, function(data) {
 						showLogon(null, opts);
 					});
 				});
@@ -287,7 +286,7 @@ function processLogon(data, opts, message) {
 	} else {
 		log("User is logged in");
 		$(document).data('session', data.session);
-		debugger;
+		
 		if(opts.logonCompleted) {
 			opts.logonCompleted(data);
 		}
@@ -303,8 +302,7 @@ function processLogon(data, opts, message) {
 
 
 function changeLogonRealm(selectButton, opts) {
-	debugger;
-	getJSON('logon/switchRealm/' + opts.scheme + '/' + selectButton.val(), null, function(data) {
+	getJSON('logon/switchRealm/' + opts.scheme + '/' + encodeURIComponent(selectButton.val()) + '/', null, function(data) {
 		showLogon(null, opts);
 	})
 }
