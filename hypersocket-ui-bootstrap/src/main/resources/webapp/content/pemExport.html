@@ -59,7 +59,7 @@
 			$('#downloadIcon').addClass('fa-spinner fa-spin');
 			var formData = new FormData();
 			formData.append('passphrase', $('#download_passphrase').val());
-			$.ajax({
+			doAjax({
 				type : 'POST',
 				url : basePath + '/api/certificates/exportPem/' + $('#pemExport').data('resource'),  
 				cache : false,

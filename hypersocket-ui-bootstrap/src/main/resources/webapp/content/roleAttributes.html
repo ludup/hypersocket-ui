@@ -59,11 +59,6 @@
 											<span localize="attributeCategory.attributeOptions.label"></span>
 										</a>
 									</li>
-									<li id="tabRolesLi" role="presentation" >
-										<a href="#tabRoles" role="tab" data-toggle="tab" aria-controls="tabRoles" class="attributePropertiesTab attributePropertiesTab2">
-											<span localize="roles.title"></span>
-										</a>
-									</li>
 								</ul>
 							</div>
 							<div class="panel-body">
@@ -112,15 +107,6 @@
 										<input type="hidden" name="attributeId" id="attributeId">
 									</div>
 									<div id="tabOther" role="tabpanel" class="tab-pane">
-<!-- 										<div class="propertyItem form-group"> -->
-<!-- 											<label class="col-md-3 control-label" localize="attribute.displayMode.label"></label> -->
-<!-- 											<div class="propertyValue col-md-9"> -->
-<!-- 												<div id="attributeDisplayMode"></div> -->
-<!-- 												<div> -->
-<!-- 													<span class="help-block" localize="attribute.displayMode.info"></span> -->
-<!-- 												</div> -->
-<!-- 											</div> -->
-<!-- 										</div> -->
 										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.readOnly.label"></label>
 											<div class="propertyValue col-md-9">
@@ -183,23 +169,6 @@ $(document).ready(function() {
 		          { id: 'MULTIPLE_TEXT', name: 'Multiple Text', value: 'MULTIPLE_TEXT'}],
 		nameIsResourceKey: false
 	});
-	
-// 	$('#attributeDisplayMode').selectButton({
-// 		id: 'attributeDisplayMode',
-// 		value: '',
-// 		options: [{ id: '', name: 'scope.user', value: '' },
-// 		          { id: 'admin', name: 'scope.admin', value: 'admin'}],
-// 		nameIsResourceKey: true
-// 	});
-	
-// 	getJSON('roles/list', null, function(data) {
-// 			$('#roles').multipleSelect({
-// 				values : data.resources,
-// 				selectedIsObjectList : true,
-// 				resourceKey : 'roleAttribute',
-// 				disabled: !currentMenu.canUpdate
-// 		});
-// 	});
 	
 	$('#attributeReadOnly').switchInput({
 		value: false,
@@ -316,12 +285,6 @@ $(document).ready(function() {
 					$('#attributeEncrypted').data('widget').setValue(resource.encrypted);
 					$('#attributeVariableName').val(resource.variableName);
 					
-// 					$('#roles').multipleSelect({
-// 						selected : resource.roles,
-// 						selectedIsObjectList : true,
-// 						resourceKey : 'roleAttribute',
-// 						disabled: readOnly || resource.resource != null
-// 					});
 				},
 				complete : function() {
 					loadComplete();

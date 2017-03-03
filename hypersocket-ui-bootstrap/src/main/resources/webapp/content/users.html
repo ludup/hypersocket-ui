@@ -1,6 +1,7 @@
 <div id="contentUsers" class="col-md-12" style="padding-left: 0px">
 	<div id="userDialog"></div>
 	<div id="additionalActions"></div>
+	<div id="realmsContent"></div>
 </div>
 <div id="linkDialog" class="modal" role="dialog">
 	<div class="modal-dialog">
@@ -55,11 +56,101 @@
 					title = getResource('ownerRealm.users.title').format(userRealm.name);
 				} else {
 					userRealm = currentRealm;
+					if(currentRealm.module === 'local') {
+						
+					}
 				}
 				
 				$(document).data('apiUrl', apiUrl);
 				$(document).data('userRealm', null);
-				
+				$('#realmsContent').load(uiPath + '/content/realmsDialog.html', function() {
+					
+					$('#realmsContent').localize();
+					
+					$('div[dialog-for="realmsContent"]').resourceDialog(
+						{ resourceUrl : "realms/realm", 
+						  resourceKey : 'realm', 
+						  validate : function() {
+							  
+							removeMessage();
+							  
+							if ($('#name').val() == '') {
+								showError(getResource("text.nameRequired"));
+								return false;
+							}
+							
+							if(!$('#realmProperties').validateProperties()) {
+								showError("error.correctValidationErrors");
+								return false;
+							}
+							
+							return true;
+						}, confirmSave: function(doSave) {
+							if(currentRealm.module === 'local' && $('#typeButton').widget().getValue() !== 'local') {
+								bootbox.confirm(getResource("convert.realm.text"), function(result) {
+									if (result === null || !result) {
+										return;
+									}
+									doSave();
+								});
+							} else {
+								doSave();
+							}
+						}, clearDialog : function(create) {
+							$('#name').val("");
+							$('#name').attr('disabled', false);
+							$('#id').val("");
+							$('#realmProperties').clearProperties();
+							removeMessage();
+						}, createResource : function() {
+							realm = new Object();
+							realm.name = $('#name').val();
+							realm.type = $('#typeButton').widget().getValue();
+							realm.id = $('#id').val();
+
+							$('#realmProperties').saveProperties(true,
+								function(items) {
+									realm.properties = items;
+							});
+
+							return realm;
+						}, confirmed: function(resource, args) {
+							if('realm.knownHosts' in resource.properties) {
+								var pr = resource.properties['realm.knownHosts'] ;
+								if(pr.value.length > 0)
+									pr.value += ']|[';
+								pr.value += args[3];
+							}
+							else {						
+								resource.properties.push(new PropertyItem('realm.knownHosts', args[3]));
+							}
+						}, resourceUpdated : function(resource) {
+							if(currentRealm.module === 'local' && resource.module !== 'local') {
+								window.location.reload();
+							}
+						}, displayResource : function(resource, readOnly) {
+
+							$('#id').val(resource.id);
+							$('#name').val(resource.name);
+							
+							if(resource.resourceCategory!=='local') {
+								$('#typeButton').widget().disable();
+							}
+							
+							$('#typeButton').widget().setValue(resource.resourceCategory);
+							$('#realmProperties').propertyPage(
+								{ url : 'realms/realm/properties/' + resource.id, 
+									showButtons : false, 
+									resource: resource,
+									i18nNamespace: $('#typeButton').widget().getSelectedObject().module,
+									displayMode: 'admin,update',
+									canUpdate : currentMenu.canUpdate && !readOnly,
+									
+							});
+						}
+					});
+
+				});
 				$('#userDialog').load(uiPath + '/content/userDialog.html', function() {
 				
 				$('#contentUsers').localize();
@@ -431,7 +522,15 @@
 											},
 											sortOptions: false
 										});
-									}
+									} 
+
+									$('#contentUsers').find('.fixed-table-toolbar').last().append(
+											'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">' 
+											+ getResource('configure.remote.text') + '</a></div></div>');
+									$('#configureUsers').click(function(e) {
+										e.preventDefault();
+										$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
+									});
 									
 									loadComplete();
 								}

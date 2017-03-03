@@ -62,7 +62,7 @@
 			var formData = new FormData();
 			formData.append('passphrase', $('#pfx_passphrase').val());
 
-			$.ajax({
+			doAjax({
 				type : 'POST',
 				url : basePath + '/api/certificates/exportPfx/' + $('#pfxExport').data('resource'),  
 				cache : false,

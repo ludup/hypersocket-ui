@@ -7,7 +7,7 @@ var countries = null;
 var restartAutoLogoff = false;
 var allMenus = new Array();
 
-$.ajax({
+doAjax({
     url: uiPath + 'json/countries.json',
     dataType: "text",
     success: function(data) {
@@ -188,13 +188,15 @@ function logoff() {
 
 	log("Logging off");
 
-	$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
-	$(document).data('session', null);
+	
 	
 	showBusy();
 
-	$.get(basePath + '/api/logoff', null, function() {
-		
+	getJSON(basePath + '/api/logoff', null, function() {	
+		if($(document).data('session')) {
+			$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
+		}
+		$(document).data('session', null);
 		startLogon();
 	});
 
@@ -576,7 +578,7 @@ function doShutdown(option, autoLogoff, url) {
 		var restarted = false;
 			
 		var timer = setTimeout(function() {
-			$.ajax({
+			doAjax({
 				url: basePath + '/api/server/ping',
 				dataType: 'json',
 				success: function(data){
@@ -739,7 +741,7 @@ function loadRoles(roles) {
 }
 
 function reloadRealms() {
-	$.getJSON(basePath + "/api/realms/list", null, function(data) {
+	getJSON(basePath + "/api/realms/list", null, function(data) {
 		loadRealms(data.resources);
 		// This should not be needed but some areas reload the page and so the state does not get updated
 		// http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear

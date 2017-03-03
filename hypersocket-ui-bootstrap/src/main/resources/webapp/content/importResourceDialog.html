@@ -65,7 +65,7 @@
 			
 			$('#uploadIcon').removeClass('fa-upload');
 			$('#uploadIcon').addClass('fa-spinner fa-spin');
-			$.ajax({
+			doAjax({
 				type : 'POST',
 				url : basePath + '/api/' + $('#importResources').data('importUrl'),  
 				dataType : 'json',

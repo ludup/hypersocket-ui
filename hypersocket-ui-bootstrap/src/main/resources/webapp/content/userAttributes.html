@@ -194,14 +194,15 @@ $(document).ready(function() {
 		nameIsResourceKey: true
 	});
 	
-	getJSON('roles/list', null, function(data) {
-			$('#attributeRoles').multipleSelect({
-				values : data.resources,
-				selectedIsObjectList : true,
-				resourceKey : 'userAttribute',
-				disabled: !currentMenu.canUpdate
-		});
+
+	$('#attributeRoles').multipleSearchInput({
+		url: 'roles/table',
+		valueIsNamePair: false,
+		selectedIsObjectList : true,
+		resourceKey : 'userAttribute',
+		disabled: !currentMenu.canUpdate
 	});
+
 	
 	$('#attributeReadOnly').switchInput({
 		value: false,
@@ -291,7 +292,7 @@ $(document).ready(function() {
 					$('#attributeReadOnly').data('widget').setValue(false);
 					$('#attributeEncrypted').data('widget').setValue(false);
 					$('#attributeVariableName').val('');
-					$('#attributeRoles').multipleSelect({ disabled: false });
+					$('#attributeRoles').multipleSearchInput({ disabled: false });
 				},
 				createResource : function() {
 					resource = new Object();
@@ -323,7 +324,9 @@ $(document).ready(function() {
 					$('#attributeEncrypted').data('widget').setValue(resource.encrypted);
 					$('#attributeVariableName').val(resource.variableName);
 					
-					$('#attributeRoles').multipleSelect({
+					$('#attributeRoles').multipleSearchInput({
+						url: 'roles/table',
+						valueIsNamePair: false,
 						selected : resource.roles,
 						selectedIsObjectList : true,
 						resourceKey : 'userAttribute',

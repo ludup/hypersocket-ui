@@ -6,6 +6,20 @@ var polling = false;
 var basePath = '${appPath}';
 var uiPath = '${uiPath}';
 
+function getCsrfToken() {
+	return Cookies.get('HYPERSOCKET_CSRF_TOKEN');
+};
+
+function doAjax(options) {
+	options = $.extend(
+			{  
+			   beforeSend: function(request) {
+				  request.setRequestHeader("X-Csrf-Token", getCsrfToken());
+			   }
+			}, options);
+	return $.ajax(options);
+};
+
 //This is the function.
 String.prototype.formatAll = function (args) {
 	var str = this.toString();
@@ -465,14 +479,18 @@ function getJSON(url, params, callback, errorCallback) {
 		url = basePath + '/api/' + url;
 	}
 	
-	return $.ajax({
+	return doAjax({
 		type: "GET",
 	    url:  url + (params ? (url.endsWith('?') ? '' : '?') + $.param(params) : ''),
 	    cache: false,
 	    dataType: 'json',
 	    success: callback
 	}).fail(function(xmlRequest) {
-		
+		if(xmlRequest.status==200) {
+			// Simply no content
+			callback();
+			return;
+		}
 		if(errorCallback) {
 			if(!errorCallback(xmlRequest)) {
 				return;
@@ -499,7 +517,7 @@ function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 		url = basePath + '/api/' + url;
 	}
 	
-	return $.ajax({
+	return doAjax({
 		type: "POST",
 	    url:  url,
 	    dataType: 'json',
@@ -507,6 +525,55 @@ function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 	    data: JSON.stringify(params),
 	    success: callback
 	}).fail(function(xmlRequest) {
+		if(xmlRequest.status==200) {
+			// Simply no content
+			callback();
+			return;
+		}
+		if(errorCallback) {
+			if(!errorCallback()) {
+				return;
+			}
+		}
+		if (xmlRequest.status != 401) {
+			if(!hasShutdown) {
+				if(xmlRequest.status == 0) {
+					showError(getResource("error.cannotContactServer"));
+					pollForServerContact();
+				} else {
+					showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+				}
+			}
+		}
+	}).always(function() {
+		if(alwaysCallback) {
+			alwaysCallback();
+		}
+	});
+	
+};
+
+function postFORM(url, params, callback, errorCallback, alwaysCallback) {
+	
+	log("POST FORM: " + url);
+	
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
+		url = basePath + '/api/' + url;
+	}
+	
+	return doAjax({
+		type: "POST",
+	    url:  url,
+	    dataType: 'json',
+	    contentType: 'application/x-www-form-urlencoded',
+	    data: params,
+	    success: callback
+	}).fail(function(xmlRequest) {
+		if(xmlRequest.status==200) {
+			// Simply no content
+			callback();
+			return;
+		}
 		if(errorCallback) {
 			if(!errorCallback()) {
 				return;
@@ -538,7 +605,7 @@ function deleteJSON(url, params, callback, errorCallback) {
 		url = basePath + '/api/' + url;
 	}
 	
-	return $.ajax({
+	return doAjax({
 		type: "DELETE",
 	    url:  url,
 	    dataType: 'json',
@@ -567,7 +634,7 @@ function deleteJSON(url, params, callback, errorCallback) {
 function pollForServerContact() {
 	
 	polling = true;
-	$.ajax({
+	doAjax({
 		type: "GET",
 	    url:  basePath + '/api/session/peek',
 	    dataType: 'json',
