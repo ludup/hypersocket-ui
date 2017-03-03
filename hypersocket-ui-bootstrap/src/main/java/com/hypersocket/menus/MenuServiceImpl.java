@@ -201,6 +201,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				SystemPermission.SYSTEM_ADMINISTRATION,
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION),
+				MenuService.MENU_SYSTEM_CONFIGURATION);
+
+
+				"fa-gears", "settings", 0,
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION,
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION),
 
 				MenuService.MENU_SYSTEM_CONFIGURATION);
 
