@@ -553,6 +553,11 @@ $.fn.resourceTable = function(params) {
 		    sortable: true,
 		    cache: false,
 		    uniqueId: 'id',
+		    ajaxOptions: {
+		    	beforeSend: function(request) {
+		    		request.setRequestHeader("X-Csrf-Token", getCsrfToken());
+				}
+		    },
 		    onSort: function(name, order) {
 
 		    	$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
@@ -1462,17 +1467,24 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.create") + '</button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
 
-		$('#' + $(this).attr('id') + "Action").on('click', function() {				
-			saveResource(dialogOptions.createResource(), $(this), dialogOptions, 'create', function() {
-				dialog.bootstrapResourceDialog('close');
-				if (dialogOptions.hasResourceTable) {
-					$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
-				}
-				if(dialogOptions.resourceSaved) {
-					dialogOptions.resourceSaved(resource);
-				}
-			});
-
+		$('#' + $(this).attr('id') + "Action").on('click', function() {	
+			var buttonElement = $(this);
+			var func = function() {
+				saveResource(dialogOptions.createResource(), buttonElement, dialogOptions, 'create', function() {
+					dialog.bootstrapResourceDialog('close');
+					if (dialogOptions.hasResourceTable) {
+						$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+					}
+					if(dialogOptions.resourceSaved) {
+						dialogOptions.resourceSaved(resource);
+					}
+				});
+			};
+			if(dialogOptions.confirmSave) {
+				dialogOptions.confirmSave(func);
+			} else {
+				func();
+			}
 		});
 		dialog.modal('show');
 		return;
@@ -1567,22 +1579,30 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						}
 					});
 				} else {
-					saveResource(resource, $(this), dialogOptions, params, function() {
-						dialog.bootstrapResourceDialog('close');
-						if (dialogOptions.hasResourceTable) {
-							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateByUniqueId',	{ id: resource.id, row: resource });
-							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
-						}
-						if (dialogOptions.resourceUpdated) {
-							dialogOptions.resourceUpdated(resource);
-						}
-						if(dialogOptions.resourceSaved) {
-							dialogOptions.resourceSaved(resource);
-						}
-						if(params2.resourceUpdated) {
-							params2.resourceUpdated(resource);
-						}
-					});
+					var buttonElement = $(this);
+					var func = function() {
+						saveResource(resource, buttonElement, dialogOptions, params, function() {
+							dialog.bootstrapResourceDialog('close');
+							if (dialogOptions.hasResourceTable) {
+								$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateByUniqueId',	{ id: resource.id, row: resource });
+								$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+							}
+							if (dialogOptions.resourceUpdated) {
+								dialogOptions.resourceUpdated(resource);
+							}
+							if(dialogOptions.resourceSaved) {
+								dialogOptions.resourceSaved(resource);
+							}
+							if(params2.resourceUpdated) {
+								params2.resourceUpdated(resource);
+							}
+						});
+					};
+					if(dialogOptions.confirmSave) {
+						dialogOptions.confirmSave(func);
+					} else {
+						func();
+					}
 				}
 
 			});

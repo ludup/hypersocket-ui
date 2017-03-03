@@ -7,7 +7,7 @@ var countries = null;
 var restartAutoLogoff = false;
 var allMenus = new Array();
 
-$.ajax({
+doAjax({
     url: uiPath + 'json/countries.json',
     dataType: "text",
     success: function(data) {
@@ -159,10 +159,18 @@ function startLogon(opts) {
 			}
 		},
 		logonCompleted: function(data) {
+		
 			
 			if(data.homePage) {
 				window.open(data.homePage, "_self", false);
 			} else {
+				if($(document).data('lastPrincipal')) {
+					
+					if($(document).data('session').currentPrincipal !== $(document).data('lastPrincipal')) {
+						window.location = '${uiPath}';
+						return;
+					}
+				}
 				home(data);
 			}
 			$('#userInf').empty();
@@ -180,12 +188,15 @@ function logoff() {
 
 	log("Logging off");
 
-	$(document).data('session', null);
+	
 	
 	showBusy();
 
-	$.get(basePath + '/api/logoff', null, function() {
-		
+	getJSON(basePath + '/api/logoff', null, function() {	
+		if($(document).data('session')) {
+			$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
+		}
+		$(document).data('session', null);
 		startLogon();
 	});
 
@@ -462,7 +473,7 @@ function home(data) {
 			if(loadThisMenu !== '') {
 				currentMenu = allMenus[loadThisMenu];;
 			}
-			
+
 			if(!currentMenu) {
 				window.location = '${uiPath}';
 			} else {
@@ -567,7 +578,7 @@ function doShutdown(option, autoLogoff, url) {
 		var restarted = false;
 			
 		var timer = setTimeout(function() {
-			$.ajax({
+			doAjax({
 				url: basePath + '/api/server/ping',
 				dataType: 'json',
 				success: function(data){
@@ -705,7 +716,7 @@ function loadRoles(roles) {
 				}
 			});
 	};
-	debugger;
+	
 	if(roles.length > 1) {
 		$('#main-menu-toggle').parent().after('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-user-md"></i></a></li>');
 
@@ -718,6 +729,7 @@ function loadRoles(roles) {
 		$('.roleSelect').on(
 			'click', function(evt) {
 				evt.preventDefault();
+				
 				func($(this).attr('data-value'));
 			}
 		);
@@ -729,7 +741,7 @@ function loadRoles(roles) {
 }
 
 function reloadRealms() {
-	$.getJSON(basePath + "/api/realms/list", null, function(data) {
+	getJSON(basePath + "/api/realms/list", null, function(data) {
 		loadRealms(data.resources);
 		// This should not be needed but some areas reload the page and so the state does not get updated
 		// http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear

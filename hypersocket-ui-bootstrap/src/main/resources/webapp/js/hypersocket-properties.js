@@ -1115,131 +1115,134 @@ $.fn.propertyPage = function(opts) {
 	
 							});
 				
-				
-				$.each(widgets, function(idx, w) {
-					if(w.options().visibilityDependsOn) {
-						var props = w.options().visibilityDependsOn.split(',');
-						var w2 = [];
-						for(i=0;i<props.length;i++) {
-							w2.push($(document).data(props[i]));
-							if(!w2[i]) {
-								log("WARNING: " + w.options().resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
-								return;
-							}
-						}
-
-						w.getInput().parents('.propertyItem').hide();
-						var visibilityCallback = function() {
-							
-							var dependsValue = w.options().visibilityDependsValue.toString().split(',');
-							var show = false;
-							for(i=0;i<w2.length;i++) {
-								if(i > 0 && !show) {
-									break;
-								}
-								if(dependsValue[i].startsWith('!')) {
-									dependsValue[i] = dependsValue[i].substring(1);
-									show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);
-								} else {
-									var v = w2[i].getValue();
-									show = (v == makeVariableSafe(dependsValue[i]));
+				var funcVisibility = function() {
+					$.each(widgets, function(idx, w) {
+						if(w.options().visibilityDependsOn) {
+							var props = w.options().visibilityDependsOn.split(',');
+							var w2 = [];
+							for(i=0;i<props.length;i++) {
+								w2.push($(document).data(props[i]));
+								if(!w2[i]) {
+									log("WARNING: " + w.options().resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
+									return;
 								}
 							}
-							
-							if(show) {
-								w.getInput().parents('.propertyItem').show();
-							} else {
-								if(w.options().clearOnVisibilityChange) {
-									w.clear();
-								}
-								w.getInput().parents('.propertyItem').hide();
-							}
-						}
-						visibilityCallback();
-						for(i=0;i<w2.length;i++) {
-							if(!w2[i].options().visibilityCallbacks) {
-								w2[i].options().visibilityCallbacks = new Array();
-							}
-							w2[i].options().visibilityCallbacks.push(visibilityCallback);
-						}
-					}
-					
-				});
-				
-				$.each(tabs, function(idx, t) {
-					if(t.visibilityDependsOn) {
-						
-						var props = t.visibilityDependsOn.split(',');
-						var w2 = [];
-						for(i=0;i<props.length;i++) {
-							w2.push($(document).data(props[i]));
-							if(!w2[i]) {
-								log("WARNING: " + t.resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
-								return;
-							}
-						}
-						
-						// Hide tab
-						$('.tab' + idx).addClass('visibility');
-						$('.tab' + idx).hide();
-						var visibilityCallback = function() {
-							
-							var dependsValue = t.visibilityDependsValue.toString().split(',');
-							var show = false;
-							for(i=0;i<w2.length;i++) {
-								if(i > 0 && !show) {
-									break;
-								}
-								if(dependsValue[i].startsWith('!')) {
-									dependsValue[i] = dependsValue[i].substring(1);
-									show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);
-								} else {
-									var v = w2[i].getValue();
-									show = v == makeVariableSafe(dependsValue[i]);
-								}
-							}
-							
-							if(show) {
-								// Show tab
-								$('.tab' + idx).show();
-								$('.tab' + idx).removeClass('visibility');
-							} else {
-								// Hide tab
-								$('.tab' + idx).hide();
-								$('.tab' + idx).addClass('visibility');
-							}
-						}
-						visibilityCallback();
-						for(i=0;i<w2.length;i++) {
-							if(!w2[i].options().visibilityCallbacks) {
-								w2[i].options().visibilityCallbacks = new Array();
-							}
-							w2[i].options().visibilityCallbacks.push(visibilityCallback);
-						}
-					}
-				});
-			
-				
-				$.each(widgets, function(idx, w) {
-					if(w.options().valueChanges) {
-						var w2 = $(document).data(w.options().valueChanges);
-						if(!w2) {
-							log("WARNING: " + w.options().resourceKey + " value changes " + w.options().valueChanges + " but a property with that resource key does not exist");
-						} else {
+	
+							w.getInput().parents('.propertyItem').hide();
 							var visibilityCallback = function() {
-								var val = w.options().attributes["value" + w.getValue()];
-								if(val) {
-									w2.setValue(val);
+								
+								var dependsValue = w.options().visibilityDependsValue.toString().split(',');
+								var show = false;
+								for(i=0;i<w2.length;i++) {
+									if(i > 0 && !show) {
+										break;
+									}
+									if(dependsValue[i].startsWith('!')) {
+										dependsValue[i] = dependsValue[i].substring(1);
+										show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);
+									} else {
+										var v = w2[i].getValue();
+										show = (v == makeVariableSafe(dependsValue[i]));
+									}
+								}
+								
+								if(show) {
+									w.getInput().parents('.propertyItem').show();
+								} else {
+									if(w.options().clearOnVisibilityChange) {
+										w.clear();
+									}
+									w.getInput().parents('.propertyItem').hide();
 								}
 							}
 							visibilityCallback();
-							if(!w.options().visibilityCallbacks) {
-								w.options().visibilityCallbacks = new Array();
+							for(i=0;i<w2.length;i++) {
+								if(!w2[i].options().visibilityCallbacks) {
+									w2[i].options().visibilityCallbacks = new Array();
+								}
+								w2[i].options().visibilityCallbacks.push(visibilityCallback);
 							}
-							w.options().visibilityCallbacks.push(visibilityCallback);
 						}
-					}
-				});
+						
+					});
+					
+					$.each(tabs, function(idx, t) {
+						if(t.visibilityDependsOn) {
+							
+							var props = t.visibilityDependsOn.split(',');
+							var w2 = [];
+							for(i=0;i<props.length;i++) {
+								w2.push($(document).data(props[i]));
+								if(!w2[i]) {
+									log("WARNING: " + t.resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
+									return;
+								}
+							}
+							
+							// Hide tab
+							$('.tab' + idx).addClass('visibility');
+							$('.tab' + idx).hide();
+							var visibilityCallback = function() {
+								
+								var dependsValue = t.visibilityDependsValue.toString().split(',');
+								var show = false;
+								for(i=0;i<w2.length;i++) {
+									if(i > 0 && !show) {
+										break;
+									}
+									if(dependsValue[i].startsWith('!')) {
+										dependsValue[i] = dependsValue[i].substring(1);
+										show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);
+									} else {
+										var v = w2[i].getValue();
+										show = v == makeVariableSafe(dependsValue[i]);
+									}
+								}
+								
+								if(show) {
+									// Show tab
+									$('.tab' + idx).show();
+									$('.tab' + idx).removeClass('visibility');
+								} else {
+									// Hide tab
+									$('.tab' + idx).hide();
+									$('.tab' + idx).addClass('visibility');
+								}
+							}
+							visibilityCallback();
+							for(i=0;i<w2.length;i++) {
+								if(!w2[i].options().visibilityCallbacks) {
+									w2[i].options().visibilityCallbacks = new Array();
+								}
+								w2[i].options().visibilityCallbacks.push(visibilityCallback);
+							}
+						}
+					});
+				
+					
+					$.each(widgets, function(idx, w) {
+						if(w.options().valueChanges) {
+							var w2 = $(document).data(w.options().valueChanges);
+							if(!w2) {
+								log("WARNING: " + w.options().resourceKey + " value changes " + w.options().valueChanges + " but a property with that resource key does not exist");
+							} else {
+								var visibilityCallback = function() {
+									var val = w.options().attributes["value" + w.getValue()];
+									if(val) {
+										w2.setValue(val);
+									}
+								}
+								visibilityCallback();
+								if(!w.options().visibilityCallbacks) {
+									w.options().visibilityCallbacks = new Array();
+								}
+								w.options().visibilityCallbacks.push(visibilityCallback);
+							}
+						}
+					});
+				}
+				
+				funcVisibility();
 				
 				if(filters.length > 0 && options.useFilters) {
 					$('#' + propertyDiv + 'PropertyFilter').append('<a href="#" class="click_default">' + getResource('default.label') + '</a>');
@@ -1261,6 +1264,7 @@ $.fn.propertyPage = function(opts) {
 							$('.' + filterPrefix + filter).show();
 							$('.visibility').hide();
 							$('li.' + filterPrefix + filter + ':first a').tab('show');
+							funcVisibility();
 						});
 					});
 				}

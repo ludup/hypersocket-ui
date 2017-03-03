@@ -117,8 +117,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RealmPermission.UPDATE, RealmPermission.DELETE), MenuService.MENU_NAV);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_DASHBOARD, "fa-pie-chart", null, 0, null, null,
-				null, null), MenuService.MENU_NAV);
+
+				MenuService.MENU_DASHBOARD, "fa-pie-chart", null, 0,
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION,
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION), MenuService.MENU_NAV);
+		
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_PERSONAL, "", null, 0, null, null, null, null));
@@ -184,12 +189,19 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_SYSTEM_CONFIGURATION, "fa-gears", null, 0,
-				null, null, null, null), MenuService.MENU_NAV);
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION), MenuService.MENU_NAV);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
-						"fa-gears", "settings", 0,
-						SystemPermission.SYSTEM_ADMINISTRATION, null,
-						SystemPermission.SYSTEM_ADMINISTRATION, null),
+
+				"fa-gears", "settings", 0,
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION,
+				SystemPermission.SYSTEM_ADMINISTRATION, 
+				SystemPermission.SYSTEM_ADMINISTRATION),
+
 				MenuService.MENU_SYSTEM_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "interfacesMenu",

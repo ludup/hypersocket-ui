@@ -65,7 +65,7 @@
 			formData.append('file', $('#file')[0].files[0]);
 			formData.append('bundle', $('#bundle')[0].files[0]);
 			
-			$.ajax({
+			doAjax({
 				type : 'POST',
 				url : basePath + '/api/certificates/cert/' + $('#certificateUpload').data('resource').id,
 				dataType : 'json',
