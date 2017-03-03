@@ -640,7 +640,7 @@ function patchJSON(url, params, callback, errorCallback, alwaysCallback) {
 		url = basePath + '/api/' + url;
 	}
 
-	return $.ajax({
+	return doAjax({
 		type: "PATCH",
 	    url:  url,
 	    dataType: 'json',
