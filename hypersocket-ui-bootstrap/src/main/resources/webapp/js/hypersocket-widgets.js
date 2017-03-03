@@ -1093,23 +1093,22 @@ $.fn.autoComplete = function(data) {
 					options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text,
 					null,
 					function(data) {
+						$('#input_' + id).data('values', data.rows);
 						
 						if(data.rows && data.rows.length > 0) {
-						var map = [];
-						$.each(data.rows, function(idx, obj) {
-							map[obj[options.valueAttr]] = obj;
-							if(options.value) {
-								if(obj[options.valueAttr]==options.value) {
-									log("Found value with " + options.value);
-									thisWidget.data('selectedObject', obj);
-									$('#' + id).val(options.value);
-									$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+							var map = [];
+							$.each(data.rows, function(idx, obj) {
+								map[obj[options.valueAttr]] = obj;
+								if(options.value) {
+									if(obj[options.valueAttr]==options.value) {
+										log("Found value with " + options.value);
+										thisWidget.data('selectedObject', obj);
+										$('#' + id).val(options.value);
+										$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+									}
 								}
-							}
-						});
-						$('#input_' + id).data('values', data.rows);
-						$('#input_' + id).data('map', map);
-						
+							});
+							$('#input_' + id).data('map', map);
 						} else {
 							if(text=='') {
 								$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
@@ -1117,10 +1116,8 @@ $.fn.autoComplete = function(data) {
 								$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
 							}
 						}
-						
 						createDropdown(text, true, true);
 					});
-			
 		}
 		
 	};
