@@ -115,7 +115,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RealmPermission.UPDATE, RealmPermission.DELETE), MenuService.MENU_NAV);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_DASHBOARD, "fa-pie-chart", null, 0,
+				MenuService.MENU_DASHBOARD, "fa-pie-chart", null, Integer.MIN_VALUE,
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION,
 				SystemPermission.SYSTEM_ADMINISTRATION, 
@@ -123,8 +123,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_PERSONAL, "", null, 0, null, null, null, null));
-
-		
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
 				"fa-hourglass-start", "sessions", 99999,

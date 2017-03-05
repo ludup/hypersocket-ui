@@ -1949,7 +1949,7 @@ $.fn.multipleSearchInput = function(data) {
 				return result;
 			},
 			reset: function() {
-				$('#' + id).multipleTextInput();
+				$('#' + id).multipleSearchInput();
 			},
 			disable: function() {
 				$('#' + id + 'Excluded').widget().disable();
@@ -1976,7 +1976,7 @@ $.fn.multipleSearchInput = function(data) {
 				return $('#' + id);
 			},
  			clear: function() {
- 				$('#' + id).multipleTextInput();
+ 				$('#' + id).multipleSearchInput();
  			}
 		};
 	}
