@@ -1582,10 +1582,8 @@ $.fn.multipleSelect = function(data) {
 					$('#' + id).multipleSelect();
 				},
 				disable: function() {
-					$('#' + id + 'IncludedSelect li i').off();
-					$('#' + id + 'IncludedSelect li i').css('cursor', 'default');
-					$('#' + id + 'ExcludedSelect li i').off();
-					$('#' + id + 'ExcludedSelect li i').css('cursor', 'default');
+					$('#' + id + 'IncludedSelect li i').hide();
+					$('#' + id + 'ExcludedSelect li i').hide();
 					$('#' + id + 'IncludedSelect li').attr('draggable', false);
 					$('#' + id + 'IncludedSelect li').css('cursor', 'default');
 					$('#' + id + 'ExcludedSelect li').attr('draggable', false);
@@ -1593,15 +1591,8 @@ $.fn.multipleSelect = function(data) {
 					multipleSelectDisabled = true;
 				},
 				enable: function() {
-					$('#' + id + 'IncludedSelect li i').off();
-					$('#' + id + 'IncludedSelect li i').click(function(e){
-						removeElement($(e.target).parent());
-					});
-					$('#' + id + 'IncludedSelect li i').css('cursor', 'pointer');
-					$('#' + id + 'ExcludedSelect li i').off();
-					$('#' + id + 'ExcludedSelect li i').click(function(e){
-						addElement($(e.target).parent());
-					});
+					$('#' + id + 'IncludedSelect li i').show();
+					$('#' + id + 'ExcludedSelect li i').show();
 					$('#' + id + 'ExcludedSelect li i').css('cursor', 'pointer');
 					$('#' + id + 'IncludedSelect li').attr('draggable', true);
 					$('#' + id + 'IncludedSelect li').css('cursor', 'move');
@@ -1764,7 +1755,7 @@ $.fn.multipleSearchInput = function(data) {
 			options.changed(callback);
 		}
 	}
-	
+
 	dragSrcEl = null;
 	
 	var handleDragStart = function(e){
@@ -1823,7 +1814,6 @@ $.fn.multipleSearchInput = function(data) {
 
 	var handleDragEnd = function (e) {
 		$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
-		//dragSrcEl = null;
 	}
 	
 	var addListeners = function(newElement){
@@ -1839,7 +1829,6 @@ $.fn.multipleSearchInput = function(data) {
 	}
 	
 	if ($(this).data('created')) {
-
 		options = $(this).widget().options();
 
 		var inputText = $('#' + id + 'ExcludedSelect');
@@ -1863,9 +1852,9 @@ $.fn.multipleSearchInput = function(data) {
 		}
 		
 		if(data && data.disabled) {
-			$('#' + id + 'Excluded').widget().disable();
+			$(this).widget().disable();
 		} else {
-			$('#' + id + 'Excluded').widget().enable();
+			$(this).widget().enable();
 		}
 		
 		return;
@@ -1892,7 +1881,7 @@ $.fn.multipleSearchInput = function(data) {
 		$(this).append('<div id="' + id + '"></div>');
 		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div></div>');
 		$('#' + id).append('<div id="' + id + 'SelectedItems"><div class="includedList widget" id="' + id + 'Included"></div></div></div>');
-		
+
 		var searchInput = $('#' + id + 'Excluded').autoComplete({
 			remoteSearch: true,
 			url: options.url,
@@ -1946,7 +1935,7 @@ $.fn.multipleSearchInput = function(data) {
 				return result;
 			},
 			reset: function() {
-				$('#' + id).multipleTextInput();
+				$('#' + id).multipleSearchInput();
 			},
 			disable: function() {
 				$('#' + id + 'Excluded').widget().disable();
@@ -1954,8 +1943,7 @@ $.fn.multipleSearchInput = function(data) {
 					$('#' + id + 'IncludedSelect li').attr('draggable', false);
 					$('#' + id + 'IncludedSelect li').css('cursor', 'default');
 				}
-				$('#' + id + 'IncludedSelect li i').off();
-				$('#' + id + 'IncludedSelect li i').css('cursor', 'default');
+				$('#' + id + 'IncludedSelect li i').hide();
 			},
 			enable: function() {
 				$('#' + id + 'Excluded').widget().enable();
@@ -1963,8 +1951,7 @@ $.fn.multipleSearchInput = function(data) {
 					$('#' + id + 'IncludedSelect li').attr('draggable', true);
 					$('#' + id + 'IncludedSelect li').css('cursor', 'move');
 				}
-				$('#' + id + 'IncludedSelect li i').on('click', removeElement);
-				$('#' + id + 'IncludedSelect li i').css('cursor', 'pointer');
+				$('#' + id + 'IncludedSelect li i').show();
 			},
 			options: function() {
 				return options;
@@ -1973,7 +1960,7 @@ $.fn.multipleSearchInput = function(data) {
 				return $('#' + id);
 			},
  			clear: function() {
- 				$('#' + id).multipleTextInput();
+ 				$('#' + id).multipleSearchInput();
  			}
 		};
 	}
@@ -2008,7 +1995,7 @@ $.fn.multipleSearchInput = function(data) {
 			addListeners(newElement);
 		});
 	}
-	
+
 	if(options.disabled) {
 		callback.disable();
 	}
@@ -2167,13 +2154,29 @@ $.fn.multipleTextInput = function(data) {
 		$('#' + id + 'Included').remove();
 
 		$(this).append('<div id="' + id + '"></div>');
-		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList" id="' + id + 'Excluded"></div></div>');
+		$('#' + id).append('<div id="' + id + 'ExcludedSearch"><div class="excludedList input-group " id="' + id + 'Excluded"></div></div>');
 
 		var textInput = $('#' + id + 'Excluded').textInput({
 				id: id + 'ExcludedSelect',
 				isPropertyInput: false,
 				variables: options.variables
 		});
+
+		var searchAction = function() {
+		    var selectedText = textInput.getValue();
+            if (selectedText.trim() == '') {
+                return;
+            }
+            var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(selectedText)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(selectedText)) + '"><span>' + he.encode(selectedText) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+            newElement.find('i.fa.fa-times').click(function(e){
+                removeElement(e);
+            });
+            toSelect.append(newElement);
+            addListeners(newElement);
+            textInput.clear();
+		}
+
+		$('#' + id + 'Excluded').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-addon"><i class="fa fa-plus"></i></span>');
 		$('#input' + id + 'ExcludedSelect').after('<ul id="auto_' + id + 'ExcludedAutoComplete" class="dropdown-menu scrollable-menu" role="menu"><li><a>' + getResource('pressEnter.text') + '</a></li></ul>');
 		$('#input' + id + 'ExcludedSelect').focus(function(){
 			$('#auto_' + id + 'ExcludedAutoComplete').show();
@@ -2185,19 +2188,13 @@ $.fn.multipleTextInput = function(data) {
 			var code = e.which;
 		    if(code==13){
 		    	e.preventDefault();
-		    	var selectedText = textInput.getValue();
-				if (selectedText.trim() == '') {
-					return;
-				}
-		    	var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(selectedText)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(selectedText)) + '"><span>' + he.encode(selectedText) + '</span>&ensp;<i class="fa fa-times"></i></li>');
-				newElement.find('i.fa.fa-times').click(function(e){
-					removeElement(e);
-				});
-				toSelect.append(newElement);
-				addListeners(newElement);
-				textInput.clear();
+		    	searchAction();
 		    }
 		});
+
+		$('#' + id + 'ExcludedSearchAddButton').click(function(e) {
+           searchAction();
+        });
 
 		$('#' + id).append('<div class="includedList" id="' + id + 'Included"></div>');
 		$('#' + id + 'Included').append('<div class=" formInput form-control includedSelect">'
