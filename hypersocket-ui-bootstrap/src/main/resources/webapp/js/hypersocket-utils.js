@@ -302,14 +302,18 @@ function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(location.search);
-    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    return results == null ? "" : decodeFormParameter(results[1]);
+}
+
+function decodeFormParameter(val) {
+	return decodeURIComponent(val.replace(/\+/g, " "));
 }
 
 function getAnchorByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\#&]" + name + "=([^&]*)"),
     results = regex.exec(location.hash);
-    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    return results == null ? "" : decodeFormParameter(results[1]);
 }
 
 function loadResources(callback) {
@@ -443,7 +447,7 @@ function removeMessage() {
 	$('#systemMessage').remove();
 }
 
-function showMessage(text, icon, alertClass, fade, fadeCallback) {
+function showMessage(text, icon, alertClass, fade, fadeCallback, element) {
 	
 	text = (getResourceNoDefault(text) == undefined ? text : getResource(text));
 	
@@ -460,7 +464,10 @@ function showMessage(text, icon, alertClass, fade, fadeCallback) {
 		});
 	};
 	
-	$('body').prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
+	if(!element) {
+		element = $('body');
+	}
+	element.prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
 	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + text + '</span><i id="messageDismiss" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
 	
 	$('#messageDismiss').click(function() {

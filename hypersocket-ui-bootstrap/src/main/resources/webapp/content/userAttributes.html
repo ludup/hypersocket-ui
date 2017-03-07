@@ -197,7 +197,7 @@ $(document).ready(function() {
 
 	$('#attributeRoles').multipleSearchInput({
 		url: 'roles/table',
-		valueIsNamePair: false,
+		isNamePairValue: false,
 		selectedIsObjectList : true,
 		resourceKey : 'userAttribute',
 		disabled: !currentMenu.canUpdate
@@ -326,7 +326,7 @@ $(document).ready(function() {
 					
 					$('#attributeRoles').multipleSearchInput({
 						url: 'roles/table',
-						valueIsNamePair: false,
+						isNamePairValue: false,
 						selected : resource.roles,
 						selectedIsObjectList : true,
 						resourceKey : 'userAttribute',

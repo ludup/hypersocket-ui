@@ -166,6 +166,27 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 			log("Logo widget needs upload");
 			return false;
 		}
+	} else if(obj.isNamePairValue) {
+		
+		if(!obj.allowEmpty && value == '') {
+			log("validaton failed for " + obj.resourceKey + " and empty value");
+			return false;
+		}
+		var values = value.split('=');
+		if(values.length == 2) {
+			if(obj.validateName) {
+				if(!validateAll(widget,decodeURIComponent(values[0]),obj.validateName)) {
+					log("validaton (name_ failed for " + obj.resourceKey + " and value" + decodeURIComponent(values[0]));
+					return false;
+				}
+			} 
+			if(obj.validateValue) {
+				if(!validateAll(widget,decodeURIComponent(values[1]),obj.validateValue)) {
+					log("validaton (value) failed for " + obj.resourceKey + " and value" + decodeURIComponent(values[1]));
+					return false;
+				}
+			}
+		} 
 	}
 	if(obj.maxLength){
 	   if(value) {
@@ -195,11 +216,11 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
-	if(obj.validateAny && !validateAny(widget,value)){
+	if(obj.validateAny && !validateAny(widget,value,obj.validateAny)){
 		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
-	if(obj.validateAll && !validateAll(widget,value)){
+	if(obj.validateAll && !validateAll(widget,value,obj.validateAll)){
 		log("Validation failed for " + obj.resourceKey + " and value " + value);
 		return false ;
 	}
@@ -228,6 +249,7 @@ function validateInputType(type){
 		case 'multipleSelect' :
 		case 'multipleTextInput' :
 		case 'multipleSearchInput' :
+		case 'multipleNamePairInput' :
 		case 'boolean' :
 		case 'image' :
 		case 'switch' :
@@ -316,9 +338,8 @@ function validateAny(widget,value){
     }
 }
 
-function validateAll(widget,value){
+function validateAll(widget,value,conditions){
 	var option = widget.options();
-	var conditions = option.validateAll;
 	var arr = conditions.split(',');
 	var matched = false;
 	for (i = 0; i < arr.length; ++i) {
@@ -602,6 +623,8 @@ $.fn.propertyPage = function(opts) {
 				  propertyTabsLast: true, 
 				  i18nNamespace: '',
 				  useFilters: false,
+				  defaults: {
+				  },
 				  alwaysShowStandardFilter: false},
 				opts);
 	
@@ -831,6 +854,10 @@ $.fn.propertyPage = function(opts) {
 											resourceKeyTemplate: (categoryNamespace && categoryNamespace != '' ? (categoryNamespace + '.{0}') : '{0}')
 										}, obj);
 										
+										if(options.defaults[obj.resourceKey]) {
+											obj.value = options.defaults[obj.resourceKey];
+										}
+										
 										makeBooleanSafe(obj);
 										if(obj.url) {
 											
@@ -1051,6 +1078,15 @@ $.fn.propertyPage = function(opts) {
 											}, obj);
 											
 											widget = $('#' + tab + '_value' + inputId).multipleSearchInput(widgetOptions);
+
+										} else if (obj.inputType == 'multipleNamePairInput') {
+											var widgetOptions = $.extend({
+												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url),
+												values: obj.isNamePairValue == false ? splitFix(obj.value) : splitNamePairs(obj.value)
+											}, obj);
+											
+											widgetOptions.isNamePairValue = true;
+											widget = $('#' + tab + '_value' + inputId).multipleNamePairInput(widgetOptions);
 
 										} else if (obj.inputType == 'date') {
 											

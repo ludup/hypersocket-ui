@@ -147,7 +147,9 @@ $.fn.textInput = function(data) {
 	$(this).append(html);
 	
 	$('#' + id).val(stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value));
-	
+	if(options.placeholder) {
+		$('#' + id).prop('placeholder', getResourceOrDefault(options.placeholder));
+	}
  	if(hasVariables) {
  		$.each(options.variables, function(idx, obj) {
  			$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
@@ -1089,8 +1091,12 @@ $.fn.autoComplete = function(data) {
 		if(!options.remoteSearch) {
 			createDropdown(text, true, false);
 		} else {
-			getJSON(
-					options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text,
+			
+			var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text;
+			if(options.searchParams) {
+				url += '&' + options.searchParams;
+			}
+			getJSON(url,
 					null,
 					function(data) {
 						
@@ -1145,8 +1151,12 @@ $.fn.autoComplete = function(data) {
 			reset: function(newValue) {
 				
 				if(options.url && !options.remoteSearch) {
+					var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text;
+					if(options.searchParams) {
+						url += '&' + options.searchParams;
+					}
 					getJSON(
-						options.url,
+						url,
 						null,
 						function(data) {
 							buildData(options.isResourceList ? data.resources : data);
@@ -1207,10 +1217,14 @@ $.fn.autoComplete = function(data) {
  				if(select){
  					$('#' + id).parent().parent().data('widget').setValue(item[options.valueAttr]);
  				}
+ 			},
+ 			dropdown: function() {
+ 				doDropdown($('#input_' + id).val());
  			}
 	};
 
 	$('#click_' + id).click(function(e){
+		
 		if(options.alwaysDropdown) {
 			createDropdown("", true, false);
 		} else {
@@ -1240,7 +1254,11 @@ $.fn.autoComplete = function(data) {
 	} else if(options.remoteSearch) {
 		
 		if(options.value && options.value !== '') {
-			getJSON(options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + options.value + "&searchColumn=" + options.valueAttr,
+			var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + options.value + "&searchColumn=" + options.valueAttr;
+			if(options.searchParams) {
+				url += '&' + options.searchParams;
+			}
+			getJSON(url,
 					null,
 					function(data) {
 						
@@ -1872,7 +1890,8 @@ $.fn.multipleSearchInput = function(data) {
 						selectAllIfEmpty : false, 
 						selectedIsObjectList : false, 
 						disabled : false,
-						valueIsNamePair: true,
+						isNamePairValue: true,
+						addOnSelect: true,
 						isArrayValue: true },
 					data);
 
@@ -1887,13 +1906,15 @@ $.fn.multipleSearchInput = function(data) {
 
 		var searchInput = $('#' + id + 'Excluded').autoComplete({
 			remoteSearch: true,
+			searchParams: options.searchParams,
 			url: options.url,
 			nameAttr: options.nameAttr,
 			valueAttr: options.valueAttr,
 			selectedIsObjectList: true,
 			disabled: options.disabled,
+			icon: options.addOnSelect ? 'fa-search' : 'fa-plus',
 			nameIsResourceKey: options.nameIsResourceKey,
-			changed: function(element){
+			clicked: function(element) {
 				var selectedObj = element.getObject();
 				if (!selectedObj) {
 					return;
@@ -1909,6 +1930,13 @@ $.fn.multipleSearchInput = function(data) {
 				toSelect.data('updated', true);
 				if (options.changed) {
 					options.changed(callback);
+				}
+			},
+			changed: function(element){
+				if(options.addOnSelect) {
+					this.clicked(element);
+				} else {
+					element.dropdown();
 				}
 			}
 		});
@@ -1926,7 +1954,7 @@ $.fn.multipleSearchInput = function(data) {
 			},
 			getValue: function() {
 				result = new Array();
-				if(options.valueIsNamePair) {
+				if(options.isNamePairValue) {
 					$('#' + id + 'IncludedSelect li').each(function() {
 						result.push(he.encode($(this).attr('value')) + "=" + he.encode($(this).find('span').text()));
 					});
@@ -2259,7 +2287,304 @@ $.fn.multipleTextInput = function(data) {
 
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
-			var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + he.encode(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+			var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
+			
+			newElement.find('i.fa.fa-times').click(function(e){
+				removeElement(e);
+			});
+			toSelect.append(newElement);
+			addListeners(newElement);
+		});
+	}
+	
+	if(options.disabled) {
+		callback.disable();
+	}
+	
+	$(this).data('created', true);
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+};
+
+/**
+ * Shows a name pair component
+ */
+$.fn.multipleNamePairInput = function(data) {
+
+	var id = $(this).attr('id');
+	
+	var removeElement = function(e){
+		$(e.target).parent().remove();
+		toSelect.data('updated', true);
+		if (options.changed) {
+			options.changed(callback);
+		}
+	}
+	
+	dragSrcEl = null;
+	
+	var handleDragStart = function(e){
+		dragSrcEl = this;
+		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.setData('text/html', this.innerHTML);
+	}
+	
+	var handleDragOver = function(e){
+		if (e.preventDefault) {
+			e.preventDefault();
+		}
+		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
+			e.dataTransfer.dropEffect = 'move';
+		}
+		
+		return false;
+	}
+	
+	var handleDragEnter = function(e) {
+		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
+			this.classList.add('overMultipleSearchInput');
+		}
+	}
+	
+	var handleDragLeave = function(e) {
+		this.classList.remove('overMultipleSearchInput');
+	}
+	
+	var handleDrop = function (e) {
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		}
+		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
+			dragSrcEl.innerHTML = this.innerHTML;
+			var dragId = dragSrcEl.getAttribute('id');
+			var dragValue = dragSrcEl.getAttribute('value');
+			dragSrcEl.setAttribute('id', this.getAttribute('id'));
+			dragSrcEl.setAttribute('value', this.getAttribute('value'));
+			this.innerHTML = e.dataTransfer.getData('text/html');
+			this.setAttribute('id', dragId);
+			this.setAttribute('value', dragValue);
+			if (options.changed) {
+				options.changed(callback);
+			}
+			$('[id="' + dragSrcEl.id + '"]').find('i').click(function(e){
+				removeElement(e);
+			});
+			
+			$('[id="' + this.id + '"]').find('i').click(function(e){
+				removeElement(e);
+			});
+		}
+		return false;
+	}
+
+	var handleDragEnd = function (e) {
+		$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
+		dragSrcEl = null;
+	}
+	
+	var addListeners = function(newElement){
+		if(options.allowOrdering){
+			var element = document.getElementById($(newElement).attr('id'));
+			element.addEventListener('dragstart', handleDragStart, false);
+			element.addEventListener('dragenter', handleDragEnter, false);
+			element.addEventListener('dragover', handleDragOver, false);
+			element.addEventListener('dragleave', handleDragLeave, false);
+			element.addEventListener('drop', handleDrop, false);
+			element.addEventListener('dragend', handleDragEnd, false);
+		}
+	}
+	
+	var removeListeners = function(newElement){
+		if(options.allowOrdering){
+			var element = document.getElementById($(newElement).attr('id'));
+			element.removeEventListener('dragstart', handleDragStart, false);
+			element.removeEventListener('dragenter', handleDragEnter, false);
+			element.removeEventListener('dragover', handleDragOver, false);
+			element.removeEventListener('dragleave', handleDragLeave, false);
+			element.removeEventListener('drop', handleDrop, false);
+			element.removeEventListener('dragend', handleDragEnd, false);
+		}
+	}
+	
+	if ($(this).data('created')) {
+
+		options = $(this).widget().options();
+
+		var inputText = $('#' + id + 'ExcludedSelect').widget();
+		inputText.setValue('');
+		var allIncludedOptions = $('#' + id + 'IncludedSelect li');
+		if (allIncludedOptions.length > 0) {
+			$(allIncludedOptions).remove();
+		}
+
+		var toSelect = $('#' + id + 'IncludedSelect');
+
+		if(data && data.values) {
+			options.values = data.values;
+		} 
+		
+		if (options.values) {
+			$.each(options.values, function(idx, obj) {
+				var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" '
+						+ (options.allowOrdering ? 'draggable="true" class="draggable ' 
+								+ id + 'Draggable" ' : '' ) + '><span>' + decodeFormParameter(obj[options.nameAttr])
+								+ '</span>&ensp;<i class="fa fa-times"></i></li>');
+				newElement.data('value', decodeFormParameter(obj[options.valueAttr]));
+				newElement.data('name', decodeFormParameter(obj[options.nameAttr]));
+				newElement.find('i.fa.fa-times').click(function(e){
+					removeElement(e);
+				});
+				toSelect.append(newElement);
+				addListeners(newElement);
+			});
+		}
+
+		return;
+
+	} else {
+
+		var options = $
+				.extend(
+					{ valueAttr : 'id', 
+						nameAttr : 'name', 
+						valueAttr: 'value',
+						nameIsResourceKey : false, 
+						selectAllIfEmpty : false, 
+						selectedIsObjectList : false, 
+						disabled : false,
+						isArrayValue: true,
+						namePlaceholder: 'Name',
+						valuePlaceholder: 'Value'
+					},
+					data);
+
+		options.isNamePairValue = true;
+		var name = ((data && data.resourceKey != null ) ? formatResourceKey(data.resourceKey) : id) ;
+		
+		$('#' + id + 'Excluded').remove();
+		$('#' + id + 'Included').remove();
+
+		$(this).append('<div id="' + id + '"></div>');
+		$('#' + id).append('<div id="' + id + 'NameValuePair"><div class="excludedList input-group" id="' + id + 'Name"></div>'
+				+ '<div class="excludedList input-group" id="' + id + 'Value"></div></div>');
+
+		var nameInput = $('#' + id + 'Name').textInput({
+				isPropertyInput: false,
+				variables: options.variables,
+				placeholder: options.namePlaceholder
+		});
+		
+		var valueInput = $('#' + id + 'Value').textInput({
+			isPropertyInput: false,
+			variables: options.variables,
+			placeholder: options.valuePlaceholder
+			
+		});
+
+		var searchAction = function() {
+		    var selectedText = nameInput.getValue();
+            if (selectedText.trim() == '') {
+                return;
+            }
+            var val = selectedText + '=' + valueInput.getValue();
+            var newElement = $('<li id="' + id + 'Li' + he.encode(val) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + he.encode(val) + '"><span>' + selectedText + '</span>&ensp;<i class="fa fa-times"></i></li>');
+            newElement.data('value', valueInput.getValue());
+			newElement.data('name', selectedText);
+            newElement.find('i.fa.fa-times').click(function(e){
+                removeElement(e);
+            });
+            toSelect.append(newElement);
+            addListeners(newElement);
+            nameInput.clear();
+            valueInput.clear();
+		}
+
+		$('#' + id + 'Value').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-addon"><i class="fa fa-plus"></i></span>');
+		$('#input' + id + 'ExcludedSelect').blur(function(){
+			$('#auto_' + id + 'ExcludedAutoComplete').hide();
+		});
+		$('#' + id + 'Value').keyup(function(e) {
+			var code = e.which;
+		    if(code==13){
+		    	e.preventDefault();
+		    	searchAction();
+		    }
+		});
+
+		$('#' + id + 'ExcludedSearchAddButton').click(function(e) {
+			
+           searchAction();
+        });
+
+		$('#' + id).append('<div class="includedList" id="' + id + 'Included"></div>');
+		$('#' + id + 'Included').append('<div class=" formInput form-control includedSelect">'
+					+ '<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
+							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '"/></div>');
+
+		var toSelect = $('#' + id + 'IncludedSelect');
+
+		var callback = {
+				setValue: function(val) {
+					// Cannot be done yet.
+				},
+				getValue: function() {
+					result = new Array();
+					
+					$('#' + id + 'IncludedSelect li').each(function() {
+						result.push(he.encode($(this).data('name')) + '=' + he.encode($(this).data('value')));
+					});
+					return result;
+				},
+				reset: function() {
+					$('#' + id).multipleTextInput();
+				},
+				disable: function() {
+					$('#' + id + 'Excluded').widget().disable();
+					if(options.allowOrdering){
+						$('#' + id + 'IncludedSelect li').attr('draggable', false);
+						$('#' + id + 'IncludedSelect li').css('cursor', 'default');
+						$('#' + id + 'IncludedSelect li').each(function(){
+							removeListeners($(this));
+						});
+					}
+					$('#' + id + 'IncludedSelect li i').off();
+					$('#' + id + 'IncludedSelect li i').css('cursor', 'default');
+				},
+				enable: function() {					
+					$('#' + id + 'Excluded').widget().enable();
+					if(options.allowOrdering){
+						$('#' + id + 'IncludedSelect li').attr('draggable', true);
+						$('#' + id + 'IncludedSelect li').css('cursor', 'move');
+						$('#' + id + 'IncludedSelect li').each(function(){
+							addListeners($(this));
+						});
+					}
+					$('#' + id + 'IncludedSelect li i').on('click', removeElement);
+					$('#' + id + 'IncludedSelect li i').css('cursor', 'pointer');
+				},
+				options: function() {
+					return options;
+				},
+				getInput: function() {
+					return $('#' + id);
+				},
+	 			clear: function() {
+	 				$('#' + id).multipleTextInput();
+	 			}
+		};
+	}
+
+	if (options.values) {
+		$.each(options.values, function(idx, obj) {
+			
+			var newElement = $('<li id="' + id + 'Li' 
+					+ obj[options.valueAttr] + '" ' 
+					+ (options.allowOrdering ? 'draggable="true" class="draggable '
+							+ id + 'Draggable"' : '' ) + '><span>' 
+							+ decodeFormParameter(obj[options.nameAttr]) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+			newElement.data('value', decodeFormParameter(obj[options.valueAttr]));
+			newElement.data('name', decodeFormParameter(obj[options.nameAttr]));
 			
 			newElement.find('i.fa.fa-times').click(function(e){
 				removeElement(e);
