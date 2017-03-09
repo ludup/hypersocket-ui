@@ -90,7 +90,7 @@ function processLogon(data, opts, message) {
 			$.each(data.formTemplate.inputFields, function() {
 				if (this.type == 'hidden') {
 					$('#logonForm').append('<input type="' + this.type + '" name="' 
-								+ this.resourceKey + '" id="' 
+								+ this.resourceKey + '" autocomplete="off" id="' 
 								+ this.resourceKey + '" value="' 
 								+ this.defaultValue + '"/>');
 					return;

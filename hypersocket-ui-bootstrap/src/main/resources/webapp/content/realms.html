@@ -98,7 +98,9 @@
 								return !resource.system;
 							}, checkUpdate: function(resource) {
 								return true;
-							}, showCreate : function() {
+							}, 
+							checkReadOnly: false,
+						    showCreate : function() {
 
 								$('#typeButton').widget().enable();
 								$('#typeButton').widget().selectFirst();

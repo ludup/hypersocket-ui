@@ -133,7 +133,7 @@ $.fn.textInput = function(data) {
 		}
 		
 		var type = options.inputType != 'text' && options.inputType != 'password' ? 'text' : options.inputType;
-		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" value=""'
+		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" autocomplete="off" value=""'
 					+ (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
 		
 		
