@@ -101,6 +101,10 @@ public class ClientDownloadServiceImpl implements ClientDownloadService {
 				public String getBasePath() {
 					return "clients";
 				}
+				@Override
+				public boolean getDisableCache() {
+					return true;
+				}
 			};
 
 			server.registerHttpHandler(contentHandler);

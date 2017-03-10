@@ -53,4 +53,8 @@ public class RobotsTxtHandler extends HttpRequestHandler {
 		responseProcessor.sendResponse(request, response, false);
 	}
 
+	@Override
+	public boolean getDisableCache() {
+		return false;
+	}
 }

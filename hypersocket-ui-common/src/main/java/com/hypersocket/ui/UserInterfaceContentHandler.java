@@ -130,6 +130,10 @@ public class UserInterfaceContentHandler implements ContentHandler {
 							public String getBasePath() {
 								return FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath());
 							}
+							@Override
+							public boolean getDisableCache() {
+								return false;
+							}
 						};
 					} else {
 						handler.addBaseDir(webappFolder);
