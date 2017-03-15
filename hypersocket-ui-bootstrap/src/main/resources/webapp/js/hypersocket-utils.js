@@ -638,6 +638,46 @@ function deleteJSON(url, params, callback, errorCallback) {
 	});
 };
 
+
+function patchJSON(url, params, callback, errorCallback, alwaysCallback) {
+
+	log("PATCH: " + url);
+
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
+		url = basePath + '/api/' + url;
+	}
+
+	return doAjax({
+		type: "PATCH",
+	    url:  url,
+	    dataType: 'json',
+	    contentType: 'application/json',
+	    data: JSON.stringify(params),
+	    success: callback
+	}).fail(function(xmlRequest) {
+		if(errorCallback) {
+			if(!errorCallback()) {
+				return;
+			}
+		}
+		if (xmlRequest.status != 401) {
+			if(!hasShutdown) {
+				if(xmlRequest.status == 0) {
+					showError(getResource("error.cannotContactServer"));
+					pollForServerContact();
+				} else {
+					showError(url + " JSON request failed. [" + xmlRequest.status + "]");
+				}
+			}
+		}
+	}).always(function() {
+		if(alwaysCallback) {
+			alwaysCallback();
+		}
+	});
+
+};
+
 function pollForServerContact() {
 	
 	polling = true;

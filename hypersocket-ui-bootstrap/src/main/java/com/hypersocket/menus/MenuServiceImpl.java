@@ -68,7 +68,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	Map<String, List<AbstractTableAction>> registeredActions = new HashMap<String, List<AbstractTableAction>>();
 
 	List<BadgeProvider> badgeProviders = new ArrayList<BadgeProvider>();
-	
+
+	Map<String, List<TabRegistration>> extendedInformationTabs = new HashMap<>();
+
 	@Autowired
 	I18NService i18nService;
 
@@ -83,19 +85,19 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	@Autowired
 	UserInterfaceStateService userInterfaceStateService;
-	
+
 	@Autowired
 	HypersocketServer server;
-	
+
 	@Autowired
 	IndexPageFilter indexFilter;
-	
+
 	@Autowired
 	MessageResourceService messageService;
-	
+
 	Set<MenuFilter> filters = new HashSet<MenuFilter>();
 	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
-	
+
 	@PostConstruct
 	private void postConstruct() {
 
@@ -103,24 +105,24 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		server.addAlias("${basePath}/recover", "redirect:${basePath}/recover/");
 		server.addAlias("${basePath}/recover/", "${uiPath}/recover-index.html");
-		
+
 		indexFilter.addPage("recover-index.html");
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_NAV, "", null, 0, null, null, null, null));
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_REALMS, "fa-database", "realms", 1,
 				RealmPermission.READ, RealmPermission.CREATE,
 				RealmPermission.UPDATE, RealmPermission.DELETE), MenuService.MENU_NAV);
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_DASHBOARD, "fa-pie-chart", null, Integer.MIN_VALUE,
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION,
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION), MenuService.MENU_NAV);
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_PERSONAL, "", null, 0, null, null, null, null));
 
@@ -197,15 +199,15 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_SYSTEM_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "interfacesMenu",
-				"fa-sitemap", "interfacesMenu", 100,
-				SystemPermission.SYSTEM_ADMINISTRATION, 
-				SystemPermission.SYSTEM_ADMINISTRATION,
-				SystemPermission.SYSTEM_ADMINISTRATION, 
-				SystemPermission.SYSTEM_ADMINISTRATION),
+						"fa-sitemap", "interfacesMenu", 100,
+						SystemPermission.SYSTEM_ADMINISTRATION,
+						SystemPermission.SYSTEM_ADMINISTRATION,
+						SystemPermission.SYSTEM_ADMINISTRATION,
+						SystemPermission.SYSTEM_ADMINISTRATION),
 				MenuService.MENU_SYSTEM_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DIAGNOSTICS,
-				"fa-wrench", null, 100, null, null, null, null),
+						"fa-wrench", null, 100, null, null, null, null),
 				MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
@@ -213,26 +215,26 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null, null, null), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_REALM_CONFIGURATION, "fa-gears",
-				"realmSettings", 0, ConfigurationPermission.READ, null,
-				ConfigurationPermission.UPDATE, null),
+						MenuService.MENU_REALM_CONFIGURATION, "fa-gears",
+						"realmSettings", 0, ConfigurationPermission.READ, null,
+						ConfigurationPermission.UPDATE, null),
 				MenuService.MENU_CONFIGURATION);
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				"fileUploads", "fa-file",
-				"fileUploads", 0, SystemPermission.SYSTEM_ADMINISTRATION, 
-				SystemPermission.SYSTEM_ADMINISTRATION,
-				SystemPermission.SYSTEM_ADMINISTRATION, 
-				SystemPermission.SYSTEM_ADMINISTRATION).setHidden(true),
+						"fileUploads", "fa-file",
+						"fileUploads", 0, SystemPermission.SYSTEM_ADMINISTRATION,
+						SystemPermission.SYSTEM_ADMINISTRATION,
+						SystemPermission.SYSTEM_ADMINISTRATION,
+						SystemPermission.SYSTEM_ADMINISTRATION).setHidden(true),
 				null);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_CERTIFICATES, "fa-certificate",
-				"certificateResources", 99999,
-				CertificateResourcePermission.READ,
-				CertificateResourcePermission.CREATE,
-				CertificateResourcePermission.UPDATE,
-				CertificateResourcePermission.DELETE),
+						MenuService.MENU_CERTIFICATES, "fa-certificate",
+						"certificateResources", 99999,
+						CertificateResourcePermission.READ,
+						CertificateResourcePermission.CREATE,
+						CertificateResourcePermission.UPDATE,
+						CertificateResourcePermission.DELETE),
 				MenuService.MENU_CONFIGURATION);
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
@@ -278,7 +280,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "accessControl",
-				"fa-unlock-alt", null, 200, null, null, null, null),
+						"fa-unlock-alt", null, 200, null, null, null, null),
 				MenuService.MENU_SYSTEM);
 
 		registerMenu(new RealmMenuRegistration(RESOURCE_BUNDLE, "users",
@@ -335,7 +337,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						RoleAttributePermission.UPDATE,
 						RoleAttributePermission.DELETE),
 				MenuService.MENU_CONFIGURATION);
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
 				null));
@@ -351,11 +353,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"impersonateUser", "fa-male", "impersonateUser",
 				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "canImpersonateUser"));
-		
+
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"suspendUser", "fa-ban", "suspendUser",
 				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isSuspended"));
-		
+
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"resumeUser", "fa-check", "resumeUser",
 				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isResumed"));
@@ -374,7 +376,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageMenu", "fa-envelope-o",
 				null, 9999, null, null, null,
 				null), MENU_BUSINESS_RULES);
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				"messages", "fa-envelope-o", "messages", 0,
 				MessageResourcePermission.READ,
@@ -382,21 +384,21 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MessageResourcePermission.UPDATE,
 				MessageResourcePermission.DELETE) {
 
-					@Override
-					public boolean canRead() {
-						try {
-							return messageService.getResourceCount(getCurrentRealm(), "", "") > 0;
-						} catch (AccessDeniedException e) {
-							return false;
-						}
-					}
-			
+			@Override
+			public boolean canRead() {
+				try {
+					return messageService.getResourceCount(getCurrentRealm(), "", "") > 0;
+				} catch (AccessDeniedException e) {
+					return false;
+				}
+			}
+
 		}, "messageMenu");
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageConfiguration", "fa-gears",
 				"messageSettings", Integer.MAX_VALUE, MessageResourcePermission.READ, null, null,
 				null), "messageMenu");
-		
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_TOOLS, "",
 				null, 99999, null, null, null, null, null));
 
@@ -425,8 +427,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				try {
 					return !permissionService.hasSystemPermission(getCurrentPrincipal())
 							&& !overviewWidgetService.getWidgets(
-									OverviewWidgetServiceImpl.USERDASH)
-									.isEmpty();
+							OverviewWidgetServiceImpl.USERDASH)
+							.isEmpty();
 				} catch (AccessDeniedException e) {
 					return false;
 				}
@@ -435,20 +437,20 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		}, MenuService.MENU_DASHBOARD);
 		userInterfaceStateService.registerListener(this);
-		
-		
+
+
 	}
 
 	@Override
 	public void registerFilter(MenuFilter filter) {
 		filters.add(filter);
 	}
-	
+
 	@Override
 	public void registerBadgeProvider(BadgeProvider provider) {
 		badgeProviders.add(provider);
 	}
-	
+
 	@Override
 	public Collection<Badge> getCurrentBadges() {
 		List<Badge> badges = new ArrayList<Badge>();
@@ -473,21 +475,21 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		if(MENU_NAV.equals(module.getResourceKey()) || MENU_NAV.equals(parentModule)) {
 			module.setHidden(true);
 		}
-		
+
 		if (pendingMenus.containsKey(module.getResourceKey())) {
 			for (MenuRegistration m : pendingMenus.get(module.getResourceKey())) {
 				module.addMenu(m);
 			}
 			pendingMenus.remove(module.getResourceKey());
 		}
-		
+
 		allMenus.put(module.getResourceKey(), module);
-		
+
 		if (parentModule != null) {
 			if (rootMenus.containsKey(parentModule)) {
 				MenuRegistration parent = rootMenus.get(parentModule);
 				parent.addMenu(module);
-				
+
 				return true;
 			} else {
 				for (MenuRegistration m : rootMenus.values()) {
@@ -528,7 +530,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		if (!registeredActions.containsKey(table)) {
 			return new ArrayList<AbstractTableAction>();
 		}
-		
+
 		List<AbstractTableAction> results = new ArrayList<AbstractTableAction>();
 
 		for (AbstractTableAction action : registeredActions.get(table)) {
@@ -555,11 +557,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		return results;
 	}
-	
+
 	public Menu getMenu(String resourceKey) {
-		
+
 		MenuRegistration m = allMenus.get(resourceKey);
-		
+
 		return new Menu(
 				m,
 				hasPermission(m.getCreatePermission()) && m.canCreate(),
@@ -793,9 +795,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}
 
 		public RealmMenuRegistration(String bundle, String resourceKey,
-				String icon, String url, Integer weight,
-				PermissionType readPermision, PermissionType createPermission,
-				PermissionType updatePermission, PermissionType deletePermission) {
+									 String icon, String url, Integer weight,
+									 PermissionType readPermision, PermissionType createPermission,
+									 PermissionType updatePermission, PermissionType deletePermission) {
 			super(bundle, resourceKey, icon, url, weight, readPermision,
 					createPermission, updatePermission, deletePermission);
 		}
@@ -824,7 +826,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				HashMap<String, Boolean> preferences = new ObjectMapper().readValue(state.getPreferences(), HashMap.class);
 				List<Menu> menuList = getMenus();
 				Boolean.getBoolean("showHelpZone");
-				
+
 				for(Menu menu: menuList){
 					if("personal".equalsIgnoreCase(menu.getResourceKey())){
 						for(Menu mainMenu: menu.getMenus()){
@@ -834,14 +836,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 										if(preferences.get("showHelpZone")){
 											System.setProperty("showHelpZone", "true");
 											registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-													MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
-													SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
+															MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
+															SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 													MenuService.MENU_DASHBOARD);
 										}else{
 											System.setProperty("showHelpZone", "false");
 											registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-													MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", 99999,
-													SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
+															MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", 99999,
+															SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 													MenuService.MENU_DASHBOARD);
 										}
 									}
@@ -853,9 +855,42 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		} catch (IOException e) {
 			registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-					MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
-					SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
+							MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
+							SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
 					MenuService.MENU_DASHBOARD);
 		}
+	}
+
+	@Override
+	public void registerExtendedInformationTab(String tab, TabRegistration tabRegistration) {
+		if (!extendedInformationTabs.containsKey(tab)) {
+			extendedInformationTabs.put(tab, new ArrayList<TabRegistration>());
+		}
+		extendedInformationTabs.get(tab).add(tabRegistration);
+	}
+
+	@Override
+	public List<TabRegistration> getExtendedInformationTab (String tab) {
+		List<TabRegistration> processedTabRegistration = new ArrayList<>();
+		List<TabRegistration> toProcessTabRegistration = extendedInformationTabs.get(tab);
+		if(toProcessTabRegistration == null || toProcessTabRegistration.isEmpty()) {
+			return processedTabRegistration;
+		}
+		for (TabRegistration tabRegistration : toProcessTabRegistration) {
+			if(tabRegistration.canRead()) {
+				try {
+					assertPermission(tabRegistration.permission);
+					processedTabRegistration.add(tabRegistration);
+				}catch (AccessDeniedException e) {
+					log.debug("{}/{} does not have access to {} tab with permission {}",
+							getCurrentPrincipal().getRealm(),
+							getCurrentPrincipal().getName(),
+							tabRegistration.getResourceKey(),
+							tabRegistration.getPermission()
+					);
+				}
+			}
+		}
+		return processedTabRegistration;
 	}
 }

@@ -1770,11 +1770,34 @@ $.fn.multipleSelectValues = function() {
 $.fn.multipleSearchInput = function(data) {
 	var id = $(this).attr('id');
 	var removeElement = function(e){
+	    if(options.confirmRemove){
+	        if(!confirm(getResource(options.confirmRemoveMsgKey || 'confirm.remove.operation'))){
+	            return;
+	        }
+	    }
+
+	    if(options.preRemoveCallback){
+	        if(!options.preRemoveCallback(e, callback)){
+	            return;
+	        }
+	    }
+
 		$(e.target).parent().remove();
 		toSelect.data('updated', true);
 		if (options.changed) {
 			options.changed(callback);
 		}
+	}
+
+	var processCrossDeletable = function(cross, obj) {
+	    if(typeof options.objectDeletable == 'undefined' || options.objectDeletable(obj)) {
+            cross.data('value', obj);
+            cross.click(function(e){
+                removeElement(e);
+            });
+        } else {
+            cross.remove();
+        }
 	}
 
 	dragSrcEl = null;
@@ -1864,9 +1887,8 @@ $.fn.multipleSearchInput = function(data) {
 		if (data && data.selected) {
 			$.each(data.selected, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + '</span>&ensp;<i class="fa fa-times"></i></li>');
-				newElement.find('i').click(function(e){
-					removeElement(e);
-				});
+				var cross = newElement.find('i');
+				processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
 			});
@@ -1919,15 +1941,20 @@ $.fn.multipleSearchInput = function(data) {
 				if (!selectedObj) {
 					return;
 				}
+				if(options.preAddCallback) {
+				    if(!options.preAddCallback(selectedObj, callback)){
+				        return;
+				    }
+                }
 				var newElement = $('<li id="' + id + 'Li' + selectedObj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + selectedObj[options.valueAttr] + '"><span>'
 						+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + '</span>&ensp;<i class="fa fa-times"></i></li>');
-				newElement.find('i').click(function(e){
-					removeElement(e);
-				});
+				var cross = newElement.find('i');
+                processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
 				searchInput.clear();
 				toSelect.data('updated', true);
+
 				if (options.changed) {
 					options.changed(callback);
 				}
@@ -2000,18 +2027,16 @@ $.fn.multipleSearchInput = function(data) {
 		if(options.isNamePairValue) {
 			$.each(options.values, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + he.decode(obj.value) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + he.decode(obj.value) + '"><span>' + he.decode(obj.name) + '</span>&ensp;<i class="fa fa-times"></i></li>');
-				newElement.find('i').click(function(e){
-					removeElement(e);
-				});
+				var cross = newElement.find('i');
+                processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
 			});
 		} else {
 			$.each(options.values, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + obj + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj + '"><span>' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
-				newElement.find('i').click(function(e){
-					removeElement(e);
-				});
+				var cross = newElement.find('i');
+                processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
 			});
@@ -2019,9 +2044,8 @@ $.fn.multipleSearchInput = function(data) {
 	} else if(options.selected) {
 		$.each(options.selected, function(idx, obj) {
 			var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + "</span>&ensp;<i class='fa fa-times'></i></li>");
-			newElement.find('i').click(function(e){
-				removeElement(e);
-			});
+			var cross = newElement.find('i');
+			processCrossDeletable(cross, obj);
 			toSelect.append(newElement);
 			addListeners(newElement);
 		});

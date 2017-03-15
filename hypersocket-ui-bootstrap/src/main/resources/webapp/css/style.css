@@ -1885,3 +1885,8 @@ select[multiple] {
 .checkboxProperty span {
 	display: inline-block;
 }
+
+.box20 {margin: 20px}
+.row20 {margin-top: 20px; margin-bottom: 20px}
+.box10 {margin: 10px}
+.row10 {margin-top: 10px; margin-bottom: 10px}

@@ -1400,11 +1400,11 @@ $.fn.bulkAssignmentDialog = function(options) {
 
     var valid = function(bulkAssignment) {
         if(bulkAssignment.roleIds.length == 0) {
-            showError(getResource('bulk.assignment.error.no.resource'));
+            showError(getResource('bulk.assignment.error.no.role'));
             return false;
         }
         if(bulkAssignment.resourceIds.length == 0) {
-            showError(getResource('bulk.assignment.error.no.role'));
+            showError(getResource('bulk.assignment.error.no.resource'));
             return false;
         }
         return true;
@@ -1551,7 +1551,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			}
 			
 			if(dialogOptions.buildUpdateButtons) {
-				dialogOptions.buildUpdateButtons(params2, function(button, onclick) {
+				dialogOptions.buildUpdateButtons(function(button, onclick) {
 					dialog.find('.modal-footer').append(
 							'<button type="button" id="' + button.id + 'Action" class="updateButton btn ' 
 							+ button.cssClass + '"><i class="fa ' 
@@ -1646,4 +1646,59 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			dialog.bootstrapResourceDialog('close');
 		}
 	};
+};
+
+$.fn.extendedResourcePanel = function(params){
+    var options = $.extend({tabIcon: 'fa-cog'}, params);
+
+    var id = $(this).attr('id');
+    if(id == null || typeof id == 'undefined' || id.trim().length == 0) {
+        id = options.resource.id.toString();
+    }
+    var tabContentHolderId = id + 'Tabs';
+    var tabsId = 'tabs' + id.charAt(0).toUpperCase() + id.substring(1);
+    $(this).empty();
+    $(this).append('<div id=' + tabContentHolderId + '></div>');
+    var $tabContentHolder = $('#' + tabContentHolderId);
+    $tabContentHolder.append('<div id=' + tabsId + '></div>');
+
+    getJSON('menus/extendedResourceInfo/' + options.resourceKey, null, function(data) {
+        if(data.success) {
+            var tabList = data.resources;
+            if(tabList == null || typeof tabList == 'undefined' || tabList.length == 0) {
+                $tabContentHolder.empty().html('<div class="well well-sm text-center">' + getResource('tabs.not.found') + '</div>');
+                return;
+            }
+            tabList.sort(function(obj1, obj2){ return obj1.weight - obj2.weight});
+            var tabArray = [];
+            $.each(tabList,function(index, value){
+                var tabId = id + value.resourceKey.charAt(0).toUpperCase() + value.resourceKey.substring(1);
+                tabArray.push({id : tabId, name: getResource(value.resourceKey + '.label')});
+                $tabContentHolder.append('<div id=' + tabId + '></div>');
+                $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){
+                    var elements = $('#' + tabId + ' [data-id]');
+                    var extendedTabContent = 'extendedTabContent' + '_' + options.resource.id;
+                    $.each(elements, function(i, element) {
+                        $(element).attr('id', $(element).attr('data-id') + '_' + options.resource.id);
+                        if($(element).hasClass('extendedTabContent')) {
+                            $(element).removeClass('extendedTabContent')
+                            .addClass(extendedTabContent);
+                        }
+                    });
+                    if($('.' + extendedTabContent).length > 0) {
+                        $('.' + extendedTabContent).data('initPage')(options.resource, options.data);
+                    }
+                });
+            });
+
+            $tabContentHolder.tabPage({
+                title : getResource(options.resourceKey + '.label'),
+                icon : options.tabIcon,
+                tabs : tabArray,
+                complete : function() {
+                    loadComplete();
+                }
+            });
+        }
+    });
 };

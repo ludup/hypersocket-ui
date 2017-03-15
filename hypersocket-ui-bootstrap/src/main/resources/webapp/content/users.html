@@ -12,19 +12,19 @@
 			</div>
 			<div class="modal-body">
 				<div class="propertyItem form-group">
-						<label for="file" class="col-md-3 control-label"
-							localize="primaryAccount.label"></label>
-						<div class="propertyValue col-md-9">
-							<div id="primaryAccount"></div>
-							<div>
-								<span class="help-block" localize="primaryAccount.info"></span>
-							</div>
+					<label for="file" class="col-md-3 control-label"
+						   localize="primaryAccount.label"></label>
+					<div class="propertyValue col-md-9">
+						<div id="primaryAccount"></div>
+						<div>
+							<span class="help-block" localize="primaryAccount.info"></span>
 						</div>
 					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i><span localize="text.cancel"></span></button>
-        		<button id="saveLinkedAccount" type="button" class="btn btn-primary"><i class="fa fa-save"></i><span localize="text.save"></span></button>
+				<button id="saveLinkedAccount" type="button" class="btn btn-primary"><i class="fa fa-save"></i><span localize="text.save"></span></button>
 			</div>
 		</div>
 	</div>
@@ -32,7 +32,7 @@
 <script type="text/javascript">
 	$(document).ready(
 			function() {
-				
+
 				var apiUrl = 'currentRealm';
 				var disableDecoration = false;
 				var buttons = [];
@@ -45,7 +45,7 @@
 				if(userRealm) {
 					apiUrl = 'ownerRealm/' + userRealm.id;
 					disableDecoration = true;
-					buttons.push({ 
+					buttons.push({
 						resourceKey: 'backButton',
 						buttonClass: 'btn-danger',
 						icon: 'fa-step-backward',
@@ -60,7 +60,7 @@
 						
 					}
 				}
-				
+
 				$(document).data('apiUrl', apiUrl);
 				$(document).data('userRealm', null);
 				$('#realmsContent').load(uiPath + '/content/realmsDialog.html', function() {
@@ -152,22 +152,22 @@
 
 				});
 				$('#userDialog').load(uiPath + '/content/userDialog.html', function() {
-				
+
 				$('#contentUsers').localize();
 				$('#linkDialog').localize();
-		
+
 				$('#primaryAccount').autoComplete({
 					url:'currentRealm/users/table',
 					remoteSearch: true,
 					valueAttr: 'id'
 				});
-				
+
 				$('#saveLinkedAccount').click(function(e) {
 					e.preventDefault();
 					removeMessage();
 					var account = $('#linkDialog').data('account');
 					var callback = $('#linkDialog').data('callback');
-					
+
 					if(!$('#primaryAccount').widget().getValue()) {
 						showError(getResource("text.selectAccount"));
 					} else {
@@ -182,11 +182,11 @@
 						});
 					}
 				});
-				
+
 				getJSON('menus/tableActions/userActions', null, function(data) {
-					
+
 					var actions = new Array();
-					
+
 					if(ownerRealm) {
 						actions.push({
 							resourceKey: 'linkAccount',
@@ -225,7 +225,7 @@
 							}
 						});
 					}
-					
+
 					if(data.resources.length > 0) {
 						$.each(data.resources, function(idx, action) {
 							var div = action.resourceKey + 'Div';
@@ -245,7 +245,7 @@
 							});
 						});
 					 }
-					
+
 					$('#userProperties').propertyPage({
 						url : apiUrl + '/user/template/' + userRealm.resourceCategory,
 						showButtons : false,
@@ -264,12 +264,11 @@
 							name : getResource("label.password")
 						} ]
 					});
-					
+
 					var fields = [ {
 						name : "icon",
 						width: 40,
 						formatter: function(value, obj, index) {
-							
 							return '<div class="center"><i class="fa fa-2x ' 
 							+ getResourceOrDefault(obj.realmModule + '.icon', 'fa-user') + '"></i></div>';
 						}
@@ -284,7 +283,7 @@
 							return obj.principalDescription;
 						}
 					}];
-					
+
 					if(ownerRealm) {
 						fields.push({
 							name: 'parentPrincipal',
@@ -299,7 +298,7 @@
 							}
 						});
 					}
-					
+
 					var resourcePage = $('#contentUsers').ajaxResourcePage(
 
 							{
@@ -319,6 +318,12 @@
 								checkDelete: function(row) {
 									return !row.readOnly;
 								},
+								detailFormatter: function(index, resource, $element) {
+									$element.extendedResourcePanel({resourceKey: "principalRoleMappingTab",
+																	   resource: resource,
+																	   data: {parentContainer : '#contentUsers'}
+																	});
+				    	    	},
 								additionalActions : actions,
 								validate : function(create) {
 									if ($('#userName').val().trim() == '') {
