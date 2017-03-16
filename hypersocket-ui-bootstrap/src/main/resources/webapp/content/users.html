@@ -112,7 +112,7 @@
 								function(items) {
 									realm.properties = items;
 							});
-
+							
 							return realm;
 						}, confirmed: function(resource, args) {
 							if('realm.knownHosts' in resource.properties) {
@@ -356,9 +356,10 @@
 									$('#userConfirmPassword').val('');
 									$('#userProperties').clearProperties();
 									$('#tabUserGroups').remove();
-									
+
 									if(create) {
-										
+										$('.createOnly').show();
+										$('#disableNotifications').prop('checked', true);
 										var resourceCategory = currentRealm.resourceCategory;
 										if($('#principalType').length > 0) {
 											if($('#principalType').widget().getValue() !== '') {
@@ -406,7 +407,9 @@
 											useFilters: true,
 											additionalTabs : tabs
 										});
-									} 
+									} else {
+										$('.createOnly').hide();
+									}
 								},
 								createResource : function() {
 
@@ -421,6 +424,10 @@
 												user.properties = items;
 											});
 									user.groups = $('#tabUserGroupsContent').widget().getValue();
+									
+									if(!$('#disableNotifications').prop('checked')) {
+										user.properties.push(new PropertyItem('disableNotifications', "true"));
+									}
 									return user;
 								},
 								resourceCreated : function(resource) {
