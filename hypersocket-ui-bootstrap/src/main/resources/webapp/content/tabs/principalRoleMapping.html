@@ -24,39 +24,32 @@ $(document).ready(function() {
                         confirmRemove: true,
                         addOnSelect: false,
                         preAddCallback : function(data){
-                            try{
-                                var roleId = data.id;
-                                patchJSON('roles/' + roleId + '/user/' + resource.id, null, function(data){
-                                    if(data){
-                                        showSuccess(getResource('role.add.to.user'));
-                                    }else{
-                                        showError(getResource('role.add.to.user.error'));
-                                    }
-                                });
-                                return true;
-                            }catch(e){
-                                showError(getResource('role.add.to.user.error'));
-                                return false;
-                            }
+                       
+                             var roleId = data.id;
+                             patchJSON('roles/' + roleId + '/user/' + resource.id, null, function(data){
+                                 if(data.success){
+                                     showSuccess(data.message);
+                                 }else{
+                                     showError(data.message);
+                                 }
+                             });
+                             return true;
+   
                         },
                         preRemoveCallback : function(evt) {
-                            try{
+                            
                                 var callback = el.data('widget');
                                 var roleId = $(evt.target).data('value').id;
                                 deleteJSON('roles/' + roleId + '/user/' + resource.id, null, function(response){
-                                    if(response){
-                                        showSuccess(getResource('role.remove.from.user'));
+                                    if(response.success){
+                                        showSuccess(response.message);
                                     }else{
-                                        showError(getResource('role.remove.from.user.error'));
+                                        showError(response.message);
                                         el.multipleSearchInput(initObj);
                                     }
                                 });
                                 return true;
-                            }catch(e) {
-                                showError(getResource('role.remove.from.user.error'));
-                                el.multipleSearchInput(initObj);
-                                return false;
-                            }
+                           
                         },
                         objectDeletable : function(obj){
                             return !obj.allUsers;
