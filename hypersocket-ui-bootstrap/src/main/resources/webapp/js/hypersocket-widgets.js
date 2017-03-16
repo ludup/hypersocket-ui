@@ -1767,12 +1767,6 @@ $.fn.multipleSelectValues = function() {
 $.fn.multipleSearchInput = function(data) {
 	var id = $(this).attr('id');
 	var removeElement = function(e){
-	    if(options.confirmRemove){
-	        if(!confirm(getResource(options.confirmRemoveMsgKey || 'confirm.remove.operation'))){
-	            return;
-	        }
-	    }
-
 	    if(options.preRemoveCallback){
 	        if(!options.preRemoveCallback(e, callback)){
 	            return;
@@ -1790,7 +1784,28 @@ $.fn.multipleSearchInput = function(data) {
 	    if(typeof options.objectDeletable == 'undefined' || options.objectDeletable(obj)) {
             cross.data('value', obj);
             cross.click(function(e){
-                removeElement(e);
+                if(options.confirmRemove){
+                    bootbox.confirm({
+                        message: getResource(options.confirmRemoveMsgKey || 'confirm.remove.operation'),
+                        buttons: {
+                            confirm: {
+                                label: getResource('text.yes'),
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: getResource('text.no'),
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if(result) {
+                                removeElement(e);
+                            }
+                        }
+                    });
+                } else {
+                    removeElement(e);
+                }
             });
         } else {
             cross.remove();
@@ -1946,7 +1961,7 @@ $.fn.multipleSearchInput = function(data) {
 				var newElement = $('<li id="' + id + 'Li' + selectedObj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + selectedObj[options.valueAttr] + '"><span>'
 						+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				var cross = newElement.find('i');
-                processCrossDeletable(cross, obj);
+                processCrossDeletable(cross, selectedObj);
 				toSelect.append(newElement);
 				addListeners(newElement);
 				searchInput.clear();
