@@ -3445,6 +3445,7 @@ $.fn.fileUploadInput = function(data) {
 				disabled : false,
 				showUploadButton: true,
 				showDownloadButton: true,
+				showDownloadLink: true,
 				url: basePath + '/api/files/file',
 				detailedView: true,
 				getUrlData: function(data) {
@@ -3491,18 +3492,22 @@ $.fn.fileUploadInput = function(data) {
 					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>';
 		if(options.detailedView) {
 			formattedHtml +=	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
-			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span></br>'
-			+   '   <span>' + getResource('text.url') + '</span>';			
+			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>';
+			if(options.showDownloadLink) {
+				formattedHtml +=   '  <br><span>' + getResource('text.url') + '</span>';			
+			}
 		}
 
 		formattedHtml +=	'</div>'
 					+	'<div class="file-upload-info">'
-					+	'	<span>' + data.fileName + '</span></br>';
+					+	'	<span>' + data.fileName + '</span><br>';
 		
 		if(options.detailedView) {
-			formattedHtml +=	'	<span>' + fileSize + '</span></br>'
-						+	'	<span>' + data.md5Sum + '</span></br>'
-						+   '   <span><a href="' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '</a></span>';			
+			formattedHtml +=	'	<span>' + fileSize + '</span><br>'
+						+	'	<span>' + data.md5Sum + '</span>';
+			if(options.showDownloadLink) {
+				formattedHtml +=   '   <br><span><a href="' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '</a></span>';			
+			}
 		}
 					
 		formattedHtml +=	'</div>';
@@ -3518,7 +3523,7 @@ $.fn.fileUploadInput = function(data) {
 		$('#' + id + 'File').parent().append(
 				'<div id="' + id + 'Info">' + showInfoFormat(data) + '</div>');
 		$('#' + id + 'File').hide();
-		if(!options.disabled) {
+		if(!options.disabled && options.showDeleteButton) {
 			$('#' + id + 'Buttons').append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
 		}
 		
@@ -3555,7 +3560,6 @@ $.fn.fileUploadInput = function(data) {
  				return $('#' + id + 'Info').data('uuid');
  			},
  			reset: function() {
- 				
  				if(options.value == '') {
  					this.clear();
  				} else {
@@ -3591,8 +3595,8 @@ $.fn.fileUploadInput = function(data) {
  				});
  			},
  			clear: function() {
+
  				if(callback.hasFile()) {
-	 				
  					$('#' + id + 'File').val('');
  					$('#' + id + 'File').show();
 					$('#' + id + 'Info').remove();
