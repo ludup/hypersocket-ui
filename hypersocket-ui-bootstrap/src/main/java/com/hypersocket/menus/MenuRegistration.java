@@ -7,10 +7,12 @@
  ******************************************************************************/
 package com.hypersocket.menus;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -35,7 +37,7 @@ public class MenuRegistration {
 	boolean hidden;
 	Map<String,PermissionType> additionalPermissions;
 	
-	Set<MenuRegistration> modules = new HashSet<MenuRegistration>();
+	List<MenuRegistration> modules = new ArrayList<MenuRegistration>();
 
 	public MenuRegistration() {
 	}
@@ -92,6 +94,13 @@ public class MenuRegistration {
 			modules.remove(module);
 		}
 		modules.add(module);
+		Collections.sort(modules, new Comparator<MenuRegistration>() {
+
+			@Override
+			public int compare(MenuRegistration o1, MenuRegistration o2) {
+				return o1.getWeight().compareTo(o2.getWeight());
+			}
+		});
 	}
 
 	public Collection<MenuRegistration> getMenus() {
