@@ -20,6 +20,8 @@ public interface MenuService extends AuthenticatedService {
 	
 	static final String MENU_DASHBOARD = "dashboard";
 	
+	static final String MENU_OVERVIEW = "overview";
+	
 	static final String MENU_PERSONAL = "personal";
 
 	static final String MENU_MY_RESOURCES = "myResources";
