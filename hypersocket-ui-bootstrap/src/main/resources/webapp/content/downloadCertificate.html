@@ -4,7 +4,7 @@
 	$(document).ready(function() {
 		
 		$('#downloadCertificate').data('action', function(resource) {
-			window.location = basePath + '/api/certificates/downloadCertificate/' + resource.id;
+			window.location = basePath + '/api/certificates/downloadCertificate/' + resource.id + '?token=' + getCsrfToken();
 		});
 		
 	});

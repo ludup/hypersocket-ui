@@ -274,7 +274,7 @@ $.fn.resourceTable = function(params) {
 			resourceKey : 'exportResource',
 			iconClass : 'fa-download',
 			action : function(resource, callback) {
-				window.location = basePath + '/api/' + options.exportUrl + '/' + resource.id;
+				window.location = basePath + '/api/' + options.exportUrl + '/' + resource.id + '?token=' + getCsrfToken();
 				callback();
 			},
 			enabled : true
@@ -284,7 +284,7 @@ $.fn.resourceTable = function(params) {
 			resourceKey: 'exportResources',
 			icon: 'fa-download',
 			action: function(selections, callback) {
-				window.location = basePath + '/api/' + options.exportUrl;
+				window.location = basePath + '/api/' + options.exportUrl + '?token=' + getCsrfToken();
 				callback();
 			}
 		});

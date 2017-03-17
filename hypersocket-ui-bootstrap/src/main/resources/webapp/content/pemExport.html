@@ -68,7 +68,7 @@
 				data : formData,
 				success : function(data) {
 					$('#pemExport').modal('hide');
-					window.location = basePath + '/api/certificates/downloadPem/' + $('#pemExport').data('resource');
+					window.location = basePath + '/api/certificates/downloadPem/' + $('#pemExport').data('resource') + '?token=' + getCsrfToken();
 				},
 				error : function(jqXHR,textStatus,errorThrown) {
 					showError(errorThrown);

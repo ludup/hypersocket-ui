@@ -72,7 +72,7 @@
 				success : function(data) {
 					if(data.success) {
 						$('#pfxExport').modal('hide');
-						window.location = basePath + '/api/certificates/downloadPfx/' + $('#pfxExport').data('resource');
+						window.location = basePath + '/api/certificates/downloadPfx/' + $('#pfxExport').data('resource') + '?token=' + getCsrfToken();
 					} else {
 						showError(data.message);
 					}

@@ -4,7 +4,8 @@
 	$(document).ready(function() {
 		
 		$('#downloadCSR').data('action', function(resource) {
-			window.location = basePath + '/api/certificates/downloadCSR/' + resource.id;
+			window.location = basePath + '/api/certificates/downloadCSR/' + resource.id
+								+ '?token=' + getCsrfToken();
 		});
 		
 	});

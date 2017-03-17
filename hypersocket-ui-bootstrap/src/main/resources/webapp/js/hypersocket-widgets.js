@@ -3702,7 +3702,7 @@ $.fn.fileUploadInput = function(data) {
  			},
  			download: function(){
  				uuid = $('#' + id + 'Info').data('uuid');
- 				window.location = basePath + '/api/files/public/' + uuid;
+ 				window.location = basePath + '/api/files/public/' + uuid + '?token=' + getCsrfToken();
  			},
  			options: function() {
  				return options;
@@ -4227,7 +4227,7 @@ $.fn.logoInput = function(data) {
  			},
  			download: function(){
  				uuid = $('#' + id + 'Info').data('uuid');
- 				window.location = basePath + '/api/files/download/' + uuid;
+ 				window.location = basePath + '/api/files/download/' + uuid + '?token=' + getCsrfToken();
  			},
  			options: function() {
  				return options;
@@ -4832,7 +4832,7 @@ $.fn.html5Upload = function(data) {
  			},
  			download: function(index){
  				var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
- 				window.location = basePath + '/api/files/download/' + uuid;
+ 				window.location = basePath + '/api/files/download/' + uuid + '?token=' + getCsrfToken();
  				//window.location = basePath + '/api/fs/download/' + uuid;
  			},
  			remove: function(index) {
