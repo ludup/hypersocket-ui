@@ -362,7 +362,6 @@ function home(data) {
 				$.each(allMenus['navigation'].menus, function(idx, obj) {
 					
 					if(obj.resourceKey === 'realms') {
-						$('#currentRealm').remove();
 						if (data.realms) {
 							if(data.realms.length > 0) {
 								loadRealms(data.realms);
@@ -630,8 +629,6 @@ function doShutdown(option, autoLogoff, url) {
 
 function loadRealms(realms) {
 
-	$('#currentRealm').remove();
-	
 	var deletedCurrentRealm = true;
 	$.each(realms, function() {
 		if (currentRealm.id === this.id) {
@@ -653,38 +650,43 @@ function loadRealms(realms) {
 				}
 			});
 	};
-	
-	//if(realms.length > 1) {
-		$('#main-menu-toggle').parent().after('<li id="currentRealm" class="navicon" data-toggle="tooltip" title="' + getResource('text.userRealms') + '" data-placement="bottom"class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a></li>');
 
-		$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
-		
-		$('#realm').append('<li class="dropdown-header">' + getResource('text.selectRealm') + '</li>')
-		$.each(realms, function() {
-			$('#realm').append(
-				'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
-		});
-		
-		$('#realm').append('<li class="divider"></li>');
-		
-		
-		$('#realm').append(
-				'<li role="presentation"><a id="manageRealms" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + getResource('text.manageRealms') + '</a></li>');
+	if(!$('#currentRealm').length) {
+		$('#main-menu-toggle').parent().after('<li id="currentRealm" class="navicon" data-toggle="tooltip" title="' 
+				+ getResource('text.userRealms') 
+				+ '" data-placement="bottom"class="dropdown"></li>');
+	}
 	
-		$('#manageRealms').click(function(e) {
-			e.preventDefault();
-			$('.active').removeClass('active');
-			$('#currentRealm i').addClass('active');
-			loadMenu(allMenus['realms']);
-		});
-		
-		$('.realmSelect').on(
-			'click', function(evt) {
-				evt.preventDefault();
-				func($(this).attr('data-value'));
-			}
-		);
-	//}
+	$('#currentRealm').empty();
+	$('#currentRealm').append('<a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a>');
+	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
+	
+	$('#realm').append('<li class="dropdown-header">' + getResource('text.selectRealm') + '</li>')
+	$.each(realms, function() {
+		$('#realm').append(
+			'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
+	});
+	
+	$('#realm').append('<li class="divider"></li>');
+	
+	
+	$('#realm').append(
+			'<li role="presentation"><a id="manageRealms" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + getResource('text.manageRealms') + '</a></li>');
+
+	$('#manageRealms').click(function(e) {
+		e.preventDefault();
+		$('.active').removeClass('active');
+		$('#currentRealm i').addClass('active');
+		loadMenu(allMenus['realms']);
+	});
+	
+	$('.realmSelect').on(
+		'click', function(evt) {
+			evt.preventDefault();
+			func($(this).attr('data-value'));
+		}
+	);
+
 	
 	if (deletedCurrentRealm) {
 		func(currentRealm.id);

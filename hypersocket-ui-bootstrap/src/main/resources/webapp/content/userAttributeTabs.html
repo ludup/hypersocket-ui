@@ -63,7 +63,7 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
-		
+		debugger;
 		$('#attributeTabContent').localize();
 		$('#addCategoryForm').localize();
 		$('#tabAttributes').load('${uiPath}/content/userAttributes.html');
@@ -84,17 +84,16 @@
 				id : "tabAttributeCategories",
 				name : getResource("attributeCategories.label")
 			}],
-	   	   complete: function() {
+	   	   	complete: function() {
 	   		   loadComplete();
-	   	   }
+	   	   	}
 		  });
 	      
 		$('.attributeTab a').click(function (e) {
+			debugger;
 			  e.preventDefault();
 			  $('#attributeHeading').text(getResource($(this).data('resourcekey')));
 			  $(this).tab('show');
 		});
-		
-		
 	});
 </script>
