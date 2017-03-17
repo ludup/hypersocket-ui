@@ -110,7 +110,11 @@
 								$('#id').val(resource.id);
 								$('#name').val(resource.name);
 								$('#name').attr('disabled', resource.system || readOnly);
-								$('#typeButton').widget().disable();
+								if(resource.resourceCategory!=='local') {
+									$('#typeButton').widget().disable();
+								} else {
+									$('#typeButton').widget().enable();
+								}
 								$('#typeButton').widget().setValue(resource.resourceCategory);
 								$('#realmProperties').propertyPage(
 									{ url : 'realms/realm/properties/' + resource.id, 
