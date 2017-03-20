@@ -133,11 +133,7 @@
 								action : function(resource, callback) {
 
 									getJSON('automations/run/' + resource.id, null, function(data) {
-										if(data.success) {
-											showSuccess(data.message);
-										} else {
-											showError(data.message);
-										}
+
 									});
 								},
 								enabled : true
