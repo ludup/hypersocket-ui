@@ -6,6 +6,11 @@ var polling = false;
 var basePath = '${appPath}';
 var uiPath = '${uiPath}';
 
+var errorFunc;
+var successFunc;
+var warningFunc;
+var infoFunc;
+
 function getCsrfToken() {
 	return Cookies.get('HYPERSOCKET_CSRF_TOKEN');
 };
@@ -428,19 +433,42 @@ function clearError() {
 }
 
 function showError(text, fade, fadeCallback) {
-	showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? false : fade, fadeCallback);
+	if(errorFunc) {
+		errorFunc(text);
+	} else {
+		showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? false : fade, fadeCallback);
+	}
 }
 
 function showWarning(text, fade, fadeCallback) {
-	showMessage(text, 'fa-warning', 'alert-warning', typeof fade == 'undefined' ? false : fade, fadeCallback);
+	if(warningFunc) {
+		warningFunc(text);
+	} else {
+		showMessage(text, 'fa-warning', 'alert-warning', typeof fade == 'undefined' ? false : fade, fadeCallback);
+	}
 }
 
 function showSuccess(text, fade, fadeCallback) {
-	showMessage(text, 'fa-warning', 'alert-success', typeof fade == 'undefined' ? true : fade, fadeCallback);
+	if(successFunc) {
+		successFunc(text);
+	} else {
+		showMessage(text, 'fa-warning', 'alert-success', typeof fade == 'undefined' ? true : fade, fadeCallback);
+	}
 }
 
 function showInformation(text, fade, fadeCallback) {
-	showMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade, fadeCallback);
+	if(infoFunc) {
+		infoFunc(text);
+	} else {
+		showMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade, fadeCallback);
+	}
+}
+
+function setupMessaging(error, warn, success, info) {
+	errorFunc = error;
+	warningFunc = warn;
+	successFunc = success;
+	infoFunc = info;
 }
 
 function removeMessage() {
