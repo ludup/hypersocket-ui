@@ -160,14 +160,13 @@ function startLogon(opts) {
 		},
 		logonCompleted: function(data) {
 		
-			
 			if(data.homePage) {
 				window.open(data.homePage, "_self", false);
 			} else {
 				if($(document).data('lastPrincipal')) {
 					
-					if($(document).data('session').currentPrincipal !== $(document).data('lastPrincipal')) {
-						window.location = '${uiPath}';
+					if($(document).data('session').currentPrincipal.id !== $(document).data('lastPrincipal').id) {
+						window.location.reload();
 						return;
 					}
 				}
