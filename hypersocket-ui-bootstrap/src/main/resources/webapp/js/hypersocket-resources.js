@@ -660,6 +660,10 @@ $.fn.resourceTable = function(params) {
 		    },
 		    onLoadSuccess: function() {
 		    	
+		    	if(options.expandFirst) {
+		    		$('#' + divName + 'Placeholder').bootstrapTable('expandRow', 0);
+		    	}
+		    	
 		    	if (options.logo) {
 		    		
 		    		log("Rendering logo");
