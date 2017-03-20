@@ -111,8 +111,10 @@
 								$('#name').val(resource.name);
 								$('#name').attr('disabled', resource.system || readOnly);
 								if(resource.resourceCategory!=='local') {
+									$('#realmsContent').data('local', false);
 									$('#typeButton').widget().disable();
 								} else {
+									$('#realmsContent').data('local', true);
 									$('#typeButton').widget().enable();
 								}
 								$('#typeButton').widget().setValue(resource.resourceCategory);
@@ -139,7 +141,12 @@
 									}
 								});
 							}, resourceUpdated : function(resource) {
-								reloadRealms();
+								if(resource.resourceCategory!=='local' && $('#realmsContent').data('local')) {
+									window.location.hash = 'menu=realms';
+									window.location.reload();
+								} else {
+									reloadRealms();
+								}
 							}, resourceDeleted : function(resource) {
 								reloadRealms();
 								getJSON('menus/realms', null, function(data) {
