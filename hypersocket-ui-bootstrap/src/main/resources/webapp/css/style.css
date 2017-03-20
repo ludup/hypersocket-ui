@@ -566,7 +566,7 @@ table {
 	background-color: #000;
 	color: #fff;
 	bottom: 0;
-	z-index: 9999;
+	z-index: 1000;
 }
 
 #copyright {
