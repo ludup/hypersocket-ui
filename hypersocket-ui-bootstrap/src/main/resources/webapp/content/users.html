@@ -318,7 +318,7 @@
 								checkDelete: function(row) {
 									return !row.readOnly;
 								},
-								detailFormatter: function(index, resource, $element) {
+								detailFormatter: ownerRealm ? undefined : function(index, resource, $element) {
 									$element.extendedResourcePanel({resourceKey: "principalRoleMappingTab",
 																	   resource: resource,
 																	   data: {parentContainer : '#contentUsers'}
