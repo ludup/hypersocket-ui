@@ -37,7 +37,9 @@
 						.ajaxResourcePage(
 							{ id: 'Realm',
 							  tableUrl : "realms/table", 
-							  title : getResource('realms.title'), 
+							  title : getResource('realms.title'),
+							  exportUrl: 'realms/export',
+						  	  importUrl: 'realms/import',
 							  icon : "fa-database", 
 							  resourceUrl : "realms/realm", 
 							  fields : [ { name : "name" },

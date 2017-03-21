@@ -125,7 +125,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_PERSONAL, "", null, 0, null, null, null, null));
+				MenuService.MENU_PERSONAL, "", null, 100, null, null, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
 				"fa-hourglass-start", "sessions", 99999,
@@ -182,7 +182,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}, MenuService.MENU_MY_RESOURCES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_SYSTEM, "", null, 100, null, null, null, null));
+				MenuService.MENU_SYSTEM, "", null, 200, null, null, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_SYSTEM_CONFIGURATION, "fa-gears", null, 0,
@@ -223,7 +223,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 						"fileUploads", "fa-file",
-						"fileUploads", 0, SystemPermission.SYSTEM_ADMINISTRATION,
+						"fileUploads", 9999, SystemPermission.SYSTEM_ADMINISTRATION,
 						SystemPermission.SYSTEM_ADMINISTRATION,
 						SystemPermission.SYSTEM_ADMINISTRATION,
 						SystemPermission.SYSTEM_ADMINISTRATION).setHidden(true),

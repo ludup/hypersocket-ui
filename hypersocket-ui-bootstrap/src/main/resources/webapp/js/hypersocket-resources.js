@@ -296,10 +296,12 @@ $.fn.resourceTable = function(params) {
 			options.toolbarButtons = new Array();
 		}
 		
-		if(!$('#importResourcesPlaceholder').length) {
-			$('body').append('<div id="importResourcesPlaceholder"></div>');
-			$('#importResourcesPlaceholder').load(uiPath + "content/importResourceDialog.html");
-		}
+		if(!$('#importResources').length) {
+            if(!$('#importResourcesPlaceholder').length) {
+                $('body').append('<div id="importResourcesPlaceholder"></div>');
+            }
+            $('#importResourcesPlaceholder').load(uiPath + "content/importResourceDialog.html");
+        }
 		options.toolbarButtons.push({ 
 			resourceKey: 'importResources',
 			icon: 'fa-upload',
