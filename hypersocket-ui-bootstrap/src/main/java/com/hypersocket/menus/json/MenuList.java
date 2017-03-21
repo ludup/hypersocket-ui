@@ -8,6 +8,8 @@
 package com.hypersocket.menus.json;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -37,6 +39,13 @@ public class MenuList {
 	
 	@XmlElement(name="menu")
 	public List<Menu> getMenus() {
+		Collections.sort(menus, new Comparator<Menu>() {
+
+			@Override
+			public int compare(Menu o1, Menu o2) {
+				return o1.getWeight().compareTo(o2.getWeight());
+			}
+		});
 		return menus;
 	}
 	
