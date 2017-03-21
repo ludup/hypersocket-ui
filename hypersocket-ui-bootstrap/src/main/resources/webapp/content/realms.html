@@ -105,19 +105,6 @@
 								$('#typeButton').widget().enable();
 								$('#typeButton').widget().selectFirst();
 
-							}, confirmSave: function(doSave) {
-								var type = $('#typeButton').widget().getValue();
-								var original = $('#typeButton').data('original');
-								if(original === 'local' && type !== 'local') {
-									bootbox.confirm(getResource("convert.realm.text"), function(result) {
-										if (result === null || !result) {
-											return;
-										}
-										doSave();
-									});
-								} else {
-									doSave();
-								}
 							}, displayResource : function(resource, readOnly) {
 
 								$('#id').val(resource.id);
