@@ -56,9 +56,6 @@
 					title = getResource('ownerRealm.users.title').format(userRealm.name);
 				} else {
 					userRealm = currentRealm;
-					if(currentRealm.module === 'local') {
-						
-					}
 				}
 
 				$(document).data('apiUrl', apiUrl);
@@ -86,7 +83,8 @@
 							
 							return true;
 						}, confirmSave: function(doSave) {
-							if(currentRealm.module === 'local' && $('#typeButton').widget().getValue() !== 'local') {
+							var type = $('#typeButton').widget().getValue();
+							if(currentRealm.resourceCategory === 'local' && type !== 'local') {
 								bootbox.confirm(getResource("convert.realm.text"), function(result) {
 									if (result === null || !result) {
 										return;
@@ -125,7 +123,8 @@
 								resource.properties.push(new PropertyItem('realm.knownHosts', args[3]));
 							}
 						}, resourceUpdated : function(resource) {
-							if(currentRealm.module === 'local' && resource.module !== 'local') {
+							if(currentRealm.resourceCategory === 'local' && resource.type !== 'local') {
+								window.location.hash = 'menu=users';
 								window.location.reload();
 							}
 						}, displayResource : function(resource, readOnly) {
