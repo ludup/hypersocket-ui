@@ -736,33 +736,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		}
 
-		Collections.sort(userMenus, new Comparator<Menu>() {
-			@Override
-			public int compare(Menu o1, Menu o2) {
-				return (o1.getWeight() > o2.getWeight() ? 1
-						: (o1.getWeight() == o2.getWeight() ? 0 : -1));
-			}
-		});
-
-		for (Menu m : userMenus) {
-			Collections.sort(m.getMenus(), new Comparator<Menu>() {
-				@Override
-				public int compare(Menu o1, Menu o2) {
-					return (o1.getWeight() > o2.getWeight() ? 1 : (o1
-							.getWeight() == o2.getWeight() ? 0 : -1));
-				}
-			});
-
-			for (Menu m2 : m.getMenus()) {
-				Collections.sort(m2.getMenus(), new Comparator<Menu>() {
-					@Override
-					public int compare(Menu o1, Menu o2) {
-						return (o1.getWeight() > o2.getWeight() ? 1 : (o1
-								.getWeight() == o2.getWeight() ? 0 : -1));
-					}
-				});
-			}
-		}
 		return userMenus;
 	}
 
