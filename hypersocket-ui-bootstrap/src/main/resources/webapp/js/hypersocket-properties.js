@@ -916,6 +916,11 @@ $.fn.propertyPage = function(opts) {
 											|| obj.inputType == 'number' 
 											|| obj.inputType == 'long'
 											|| obj.inputType == 'integer') {
+											
+											var widgetOptions = $.extend(obj, {
+									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
+											});
+											
 											widget = $('#' + tab + '_value' + inputId).textInput(obj);
 			
 										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java' || obj.inputType=='sql') {
