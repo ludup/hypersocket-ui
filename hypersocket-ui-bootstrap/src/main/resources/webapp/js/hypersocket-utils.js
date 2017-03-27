@@ -544,6 +544,22 @@ function getJSON(url, params, callback, errorCallback) {
 	});
 };
 
+function backgroundJSON(url, params, callback) {
+	log("GET: " + url);
+	
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
+		url = basePath + '/api/' + url;
+	}
+	
+	return doAjax({
+		type: "GET",
+	    url:  url + (params ? (url.endsWith('?') ? '' : '?') + $.param(params) : ''),
+	    cache: false,
+	    dataType: 'json',
+	    success: callback
+	});
+};
+
 function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 	
 	log("POST: " + url);

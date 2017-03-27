@@ -1378,10 +1378,21 @@ $.fn.propertyPage = function(opts) {
 									$('.propertyInput', '#' + propertyDiv).each(function(i, obj) {
 										var item = $('#' + obj.id);
 										item.data('updated', false);
+										
 									});
+									
+									if(options.onPropertiesChange) {
+										var updatedWidgets = [];
+										$.each(items, function(idx, obj) {
+											updatedWidgets.push($(document).data(obj.id));
+										});
+										options.onPropertiesChange(updatedWidgets);
+									}
+									
 								} else {
 									showError(data.message);
 								}
+								
 								if(options.maintainButtonState) {
 									$(revertButton).attr('disabled', true);
 									$(applyButton).attr('disabled', true);
