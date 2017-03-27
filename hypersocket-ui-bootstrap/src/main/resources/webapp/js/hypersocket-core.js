@@ -53,12 +53,14 @@ function startSpin(element, iconClass) {
 	element.removeClass(iconClass);
 	element.addClass('fa-spin');
 	element.addClass('fa-spinner');
+	element.parent().attr('disabled', true);
 }
 
 function stopSpin(element, iconClass) {
 	element.removeClass('fa-spin');
 	element.removeClass('fa-spinner');
 	element.addClass(iconClass);
+	element.parent().attr('disabled', false);
 }
 
 
