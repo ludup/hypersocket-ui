@@ -182,6 +182,18 @@ function processLogon(data, opts, message) {
                                 + '"/>'
                                 + ((this.label != null && this.label.length > 0) ? this.label : getResource(this.resourceKey + ".label"))
                                 + '</label></div>');
+				} else if(this.type == 'textarea') {
+					$('#logonForm')
+					.append(
+						'<div class="logonInput"><textarea class="form-control" " name="'
+						+ this.resourceKey + '" placeholder="'
+						+ (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
+						+ '" id="' + this.resourceKey + '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
+						+ '">' + this.defaultValue + '</textarea></div>');
+					if(!setFocus) {
+						$('#' + this.resourceKey).focus();
+						setFocus = true;
+					}
 				}else {
 					$('#logonForm')
 							.append(
