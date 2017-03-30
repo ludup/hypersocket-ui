@@ -131,8 +131,8 @@ $.fn.resourceTable = function(params) {
 		method : 'get',
 		pagination : true,
 		page : 1,
-		pageSize: 5,
-		pageList : [ 5, 10, 20, 50, 100 ],
+		pageSize: 25,
+		pageList : [ 5, 10, 25, 50, 100, 250, 500],
 		search: true,
 		showColumns : true,
 		showRefresh : true,
@@ -518,7 +518,7 @@ $.fn.resourceTable = function(params) {
 		$('[data-toggle="tooltip"]').tooltip();
 	});
 	
-	getState(options.id, true, function(data){
+	getState(divName + 'Placeholder', true, function(data){
 		if(data.success && data.resources.length && data.resources[0].preferences){
 			var preferences = JSON.parse(data.resources[0].preferences);
 			if(preferences && preferences.sortName){
@@ -584,17 +584,13 @@ $.fn.resourceTable = function(params) {
 		    	return params;
 		    },
 		    onPageChange: function(number, size){
-		    	if(options.id){
-		    		var sortName = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortName;
-		    		var sortOrder = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortOrder;
-		    		saveState(options.id, {'pageSize': size, 'sortOrder': sortOrder, 'sortName': sortName}, true);
-		    	}
+	    		var sortName = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortName;
+	    		var sortOrder = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').sortOrder;
+	    		saveState(divName + 'Placeholder', {'pageSize': size, 'sortOrder': sortOrder, 'sortName': sortName}, true);
 		    },
 		    onSort: function(name, order){
-		    	if(options.id){
-		    		var size = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').pageSize;
-		    		saveState(options.id, {'pageSize': size, 'sortOrder': order, 'sortName': name}, true);
-		    	}
+		    	var size = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').pageSize;
+		    	saveState(divName + 'Placeholder', {'pageSize': size, 'sortOrder': order, 'sortName': name}, true);
 		    },
 		    classes: 'table table-hover ' + divName,
 		    onPostHeader: function() {

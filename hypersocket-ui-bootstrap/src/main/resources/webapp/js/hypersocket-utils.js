@@ -303,6 +303,39 @@ $.fn.getCursorPosition = function () {
     return pos;
 }
 
+$.fn.startSpin = function () {
+
+	if(!$(this).find('.sk-fading-circle').length) {
+		$(this).children().hide();	
+		$(this).append('<div class="sk-fading-circle">'
+				+'<div class="sk-circle1 sk-circle"></div>'
+				+'<div class="sk-circle2 sk-circle"></div>'
+				+'<div class="sk-circle3 sk-circle"></div>'
+				+'<div class="sk-circle4 sk-circle"></div>'
+				+'<div class="sk-circle5 sk-circle"></div>'
+				+'<div class="sk-circle6 sk-circle"></div>'
+				+'<div class="sk-circle7 sk-circle"></div>'
+				+'<div class="sk-circle8 sk-circle"></div>'
+				+'<div class="sk-circle9 sk-circle"></div>'
+				+'<div class="sk-circle10 sk-circle"></div>'
+				+'<div class="sk-circle11 sk-circle"></div>'
+				+'<div class="sk-circle12 sk-circle"></div>'
+				+'</div>');
+	}
+}
+
+$.fn.stopSpin = function () {
+
+	var me = $(this).find('.sk-fading-circle').parent();
+	if(me.length) {
+		setTimeout(function() {
+			me.find('.sk-fading-circle').remove();
+		    me.children().show();	
+		}, 500);
+	}
+
+}
+
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -1038,6 +1071,4 @@ function getCookie(cname) {
     }
     return "";
 }
-
-
 

@@ -86,24 +86,6 @@ var progressOptions = { lines : 11, // The number of lines to draw
 	left : 'auto' // Left position relative to parent in px
 };
 
-function showBusy() {
-
-	log("Showing busy");
-
-	if ($('#progress')) {
-		$('#progress').spin(progressOptions);
-	}
-};
-
-function hideBusy() {
-
-	log("Hiding busy");
-
-	if ($('#progress')) {
-		$('#progress').spin(false);
-	}
-};
-
 /**
  * Clear the main content div
  */
@@ -121,8 +103,6 @@ function startLogon(opts) {
 	}
 	
 	opts = $.extend({
-		showBusy: showBusy,
-		hideBusy: hideBusy,
 		logonStarted: function() {
 			$('div[role="dialog"]').remove();
 			$('#actionLogoff').remove();
@@ -189,10 +169,6 @@ function logoff() {
 
 	log("Logging off");
 
-	
-	
-	showBusy();
-
 	getJSON(basePath + '/api/logoff', null, function() {	
 		if($(document).data('session')) {
 			$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
@@ -223,8 +199,6 @@ function checkBadges(schedule) {
 function home(data) {
 
 	log("Entering home");
-
-	showBusy();
 
 	// Menu
 	$('#navMenu').empty();
@@ -492,7 +466,6 @@ function home(data) {
 					} 
 				}
 			}
-			hideBusy();
 		});
 
 		var checkTimeout = function() {
@@ -758,7 +731,7 @@ function loadComplete(pageChange) {
 	log("Signaling load complete");
 	$('#mainContent').data('loadComplete', true);
 	$('#mainContent').data('pageChange', pageChange);
-	
+	$('#mainContainer').stopSpin();
     $('[data-toggle="tooltip"]').tooltip(); 
 }
 
@@ -773,8 +746,6 @@ function loadWait() {
 		if ($('#mainContent').data('loadComplete')) {
 			log("Page has loaded");
 			fadeMessage();
-			$('#mainContent').show();
-			hideBusy();
 		} else {
 			loadWait();
 		}
@@ -784,9 +755,7 @@ function loadWait() {
 function loadMenu(menu) {
 
 	log("Loading menu " + menu);
-
-	showBusy();
-
+	
 	if (currentMenu) {
 		$('.active').removeClass('active');
 	}
@@ -807,7 +776,7 @@ function loadMenu(menu) {
 		$('#' + currentMenu.id).addClass('active');
 	}
 	
-	$('#mainContent').hide();
+	$('#mainContainer').startSpin();
 	$('#informationBar').empty();
 	$('#mainContent').empty();
 	
@@ -886,6 +855,7 @@ function loadSubPage(menu, element) {
 	log(element.data().value);
 	element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').addClass('large-button-active');
 	element.parent().parent().find('.small-button[id="buttonSmall_' + element.data().value + '"]').addClass('small-button-active');
+	$('#subMenuPageContent').startSpin();
 	loadWait();
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
 		window.location.hash = "menu=" + menu.resourceKey;
