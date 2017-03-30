@@ -269,6 +269,21 @@
 						formatter: function(value, obj, index) {
 							return obj.principalDescription;
 						}
+					}, {
+						name : "email"
+					},{
+						name : "principalStatus",
+						formatter: function(value, obj, index) {
+							return getResource(value + '.label');
+						}
+					},{
+						name : "expires",
+						formatter: function(value, obj, index) {
+							if(value) {
+								return new Date(value).format();
+							}
+							return null;
+						}
 					}];
 
 					if(ownerRealm) {
