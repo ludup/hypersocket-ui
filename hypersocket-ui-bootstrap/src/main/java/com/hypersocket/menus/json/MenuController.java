@@ -89,14 +89,13 @@ public class MenuController extends AuthenticatedController {
 		try {
 
 			MenuList list = new MenuList(menuService.getMenus());
-			if (permissionService.hasSystemPermission(sessionUtils
-					.getPrincipal(request))) {
+			if (permissionService.hasSystemPermission(getCurrentPrincipal())) {
 				list.setSystemAdmin(true);
 			}
 
 			try {
 				permissionService.verifyPermission(
-						sessionUtils.getPrincipal(request),
+						getCurrentPrincipal(),
 						PermissionStrategy.EXCLUDE_IMPLIED, 
 						RealmPermission.READ, 
 						SystemPermission.SWITCH_REALM);
