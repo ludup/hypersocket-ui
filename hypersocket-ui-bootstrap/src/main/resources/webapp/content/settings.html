@@ -10,6 +10,18 @@
 	   title: getResource('system.configuration.title'),
 	   icon: 'fa-cog',
 	   canUpdate: currentMenu.canUpdate,
+	   onPropertiesChange(updatedWidgets) {
+		 	$.each(updatedWidgets, function(idx, obj) {
+		 		if(obj.options().refreshUserInterface) {
+		 			debugger;
+		 			showInformation(getResource('text.reloadingShortly'));
+		 			setTimeout(function() {
+		 				window.location = '/#menu=settings';
+		 			}, 3000);
+		 			return false;
+		 		}
+		 	});
+	   },
 	   complete: function() {
 		   loadComplete();
 	   }});

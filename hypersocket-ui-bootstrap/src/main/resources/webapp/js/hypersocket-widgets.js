@@ -4976,9 +4976,7 @@ $.fn.wizardPage = function(data) {
 		
 			if(page.onNext) {
 				var clicked = false;
-				
-				$('#button' + idx).find('i').removeClass(page.buttonIcon);
-				$('#button' + idx).find('i').addClass('fa-spinner fa-spin');
+				startSpin($('#button' + idx).find('i'), 'fa-spinner fa-spin');
 				
 				page.onNext(function() {
 	
@@ -4988,10 +4986,8 @@ $.fn.wizardPage = function(data) {
 					
 					clicked = true;
 					
-					$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
-
 					if(options.steps.length > idx + 1) {
-						$('#button' + idx).find('i').addClass(page.buttonIcon);
+						stopSpin($('#button' + idx).find('i'), page.buttonIcon);
 						var nextPage = idx + 1;
 							$('.pageState' + idx).attr('disabled', true);
 						
@@ -5001,7 +4997,7 @@ $.fn.wizardPage = function(data) {
 					} else {
 						if(options.done) {
 							options.pageDone = true;
-							$('#button' + idx).find('i').addClass(options.doneIcon);
+							stopSpin($('#button' + idx).find('i'), options.doneIcon);
 							$('#button' + idx).find('span').text(getResource(options.doneText));
 						} else {
 							$('#button' + idx).attr('disabled', true);
@@ -5011,8 +5007,7 @@ $.fn.wizardPage = function(data) {
 						}
 					}
 				}, function() {
-					$('#button' + idx).find('i').removeClass('fa-spinner fa-spin');
-					$('#button' + idx).find('i').addClass(page.buttonIcon);
+					stopSpin($('#button' + idx).find('i'), page.buttonIcon);
 				});
 			}
 		

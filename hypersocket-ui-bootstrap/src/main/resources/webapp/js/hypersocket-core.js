@@ -205,7 +205,7 @@ function logoff() {
 
 function checkBadges(schedule) {
 	
-	getJSON('menus/badges', null, function(data) {
+	backgroundJSON('menus/badges', null, function(data) {
 		$('.menuBadge').remove();
 		if(data.success) {
 			$.each(data.resources, function(idx, obj) {

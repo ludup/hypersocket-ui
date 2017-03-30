@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +26,8 @@ import com.hypersocket.server.handlers.HttpResponseProcessor;
 
 @Component
 public class RedirectHandler extends HttpRequestHandler {
+	
+	static Logger log = LoggerFactory.getLogger(RedirectHandler.class);
 	
 	@Autowired
 	HypersocketServer server; 
@@ -50,7 +54,12 @@ public class RedirectHandler extends HttpRequestHandler {
 			HttpServletResponse response,
 			HttpResponseProcessor responseProcessor) throws IOException {
 
-		response.setHeader(HttpHeaders.LOCATION, server.resolvePath(server.getUserInterfacePath()));
+		String hash = "";
+		int idx;
+		if((idx = request.getRequestURI().indexOf("#")) > -1 ) {
+			hash = request.getRequestURI().substring(idx);
+		}
+		response.setHeader(HttpHeaders.LOCATION, server.resolvePath(server.getUserInterfacePath()) + hash);
 		response.sendError(HttpStatus.SC_MOVED_TEMPORARILY);
 		responseProcessor.sendResponse(request, response, false);
 

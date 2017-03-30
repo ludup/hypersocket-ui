@@ -1557,7 +1557,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			}
 			
 			if(dialogOptions.buildUpdateButtons) {
-				dialogOptions.buildUpdateButtons(function(button, onclick) {
+				dialogOptions.buildUpdateButtons(params2, function(button, onclick) {
 					dialog.find('.modal-footer').append(
 							'<button type="button" id="' + button.id + 'Action" class="updateButton btn ' 
 							+ button.cssClass + '"><i class="fa ' 

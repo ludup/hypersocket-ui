@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hypersocket.HypersocketVersion;
+import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.menus.MenuRegistration;
 import com.hypersocket.menus.MenuService;
@@ -35,7 +36,7 @@ import com.hypersocket.server.handlers.impl.FileContentHandler;
 import com.hypersocket.upgrade.UpgradeService;
 
 @Service
-public class ClientDownloadServiceImpl implements ClientDownloadService {
+public class ClientDownloadServiceImpl extends AbstractAuthenticatedServiceImpl implements ClientDownloadService {
 
 	static final String RESOURCE_BUNDLE = "ClientDownloadService";
 
@@ -63,8 +64,9 @@ public class ClientDownloadServiceImpl implements ClientDownloadService {
 	@Autowired
 	RealmService realmService;
 	
-	List<DownloadFile> downloads = new ArrayList<DownloadFile>();
-
+	List<DownloadFile> userDownloads = new ArrayList<DownloadFile>();
+	List<DownloadFile> adminDownloads = new ArrayList<DownloadFile>();
+	
 	@PostConstruct
 	private void postConstruct() {
 
@@ -78,7 +80,7 @@ public class ClientDownloadServiceImpl implements ClientDownloadService {
 		
 		try {
 			if(Boolean.getBoolean("hypersocket.customDownloads")) {
-				loadDownloads(new FileInputStream(new File(downloadsDir,"downloads.properties")));
+				loadUserDownloads(new FileInputStream(new File(downloadsDir,"downloads.properties")));
 			}
 		} catch(IOException ex) {
 		}
@@ -88,14 +90,26 @@ public class ClientDownloadServiceImpl implements ClientDownloadService {
 			if(urls!=null) {
 				while(urls.hasMoreElements()) {	
 					URL url = urls.nextElement();
-					loadDownloads(url.openStream());
+					loadUserDownloads(url.openStream());
 				}
 			}
 		} catch(IOException ex) { 
 			log.error("There are no downloads.proeprties in the classpath", ex);
 		}
+		
+		try {
+			Enumeration<URL> urls = getClass().getClassLoader().getResources("adminDownloads.properties");
+			if(urls!=null) {
+				while(urls.hasMoreElements()) {	
+					URL url = urls.nextElement();
+					loadAdminDownloads(url.openStream());
+				}
+			}
+		} catch(IOException ex) { 
+			log.error("There are no adminDownloads.proeprties in the classpath", ex);
+		}
 
-		if (downloads.size() > 0) {
+		if (userDownloads.size() > 0 || adminDownloads.size() > 0) {
 			FileContentHandler contentHandler = new FileContentHandler(
 					"clients", 9999, downloadsDir) {
 				public String getBasePath() {
@@ -111,9 +125,19 @@ public class ClientDownloadServiceImpl implements ClientDownloadService {
 
 			menuService.registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 					"clientDownloads", "fa-download", "clientDownloads", 999,
-					ClientDownloadPermission.DOWNLOAD, null,
-					ClientDownloadPermission.DOWNLOAD, null),
-					MenuService.MENU_MY_RESOURCES);
+					null, null, null, null) {
+				@Override
+				public boolean canRead() {
+					if(permissionService.hasAdministrativePermission(getCurrentPrincipal())) {
+						return !userDownloads.isEmpty() || !adminDownloads.isEmpty();
+					} else {
+						if(permissionService.hasPermission(getCurrentPrincipal(), 
+								ClientDownloadPermission.DOWNLOAD))
+						return !userDownloads.isEmpty();
+					}
+					return false;
+				}
+			}, MenuService.MENU_NAV);
 
 		}
 		
@@ -144,8 +168,15 @@ public class ClientDownloadServiceImpl implements ClientDownloadService {
 		 */
 	}
 
-	private void loadDownloads(InputStream in) {
+	private void loadUserDownloads(InputStream in) {
+		loadDownloads(in, userDownloads);
+	}
+	
+	private void loadAdminDownloads(InputStream in) {
+		loadDownloads(in, adminDownloads);
+	}
 		
+	private void loadDownloads(InputStream in, List<DownloadFile> downloads) {
 		BufferedReader reader = null;
 		
 		try {
@@ -180,8 +211,16 @@ public class ClientDownloadServiceImpl implements ClientDownloadService {
 			IOUtils.closeQuietly(in);
 		}
 	}
+	
 	@Override
 	public Collection<DownloadFile> getDownloads() {
-		return downloads;
+		if(permissionService.hasAdministrativePermission(getCurrentPrincipal())) {
+			List<DownloadFile> downloads = new ArrayList<DownloadFile>();
+			downloads.addAll(adminDownloads);
+			downloads.addAll(userDownloads);
+			return downloads;
+		} else {
+			return userDownloads;
+		}
 	}
 }
