@@ -306,7 +306,13 @@ $.fn.getCursorPosition = function () {
 $.fn.startSpin = function () {
 
 	if(!$(this).find('.sk-fading-circle').length) {
-		$(this).children().hide();	
+		$.each($(this).children(), function(idx, element) {
+			if($(element).is(":visible")) {
+				$(element).data('state', true);
+				$(element).hide();
+			}
+		});
+		
 		$(this).append('<div class="sk-fading-circle">'
 				+'<div class="sk-circle1 sk-circle"></div>'
 				+'<div class="sk-circle2 sk-circle"></div>'
@@ -330,7 +336,13 @@ $.fn.stopSpin = function () {
 	if(me.length) {
 		setTimeout(function() {
 			me.find('.sk-fading-circle').remove();
-		    me.children().show();	
+			$.each(me.children(), function(idx, element) {
+				if($(element).data('state')) {
+					$(element).show();
+					$(element).data('state', null);
+				}
+			});
+		    
 		}, 500);
 	}
 
