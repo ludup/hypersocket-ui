@@ -143,11 +143,14 @@ function startLogon(opts) {
 		logonCompleted: function(data) {
 		
 			if(data.homePage) {
+				log('Opening user home page ' + data.homePage);
 				window.open(data.homePage, "_self", false);
 			} else {
 				if($(document).data('lastPrincipal')) {
 					
 					if($(document).data('session').currentPrincipal.id !== $(document).data('lastPrincipal').id) {
+						log('Session principal does not match the last principal used by this document');
+						debugger;
 						window.location.reload();
 						return;
 					}
@@ -285,6 +288,7 @@ function home(data) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
 						if(data.success) {
+							log('Loading original principals view of users');
 							window.location = '${uiPath}#menu=users';
 						} else {
 							showError(data.message);
@@ -448,7 +452,10 @@ function home(data) {
 				currentMenu = allMenus[loadThisMenu];;
 			}
 
+			debugger;
 			if(!currentMenu) {
+				log('No menu so resetting page to default');
+				debugger;
 				window.location = '${uiPath}';
 			} else {
 				$('#' + currentMenu.id).addClass('active');
@@ -688,6 +695,7 @@ function loadRoles(roles) {
 				if (!data.success) {
 					showError(data.errorMsg);
 				} else {
+					debugger;
 					document.location.reload();
 				}
 			});
@@ -705,7 +713,6 @@ function loadRoles(roles) {
 		$('.roleSelect').on(
 			'click', function(evt) {
 				evt.preventDefault();
-				
 				func($(this).attr('data-value'));
 			}
 		);
@@ -754,7 +761,7 @@ function loadWait() {
 
 function loadMenu(menu) {
 
-	log("Loading menu " + menu);
+	log("Loading menu " + menu.resourceKey);
 	
 	if (currentMenu) {
 		$('.active').removeClass('active');
