@@ -150,7 +150,7 @@ function startLogon(opts) {
 					
 					if($(document).data('session').currentPrincipal.id !== $(document).data('lastPrincipal').id) {
 						log('Session principal does not match the last principal used by this document');
-						debugger;
+						
 						window.location.reload();
 						return;
 					}
@@ -252,14 +252,18 @@ function home(data) {
 								$(this).addClass("active");
 								loadMenu($('#' + $(this).attr('id')).data('menu'));
 							});
-
+							
 							var parent = this;
 							$.each(this.menus, function() {
 								this.parent = parent;
 								allMenus[this.resourceKey] = this;
+								if(currentMenu==null && this.home) {
+									currentMenu = this;
+								}	
 							});
 
-							if(currentMenu==null) {
+							
+							if(currentMenu==null && this.home) {
 								currentMenu = this;
 							}	
 
@@ -452,10 +456,10 @@ function home(data) {
 				currentMenu = allMenus[loadThisMenu];;
 			}
 
-			debugger;
+			
 			if(!currentMenu) {
 				log('No menu so resetting page to default');
-				debugger;
+				
 				window.location = '${uiPath}';
 			} else {
 				$('#' + currentMenu.id).addClass('active');
@@ -695,7 +699,7 @@ function loadRoles(roles) {
 				if (!data.success) {
 					showError(data.errorMsg);
 				} else {
-					debugger;
+					
 					document.location.reload();
 				}
 			});

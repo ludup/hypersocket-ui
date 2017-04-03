@@ -187,4 +187,8 @@ public class MenuRegistration {
 		return builder.build();
 	}
 
+	public boolean isHome() {
+		return false;
+	}
+
 }
