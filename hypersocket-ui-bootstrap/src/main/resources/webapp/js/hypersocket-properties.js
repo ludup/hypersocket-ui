@@ -1369,6 +1369,8 @@ $.fn.propertyPage = function(opts) {
 							return;
 						}
 						
+						startSpin($(applyButton).find('i'));
+						
 						$('#' + propertyDiv).saveProperties(false, function(items) {
 							postJSON(options.url, items, function(data) {
 	
@@ -1393,10 +1395,14 @@ $.fn.propertyPage = function(opts) {
 									showError(data.message);
 								}
 								
+								
 								if(options.maintainButtonState) {
 									$(revertButton).attr('disabled', true);
 									$(applyButton).attr('disabled', true);
 								}
+
+							}, null, function() {
+								stopSpin($(applyButton).find('i'));
 							});
 						});
 					}
