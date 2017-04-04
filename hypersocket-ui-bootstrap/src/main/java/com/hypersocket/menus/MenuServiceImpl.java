@@ -56,8 +56,7 @@ import com.hypersocket.session.SessionPermission;
 import com.hypersocket.ui.IndexPageFilter;
 
 @Service
-public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
-		MenuService, UserInterfaceStateListener {
+public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements MenuService {
 
 	static Logger log = LoggerFactory.getLogger(MenuServiceImpl.class);
 
@@ -113,10 +112,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_DASHBOARD, "fa-pie-chart", null, 0,
-				SystemPermission.SYSTEM_ADMINISTRATION, 
-				SystemPermission.SYSTEM_ADMINISTRATION,
-				SystemPermission.SYSTEM_ADMINISTRATION, 
-				SystemPermission.SYSTEM_ADMINISTRATION), MenuService.MENU_NAV);
+				null, 
+				null,
+				null, 
+				null), MenuService.MENU_NAV);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_REALMS, "fa-database", "realms", 1,
@@ -141,8 +140,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				ProfilePermission.UPDATE, null) {
 			@Override
 			public boolean isHome() {
-				return !permissionService.hasAdministrativePermission(getCurrentPrincipal());
+				return true; // If this is overridden it must be weighted lower than this
 			}
+			
 			@Override
 			public boolean canRead() {
 				try {
@@ -424,9 +424,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		}, MenuService.MENU_MY_PROFILE);
 		
-		userInterfaceStateService.registerListener(this);
-
-
 	}
 
 	@Override
@@ -776,49 +773,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		@Override
 		public boolean canCreate() {
 			return !realmService.isReadOnly(getCurrentRealm());
-		}
-	}
-
-	@Override
-	public void modifyState(UserInterfaceState state) {
-		try {
-			if("showHelpZone".equalsIgnoreCase(state.getName())){
-				@SuppressWarnings("unchecked")
-				HashMap<String, Boolean> preferences = new ObjectMapper().readValue(state.getPreferences(), HashMap.class);
-				List<Menu> menuList = getMenus();
-				Boolean.getBoolean("showHelpZone");
-
-				for(Menu menu: menuList){
-					if("personal".equalsIgnoreCase(menu.getResourceKey())){
-						for(Menu mainMenu: menu.getMenus()){
-							if("dashboard".equalsIgnoreCase(mainMenu.getResourceKey())){
-								for(Menu iconMenu: mainMenu.getMenus()){
-									if("helpzone".equalsIgnoreCase(iconMenu.getResourceKey())){
-										if(preferences.get("showHelpZone")){
-											System.setProperty("showHelpZone", "true");
-											registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-															MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
-															SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
-													MenuService.MENU_DASHBOARD);
-										}else{
-											System.setProperty("showHelpZone", "false");
-											registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-															MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", 99999,
-															SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
-													MenuService.MENU_DASHBOARD);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		} catch (IOException e) {
-			registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-							MENU_DASHBOARD_HELPZONE, "fa-graduation-cap", "helpzone", -200,
-							SystemPermission.SYSTEM_ADMINISTRATION, null, null, null),
-					MenuService.MENU_DASHBOARD);
 		}
 	}
 
