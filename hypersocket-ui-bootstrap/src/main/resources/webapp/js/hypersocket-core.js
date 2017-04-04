@@ -278,6 +278,15 @@ function home(data) {
 					
 			});
 			
+			if(currentMenu==null) {
+				for(var e in allMenus) {
+					if(allMenus[e].menus && allMenus[e].menus.length > 0) {
+						continue;
+					}
+					currentMenu = allMenus[e];
+					break;
+				}
+			}
 			checkBadges(true);
 			
 			$('#navMenu')
@@ -456,27 +465,21 @@ function home(data) {
 				currentMenu = allMenus[loadThisMenu];;
 			}
 
-			
-			if(!currentMenu) {
-				log('No menu so resetting page to default');
-				
-				window.location = '${uiPath}';
-			} else {
-				$('#' + currentMenu.id).addClass('active');
-				loadMenu(currentMenu);
-			
-				if(message != null && message.length > 0) {
-					if(message.startsWith('info=')) {
-						showInformation(message.substring(5));
-					} else if(message.startsWith('success=')) {
-						showSuccess(message.substring(8));
-					} else if(message.startsWith('warning=')) {
-						showWarning(message.substring(8));
-					} else if(message.startsWith('error=')) {
-						showError(message.substring(6));
-					} 
-				}
+			$('#' + currentMenu.id).addClass('active');
+			loadMenu(currentMenu);
+		
+			if(message != null && message.length > 0) {
+				if(message.startsWith('info=')) {
+					showInformation(message.substring(5));
+				} else if(message.startsWith('success=')) {
+					showSuccess(message.substring(8));
+				} else if(message.startsWith('warning=')) {
+					showWarning(message.substring(8));
+				} else if(message.startsWith('error=')) {
+					showError(message.substring(6));
+				} 
 			}
+			
 		});
 
 		var checkTimeout = function() {
