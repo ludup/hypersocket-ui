@@ -13,7 +13,7 @@
 	   onPropertiesChange(updatedWidgets) {
 		 	$.each(updatedWidgets, function(idx, obj) {
 		 		if(obj.options().refreshUserInterface) {
-		 			debugger;
+		 			
 		 			showInformation(getResource('text.reloadingShortly'));
 		 			setTimeout(function() {
 		 				window.location = '/#menu=settings';

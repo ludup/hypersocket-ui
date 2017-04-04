@@ -140,6 +140,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"fa-tags", "details", 200, ProfilePermission.READ, null,
 				ProfilePermission.UPDATE, null) {
 			@Override
+			public boolean isHome() {
+				return !permissionService.hasAdministrativePermission(getCurrentPrincipal());
+			}
+			@Override
 			public boolean canRead() {
 				try {
 					return realmService.getUserProfileTemplates(
@@ -419,24 +423,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				}
 			}
 		}, MenuService.MENU_MY_PROFILE);
-
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "userOverview",
-				"fa-home", "userOverview", -100, null, null, null, null) {
-
-			@Override
-			public boolean canRead() {
-				try {
-					return !permissionService.hasSystemPermission(getCurrentPrincipal())
-							&& !overviewWidgetService.getWidgets(
-							OverviewWidgetServiceImpl.USERDASH)
-							.isEmpty();
-				} catch (AccessDeniedException e) {
-					return false;
-				}
-
-			}
-
-		}, MenuService.MENU_DASHBOARD);
+		
 		userInterfaceStateService.registerListener(this);
 
 

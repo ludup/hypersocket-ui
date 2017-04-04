@@ -19,6 +19,7 @@ public class Menu {
 	boolean canUpdate;
 	boolean canDelete;
 	boolean hidden;
+	boolean isDefault;
 	String data;
 	List<Menu> menus = new ArrayList<Menu>();
 	
@@ -33,6 +34,7 @@ public class Menu {
 		this.icon = icon;
 		this.data = data;
 		this.hidden = hidden;
+		this.isDefault = m.isHome();
 	}
 	
 	public String getId() {
@@ -130,4 +132,7 @@ public class Menu {
 		return hidden;
 	}
 	
+	public boolean isHome() {
+		return isDefault;
+	}	
 }

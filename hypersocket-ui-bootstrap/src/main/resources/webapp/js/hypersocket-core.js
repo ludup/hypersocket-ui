@@ -86,24 +86,6 @@ var progressOptions = { lines : 11, // The number of lines to draw
 	left : 'auto' // Left position relative to parent in px
 };
 
-function showBusy() {
-
-	log("Showing busy");
-
-	if ($('#progress')) {
-		$('#progress').spin(progressOptions);
-	}
-};
-
-function hideBusy() {
-
-	log("Hiding busy");
-
-	if ($('#progress')) {
-		$('#progress').spin(false);
-	}
-};
-
 /**
  * Clear the main content div
  */
@@ -121,8 +103,6 @@ function startLogon(opts) {
 	}
 	
 	opts = $.extend({
-		showBusy: showBusy,
-		hideBusy: hideBusy,
 		logonStarted: function() {
 			$('div[role="dialog"]').remove();
 			$('#actionLogoff').remove();
@@ -163,11 +143,14 @@ function startLogon(opts) {
 		logonCompleted: function(data) {
 		
 			if(data.homePage) {
+				log('Opening user home page ' + data.homePage);
 				window.open(data.homePage, "_self", false);
 			} else {
 				if($(document).data('lastPrincipal')) {
 					
 					if($(document).data('session').currentPrincipal.id !== $(document).data('lastPrincipal').id) {
+						log('Session principal does not match the last principal used by this document');
+						
 						window.location.reload();
 						return;
 					}
@@ -188,10 +171,6 @@ function startLogon(opts) {
 function logoff() {
 
 	log("Logging off");
-
-	
-	
-	showBusy();
 
 	getJSON(basePath + '/api/logoff', null, function() {	
 		if($(document).data('session')) {
@@ -223,8 +202,6 @@ function checkBadges(schedule) {
 function home(data) {
 
 	log("Entering home");
-
-	showBusy();
 
 	// Menu
 	$('#navMenu').empty();
@@ -275,14 +252,18 @@ function home(data) {
 								$(this).addClass("active");
 								loadMenu($('#' + $(this).attr('id')).data('menu'));
 							});
-
+							
 							var parent = this;
 							$.each(this.menus, function() {
 								this.parent = parent;
 								allMenus[this.resourceKey] = this;
+								if(currentMenu==null && this.home) {
+									currentMenu = this;
+								}	
 							});
 
-							if(currentMenu==null) {
+							
+							if(currentMenu==null && this.home) {
 								currentMenu = this;
 							}	
 
@@ -311,6 +292,7 @@ function home(data) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
 						if(data.success) {
+							log('Loading original principals view of users');
 							window.location = '${uiPath}#menu=users';
 						} else {
 							showError(data.message);
@@ -474,7 +456,10 @@ function home(data) {
 				currentMenu = allMenus[loadThisMenu];;
 			}
 
+			
 			if(!currentMenu) {
+				log('No menu so resetting page to default');
+				
 				window.location = '${uiPath}';
 			} else {
 				$('#' + currentMenu.id).addClass('active');
@@ -492,7 +477,6 @@ function home(data) {
 					} 
 				}
 			}
-			hideBusy();
 		});
 
 		var checkTimeout = function() {
@@ -715,6 +699,7 @@ function loadRoles(roles) {
 				if (!data.success) {
 					showError(data.errorMsg);
 				} else {
+					
 					document.location.reload();
 				}
 			});
@@ -732,7 +717,6 @@ function loadRoles(roles) {
 		$('.roleSelect').on(
 			'click', function(evt) {
 				evt.preventDefault();
-				
 				func($(this).attr('data-value'));
 			}
 		);
@@ -758,7 +742,7 @@ function loadComplete(pageChange) {
 	log("Signaling load complete");
 	$('#mainContent').data('loadComplete', true);
 	$('#mainContent').data('pageChange', pageChange);
-	
+	$('#mainContainer').stopSpin();
     $('[data-toggle="tooltip"]').tooltip(); 
 }
 
@@ -773,8 +757,6 @@ function loadWait() {
 		if ($('#mainContent').data('loadComplete')) {
 			log("Page has loaded");
 			fadeMessage();
-			$('#mainContent').show();
-			hideBusy();
 		} else {
 			loadWait();
 		}
@@ -783,10 +765,8 @@ function loadWait() {
 
 function loadMenu(menu) {
 
-	log("Loading menu " + menu);
-
-	showBusy();
-
+	log("Loading menu " + menu.resourceKey);
+	
 	if (currentMenu) {
 		$('.active').removeClass('active');
 	}
@@ -807,7 +787,7 @@ function loadMenu(menu) {
 		$('#' + currentMenu.id).addClass('active');
 	}
 	
-	$('#mainContent').hide();
+	$('#mainContainer').startSpin();
 	$('#informationBar').empty();
 	$('#mainContent').empty();
 	
@@ -886,6 +866,7 @@ function loadSubPage(menu, element) {
 	log(element.data().value);
 	element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').addClass('large-button-active');
 	element.parent().parent().find('.small-button[id="buttonSmall_' + element.data().value + '"]').addClass('small-button-active');
+	$('#subMenuPageContent').startSpin();
 	loadWait();
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
 		window.location.hash = "menu=" + menu.resourceKey;

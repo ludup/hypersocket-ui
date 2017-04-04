@@ -15,9 +15,6 @@ function logon(credentials, opts) {
 	};
 	
 	loadResources(function() {
-		if(opts.showBusy) {
-			opts.showBusy();
-		}
 		showLogon(credentials, opts);
 	});
 }
@@ -303,10 +300,6 @@ function processLogon(data, opts, message) {
 			opts.logonCompleted(data);
 		}
 
-	}
-
-	if(opts.hideBusy) {
-		opts.hideBusy();
 	}
 
 	stopSpin($('#logonButton i'), 'fa-sign-in');
