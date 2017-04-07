@@ -323,7 +323,7 @@
 										+	'<div class="spacer20px"></div>'
 										+	'	<div class="row">'
 										+	'		<div class="col-md-9" id="schemeArea' + resource.id + '">'	
-										+	'			<div id="triggerTasks' + resource.id + '" style="overflow: auto; height: 400px">'		
+										+	'			<div id="triggerTasks' + resource.id + '" style="overflow: auto; height: 200px">'		
 										+	'				<div id="rootTrigger' + resource.id + '" class="triggerShape trigger-same-row" style="position: absolute; left: 50px; top: 50px;">'			
 										+	'					<span id="rootEvent' + resource.id + '" class="triggerContent"></span>'				
 										+	'				</div>'			
@@ -374,9 +374,8 @@
     	            overlays:[["Arrow", {location: 1}]]
     	        });
             	
-				jsPlumb.draggable($('.triggerDraggable'));
-				
-				$('.triggerDraggable').draggable({
+				jsPlumb.draggable($('#triggerDiagram_' + trigger.id));				
+				$('#triggerDiagram_' + trigger.id).draggable({
 			        stop: function(e){
 			            if($(this).data('trigger')){
 			            	var preferences = {};
@@ -518,7 +517,28 @@
 	            endpoint:"Blank",
 	            detachable:false,
 	            overlays:[["Arrow", {location: 1}]]
-	        });	
+	        });
+			
+			jsPlumb.draggable($('#triggerDiagram_' + trigger.id));
+			$('#triggerDiagram_' + trigger.id).draggable({
+		        stop: function(e){
+		            if($(this).data('trigger')){
+		            	var preferences = {};
+		            	state = new Object();
+		            	preferences.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
+		            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
+			            if(preferences.leftpx < 0) {
+			            	preferences.leftpx = 0;
+			            }
+			            if(preferences.top < 0) {
+			            	preferences.top = 0;
+			            }
+			            
+			            saveState('triggerDiagram_' + $(this).data('trigger').id, preferences, false);
+		            }
+		        },
+		        //containment:true
+		    });
 		}
 		
 		top+= 50;
@@ -530,4 +550,5 @@
         
 	}
 </script>
-<script src="${uiPath}/js/jquery.jsPlumb-1.7.5.min.js"></script>
+<!-- <script src="${uiPath}/js/jquery.jsPlumb-1.7.5.min.js"></script> -->
+<script src="${uiPath}/js/jquery.jsPlumb-1.7.5.js"></script>
