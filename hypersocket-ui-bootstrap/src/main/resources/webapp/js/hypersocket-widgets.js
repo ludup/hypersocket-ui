@@ -4569,9 +4569,9 @@ $.fn.html5Upload = function(data) {
 		if(fileSize > 1024 * 1024){
 			fileSize = (Math.round((fileSize / (1024 * 1024)) * 100)/100).toFixed(0) + ' MB';
 		} else if(fileSize > 1024){
-			fileSize = (Math.round((fileSize / 1024) * 100)/100).toFixed(1) + ' KB';
+			fileSize = (Math.round((fileSize / 1024) * 100)/100).toFixed(0) + ' KB';
 		} else{
-			fileSize = parseFloat(fileSize).toFixed(2) + ' B';
+			fileSize = parseFloat(fileSize).toFixed(0) + ' B';
 		}
 		return fileSize;
 	}
