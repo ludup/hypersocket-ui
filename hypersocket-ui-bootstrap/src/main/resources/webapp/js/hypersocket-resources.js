@@ -1109,6 +1109,7 @@ $.fn.samePageResourceView = function(params, params2) {
 					{ url: dialogOptions.propertyOptions.templateUrl,
 				      title: getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
 				      icon: dialogOptions.icon,
+				      displayMode: 'create',
 					  complete: function() {
 						  showView(dialog);
 						  if(dialogOptions.propertyOptions.complete) {
@@ -1143,6 +1144,8 @@ $.fn.samePageResourceView = function(params, params2) {
 					{ url: dialogOptions.propertyOptions.propertiesUrl + params2.id,
 					  title: getResource(dialogOptions.resourceKey + '.update.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
 					  icon: dialogOptions.icon,
+					  displayMode: 'update',
+					  resource: params2,
 				  	  complete: function() {
 						  showView(dialog);
 						  if(dialogOptions.propertyOptions.complete) {
@@ -1177,6 +1180,8 @@ $.fn.samePageResourceView = function(params, params2) {
 				      title: getResource(dialogOptions.resourceKey + '.view.title'),
 				      icon: dialogOptions.icon,
 				      canUpdate: false,
+				      displayMode: 'view',
+					  resource: params2,
 					  complete: function() {
 						  showView(dialog);
 						  if(dialogOptions.propertyOptions.complete) {
@@ -1226,6 +1231,8 @@ $.fn.samePageResourceView = function(params, params2) {
 						{ url: dialogOptions.propertyOptions.propertiesUrl + copiedResource.id,
 					      title: getResource(dialogOptions.resourceKey + '.create.title'),
 					      icon: dialogOptions.icon,
+					      displayMode: 'copy',
+						  resource: params2,
 						  complete: function() {
 							  showView(dialog)
 							  if(dialogOptions.propertyOptions.complete) {
