@@ -632,9 +632,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				m.getIcon(), m.getData(), m.isHidden());
 
 		for (MenuRegistration child : allMenus.get(m.getResourceKey()).getMenus()) {
-			Menu childMenu = populateMenuList(child, thisMenu.getMenus());
-			if(childMenu != null) {
-				sortMenu(childMenu);
+			try {
+				Menu childMenu = populateMenuList(child, thisMenu.getMenus());
+				if(childMenu != null) {
+					sortMenu(childMenu);
+				}
+			} catch (AccessDeniedException e) {
 			}
 		}
 
