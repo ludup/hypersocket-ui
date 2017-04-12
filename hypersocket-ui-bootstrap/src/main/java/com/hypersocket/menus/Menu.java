@@ -134,5 +134,6 @@ public class Menu {
 	
 	public boolean isHome() {
 		return isDefault;
-	}	
+	}
+	
 }

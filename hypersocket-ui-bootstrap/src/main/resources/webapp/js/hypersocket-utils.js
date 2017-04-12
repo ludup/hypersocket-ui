@@ -944,7 +944,7 @@ function formatBytes(bytes,decimals) {
 }
 
 function fixSplit(value) {
-	return value.join(']|[');
+	return value ? value.join(']|[') : '';
 }
 
 function log(str) {

@@ -57,7 +57,24 @@ public class MenuController extends AuthenticatedController {
 		setupAuthenticatedContext(sessionUtils.getSession(request),
 				sessionUtils.getLocale(request));
 		try {
-			return getModuleList(request);
+			return getModuleList(request, null);
+		} finally {
+			clearAuthenticatedContext();
+		}
+	}
+
+	@AuthenticationRequired
+	@RequestMapping(value = "menu/{resourceKey}", method = RequestMethod.GET, produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	public MenuList getScopedModules(HttpServletRequest request,
+			HttpServletResponse response, @PathVariable String resourceKey) throws AccessDeniedException,
+			UnauthorizedException, SessionTimeoutException {
+
+		setupAuthenticatedContext(sessionUtils.getSession(request),
+				sessionUtils.getLocale(request));
+		try {
+			return getModuleList(request, resourceKey);
 		} finally {
 			clearAuthenticatedContext();
 		}
@@ -80,7 +97,7 @@ public class MenuController extends AuthenticatedController {
 		}
 	}
 
-	private MenuList getModuleList(HttpServletRequest request)
+	private MenuList getModuleList(HttpServletRequest request, String resourceKey)
 			throws UnauthorizedException, AccessDeniedException,
 			SessionTimeoutException {
 
@@ -88,7 +105,7 @@ public class MenuController extends AuthenticatedController {
 				sessionUtils.getLocale(request));
 		try {
 
-			MenuList list = new MenuList(menuService.getMenus());
+			MenuList list = new MenuList(menuService.getMenus(resourceKey));
 			if (permissionService.hasSystemPermission(sessionUtils
 					.getPrincipal(request))) {
 				list.setSystemAdmin(true);

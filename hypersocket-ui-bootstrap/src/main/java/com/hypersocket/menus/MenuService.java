@@ -76,6 +76,8 @@ public interface MenuService extends AuthenticatedService {
 	
 	List<Menu> getMenus();
 
+	List<Menu> getMenus(String parent);
+
 	boolean registerMenu(MenuRegistration module);
 
 	boolean registerMenu(MenuRegistration module, String parentModule);

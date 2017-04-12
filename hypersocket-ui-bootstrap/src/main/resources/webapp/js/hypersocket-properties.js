@@ -953,7 +953,7 @@ $.fn.propertyPage = function(opts) {
 									    	widget = $('#' + tab + '_value' + inputId).selectButton(obj);
 
 										} else if (obj.inputType == 'dropdown') {
-
+											
 									    	var widgetOptions = $.extend(obj, {
 									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
 									    		notSetResourceKey: obj.emptySelectionResourceKey
