@@ -7,7 +7,6 @@
  ******************************************************************************/
 package com.hypersocket.menus;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hypersocket.attributes.role.RoleAttributePermission;
 import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
@@ -33,10 +31,7 @@ import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.dashboard.OverviewWidgetService;
-import com.hypersocket.dashboard.OverviewWidgetServiceImpl;
 import com.hypersocket.i18n.I18NService;
-import com.hypersocket.interfaceState.UserInterfaceState;
-import com.hypersocket.interfaceState.UserInterfaceStateListener;
 import com.hypersocket.interfaceState.UserInterfaceStateService;
 import com.hypersocket.message.MessageResourcePermission;
 import com.hypersocket.message.MessageResourceService;
@@ -471,13 +466,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		allMenus.put(module.getResourceKey(), module);
 
 		if (parentModule != null) {
-			if (rootMenus.containsKey(parentModule)) {
-				MenuRegistration parent = rootMenus.get(parentModule);
+			if (allMenus.containsKey(parentModule)) {
+				MenuRegistration parent = allMenus.get(parentModule);
 				parent.addMenu(module);
 
 				return true;
 			} else {
-				for (MenuRegistration m : rootMenus.values()) {
+				for (MenuRegistration m : allMenus.values()) {
 					for (MenuRegistration m2 : m.getMenus()) {
 						if (m2.getResourceKey().equals(parentModule)) {
 							m2.addMenu(module);
@@ -547,168 +542,38 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		MenuRegistration m = allMenus.get(resourceKey);
 
-		return new Menu(
+		Menu menu = new Menu(
 				m,
 				hasPermission(m.getCreatePermission()) && m.canCreate(),
 				hasPermission(m.getUpdatePermission()) && m.canUpdate(),
 				hasPermission(m.getDeletePermission()) && m.canDelete(),
 				m.getIcon(), m.getData(), m.isHidden());
+		
+		return menu;
 
 	}
 
 	@Override
 	public List<Menu> getMenus() {
+		return getMenus(null);
+	}
 
+	@Override
+	public List<Menu> getMenus(String resourceKey) {
+
+		Collection<MenuRegistration> menus;
+		if(resourceKey == null)
+			menus = rootMenus.values();
+		else
+			menus = allMenus.get(resourceKey).getMenus();
+		
 		List<Menu> userMenus = new ArrayList<Menu>();
 
-		for (MenuRegistration m : rootMenus.values()) {
+		for (MenuRegistration m : menus) {
 			try {
-				if (shouldFilter(m)) {
-					if (log.isDebugEnabled()) {
-						log.debug(m.getResourceKey() + " has been filtered out");
-					}
-					continue;
-				} else if (!m.canRead()) {
-					if (log.isDebugEnabled()) {
-						log.debug(getCurrentPrincipal().getRealm() + "/"
-								+ getCurrentPrincipal().getName()
-								+ " does not have access to "
-								+ m.getResourceKey()
-								+ " menu due to canRead returning false");
-					}
-					continue;
-
-				} else if (m.getReadPermission() != null) {
-					assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
-							m.getReadPermission());
-				}
-
-				Menu rootMenu = new Menu(
-						m,
-						hasPermission(m.getCreatePermission()) && m.canCreate(),
-						hasPermission(m.getUpdatePermission()) && m.canUpdate(),
-						hasPermission(m.getDeletePermission()) && m.canDelete(),
-						m.getIcon(), m.getData(), m.isHidden());
-
-				for (MenuRegistration child : m.getMenus()) {
-					if (shouldFilter(child)) {
-						if (log.isDebugEnabled()) {
-							log.debug(m.getResourceKey()
-									+ " has been filtered out");
-						}
-						continue;
-					} else if (!child.canRead()) {
-						// User does not have access to this menu
-						if (log.isDebugEnabled()) {
-							log.debug(getCurrentPrincipal().getRealm() + "/"
-									+ getCurrentPrincipal().getName()
-									+ " does not have access to "
-									+ child.getResourceKey()
-									+ " menu due to canRead returning false");
-						}
-						continue;
-					} else if (child.getReadPermission() != null) {
-						try {
-							assertAnyPermission(
-									PermissionStrategy.EXCLUDE_IMPLIED,
-									child.getReadPermission());
-						} catch (Exception e) {
-							// User does not have access to this menu
-							if (log.isDebugEnabled()) {
-								log.debug(getCurrentPrincipal().getRealm()
-										+ "/" + getCurrentPrincipal().getName()
-										+ " does not have access to "
-										+ child.getResourceKey()
-										+ " menu with permission "
-										+ child.getReadPermission());
-							}
-							continue;
-						}
-					}
-
-					Menu childMenu = new Menu(child,
-							hasPermission(child.getCreatePermission())
-									&& child.canCreate(),
-							hasPermission(child.getUpdatePermission())
-									&& child.canUpdate(),
-							hasPermission(child.getDeletePermission())
-									&& child.canDelete(), child.getIcon(),
-							child.getData(), child.isHidden());
-
-					for (MenuRegistration leaf : child.getMenus()) {
-
-						if (shouldFilter(leaf)) {
-							if (log.isDebugEnabled()) {
-								log.debug(m.getResourceKey()
-										+ " has been filtered out");
-							}
-							continue;
-						} else if (!leaf.canRead()) {
-							// User does not have access to this menu
-							if (log.isDebugEnabled()) {
-								log.debug(getCurrentPrincipal().getRealm()
-										+ "/"
-										+ getCurrentPrincipal().getName()
-										+ " does not have access to "
-										+ leaf.getResourceKey()
-										+ " menu due to canRead returning false");
-							}
-							continue;
-
-						} else if (leaf.getReadPermission() != null) {
-							try {
-								assertAnyPermission(
-										PermissionStrategy.EXCLUDE_IMPLIED,
-										leaf.getReadPermission());
-
-							} catch (Exception e) {
-								// User does not have access to this menu
-								if (log.isDebugEnabled()) {
-									log.debug(getCurrentPrincipal().getRealm()
-											+ "/"
-											+ getCurrentPrincipal().getName()
-											+ " does not have access to "
-											+ leaf.getResourceKey()
-											+ " menu with permission "
-											+ leaf.getReadPermission());
-								}
-								continue;
-							}
-						}
-						childMenu.getMenus().add(
-								new Menu(leaf, hasPermission(leaf
-										.getCreatePermission())
-										&& leaf.canCreate(), hasPermission(leaf
-										.getUpdatePermission())
-										&& leaf.canUpdate(), hasPermission(leaf
-										.getDeletePermission())
-										&& leaf.canDelete(), leaf.getIcon(),
-										leaf.getData(), leaf.isHidden()));
-					}
-
-					if (childMenu.getResourceName() == null
-							&& childMenu.getMenus().size() == 0) {
-						if (log.isDebugEnabled()) {
-							log.debug("Child menu "
-									+ childMenu.getResourceKey()
-									+ " will not be displayed because there are no leafs and no url has been set");
-						}
-						continue;
-					}
-					rootMenu.getMenus().add(childMenu);
-				}
-
-				if (rootMenu.getResourceName() == null) {
-					if (rootMenu.getMenus().size() == 0) {
-						if (log.isDebugEnabled()) {
-							log.debug("Root menu "
-									+ rootMenu.getResourceKey()
-									+ " will not be displayed because there are no children and no url has been set");
-						}
-						continue;
-					}
-				}
-				userMenus.add(rootMenu);
+				Menu menu = populateMenuList(m, userMenus);
+				if(menu != null)
+					sortMenu(menu);
 			} catch (AccessDeniedException e) {
 				// User does not have access to this menu
 				if (log.isDebugEnabled()) {
@@ -721,6 +586,70 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}
 
 		return userMenus;
+	}
+
+	protected void sortMenu(Menu menu) {
+		Collections.sort(menu.getMenus(), new Comparator<Menu>() {
+
+			@Override
+			public int compare(Menu o1, Menu o2) {
+				Integer weight1 = o1.getWeight();
+				Integer weight2 = o2.getWeight();
+				return ( weight1 == null ? Integer.valueOf(0) : weight1 ).compareTo(weight2 == null ? Integer.valueOf(0) : weight2);
+			}
+		});
+	}
+	
+	protected Menu populateMenuList(MenuRegistration m, List<Menu> menuList) throws AccessDeniedException {
+		if(m.getResourceKey().equals("theme")) {
+			System.out.println("brtek");
+		}
+		if (shouldFilter(m)) {
+			if (log.isDebugEnabled()) {
+				log.debug(m.getResourceKey() + " has been filtered out");
+			}
+			return null;
+		} else if (!m.canRead()) {
+			if (log.isDebugEnabled()) {
+				log.debug(getCurrentPrincipal().getRealm() + "/"
+						+ getCurrentPrincipal().getName()
+						+ " does not have access to "
+						+ m.getResourceKey()
+						+ " menu due to canRead returning false");
+			}
+			return null;
+
+		} else if (m.getReadPermission() != null) {
+			assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
+					m.getReadPermission());
+		}
+
+		Menu thisMenu = new Menu(
+				m,
+				hasPermission(m.getCreatePermission()) && m.canCreate(),
+				hasPermission(m.getUpdatePermission()) && m.canUpdate(),
+				hasPermission(m.getDeletePermission()) && m.canDelete(),
+				m.getIcon(), m.getData(), m.isHidden());
+
+		for (MenuRegistration child : allMenus.get(m.getResourceKey()).getMenus()) {
+			Menu childMenu = populateMenuList(child, thisMenu.getMenus());
+			if(childMenu != null) {
+				sortMenu(childMenu);
+			}
+		}
+
+		if (thisMenu.getResourceName() == null) {
+			if (thisMenu.getMenus().size() == 0) {
+				if (log.isDebugEnabled()) {
+					log.debug("Root menu "
+							+ thisMenu.getResourceKey()
+							+ " will not be displayed because there are no children and no url has been set");
+				}
+				return null;
+			}
+		}
+		menuList.add(thisMenu);
+		return thisMenu;
 	}
 
 	protected boolean hasPermission(PermissionType permission) {
