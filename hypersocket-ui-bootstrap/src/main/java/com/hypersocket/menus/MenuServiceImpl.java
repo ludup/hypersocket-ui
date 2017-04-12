@@ -601,9 +601,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	}
 	
 	protected Menu populateMenuList(MenuRegistration m, List<Menu> menuList) throws AccessDeniedException {
-		if(m.getResourceKey().equals("theme")) {
-			System.out.println("brtek");
-		}
 		if (shouldFilter(m)) {
 			if (log.isDebugEnabled()) {
 				log.debug(m.getResourceKey() + " has been filtered out");
