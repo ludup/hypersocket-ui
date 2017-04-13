@@ -346,8 +346,7 @@
 			});
 	
 	function renderDiagram(trigger, resourcePage, rootId) {
-		
-		jsPlumb.empty($('#triggerView' + rootId));
+		//jsPlumb.empty($('#triggerView' + rootId));
 		triggerList = [];
 		triggerMap = [];
 		if(trigger) {
@@ -363,7 +362,6 @@
         	getState(triggerList, false, function(data){
         		resourceList = data.resources;
         		addTask(trigger, null, top+50, left+50, rootId);
-        		debugger;
             	jsPlumb.connect({
     	            source: 'rootTrigger' + trigger.id,
     	            target:"triggerDiagram_" + trigger.id,
@@ -373,7 +371,7 @@
     	            detachable:false,
     	            overlays:[["Arrow", {location: 1}]]
     	        });
-            	
+            	//debugger;
 				jsPlumb.draggable($('#triggerDiagram_' + trigger.id));				
 				$('#triggerDiagram_' + trigger.id).draggable({
 			        stop: function(e){
@@ -550,5 +548,6 @@
         
 	}
 </script>
-<script src="${uiPath}/js/jquery.jsPlumb-1.7.5.min.js"></script>
+<!-- <script src="${uiPath}/js/jquery.jsPlumb-1.7.5.min.js"></script> -->
 <!-- <script src="${uiPath}/js/jquery.jsPlumb-1.7.5.js"></script> -->
+<script src="${uiPath}/js/jsplumb.js"></script>
