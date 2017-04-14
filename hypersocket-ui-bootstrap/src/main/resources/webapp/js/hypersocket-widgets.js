@@ -2728,9 +2728,9 @@ $.fn.timeInput = function(options) {
 	
 	var options = $.extend(
 			{   template: 'dropdown',
-				minuteStep: 15,
+				minuteStep: 1,
 				showSeconds: false,
-				secondStep: 15,
+				secondStep: 1,
 				defaultTime: (options.value ? (options.value=='' ? false : options.value) : false),
 				showMeridian: false,
 				showInputs: true,
@@ -5266,7 +5266,6 @@ $.fn.multipleRows = function(data) {
 				showAdd: true,
 				isArrayValue: true,
 				render: function(element, value) {
-					
 					element.textInput({ }).setValue(value);
 				},
 			}, data);
