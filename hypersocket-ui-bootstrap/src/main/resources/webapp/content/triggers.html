@@ -307,12 +307,9 @@
 								complete : function() {
 									loadComplete();
 								},
-								selected: function(row) {
-									//renderDiagram(row, resourcePage);
-								},
 								resourceUpdated: function(resource) {
-									$('#triggerView' + resource.id).empty();
 									$('._jsPlumb_connector').remove();
+									$('#schemeArea' + resource.id).find('.triggerDraggable').empty();
 									resourcePage.refresh();
 								},
 								detailView: true,
@@ -323,11 +320,10 @@
 										+	'<div class="spacer20px"></div>'
 										+	'	<div class="row">'
 										+	'		<div class="col-md-12" id="schemeArea' + resource.id + '">'	
-										+	'			<div id="triggerTasks' + resource.id + '" style="overflow: auto; height: 200px">'		
+										+	'			<div id="triggerTasks' + resource.id + '" style="overflow: auto; height: 300px">'		
 										+	'				<div id="rootTrigger' + resource.id + '" class="triggerShape trigger-same-row" style="position: absolute; left: 50px; top: 50px;">'			
 										+	'					<span id="rootEvent' + resource.id + '" class="triggerContent"></span>'				
 										+	'				</div>'			
-										+	'				<div id="triggerView' + resource.id + '" class="trigger-same-row"></div>'			
 										+	'			</div>'		
 										+	'			<div class="spacer20px"></div>'		
 										+	'		</div>'	
@@ -372,7 +368,6 @@
     	            detachable:false,
     	            overlays:[["Arrow", {location: 1}]]
     	        });
-            	//debugger;
 				jsPlumbInstance.draggable($('#triggerDiagram_' + trigger.id));				
 				$('#triggerDiagram_' + trigger.id).draggable({
 			        stop: function(e){
@@ -391,7 +386,7 @@
 				            saveState('triggerDiagram_' + $(this).data('trigger').id, preferences, false);
 			            }
 			        },
-					containment: '#triggerTasks413'
+					containment: 'parent'
 			    });
 				
 				$('.addIcon').off('click');
@@ -406,8 +401,6 @@
 							}
 						});
 					});
-// 					$(document).data('triggerModalCallback').loadParent(trigger, null, 0);
-// 					$('div[dialog-for="contentTriggers"]').resourceDialog('create');
 				});
 				
 				$('.editIcon').off('click');
@@ -489,7 +482,8 @@
 				return false;
 			}
 		});
-		$('#triggerView' + rootId).append(
+		
+		$('#triggerTasks' + rootId).append(
 					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape triggerDraggable " + triggerClass + " trigger-same-row' id='triggerDiagram_" + trigger.id + "'>"
 				+	"	<div class='triggerContent'>"
 				+	"		<span class='triggerText'>"	+ trigger.name + "</span>"
@@ -536,7 +530,7 @@
 			            saveState('triggerDiagram_' + $(this).data('trigger').id, preferences, false);
 		            }
 		        },
-		        containment: '#triggerTasks413'
+		        containment: 'parent'
 		    });
 		}
 		
@@ -549,6 +543,4 @@
         
 	}
 </script>
-<!-- <script src="${uiPath}/js/jquery.jsPlumb-1.7.5.min.js"></script> -->
-<!-- <script src="${uiPath}/js/jquery.jsPlumb-1.7.5.js"></script> -->
 <script src="${uiPath}/js/jsplumb.js"></script>
