@@ -3637,7 +3637,7 @@
         // @param clearEdits defaults to false; indicates that mouse edits for connectors should be cleared
         ///
             _draw = function (element, ui, timestamp, clearEdits) {
-            	debugger;
+
                 if (!_suspendDrawing) {
                     var id = _getId(element),
                         repaintEls,
@@ -3663,6 +3663,7 @@
                             });
                         }
                     }
+
                     _currentInstance.anchorManager.redraw(id, ui, timestamp, null, clearEdits);
 
                     if (repaintEls) {
@@ -3904,7 +3905,6 @@
                 params.endpointsByElement = endpointsByElement;
                 params.finaliseConnection = _finaliseConnection;
                 params.id = "con_" + _idstamp();
-                debugger;
                 var con = new connectionFunc(params);
 
                 // if the connection is draggable, then maybe we need to tell the target endpoint to init the
@@ -3921,7 +3921,6 @@
         // adds the connection to the backing model, fires an event if necessary and then redraws
         //
             _finaliseConnection = _currentInstance.finaliseConnection = function (jpc, params, originalEvent, doInformAnchorManager) {
-            	debugger;
                 params = params || {};
                 // add to list of connections (by scope).
                 if (!jpc.suspendedEndpoint)
@@ -4247,7 +4246,6 @@
         };
 
         this.connect = function (params, referenceParams) {
-        	debugger;
             // prepare a final set of parameters to create connection with
             var _p = _prepareConnectionParams(params, referenceParams), jpc;
             // TODO probably a nicer return value if the connection was not made.  _prepareConnectionParams
@@ -8216,7 +8214,6 @@
         };
 
     _jp.Connection = function (params) {
-    	debugger;
         var _newEndpoint = params.newEndpoint;
 
         this.id = params.id;
@@ -8589,7 +8586,7 @@
             this.setPreparedConnector(connector, doNotRepaint, doNotChangeListenerComponent, typeId);
         },
         paint: function (params) {
-        	debugger;
+
             if (!this._jsPlumb.instance.isSuspendDrawing() && this._jsPlumb.visible) {
                 params = params || {};
                 var timestamp = params.timestamp,
@@ -8644,7 +8641,6 @@
                             ymax: Math.max(this.connector.bounds.maxY + (lineWidth + outlineWidth), overlayExtents.maxY)
                         };
                     // paint the connector.
-                    debugger;
                     this.connector.paint(this._jsPlumb.paintStyleInUse, null, extents);
                     // and then the overlays
                     for (var j in this._jsPlumb.overlays) {
@@ -9187,7 +9183,7 @@
         };
 
         this.redraw = function (elementId, ui, timestamp, offsetToUI, clearEdits, doNotRecalcEndpoint) {
-        	debugger;
+
             if (!jsPlumbInstance.isSuspendDrawing()) {
                 // get all the endpoints for this element
                 var ep = _amEndpoints[elementId] || [],
@@ -9340,7 +9336,6 @@
                     fc.paint({timestamp: timestamp, recalc: false, elId: elementId});
 
                 // paint all the connections
-                debugger;
                 for (i = 0; i < connectionsToPaint.length; i++) {
                     connectionsToPaint[i].paint({elId: elementId, timestamp: timestamp, recalc: false, clearEdits: clearEdits});
                 }
@@ -13211,7 +13206,6 @@
         };
 
         this.paint = function (style, anchor, extents) {
-        	debugger;
             if (style != null) {
 
                 var xy = [ this.x, this.y ], wh = [ this.w, this.h ], p;
@@ -13232,7 +13226,7 @@
                     p = _pos([ xy[0], xy[1] ]);
 
                 renderer.paint.apply(this, arguments);
-                debugger;
+
                 _attr(this.svg, {
                     "style": p,
                     "width": wh[0] || 0,
