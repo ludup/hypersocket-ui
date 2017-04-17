@@ -5268,27 +5268,37 @@ $.fn.multipleRows = function(data) {
 				render: function(element, value) {
 					element.textInput({ }).setValue(value);
 				},
+				generateValue: function(element) {
+					log('Unimplemented generateValue');
+				},
+				enable: function(element) {
+					log('Unimplemented enable');
+				},
+				disable: function(element) {
+					log('Unimplemented disable');
+				}, 
+				clear: function(element) {
+					log('Unimplemented clear');
+				}
 			}, data);
 	
 	var id = $(this).attr('id') + "Multiple";
-	
+
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
-	+	'	<div>' 
 	+	'	<div class="col-xs-11" id="' + id + 'Header"></div>' 
 	+	'	<div class="col-xs-1"></div>' 
 	+   '   </div>'
 	+	'	<div id="' + id + 'Rows" ></div>'
-	+	'	<div id="' + id + 'NewRow" class="row">'
+	+	'	<div id="' + id + 'NewRow">'
 	+	'		<div class="propertyValue col-xs-11">'
 	+	'			<span class="help-block">&nbsp;</span>'
 	+	'		</div>'
-	+	'		<div class="propertyValue col-xs-1 dialogActions">'
+	+	'		<div class="propertyValue col-xs-1">'
 	+	'			<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
 	+	'				<i class="fa fa-plus"></i>'
 	+	'			</a>'
 	+	'		</div>'
-	+	'	</div>'
-	+	'</div>';
+	+	'   </div>';
 	
 	$(this).append(html);
 	
@@ -5303,21 +5313,20 @@ $.fn.multipleRows = function(data) {
 	var addRow = function(val) {
 		
 		var elementId = id + options.count++;
-		$('#' + id + 'Rows').append('<div class="row">' 
-				+ '    <div id="' + elementId  + '" class="rowInput col-xs-11">'
+		$('#' + id + 'Rows').append(
+				 '    <div id="' + elementId  + '" class="rowInput col-xs-11">'
 				+ '    </div>'
-				+ '    <div class="col-xs-1 dialogActions">'
+				+ '    <div class="col-xs-1">'
 				+	'		<a href="#" class="btn btn-danger delButton">'
 				+	'			<i class="fa fa-minus"></i>'
 				+	'		</a>'
-				+ '    </div>'
 				+ '</div>'); 
 		
 		options.render($('#' + id + 'Rows').find('.rowInput').last(), val);
 		
 		$('.delButton').off('click');
 		$('.delButton').on('click', function() {
-			$(this).closest('.row').remove();
+			$(this).closest('.rowInput').parent().remove();
 			if(options.showAdd) {
 				$('#' + id + 'NewRow').show();
 			}
@@ -5337,15 +5346,17 @@ $.fn.multipleRows = function(data) {
 			setValue: function(val) {
 				$('#' + id + 'Rows').children().remove();
 				$.each(val, function(idx, v) {
-					
 					addRow(v);
 				});
 			},
 			getValue: function() {
 				var res = [];
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					res.push($(this).find('.rowInput').widget().getValue());
+					if($(row).find('.widget').length > 0) {
+						res.push(options.generateValue($(row)));
+					}
 				});
+				debugger;
 				return res;
 			},
 			reset: function() {
@@ -5354,12 +5365,12 @@ $.fn.multipleRows = function(data) {
 			},
 			disable: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					$(this).find('.rowInput').widget().disable();
+					options.disable($(this));
 				});
 			},
 			enable: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					$(this).find('.rowInput').widget().enable();
+					options.enable($(this));
 				});
 			},
 			options: function() {
@@ -5370,7 +5381,7 @@ $.fn.multipleRows = function(data) {
 			}, 
 			clear: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					$(this).find('.rowInput').widget().clear();
+					options.clear($(this));
 				});
 			}
 	}
