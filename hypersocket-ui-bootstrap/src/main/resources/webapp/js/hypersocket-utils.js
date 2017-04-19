@@ -552,7 +552,19 @@ function showMessage(text, icon, alertClass, fade, fadeCallback, element) {
 	}
 }
 
+function isFunction(functionToCheck) {
+	var getType = {};
+	return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+}
+
 function getJSON(url, params, callback, errorCallback) {
+	if(isFunction(url)) {
+		url = url();
+	}
+	if(isFunction(params)) {
+		params = params();
+	}
+	
 	log("GET: " + url);
 	
 	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
@@ -922,14 +934,20 @@ function splitFix(value) {
 	return result;
 }
 
-function splitNamePairs(value) {
+function splitNamePairs(value, nameAttr, valueAttr) {
 	
 	var values = splitFix(value);
 	var result = new Array();
 	$.each(values, function(idx, obj) {
 		v = obj.split('=');
-		result.push({ value: v[0],
-			name: decodeURIComponent(v[1])});
+		if(!valueAttr)
+			valueAttr = 'value';
+		if(!nameAttr)
+			nameAttr = 'name';
+		var o = {};
+		o[valueAttr] = v[0];
+		o[nameAttr] = decodeURIComponent(v[1]);
+		result.push(o);
 	});
 	return result;
 }
@@ -1084,3 +1102,9 @@ function getCookie(cname) {
     return "";
 }
 
+function generateUUID() {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+	    return v.toString(16);
+	});
+}

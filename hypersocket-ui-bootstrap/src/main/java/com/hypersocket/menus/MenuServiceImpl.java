@@ -575,19 +575,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		List<Menu> userMenus = new ArrayList<Menu>();
 
 		for (MenuRegistration m : menus) {
-			try {
-				Menu menu = populateMenuList(m, userMenus);
-				if(menu != null)
-					sortMenu(menu);
-			} catch (AccessDeniedException e) {
-				// User does not have access to this menu
-				if (log.isDebugEnabled()) {
-					log.debug(getCurrentPrincipal().getRealm() + "/"
-							+ getCurrentPrincipal().getName()
-							+ " does not have access to " + m.getResourceKey()
-							+ " menu with permission " + m.getReadPermission());
-				}
-			}
+			populateMenuList(m, userMenus);
 		}
 
 		return userMenus;
@@ -605,7 +593,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		});
 	}
 	
-	protected Menu populateMenuList(MenuRegistration m, List<Menu> menuList) throws AccessDeniedException {
+	protected Menu populateMenuList(MenuRegistration m, List<Menu> menuList) {
 		if (shouldFilter(m)) {
 			if (log.isDebugEnabled()) {
 				log.debug(m.getResourceKey() + " has been filtered out");
@@ -622,8 +610,19 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			return null;
 
 		} else if (m.getReadPermission() != null) {
-			assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
-					m.getReadPermission());
+			try {
+				assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
+						m.getReadPermission());
+			} catch (AccessDeniedException e) {
+				if (log.isDebugEnabled()) {
+					log.debug(getCurrentPrincipal().getRealm() + "/"
+							+ getCurrentPrincipal().getName()
+							+ " does not have access to "
+							+ m.getResourceKey()
+							+ " menu due to permission " + m.getReadPermission().getResourceKey());
+				}
+				return null;
+			}
 		}
 
 		Menu thisMenu = new Menu(
@@ -634,19 +633,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				m.getIcon(), m.getData(), m.isHidden());
 
 		for (MenuRegistration child : allMenus.get(m.getResourceKey()).getMenus()) {
-			try {
-				Menu childMenu = populateMenuList(child, thisMenu.getMenus());
-				if(childMenu != null) {
-					sortMenu(childMenu);
-				}
-			} catch (AccessDeniedException e) {
-			}
+			populateMenuList(child, thisMenu.getMenus());
 		}
 
 		if (thisMenu.getResourceName() == null) {
 			if (thisMenu.getMenus().size() == 0) {
 				if (log.isDebugEnabled()) {
-					log.debug("Root menu "
+					log.debug("Menu "
 							+ thisMenu.getResourceKey()
 							+ " will not be displayed because there are no children and no url has been set");
 				}
