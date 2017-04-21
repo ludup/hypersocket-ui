@@ -1052,13 +1052,13 @@ $.fn.multipleSelect = function(data) {
 		newElement.find('i').click(function(e){
 			e.preventDefault();
 			removeElement($(e.target).parent());
+			if (options.changed) {
+				options.changed(callback);
+			}
 		});
 		$('#' + id + 'IncludedSelect').append(newElement);
 		element.remove();
 		addListeners(newElement);
-		if (options.changed) {
-			options.changed(callback);
-		}
 	}
 	
 	var addElementBefore = function(elementToAdd, element){
@@ -1068,13 +1068,13 @@ $.fn.multipleSelect = function(data) {
 		newElement.find('i').click(function(e){
 			e.preventDefault();
 			removeElement($(e.target).parent());
+			if (options.changed) {
+				options.changed(callback);
+			}
 		});
 		element.before(newElement);
 		elementToAdd.remove();
 		addListeners(newElement);
-		if (options.changed) {
-			options.changed(callback);
-		}
 	}
 	
 	var removeElement = function(element){
@@ -1082,7 +1082,11 @@ $.fn.multipleSelect = function(data) {
 		newElement.find('i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
 		newElement.removeClass(id + 'includedDraggable').addClass(id + 'excludedDraggable');
 		newElement.find('i').click(function(e){
+			e.preventDefault();
 			addElement($(e.target).parent());
+			if (options.changed) {
+				options.changed(callback);
+			}
 		});
 		var placeFound = false;
 		$('#' + id + 'ExcludedSelect').find('li').each(function(index, excludedElement){
@@ -1097,9 +1101,6 @@ $.fn.multipleSelect = function(data) {
 		}
 		addListeners(newElement);
 		element.remove();
-		if (options.changed) {
-			options.changed(callback);
-		}
 	}
 
 	dragSrcEl = null;
@@ -1161,10 +1162,19 @@ $.fn.multipleSelect = function(data) {
 		if(dragSrcEl && dragSrcEl != this && ($(dragSrcEl).hasClass(id + 'includedDraggable') || $(dragSrcEl).hasClass(id + 'excludedDraggable'))) {
 			if($(dragSrcEl).hasClass(id + 'includedDraggable') && ($(this).attr('id') == id + 'Excluded' || $(this).closest('div.excludedSelect').length)){
 				removeElement($(dragSrcEl));
+				if (options.changed) {
+					options.changed(callback);
+				}
 			}else if($(dragSrcEl).hasClass(id + 'excludedDraggable') && $(this).attr('id') == id + 'Included'){
 				addElement($(dragSrcEl));
+				if (options.changed) {
+					options.changed(callback);
+				}
 			}else if($(dragSrcEl).hasClass(id + 'excludedDraggable') && $(this).closest('div.includedSelect').length){
 				addElementBefore($(dragSrcEl), $(this));
+				if (options.changed) {
+					options.changed(callback);
+				}
 			}else if($(dragSrcEl).hasClass(id + 'includedDraggable') && $(this).hasClass(id + 'includedDraggable') && options.allowOrdering){
 				dragSrcEl.innerHTML = this.innerHTML;
 				var dragId = dragSrcEl.getAttribute('id');
@@ -1174,7 +1184,6 @@ $.fn.multipleSelect = function(data) {
 				this.innerHTML = e.dataTransfer.getData('text/html');
 				this.setAttribute('id', dragId);
 				this.setAttribute('value', dragValue);
-				
 				if (options.changed) {
 					options.changed(callback);
 				}
@@ -1239,7 +1248,7 @@ $.fn.multipleSelect = function(data) {
 				} else {
 					selectedOpt = $('#' + select.attr('id') + ' li[value="' + he.encode(id) + '"]');
 				}
-				if (selectedOpt) {
+				if (selectedOpt.length) {
 					addElement(selectedOpt);
 				}
 			});
@@ -1349,10 +1358,8 @@ $.fn.multipleSelect = function(data) {
 					$('#' + id).multipleSelect();
 				},
 				disable: function() {
-					$('#' + id + 'IncludedSelect li i').off();
-					$('#' + id + 'IncludedSelect li i').css('cursor', 'default');
-					$('#' + id + 'ExcludedSelect li i').off();
-					$('#' + id + 'ExcludedSelect li i').css('cursor', 'default');
+					$('#' + id + 'IncludedSelect li i').hide();
+					$('#' + id + 'ExcludedSelect li i').hide();
 					$('#' + id + 'IncludedSelect li').attr('draggable', false);
 					$('#' + id + 'IncludedSelect li').css('cursor', 'default');
 					$('#' + id + 'ExcludedSelect li').attr('draggable', false);
@@ -1360,15 +1367,8 @@ $.fn.multipleSelect = function(data) {
 					multipleSelectDisabled = true;
 				},
 				enable: function() {
-					$('#' + id + 'IncludedSelect li i').off();
-					$('#' + id + 'IncludedSelect li i').click(function(e){
-						removeElement($(e.target).parent());
-					});
-					$('#' + id + 'IncludedSelect li i').css('cursor', 'pointer');
-					$('#' + id + 'ExcludedSelect li i').off();
-					$('#' + id + 'ExcludedSelect li i').click(function(e){
-						addElement($(e.target).parent());
-					});
+					$('#' + id + 'IncludedSelect li i').show();
+					$('#' + id + 'ExcludedSelect li i').show();
 					$('#' + id + 'ExcludedSelect li i').css('cursor', 'pointer');
 					$('#' + id + 'IncludedSelect li').attr('draggable', true);
 					$('#' + id + 'IncludedSelect li').css('cursor', 'move');
@@ -1396,7 +1396,7 @@ $.fn.multipleSelect = function(data) {
 		
 		var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id ;
 
-		$(this).addClass('container-fluid');
+		//$(this).addClass('container-fluid');
 		
 		$(this).append('<div id="' + id + '"></div>');
 		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><label>' + getResource(options.excludedLabelResourceKey) + '</label><div class="excludedList col-md-5 formInput form-control excludedSelect" id="' + id 
@@ -1406,7 +1406,7 @@ $.fn.multipleSelect = function(data) {
 					'<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'id="' + id
 						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"/>');
 		
-		$('#' + id).append('<div id="' + id + 'IncludedList"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="includedList col-md-5 formInput form-control includedSelect" id="' + id 
+		$('#' + id).append('<div id="' + id + 'IncludedList" class="includedList1"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="includedList col-md-5 formInput form-control includedSelect" id="' + id 
 				+ 'Included"></div></div>');
 	
 		$('#' + id + 'Included').append('<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') 
