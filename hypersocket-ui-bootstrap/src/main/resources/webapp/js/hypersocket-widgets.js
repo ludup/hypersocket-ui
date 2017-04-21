@@ -1303,13 +1303,13 @@ $.fn.multipleSelect = function(data) {
 		newElement.find('i').click(function(e){
 			e.preventDefault();
 			removeElement($(e.target).parent());
+			if (options.changed) {
+				options.changed(callback);
+			}
 		});
 		$('#' + id + 'IncludedSelect').append(newElement);
 		element.remove();
 		addListeners(newElement);
-		if (options.changed) {
-			options.changed(callback);
-		}
 	}
 	
 	var addElementBefore = function(elementToAdd, element){
@@ -1319,13 +1319,13 @@ $.fn.multipleSelect = function(data) {
 		newElement.find('i').click(function(e){
 			e.preventDefault();
 			removeElement($(e.target).parent());
+			if (options.changed) {
+				options.changed(callback);
+			}
 		});
 		element.before(newElement);
 		elementToAdd.remove();
 		addListeners(newElement);
-		if (options.changed) {
-			options.changed(callback);
-		}
 	}
 	
 	var removeElement = function(element){
@@ -1333,7 +1333,11 @@ $.fn.multipleSelect = function(data) {
 		newElement.find('i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
 		newElement.removeClass(id + 'includedDraggable').addClass(id + 'excludedDraggable');
 		newElement.find('i').click(function(e){
+			e.preventDefault();
 			addElement($(e.target).parent());
+			if (options.changed) {
+				options.changed(callback);
+			}
 		});
 		var placeFound = false;
 		$('#' + id + 'ExcludedSelect').find('li').each(function(index, excludedElement){
@@ -1348,9 +1352,6 @@ $.fn.multipleSelect = function(data) {
 		}
 		addListeners(newElement);
 		element.remove();
-		if (options.changed) {
-			options.changed(callback);
-		}
 	}
 
 	dragSrcEl = null;
@@ -1412,10 +1413,19 @@ $.fn.multipleSelect = function(data) {
 		if(dragSrcEl && dragSrcEl != this && ($(dragSrcEl).hasClass(id + 'includedDraggable') || $(dragSrcEl).hasClass(id + 'excludedDraggable'))) {
 			if($(dragSrcEl).hasClass(id + 'includedDraggable') && ($(this).attr('id') == id + 'Excluded' || $(this).closest('div.excludedSelect').length)){
 				removeElement($(dragSrcEl));
+				if (options.changed) {
+					options.changed(callback);
+				}
 			}else if($(dragSrcEl).hasClass(id + 'excludedDraggable') && $(this).attr('id') == id + 'Included'){
 				addElement($(dragSrcEl));
+				if (options.changed) {
+					options.changed(callback);
+				}
 			}else if($(dragSrcEl).hasClass(id + 'excludedDraggable') && $(this).closest('div.includedSelect').length){
 				addElementBefore($(dragSrcEl), $(this));
+				if (options.changed) {
+					options.changed(callback);
+				}
 			}else if($(dragSrcEl).hasClass(id + 'includedDraggable') && $(this).hasClass(id + 'includedDraggable') && options.allowOrdering){
 				dragSrcEl.innerHTML = this.innerHTML;
 				var dragId = dragSrcEl.getAttribute('id');
@@ -1425,7 +1435,6 @@ $.fn.multipleSelect = function(data) {
 				this.innerHTML = e.dataTransfer.getData('text/html');
 				this.setAttribute('id', dragId);
 				this.setAttribute('value', dragValue);
-				
 				if (options.changed) {
 					options.changed(callback);
 				}
@@ -1490,7 +1499,7 @@ $.fn.multipleSelect = function(data) {
 				} else {
 					selectedOpt = $('#' + select.attr('id') + ' li[value="' + he.encode(id) + '"]');
 				}
-				if (selectedOpt) {
+				if (selectedOpt.length) {
 					addElement(selectedOpt);
 				}
 			});
@@ -1975,7 +1984,7 @@ $.fn.multipleSearchInput = function(data) {
 				if(options.addOnSelect) {
 					this.clicked(element);
 				} else {
-					element.dropdown();
+//					element.dropdown();
 				}
 			}
 		});

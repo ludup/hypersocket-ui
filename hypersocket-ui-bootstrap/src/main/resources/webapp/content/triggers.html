@@ -5,24 +5,6 @@
 
 <div id="contentTriggers">
 </div>
-<div id="contentTrigger" class="panel panel-default" style="display: none;">
-
-	<div class="spacer20px"></div>
-	<div class="row">
-		<div class="col-md-9" id="schemeArea">
-			<div id="triggerTasks" style="overflow: auto; height: 800px">
-				<div id="rootTrigger" class="triggerShape trigger-same-row" style="position: absolute; left: 50px; top: 50px;">
-					<span id="rootEvent" class="triggerContent"></span>
-				</div>
-				<div id="triggerView" class="trigger-same-row"></div>
-			</div>
-			<div class="spacer20px"></div>
-		</div>
-		<div class="col-md-3" id="triggerArea">
-			<div id="triggerIcons"></div>
-		</div>
-	</div>
-</div>
 <div id="searchTriggers">
 	<div class="modal" id="searchTriggersForm" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-lg">
@@ -325,28 +307,49 @@
 								complete : function() {
 									loadComplete();
 								},
-								selected: function(row) {
-									renderDiagram(row, resourcePage);
-								},
-								resourceUpdated: function() {
-									$('#triggerView').empty();
+								resourceUpdated: function(resource) {
 									$('._jsPlumb_connector').remove();
+									$('#schemeArea' + resource.id).find('.triggerDraggable').empty();
 									resourcePage.refresh();
+								},
+								detailView: true,
+								detailFormatter: function(index, resource, element) {
+									// Here element is the jquery object where you can render the view and resource is the table rows resource.
+									element.append(
+											'<div id="contentTrigger' + resource.id + '" class="panel panel-default" style="display: none;">'
+										+	'<div class="spacer20px"></div>'
+										+	'	<div class="row">'
+										+	'		<div class="col-md-12" id="schemeArea' + resource.id + '">'	
+										+	'			<div id="triggerTasks' + resource.id + '" style="overflow: auto; height: 300px">'		
+										+	'				<div id="rootTrigger' + resource.id + '" class="triggerShape trigger-same-row" style="position: absolute; left: 50px; top: 50px;">'			
+										+	'					<span id="rootEvent' + resource.id + '" class="triggerContent"></span>'				
+										+	'				</div>'			
+										+	'			</div>'		
+										+	'			<div class="spacer20px"></div>'		
+										+	'		</div>'	
+										+	'		<div class="col-md-3" id="triggerArea' + resource.id + '">'
+										+	'			<div id="triggerIcons' + resource.id + '"></div>'				
+										+	'		</div>'
+										+	'	</div>'
+										+	'</div>');
+									var jsPlumbInstance = jsPlumb.getInstance();
+									jsPlumbInstance.setContainer($('#schemeArea' + resource.id));
+									renderDiagram(resource, resourcePage, resource.id, jsPlumbInstance);
 								}
+								
 							});
 				});
 
 			});
 	
-	function renderDiagram(trigger, resourcePage) {
-		
-		jsPlumb.empty($('#triggerView'));
+	function renderDiagram(trigger, resourcePage, rootId, jsPlumbInstance) {
+		//jsPlumb.empty($('#triggerView' + rootId));
 		triggerList = [];
 		triggerMap = [];
 		if(trigger) {
 
-			$('#contentTrigger').show();
-			$('#rootEvent').text(getResource(trigger.event));
+			$('#contentTrigger' + trigger.id).show();
+			$('#rootEvent' + trigger.id).text(getResource(trigger.event));
 
         	triggerList.push('triggerDiagram_' + trigger.id);
         	triggerMap[trigger.id] = trigger;
@@ -355,9 +358,9 @@
         	var left = 200;
         	getState(triggerList, false, function(data){
         		resourceList = data.resources;
-        		addTask(trigger, null, top+50, left+50);
-            	jsPlumb.connect({
-    	            source: 'rootTrigger',
+        		addTask(trigger, null, top+50, left+50, rootId, jsPlumbInstance);
+        		jsPlumbInstance.connect({
+    	            source: 'rootTrigger' + trigger.id,
     	            target:"triggerDiagram_" + trigger.id,
     	            connector: 'Flowchart',
     	            anchor: "AutoDefault",
@@ -365,10 +368,8 @@
     	            detachable:false,
     	            overlays:[["Arrow", {location: 1}]]
     	        });
-            	
-				jsPlumb.draggable($('.triggerDraggable'));
-				
-				$('.triggerDraggable').draggable({
+				jsPlumbInstance.draggable($('#triggerDiagram_' + trigger.id));				
+				$('#triggerDiagram_' + trigger.id).draggable({
 			        stop: function(e){
 			            if($(this).data('trigger')){
 			            	var preferences = {};
@@ -384,7 +385,8 @@
 				            
 				            saveState('triggerDiagram_' + $(this).data('trigger').id, preferences, false);
 			            }
-			        }
+			        },
+					containment: 'parent'
 			    });
 				
 				$('.addIcon').off('click');
@@ -395,12 +397,10 @@
 						$(document).data('triggerModalCallback').loadParent(trigger, data.resources, 0);
 						$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
 							resourceCreated: function(resource) {
-								renderDiagram(resource, resourcePage);
+								renderDiagram(resource, resourcePage, rootId, jsPlumbInstance);
 							}
 						});
 					});
-// 					$(document).data('triggerModalCallback').loadParent(trigger, null, 0);
-// 					$('div[dialog-for="contentTriggers"]').resourceDialog('create');
 				});
 				
 				$('.editIcon').off('click');
@@ -423,7 +423,7 @@
 								  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
 										if(data.success) {
 											showSuccess(data.message);
-											renderDiagram(data.resource, resourcePage);
+											renderDiagram(data.resource, resourcePage, rootId, jsPlumbInstance);
 											resourcePage.refresh();
 										} else {
 											showError(data.message)
@@ -437,7 +437,7 @@
 								  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
 										if(data.success) {
 											showSuccess(data.message);
-											renderDiagram(null, resourcePage);
+											renderDiagram(null, resourcePage, rootId, jsPlumbInstance);
 											resourcePage.refresh();
 										} else {
 											showError(data.message)
@@ -451,55 +451,8 @@
         	});
         	
 		} else {
-			$('#contentTrigger').hide();
+			$('#contentTrigger' + trigger.id).hide();
 		}
-	}
-	
-	function getParent(trigger) {
-		while(trigger.parentId!=null) {
-			trigger = triggerMap[trigger.parentId];
-		}	
-		return trigger;
-	}
-	
-	function getStateLabelClass(trigger) {
-		var triggerClass = "label-info";
-		if(trigger.result == 'EVENT_FAILURE') {
-			triggerClass = "label-danger";
-		}else if(trigger.result == 'EVENT_WARNING') {
-			triggerClass = "label-warning";
-		} else if(trigger.result == 'EVENT_SUCCESS') {
-			triggerClass = "label-success";
-		}
-		
-		return triggerClass;
-	}
-	
-	function getStateLabelText(trigger) {
-		var triggerText = "text.any";
-		if(trigger.result == 'EVENT_FAILURE') {
-			triggerText = "text.failure";
-		}else if(trigger.result == 'EVENT_WARNING') {
-			triggerText = "text.warning";
-		} else if(trigger.result == 'EVENT_SUCCESS') {
-			triggerText = "text.success";
-		}
-		
-		return triggerText;
-	}
-	
-	function getStateClass(trigger) {
-		
-		var triggerClass = "trigger-any";
-		if(trigger.result == 'EVENT_FAILURE') {
-			triggerClass = "trigger-failure";
-		}else if(trigger.result == 'EVENT_WARNING') {
-			triggerClass = "trigger-warning";
-		} else if(trigger.result == 'EVENT_SUCCESS') {
-			triggerClass = "trigger-success";
-		}
-		
-		return triggerClass;
 	}
 	
 	function createTriggerList(childTriggers){
@@ -512,7 +465,7 @@
 		});
 	}
 	
-	function addTask(trigger, parent, top, left) {
+	function addTask(trigger, parent, top, left, rootId, jsPlumbInstance) {
 		var triggerClass = "blueTrigger";
 		if(trigger.result == 'EVENT_FAILURE') {
 			triggerClass = "redTrigger";
@@ -529,7 +482,8 @@
 				return false;
 			}
 		});
-		$('#triggerView').append(
+		
+		$('#triggerTasks' + rootId).append(
 					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape triggerDraggable " + triggerClass + " trigger-same-row' id='triggerDiagram_" + trigger.id + "'>"
 				+	"	<div class='triggerContent'>"
 				+	"		<span class='triggerText'>"	+ trigger.name + "</span>"
@@ -547,9 +501,8 @@
 		
 		$('#triggerDiagram_' + trigger.id).data('trigger', trigger);
 		$('#triggerDiagram_' + trigger.id).data('parent', parent);
-		
 		if(parent) {
-			jsPlumb.connect({
+			jsPlumbInstance.connect({
 	            source:"triggerDiagram_" + parent.id,
 	            target:"triggerDiagram_" + trigger.id,
 	            connector: 'Flowchart',
@@ -557,16 +510,37 @@
 	            endpoint:"Blank",
 	            detachable:false,
 	            overlays:[["Arrow", {location: 1}]]
-	        });	
+	        });
+			
+			jsPlumbInstance.draggable($('#triggerDiagram_' + trigger.id));
+			$('#triggerDiagram_' + trigger.id).draggable({
+		        stop: function(e){
+		            if($(this).data('trigger')){
+		            	var preferences = {};
+		            	state = new Object();
+		            	preferences.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
+		            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
+			            if(preferences.leftpx < 0) {
+			            	preferences.leftpx = 0;
+			            }
+			            if(preferences.top < 0) {
+			            	preferences.top = 0;
+			            }
+			            
+			            saveState('triggerDiagram_' + $(this).data('trigger').id, preferences, false);
+		            }
+		        },
+		        containment: 'parent'
+		    });
 		}
 		
 		top+= 50;
 		$.each(trigger.childTriggers, function(idx, childTrigger) {
 			left+=175;
-			addTask(childTrigger, trigger, top, left);
+			addTask(childTrigger, trigger, top, left, rootId, jsPlumbInstance);
 		});
         
         
 	}
 </script>
-<script src="${uiPath}/js/jquery.jsPlumb-1.7.5.min.js"></script>
+<script src="${uiPath}/js/jsplumb.js"></script>
