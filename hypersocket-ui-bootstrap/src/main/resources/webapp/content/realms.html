@@ -37,8 +37,8 @@
 						.ajaxResourcePage(
 							{ id: 'Realm',
 							  tableUrl : "realms/table", 
-							  title : getResource('realms.title'), 
-							  icon : "fa-database", 
+							  title : getResource('realms.title'),
+							  icon : "fa-database",
 							  resourceUrl : "realms/realm", 
 							  fields : [ { name : "name" },
 							             { name : "resourceCategory",
@@ -50,6 +50,20 @@
 							  canCreate : currentMenu.canCreate, 
 							  canUpdate : currentMenu.canUpdate, 
 							  canDelete : currentMenu.canDelete,
+							  additionalButtons : [{
+							  		resourceKey: 'realmImport',
+									buttonClass: 'btn-primary',
+									icon: 'fa-upload',
+									action: function(callback) {
+										if(!$('#importRealmPlaceholder').length) {
+											$('body').append('<div id="importRealmPlaceholder"></div>');
+										}
+										$('#importRealmPlaceholder').load(uiPath + "content/importRealmDialog.html", function(){
+											$('#importRealm').data('importUrl', 'realms/import');
+											$('#importRealm').data('action')(callback);
+										});
+									}
+							  }],
 							  additionalActions : actions,
 							  validate : function() {
 								  
