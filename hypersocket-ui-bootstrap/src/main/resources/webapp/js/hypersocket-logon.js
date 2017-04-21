@@ -220,8 +220,8 @@ function processLogon(data, opts, message) {
 			if(data.formTemplate.showLogonButton) {
 				$('#logonForm').append(
 						'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
-							+ (data.last ? getResource(data.lastButtonResourceKey) : getResource("text.next")) 
-							+ '&nbsp;<i class="fa fa-sign-in"></i></button>');
+							+ (data.last ? (data.formTemplate.logonButtonResourceKey ? getResource(data.formTemplate.logonButtonResourceKey) : getResource(data.lastButtonResourceKey)) : getResource("text.next")) 
+							+ '&nbsp;<i class="fa ' + (data.formTemplate.logonButtonIcon ? data.formTemplate.logonButtonIcon : 'fa-sign-in') + '"></i></button>');
 			}
 		}
 		
@@ -299,10 +299,12 @@ function processLogon(data, opts, message) {
 		if(opts.logonCompleted) {
 			opts.logonCompleted(data);
 		}
+		
+		stopSpin($('#logonButton i'), 'fa-sign-in');
 
 	}
 
-	stopSpin($('#logonButton i'), 'fa-sign-in');
+	
 }
 
 
