@@ -1079,10 +1079,6 @@ $.fn.autoComplete = function(data) {
 		}
 	};
 	
-	$('#input_' + id).change(function() {
-		updateValue($(this).val(), true);
-	});
-	
 	var doDropdown = function(text) {
 		$('#spin_' + id).removeClass('fa-search');
 		$('#spin_' + id).addClass('fa-spin');
@@ -1105,14 +1101,18 @@ $.fn.autoComplete = function(data) {
 							var map = [];
 							$.each(data.rows, function(idx, obj) {
 								map[obj[options.valueAttr]] = obj;
-								if(options.value) {
-									if(obj[options.valueAttr]==options.value) {
-										log("Found value with " + options.value);
-										thisWidget.data('selectedObject', obj);
-										$('#' + id).val(options.value);
-										$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-									}
-								}
+								/**
+								 * We don't want to set value here. It makes the dropdown unresponsive
+								 * when there is only one option.
+								 */
+//								if(options.value) {
+//									if(obj[options.valueAttr]==options.value) {
+//										log("Found value with " + options.value);
+//										thisWidget.data('selectedObject', obj);
+//										$('#' + id).val(options.value);
+//										$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+//									}
+//								}
 							});
 							$('#input_' + id).data('map', map);
 						} else {
@@ -1127,6 +1127,10 @@ $.fn.autoComplete = function(data) {
 		}
 		
 	};
+	
+	$('#input_' + id).change(function() {
+		updateValue($(this).val(), true);
+	});
 	
 	$('#input_' + id).keyup(function() {
 		var text = $(this).val();
