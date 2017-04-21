@@ -1984,7 +1984,7 @@ $.fn.multipleSearchInput = function(data) {
 				if(options.addOnSelect) {
 					this.clicked(element);
 				} else {
-					element.dropdown();
+//					element.dropdown();
 				}
 			}
 		});
