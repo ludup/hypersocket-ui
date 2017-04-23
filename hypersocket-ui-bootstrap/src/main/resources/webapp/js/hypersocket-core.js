@@ -858,7 +858,9 @@ function loadMenu(menu) {
 	
 		loadWait();
 		$('#mainContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
-			window.location.hash = "menu=" + menu.resourceKey;
+			if(window.location.hash.indexOf("menu=" + menu.resourceKey)===-1) {
+				window.location.hash = "menu=" + menu.resourceKey;
+			}
 		});
 	}
 }
@@ -872,7 +874,9 @@ function loadSubPage(menu, element) {
 	$('#subMenuPageContent').startSpin();
 	loadWait();
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
-		window.location.hash = "menu=" + menu.resourceKey;
+		if(window.location.hash.indexOf("menu=" + menu.resourceKey)===-1) {
+			window.location.hash = "menu=" + menu.resourceKey;
+		}
 		if ($(window).width() < 959) {
 			$('#main-menu').addClass('hidden-xs');
 		}

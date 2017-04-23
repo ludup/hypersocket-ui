@@ -1111,7 +1111,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#mainContainer').addClass('col-sm-12');
 		$('#main-menu').hide();
 		$('#mainContent').hide();
-		//dialogOptions.tableView.hide();
+
 		view.show();
 	}
 	
