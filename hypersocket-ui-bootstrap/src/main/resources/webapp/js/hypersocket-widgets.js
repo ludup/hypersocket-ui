@@ -1068,6 +1068,7 @@ $.fn.autoComplete = function(data) {
 		if($('#input_' + id).data('values')) {
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
+					
 					thisWidget.data('selectedObject', obj);
 					$('#' + id).val(obj[options.valueAttr]);
 					$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
@@ -5369,7 +5370,7 @@ $.fn.multipleRows = function(data) {
 						res.push(options.generateValue($(row)));
 					}
 				});
-				debugger;
+				
 				return res;
 			},
 			reset: function() {

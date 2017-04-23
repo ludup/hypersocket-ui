@@ -215,7 +215,7 @@ $.fn.resourceTable = function(params) {
 
 	var columns = new Array();
 	var columnsDefs = new Array();
-	var sortColumns = new Array();
+	var searchColumns = new Array();
 	
 	if(options.logo) {
 		var c = { field : 'logo',
@@ -251,9 +251,10 @@ $.fn.resourceTable = function(params) {
 	if(options.searchFields) {
 		$.each(options.searchFields,function(idx, obj) {
 			var c = { value : obj.name,
-					name: getResource(options.resourceKey + "." + obj.name + '.label')
+					name: getResource(options.resourceKey + "." + obj.name + '.label'),
+					renderOptions: obj.renderOptions
 			};
-			sortColumns.push(c);	
+			searchColumns.push(c);	
 		});
 	}
 	
@@ -577,8 +578,14 @@ $.fn.resourceTable = function(params) {
 		    	}
 		    },
 		    queryParams: function(params) {
+		    	
 		    	if($('#searchColumn').widget()) {
+		    		
 		    		params.searchColumn = $('#searchColumn').widget().getValue();
+		    		var selected = $('#searchColumn').widget().getObject();
+		    		if(selected && selected.renderOptions && $('#searchValue').widget()) {
+		    			params.search = $('#searchValue').widget().getValue();
+		    		}
 		    	}
 		    	if(options.queryParams) {
 		    		options.queryParams(params);
@@ -601,17 +608,29 @@ $.fn.resourceTable = function(params) {
 		    		
 		    		log("Rendering search");
 		    		
-		    		if(sortColumns.length > 0) {
+		    		if(searchColumns.length > 0) {
 						$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
 						$('#searchColumn').textDropdown({
-							values: sortColumns,
-							value: sortColumns[0].name,
+							values: searchColumns,
 							changed: function(widget) {
+								var selected = widget.getObject();
+								$('#searchValue').remove();
+								if(selected.renderOptions) {
+									$('.search input[placeholder="Search"]').hide();
+									$('#searchColumn').parent().append('<div id="searchValue" class="toolbarWidget"></div>');
+									selected.renderOptions($('#searchValue'), function() {
+										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+									});
+									
+								} else {
+									$('.search input[placeholder="Search"]').show();
+								}
 								
 								$('.search input[placeholder="Search"]').val('');
 								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 							}
 						});
+						$('#searchColumn').widget().setValue(searchColumns[0].name);
 					}
 
                     if(options.bulkAssignment) {
