@@ -216,7 +216,19 @@ $.fn.resourceTable = function(params) {
 	var columns = new Array();
 	var columnsDefs = new Array();
 	var sortColumns = new Array();
-	
+
+	if(options.checkbox) {
+	    columns.push({
+	        checkbox : true
+	    });
+	}
+
+	if(options.radio) {
+        columns.push({
+            radio : true
+        });
+    }
+
 	if(options.logo) {
 		var c = { field : 'logo',
 				title: getResource(options.resourceKey + '.logo.label'),
@@ -595,7 +607,7 @@ $.fn.resourceTable = function(params) {
 		    classes: 'table table-hover ' + divName,
 		    onPostHeader: function() {
 		    	
-		    	if($('#searchRendered' + divName).length==0) {
+		    	if($('#searchRendered' + divName).length == 0) {
 		    		
 		    		log("Rendering search");
 		    		
@@ -651,6 +663,44 @@ $.fn.resourceTable = function(params) {
 							});
 						});
 					}
+
+					if (options.checkbox && options.canDelete) {
+                        if($('#multipleDelete').length == 0) {
+                            $('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="multipleDelete" class="btn btn-default" type="button" name="multipleDelete" title="Delete"><i class="fa fa-trash"></i></button>');
+                            $('#multipleDelete').click(function(e) {
+                                var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
+                                if(arr.length > 0) {
+                                debugger;
+                                    var resourceNames = [];
+                                    $.each(arr, function(idx, val) {
+                                      resourceNames.push(val.name);
+                                    });
+                                    bootbox.confirm(getResource("bulk.delete.confirm").format(resourceNames.join(", ")), function(confirmed) {
+                                        if (confirmed) {
+                                            log('Deleted..................');
+                                            /*deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
+                                                if (data.success) {
+                                                    if (options.resourceDeleted) {
+                                                        options.resourceDeleted(resource, data.message);
+                                                    }
+                                                    $('#' + divName + 'Placeholder').bootstrapTable('remove', {
+                                                        field: 'id',
+                                                        values: [resource.id]
+                                                    });
+                                                    $('#' + divName + 'Placeholder').bootstrapTable('refresh');
+                                                    checkBadges(false);
+                                                    showSuccess(data.message);
+                                                } else {
+                                                    showError(data.message);
+                                                }
+                                            });*/
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+
 					$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').last().append('<div id="searchRendered' + divName + '"></div>');
 		    	}
 		    },
