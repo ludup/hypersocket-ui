@@ -119,6 +119,10 @@ function processLogon(data, opts, message) {
 						
 					});
 					return;
+				} else if(this.type == 'html') {
+					$('#logonForm').append('<div id="' + this.resourceKey + '"></div>');
+					$('#' + this.resourceKey).html(this.defaultValue);
+					return;
 				} else if(this.type =='img') {
 					$('#logonForm').append('<div class="center"><img id="' + this.resourceKey + '" src="' + this.defaultValue + '"></img></div>');
 					return;
@@ -226,7 +230,7 @@ function processLogon(data, opts, message) {
 		}
 		
 		if(!data.postAuthentication) {
-			if(!data.first) {
+			if(!data.first && data.formTemplate.showStartAgain) {
 				$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 				$('#resetLogon').click(function(e) {
 					e.preventDefault();
