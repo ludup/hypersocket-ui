@@ -722,7 +722,7 @@ function deleteJSON(url, params, callback, errorCallback) {
 	    success: callback
 	}).fail(function(xmlRequest) {
 		if(errorCallback) {
-			if(!errorCallback()) {
+			if(!errorCallback(xmlRequest)) {
 				return;
 			}
 		}

@@ -215,7 +215,7 @@ $.fn.resourceTable = function(params) {
 
 	var columns = new Array();
 	var columnsDefs = new Array();
-	var sortColumns = new Array();
+	var searchColumns = new Array();
 
 	if(options.checkbox) {
 	    columns.push({
@@ -691,30 +691,46 @@ $.fn.resourceTable = function(params) {
                             $('#multipleDelete').click(function(e) {
                                 var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
                                 if(arr.length > 0) {
-                                debugger;
-                                    var resourceNames = [];
+                                    var ids = [];
+                                    var names = [];
                                     $.each(arr, function(idx, val) {
-                                      resourceNames.push(val.name);
+                                    	ids.push(val.id);
+                                    	names.push(val.name);
                                     });
-                                    bootbox.confirm(getResource("bulk.delete.confirm").format(resourceNames.join(", ")), function(confirmed) {
-                                        if (confirmed) {
-                                            log('Deleted..................');
-                                            /*deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
-                                                if (data.success) {
-                                                    if (options.resourceDeleted) {
-                                                        options.resourceDeleted(resource, data.message);
-                                                    }
-                                                    $('#' + divName + 'Placeholder').bootstrapTable('remove', {
-                                                        field: 'id',
-                                                        values: [resource.id]
-                                                    });
+                                    bootbox.confirm(getResource("bulk.delete.confirm").format(names.join(", ")), function(confirmed) {
+                                        if (confirmed && options.deleteResourcesUrl) {
+                                            deleteJSON(options.deleteResourcesUrl, ids, function(data) {
+                                            	if(data.success) {
+                                        			 $('#' + divName + 'Placeholder').bootstrapTable('remove', {
+                                                         field: 'id',
+                                                         values: ids
+                                                     });
+                                            		
                                                     $('#' + divName + 'Placeholder').bootstrapTable('refresh');
-                                                    checkBadges(false);
+                                            		checkBadges(false);
                                                     showSuccess(data.message);
-                                                } else {
-                                                    showError(data.message);
-                                                }
-                                            });*/
+                                            	} else {
+                                            		showError(data.message);
+                                            	}
+                                            }, function(xmlRequest) {
+                                            	if (xmlRequest.status == 404) {
+                                            		$.each(ids, function(idx, id) {
+                                            			deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
+                                                            if (data.success) {
+                                                                $('#' + divName + 'Placeholder').bootstrapTable('remove', {
+                                                                    field: 'id',
+                                                                    values: [id]
+                                                                });
+                                                                $('#' + divName + 'Placeholder').bootstrapTable('refresh');
+                                                                checkBadges(false);
+                                                                showSuccess(data.message);
+                                                            } else {
+                                                                showError(data.message);
+                                                            }
+                                                        });
+                                            		});
+                                            	}
+                                            });
                                         }
                                     });
                                 }
