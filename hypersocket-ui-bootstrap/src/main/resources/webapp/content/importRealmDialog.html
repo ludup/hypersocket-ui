@@ -1,0 +1,94 @@
+<div class="modal" id="importRealm" tabindex="-1" role="dialog">
+	<div class="modal-dialog"> 
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title" localize="import.title"></h4>
+			</div>
+			<div class="modal-body">
+				<div class="propertyItem form-group">
+					<label for="importRealmFile" class="col-md-3 control-label"
+						localize="import.file.label"></label>
+					<div class="propertyValue col-md-9">
+						<input type="file" name="importRealmFile" id="importRealmFile" class="form-control" />
+						<div>
+							<span class="help-block" localize="import.realm.file.info"></span>
+						</div>
+					</div>
+				</div>
+				<div class="propertyItem form-group">
+					<label for="mergeSwitch" class="col-md-3 control-label"
+						   localize="import.realm.merge.label"></label>
+					<div class="propertyValue col-md-9">
+						<div id="mergeSwitch"></div>
+						<div>
+							<span class="help-block" localize="import.merge.info"></span>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="importRealmButton" type="button" class="btn btn-primary">
+						<i id="realmUploadIcon" class="fa fa-upload"></i><span
+							localize="importResourceButton.label"></span>
+					</button>
+				</div>
+			</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#importRealm').localize();
+
+		$('#importRealm').data('action', function(callback) {
+			$('#importRealmFile').val('');
+			$('#importRealm').data('callback', callback);
+			$('#importRealm').modal('show');
+		});
+
+		var mergeSwitch = $('#mergeSwitch').switchInput({
+		    onResourceKey: 'text.yes',
+		    offResourceKey: 'text.no'
+		});
+
+		$('#importRealmButton').click(function(e) {
+	
+			if ($('#importRealmFile').val() == '') {
+				showError(getResource("error.selectImportFile"));
+				return;
+			}
+			
+			var formData = new FormData();
+			formData.append('file', $('#importRealmFile')[0].files[0]);
+			formData.append('mergeData', mergeSwitch.getValue());
+
+			
+			$('#realmUploadIcon').removeClass('fa-upload');
+			$('#realmUploadIcon').addClass('fa-spinner fa-spin');
+			doAjax({
+				type : 'POST',
+				url : basePath + '/api/' + $('#importRealm').data('importUrl'),
+				dataType : 'json',
+				cache : false,
+				contentType : false,
+				processData : false,
+				data : formData,
+				success : function(data) {
+	 				if (data.success) {
+		   				$('#importRealm').modal('hide');
+		   				$('#importRealm').data('callback')();
+	  	 				showSuccess(data.message);
+	 				} else {
+	 	  				showError(data.message);
+	 				} 
+				},
+				error : function(jqXHR,textStatus,errorThrown) {
+					            showError(errorThrown);
+				} 
+			}).always(function() {
+				$('#realmUploadIcon').removeClass('fa-spinner fa-spin');
+				$('#realmUploadIcon').addClass('fa-upload');
+			});
+		});
+	});
+</script>
+

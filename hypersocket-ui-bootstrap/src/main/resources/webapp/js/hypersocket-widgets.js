@@ -1068,6 +1068,7 @@ $.fn.autoComplete = function(data) {
 		if($('#input_' + id).data('values')) {
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
+					
 					thisWidget.data('selectedObject', obj);
 					$('#' + id).val(obj[options.valueAttr]);
 					$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
@@ -1078,10 +1079,6 @@ $.fn.autoComplete = function(data) {
 			});
 		}
 	};
-	
-	$('#input_' + id).change(function() {
-		updateValue($(this).val(), true);
-	});
 	
 	var doDropdown = function(text) {
 		$('#spin_' + id).removeClass('fa-search');
@@ -1105,14 +1102,18 @@ $.fn.autoComplete = function(data) {
 							var map = [];
 							$.each(data.rows, function(idx, obj) {
 								map[obj[options.valueAttr]] = obj;
-								if(options.value) {
-									if(obj[options.valueAttr]==options.value) {
-										log("Found value with " + options.value);
-										thisWidget.data('selectedObject', obj);
-										$('#' + id).val(options.value);
-										$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-									}
-								}
+								/**
+								 * We don't want to set value here. It makes the dropdown unresponsive
+								 * when there is only one option.
+								 */
+//								if(options.value) {
+//									if(obj[options.valueAttr]==options.value) {
+//										log("Found value with " + options.value);
+//										thisWidget.data('selectedObject', obj);
+//										$('#' + id).val(options.value);
+//										$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+//									}
+//								}
 							});
 							$('#input_' + id).data('map', map);
 						} else {
@@ -1127,6 +1128,10 @@ $.fn.autoComplete = function(data) {
 		}
 		
 	};
+	
+	$('#input_' + id).change(function() {
+		updateValue($(this).val(), true);
+	});
 	
 	$('#input_' + id).keyup(function() {
 		var text = $(this).val();
@@ -1303,13 +1308,13 @@ $.fn.multipleSelect = function(data) {
 		newElement.find('i').click(function(e){
 			e.preventDefault();
 			removeElement($(e.target).parent());
+			if (options.changed) {
+				options.changed(callback);
+			}
 		});
 		$('#' + id + 'IncludedSelect').append(newElement);
 		element.remove();
 		addListeners(newElement);
-		if (options.changed) {
-			options.changed(callback);
-		}
 	}
 	
 	var addElementBefore = function(elementToAdd, element){
@@ -1319,13 +1324,13 @@ $.fn.multipleSelect = function(data) {
 		newElement.find('i').click(function(e){
 			e.preventDefault();
 			removeElement($(e.target).parent());
+			if (options.changed) {
+				options.changed(callback);
+			}
 		});
 		element.before(newElement);
 		elementToAdd.remove();
 		addListeners(newElement);
-		if (options.changed) {
-			options.changed(callback);
-		}
 	}
 	
 	var removeElement = function(element){
@@ -1333,7 +1338,11 @@ $.fn.multipleSelect = function(data) {
 		newElement.find('i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
 		newElement.removeClass(id + 'includedDraggable').addClass(id + 'excludedDraggable');
 		newElement.find('i').click(function(e){
+			e.preventDefault();
 			addElement($(e.target).parent());
+			if (options.changed) {
+				options.changed(callback);
+			}
 		});
 		var placeFound = false;
 		$('#' + id + 'ExcludedSelect').find('li').each(function(index, excludedElement){
@@ -1348,9 +1357,6 @@ $.fn.multipleSelect = function(data) {
 		}
 		addListeners(newElement);
 		element.remove();
-		if (options.changed) {
-			options.changed(callback);
-		}
 	}
 
 	dragSrcEl = null;
@@ -1412,10 +1418,19 @@ $.fn.multipleSelect = function(data) {
 		if(dragSrcEl && dragSrcEl != this && ($(dragSrcEl).hasClass(id + 'includedDraggable') || $(dragSrcEl).hasClass(id + 'excludedDraggable'))) {
 			if($(dragSrcEl).hasClass(id + 'includedDraggable') && ($(this).attr('id') == id + 'Excluded' || $(this).closest('div.excludedSelect').length)){
 				removeElement($(dragSrcEl));
+				if (options.changed) {
+					options.changed(callback);
+				}
 			}else if($(dragSrcEl).hasClass(id + 'excludedDraggable') && $(this).attr('id') == id + 'Included'){
 				addElement($(dragSrcEl));
+				if (options.changed) {
+					options.changed(callback);
+				}
 			}else if($(dragSrcEl).hasClass(id + 'excludedDraggable') && $(this).closest('div.includedSelect').length){
 				addElementBefore($(dragSrcEl), $(this));
+				if (options.changed) {
+					options.changed(callback);
+				}
 			}else if($(dragSrcEl).hasClass(id + 'includedDraggable') && $(this).hasClass(id + 'includedDraggable') && options.allowOrdering){
 				dragSrcEl.innerHTML = this.innerHTML;
 				var dragId = dragSrcEl.getAttribute('id');
@@ -1425,7 +1440,6 @@ $.fn.multipleSelect = function(data) {
 				this.innerHTML = e.dataTransfer.getData('text/html');
 				this.setAttribute('id', dragId);
 				this.setAttribute('value', dragValue);
-				
 				if (options.changed) {
 					options.changed(callback);
 				}
@@ -1490,7 +1504,7 @@ $.fn.multipleSelect = function(data) {
 				} else {
 					selectedOpt = $('#' + select.attr('id') + ' li[value="' + he.encode(id) + '"]');
 				}
-				if (selectedOpt) {
+				if (selectedOpt.length) {
 					addElement(selectedOpt);
 				}
 			});
@@ -1975,7 +1989,7 @@ $.fn.multipleSearchInput = function(data) {
 				if(options.addOnSelect) {
 					this.clicked(element);
 				} else {
-					element.dropdown();
+//					element.dropdown();
 				}
 			}
 		});
@@ -5356,7 +5370,7 @@ $.fn.multipleRows = function(data) {
 						res.push(options.generateValue($(row)));
 					}
 				});
-				debugger;
+				
 				return res;
 			},
 			reset: function() {
