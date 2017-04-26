@@ -309,6 +309,7 @@
 								title : title,
 								icon : 'fa-user',
 								resourceUrl : apiUrl + "/user",
+								deleteResourcesUrl : "currentRealm/bulk/users",
 								disableDecoration: disableDecoration,
 								fields : fields,
 								resourceKey : 'user',
@@ -327,6 +328,7 @@
 																	});
 				    	    	},
 								additionalActions : actions,
+								checkbox : true,
 								validate : function(create) {
 									if ($('#userName').val().trim() == '') {
 										showError("error.nameRequired");

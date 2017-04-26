@@ -39,7 +39,8 @@
 							  tableUrl : "realms/table", 
 							  title : getResource('realms.title'),
 							  icon : "fa-database",
-							  resourceUrl : "realms/realm", 
+							  resourceUrl : "realms/realm",
+							  deleteResourcesUrl : "realms/bulk",
 							  fields : [ { name : "name" },
 							             { name : "resourceCategory",
 								           formatter: function(value, obj, index) {
@@ -65,6 +66,7 @@
 									}
 							  }],
 							  additionalActions : actions,
+							  checkbox : true,
 							  validate : function() {
 								  
 								removeMessage();

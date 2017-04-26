@@ -76,11 +76,13 @@
 				infoHtml: getResource('roles.infoHtml'),
 				icon: 'fa-user-md',
 				resourceUrl : "roles/role",
+				deleteResourcesUrl : 'roles/bulk',
 				fields : [ { name: "name"} ],
 				resourceKey : 'role',
 				canCreate: currentMenu.canCreate,
 				canUpdate: currentMenu.canUpdate,
 				canDelete: currentMenu.canDelete,
+				checkbox : true,
 				validate : function() {
 					if ($('#name').val() == '') {
 						showError("error.nameRequired");
