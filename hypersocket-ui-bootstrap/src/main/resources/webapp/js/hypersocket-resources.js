@@ -686,9 +686,9 @@ $.fn.resourceTable = function(params) {
 					}
 
 					if (options.checkbox && options.canDelete) {
-                        if($('#multipleDelete').length == 0) {
-                            $('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="multipleDelete" class="btn btn-default" type="button" name="multipleDelete" title="Delete"><i class="fa fa-trash"></i></button>');
-                            $('#multipleDelete').click(function(e) {
+                        if($('#multipleDelete' + divName).length == 0) {
+                            $('#' + divName +  ' .fixed-table-toolbar').find('.btn-group').first().prepend('<button id="multipleDelete' + divName +'" class="btn btn-default" type="button" name="multipleDelete' + divName +'" title="Delete"><i class="fa fa-trash"></i></button>');
+                            $('#multipleDelete' + divName).click(function(e) {
                                 var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
                                 if(arr.length > 0) {
                                     var ids = [];

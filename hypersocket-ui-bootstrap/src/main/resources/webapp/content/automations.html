@@ -120,6 +120,7 @@
 							infoHtml: getResource('automations.infoHtml'),
 							icon: 'fa-clock-o',
 							resourceUrl : "automations/automation",
+							deleteResourcesUrl : "automations/bulk",
 							fields : [ {
 								name : "name"
 							}],
@@ -127,6 +128,7 @@
 							canCreate: currentMenu.canCreate,
 							canUpdate: currentMenu.canUpdate,
 							canDelete: currentMenu.canDelete,
+							checkbox : true,
 							additionalActions: [{
 								resourceKey : 'automationRunNow',
 								iconClass : 'fa-play',

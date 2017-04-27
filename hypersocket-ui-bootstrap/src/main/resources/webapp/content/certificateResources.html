@@ -107,6 +107,7 @@
 							title: getResource("certificates.label"),
 							icon: 'fa-globe',
 							resourceUrl : "certificates/certificate",
+							deleteResourcesUrl : "certificates/bulk",
 							fields : [ {
 								name : "name"
 							}],
@@ -119,6 +120,7 @@
 							canCopy: false,
 							canUpdate: currentMenu.canUpdate,
 							canDelete: currentMenu.canDelete,
+							checkbox : true,
 							validate : function() {
 
 								if ($('#resourceName').val() == '') {
