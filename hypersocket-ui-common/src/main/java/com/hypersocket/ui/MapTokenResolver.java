@@ -7,7 +7,7 @@ import com.hypersocket.utils.ITokenResolver;
 
 public class MapTokenResolver implements ITokenResolver {
 
-	  protected Map<String, String> tokenMap = new HashMap<String, String>();
+	  protected Map<String, Object> tokenMap = new HashMap<String, Object>();
 
 	  public MapTokenResolver() {
 	  }
@@ -17,11 +17,19 @@ public class MapTokenResolver implements ITokenResolver {
 	  }
 
 	  public String resolveToken(String tokenName) {
-	    return this.tokenMap.get(tokenName);
+	    Object obj = this.tokenMap.get(tokenName);
+	    if(obj!=null) {
+	    	return obj.toString();
+	    }
+	    return null;
 	  }
 	  
 	  public void addAll(MapTokenResolver resolver) {
 		  this.tokenMap.putAll(resolver.tokenMap);
+	  }
+	  
+	  public Map<String,Object> getData() {
+		  return tokenMap;
 	  }
 
 }
