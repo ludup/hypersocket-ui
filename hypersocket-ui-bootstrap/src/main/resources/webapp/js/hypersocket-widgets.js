@@ -3,6 +3,29 @@ $.fn.widget = function() {
 	return $(this).data('widget');
 }
 
+function processURL(widget, url) {
+	debugger;
+	const regex = /{(.*?)}/g;
+	let m;
+
+	while ((m = regex.exec(url)) !== null) {
+	    // This is necessary to avoid infinite loops with zero-width matches
+	    if (m.index === regex.lastIndex) {
+	        regex.lastIndex++;
+	    }
+	    
+	    // The result can be accessed through the `m`-variable.
+	    m.forEach((match, groupIndex) => {
+	    	debugger;
+	    	var w = widget.options().widgets[m[1]];
+	    	if(w) {
+	    		url = url.replace(match, w.getValue());
+	    	}
+	    });
+	}
+	
+	return url;
+}
 /**
  * Attach an event handler to an element, so that when clicked, it will
  * copy some text to the clipboard. 
@@ -1093,7 +1116,7 @@ $.fn.autoComplete = function(data) {
 			if(options.searchParams) {
 				url += '&' + options.searchParams;
 			}
-			getJSON(url,
+			getJSON(processURL(thisWidget.widget(), url),
 					null,
 					function(data) {
 						$('#input_' + id).data('values', data.rows);
@@ -1151,14 +1174,14 @@ $.fn.autoComplete = function(data) {
 				return thisWidget.data('selectedObject');
 			},
 			reset: function(newValue) {
-				
+				debugger;
 				if(options.url && !options.remoteSearch) {
 					var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text;
 					if(options.searchParams) {
 						url += '&' + options.searchParams;
 					}
 					getJSON(
-						url,
+						processURL(callback, url),
 						null,
 						function(data) {
 							buildData(options.isResourceList ? data.resources : data);
@@ -1242,7 +1265,7 @@ $.fn.autoComplete = function(data) {
 	
 	if(options.url && !options.remoteSearch) {
 		getJSON(
-			options.url,
+			processURL(callback, options.url),
 			null,
 			function(data) {
 				buildData(options.isResourceList ? data.resources : data);
@@ -1260,7 +1283,7 @@ $.fn.autoComplete = function(data) {
 			if(options.searchParams) {
 				url += '&' + options.searchParams;
 			}
-			getJSON(url,
+			getJSON(processURL(callback, url),
 					null,
 					function(data) {
 						

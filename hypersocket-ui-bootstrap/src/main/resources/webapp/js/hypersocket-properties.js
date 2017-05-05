@@ -1156,6 +1156,15 @@ $.fn.propertyPage = function(opts) {
 	
 							});
 				
+				var widgetMap = [];
+				$.each(widgets, function(idx, widget) {
+					widgetMap[widget.options().resourceKey] = widget;
+				});
+				
+				$.each(widgets, function(idx, widget) {
+					widget.options().widgets = widgetMap;
+				});
+				
 				var funcVisibility = function() {
 					$.each(widgets, function(idx, w) {
 						if(w.options().visibilityDependsOn) {
@@ -1188,7 +1197,11 @@ $.fn.propertyPage = function(opts) {
 								}
 								
 								if(show) {
+									if(w.options().resetOnVisibilityChange) {
+										w.reset();
+									}
 									w.getInput().parents('.propertyItem').show();
+									
 								} else {
 									if(w.options().clearOnVisibilityChange) {
 										w.clear();
