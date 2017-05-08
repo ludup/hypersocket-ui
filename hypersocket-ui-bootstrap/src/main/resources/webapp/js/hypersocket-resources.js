@@ -216,7 +216,19 @@ $.fn.resourceTable = function(params) {
 	var columns = new Array();
 	var columnsDefs = new Array();
 	var searchColumns = new Array();
-	
+
+	if(options.checkbox) {
+	    columns.push({
+	        checkbox : true
+	    });
+	}
+
+	if(options.radio) {
+        columns.push({
+            radio : true
+        });
+    }
+
 	if(options.logo) {
 		var c = { field : 'logo',
 				title: getResource(options.resourceKey + '.logo.label'),
@@ -604,7 +616,7 @@ $.fn.resourceTable = function(params) {
 		    classes: 'table table-hover ' + divName,
 		    onPostHeader: function() {
 		    	
-		    	if($('#searchRendered' + divName).length==0) {
+		    	if($('#searchRendered' + divName).length == 0) {
 		    		
 		    		log("Rendering search");
 		    		
@@ -672,6 +684,60 @@ $.fn.resourceTable = function(params) {
 							});
 						});
 					}
+
+					if (options.checkbox && options.canDelete) {
+                        if($('#multipleDelete' + divName).length == 0) {
+                            $('#' + divName +  ' .fixed-table-toolbar').find('.btn-group').first().prepend('<button id="multipleDelete' + divName +'" class="btn btn-default" type="button" name="multipleDelete' + divName +'" title="Delete"><i class="fa fa-trash"></i></button>');
+                            $('#multipleDelete' + divName).click(function(e) {
+                                var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
+                                if(arr.length > 0) {
+                                    var ids = [];
+                                    var names = [];
+                                    $.each(arr, function(idx, val) {
+                                    	ids.push(val.id);
+                                    	names.push(val.name);
+                                    });
+                                    bootbox.confirm(getResource("bulk.delete.confirm").format(names.join(", ")), function(confirmed) {
+                                        if (confirmed && options.deleteResourcesUrl) {
+                                            deleteJSON(options.deleteResourcesUrl, ids, function(data) {
+                                            	if(data.success) {
+                                        			 $('#' + divName + 'Placeholder').bootstrapTable('remove', {
+                                                         field: 'id',
+                                                         values: ids
+                                                     });
+                                            		
+                                                    $('#' + divName + 'Placeholder').bootstrapTable('refresh');
+                                            		checkBadges(false);
+                                                    showSuccess(data.message);
+                                            	} else {
+                                            		showError(data.message);
+                                            	}
+                                            }, function(xmlRequest) {
+                                            	if (xmlRequest.status == 404) {
+                                            		$.each(ids, function(idx, id) {
+                                            			deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
+                                                            if (data.success) {
+                                                                $('#' + divName + 'Placeholder').bootstrapTable('remove', {
+                                                                    field: 'id',
+                                                                    values: [id]
+                                                                });
+                                                                $('#' + divName + 'Placeholder').bootstrapTable('refresh');
+                                                                checkBadges(false);
+                                                                showSuccess(data.message);
+                                                            } else {
+                                                                showError(data.message);
+                                                            }
+                                                        });
+                                            		});
+                                            	}
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+
 					$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').last().append('<div id="searchRendered' + divName + '"></div>');
 		    	}
 		    },
