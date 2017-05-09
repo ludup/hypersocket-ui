@@ -150,8 +150,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}, MenuService.MENU_MY_PROFILE);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_MY_RESOURCES, "fa-share-alt", null, 300, null,
+				MenuService.MENU_MY_RESOURCES, "fa-share-alt", null, 100, null,
 				null, null, null) {
+			@Override
+			public boolean isHome() {
+				return true; // If we have some resources make this home.
+			}
+			
 			@Override
 			public boolean canRead() {
 				return !isHidden();
