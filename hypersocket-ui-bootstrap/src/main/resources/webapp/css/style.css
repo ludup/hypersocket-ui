@@ -2044,3 +2044,31 @@ select[multiple] {
   0%, 39%, 100% { opacity: 0; }
   40% { opacity: 1; } 
 }
+
+.imageGalleryRow img{
+	max-width:100%;
+	max-height:120px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	cursor: pointer;
+}
+.imageGalleryRow img.imageSelected{
+	//border: 5px black solid;
+	opacity: 0.5;
+}
+.imageGalleryRow .col-md-4{
+	height:180px;
+	text-align: center;
+}
+.imageGalleryRow .col-md-4 span{
+	height: 60px;
+	margin-top: 10px;
+}
+.imageGalleryList{
+	max-height:540px;
+	height:540px;
+	overflow-y: scroll;
+	padding-right: 60px;
+	padding-left: 60px;
+}

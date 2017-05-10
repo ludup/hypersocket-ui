@@ -4811,7 +4811,7 @@ $.fn.html5Upload = function(data) {
  	 				        		});
  	 				        	}
  	 				        	if(options.uploadCallback){
- 	 				        		options.uploadCallback();
+ 	 				        		options.uploadCallback(data);
  	 				        	}
  	 				        	if(options.fadeBars){
  	 				        		setTimeout(function() {
