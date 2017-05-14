@@ -156,7 +156,7 @@ $.fn.resourceTable = function(params) {
 		onSave : false,
 		stayOnPageAfterSave: false,
 		bulkAssignment: false
-		},params);
+		}, params);
 
 	options.tableView = $('#' + divName);
 	
@@ -1191,7 +1191,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		dialogOptions.clearDialog(true);
 		if(dialogOptions.propertyOptions) {
-			var propertyOptions = $.extend({},
+			 var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
 					{ url: dialogOptions.propertyOptions.templateUrl,
 				      title: getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
@@ -1206,13 +1206,13 @@ $.fn.samePageResourceView = function(params, params2) {
 						  
 					  }	
 			});
-			if(dialogOptions.propertyOptions.additionalTabs) {
-				$.each(dialogOptions.propertyOptions.additionalTabs, function(idx, obj) {
+			if(propertyOptions.additionalTabs) {
+				$.each(propertyOptions.additionalTabs, function(idx, obj) {
 					$('body').append($('#' + obj.id).detach());
 				});
 			}
-			$(dialogOptions.propertyOptions.propertySelector).empty();
-			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+			$(propertyOptions.propertySelector).empty();
+			$(propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
 			addActions(true);

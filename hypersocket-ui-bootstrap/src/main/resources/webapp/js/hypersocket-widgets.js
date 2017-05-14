@@ -3,6 +3,28 @@ $.fn.widget = function() {
 	return $(this).data('widget');
 }
 
+function processURL(widget, url) {
+
+	const regex = /{(.*?)}/g;
+	let m;
+
+	while ((m = regex.exec(url)) !== null) {
+	    // This is necessary to avoid infinite loops with zero-width matches
+	    if (m.index === regex.lastIndex) {
+	        regex.lastIndex++;
+	    }
+	    
+	    // The result can be accessed through the `m`-variable.
+	    m.forEach((match, groupIndex) => {
+	    	var w = widget.options().widgets[m[1]];
+	    	if(w) {
+	    		url = url.replace(match, w.getValue());
+	    	}
+	    });
+	}
+	
+	return url;
+}
 /**
  * Attach an event handler to an element, so that when clicked, it will
  * copy some text to the clipboard. 
@@ -935,7 +957,8 @@ $.fn.autoComplete = function(data) {
 			remoteSearch: false,
 			resourceKeyTemplate: '{0}',
 			icon: 'fa-search',
-			sortOptions: true
+			sortOptions: true,
+			doNotInit: false
 		}, data);
 	
 	var callback;
@@ -1093,7 +1116,7 @@ $.fn.autoComplete = function(data) {
 			if(options.searchParams) {
 				url += '&' + options.searchParams;
 			}
-			getJSON(url,
+			getJSON(processURL(thisWidget.widget(), url),
 					null,
 					function(data) {
 						$('#input_' + id).data('values', data.rows);
@@ -1139,7 +1162,6 @@ $.fn.autoComplete = function(data) {
 	});
 	
 	var remoteDropdown = false;
-	
 	callback = {
 			setValue: function(val) {
 				updateValue(val, true);
@@ -1150,33 +1172,37 @@ $.fn.autoComplete = function(data) {
 			getObject: function() {
 				return thisWidget.data('selectedObject');
 			},
-			reset: function(newValue) {
-				
+			_reload: function(newValue) {
 				if(options.url && !options.remoteSearch) {
-					var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text;
+					var url = options.url;
 					if(options.searchParams) {
 						url += '&' + options.searchParams;
 					}
 					getJSON(
-						url,
+						processURL(callback, url),
 						null,
 						function(data) {
-							buildData(options.isResourceList ? data.resources : data);
-							if(newValue) {
+							
+							if(data.success) {
+								buildData(options.isResourceList ? data.resources : data);
 								callback.setValue(newValue);
-							} else {
-								callback.setValue(options.value);
 							}
 						});
 				} else if(options.values && !options.remoteSearch) {
 					buildData(options.values);
-					if(newValue) {
-						callback.setValue(newValue);
-					} else {
-						callback.setValue(options.value);
-					}
+					callback.setValue(newValue);
 				} 
-				
+			},
+			/**
+			 * LDP - Reset should not have a newValue. It should initialise from options.
+			 * Added reload method instead if you want to set a specific value and reload 
+			 * at the same time.
+			 */
+			reset: function() {
+				this._reload(options.value);
+			},
+			reload: function(newValue) {
+				this._reload(newValue);
 			},
 			disable: function() {
 				$('#input_' + id).attr('disabled', true);
@@ -1240,9 +1266,9 @@ $.fn.autoComplete = function(data) {
 		callback.disable();
 	}
 	
-	if(options.url && !options.remoteSearch) {
+	if(options.url && !options.remoteSearch && !options.doNotInit) {
 		getJSON(
-			options.url,
+			processURL(callback, options.url),
 			null,
 			function(data) {
 				buildData(options.isResourceList ? data.resources : data);
@@ -1260,7 +1286,7 @@ $.fn.autoComplete = function(data) {
 			if(options.searchParams) {
 				url += '&' + options.searchParams;
 			}
-			getJSON(url,
+			getJSON(processURL(callback, url),
 					null,
 					function(data) {
 						
@@ -3695,6 +3721,45 @@ $.fn.fileUploadInput = function(data) {
  		        
  		        return true;
  			},
+ 			uploadBlob: function(blobInfo) {
+ 				debugger;
+ 				$('#' + id + 'UpdateProgressHolder').show();
+ 				$('#' + id + 'UpdateProgress').css("width",  "0%");
+			    var formData = new FormData();
+			    formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+ 		        var xhr = new XMLHttpRequest();
+ 		        xhr.upload.addEventListener("progress", uploadProgress, false);
+ 		       
+ 		        xhr.onreadystatechange=function()
+		        {
+		        	if (xhr.readyState==4 && xhr.status!=0)
+		        	{
+		        		if(xhr.status==200) {
+		        			data = jQuery.parseJSON(xhr.response);
+	 		        		if(data.success) {
+		 		        		showInfo(data.resource);
+		 						if(options.disabled) {
+		 							callback.disable();
+		 						}
+		 						$(this).data('needsUpload', false);
+		 						if(options.changed) {
+		 							options.changed(callback);
+		 						}
+		 						if(notify) {
+		 							notify(true);
+		 						}
+	 		        		} else {
+	 		        			if(notify) {
+	 		        				notify(false);
+	 		        			}
+	 		        		} 
+		        		} 
+		        	} 
+		        }
+		        xhr.open("POST", options.url);
+		        xhr.send(formData);
+ 			},
  			remove: function() {
  				if(!$('#' + id + 'Info').length){
  					return;
@@ -4345,6 +4410,7 @@ $.fn.multipleFileUpload = function(data) {
 				showRemoveLine: true,
 				isArrayValue: true,
 				showEmptyRow: false,
+				automaticUpload: false,
 				url: 'files/file'
 			}, data);
 	
@@ -4354,7 +4420,7 @@ $.fn.multipleFileUpload = function(data) {
 		var rowNum = 0;
 	}
 	maxRows = options.maxRows;
-	if(options.maxRows > 10 || options.maxRows <= 0){
+	if(options.maxRows <= 0){
 		maxRows = 10;
 	}
 	
@@ -4429,7 +4495,8 @@ $.fn.multipleFileUpload = function(data) {
  	 					url: options.url,
  	 					disabled: options.disabled,
  	 					showDownloadButton: options.showDownloadButton,
- 	 					showUploadButton: options.showUploadButton
+ 	 					showUploadButton: options.showUploadButton,
+ 	 					automaticUpload: options.automaticUpload
  	 				});
  	 				if(options.showRemoveLine && !options.disabled){
  	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').before('<a href="#" class="btn btn-danger" id="' + id + 'RemoveButton' + rowNum + '"><i class="fa fa-minus"></i></a>');
@@ -4443,6 +4510,12 @@ $.fn.multipleFileUpload = function(data) {
  	 					$('#' + id + 'NewRow').hide();
  	 				}
  				}
+ 			},
+ 			addFile: function(blob) {
+ 				debugger;
+ 				var widget = $('#' + id + 'FileUploads .fileUploadInput').last().widget();
+ 				widget.uploadBlob(blob);
+ 				this.addRows(1);
  			},
  			removeRows: function(){
  				$('#' + id + 'FileUploads').empty();

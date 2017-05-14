@@ -599,6 +599,10 @@ $.fn.tabPage = function(opts) {
 	}
 }
 
+$.fn.propertyOptions = function() {
+	return $(this).data('propertyOptions');
+}
+
 $.fn.propertyPage = function(opts) {
 
 	log("Creating property page for div " + $(this).attr('id'));
@@ -639,7 +643,7 @@ $.fn.propertyPage = function(opts) {
 	}
 	
 	$(this).empty();
-
+	var self = $(this);
 	getJSON(
 		options.url,
 		null,
@@ -1156,6 +1160,17 @@ $.fn.propertyPage = function(opts) {
 	
 							});
 				
+				var widgetMap = [];
+				$.each(widgets, function(idx, widget) {
+					widgetMap[widget.options().resourceKey] = widget;
+				});
+				
+				$.each(widgets, function(idx, widget) {
+					widget.options().widgets = widgetMap;
+				});
+				
+				options.widgets = widgetMap;
+				
 				var funcVisibility = function() {
 					$.each(widgets, function(idx, w) {
 						if(w.options().visibilityDependsOn) {
@@ -1188,7 +1203,11 @@ $.fn.propertyPage = function(opts) {
 								}
 								
 								if(show) {
+									if(w.options().resetOnVisibilityChange) {
+										w.reset();
+									}
 									w.getInput().parents('.propertyItem').show();
+									
 								} else {
 									if(w.options().clearOnVisibilityChange) {
 										w.clear();
@@ -1410,6 +1429,9 @@ $.fn.propertyPage = function(opts) {
 				});
 			}
 
+			self.data('propertyOptions', options);
+			
+			
 			if (options.complete) {
 				options.complete();
 			}

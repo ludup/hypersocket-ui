@@ -185,7 +185,7 @@ $(document).ready(function() {
 	$('#createCategory').click(function(e){
 		e.preventDefault();
 		$('#attributeTabContent').data('categoryPage').showCreate(function(resource) {
-			$('#attributeCategoryAutocomplete').widget().reset(resource.id);
+			$('#attributeCategoryAutocomplete').widget().reload(resource.id);
 		});
 	});
 
