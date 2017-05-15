@@ -3690,6 +3690,7 @@ $.fn.fileUploadInput = function(data) {
  		        	} 
  		        }
  		        xhr.open("POST", options.url);
+ 		        xhr.setRequestHeader("X-Csrf-Token", getCsrfToken());
  		        xhr.send(formData);
  		        
  		        return true;
@@ -4213,6 +4214,7 @@ $.fn.logoInput = function(data) {
  		        	} 
  		        }
  		        xhr.open("POST", options.url);
+ 		        xhr.setRequestHeader("X-Csrf-Token", getCsrfToken());
  		        xhr.send(formData);
  		        
  		        return true;
