@@ -3228,7 +3228,9 @@ $.fn.namePairInput = function(data) {
 				onlyName: false,
 				isArrayValue: true,
 				showEmptyRow: false,
-				password: false
+				password: false,
+				showNameVariables: false,
+				showValueVariables: false
 			}, data);
 	
 	var id =  $(this).attr('id') + "NamePairInput";
@@ -3373,7 +3375,8 @@ $.fn.namePairInput = function(data) {
  	 	 						return data.resources;
  	 	 					},
 	 	 					disabled: options.disabled || options.disableName,
-	 	 					value: values ? values[0] : ''
+	 	 					value: values ? values[0] : '',
+	 	 					showVariables: options.showNameVariables
 	 	 				});
  	 				}
  	 				if(!options.onlyName){
@@ -3399,7 +3402,8 @@ $.fn.namePairInput = function(data) {
 	 	 	 						return data.resources;
 	 	 	 					},
 	 	 	 					disabled: options.disabled,
-	 	 	 					value: values && values.length > 1 ? values[1] : ''
+	 	 	 					value: values && values.length > 1 ? values[1] : '',
+	 	 	 					showVariables: options.showValueVariables
 	 	 	 				});
  	 					}
  	 				}
