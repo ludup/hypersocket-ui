@@ -177,7 +177,7 @@ function logoff() {
 			$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
 		}
 		$(document).data('session', null);
-		startLogon();
+		window.location = '${uiPath}';
 	});
 
 }
