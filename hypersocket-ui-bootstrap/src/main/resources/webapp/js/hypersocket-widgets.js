@@ -5080,9 +5080,22 @@ $.fn.wizardPage = function(data) {
 						var nextPage = idx + 1;
 							$('.pageState' + idx).attr('disabled', true);
 						
-						$('#panel' + nextPage).show();
-						$('#collapse' + idx).collapse('hide');
-						$('#collapse' + nextPage).collapse('show');
+						var nextPageW = $('#panel' + nextPage).data('page');
+						
+						var doShow = function() {
+							$('#panel' + nextPage).show();
+							$('#collapse' + idx).collapse('hide');
+							$('#collapse' + nextPage).collapse('show');
+						};
+						if(nextPageW.onShow) {
+							if(nextPageW.onShow(doShow)) {
+								doShow();
+							};
+						} else {
+							doShow();
+						}
+						
+						
 					} else {
 						if(options.done) {
 							options.pageDone = true;
