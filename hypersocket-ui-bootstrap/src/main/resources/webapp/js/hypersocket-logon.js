@@ -128,9 +128,9 @@ function processLogon(data, opts, message) {
 					
 					$('#logonForm').append('<div><select class="logonSelect" name="' 
 							+ this.resourceKey + '" id="' + this.resourceKey
-							+ 'Select" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
+							+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 							+ '"/></div>');
-					currentKey = this.resourceKey + 'Select';
+					currentKey = this.resourceKey;
 					var changeFunc = this.onChange;
 					$.each(
 						this.options,
@@ -171,7 +171,7 @@ function processLogon(data, opts, message) {
 				} else if(this.type == 'checkbox') {
 				    $('#logonForm')
                             .append(
-                                '<div class="checkbox"><label id="'+ this.resourceKey +'Label">'
+                                '<div class="checkbox"><label id="'+ this.resourceKey + '">'
                                 + '<input  type="' + this.type + '" name="'
                                 + this.resourceKey
                                 + '" id="' + this.resourceKey + '" value="' + this.defaultValue
@@ -269,6 +269,7 @@ function processLogon(data, opts, message) {
 						$.each(
 							data['formTemplate']['inputFields'],
 							function() {
+								
 							    var elem = $('#' + this.resourceKey);
 								var name = encodeURIComponent(this.resourceKey);
 								var value = encodeURIComponent(elem.val());
