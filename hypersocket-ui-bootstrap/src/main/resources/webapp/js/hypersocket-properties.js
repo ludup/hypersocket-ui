@@ -55,6 +55,11 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 	
 	obj = $.extend({ allowEmpty: true, allowAttribute: true }, obj);
 	
+	if(!widget.getInput().parents('.propertyItem').is(':visible')) {
+		log('Not validating ' + obj.resourceKey + ' because its not visible');
+		return true;
+	}
+	
 	log("Validating " + obj.resourceKey + ' value ' + value);
 	
 	if(!validateInputType(obj.inputType)){
