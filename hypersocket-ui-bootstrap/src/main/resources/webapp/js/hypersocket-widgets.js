@@ -5065,7 +5065,7 @@ $.fn.wizardPage = function(data) {
 		
 			if(page.onNext) {
 				var clicked = false;
-				startSpin($('#button' + idx).find('i'), 'fa-spinner fa-spin');
+				startSpin($('#button' + idx).find('i'), page.buttonIcon);
 				
 				page.onNext(function() {
 	
@@ -5078,7 +5078,7 @@ $.fn.wizardPage = function(data) {
 					if(options.steps.length > idx + 1) {
 						stopSpin($('#button' + idx).find('i'), page.buttonIcon);
 						var nextPage = idx + 1;
-							$('.pageState' + idx).attr('disabled', true);
+						$('.pageState' + idx).attr('disabled', true);
 						
 						var nextPageW = $('#panel' + nextPage).data('page');
 						
