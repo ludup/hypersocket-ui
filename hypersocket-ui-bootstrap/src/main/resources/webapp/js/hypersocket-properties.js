@@ -1257,7 +1257,7 @@ $.fn.propertyPage = function(opts) {
 									}
 									if(dependsValue[i].startsWith('!')) {
 										dependsValue[i] = dependsValue[i].substring(1);
-										show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);
+										show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);							
 									} else {
 										var v = w2[i].getValue();
 										show = v == makeVariableSafe(dependsValue[i]);
@@ -1307,8 +1307,6 @@ $.fn.propertyPage = function(opts) {
 					});
 				}
 				
-				funcVisibility();
-				
 				if(filters.length > 0 && options.useFilters) {
 					$('#' + propertyDiv + 'PropertyFilter').append('<a href="#" class="click_default">' + getResource('default.label') + '</a>');
 					filters.push('default');
@@ -1329,7 +1327,6 @@ $.fn.propertyPage = function(opts) {
 							$('.' + filterPrefix + filter).show();
 							$('.visibility').hide();
 							$('li.' + filterPrefix + filter + ':first a').tab('show');
-							funcVisibility();
 						});
 					});
 				}
@@ -1440,6 +1437,8 @@ $.fn.propertyPage = function(opts) {
 			if (options.complete) {
 				options.complete();
 			}
+			
+			setTimeout(funcVisibility, 1000);
 		});
 };
 
