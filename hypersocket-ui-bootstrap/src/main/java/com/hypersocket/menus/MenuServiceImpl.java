@@ -29,6 +29,7 @@ import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
+import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.dashboard.OverviewWidgetService;
 import com.hypersocket.i18n.I18NService;
@@ -66,28 +67,31 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	Map<String, List<TabRegistration>> extendedInformationTabs = new HashMap<>();
 
 	@Autowired
-	I18NService i18nService;
+	private I18NService i18nService;
 
 	@Autowired
-	RealmService realmService;
+	private RealmService realmService;
 
 	@Autowired
-	BrowserLaunchableService browserService;
+	private BrowserLaunchableService browserService;
 
 	@Autowired
-	OverviewWidgetService overviewWidgetService;
+	private OverviewWidgetService overviewWidgetService;
 
 	@Autowired
-	UserInterfaceStateService userInterfaceStateService;
+	private UserInterfaceStateService userInterfaceStateService;
 
 	@Autowired
-	HypersocketServer server;
+	private HypersocketServer server;
 
 	@Autowired
-	IndexPageFilter indexFilter;
+	private IndexPageFilter indexFilter;
 
 	@Autowired
-	MessageResourceService messageService;
+	private MessageResourceService messageService;
+	
+	@Autowired
+	private CertificateResourceService certificateService; 
 
 	Set<MenuFilter> filters = new HashSet<MenuFilter>();
 	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
@@ -239,8 +243,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						CertificateResourcePermission.READ,
 						CertificateResourcePermission.CREATE,
 						CertificateResourcePermission.UPDATE,
-						CertificateResourcePermission.DELETE),
-				MenuService.MENU_CONFIGURATION);
+						CertificateResourcePermission.DELETE) {
+			public boolean canRead() {
+				return !certificateService.allResources().isEmpty();
+			}
+		}, MenuService.MENU_CONFIGURATION);
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
 				new AbstractTableAction("downloadCSR", "fa-certificate",
