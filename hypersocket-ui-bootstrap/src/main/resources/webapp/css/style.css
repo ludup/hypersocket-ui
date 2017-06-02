@@ -2040,3 +2040,18 @@ select[multiple] {
   0%, 39%, 100% { opacity: 0; }
   40% { opacity: 1; } 
 }
+
+.dropzoneColumn{
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-top: 25px;
+}
+.dragablePlaceholder{
+	background-color: #e1e6ef;
+	border-style: dashed;
+	border-width:2px;
+	border-color: black;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	z-index: 100;
+}
