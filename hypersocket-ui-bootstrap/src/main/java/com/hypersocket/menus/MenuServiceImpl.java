@@ -12,10 +12,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -31,9 +29,7 @@ import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationPermission;
-import com.hypersocket.dashboard.OverviewWidgetService;
 import com.hypersocket.i18n.I18NService;
-import com.hypersocket.interfaceState.UserInterfaceStateService;
 import com.hypersocket.message.MessageResourcePermission;
 import com.hypersocket.message.MessageResourceService;
 import com.hypersocket.permissions.AccessDeniedException;
@@ -76,12 +72,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	private BrowserLaunchableService browserService;
 
 	@Autowired
-	private OverviewWidgetService overviewWidgetService;
-
-	@Autowired
-	private UserInterfaceStateService userInterfaceStateService;
-
-	@Autowired
 	private HypersocketServer server;
 
 	@Autowired
@@ -93,7 +83,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Autowired
 	private CertificateResourceService certificateService; 
 
-	Set<MenuFilter> filters = new HashSet<MenuFilter>();
+	List<MenuFilter> filters = new ArrayList<MenuFilter>();
 	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
 
 	@PostConstruct
@@ -180,6 +170,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		}, MenuService.MENU_PERSONAL);
 
+		registerMenu(new MenuRegistration( 
+				RESOURCE_BUNDLE,
+				MENU_NETWORKING, "fa-sitemap", null, 99999,
+				null,
+				null,
+				null,
+				null), MenuService.MENU_SYSTEM);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "browserLaunchable",
 				"fa-globe", "browserLaunchable", 300, null, null, null, null) {
 			@Override
@@ -446,6 +444,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Override
 	public void registerFilter(MenuFilter filter) {
 		filters.add(filter);
+		Collections.<MenuFilter>sort(filters, new Comparator<MenuFilter>() {
+
+			@Override
+			public int compare(MenuFilter o1, MenuFilter o2) {
+				return o1.getWeight().compareTo(o2.getWeight());
+			}
+		});
 	}
 
 	@Override
