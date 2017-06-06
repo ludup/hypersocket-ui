@@ -831,6 +831,9 @@ $.fn.propertyPage = function(opts) {
 										}
 										obj = $.extend({
 											changed : function(widget) {
+												if(options.onPropertyChange) {
+													options.onPropertyChange(widget.options().resourceKey, widget);
+												}
 												if(!$('#' + propertyDiv).validateProperty(widget)) {
 													if (options.showButtons && options.maintainButtonState) {
 														$(revertButton).attr('disabled', true);
@@ -869,16 +872,17 @@ $.fn.propertyPage = function(opts) {
 										
 										makeBooleanSafe(obj);
 										if(obj.url) {
-											
 											obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
 										}
 										
 										if(obj.displayMode && obj.displayMode != '') {
 											if(!options.displayMode.contains(obj.displayMode)) {
-												return;
+												if(!obj.disableMode) {
+													return;
+												}
+												obj.disabled = true
 											}
 										}
-										
 										
 										var filterClass = tabfilterClass;
 										
@@ -1433,12 +1437,12 @@ $.fn.propertyPage = function(opts) {
 
 			self.data('propertyOptions', options);
 			
-			
-			if (options.complete) {
-				options.complete();
-			}
-			
-			setTimeout(funcVisibility, 1000);
+			setTimeout(new function() {
+				funcVisibility();
+				if (options.complete) {
+					options.complete();
+				}
+			}, 1000);
 		});
 };
 

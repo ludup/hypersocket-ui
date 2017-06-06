@@ -1204,7 +1204,13 @@ $.fn.samePageResourceView = function(params, params2) {
 						  }
 						  addActions(true);
 						  
-					  }	
+					  },
+					  onPropertyChange: function(resourceKey, widget) {
+						  if(dialogOptions.propertyOptions.onPropertyChange) {
+							  dialogOptions.propertyOptions.onPropertyChange(resourceKey, widget, 
+									  $(propertyOptions.propertySelector).propertyOptions());
+						  }
+					  }
 			});
 			if(propertyOptions.additionalTabs) {
 				$.each(propertyOptions.additionalTabs, function(idx, obj) {
@@ -1240,7 +1246,12 @@ $.fn.samePageResourceView = function(params, params2) {
 						  }
 						  addActions(true);
 						  
-					  }	
+					  },
+					  onPropertyChange: function(resourceKey, widget) {
+						  if(dialogOptions.propertyOptions.onPropertyChange) {
+							  dialogOptions.propertyOptions.onPropertyChange(resourceKey, widget);
+						  }
+					  }
 			});
 			if(dialogOptions.propertyOptions.additionalTabs) {
 				$.each(dialogOptions.propertyOptions.additionalTabs, function(idx, obj) {
