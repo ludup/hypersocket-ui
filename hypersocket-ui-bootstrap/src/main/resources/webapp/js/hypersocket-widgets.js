@@ -4981,7 +4981,8 @@ $.fn.wizardPage = function(data) {
 	
 	var options = $.extend(
 			{  
-				allowReset: true
+				allowReset: true,
+				allowBack: false
 			}, data);
 	
 	
@@ -4995,68 +4996,102 @@ $.fn.wizardPage = function(data) {
 
 	$.each(options.steps, function(index, obj) {
 	
-		var page = $.extend({
-			titleText: getResource('text.step') + '. ' + (index+1),
-			titleIcon: 'fa-flash',
-			buttonText: 'text.next',
-			buttonIcon: 'fa-forward'
-		}, obj);
-		
-		
-		var html;
-		
-		if(options.useNumberIcons) {
+			var page = $.extend({
+				titleText: getResource('text.step') + '. ' + (index+1),
+				titleIcon: 'fa-flash',
+				buttonText: 'text.next',
+				buttonIcon: 'fa-forward'
+			}, obj);
 			
-			html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
-			+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
-			+ ' 	<h5 class="panel-title wizardTitle"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i>'
-			+ '<i class="fa fa-stack-1x" style="color: white"><strong>' + (index+1) + '</strong></i></span>'
-			+ '		    <a data-toggle="collapse" data-parent="#accordion"'
-			+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
-			+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
-			+ '	    </h5>'
-			+ '</div>'
-			+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
-			+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
-			+ '	<div class="panel-body"><div id="page' + index + '"></div>';
 			
-		} else {
-			html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
+			var html;
+			
+			if(options.useNumberIcons) {
+				
+				html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
 				+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
-				+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
+				+ ' 	<h5 class="panel-title wizardTitle"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i>'
+				+ '<i class="fa fa-stack-1x" style="color: white"><strong>' + (index+1) + '</strong></i></span>'
 				+ '		    <a data-toggle="collapse" data-parent="#accordion"'
 				+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
 				+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
-				+ '	    </h4>'
+				+ '	    </h5>'
 				+ '</div>'
 				+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
 				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 				+ '	<div class="panel-body"><div id="page' + index + '"></div>';
-		}
+				
+			} else {
+				html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
+					+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
+					+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
+					+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+					+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
+					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
+					+ '	    </h4>'
+					+ '</div>'
+					+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
+					+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
+					+ '	<div class="panel-body"><div id="page' + index + '"></div>';
+			}
+				
+			if(page.onNext) {
+				html += '		<div class="propertyItem form-group buttonBar">';
+				if(index > 0) {
+					html += '			<button id="backButton' + index + '" class="backButton pageState' + index + ' btn btn-danger">'
+					+ '				<i class="fa fa-step-backward"></i><span localize="text.back"></span>'
+					+ '			</button>&nbsp';
+				}
+				html += '			<button id="button' + index + '" class="nextButton pageState' + index + ' btn btn-primary">'
+					+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
+					+ '			</button>'
+					+ '		</div>';
+			}
+		
+			html += '</div>'
+				+ '</div>'
+				+ '</div>';
+		
+			$('#wizardPages').append(html);
+			$('#panel' + index).data('page', page);
+			$('#panel' + index).data('index', index);
 			
-		if(page.onNext) {
-			html += '		<div class="propertyItem form-group buttonBar">'
-			+ '			<button id="button' + index + '" class="nextButton pageState' + index + ' btn btn-primary">'
-			+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
-			+ '			</button>'
-			+ '		</div>';
-		}
-	
-		html += '</div>'
-			+ '</div>'
-			+ '</div>';
-	
-		$('#wizardPages').append(html);
-		$('#panel' + index).data('page', page);
-		$('#panel' + index).data('index', index);
+			$('#' + page.pageDiv).detach().appendTo('#page' + index).show();
 		
-		$('#' + page.pageDiv).detach().appendTo('#page' + index).show();
-		
-	});
+		});
 		
 		$('.wizardPage').first().show();
 		
 		$(this).localize();
+		
+		$('.backButton').click(function() {
+			
+			$('.wizardError').remove();
+			var page = $(this).closest('.panel').data('page');
+			var idx = $(this).closest('.panel').data('index');
+			
+			var previousPage = idx - 1;
+			$('.pageState' + idx).attr('disabled', true);
+			
+			var previousPageW = $('#panel' + previousPage).data('page');
+			
+			var doShow = function() {
+				$('.pageState' + previousPage).attr('disabled', false);
+				$('.pageState' + idx).attr('disabled', false);
+				$('#button' + previousPage).attr('disabled', false);
+				$('#panel' + previousPage).show();
+				$('#panel' + idx).hide();
+				$('#collapse' + idx).collapse('hide');
+				$('#collapse' + previousPage).collapse('show');
+			};
+			if(previousPageW.onShow) {
+				if(previousPageW.onShow(doShow)) {
+					doShow();
+				};
+			} else {
+				doShow();
+			}
+		});
 		
 		$('.nextButton').click(function() {
 		
