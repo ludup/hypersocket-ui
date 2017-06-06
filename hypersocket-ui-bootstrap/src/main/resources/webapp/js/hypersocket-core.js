@@ -172,12 +172,14 @@ function logoff() {
 
 	log("Logging off");
 
-	getJSON(basePath + '/api/logoff', null, function() {	
-		if($(document).data('session')) {
-			$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
+	getJSON(basePath + '/api/logoff', null, function(data) {	
+		if(data.success) {
+			if($(document).data('session')) {
+				$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
+			}
+			$(document).data('session', null);
+			window.location = data.resource;
 		}
-		$(document).data('session', null);
-		window.location = '${uiPath}';
 	});
 
 }
