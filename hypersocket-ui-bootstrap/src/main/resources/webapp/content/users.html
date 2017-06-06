@@ -50,7 +50,7 @@
 						buttonClass: 'btn-danger',
 						icon: 'fa-step-backward',
 						action: function(callback) {
-							window.location = '${uiPath}#menu=proxy';
+							window.location = $(document).data('accounts.returnTo');
 						}
 					});
 					title = getResource('ownerRealm.users.title').format(userRealm.name);
@@ -138,6 +138,7 @@
 					});
 
 				});
+				
 				$('#userDialog').load(uiPath + '/content/userDialog.html', function() {
 
 				$('#contentUsers').localize();
@@ -540,13 +541,15 @@
 										});
 									} 
 
-									$('#contentUsers').find('.fixed-table-toolbar').last().append(
-											'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">' 
-											+ getResource('configure.remote.text') + '</a></div></div>');
-									$('#configureUsers').click(function(e) {
-										e.preventDefault();
-										$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
-									});
+									if(!ownerRealm) {
+										$('#contentUsers').find('.fixed-table-toolbar').last().append(
+												'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">' 
+												+ getResource('configure.remote.text') + '</a></div></div>');
+										$('#configureUsers').click(function(e) {
+											e.preventDefault();
+											$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
+										});
+									}
 									
 									loadComplete();
 								}

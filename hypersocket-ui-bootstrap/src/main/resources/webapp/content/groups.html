@@ -47,7 +47,7 @@
 				buttonClass: 'btn-danger',
 				icon: 'fa-step-backward',
 				action: function(callback) {
-					window.location = '${uiPath}#menu=proxy';
+					window.location = $(document).data('accounts.returnTo');
 				}
 			});
 			title = getResource('ownerRealm.groups.title').format(groupRealm.name);
