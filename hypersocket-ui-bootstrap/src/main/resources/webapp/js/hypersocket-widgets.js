@@ -5071,6 +5071,11 @@ $.fn.wizardPage = function(data) {
 				var clicked = false;
 				startSpin($('#button' + idx).find('i'), page.buttonIcon);
 				
+				var onError = function(val) {
+					$('.wizardError').remove();
+					$('#page' + idx).prepend('<div class="wizardError alert alert-danger"><i class="fa fa-warning"></i> <span>' + val + '</span></p>')
+				};
+				
 				page.onNext(function() {
 	
 					if(clicked) {
@@ -5114,7 +5119,7 @@ $.fn.wizardPage = function(data) {
 					}
 				}, function() {
 					stopSpin($('#button' + idx).find('i'), page.buttonIcon);
-				});
+				}, onError);
 			}
 		
 		});
@@ -5139,6 +5144,9 @@ $.fn.wizardPage = function(data) {
 		return {
 			reset: function() {
 				$('#resetForm').click();
+			},
+			showError: function(str) {
+				
 			}
 		}
 	});
