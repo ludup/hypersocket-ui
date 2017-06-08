@@ -366,6 +366,14 @@ function getAnchorByName(name) {
     return results == null ? "" : decodeFormParameter(results[1]);
 }
 
+function assertResources(callback) {
+	if(!$(document).data('i18n')) {
+		loadResources(callback);
+	} else {
+		callback();
+	}
+}
+
 function loadResources(callback) {
 	loadResourcesUrl('i18n', callback);
 }
