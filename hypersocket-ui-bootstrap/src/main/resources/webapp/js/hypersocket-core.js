@@ -158,8 +158,13 @@ function startLogon(opts) {
 				home(data);
 			}
 			$('#userInf').empty();
-			$('#userInf').append(getResource('text.loggedIn').format(
-					data.session.currentPrincipal.name, data.session.currentRealm.name, currentRole.name));
+			if(currentRole) {
+				$('#userInf').append(getResource('text.loggedIn').format(
+						data.session.currentPrincipal.name, data.session.currentRealm.name, currentRole.name));
+			} else {
+				$('#userInf').append(getResource('text.loggedInNoRole').format(
+						data.session.currentPrincipal.name, data.session.currentRealm.name));
+			}
 		},
 		formContent: $(contentDiv)
 	}, opts);

@@ -29,6 +29,7 @@ import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationPermission;
+import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.message.MessageResourcePermission;
 import com.hypersocket.message.MessageResourceService;
@@ -83,6 +84,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Autowired
 	private CertificateResourceService certificateService; 
 
+	@Autowired
+	private ConfigurationService configurationService; 
+	
 	List<MenuFilter> filters = new ArrayList<MenuFilter>();
 	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
 
@@ -345,7 +349,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						RoleAttributePermission.READ,
 						RoleAttributePermission.CREATE,
 						RoleAttributePermission.UPDATE,
-						RoleAttributePermission.DELETE),
+						RoleAttributePermission.DELETE) {
+			public boolean canRead() {
+				return super.canRead() && configurationService.getBooleanValue(getCurrentRealm(), "feature.roleSelection");
+			}
+		},
 				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
