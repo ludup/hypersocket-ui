@@ -824,6 +824,19 @@ table {
 	padding-right: 0px;
 }
 
+#bottomMenu {
+	float: right;
+    margin: 15px 10px;
+}
+
+#bottomMenu a {
+	color: #999;
+}
+
+#bottomMenu a:hover {
+	color: #fff;
+}
+   
 .navbar-inverse {
 	background-color: #000;
 	border-color: #000;

@@ -383,7 +383,7 @@ function home(data) {
 			}
 			
 			if(data.systemAdmin) {
-				$('#navMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="bottom" href="#"><i class="fa fa-power-off"></i></a></li>');
+				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="fa fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function(e) {
 					showShutdownDialog();
