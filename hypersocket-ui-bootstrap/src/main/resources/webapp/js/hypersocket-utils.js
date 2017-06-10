@@ -489,7 +489,7 @@ function showError(text, fade, fadeCallback) {
 	if(errorFunc) {
 		errorFunc(text);
 	} else {
-		showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? false : fade, fadeCallback);
+		showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? true : fade, fadeCallback);
 	}
 }
 
@@ -497,7 +497,7 @@ function showWarning(text, fade, fadeCallback) {
 	if(warningFunc) {
 		warningFunc(text);
 	} else {
-		showMessage(text, 'fa-warning', 'alert-warning', typeof fade == 'undefined' ? false : fade, fadeCallback);
+		showMessage(text, 'fa-warning', 'alert-warning', typeof fade == 'undefined' ? true : fade, fadeCallback);
 	}
 }
 
@@ -537,7 +537,7 @@ function showMessage(text, icon, alertClass, fade, fadeCallback, element) {
 	removeMessage();
 	
 	var doFade = function() {
-		$('#systemMessage').fadeOut(2000, function() {
+		$('#systemMessage').fadeOut(5000, function() {
 			$('#systemMessage').remove();
 			if(fadeCallback) {
 				fadeCallback();
