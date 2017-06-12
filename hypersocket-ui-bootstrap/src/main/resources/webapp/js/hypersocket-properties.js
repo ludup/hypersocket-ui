@@ -747,12 +747,18 @@ $.fn.propertyPage = function(opts) {
 								
 								var toSort = [];
 								$.each(this.templates, function() {
+									if(this.hidden) {
+										return;
+									}
 									if(values[this.resourceKey]) {
 										this.value = values[this.resourceKey];
 									}
 									toSort.push(this);
 								});
 	
+								if(toSort.length == 0) {
+									return;
+								}
 								
 								toSort.sort(function(a, b) {
 									if (a.weight < b.weight) {
@@ -895,6 +901,10 @@ $.fn.propertyPage = function(opts) {
 													filterClass = filterPrefix + obj.filter;
 												}
 											}
+										}
+										
+										if(obj.hidden) {
+											obj.inputType = 'hidden';
 										}
 										
 										if(obj.inputType!='hidden') {
