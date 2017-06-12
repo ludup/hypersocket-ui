@@ -156,7 +156,7 @@ $.fn.resourceTable = function(params) {
 		onSave : false,
 		stayOnPageAfterSave: false,
 		bulkAssignment: false
-		},params);
+		}, params);
 
 	options.tableView = $('#' + divName);
 	
@@ -215,8 +215,20 @@ $.fn.resourceTable = function(params) {
 
 	var columns = new Array();
 	var columnsDefs = new Array();
-	var sortColumns = new Array();
-	
+	var searchColumns = new Array();
+
+	if(options.checkbox) {
+	    columns.push({
+	        checkbox : true
+	    });
+	}
+
+	if(options.radio) {
+        columns.push({
+            radio : true
+        });
+    }
+
 	if(options.logo) {
 		var c = { field : 'logo',
 				title: getResource(options.resourceKey + '.logo.label'),
@@ -251,9 +263,10 @@ $.fn.resourceTable = function(params) {
 	if(options.searchFields) {
 		$.each(options.searchFields,function(idx, obj) {
 			var c = { value : obj.name,
-					name: getResource(options.resourceKey + "." + obj.name + '.label')
+					name: getResource(options.resourceKey + "." + obj.name + '.label'),
+					renderOptions: obj.renderOptions
 			};
-			sortColumns.push(c);	
+			searchColumns.push(c);	
 		});
 	}
 	
@@ -296,10 +309,12 @@ $.fn.resourceTable = function(params) {
 			options.toolbarButtons = new Array();
 		}
 		
-		if(!$('#importResourcesPlaceholder').length) {
-			$('body').append('<div id="importResourcesPlaceholder"></div>');
-			$('#importResourcesPlaceholder').load(uiPath + "content/importResourceDialog.html");
-		}
+		if(!$('#importResources').length) {
+            if(!$('#importResourcesPlaceholder').length) {
+                $('body').append('<div id="importResourcesPlaceholder"></div>');
+            }
+            $('#importResourcesPlaceholder').load(uiPath + "content/importResourceDialog.html");
+        }
 		options.toolbarButtons.push({ 
 			resourceKey: 'importResources',
 			icon: 'fa-upload',
@@ -575,8 +590,14 @@ $.fn.resourceTable = function(params) {
 		    	}
 		    },
 		    queryParams: function(params) {
+		    	
 		    	if($('#searchColumn').widget()) {
+		    		
 		    		params.searchColumn = $('#searchColumn').widget().getValue();
+		    		var selected = $('#searchColumn').widget().getObject();
+		    		if(selected && selected.renderOptions && $('#searchValue').widget()) {
+		    			params.search = $('#searchValue').widget().getValue();
+		    		}
 		    	}
 		    	if(options.queryParams) {
 		    		options.queryParams(params);
@@ -595,21 +616,33 @@ $.fn.resourceTable = function(params) {
 		    classes: 'table table-hover ' + divName,
 		    onPostHeader: function() {
 		    	
-		    	if($('#searchRendered' + divName).length==0) {
+		    	if($('#searchRendered' + divName).length == 0) {
 		    		
 		    		log("Rendering search");
 		    		
-		    		if(sortColumns.length > 0) {
+		    		if(searchColumns.length > 0) {
 						$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
 						$('#searchColumn').textDropdown({
-							values: sortColumns,
-							value: sortColumns[0].name,
+							values: searchColumns,
 							changed: function(widget) {
+								var selected = widget.getObject();
+								$('#searchValue').remove();
+								if(selected.renderOptions) {
+									$('.search input[placeholder="Search"]').hide();
+									$('#searchColumn').parent().append('<div id="searchValue" class="toolbarWidget"></div>');
+									selected.renderOptions($('#searchValue'), function() {
+										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+									});
+									
+								} else {
+									$('.search input[placeholder="Search"]').show();
+								}
 								
 								$('.search input[placeholder="Search"]').val('');
 								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 							}
 						});
+						$('#searchColumn').widget().setValue(searchColumns[0].name);
 					}
 
                     if(options.bulkAssignment) {
@@ -651,6 +684,60 @@ $.fn.resourceTable = function(params) {
 							});
 						});
 					}
+
+					if (options.checkbox && options.canDelete) {
+                        if($('#multipleDelete' + divName).length == 0) {
+                            $('#' + divName +  ' .fixed-table-toolbar').find('.btn-group').first().prepend('<button id="multipleDelete' + divName +'" class="btn btn-default" type="button" name="multipleDelete' + divName +'" title="Delete"><i class="fa fa-trash"></i></button>');
+                            $('#multipleDelete' + divName).click(function(e) {
+                                var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
+                                if(arr.length > 0) {
+                                    var ids = [];
+                                    var names = [];
+                                    $.each(arr, function(idx, val) {
+                                    	ids.push(val.id);
+                                    	names.push(val.name);
+                                    });
+                                    bootbox.confirm(getResource("bulk.delete.confirm").format(names.join(", ")), function(confirmed) {
+                                        if (confirmed && options.deleteResourcesUrl) {
+                                            deleteJSON(options.deleteResourcesUrl, ids, function(data) {
+                                            	if(data.success) {
+                                        			 $('#' + divName + 'Placeholder').bootstrapTable('remove', {
+                                                         field: 'id',
+                                                         values: ids
+                                                     });
+                                            		
+                                                    $('#' + divName + 'Placeholder').bootstrapTable('refresh');
+                                            		checkBadges(false);
+                                                    showSuccess(data.message);
+                                            	} else {
+                                            		showError(data.message);
+                                            	}
+                                            }, function(xmlRequest) {
+                                            	if (xmlRequest.status == 404) {
+                                            		$.each(ids, function(idx, id) {
+                                            			deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
+                                                            if (data.success) {
+                                                                $('#' + divName + 'Placeholder').bootstrapTable('remove', {
+                                                                    field: 'id',
+                                                                    values: [id]
+                                                                });
+                                                                $('#' + divName + 'Placeholder').bootstrapTable('refresh');
+                                                                checkBadges(false);
+                                                                showSuccess(data.message);
+                                                            } else {
+                                                                showError(data.message);
+                                                            }
+                                                        });
+                                            		});
+                                            	}
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+
 					$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').last().append('<div id="searchRendered' + divName + '"></div>');
 		    	}
 		    },
@@ -1090,7 +1177,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#mainContainer').addClass('col-sm-12');
 		$('#main-menu').hide();
 		$('#mainContent').hide();
-		//dialogOptions.tableView.hide();
+
 		view.show();
 	}
 	
@@ -1104,7 +1191,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		dialogOptions.clearDialog(true);
 		if(dialogOptions.propertyOptions) {
-			var propertyOptions = $.extend({},
+			 var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
 					{ url: dialogOptions.propertyOptions.templateUrl,
 				      title: getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
@@ -1117,15 +1204,21 @@ $.fn.samePageResourceView = function(params, params2) {
 						  }
 						  addActions(true);
 						  
-					  }	
+					  },
+					  onPropertyChange: function(resourceKey, widget) {
+						  if(dialogOptions.propertyOptions.onPropertyChange) {
+							  dialogOptions.propertyOptions.onPropertyChange(resourceKey, widget, 
+									  $(propertyOptions.propertySelector).propertyOptions());
+						  }
+					  }
 			});
-			if(dialogOptions.propertyOptions.additionalTabs) {
-				$.each(dialogOptions.propertyOptions.additionalTabs, function(idx, obj) {
+			if(propertyOptions.additionalTabs) {
+				$.each(propertyOptions.additionalTabs, function(idx, obj) {
 					$('body').append($('#' + obj.id).detach());
 				});
 			}
-			$(dialogOptions.propertyOptions.propertySelector).empty();
-			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+			$(propertyOptions.propertySelector).empty();
+			$(propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
 			addActions(true);
@@ -1153,7 +1246,12 @@ $.fn.samePageResourceView = function(params, params2) {
 						  }
 						  addActions(true);
 						  
-					  }	
+					  },
+					  onPropertyChange: function(resourceKey, widget) {
+						  if(dialogOptions.propertyOptions.onPropertyChange) {
+							  dialogOptions.propertyOptions.onPropertyChange(resourceKey, widget);
+						  }
+					  }
 			});
 			if(dialogOptions.propertyOptions.additionalTabs) {
 				$.each(dialogOptions.propertyOptions.additionalTabs, function(idx, obj) {

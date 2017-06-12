@@ -366,6 +366,14 @@ function getAnchorByName(name) {
     return results == null ? "" : decodeFormParameter(results[1]);
 }
 
+function assertResources(callback) {
+	if(!$(document).data('i18n')) {
+		loadResources(callback);
+	} else {
+		callback();
+	}
+}
+
 function loadResources(callback) {
 	loadResourcesUrl('i18n', callback);
 }
@@ -481,7 +489,7 @@ function showError(text, fade, fadeCallback) {
 	if(errorFunc) {
 		errorFunc(text);
 	} else {
-		showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? false : fade, fadeCallback);
+		showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? true : fade, fadeCallback);
 	}
 }
 
@@ -489,7 +497,7 @@ function showWarning(text, fade, fadeCallback) {
 	if(warningFunc) {
 		warningFunc(text);
 	} else {
-		showMessage(text, 'fa-warning', 'alert-warning', typeof fade == 'undefined' ? false : fade, fadeCallback);
+		showMessage(text, 'fa-warning', 'alert-warning', typeof fade == 'undefined' ? true : fade, fadeCallback);
 	}
 }
 
@@ -529,7 +537,7 @@ function showMessage(text, icon, alertClass, fade, fadeCallback, element) {
 	removeMessage();
 	
 	var doFade = function() {
-		$('#systemMessage').fadeOut(2000, function() {
+		$('#systemMessage').fadeOut(5000, function() {
 			$('#systemMessage').remove();
 			if(fadeCallback) {
 				fadeCallback();
@@ -722,7 +730,7 @@ function deleteJSON(url, params, callback, errorCallback) {
 	    success: callback
 	}).fail(function(xmlRequest) {
 		if(errorCallback) {
-			if(!errorCallback()) {
+			if(!errorCallback(xmlRequest)) {
 				return;
 			}
 		}
@@ -896,6 +904,10 @@ function isValidEmail(email){
 
 function isValidCIDR(cdir){
 	return validateRegex("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$",cdir);
+}
+
+function isAlphaNumeric(val) {
+	return validateRegex("^[0-9a-z]+$", val);
 }
 
 function isNotGmail(email){

@@ -199,6 +199,10 @@ pre {
 	float: none;
 }
 
+#searchValue {
+	margin-left: 10px;
+}
+
 .searchInputAdd {
 	margin-left: 5px;
 	float: left;
@@ -820,6 +824,19 @@ table {
 	padding-right: 0px;
 }
 
+#bottomMenu {
+	float: right;
+    margin: 15px 10px;
+}
+
+#bottomMenu a {
+	color: #999;
+}
+
+#bottomMenu a:hover {
+	color: #fff;
+}
+   
 .navbar-inverse {
 	background-color: #000;
 	border-color: #000;
@@ -2054,4 +2071,11 @@ select[multiple] {
 	border-radius: 10px;
 	margin-bottom: 20px;
 	z-index: 100;
+}
+
+.wizardError {
+	margin-top: -10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
 }

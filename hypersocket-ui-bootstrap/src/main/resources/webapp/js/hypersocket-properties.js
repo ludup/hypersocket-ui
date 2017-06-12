@@ -55,6 +55,11 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 	
 	obj = $.extend({ allowEmpty: true, allowAttribute: true }, obj);
 	
+	if(!widget.getInput().parents('.propertyItem').is(':visible')) {
+		log('Not validating ' + obj.resourceKey + ' because its not visible');
+		return true;
+	}
+	
 	log("Validating " + obj.resourceKey + ' value ' + value);
 	
 	if(!validateInputType(obj.inputType)){
@@ -599,6 +604,10 @@ $.fn.tabPage = function(opts) {
 	}
 }
 
+$.fn.propertyOptions = function() {
+	return $(this).data('propertyOptions');
+}
+
 $.fn.propertyPage = function(opts) {
 
 	log("Creating property page for div " + $(this).attr('id'));
@@ -639,7 +648,7 @@ $.fn.propertyPage = function(opts) {
 	}
 	
 	$(this).empty();
-
+	var self = $(this);
 	getJSON(
 		options.url,
 		null,
@@ -822,6 +831,9 @@ $.fn.propertyPage = function(opts) {
 										}
 										obj = $.extend({
 											changed : function(widget) {
+												if(options.onPropertyChange) {
+													options.onPropertyChange(widget.options().resourceKey, widget);
+												}
 												if(!$('#' + propertyDiv).validateProperty(widget)) {
 													if (options.showButtons && options.maintainButtonState) {
 														$(revertButton).attr('disabled', true);
@@ -860,16 +872,17 @@ $.fn.propertyPage = function(opts) {
 										
 										makeBooleanSafe(obj);
 										if(obj.url) {
-											
 											obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
 										}
 										
 										if(obj.displayMode && obj.displayMode != '') {
 											if(!options.displayMode.contains(obj.displayMode)) {
-												return;
+												if(!obj.disableMode) {
+													return;
+												}
+												obj.disabled = true
 											}
 										}
-										
 										
 										var filterClass = tabfilterClass;
 										
@@ -1156,6 +1169,17 @@ $.fn.propertyPage = function(opts) {
 	
 							});
 				
+				var widgetMap = [];
+				$.each(widgets, function(idx, widget) {
+					widgetMap[widget.options().resourceKey] = widget;
+				});
+				
+				$.each(widgets, function(idx, widget) {
+					widget.options().widgets = widgetMap;
+				});
+				
+				options.widgets = widgetMap;
+				
 				var funcVisibility = function() {
 					$.each(widgets, function(idx, w) {
 						if(w.options().visibilityDependsOn) {
@@ -1188,7 +1212,11 @@ $.fn.propertyPage = function(opts) {
 								}
 								
 								if(show) {
+									if(w.options().resetOnVisibilityChange) {
+										w.reset();
+									}
 									w.getInput().parents('.propertyItem').show();
+									
 								} else {
 									if(w.options().clearOnVisibilityChange) {
 										w.clear();
@@ -1407,11 +1435,14 @@ $.fn.propertyPage = function(opts) {
 				});
 			}
 
-			if (options.complete) {
-				options.complete();
-			}
+			self.data('propertyOptions', options);
 			
-			setTimeout(funcVisibility, 1000);
+			setTimeout(new function() {
+				funcVisibility();
+				if (options.complete) {
+					options.complete();
+				}
+			}, 1000);
 		});
 };
 

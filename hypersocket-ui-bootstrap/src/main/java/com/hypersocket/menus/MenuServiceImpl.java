@@ -12,10 +12,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -29,10 +27,10 @@ import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
+import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationPermission;
-import com.hypersocket.dashboard.OverviewWidgetService;
+import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.i18n.I18NService;
-import com.hypersocket.interfaceState.UserInterfaceStateService;
 import com.hypersocket.message.MessageResourcePermission;
 import com.hypersocket.message.MessageResourceService;
 import com.hypersocket.permissions.AccessDeniedException;
@@ -66,30 +64,30 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	Map<String, List<TabRegistration>> extendedInformationTabs = new HashMap<>();
 
 	@Autowired
-	I18NService i18nService;
+	private I18NService i18nService;
 
 	@Autowired
-	RealmService realmService;
+	private RealmService realmService;
 
 	@Autowired
-	BrowserLaunchableService browserService;
+	private BrowserLaunchableService browserService;
 
 	@Autowired
-	OverviewWidgetService overviewWidgetService;
+	private HypersocketServer server;
 
 	@Autowired
-	UserInterfaceStateService userInterfaceStateService;
+	private IndexPageFilter indexFilter;
 
 	@Autowired
-	HypersocketServer server;
+	private MessageResourceService messageService;
+	
+	@Autowired
+	private CertificateResourceService certificateService; 
 
 	@Autowired
-	IndexPageFilter indexFilter;
-
-	@Autowired
-	MessageResourceService messageService;
-
-	Set<MenuFilter> filters = new HashSet<MenuFilter>();
+	private ConfigurationService configurationService; 
+	
+	List<MenuFilter> filters = new ArrayList<MenuFilter>();
 	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
 
 	@PostConstruct
@@ -150,8 +148,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}, MenuService.MENU_MY_PROFILE);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_MY_RESOURCES, "fa-share-alt", null, 300, null,
+				MenuService.MENU_MY_RESOURCES, "fa-share-alt", null, 100, null,
 				null, null, null) {
+			@Override
+			public boolean isHome() {
+				return true; // If we have some resources make this home.
+			}
+			
 			@Override
 			public boolean canRead() {
 				return !isHidden();
@@ -171,6 +174,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		}, MenuService.MENU_PERSONAL);
 
+		registerMenu(new MenuRegistration( 
+				RESOURCE_BUNDLE,
+				MENU_NETWORKING, "fa-sitemap", null, 99999,
+				null,
+				null,
+				null,
+				null), MenuService.MENU_SYSTEM);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "browserLaunchable",
 				"fa-globe", "browserLaunchable", 300, null, null, null, null) {
 			@Override
@@ -234,8 +245,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						CertificateResourcePermission.READ,
 						CertificateResourcePermission.CREATE,
 						CertificateResourcePermission.UPDATE,
-						CertificateResourcePermission.DELETE),
-				MenuService.MENU_CONFIGURATION);
+						CertificateResourcePermission.DELETE) {
+			public boolean canRead() {
+				return !certificateService.allResources().isEmpty();
+			}
+		}, MenuService.MENU_CONFIGURATION);
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
 				new AbstractTableAction("downloadCSR", "fa-certificate",
@@ -335,7 +349,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						RoleAttributePermission.READ,
 						RoleAttributePermission.CREATE,
 						RoleAttributePermission.UPDATE,
-						RoleAttributePermission.DELETE),
+						RoleAttributePermission.DELETE) {
+			public boolean canRead() {
+				return super.canRead() && configurationService.getBooleanValue(getCurrentRealm(), "feature.roleSelection");
+			}
+		},
 				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
@@ -371,6 +389,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				new AbstractTableAction("defaultRealm", "fa-tag",
 						"defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION,
 						0, "isDefault", null));
+
+		registerTableAction(MenuService.ACTIONS_REALMS,
+				new AbstractTableAction("exportForMigrationRealmDialog", "fa-download",
+						"exportForMigrationRealmDialog", SystemPermission.SYSTEM_ADMINISTRATION,
+						0, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_BUSINESS_RULES,
 				"", null, 8888, null, null, null, null, null));
@@ -429,6 +452,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Override
 	public void registerFilter(MenuFilter filter) {
 		filters.add(filter);
+		Collections.<MenuFilter>sort(filters, new Comparator<MenuFilter>() {
+
+			@Override
+			public int compare(MenuFilter o1, MenuFilter o2) {
+				return o1.getWeight().compareTo(o2.getWeight());
+			}
+		});
 	}
 
 	@Override

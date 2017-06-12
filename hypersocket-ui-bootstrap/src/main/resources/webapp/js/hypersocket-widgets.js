@@ -3,6 +3,28 @@ $.fn.widget = function() {
 	return $(this).data('widget');
 }
 
+function processURL(widget, url) {
+
+	const regex = /{(.*?)}/g;
+	let m;
+
+	while ((m = regex.exec(url)) !== null) {
+	    // This is necessary to avoid infinite loops with zero-width matches
+	    if (m.index === regex.lastIndex) {
+	        regex.lastIndex++;
+	    }
+	    
+	    // The result can be accessed through the `m`-variable.
+	    m.forEach((match, groupIndex) => {
+	    	var w = widget.options().widgets[m[1]];
+	    	if(w) {
+	    		url = url.replace(match, w.getValue());
+	    	}
+	    });
+	}
+	
+	return url;
+}
 /**
  * Attach an event handler to an element, so that when clicked, it will
  * copy some text to the clipboard. 
@@ -935,7 +957,8 @@ $.fn.autoComplete = function(data) {
 			remoteSearch: false,
 			resourceKeyTemplate: '{0}',
 			icon: 'fa-search',
-			sortOptions: true
+			sortOptions: true,
+			doNotInit: false
 		}, data);
 	
 	var callback;
@@ -1068,6 +1091,7 @@ $.fn.autoComplete = function(data) {
 		if($('#input_' + id).data('values')) {
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
+					
 					thisWidget.data('selectedObject', obj);
 					$('#' + id).val(obj[options.valueAttr]);
 					$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
@@ -1092,7 +1116,7 @@ $.fn.autoComplete = function(data) {
 			if(options.searchParams) {
 				url += '&' + options.searchParams;
 			}
-			getJSON(url,
+			getJSON(processURL(thisWidget.widget(), url),
 					null,
 					function(data) {
 						$('#input_' + id).data('values', data.rows);
@@ -1138,7 +1162,6 @@ $.fn.autoComplete = function(data) {
 	});
 	
 	var remoteDropdown = false;
-	
 	callback = {
 			setValue: function(val) {
 				updateValue(val, true);
@@ -1149,33 +1172,37 @@ $.fn.autoComplete = function(data) {
 			getObject: function() {
 				return thisWidget.data('selectedObject');
 			},
-			reset: function(newValue) {
-				
+			_reload: function(newValue) {
 				if(options.url && !options.remoteSearch) {
-					var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text;
+					var url = options.url;
 					if(options.searchParams) {
 						url += '&' + options.searchParams;
 					}
 					getJSON(
-						url,
+						processURL(callback, url),
 						null,
 						function(data) {
-							buildData(options.isResourceList ? data.resources : data);
-							if(newValue) {
+							
+							if(data.success) {
+								buildData(options.isResourceList ? data.resources : data);
 								callback.setValue(newValue);
-							} else {
-								callback.setValue(options.value);
 							}
 						});
 				} else if(options.values && !options.remoteSearch) {
 					buildData(options.values);
-					if(newValue) {
-						callback.setValue(newValue);
-					} else {
-						callback.setValue(options.value);
-					}
+					callback.setValue(newValue);
 				} 
-				
+			},
+			/**
+			 * LDP - Reset should not have a newValue. It should initialise from options.
+			 * Added reload method instead if you want to set a specific value and reload 
+			 * at the same time.
+			 */
+			reset: function() {
+				this._reload(options.value);
+			},
+			reload: function(newValue) {
+				this._reload(newValue);
 			},
 			disable: function() {
 				$('#input_' + id).attr('disabled', true);
@@ -1239,9 +1266,9 @@ $.fn.autoComplete = function(data) {
 		callback.disable();
 	}
 	
-	if(options.url && !options.remoteSearch) {
+	if(options.url && !options.remoteSearch && !options.doNotInit) {
 		getJSON(
-			options.url,
+			processURL(callback, options.url),
 			null,
 			function(data) {
 				buildData(options.isResourceList ? data.resources : data);
@@ -1259,7 +1286,7 @@ $.fn.autoComplete = function(data) {
 			if(options.searchParams) {
 				url += '&' + options.searchParams;
 			}
-			getJSON(url,
+			getJSON(processURL(callback, url),
 					null,
 					function(data) {
 						
@@ -3699,6 +3726,45 @@ $.fn.fileUploadInput = function(data) {
  		        
  		        return true;
  			},
+ 			uploadBlob: function(blobInfo) {
+ 				debugger;
+ 				$('#' + id + 'UpdateProgressHolder').show();
+ 				$('#' + id + 'UpdateProgress').css("width",  "0%");
+			    var formData = new FormData();
+			    formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+ 		        var xhr = new XMLHttpRequest();
+ 		        xhr.upload.addEventListener("progress", uploadProgress, false);
+ 		       
+ 		        xhr.onreadystatechange=function()
+		        {
+		        	if (xhr.readyState==4 && xhr.status!=0)
+		        	{
+		        		if(xhr.status==200) {
+		        			data = jQuery.parseJSON(xhr.response);
+	 		        		if(data.success) {
+		 		        		showInfo(data.resource);
+		 						if(options.disabled) {
+		 							callback.disable();
+		 						}
+		 						$(this).data('needsUpload', false);
+		 						if(options.changed) {
+		 							options.changed(callback);
+		 						}
+		 						if(notify) {
+		 							notify(true);
+		 						}
+	 		        		} else {
+	 		        			if(notify) {
+	 		        				notify(false);
+	 		        			}
+	 		        		} 
+		        		} 
+		        	} 
+		        }
+		        xhr.open("POST", options.url);
+		        xhr.send(formData);
+ 			},
  			remove: function() {
  				if(!$('#' + id + 'Info').length){
  					return;
@@ -4350,6 +4416,7 @@ $.fn.multipleFileUpload = function(data) {
 				showRemoveLine: true,
 				isArrayValue: true,
 				showEmptyRow: false,
+				automaticUpload: false,
 				url: 'files/file'
 			}, data);
 	
@@ -4359,7 +4426,7 @@ $.fn.multipleFileUpload = function(data) {
 		var rowNum = 0;
 	}
 	maxRows = options.maxRows;
-	if(options.maxRows > 10 || options.maxRows <= 0){
+	if(options.maxRows <= 0){
 		maxRows = 10;
 	}
 	
@@ -4434,7 +4501,8 @@ $.fn.multipleFileUpload = function(data) {
  	 					url: options.url,
  	 					disabled: options.disabled,
  	 					showDownloadButton: options.showDownloadButton,
- 	 					showUploadButton: options.showUploadButton
+ 	 					showUploadButton: options.showUploadButton,
+ 	 					automaticUpload: options.automaticUpload
  	 				});
  	 				if(options.showRemoveLine && !options.disabled){
  	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').before('<a href="#" class="btn btn-danger" id="' + id + 'RemoveButton' + rowNum + '"><i class="fa fa-minus"></i></a>');
@@ -4448,6 +4516,12 @@ $.fn.multipleFileUpload = function(data) {
  	 					$('#' + id + 'NewRow').hide();
  	 				}
  				}
+ 			},
+ 			addFile: function(blob) {
+ 				debugger;
+ 				var widget = $('#' + id + 'FileUploads .fileUploadInput').last().widget();
+ 				widget.uploadBlob(blob);
+ 				this.addRows(1);
  			},
  			removeRows: function(){
  				$('#' + id + 'FileUploads').empty();
@@ -4816,7 +4890,7 @@ $.fn.html5Upload = function(data) {
  	 				        		});
  	 				        	}
  	 				        	if(options.uploadCallback){
- 	 				        		options.uploadCallback();
+ 	 				        		options.uploadCallback(data);
  	 				        	}
  	 				        	if(options.fadeBars){
  	 				        		setTimeout(function() {
@@ -4907,7 +4981,8 @@ $.fn.wizardPage = function(data) {
 	
 	var options = $.extend(
 			{  
-				allowReset: true
+				allowReset: true,
+				allowBack: false
 			}, data);
 	
 	
@@ -4921,68 +4996,102 @@ $.fn.wizardPage = function(data) {
 
 	$.each(options.steps, function(index, obj) {
 	
-		var page = $.extend({
-			titleText: getResource('text.step') + '. ' + (index+1),
-			titleIcon: 'fa-flash',
-			buttonText: 'text.next',
-			buttonIcon: 'fa-forward'
-		}, obj);
-		
-		
-		var html;
-		
-		if(options.useNumberIcons) {
+			var page = $.extend({
+				titleText: getResource('text.step') + '. ' + (index+1),
+				titleIcon: 'fa-flash',
+				buttonText: 'text.next',
+				buttonIcon: 'fa-forward'
+			}, obj);
 			
-			html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
-			+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
-			+ ' 	<h5 class="panel-title wizardTitle"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i>'
-			+ '<i class="fa fa-stack-1x" style="color: white"><strong>' + (index+1) + '</strong></i></span>'
-			+ '		    <a data-toggle="collapse" data-parent="#accordion"'
-			+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
-			+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
-			+ '	    </h5>'
-			+ '</div>'
-			+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
-			+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
-			+ '	<div class="panel-body"><div id="page' + index + '"></div>';
 			
-		} else {
-			html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
+			var html;
+			
+			if(options.useNumberIcons) {
+				
+				html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
 				+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
-				+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
+				+ ' 	<h5 class="panel-title wizardTitle"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i>'
+				+ '<i class="fa fa-stack-1x" style="color: white"><strong>' + (index+1) + '</strong></i></span>'
 				+ '		    <a data-toggle="collapse" data-parent="#accordion"'
 				+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
 				+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
-				+ '	    </h4>'
+				+ '	    </h5>'
 				+ '</div>'
 				+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
 				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 				+ '	<div class="panel-body"><div id="page' + index + '"></div>';
-		}
+				
+			} else {
+				html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
+					+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
+					+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
+					+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+					+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
+					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
+					+ '	    </h4>'
+					+ '</div>'
+					+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
+					+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
+					+ '	<div class="panel-body"><div id="page' + index + '"></div>';
+			}
+				
+			if(page.onNext) {
+				html += '		<div class="propertyItem form-group buttonBar">';
+				if(index > 0) {
+					html += '			<button id="backButton' + index + '" class="backButton pageState' + index + ' btn btn-danger">'
+					+ '				<i class="fa fa-step-backward"></i><span localize="text.back"></span>'
+					+ '			</button>&nbsp';
+				}
+				html += '			<button id="button' + index + '" class="nextButton pageState' + index + ' btn btn-primary">'
+					+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
+					+ '			</button>'
+					+ '		</div>';
+			}
+		
+			html += '</div>'
+				+ '</div>'
+				+ '</div>';
+		
+			$('#wizardPages').append(html);
+			$('#panel' + index).data('page', page);
+			$('#panel' + index).data('index', index);
 			
-		if(page.onNext) {
-			html += '		<div class="propertyItem form-group buttonBar">'
-			+ '			<button id="button' + index + '" class="nextButton pageState' + index + ' btn btn-primary">'
-			+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
-			+ '			</button>'
-			+ '		</div>';
-		}
-	
-		html += '</div>'
-			+ '</div>'
-			+ '</div>';
-	
-		$('#wizardPages').append(html);
-		$('#panel' + index).data('page', page);
-		$('#panel' + index).data('index', index);
+			$('#' + page.pageDiv).detach().appendTo('#page' + index).show();
 		
-		$('#' + page.pageDiv).detach().appendTo('#page' + index).show();
-		
-	});
+		});
 		
 		$('.wizardPage').first().show();
 		
 		$(this).localize();
+		
+		$('.backButton').click(function() {
+			
+			$('.wizardError').remove();
+			var page = $(this).closest('.panel').data('page');
+			var idx = $(this).closest('.panel').data('index');
+			
+			var previousPage = idx - 1;
+			$('.pageState' + idx).attr('disabled', true);
+			
+			var previousPageW = $('#panel' + previousPage).data('page');
+			
+			var doShow = function() {
+				$('.pageState' + previousPage).attr('disabled', false);
+				$('.pageState' + idx).attr('disabled', false);
+				$('#button' + previousPage).attr('disabled', false);
+				$('#panel' + previousPage).show();
+				$('#panel' + idx).hide();
+				$('#collapse' + idx).collapse('hide');
+				$('#collapse' + previousPage).collapse('show');
+			};
+			if(previousPageW.onShow) {
+				if(previousPageW.onShow(doShow)) {
+					doShow();
+				};
+			} else {
+				doShow();
+			}
+		});
 		
 		$('.nextButton').click(function() {
 		
@@ -4995,7 +5104,12 @@ $.fn.wizardPage = function(data) {
 		
 			if(page.onNext) {
 				var clicked = false;
-				startSpin($('#button' + idx).find('i'), 'fa-spinner fa-spin');
+				startSpin($('#button' + idx).find('i'), page.buttonIcon);
+				
+				var onError = function(val) {
+					$('.wizardError').remove();
+					$('#page' + idx).prepend('<div class="wizardError alert alert-danger"><i class="fa fa-warning"></i> <span>' + val + '</span></p>')
+				};
 				
 				page.onNext(function() {
 	
@@ -5008,11 +5122,24 @@ $.fn.wizardPage = function(data) {
 					if(options.steps.length > idx + 1) {
 						stopSpin($('#button' + idx).find('i'), page.buttonIcon);
 						var nextPage = idx + 1;
-							$('.pageState' + idx).attr('disabled', true);
+						$('.pageState' + idx).attr('disabled', true);
 						
-						$('#panel' + nextPage).show();
-						$('#collapse' + idx).collapse('hide');
-						$('#collapse' + nextPage).collapse('show');
+						var nextPageW = $('#panel' + nextPage).data('page');
+						
+						var doShow = function() {
+							$('#panel' + nextPage).show();
+							$('#collapse' + idx).collapse('hide');
+							$('#collapse' + nextPage).collapse('show');
+						};
+						if(nextPageW.onShow) {
+							if(nextPageW.onShow(doShow)) {
+								doShow();
+							};
+						} else {
+							doShow();
+						}
+						
+						
 					} else {
 						if(options.done) {
 							options.pageDone = true;
@@ -5027,7 +5154,7 @@ $.fn.wizardPage = function(data) {
 					}
 				}, function() {
 					stopSpin($('#button' + idx).find('i'), page.buttonIcon);
-				});
+				}, onError);
 			}
 		
 		});
@@ -5052,6 +5179,9 @@ $.fn.wizardPage = function(data) {
 		return {
 			reset: function() {
 				$('#resetForm').click();
+			},
+			showError: function(str) {
+				
 			}
 		}
 	});
@@ -5287,27 +5417,37 @@ $.fn.multipleRows = function(data) {
 				render: function(element, value) {
 					element.textInput({ }).setValue(value);
 				},
+				generateValue: function(element) {
+					log('Unimplemented generateValue');
+				},
+				enable: function(element) {
+					log('Unimplemented enable');
+				},
+				disable: function(element) {
+					log('Unimplemented disable');
+				}, 
+				clear: function(element) {
+					log('Unimplemented clear');
+				}
 			}, data);
 	
 	var id = $(this).attr('id') + "Multiple";
-	
+
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
-	+	'	<div>' 
 	+	'	<div class="col-xs-11" id="' + id + 'Header"></div>' 
 	+	'	<div class="col-xs-1"></div>' 
 	+   '   </div>'
 	+	'	<div id="' + id + 'Rows" ></div>'
-	+	'	<div id="' + id + 'NewRow" class="row">'
+	+	'	<div id="' + id + 'NewRow">'
 	+	'		<div class="propertyValue col-xs-11">'
 	+	'			<span class="help-block">&nbsp;</span>'
 	+	'		</div>'
-	+	'		<div class="propertyValue col-xs-1 dialogActions">'
+	+	'		<div class="propertyValue col-xs-1">'
 	+	'			<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
 	+	'				<i class="fa fa-plus"></i>'
 	+	'			</a>'
 	+	'		</div>'
-	+	'	</div>'
-	+	'</div>';
+	+	'   </div>';
 	
 	$(this).append(html);
 	
@@ -5322,21 +5462,20 @@ $.fn.multipleRows = function(data) {
 	var addRow = function(val) {
 		
 		var elementId = id + options.count++;
-		$('#' + id + 'Rows').append('<div class="row">' 
-				+ '    <div id="' + elementId  + '" class="rowInput col-xs-11">'
+		$('#' + id + 'Rows').append(
+				 '    <div id="' + elementId  + '" class="rowInput col-xs-11">'
 				+ '    </div>'
-				+ '    <div class="col-xs-1 dialogActions">'
+				+ '    <div class="col-xs-1">'
 				+	'		<a href="#" class="btn btn-danger delButton">'
 				+	'			<i class="fa fa-minus"></i>'
 				+	'		</a>'
-				+ '    </div>'
 				+ '</div>'); 
 		
 		options.render($('#' + id + 'Rows').find('.rowInput').last(), val);
 		
 		$('.delButton').off('click');
 		$('.delButton').on('click', function() {
-			$(this).closest('.row').remove();
+			$(this).closest('.rowInput').parent().remove();
 			if(options.showAdd) {
 				$('#' + id + 'NewRow').show();
 			}
@@ -5356,15 +5495,17 @@ $.fn.multipleRows = function(data) {
 			setValue: function(val) {
 				$('#' + id + 'Rows').children().remove();
 				$.each(val, function(idx, v) {
-					
 					addRow(v);
 				});
 			},
 			getValue: function() {
 				var res = [];
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					res.push($(this).find('.rowInput').widget().getValue());
+					if($(row).find('.widget').length > 0) {
+						res.push(options.generateValue($(row)));
+					}
 				});
+				
 				return res;
 			},
 			reset: function() {
@@ -5373,12 +5514,12 @@ $.fn.multipleRows = function(data) {
 			},
 			disable: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					$(this).find('.rowInput').widget().disable();
+					options.disable($(this));
 				});
 			},
 			enable: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					$(this).find('.rowInput').widget().enable();
+					options.enable($(this));
 				});
 			},
 			options: function() {
@@ -5389,7 +5530,7 @@ $.fn.multipleRows = function(data) {
 			}, 
 			clear: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					$(this).find('.rowInput').widget().clear();
+					options.clear($(this));
 				});
 			}
 	}

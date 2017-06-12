@@ -102,6 +102,7 @@
 								infoHtml: getResource('triggers.infoHtml'),
 								icon: 'fa-globe',
 								resourceUrl : "triggers/trigger",
+								deleteResourcesUrl : "triggers/bulk",
 								importUrl: 'triggers/import',
 								exportUrl: 'triggers/export',
 								fields : [ {
@@ -111,6 +112,7 @@
 								canCreate: currentMenu.canCreate,
 								canUpdate: currentMenu.canUpdate,
 								canDelete: currentMenu.canDelete,
+								checkbox : true,
 								additionalButtons: [{ 
 									resourceKey: 'triggerSearchOnline',
 									buttonClass: 'btn-primary',

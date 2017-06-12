@@ -1,0 +1,91 @@
+<div class="modal" id="exportForMigrationRealmDialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" localize="export.realm.title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="propertyItem form-group">
+                    <label for="allSwitch" class="col-md-3 control-label"
+                           localize="export.realm.all.label"></label>
+                    <div class="propertyValue col-xs-12">
+                        <div id="allSwitch"></div>
+                        <div>
+                            <span class="help-block" localize="export.realm.all.info"></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="exportableDiv" class="propertyItem form-group">
+                    <label for="exportables" class="col-md-3 control-label"
+                           localize="export.realm.exportables.label"></label>
+                    <div class="propertyValue col-xs-12">
+                        <div id="exportables"></div>
+                        <div>
+                            <span class="help-block" localize="export.realm.exportables.info"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="exportRealmButton" type="button" class="btn btn-primary">
+                        <i id="realmDownloadIcon" class="fa fa-download"></i><span
+                            localize="exportResourceButton.label"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script type="text/javascript">
+	$(document).ready(function() {
+		$('#exportForMigrationRealmDialog').localize();
+
+		var allSwitch = $('#allSwitch').switchInput({
+		    onResourceKey: 'text.yes',
+		    offResourceKey: 'text.no',
+		    changed : function(callback) {
+		        if(callback.getValue()) {
+		            $('#exportableDiv').hide();
+		        } else {
+		            $('#exportableDiv').show();
+		            exportables.reset();
+		        }
+		    }
+		});
+
+		var exportables = null;
+
+		$('#exportForMigrationRealmDialog').data('action', function(resource, callback) {
+			getJSON('exportables/list', null, function(data) {
+				var exportables = $('#exportables').multipleSelect({
+					values : data.resources,
+					valuesIsObjectList : false
+				});
+
+                $('#exportForMigrationRealmDialog').data('exportables', exportables);
+                $('#exportForMigrationRealmDialog').data('resource', resource);
+                allSwitch.setValue(true);
+                $('#exportableDiv').hide();
+                $('#realmDownloadIcon').removeClass('fa-spinner fa-spin');
+				$('#realmDownloadIcon').addClass('fa-upload');
+				$('#exportForMigrationRealmDialog').data('callback', callback);
+				$('#exportForMigrationRealmDialog').modal('show');
+			});
+
+		});
+
+		$('#exportRealmButton').click(function(e) {
+			$('#realmDownloadIcon').removeClass('fa-upload');
+			$('#realmDownloadIcon').addClass('fa-spinner fa-spin');
+
+            var form = $('<form></form>').attr('action', basePath + '/api/' + 'realms/export' + '?token=' + getCsrfToken()).attr('method', 'post');
+            form.append($("<input></input>").attr('type', 'hidden').attr('name', 'all').attr('value', allSwitch.getValue()));
+            form.append($("<input></input>").attr('type', 'hidden').attr('name', 'list').attr('value',  $('#exportForMigrationRealmDialog').data('exportables').getValue()));
+            form.append($("<input></input>").attr('type', 'hidden').attr('name', 'resource').attr('value', $('#exportForMigrationRealmDialog').data('resource').id));
+            form.appendTo('body').submit().remove();
+            $('#exportForMigrationRealmDialog').modal('hide');
+
+		});
+	});
+</script>
+

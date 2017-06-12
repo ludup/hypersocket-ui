@@ -37,9 +37,10 @@
 						.ajaxResourcePage(
 							{ id: 'Realm',
 							  tableUrl : "realms/table", 
-							  title : getResource('realms.title'), 
-							  icon : "fa-database", 
-							  resourceUrl : "realms/realm", 
+							  title : getResource('realms.title'),
+							  icon : "fa-database",
+							  resourceUrl : "realms/realm",
+							  deleteResourcesUrl : "realms/bulk",
 							  fields : [ { name : "name" },
 							             { name : "resourceCategory",
 								           formatter: function(value, obj, index) {
@@ -50,7 +51,22 @@
 							  canCreate : currentMenu.canCreate, 
 							  canUpdate : currentMenu.canUpdate, 
 							  canDelete : currentMenu.canDelete,
+							  additionalButtons : [{
+							  		resourceKey: 'realmImport',
+									buttonClass: 'btn-primary',
+									icon: 'fa-upload',
+									action: function(callback) {
+										if(!$('#importRealmPlaceholder').length) {
+											$('body').append('<div id="importRealmPlaceholder"></div>');
+										}
+										$('#importRealmPlaceholder').load(uiPath + "content/importRealmDialog.html", function(){
+											$('#importRealm').data('importUrl', 'realms/import');
+											$('#importRealm').data('action')(callback);
+										});
+									}
+							  }],
 							  additionalActions : actions,
+							  checkbox : true,
 							  validate : function() {
 								  
 								removeMessage();
@@ -124,7 +140,7 @@
 										showButtons : false, 
 										resource: resource,
 										i18nNamespace: $('#typeButton').widget().getSelectedObject().module,
-										displayMode: 'admin,update',
+										displayMode: 'admin,update,parent',
 										canUpdate : currentMenu.canUpdate && !readOnly,
 										
 								});

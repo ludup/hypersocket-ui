@@ -35,6 +35,8 @@ public interface MenuService extends AuthenticatedService {
 	
 	static final String MENU_CONFIGURATION = "configuration";
 	
+	static final String MENU_NETWORKING = "networkingMenu";
+	
 	static final String MENU_RESOURCES = "resources";
 
 	static final String MENU_BUSINESS_RULES = "businessRules";

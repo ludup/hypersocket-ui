@@ -158,8 +158,13 @@ function startLogon(opts) {
 				home(data);
 			}
 			$('#userInf').empty();
-			$('#userInf').append(getResource('text.loggedIn').format(
-					data.session.currentPrincipal.name, data.session.currentRealm.name, currentRole.name));
+			if(currentRole) {
+				$('#userInf').append(getResource('text.loggedIn').format(
+						data.session.currentPrincipal.name, data.session.currentRealm.name, currentRole.name));
+			} else {
+				$('#userInf').append(getResource('text.loggedInNoRole').format(
+						data.session.currentPrincipal.name, data.session.currentRealm.name));
+			}
 		},
 		formContent: $(contentDiv)
 	}, opts);
@@ -172,12 +177,14 @@ function logoff() {
 
 	log("Logging off");
 
-	getJSON(basePath + '/api/logoff', null, function() {	
-		if($(document).data('session')) {
-			$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
+	getJSON(basePath + '/api/logoff', null, function(data) {	
+		if(data.success) {
+			if($(document).data('session')) {
+				$(document).data('lastPrincipal', $(document).data('session').currentPrincipal);
+			}
+			$(document).data('session', null);
+			window.location = data.resource;
 		}
-		$(document).data('session', null);
-		startLogon();
 	});
 
 }
@@ -376,7 +383,7 @@ function home(data) {
 			}
 			
 			if(data.systemAdmin) {
-				$('#navMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="bottom" href="#"><i class="fa fa-power-off"></i></a></li>');
+				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="fa fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function(e) {
 					showShutdownDialog();
@@ -858,7 +865,9 @@ function loadMenu(menu) {
 	
 		loadWait();
 		$('#mainContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
-			window.location.hash = "menu=" + menu.resourceKey;
+			if(window.location.hash.indexOf("menu=" + menu.resourceKey)===-1) {
+				window.location.hash = "menu=" + menu.resourceKey;
+			}
 		});
 	}
 }
@@ -872,7 +881,9 @@ function loadSubPage(menu, element) {
 	$('#subMenuPageContent').startSpin();
 	loadWait();
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
-		window.location.hash = "menu=" + menu.resourceKey;
+		if(window.location.hash.indexOf("menu=" + menu.resourceKey)===-1) {
+			window.location.hash = "menu=" + menu.resourceKey;
+		}
 		if ($(window).width() < 959) {
 			$('#main-menu').addClass('hidden-xs');
 		}

@@ -152,6 +152,11 @@ public class UserInterfaceContentHandler implements ContentHandler {
 	}
 
 	@Override
+	public boolean hasAlias(String alias) {
+		return actualHandler.hasAlias(alias);
+	}
+	
+	@Override
 	public InputStream getResourceStream(String path)
 			throws FileNotFoundException {
 		return actualHandler.getResourceStream(path);

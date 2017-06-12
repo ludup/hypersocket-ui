@@ -58,9 +58,9 @@
 							complete : function() {
 								loadComplete();
 							},
-							resourceCreated: function() {
+							resourceCreated: function(resource) {
 								loadResources();
-								$('#attributeCategoryAutocomplete').widget().reset();
+								$('#attributeCategoryAutocomplete').widget().reload(resource);
 							},
 							resourceDeleted: function() {
 								loadResources();

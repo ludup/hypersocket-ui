@@ -47,7 +47,7 @@
 				buttonClass: 'btn-danger',
 				icon: 'fa-step-backward',
 				action: function(callback) {
-					window.location = '${uiPath}#menu=proxy';
+					window.location = $(document).data('accounts.returnTo');
 				}
 			});
 			title = getResource('ownerRealm.groups.title').format(groupRealm.name);
@@ -96,6 +96,7 @@
 				title: title,
 				icon: 'fa-users',
 				resourceUrl : apiUrl + "/group",
+				deleteResourcesUrl : "currentRealm/bulk/groups",
 				fields : [ { name: "name"} ],
 				resourceKey : 'group',
 				disableDecoration: disableDecoration,
@@ -103,6 +104,7 @@
 				canUpdate: currentMenu.canUpdate,
 				canDelete: currentMenu.canDelete,
 				additionalButtons: buttons,
+				checkbox : true,
 				validate : function() {
 					if ($('#groupName').val() == '') {
 						showError("error.nameRequired");
