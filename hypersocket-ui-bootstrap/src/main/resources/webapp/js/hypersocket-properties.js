@@ -733,7 +733,16 @@ $.fn.propertyPage = function(opts) {
 									} else {
 										return;
 									}
+								} else if(this.nonSystem) {
+									if($(document).data('session') && $(document).data('session').currentRealm) {
+										if($(document).data('session').currentRealm.system) {
+											return;
+										}
+									} else {
+										return;
+									}
 								}
+								
 								var tab = propertyDiv + "Tab" + Math.abs(this.id);
 
 								// Overwrite template values with any items
@@ -749,6 +758,23 @@ $.fn.propertyPage = function(opts) {
 								$.each(this.templates, function() {
 									if(this.hidden) {
 										return;
+									}
+									if(this.systemOnly) {
+										if($(document).data('session') && $(document).data('session').currentRealm) {
+											if(!$(document).data('session').currentRealm.system) {
+												return;
+											}
+										} else {
+											return;
+										}
+									} else if(this.nonSystem) {
+										if($(document).data('session') && $(document).data('session').currentRealm) {
+											if($(document).data('session').currentRealm.system) {
+												return;
+											}
+										} else {
+											return;
+										}
 									}
 									if(values[this.resourceKey]) {
 										this.value = values[this.resourceKey];
