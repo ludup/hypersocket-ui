@@ -30,6 +30,7 @@ import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.config.ConfigurationService;
+import com.hypersocket.config.SystemConfigurationService;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.message.MessageResourcePermission;
 import com.hypersocket.message.MessageResourceService;
@@ -86,6 +87,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	@Autowired
 	private ConfigurationService configurationService; 
+	
+	@Autowired
+	private SystemConfigurationService systemConfigurationService; 
 	
 	List<MenuFilter> filters = new ArrayList<MenuFilter>();
 	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
@@ -403,7 +407,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageMenu", "fa-envelope-o",
 				null, 9999, null, null, null,
-				null), MENU_BUSINESS_RULES);
+				null) {
+			@Override
+			public boolean canRead() {
+				return systemConfigurationService.getBooleanValue("smtp.on");
+			}
+		}, MENU_BUSINESS_RULES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				"messages", "fa-envelope-o", "messages", 0,
