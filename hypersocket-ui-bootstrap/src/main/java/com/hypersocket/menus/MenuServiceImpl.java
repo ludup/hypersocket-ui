@@ -751,8 +751,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	}
 
 	@Override
-	public List<TabRegistration> getExtendedInformationTab (String tab) {
-		List<TabRegistration> processedTabRegistration = new ArrayList<>();
+	public List<Tab> getExtendedInformationTab (String tab) {
+		List<Tab> processedTabRegistration = new ArrayList<>();
 		List<TabRegistration> toProcessTabRegistration = extendedInformationTabs.get(tab);
 		if(toProcessTabRegistration == null || toProcessTabRegistration.isEmpty()) {
 			return processedTabRegistration;
@@ -761,7 +761,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			if(tabRegistration.canRead()) {
 				try {
 					assertPermission(tabRegistration.permission);
-					processedTabRegistration.add(tabRegistration);
+					processedTabRegistration.add(new Tab(tabRegistration.resourceKey, tabRegistration.url, false, tabRegistration.getWeight()));
 				}catch (AccessDeniedException e) {
 					log.debug("{}/{} does not have access to {} tab with permission {}",
 							getCurrentPrincipal().getRealm(),
@@ -769,6 +769,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 							tabRegistration.getResourceKey(),
 							tabRegistration.getPermission()
 					);
+					processedTabRegistration.add(new Tab(tabRegistration.resourceKey, tabRegistration.url, true, tabRegistration.getWeight()));
 				}
 			}
 		}

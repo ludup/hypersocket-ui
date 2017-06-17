@@ -98,6 +98,6 @@ public interface MenuService extends AuthenticatedService {
 
 	void registerExtendedInformationTab(String tab, TabRegistration tabRegistration);
 
-	List<TabRegistration> getExtendedInformationTab(String tab);
+	List<Tab> getExtendedInformationTab(String tab);
 
 }

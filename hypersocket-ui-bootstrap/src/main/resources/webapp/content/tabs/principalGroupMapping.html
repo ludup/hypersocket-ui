@@ -1,23 +1,21 @@
-<div data-id="principalRoleMapping" class="extendedTabContent box20">
-    <div data-id="rolesTab"></div>
+<div data-id="principalGroupMapping" class="extendedTabContent box20">
+    <div data-id="groupsTab"></div>
     <div class="row10 help-block">
-        <span localize="principal.role.mapping.info"></span>
+        <span localize="principal.group.mapping.info"></span>
     </div>
 </div>
 <script>
-
 $(document).ready(function() {
-    $('.extendedTabContent').data('initPage', function(resource, data, readonly) {
+    $('.extendedTabContent').data('initPage', function(resource, data, readOnly) {
         var _$ = function(jq) { return $(jq + '_' + resource.id);}
-        var el = _$('#rolesTab');
+        var el = _$('#groupsTab');
 
-        _$('#principalRoleMapping').localize();
+        _$('#principalGroupMapping').localize();
 
-       
-            getJSON('currentRealm/user/' + resource.id + '/roles', null, function(response){
+            getJSON('currentRealm/groups/user/' + resource.id, null, function(response){
                 if(response.resources) {
                     var initObj = {
-                        disabled: readonly,
+                        disabled: readOnly,
                         nameAttr : 'name',
                         selectedIsObjectList: false,
                         valueAttr: 'id',
@@ -26,8 +24,8 @@ $(document).ready(function() {
                         addOnSelect: false,
                         preAddCallback : function(data){
                        
-                             var roleId = data.id;
-                             patchJSON('roles/' + roleId + '/user/' + resource.id, null, function(data){
+                             var groupId = data.id;
+                             patchJSON('currentRealm/group/' + groupId + '/user/' + resource.id, null, function(data){
                                  if(data.success){
                                      showSuccess(data.message);
                                  }else{
@@ -40,8 +38,8 @@ $(document).ready(function() {
                         preRemoveCallback : function(evt) {
                             
                                 var callback = el.data('widget');
-                                var roleId = $(evt.target).data('value').id;
-                                deleteJSON('roles/' + roleId + '/user/' + resource.id, null, function(response){
+                                var groupId = $(evt.target).data('value').id;
+                                deleteJSON('currentRealm/group/' + groupId + '/user/' + resource.id, null, function(response){
                                     if(response.success){
                                         showSuccess(response.message);
                                     }else{
@@ -55,12 +53,11 @@ $(document).ready(function() {
                         objectDeletable : function(obj){
                             return !obj.allUsers;
                         },
-                        url : 'roles/filter/user/' + resource.id
+                        url : 'currentRealm/groups/filter/' + resource.id
                     };
                     el.multipleSearchInput(initObj);
                 }
             });
-       
     });
 });
 </script>

@@ -171,7 +171,7 @@ public class MenuController extends AuthenticatedController {
 			produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
-	public ResourceList<TabRegistration> getTabRegistration(
+	public ResourceList<Tab> getTabRegistration(
 			HttpServletRequest request, HttpServletResponse respone,
 			@PathVariable String tab) throws UnauthorizedException,
 			SessionTimeoutException {
@@ -180,7 +180,7 @@ public class MenuController extends AuthenticatedController {
 				sessionUtils.getLocale(request));
 
 		try {
-			return new ResourceList<TabRegistration>(
+			return new ResourceList<Tab>(
 					menuService.getExtendedInformationTab(tab));
 		} finally {
 			clearAuthenticatedContext();

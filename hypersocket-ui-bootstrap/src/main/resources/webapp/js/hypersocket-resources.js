@@ -1786,7 +1786,7 @@ $.fn.extendedResourcePanel = function(params){
                         $(element).attr('id', $(element).attr('data-id') + '_' + options.resource.id);
                     });
                     if($('#' + tabId).children('.extendedTabContent').length > 0) {
-                        $('#' + tabId).children('.extendedTabContent').data('initPage')(options.resource, options.data);
+                        $('#' + tabId).children('.extendedTabContent').data('initPage')(options.resource, options.data, value.readOnly);
                     }
                 });
             });
