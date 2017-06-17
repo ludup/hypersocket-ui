@@ -1782,16 +1782,11 @@ $.fn.extendedResourcePanel = function(params){
                 $tabContentHolder.append('<div id=' + tabId + '></div>');
                 $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){
                     var elements = $('#' + tabId + ' [data-id]');
-                    var extendedTabContent = 'extendedTabContent' + '_' + options.resource.id;
                     $.each(elements, function(i, element) {
                         $(element).attr('id', $(element).attr('data-id') + '_' + options.resource.id);
-                        if($(element).hasClass('extendedTabContent')) {
-                            $(element).removeClass('extendedTabContent')
-                            .addClass(extendedTabContent);
-                        }
                     });
-                    if($('.' + extendedTabContent).length > 0) {
-                        $('.' + extendedTabContent).data('initPage')(options.resource, options.data);
+                    if($('#' + tabId).children('.extendedTabContent').length > 0) {
+                        $('#' + tabId).children('.extendedTabContent').data('initPage')(options.resource, options.data);
                     }
                 });
             });

@@ -16,7 +16,7 @@ public class PrincipalExtendedService {
 
     @PostConstruct
     private void postConstruct() {
-        menuService.registerExtendedInformationTab("principalRoleMappingTab",
+        menuService.registerExtendedInformationTab("principalTabs",
                 new TabRegistration("principalRoleMapping", "tabs/principalRoleMapping", UserPermission.CREATE, 100));
     }
 }

@@ -323,7 +323,7 @@
 									return !row.readOnly;
 								},
 								detailFormatter: ownerRealm ? undefined : function(index, resource, $element) {
-									$element.extendedResourcePanel({resourceKey: "principalRoleMappingTab",
+									$element.extendedResourcePanel({resourceKey: "principalTabs",
 																	   resource: resource,
 																	   data: {parentContainer : '#contentUsers'}
 																	});
@@ -518,7 +518,7 @@
 									
 								},
 								complete : function() {
-									
+									debugger;
 									if(currentRealm.resourceCategory !== 'local') {
 										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><div class="principalType" id="principalType"></div></div>');
 											$('#principalType').textDropdown({
