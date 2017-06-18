@@ -2079,3 +2079,47 @@ select[multiple] {
 	margin-right: 10px;
 	margin-bottom: 10px;
 }
+
+.chart-color-1{
+	color: #03A9F4; /* BLUE */
+}
+
+.chart-color-2{
+	color: #FF9800; /* ORANGE */
+}
+
+.chart-color-3{
+	color: #795548; /* BROWN */
+}
+
+.chart-color-4{
+	color: #607D8B; /* BLUE GREY */
+}
+
+.chart-color-5{
+	color: #9C27B0; /* PURPLE */
+}
+
+.chart-color-6{
+	color: #E91E63; /* PINK */
+}
+
+.chart-color-7{
+	color: #4CAF50; /* GREEN */
+}
+
+.chart-color-8{
+	color: #FFEB3B; /* YELLOW */
+}
+
+.chart-color-9{
+	color: #F44336; /* RED */
+}
+
+.chart-color-10{
+	color: #009688; /* TURQUOISE */
+}
+
+.chart-color-11{
+	color: #3F51B5; /* TEAK */
+}
