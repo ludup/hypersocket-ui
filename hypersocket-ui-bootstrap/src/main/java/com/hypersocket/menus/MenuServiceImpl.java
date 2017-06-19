@@ -107,12 +107,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_NAV, "", null, 0, null, null, null, null));
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_DASHBOARD, "fa-pie-chart", null, 0,
-				SystemPermission.SYSTEM_ADMINISTRATION, 
-				SystemPermission.SYSTEM_ADMINISTRATION,
-				SystemPermission.SYSTEM_ADMINISTRATION, 
-				SystemPermission.SYSTEM_ADMINISTRATION), MenuService.MENU_NAV);
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_DASHBOARD, "fa-pie-chart", null, 0, null,
+				null, null, null) {
+			@Override
+			public boolean canRead() {
+				return permissionService.hasAdministrativePermission(getCurrentPrincipal());
+			}
+		}, MenuService.MENU_NAV);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_REALMS, "fa-database", "realms", 1,
