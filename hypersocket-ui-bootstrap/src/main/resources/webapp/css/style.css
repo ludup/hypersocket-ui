@@ -169,9 +169,9 @@ pre {
 	color: #900000 !important;
 }
 
-.requiredField {
-	color: #424242;
-	font-weight: bold;
+.requiredField:after {
+	content: "*";
+	margin-right: 4px;
 }
 
 .optionalField {

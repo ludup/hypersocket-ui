@@ -335,6 +335,12 @@
 										showError("error.nameRequired");
 										return false;
 									}
+									
+									if(!$('#userProperties').validateProperties()) {
+										showError("error.correctValidationErrors");
+										return false;
+									}
+									
 									if(create) {
 										if($('#userPassword').val().trim() == '') {
 											showError("error.passwordEmpty");
@@ -344,11 +350,6 @@
 											showError("error.passwordsNotMatched");
 											return false;
 										}
-									}
-									
-									if(!$('#userProperties').validateProperties()) {
-										showError("error.correctValidationErrors");
-										return false;
 									}
 									
 									return true;

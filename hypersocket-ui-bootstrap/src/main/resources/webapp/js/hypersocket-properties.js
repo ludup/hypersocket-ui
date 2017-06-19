@@ -55,11 +55,6 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 	
 	obj = $.extend({ allowEmpty: true, allowAttribute: true }, obj);
 	
-	if(!widget.getInput().parents('.propertyItem').is(':visible')) {
-		log('Not validating ' + obj.resourceKey + ' because its not visible');
-		return true;
-	}
-	
 	log("Validating " + obj.resourceKey + ' value ' + value);
 	
 	if(!validateInputType(obj.inputType)){
@@ -77,7 +72,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 		value = widgetsByResourceKey[getVariableName(value)];
 	}
 	
-	if(!obj.allowEmpty && value=='') {
+	if((!obj.allowEmpty || obj.requiredField) && value=='') {
 		log("Validation failed for " + obj.resourceKey + " with empty value");
 		return false;
 	} else if(obj.allowEmpty && value=='') {
@@ -118,21 +113,21 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 			return false;
 		}
 	} else if (obj.inputType == 'textarea') {
-		if(!obj.allowEmpty && value == '') {
+		if((!obj.allowEmpty || obj.requiredField) && value == '') {
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
 			return true;
 		}
 	} else if (obj.inputType == 'text' || obj.inputType == 'multipleTextInput') {
-		if(!obj.allowEmpty && value == '') {
+		if((!obj.allowEmpty || obj.requiredField) && value == '') {
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
 			return true;
 		}
 	} else if (obj.inputType == 'password') {
-		if(!obj.allowEmpty && value == '') {
+		if((!obj.allowEmpty || obj.requiredField) && value == '') {
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
@@ -140,7 +135,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 		}
 	} else if(obj.inputType == 'fileInput' || obj.inputType == 'multipleFileInput') {
 		
-		if(!obj.allowEmpty && value == '') {
+		if((!obj.allowEmpty || obj.requiredField) && value == '') {
 			log("validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
@@ -151,7 +146,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 		}
 	} else if(obj.inputType == 'html5Upload'){
 		
-		if(!obj.allowEmpty && value == '') {
+		if((!obj.allowEmpty || obj.requiredField) && value == '') {
 			log("validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
@@ -161,7 +156,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 			return false;
 		}
 	} else if(obj.inputType == 'logoInput') {
-		if(!obj.allowEmpty && value == '') {
+		if((!obj.allowEmpty || obj.requiredField) && value == '') {
 			log("validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		} else if(obj.allowEmpty && value == '') {
@@ -173,7 +168,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 		}
 	} else if(obj.isNamePairValue) {
 		
-		if(!obj.allowEmpty && value == '') {
+		if((!obj.allowEmpty || obj.requiredField) && value == '') {
 			log("validaton failed for " + obj.resourceKey + " and empty value");
 			return false;
 		}
