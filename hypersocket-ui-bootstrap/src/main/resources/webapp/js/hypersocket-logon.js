@@ -67,23 +67,24 @@ function processLogon(data, opts, message) {
 		removeMessage();
 		
 		opts.formContent.append(
-			'<form id="logonForm" autocomplete="off" class="' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/>');
+			'<form id="logonForm" autocomplete="off" class="panel panel-default ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/>');
 
 		if (data['errorMsg']) {
 			showError(data['errorMsg']);
-		} else if (message) {
-			$('#logonForm').append(
-				'<h2 class="form-signin-heading">' + message + '</h2>');
-		} else {
-			$('#logonForm').append('<h2 class="form-signin-heading"></h2>');
-		}
-
+		} 
+		
+		
 		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
 		
 		var links = new Array();
 		var scripts = new Array();
 		var setFocus = false;
 		if(data.formTemplate) {
+			
+			$('#logonForm').before('<h1 class="form-scheme-heading">' + getResource(data.formTemplate.scheme + '.logon.title') + '</h1>');
+
+			$('#logonForm').append('<h2 class="form-signin-heading">' + getResource(data.formTemplate.scheme + '.sub.title') + '</h2>');
+			
 			$.each(data.formTemplate.inputFields, function() {
 				if (this.type == 'hidden') {
 					$('#logonForm').append('<input type="' + this.type + '" name="' 
@@ -130,7 +131,7 @@ function processLogon(data, opts, message) {
 			
 				if (this.type == 'select') {
 					
-					$('#logonForm').append('<div><select class="logonSelect" name="' 
+					$('#logonForm').append('<div class="logonInput"><select class="logonSelect" name="' 
 							+ this.resourceKey + '" id="' + this.resourceKey
 							+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 							+ '"/></div>');
@@ -221,12 +222,18 @@ function processLogon(data, opts, message) {
 		});
 		
 		if(data.formTemplate) {
+			
+			$('#logonForm').append('<div class="form-signin-warning">' + getResource(data.formTemplate.scheme + '.warning.title') + '</div>');
+			
 			if(data.formTemplate.showLogonButton) {
 				$('#logonForm').append(
 						'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
 							+ (data.last ? (data.formTemplate.logonButtonResourceKey ? getResource(data.formTemplate.logonButtonResourceKey) : getResource(data.lastButtonResourceKey)) : getResource("text.next")) 
 							+ '&nbsp;<i class="fa ' + (data.formTemplate.logonButtonIcon ? data.formTemplate.logonButtonIcon : 'fa-sign-in') + '"></i></button>');
 			}
+			
+			$('#logonForm').after('<p class="form-signin-security form-signin-warning">' + getResource(data.formTemplate.scheme + '.security.title') + '</p>');
+			
 		}
 		
 		if(!data.postAuthentication) {
