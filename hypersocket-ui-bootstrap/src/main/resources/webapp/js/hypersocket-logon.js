@@ -83,8 +83,6 @@ function processLogon(data, opts, message) {
 			
 			$('#logonForm').before('<h1 class="form-scheme-heading">' + getResource(data.formTemplate.scheme + '.logon.title') + '</h1>');
 
-			$('#logonForm').append('<h2 class="form-signin-heading">' + getResource(data.formTemplate.scheme + '.sub.title') + '</h2>');
-			
 			$.each(data.formTemplate.inputFields, function() {
 				if (this.type == 'hidden') {
 					$('#logonForm').append('<input type="' + this.type + '" name="' 
