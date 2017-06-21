@@ -16,7 +16,7 @@ function processURL(widget, url) {
 	    
 	    // The result can be accessed through the `m`-variable.
 	    m.forEach((match, groupIndex) => {
-	    	var w = widget.options().widgets[m[1]];
+	    	var w = $(document).data('widgetMap')[m[1]];
 	    	if(w) {
 	    		url = url.replace(match, w.getValue());
 	    	}

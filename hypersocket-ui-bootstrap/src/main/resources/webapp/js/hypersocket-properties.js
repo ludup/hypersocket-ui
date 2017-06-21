@@ -1205,9 +1205,7 @@ $.fn.propertyPage = function(opts) {
 					widgetMap[widget.options().resourceKey] = widget;
 				});
 				
-				$.each(widgets, function(idx, widget) {
-					widget.options().widgets = widgetMap;
-				});
+				$(document).data('widgetMap', widgetMap);
 				
 				options.widgets = widgetMap;
 				
