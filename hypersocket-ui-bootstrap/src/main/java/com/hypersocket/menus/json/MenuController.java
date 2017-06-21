@@ -10,7 +10,8 @@ package com.hypersocket.menus.json;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.hypersocket.menus.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,11 @@ import com.hypersocket.auth.json.AuthenticationRequiredButDontTouchSession;
 import com.hypersocket.auth.json.UnauthorizedException;
 import com.hypersocket.json.ResourceList;
 import com.hypersocket.json.ResourceStatus;
+import com.hypersocket.menus.AbstractTableAction;
+import com.hypersocket.menus.Badge;
+import com.hypersocket.menus.Menu;
+import com.hypersocket.menus.MenuService;
+import com.hypersocket.menus.Tab;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionService;
 import com.hypersocket.permissions.PermissionStrategy;
@@ -37,6 +43,8 @@ import com.hypersocket.session.json.SessionTimeoutException;
 @Controller
 public class MenuController extends AuthenticatedController {
 
+	static Logger log = LoggerFactory.getLogger(MenuController.class);
+	
 	@Autowired
 	MenuService menuService;
 
@@ -105,12 +113,23 @@ public class MenuController extends AuthenticatedController {
 				sessionUtils.getLocale(request));
 		try {
 
+			if(log.isInfoEnabled()) {
+				log.info("REMOVEME: Starting menu collection");
+			}
 			MenuList list = new MenuList(menuService.getMenus(resourceKey));
+			
+			if(log.isInfoEnabled()) {
+				log.info("REMOVEME: Checking system permission");
+			}
+			
 			if (permissionService.hasSystemPermission(sessionUtils
 					.getPrincipal(request))) {
 				list.setSystemAdmin(true);
 			}
 
+			if(log.isInfoEnabled()) {
+				log.info("REMOVEME: Checking user can switch realm");
+			}
 			try {
 				permissionService.verifyPermission(
 						sessionUtils.getPrincipal(request),
@@ -121,8 +140,14 @@ public class MenuController extends AuthenticatedController {
 			} catch (AccessDeniedException e) {
 			}
 
+			if(log.isInfoEnabled()) {
+				log.info("REMOVEME: Returning list");
+			}
 			return list;
 		} finally {
+			if(log.isInfoEnabled()) {
+				log.info("REMOVEME: En ding menu collection");
+			}
 			clearAuthenticatedContext();
 		}
 	}

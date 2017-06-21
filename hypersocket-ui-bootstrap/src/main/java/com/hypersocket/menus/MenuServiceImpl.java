@@ -606,6 +606,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Override
 	public List<Menu> getMenus(String resourceKey) {
 
+		if(log.isInfoEnabled()) {
+			log.info("REMOVEME: Collecting menus");
+		}
+		
 		Collection<MenuRegistration> menus;
 		if(resourceKey == null)
 			menus = rootMenus.values();
@@ -618,6 +622,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			populateMenuList(m, userMenus);
 		}
 
+		if(log.isInfoEnabled()) {
+			log.info("REMOVEME: Collected menus");
+		}
+		
 		return userMenus;
 	}
 
@@ -634,60 +642,75 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	}
 	
 	protected Menu populateMenuList(MenuRegistration m, List<Menu> menuList) {
-		if (shouldFilter(m)) {
-			if (log.isDebugEnabled()) {
-				log.debug(m.getResourceKey() + " has been filtered out");
-			}
-			return null;
-		} else if (!m.canRead()) {
-			if (log.isDebugEnabled()) {
-				log.debug(getCurrentPrincipal().getRealm() + "/"
-						+ getCurrentPrincipal().getName()
-						+ " does not have access to "
-						+ m.getResourceKey()
-						+ " menu due to canRead returning false");
-			}
-			return null;
-
-		} else if (m.getReadPermission() != null) {
-			try {
-				assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
-						m.getReadPermission());
-			} catch (AccessDeniedException e) {
+		
+		if(log.isInfoEnabled()) {
+			log.info("REMOVEME: Processing menu " + m.getResourceKey());
+		}
+		
+		try {
+			if (shouldFilter(m)) {
+				if (log.isDebugEnabled()) {
+					log.debug(m.getResourceKey() + " has been filtered out");
+				}
+				return null;
+			} else if (!m.canRead()) {
 				if (log.isDebugEnabled()) {
 					log.debug(getCurrentPrincipal().getRealm() + "/"
 							+ getCurrentPrincipal().getName()
 							+ " does not have access to "
 							+ m.getResourceKey()
-							+ " menu due to permission " + m.getReadPermission().getResourceKey());
+							+ " menu due to canRead returning false");
 				}
 				return null;
-			}
-		}
-
-		Menu thisMenu = new Menu(
-				m,
-				hasPermission(m.getCreatePermission()) && m.canCreate(),
-				hasPermission(m.getUpdatePermission()) && m.canUpdate(),
-				hasPermission(m.getDeletePermission()) && m.canDelete(),
-				m.getIcon(), m.getData(), m.isHidden());
-
-		for (MenuRegistration child : allMenus.get(m.getResourceKey()).getMenus()) {
-			populateMenuList(child, thisMenu.getMenus());
-		}
-
-		if (thisMenu.getResourceName() == null) {
-			if (thisMenu.getMenus().size() == 0) {
-				if (log.isDebugEnabled()) {
-					log.debug("Menu "
-							+ thisMenu.getResourceKey()
-							+ " will not be displayed because there are no children and no url has been set");
+	
+			} else if (m.getReadPermission() != null) {
+				try {
+					assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
+							m.getReadPermission());
+				} catch (AccessDeniedException e) {
+					if (log.isDebugEnabled()) {
+						log.debug(getCurrentPrincipal().getRealm() + "/"
+								+ getCurrentPrincipal().getName()
+								+ " does not have access to "
+								+ m.getResourceKey()
+								+ " menu due to permission " + m.getReadPermission().getResourceKey());
+					}
+					return null;
 				}
-				return null;
+			}
+	
+			if(log.isInfoEnabled()) {
+				log.info("REMOVEME: Constructing menu " + m.getResourceKey());
+			}
+			
+			Menu thisMenu = new Menu(
+					m,
+					hasPermission(m.getCreatePermission()) && m.canCreate(),
+					hasPermission(m.getUpdatePermission()) && m.canUpdate(),
+					hasPermission(m.getDeletePermission()) && m.canDelete(),
+					m.getIcon(), m.getData(), m.isHidden());
+	
+			for (MenuRegistration child : allMenus.get(m.getResourceKey()).getMenus()) {
+				populateMenuList(child, thisMenu.getMenus());
+			}
+	
+			if (thisMenu.getResourceName() == null) {
+				if (thisMenu.getMenus().size() == 0) {
+					if (log.isDebugEnabled()) {
+						log.debug("Menu "
+								+ thisMenu.getResourceKey()
+								+ " will not be displayed because there are no children and no url has been set");
+					}
+					return null;
+				}
+			}
+			menuList.add(thisMenu);
+			return thisMenu;
+		} finally {
+			if(log.isInfoEnabled()) {
+				log.info("REMOVEME: Processed menu " + m.getResourceKey());
 			}
 		}
-		menuList.add(thisMenu);
-		return thisMenu;
 	}
 
 	protected boolean hasPermission(PermissionType permission) {
