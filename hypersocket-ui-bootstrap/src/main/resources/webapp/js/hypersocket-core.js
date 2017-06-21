@@ -185,6 +185,8 @@ function logoff() {
 			$(document).data('session', null);
 			window.location = data.resource;
 		}
+	}, function() {
+		window.location = '/';
 	});
 
 }
