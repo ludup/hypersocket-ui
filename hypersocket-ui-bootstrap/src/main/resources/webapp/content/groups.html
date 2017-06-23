@@ -110,6 +110,10 @@
 						showError("error.nameRequired");
 						return false;
 					}
+					if(!$('#groupProperties').validateProperties()) {
+						showError("error.correctValidationErrors");
+						return false;
+					}
 					return true;
 				},
 				clearDialog : function(create) {
