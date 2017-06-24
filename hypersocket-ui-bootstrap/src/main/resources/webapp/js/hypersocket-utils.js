@@ -1092,11 +1092,15 @@ function getState(name, specific, callback){
  * @param cvalue
  * @param exdays
  */
-function setCookie(cname, cvalue, exdays) {
+function setCookie(cname, cvalue, exdays, path) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
+    if(!path) {
+    	path = '/';
+    }
+    document.cookie = cname + "=" + cvalue + "; path=" + path + "; " + expires;
+   
 }
 
 function getCookie(cname) {

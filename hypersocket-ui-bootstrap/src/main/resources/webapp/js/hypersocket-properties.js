@@ -55,6 +55,11 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 	
 	obj = $.extend({ allowEmpty: true, allowAttribute: true }, obj);
 	
+	if(widget.getInput().parents('.propertyItem').hasClass('hiddenWidget')) {
+		log('Not validating ' + obj.resourceKey + ' because its not visible');
+		return true;
+	}
+	
 	log("Validating " + obj.resourceKey + ' value ' + value);
 	
 	if(!validateInputType(obj.inputType)){
@@ -1223,6 +1228,7 @@ $.fn.propertyPage = function(opts) {
 							}
 	
 							w.getInput().parents('.propertyItem').hide();
+							w.getInput().parents('.propertyItem').addClass('hiddenWidget');
 							var visibilityCallback = function() {
 								
 								var dependsValue = w.options().visibilityDependsValue.toString().split(',');
@@ -1245,12 +1251,14 @@ $.fn.propertyPage = function(opts) {
 										w.reset();
 									}
 									w.getInput().parents('.propertyItem').show();
+									w.getInput().parents('.propertyItem').removeClass('hiddenWidget');
 									
 								} else {
 									if(w.options().clearOnVisibilityChange) {
 										w.clear();
 									}
 									w.getInput().parents('.propertyItem').hide();
+									w.getInput().parents('.propertyItem').addClass('hiddenWidget');
 								}
 							}
 							visibilityCallback();

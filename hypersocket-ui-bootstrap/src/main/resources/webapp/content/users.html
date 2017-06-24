@@ -550,6 +550,20 @@
 											e.preventDefault();
 											$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
 										});
+										
+										/** $('#contentUsers').find('.fixed-table-toolbar').last().append(
+												'<div class="tableToolbar pull-right search"><div><a id="resetRealm" href="#">' 
+												+ getResource('reset.remote.text') + '</a></div></div>');
+										$('#resetRealm').click(function(e) {
+											e.preventDefault();
+											getJSON('realms/reset/' + currentRealm.id, null, function(data) {
+												if(data.success) {
+													showSuccess(data.message);
+												} else {
+													showError(data.message);
+												}
+											});
+										}); **/
 									}
 									
 									loadComplete();
