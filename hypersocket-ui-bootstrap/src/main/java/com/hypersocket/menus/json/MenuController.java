@@ -113,23 +113,13 @@ public class MenuController extends AuthenticatedController {
 				sessionUtils.getLocale(request));
 		try {
 
-			if(log.isInfoEnabled()) {
-				log.info("REMOVEME: Starting menu collection");
-			}
 			MenuList list = new MenuList(menuService.getMenus(resourceKey));
-			
-			if(log.isInfoEnabled()) {
-				log.info("REMOVEME: Checking system permission");
-			}
 			
 			if (permissionService.hasSystemPermission(sessionUtils
 					.getPrincipal(request))) {
 				list.setSystemAdmin(true);
 			}
 
-			if(log.isInfoEnabled()) {
-				log.info("REMOVEME: Checking user can switch realm");
-			}
 			try {
 				permissionService.verifyPermission(
 						sessionUtils.getPrincipal(request),
@@ -140,14 +130,8 @@ public class MenuController extends AuthenticatedController {
 			} catch (AccessDeniedException e) {
 			}
 
-			if(log.isInfoEnabled()) {
-				log.info("REMOVEME: Returning list");
-			}
 			return list;
 		} finally {
-			if(log.isInfoEnabled()) {
-				log.info("REMOVEME: En ding menu collection");
-			}
 			clearAuthenticatedContext();
 		}
 	}
