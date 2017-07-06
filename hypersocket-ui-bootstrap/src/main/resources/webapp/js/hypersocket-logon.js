@@ -220,9 +220,10 @@ function processLogon(data, opts, message) {
 		});
 		
 		if(data.formTemplate) {
-			
-			$('#logonForm').append('<div class="form-signin-warning">' + getResource(data.formTemplate.scheme + '.warning.title') + '</div>');
-			
+			debugger;
+			if(!data.postAuthentication) {
+				$('#logonForm').append('<div class="form-signin-warning">' + getResource(data.formTemplate.scheme + '.warning.title') + '</div>');
+			}
 			if(data.formTemplate.showLogonButton) {
 				$('#logonForm').append(
 						'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
@@ -230,8 +231,9 @@ function processLogon(data, opts, message) {
 							+ '&nbsp;<i class="fa ' + (data.formTemplate.logonButtonIcon ? data.formTemplate.logonButtonIcon : 'fa-sign-in') + '"></i></button>');
 			}
 			
-			$('#logonForm').after('<p class="form-signin-security form-signin-warning">' + getResource(data.formTemplate.scheme + '.security.title') + '</p>');
-			
+			if(!data.postAuthentication) {
+				$('#logonForm').after('<p class="form-signin-security form-signin-warning">' + getResource(data.formTemplate.scheme + '.security.title') + '</p>');
+			}
 		}
 		
 		if(!data.postAuthentication) {

@@ -531,7 +531,7 @@
 												name: getResource('local.accounts')
 											}, {
 												value: currentRealm.resourceCategory,
-												name: getResource(currentRealm.resourceCategory + '.accounts')
+												name: getResource("realm." + currentRealm.resourceCategory + '.accounts')
 											}],
 											value: '',
 											changed: function(widget) {
