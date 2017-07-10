@@ -4469,8 +4469,10 @@ $.fn.multipleFileUpload = function(data) {
  			setValue: function(val) {
  				callback.removeRows();
  				$.each(val, function(index, value){
- 					callback.addRows(1);
- 					$('#' + id + 'FileUpload' + rowNum).data('widget').setValue(value);
+ 					if(value && value!=='') {
+	 					callback.addRows(1);
+	 					$('#' + id + 'FileUpload' + rowNum).data('widget').setValue(value);
+ 					}
  				});
  			},
  			disable: function() {
