@@ -1111,7 +1111,6 @@ $.fn.autoComplete = function(data) {
 		if(!options.remoteSearch) {
 			createDropdown(text, true, false);
 		} else {
-			
 			var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text;
 			if(options.searchParams) {
 				url += '&' + options.searchParams;
@@ -1280,30 +1279,33 @@ $.fn.autoComplete = function(data) {
 		updateValue(options.value, false);
 		createDropdown('', false, false);
 	} else if(options.remoteSearch) {
-		
-		if(options.value && options.value !== '') {
-			var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + options.value + "&searchColumn=" + options.valueAttr;
-			if(options.searchParams) {
-				url += '&' + options.searchParams;
-			}
-			getJSON(processURL(callback, url),
-					null,
-					function(data) {
-						
-						var map = [];
-						$.each(data.rows, function(idx, obj) {
-							map[obj[options.valueAttr]] = obj;
-							if(obj[options.valueAttr]==options.value) {
-								thisWidget.data('selectedObject', obj);
-								$('#' + id).val(options.value);
-								$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-							}
-						});
-						$('#input_' + id).data('values', data.rows);
-						$('#input_' + id).data('map', map);
-					});
+		if(isReplacementVariable(options.value)) {
+			updateValue(options.value, false);
 		} else {
-			$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');	
+			if(options.value && options.value !== '') {
+				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + options.value + "&searchColumn=" + options.valueAttr;
+				if(options.searchParams) {
+					url += '&' + options.searchParams;
+				}
+				getJSON(processURL(callback, url),
+						null,
+						function(data) {
+							
+							var map = [];
+							$.each(data.rows, function(idx, obj) {
+								map[obj[options.valueAttr]] = obj;
+								if(obj[options.valueAttr]==options.value) {
+									thisWidget.data('selectedObject', obj);
+									$('#' + id).val(options.value);
+									$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+								}
+							});
+							$('#input_' + id).data('values', data.rows);
+							$('#input_' + id).data('map', map);
+						});
+			} else {
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');	
+			}
 		}
 	}
 	
