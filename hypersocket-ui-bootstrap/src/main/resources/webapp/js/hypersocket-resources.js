@@ -155,7 +155,8 @@ $.fn.resourceTable = function(params) {
 		hasResourceTable: true,
 		onSave : false,
 		stayOnPageAfterSave: false,
-		bulkAssignment: false
+		bulkAssignment: false,
+		assignable: false
 		}, params);
 
 	options.tableView = $('#' + divName);

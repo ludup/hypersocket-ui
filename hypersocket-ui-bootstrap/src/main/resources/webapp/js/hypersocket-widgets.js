@@ -5546,3 +5546,63 @@ $.fn.multipleRows = function(data) {
 	$(this).addClass('widget');
 	return callback;
 }
+
+$.fn.roles = function(data) {
+	var options = $.extend({}, data);
+	var divId = $(this).attr('id');
+	var roleDivId = "roles" + divId;
+	
+	var widgetConfig = {
+			url: 'roles/table',
+			isNamePairValue: false,
+			selectedIsObjectList : true,
+			resourceKey : options.resourceKey,
+			disabled: options.disabled
+		}
+	
+	if(!$('#' + roleDivId).data('created')) {
+	
+		var div = '<div id="' + roleDivId  + '"></div>';
+	
+		$(this).append(div);
+		
+		$('#' + roleDivId).multipleSearchInput(widgetConfig);
+	} 
+	
+	if(options.selected) {
+		widgetConfig.selected = options.selected;
+		$('#' + roleDivId).multipleSearchInput(widgetConfig);
+	}
+	var roleCallback = $('#' + roleDivId).data('widget');
+	
+	var callback = {
+			setValue: function(val) {
+				roleCallback.setValue(val);
+			},
+			getValue: function() {
+				return roleCallback.getValue();
+			},
+			reset: function() {
+				roleCallback.reset();
+			},
+			disable: function() {
+				roleCallback.disable();
+			},
+			enable: function() {
+				roleCallback.enable();
+			},
+			options: function() {
+				return options;
+			},
+			getInput: function() {
+				return roleCallback.getInput();
+			}, 
+			clear: function() {
+				roleCallback.clear();
+			}
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+} 

@@ -77,7 +77,25 @@
 				icon: 'fa-user-md',
 				resourceUrl : "roles/role",
 				deleteResourcesUrl : 'roles/bulk',
-				fields : [ { name: "name"} ],
+				fields : [{ name: "name",
+							 sortable: true}, {
+							 name: "type",
+							 sortable: true}
+				],
+				searchFields: [{
+					name: "name"
+				}, {
+					name: "type",
+					renderOptions: function(element, refresh) {
+						element.textDropdown({
+							valueAttr: 'name',
+							url: 'enum/com.hypersocket.permissions.RoleType/',
+							changed: function() {
+								refresh();
+							}
+						});	
+					}
+				}], 
 				resourceKey : 'role',
 				canCreate: currentMenu.canCreate,
 				canUpdate: currentMenu.canUpdate,
