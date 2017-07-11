@@ -114,16 +114,16 @@ function processLogon(data, opts, message) {
 					return;
 				} else if(this.type == 'div') {
 					$('#logonForm').append('<div id="' + this.resourceKey + '"></div>');
-					$('#' + this.resourceKey).load(this.defaultValue, function() {
+					$('#' + this.resourceKey).load(replacePaths(this.defaultValue), function() {
 						
 					});
 					return;
 				} else if(this.type == 'html') {
 					$('#logonForm').append('<div id="' + this.resourceKey + '"></div>');
-					$('#' + this.resourceKey).html(this.defaultValue);
+					$('#' + this.resourceKey).html(replacePaths(this.defaultValue));
 					return;
 				} else if(this.type =='img') {
-					$('#logonForm').append('<div class="center"><img id="' + this.resourceKey + '" src="' + this.defaultValue + '"></img></div>');
+					$('#logonForm').append('<div class="center"><img id="' + this.resourceKey + '" src="' + replacePaths(this.defaultValue) + '"></img></div>');
 					return;
 				}
 			

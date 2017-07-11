@@ -402,6 +402,10 @@
 												name : getResource("label.password")
 										});
 										
+										$('#passwordPolicy').passwordPolicy({
+											policy: 'default'
+										});
+										
 										$('#userProperties').propertyPage({
 											url : apiUrl + '/user/template/' + userRealm.resourceCategory,
 											showButtons : false,

@@ -34,6 +34,7 @@ import com.hypersocket.config.SystemConfigurationService;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.message.MessageResourcePermission;
 import com.hypersocket.message.MessageResourceService;
+import com.hypersocket.password.policy.PasswordPolicyResourcePermission;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionStrategy;
 import com.hypersocket.permissions.PermissionType;
@@ -361,6 +362,16 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		},
 				MenuService.MENU_CONFIGURATION);
 
+
+		registerMenu(
+				new MenuRegistration(RESOURCE_BUNDLE, "passwordPolicys", "fa-ellipsis-h", "passwordPolicys", 9999,
+						PasswordPolicyResourcePermission.READ, PasswordPolicyResourcePermission.CREATE,
+						PasswordPolicyResourcePermission.UPDATE, PasswordPolicyResourcePermission.DELETE),
+				MenuService.MENU_ACCESS_CONTROL);
+		
+		registerExtendedInformationTab("principalTabs",
+                new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.UPDATE, 0));
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
 				null));
