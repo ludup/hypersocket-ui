@@ -402,8 +402,12 @@
 												name : getResource("label.password")
 										});
 										
+										$('#passwordPolicy').empty();
 										$('#passwordPolicy').passwordPolicy({
-											policy: 'default'
+											policy: 'default',
+											showGenerator: false,
+											passwordElement: $('#userPassword'),
+											confirmElement: $('confirmUserPassword')
 										});
 										
 										$('#userProperties').propertyPage({
