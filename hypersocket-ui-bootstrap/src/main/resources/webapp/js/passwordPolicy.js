@@ -112,10 +112,14 @@ $.fn.passwordPolicy = function(data) {
 				options.passwordElement.on('change', function() {
 					options.passwordElement.siblings('i').remove();
 					if(options.passwordElement.val()!=='') {
-						var params = {
-							password: 	encodeURIComponent(options.passwordElement.val()),
-							id: options.principalId
-						};
+						var params = new Object();
+						params.password = encodeURIComponent(options.passwordElement.val());
+						if(options.principalId) {
+							params.id = options.principalId;
+						}
+						if(options.usernameField) {
+							options.username = options.passwordElement.val();
+						}
 						postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
 							if(data.success) {
 								options.passwordElement.after('<i class="fa fa-check success passwordValidationIcon"></i>');

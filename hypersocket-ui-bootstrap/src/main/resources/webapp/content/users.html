@@ -405,9 +405,10 @@
 										$('#passwordPolicy').empty();
 										$('#passwordPolicy').passwordPolicy({
 											policy: 'default',
-											showGenerator: false,
+											showGenerator: true,
 											passwordElement: $('#userPassword'),
-											confirmElement: $('confirmUserPassword')
+											confirmElement: $('#userConfirmPassword'),
+											usernameElement: $('#userName')
 										});
 										
 										$('#userProperties').propertyPage({
