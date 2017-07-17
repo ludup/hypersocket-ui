@@ -6,6 +6,9 @@ var NON_REPEATING_CHAR_RE = /([\w\d\?\-])\1{2,}/g;
 
 RegExp.escape=function(str)
 {
+	if(!str)
+		return str;
+	
     if (!arguments.callee.sRE) {
         var specials = [
             '/', '.', '*', '+', '?', '|',
