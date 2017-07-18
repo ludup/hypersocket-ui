@@ -3,17 +3,16 @@ var LOWERCASE_RE = /([a-z])/g;
 var NUMBER_RE = /([\d])/g;
 var SPECIAL_CHAR_RE = /([\?\-])/g;
 var NON_REPEATING_CHAR_RE = /([\w\d\?\-])\1{2,}/g;
-
+var specials = [
+    '/', '.', '*', '+', '?', '|', '$', ':', ';', '"', '\'', '-',
+    '(', ')', '[', ']', '{', '}', '\\', '<', '>', ',', '^'
+];
 RegExp.escape=function(str)
 {
 	if(!str)
 		return str;
 	
     if (!arguments.callee.sRE) {
-        var specials = [
-            '/', '.', '*', '+', '?', '|',
-            '(', ')', '[', ']', '{', '}', '\\'
-        ];
         arguments.callee.sRE = new RegExp(
         '(\\' + specials.join('|\\') + ')', 'gim'
     );
