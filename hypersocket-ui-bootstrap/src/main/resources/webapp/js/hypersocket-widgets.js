@@ -958,7 +958,8 @@ $.fn.autoComplete = function(data) {
 			resourceKeyTemplate: '{0}',
 			icon: 'fa-search',
 			sortOptions: true,
-			doNotInit: false
+			doNotInit: false,
+			selectFirst: false
 		}, data);
 	
 	var callback;
@@ -986,6 +987,8 @@ $.fn.autoComplete = function(data) {
 		$('#input_' + id).data('map', map);
 		if(options.selectedValue){
 			$('#' + id).parent().parent().data('widget').setValue(options.selectedValue);
+		} else if(options.selectFirst) {
+			$('#' + id).parent().parent().data('widget').setValue(values[0][options.valueAttr]);
 		}
 	};
 	

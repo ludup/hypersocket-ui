@@ -7,19 +7,7 @@ var specials = [
     '/', '.', '*', '+', '?', '|', '$', ':', ';', '"', '\'', '-',
     '(', ')', '[', ']', '{', '}', '\\', '<', '>', ',', '^'
 ];
-RegExp.escape=function(str)
-{
-	if(!str)
-		return str;
-	
-    if (!arguments.callee.sRE) {
-        arguments.callee.sRE = new RegExp(
-        '(\\' + specials.join('|\\') + ')', 'gim'
-    );
-    }
-    return str.replace(arguments.callee.sRE, '\\$1');
 
-};
 
 function isStrongEnough(password, policy, norepeat) {
 	  var uc = password.match(UPPERCASE_RE);
@@ -266,51 +254,52 @@ $.fn.passwordPolicy = function(data) {
 			}
 		}
 
-		debugger;
 		if(options.showGenerator && policy) {
 			thisDiv.append('<span></span><br>');
+
+			function customPassword(policy) {
+			  var password = "";
+			  
+			  while (!isStrongEnough(password, policy, false)) {
+			    password = generatePassword(policy.minimumLength + (policy.minimumLength / 2), false, new RegExp("[\\w\\d" + RegExp.escape(policy.validSymbols) + "]"));
+			  }
+			  return password;
+			}
+
+			thisDiv.append('<span><strong>' 
+					+ getResource("suggestedPassword.text")
+					+ '</strong></span><br><br>');
 			
-			$.getScript('${uiPath}/js/password-generator.min.js', function() {
-				
-				
-				function customPassword(policy) {
-				  var password = "";
-				  
-				  while (!isStrongEnough(password, policy, false)) {
-				    password = generatePassword(policy.minimumLength + (policy.minimumLength / 2), false, new RegExp("[\\w\\d" + RegExp.escape(policy.validSymbols) + "]"));
-				  }
-				  return password;
-				}
-	
-				thisDiv.append('<span><strong>' 
-						+ getResource("suggestedPassword.text")
-						+ '</strong></span><br><br>');
-				
-				thisDiv.append('<span id="suggestedPassword" class="success">' + customPassword(policy) + '</span>');
-				thisDiv.append('<span>&nbsp;&nbsp;</span><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
-						 + getResource("regeneratePassword.text") + '"><i class="fa fa-2x fa-refresh"></i></a>');
-				
-				$('#regeneratePassword').click(function(e) {
-					e.preventDefault();
-					$('#suggestedPassword').text(customPassword(policy));
-				});
-				
-				if(options.passwordElement && options.confirmElement) {
-					thisDiv.append('<span>&nbsp;&nbsp;</span><a href="#" id="insertPassword" data-toggle="tooltip" data-placement="top" title="'
-							 + getResource("injectCredentials.text") + '"><i class="fa fa-2x fa-magic"></i></a>');
-					$('#insertPassword').click(function(e) {
-						e.preventDefault();
-						options.passwordElement.val($('#suggestedPassword').text());
-						options.passwordElement.trigger('change');
-						options.confirmElement.val($('#suggestedPassword').text());
-						options.confirmElement.trigger('change');
-					});
-				}
-				
-				$('[data-toggle="tooltip"]').tooltip();
-				
-				
+			thisDiv.append('<span id="suggestedPassword" class="success"></span>');
+			thisDiv.append('<span>&nbsp;&nbsp;</span><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
+					 + getResource("regeneratePassword.text") + '"><i class="fa fa-2x fa-refresh"></i></a>');
+			
+			$('#regeneratePassword').click(function(e) {
+				e.preventDefault();
+				getJSON('passwordPolicys/generate/' + policy.id, null, function(data) {
+					if(data.success) {
+						showError(data.message);
+					} else {
+						$('#suggestedPassword').text(data.resource);
+					}
+				});		
 			});
+			
+			$('#regeneratePassword').click();
+			
+			if(options.passwordElement && options.confirmElement) {
+				thisDiv.append('<span>&nbsp;&nbsp;</span><a href="#" id="insertPassword" data-toggle="tooltip" data-placement="top" title="'
+						 + getResource("injectCredentials.text") + '"><i class="fa fa-2x fa-magic"></i></a>');
+				$('#insertPassword').click(function(e) {
+					e.preventDefault();
+					options.passwordElement.val($('#suggestedPassword').text());
+					options.passwordElement.trigger('change');
+					options.confirmElement.val($('#suggestedPassword').text());
+					options.confirmElement.trigger('change');
+				});
+			}
+			
+			$('[data-toggle="tooltip"]').tooltip();
 		}
 	});
 }
