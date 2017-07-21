@@ -5624,7 +5624,7 @@ $.fn.fileTree = function(data) {
 			for(var index = 0; index < node.parents.length - 2; index++){
 				fullPath = $('#' + id + 'TreeView').jstree().get_node(node.parents[index]).text + '/' + fullPath;
 			}
-			addFullPath(fullPath);
+			addFullPath('/' + fullPath);
 		}
 	}
 	
@@ -5675,11 +5675,17 @@ $.fn.fileTree = function(data) {
 					}else if(typeof val === 'string'){
 						addFullPath(fullPath);
 					}
+					if(options.changed) {
+			 			options.changed(callback);
+			 		}
 				},
 				getValue: function() {
-					var values = []
+					var values = '';
 					$('#' + id + 'Included option').each(function(index, option){
-						values.push($(option).val());
+						if(values != ''){
+							values = values + ']|[';
+						}
+						values = values + $(option).val(); 
 					});
 					return values;
 				},
@@ -5748,6 +5754,9 @@ $.fn.fileTree = function(data) {
 				$.each(selected, function(index, node){
 					include(node);
 				});
+				if(selected && selected.length > 0 && options.changed) {
+			 		options.changed(callback);
+				}
 			}
 		});
 		
@@ -5760,19 +5769,28 @@ $.fn.fileTree = function(data) {
 		$('#' + id + 'Exclude').click(function(){
 			if(!options.disabled){
 				var selected = $('#' + id + 'Included').val();
+				var changed = false;
 				if(selected && selected.length){
 					$('#' + id + 'Included option').each(function(index, option){
 						if(selected.indexOf($(option).val()) != -1){
-							$(option).remove();					
+							$(option).remove();
+							changed = true;
 						}
 					});
 				}
+				if(changed && options.changed) {
+		 			options.changed(callback);
+		 		}
 			}
 		});
 		
 		$('#' + id + 'ExcludeAll').click(function(){
 			if(!options.disabled){
+				var numIncluded = $('#' + id + 'Included option').length;
 				$('#' + id + 'Included option').remove();
+				if(numIncluded > 0 && options.changed){
+					options.changed(callback);
+				}
 			}
 		});
 		
