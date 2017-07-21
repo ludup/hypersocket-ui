@@ -266,18 +266,29 @@ $.fn.passwordPolicy = function(data) {
 			  return password;
 			}
 
-			thisDiv.append('<span><strong>' 
+			thisDiv.append('<div><span><strong>' 
 					+ getResource("suggestedPassword.text")
-					+ '</strong></span><br><br>');
+					+ '</strong></span></div>');
 			
-			thisDiv.append('<span id="suggestedPassword" class="success"></span>');
-			thisDiv.append('<span>&nbsp;&nbsp;</span><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
-					 + getResource("regeneratePassword.text") + '"><i class="fa fa-2x fa-refresh"></i></a>');
+			thisDiv.append('<div id="generatedPassword"><span id="suggestedPassword" class="success"></span><span>&nbsp;&nbsp;</span><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
+					 + getResource("regeneratePassword.text") + '"><i class="fa fa-2x fa-refresh"></i></a></div>');
+			
+			thisDiv.append('<div id="passwordStrength"></div>');
+			
+			$('#passwordStrength').sliderInput({
+				min: policy.minimumLength,
+				max: policy.maximumLength,
+				value: policy.minimumLength,
+				labelResourceKey: 'passwordStrength.label',
+				changed: function(widget) {
+					$('#regeneratePassword').click();
+				}
+			});
 			
 			$('#regeneratePassword').click(function(e) {
 				e.preventDefault();
-				getJSON('passwordPolicys/generate/' + policy.id, null, function(data) {
-					if(data.success) {
+				getJSON('passwordPolicys/generate/' + policy.id + '/' + $('#passwordStrength').widget().getValue(), null, function(data) {
+					if(!data.success) {
 						showError(data.message);
 					} else {
 						$('#suggestedPassword').text(data.resource);
@@ -288,7 +299,7 @@ $.fn.passwordPolicy = function(data) {
 			$('#regeneratePassword').click();
 			
 			if(options.passwordElement && options.confirmElement) {
-				thisDiv.append('<span>&nbsp;&nbsp;</span><a href="#" id="insertPassword" data-toggle="tooltip" data-placement="top" title="'
+				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a href="#" id="insertPassword" data-toggle="tooltip" data-placement="top" title="'
 						 + getResource("injectCredentials.text") + '"><i class="fa fa-2x fa-magic"></i></a>');
 				$('#insertPassword').click(function(e) {
 					e.preventDefault();

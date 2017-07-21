@@ -3228,7 +3228,7 @@ $.fn.sliderInput = function(options) {
 			}
 	};
 
-	slider.on('slide', function(ev){
+	slider.on('slideStop', function(ev){
 		   if(options.changed) {
 			   options.changed(callback)
 		   }
