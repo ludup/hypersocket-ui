@@ -2286,6 +2286,9 @@ $.fn.multipleTextInput = function(data) {
             toSelect.append(newElement);
             addListeners(newElement);
             textInput.clear();
+    		if (options.changed) {
+    			options.changed(callback);
+    		}
 		}
 
 		$('#' + id + 'Excluded').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-addon"><i class="fa fa-plus"></i></span>');
