@@ -99,7 +99,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 		}
 	} else if (obj.inputType == 'integer') {
 		// Validate for integer
-		if(!validateRegex('^[0-9]+$',value)){
+		if(!validateRegex('^(\\-|\\+)?[0-9]+$',value)){
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
@@ -109,7 +109,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 		}
 	} else if (obj.inputType == 'long') {
 		// Validate for integer
-		if(!validateRegex('^[0-9]+$',value)){
+		if(!validateRegex('^(\\-|\\+)?[0-9]+$',value)){
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
@@ -629,7 +629,8 @@ $.fn.propertyPage = function(opts) {
 	var options = $
 			.extend(
 				{ resourceNameField: false, 
-				  resourceNameCallback: false, 
+				  resourceNameCallback: false,
+				  parameters: false,
 				  typeCallback: false, 
 				  showButtons : true, 
 				  showAdditionalTabButtons: false,
@@ -661,8 +662,40 @@ $.fn.propertyPage = function(opts) {
 	
 	$(this).empty();
 	var self = $(this);
+	var url = options.url;
+	
+	/* Allow parameters to be either dynamically generation from
+	 * a function or a fixed string. Either of which may be either
+	 * a string list of parameters or a JavaScript object (that 
+	 * will get encoded)
+	 * 
+	 * The URL can still contain parameters too.
+	 */
+	if(options.parameters) {
+		var parmob;
+		if(typeof options.parameters === 'string')
+			parmob= options.parameters;
+		else
+			parmob = options.parameters();
+		if(typeof options.parameters == 'string') {
+			if(url.indexOf('?') == -1)
+				url += '?' + parmob;
+			else
+				url += '&' + parmob;
+			url += parmob;
+		}
+		else {
+			for(k in parmob) {
+				if(url.indexOf('?') == -1)
+					url += '?' + k + '=' + encodeURIComponent(parmob[k]);
+				else
+					url += '&' + k + '=' + encodeURIComponent(parmob[k]);
+			}
+		}
+	}
+	
 	getJSON(
-		options.url,
+		url,
 		null,
 		function(data) {
 			
@@ -1486,7 +1519,7 @@ $.fn.propertyPage = function(opts) {
 
 			self.data('propertyOptions', options);
 			
-			setTimeout(new function() {
+			setTimeout(function() {
 				funcVisibility();
 				if (options.complete) {
 					options.complete();
