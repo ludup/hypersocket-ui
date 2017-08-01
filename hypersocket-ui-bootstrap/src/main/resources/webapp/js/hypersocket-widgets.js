@@ -478,6 +478,16 @@ $.fn.richInput = function(data) {
  			}
  		};
 	
+	var lastCallback = $(this).data('widget');
+	if(lastCallback) {
+		/* Remove the previous editor cleanly - https://stackoverflow.com/questions/4651676/how-do-i-remove-tinymce-and-then-re-add-it#4655467 */
+		var i = tinymce.EditorManager.editors.indexOf(lastCallback.editor);
+		if(i > -1) {
+			tinymce.EditorManager.execCommand('mceRemoveEditor',true, lastCallback.editor.id);
+			tinymce.EditorManager.editors.splice(i, 1);
+		}
+	}
+	
 	tinymce.init({
 		  selector: '#' + id,
 		  height: options.height,
@@ -495,10 +505,16 @@ $.fn.richInput = function(data) {
 		    { title: 'Test template 1', content: 'Test 1' },
 		    { title: 'Test template 2', content: 'Test 2' }
 		  ],
-		  content_css: [
+		  /*
+		   * https://stackoverflow.com/questions/41724713/tinymce-get-http-fast-fonts-error-in-console
+		   * 
+		   * BPS - leaving this in results in 404 error in console, doesn't seem to have any 
+		   * effect so I am not sure of the original intention here
+		   */
+		  /*content_css: [
 		    '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
 		    '//www.tinymce.com/css/codepen.min.css'
-		  ],
+		  ],*/
 		  init_instance_callback : function(editor) {
 			  callback.editor = editor;
 			  var newval = options.value;
@@ -680,7 +696,8 @@ $.fn.selectButton = function(data) {
 			valueAttr: 'value', 
 			nameIsResourceKey : false, 
 			resourceKeyTemplate: '{0}', 
-			disabled : false, 
+			disabled : false,
+			onLoad: false,
 			value: '', 
 			sortOptions: true,
 			notSetResourceKey: 'text.notSet',
@@ -806,7 +823,7 @@ $.fn.selectButton = function(data) {
 						
 				
 					if(loadCallback) {
-						loadCallback();
+						loadCallback(callback);
 					}
 
 				} 
@@ -883,7 +900,7 @@ $.fn.selectButton = function(data) {
 						}
 						
 						if(loadCallback) {
-							loadCallback();
+							loadCallback(callback);
 						}
 					});
 				}
@@ -930,7 +947,7 @@ $.fn.selectButton = function(data) {
  			}
 		};
 	
-	callback.load();
+	callback.load(obj.onLoad);
 	
 	if(obj.disabled) {
 		callback.disable();
@@ -3735,7 +3752,6 @@ $.fn.fileUploadInput = function(data) {
  		        return true;
  			},
  			uploadBlob: function(blobInfo) {
- 				debugger;
  				$('#' + id + 'UpdateProgressHolder').show();
  				$('#' + id + 'UpdateProgress').css("width",  "0%");
 			    var formData = new FormData();
@@ -4528,7 +4544,6 @@ $.fn.multipleFileUpload = function(data) {
  				}
  			},
  			addFile: function(blob) {
- 				debugger;
  				var widget = $('#' + id + 'FileUploads .fileUploadInput').last().widget();
  				widget.uploadBlob(blob);
  				this.addRows(1);
