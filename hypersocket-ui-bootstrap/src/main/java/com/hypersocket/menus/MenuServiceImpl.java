@@ -299,7 +299,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						UserAttributePermission.DELETE),
 				MenuService.MENU_CONFIGURATION);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "accessControl",
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_ACCESS_CONTROL,
 						"fa-unlock-alt", null, 200, null, null, null, null),
 				MenuService.MENU_SYSTEM);
 
