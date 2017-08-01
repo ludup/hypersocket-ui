@@ -933,10 +933,10 @@ function looksLikeMail(str) {
 }
 
 function splitFix(value) {
-	value = value.toString();
 	if(value==null) {
 		return [];
 	}
+	value = value.toString();
 	var result = value.split(']|[');
 	if (result.length == 1) {
 		if (result[0] == "") {
