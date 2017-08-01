@@ -220,7 +220,6 @@ function processLogon(data, opts, message) {
 		});
 		
 		if(data.formTemplate) {
-			debugger;
 			if(!data.postAuthentication) {
 				$('#logonForm').append('<div class="form-signin-warning">' + getResource(data.formTemplate.scheme + '.warning.title') + '</div>');
 			}
