@@ -130,6 +130,7 @@ $.fn.resourceTable = function(params) {
 		striped	: true,
 		method : 'get',
 		pagination : true,
+		parameters: false,
 		page : 1,
 		pageSize: 25,
 		pageList : [ 5, 10, 25, 50, 100, 250, 500],
@@ -1048,6 +1049,9 @@ $.fn.resourceTable = function(params) {
 			$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 			checkBadges(false);
 		},
+		refreshView: function(resource) {
+			options.view.refreshView(resource);
+		},
 		close: function() {
 			options.view.closeResource();
 		},
@@ -1197,6 +1201,7 @@ $.fn.samePageResourceView = function(params, params2) {
 					{ url: dialogOptions.propertyOptions.templateUrl,
 				      title: getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
 				      icon: dialogOptions.icon,
+				      parameters: dialogOptions.propertyOptions.parameters,
 				      displayMode: 'create',
 					  complete: function() {
 						  showView(dialog);
@@ -1373,6 +1378,40 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#mainContent').show();
 		window.scrollTo(0,0);
 		return;
+	} else if(params === 'refreshView') {
+		var propertyOptions = $.extend({},
+				dialogOptions.propertyOptions,{
+		      		parameters: dialogOptions.propertyOptions.parameters,
+				    icon: dialogOptions.icon, 
+					complete: function() {
+						showView(dialog);
+						if(dialogOptions.propertyOptions.complete) {
+							dialogOptions.propertyOptions.complete(params2);
+						}
+						addActions(true);
+					}});
+		
+		
+		if(params2 == null) {
+			propertyOptions.url = dialogOptions.propertyOptions.templateUrl;
+			propertyOptions.title = getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs);
+			propertyOptions.displayMode = 'create';
+			propertyOptions.onPropertyChange = function(resourceKey, widget) {
+				  if(dialogOptions.propertyOptions.onPropertyChange) {
+					  dialogOptions.propertyOptions.onPropertyChange(resourceKey, widget, 
+							  $(propertyOptions.propertySelector).propertyOptions());
+				  }
+			  };
+		}
+		else {
+			propertyOptions.resource = params2;
+			propertyOptions.title = getResource(dialogOptions.resourceKey + '.view.title');
+			propertyOptions.url = dialogOptions.propertyOptions.propertiesUrl + params2.id;
+		}
+		
+		//$(dialogOptions.propertyOptions.propertySelector).empty();
+		$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
+		return;
 	}
 	
 	var parent = $(this).parent();
@@ -1395,6 +1434,9 @@ $.fn.samePageResourceView = function(params, params2) {
 		},
 		editResource: function(resource) {
 			dialog.samePageResourceView('edit', resource);
+		},
+		refreshView: function(resource) {
+			dialog.samePageResourceView('refreshView', resource);
 		},
 		viewResource: function(resource) {
 			dialog.samePageResourceView('read', resource);
