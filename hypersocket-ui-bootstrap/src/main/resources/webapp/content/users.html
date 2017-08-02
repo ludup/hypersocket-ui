@@ -434,7 +434,7 @@
 									user.password = $('#userPassword').val().trim();
 									user.forceChange = $('#userForceChange').prop('checked') ? true : false;
 									
-									$('#userProperties').saveProperties(true,
+									$('#userProperties').saveProperties(false,
 											function(items) {
 												user.properties = items;
 											});
@@ -528,7 +528,7 @@
 									
 								},
 								complete : function() {
-									debugger;
+									
 									if(currentRealm.resourceCategory !== 'local') {
 										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><div class="principalType" id="principalType"></div></div>');
 											$('#principalType').textDropdown({
