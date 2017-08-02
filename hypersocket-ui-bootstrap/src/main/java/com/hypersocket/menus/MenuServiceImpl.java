@@ -406,10 +406,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						"defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION,
 						0, "isDefault", null));
 
-		registerTableAction(MenuService.ACTIONS_REALMS,
-				new AbstractTableAction("exportForMigrationRealmDialog", "fa-download",
-						"exportForMigrationRealmDialog", SystemPermission.SYSTEM_ADMINISTRATION,
-						0, null, null));
+//		registerTableAction(MenuService.ACTIONS_REALMS,
+//				new AbstractTableAction("exportForMigrationRealmDialog", "fa-download",
+//						"exportForMigrationRealmDialog", SystemPermission.SYSTEM_ADMINISTRATION,
+//						0, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_BUSINESS_RULES,
 				"", null, 8888, null, null, null, null, null));
