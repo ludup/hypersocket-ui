@@ -686,6 +686,32 @@ $.fn.resourceTable = function(params) {
 							});
 						});
 					}
+					
+					if(options.toolbarButtonsUrl) {
+						getJSON(options.toolbarButtonsUrl, null, function(data) {
+							$.each(data.resources, function(idx, action) {
+								$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
+										+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
+										+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
+										+ action.icon + '"></i></button>');
+								
+								var div = action.resourceKey + 'Div';
+								$('#additionalActions').append('<div id="' + div + '"></div>');
+								$('#' + div).load(uiPath + '/content/' + action.url + '.html');
+
+								$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
+									if($('#' + action.resourceKey).data('action')) {
+										var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
+										$('#' + action.resourceKey).data('action')(arr, function() {
+											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+											checkBadges(false);
+										});
+									}
+								});
+							});
+						});
+						
+					}
 
 					if (options.checkbox && options.canDelete) {
                         if($('#multipleDelete' + divName).length == 0) {

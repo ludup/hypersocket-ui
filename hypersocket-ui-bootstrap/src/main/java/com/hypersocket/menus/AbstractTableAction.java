@@ -52,6 +52,10 @@ public class AbstractTableAction {
 		this.resourceKey = resourceKey;
 	}
 
+	public String getIcon() {
+		return getIconClass();
+	}
+	
 	public String getIconClass() {
 		return iconClass;
 	}
