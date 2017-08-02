@@ -186,7 +186,8 @@
  					});
  					$('#tabPermissionsContent').multipleSelect({
  						selected : resource.permissions,
- 						disabled: resource.allPermissions || readOnly
+ 						disabled: resource.allPermissions || readOnly,
+ 						selectAllIfEmpty: resource.allPermissions
  					});
  					
  					$('#roleProperties').propertyPage({

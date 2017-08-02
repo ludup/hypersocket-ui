@@ -1525,7 +1525,10 @@ $.fn.multipleSelect = function(data) {
 	}
 
 	if ($(this).data('created')) {
+		
 		options = $(this).widget().options();
+		
+		var options = $.extend(options, data);
 		if ((options.selected && options.selected.length == 0) && options.selectAllIfEmpty) {
 			var allExcludedOptions = $('#' + id + 'ExcludedSelect li');
 			if (allExcludedOptions.length > 0) {
