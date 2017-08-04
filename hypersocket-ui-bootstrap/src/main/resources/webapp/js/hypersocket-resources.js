@@ -626,7 +626,7 @@ $.fn.resourceTable = function(params) {
 		    		
 		    		log("Rendering search");
 		    		
-		    		if(searchColumns.length > 1) {
+		    		var loadSearchColumns = function() {
 						$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Search:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
 						$('#searchColumn').textDropdown({
 							values: searchColumns,
@@ -650,6 +650,26 @@ $.fn.resourceTable = function(params) {
 							}
 						});
 						$('#searchColumn').widget().setValue(searchColumns[0].name);
+		    		}
+		    		
+		    		if(options.searchColumnsUrl) {
+		    			getJSON(options.searchColumnUrl, null, function(data) {
+		    				$.each(data.resources, function(idx, obj) {
+								var div = obj.resourceKey + 'Div';
+								$('#additionalActions').append('<div id="' + div + '"></div>');
+								$('#' + div).load(uiPath + '/content/' + obj.url + '.html');
+
+								searchColumns.push({ value : obj.column,
+										name: getResource(options.resourceKey + '.label'),
+										renderOptions: function(element, refresh) {
+											$('#' + obj.resourceKey).data('action')(element, refresh);
+										}
+								});
+		    				});
+		    				loadSearchColumns();
+		    			});
+		    		} else if(searchColumns.length > 1) {
+		    			loadSearchColumns();
 					}
 		    		
 		    		if(options.searchFiltersUrl) {
