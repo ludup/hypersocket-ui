@@ -157,7 +157,8 @@ $.fn.resourceTable = function(params) {
 		onSave : false,
 		stayOnPageAfterSave: false,
 		bulkAssignment: false,
-		assignable: false
+		assignable: false,
+		rowStyle: false,
 		}, params);
 
 	options.tableView = $('#' + divName);
@@ -567,6 +568,7 @@ $.fn.resourceTable = function(params) {
 		    columns: columns,
 		    sortName: options.sortName,
 		    sortOrder: options.sortOrder,
+		    rowStyle: options.rowStyle,
 		    sortable: true,
 		    cache: false,
 		    uniqueId: 'id',
