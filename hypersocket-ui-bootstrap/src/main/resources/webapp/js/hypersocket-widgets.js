@@ -3515,6 +3515,7 @@ $.fn.fileUploadInput = function(data) {
 	var options = $.extend(
 			{  
 				disabled : false,
+				useUUID: true,
 				showUploadButton: true,
 				showDownloadButton: true,
 				showDownloadLink: true,
@@ -3608,6 +3609,7 @@ $.fn.fileUploadInput = function(data) {
 		}
 		$('#' + id + 'UploadButton').remove();
 		$('#' + id + 'Info').data('uuid', data.name);
+		$('#' + id + 'Info').data('id', data.id);
 		$('#' + id + 'RemoveButton').click(function(){
 			bootbox.confirm(getResource('fileUpload.confirmRemoveFile'),
 			function(confirmed) {
@@ -3629,7 +3631,10 @@ $.fn.fileUploadInput = function(data) {
  				if(!$('#' + id + 'Info').length){
  					return '';
  				}
- 				return $('#' + id + 'Info').data('uuid');
+ 				if(options.useUUID)
+ 					return $('#' + id + 'Info').data('uuid');
+ 				else
+ 					return $('#' + id + 'Info').data('id');
  			},
  			reset: function() {
  				if(options.value == '') {
@@ -3646,6 +3651,7 @@ $.fn.fileUploadInput = function(data) {
 	 						$('#' + id + 'Info').empty();
 	 						$('#' + id + 'Info').append(showInfoFormat(data.resource));
 	 						$('#' + id + 'Info').data('uuid', data.resource.name);
+	 						$('#' + id + 'Info').data('id', data.resource.id);
 	 						$('#' + id + 'RemoveButton').unbind('click');
 	 						$('#' + id + 'RemoveButton').click(function(){
 	 							callback.remove();
@@ -4441,6 +4447,7 @@ $.fn.multipleFileUpload = function(data) {
 				showUploadButton: true,
 				showDownloadButton: true,
 				showRemoveLine: true,
+				useUUID: true,
 				isArrayValue: true,
 				showEmptyRow: false,
 				automaticUpload: false,
@@ -4528,6 +4535,7 @@ $.fn.multipleFileUpload = function(data) {
  	 				$('#' + id + 'FileUploads').append(html);
  	 				$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').fileUploadInput({
  	 					url: options.url,
+ 	 					useUUID: options.useUUID,
  	 					disabled: options.disabled,
  	 					showDownloadButton: options.showDownloadButton,
  	 					showUploadButton: options.showUploadButton,
