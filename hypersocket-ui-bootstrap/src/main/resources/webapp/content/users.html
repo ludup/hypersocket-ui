@@ -253,6 +253,14 @@
 						} ]
 					});
 
+					var searchFields = [{
+						name: 'name'
+					}, {
+						name: 'principalDescription'
+					}, {
+						name: 'primaryEmail'
+					}];
+					
 					var fields = [ {
 						name : "icon",
 						width: 40,
@@ -271,7 +279,7 @@
 							return obj.principalDescription;
 						}
 					}, {
-						name : "email"
+						name : "primaryEmail"
 					},{
 						name : "principalStatus",
 						formatter: function(value, obj, index) {
@@ -313,6 +321,7 @@
 								deleteResourcesUrl : "currentRealm/bulk/users",
 								disableDecoration: disableDecoration,
 								fields : fields,
+								searchFields: searchFields,
 								resourceKey : 'user',
 								canCreate : currentMenu.canCreate,
 								canUpdate : true,
@@ -531,29 +540,33 @@
 								complete : function() {
 									
 									if(currentRealm.resourceCategory !== 'local') {
-										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><div class="principalType" id="principalType"></div></div>');
+										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="principalType" id="principalType"></div></div>');
+										
+										var filters = new Array();
+									
+										filters.push({name: getResource('all.accounts'), value: ''});
+										filters.push({name: getResource('local.accounts') , value: 'filter.accounts.local'});
+										filters.push({name:  getResource("realm." + currentRealm.resourceCategory + '.accounts') , value: 'filter.accounts.remote'});
+										
+										getJSON('realms/users/filters', null, function(data) {
+											
+											$.each(data.resources, function(idx, obj) {
+												filters.push({ value: obj, name: getResource(obj)});
+											});
 											$('#principalType').textDropdown({
-											values: [{
+												values: filters,
 												value: '',
-												name: getResource('all.accounts')
-											},{
-												value: 'local',
-												name: getResource('local.accounts')
-											}, {
-												value: currentRealm.resourceCategory,
-												name: getResource("realm." + currentRealm.resourceCategory + '.accounts')
-											}],
-											value: '',
-											changed: function(widget) {
-												$('.search input[placeholder="Search"]').val('');
-												resourcePage.refresh();
-											},
-											sortOptions: false
+												changed: function(widget) {
+													$('.search input[placeholder="Search"]').val('');
+													resourcePage.refresh();
+												},
+												sortOptions: false
+											});
 										});
 									} 
 
 									if(!ownerRealm) {
-										$('#contentUsers').find('.fixed-table-toolbar').last().append(
+										$('#contentUsers').find('.panel-heading').last().append(
 												'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">' 
 												+ getResource('configure.remote.text') + '</a></div></div>');
 										$('#configureUsers').click(function(e) {

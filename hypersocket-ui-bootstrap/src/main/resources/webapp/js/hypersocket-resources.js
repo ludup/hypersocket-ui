@@ -219,7 +219,7 @@ $.fn.resourceTable = function(params) {
 	var columns = new Array();
 	var columnsDefs = new Array();
 	var searchColumns = new Array();
-
+	
 	if(options.checkbox) {
 	    columns.push({
 	        checkbox : true
@@ -262,6 +262,8 @@ $.fn.resourceTable = function(params) {
 		}
 		columns.push(c);	
 	});
+	
+	searchColumns.push({ value: '',  name: '---', disableOptions: true });
 	
 	if(options.searchFields) {
 		$.each(options.searchFields,function(idx, obj) {
@@ -624,22 +626,23 @@ $.fn.resourceTable = function(params) {
 		    		
 		    		log("Rendering search");
 		    		
-		    		if(searchColumns.length > 0) {
-						$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Search By:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
+		    		if(searchColumns.length > 1) {
+						$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Search:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
 						$('#searchColumn').textDropdown({
 							values: searchColumns,
 							changed: function(widget) {
 								var selected = widget.getObject();
 								$('#searchValue').remove();
-								if(selected.renderOptions) {
-									$('.search input[placeholder="Search"]').hide();
-									$('#searchColumn').parent().append('<div id="searchValue" class="toolbarWidget"></div>');
-									selected.renderOptions($('#searchValue'), function() {
-										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-									});
-									
-								} else {
-									$('.search input[placeholder="Search"]').show();
+								$('.search input[placeholder="Search"]').hide();
+								if(!selected.disableOptions) {
+									if(selected.renderOptions) {
+										$('#searchColumn').parent().append('<div id="searchValue" class="toolbarWidget"></div>');
+										selected.renderOptions($('#searchValue'), function() {
+											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+										});
+									} else {
+										$('.search input[placeholder="Search"]').show();
+									}
 								}
 								
 								$('.search input[placeholder="Search"]').val('');
@@ -648,6 +651,17 @@ $.fn.resourceTable = function(params) {
 						});
 						$('#searchColumn').widget().setValue(searchColumns[0].name);
 					}
+		    		
+		    		if(options.searchFiltersUrl) {
+		    			getJSON(options.searchFiltersUrl, null, function(data) {
+		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter By:</label><div class="toolbarWidget" id="filterColumn"></div></div>');
+		    			});
+		    		} else if(options.searchFilters) {
+		    			$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter By:</label><div class="toolbarWidget" id="filterColumn"></div></div>');
+		    			$('#filterColumn').textDropdown({
+							values: options.searchFilters
+						});
+		    		}
 
                     if(options.bulkAssignment) {
                         var bulkAssignableTarget = resourceType + 'BulkAssignable';

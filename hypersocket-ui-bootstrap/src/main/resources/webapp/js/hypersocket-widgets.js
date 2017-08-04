@@ -5499,19 +5499,21 @@ $.fn.multipleRows = function(data) {
 		
 		var elementId = id + options.count++;
 		$('#' + id + 'Rows').append(
-				 '    <div id="' + elementId  + '" class="rowInput col-xs-11">'
-				+ '    </div>'
-				+ '    <div class="col-xs-1">'
+				 '    <div class="rowParent">'
+				+ '       <div id="' + elementId  + '" class="rowInput col-xs-11">'
+				+ '       </div>'
+				+ '       <div class="col-xs-1">'
 				+	'		<a href="#" class="btn btn-danger delButton">'
 				+	'			<i class="fa fa-minus"></i>'
 				+	'		</a>'
-				+ '</div>'); 
+				+ '       </div></div>'); 
 		
 		options.render($('#' + id + 'Rows').find('.rowInput').last(), val);
 		
 		$('.delButton').off('click');
 		$('.delButton').on('click', function() {
-			$(this).closest('.rowInput').parent().remove();
+			debugger;
+			$(this).closest('.rowParent').remove();
 			if(options.showAdd) {
 				$('#' + id + 'NewRow').show();
 			}

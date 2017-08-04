@@ -1836,7 +1836,7 @@ select[multiple] {
 
 .principalType {
 	float: left;
-	width: 200px;
+	width: 350px;
 }
 
 .imageReset {
@@ -1932,6 +1932,13 @@ select[multiple] {
 
 .checkboxProperty span {
 	display: inline-block;
+}
+
+.extendedTabContent {
+	padding-bottom: 20px;
+	padding-left: 20px;
+	padding-right: 20px;
+	overflow: auto;
 }
 
 .box20 {
