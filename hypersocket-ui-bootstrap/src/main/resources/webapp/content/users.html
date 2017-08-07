@@ -259,6 +259,17 @@
 						name: 'principalDescription'
 					}, {
 						name: 'primaryEmail'
+					}, {
+						name: 'organizationalUnit',
+						renderOptions: function(element, refresh) {
+							element.autoComplete({
+								remoteSearch: false,
+								url: 'currentRealm/organizationalUnits',
+								nameAttr: 'dn',
+								valueAttr: 'dn',
+								changed: refresh
+							});
+						}
 					}];
 					
 					var fields = [ {
@@ -295,6 +306,13 @@
 						}
 					}];
 
+					var searchFilters = [];
+					searchFilters.push({name: getResource('all.accounts'), value: '', useDefaultColumns: true, searchColumns: []});
+					if(currentRealm.resourceCategory !== 'local') {
+						searchFilters.push({name: getResource('local.accounts') , value: 'filter.accounts.local', useDefaultColumns: true, searchColumns: []});
+						searchFilters.push({name:  getResource("realm." + currentRealm.resourceCategory + '.accounts') , value: 'filter.accounts.remote', useDefaultColumns: true, searchColumns: []});
+					}
+					
 					if(ownerRealm) {
 						fields.push({
 							name: 'parentPrincipal',
@@ -461,11 +479,6 @@
 								deleted : function(resource) {
 
 								},
-								queryParams: function(params) {
-									if($('#principalType').length > 0) {
-										params.module = $('#principalType').widget().getValue();
-									}
-								},
 								displayResource : function(resource, readOnly, copy) {
 
 									var resourceCategory = currentRealm.resourceCategory;
@@ -537,32 +550,34 @@
 									});
 									
 								},
+								searchFilters: searchFilters,
+								searchFiltersUrl: 'realms/users/filters',
 								complete : function() {
 									
 									if(currentRealm.resourceCategory !== 'local') {
-										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="principalType" id="principalType"></div></div>');
+// 										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="principalType" id="principalType"></div></div>');
 										
-										var filters = new Array();
+// 										var filters = new Array();
 									
-										filters.push({name: getResource('all.accounts'), value: ''});
-										filters.push({name: getResource('local.accounts') , value: 'filter.accounts.local'});
-										filters.push({name:  getResource("realm." + currentRealm.resourceCategory + '.accounts') , value: 'filter.accounts.remote'});
+// 										filters.push({name: getResource('all.accounts'), value: ''});
+// 										filters.push({name: getResource('local.accounts') , value: 'filter.accounts.local'});
+// 										filters.push({name:  getResource("realm." + currentRealm.resourceCategory + '.accounts') , value: 'filter.accounts.remote'});
 										
-										getJSON('realms/users/filters', null, function(data) {
+// 										getJSON('realms/users/filters', null, function(data) {
 											
-											$.each(data.resources, function(idx, obj) {
-												filters.push({ value: obj, name: getResource(obj)});
-											});
-											$('#principalType').textDropdown({
-												values: filters,
-												value: '',
-												changed: function(widget) {
-													$('.search input[placeholder="Search"]').val('');
-													resourcePage.refresh();
-												},
-												sortOptions: false
-											});
-										});
+// 											$.each(data.resources, function(idx, obj) {
+// 												filters.push({ value: obj, name: getResource(obj)});
+// 											});
+// 											$('#principalType').textDropdown({
+// 												values: filters,
+// 												value: '',
+// 												changed: function(widget) {
+// 													$('.search input[placeholder="Search"]').val('');
+// 													resourcePage.refresh();
+// 												},
+// 												sortOptions: false
+// 											});
+// 										});
 									} 
 
 									if(!ownerRealm) {

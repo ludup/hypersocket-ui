@@ -1191,6 +1191,9 @@ $.fn.autoComplete = function(data) {
 			getObject: function() {
 				return thisWidget.data('selectedObject');
 			},
+			getSelectedObject: function() {
+				return thisWidget.data('selectedObject');
+			},
 			_reload: function(newValue) {
 				if(options.url && !options.remoteSearch) {
 					var url = options.url;

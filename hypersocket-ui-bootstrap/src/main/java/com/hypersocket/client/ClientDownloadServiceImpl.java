@@ -34,6 +34,7 @@ import com.hypersocket.realm.RealmService;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.FileContentHandler;
 import com.hypersocket.upgrade.UpgradeService;
+import com.hypersocket.utils.HypersocketUtils;
 
 @Service
 public class ClientDownloadServiceImpl extends AbstractAuthenticatedServiceImpl implements ClientDownloadService {
@@ -43,8 +44,7 @@ public class ClientDownloadServiceImpl extends AbstractAuthenticatedServiceImpl 
 	static Logger log = LoggerFactory
 			.getLogger(ClientDownloadServiceImpl.class);
 
-	File downloadsDir = new File(
-			System.getProperty("hypersocket.conf", "conf"), "clients");
+	File downloadsDir = new File(HypersocketUtils.getConfigDir(), "clients");
 
 	@Autowired
 	HypersocketServer server;
