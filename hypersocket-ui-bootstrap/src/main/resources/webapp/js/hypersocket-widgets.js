@@ -3601,11 +3601,7 @@ $.fn.fileUploadInput = function(data) {
 		$('#' + id + 'File').hide();
 		if(!options.disabled && options.showDeleteButton) {
 			$('#' + id + 'Buttons').append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
-		}
-		
-		if(options.showDeleteButton) {
-			$('#' + id + 'Buttons').append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
-		}
+		} 
 
 		if(options.showDownloadButton){
 			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
