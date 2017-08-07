@@ -2154,7 +2154,7 @@ select[multiple] {
 }
 
 .chart-color-1 {
-	color: #3F51B5;
+	color: #3F51B5; 
 }
 
 .chart-color-2 {
@@ -2162,31 +2162,31 @@ select[multiple] {
 }
 
 .chart-color-3 {
-	color: #673AB7;
+	color: #C5CAE9;
 }
 
 .chart-color-4 {
-	color: #9C27B0;
+	color: #BBDEFB; 
 }
 
 .chart-color-5 {
-	color: #F44336;
+	color: #1A237E; 
 }
 
 .chart-color-6 {
-	color: #9C27B0;
+	color: #0D47A1; 
 }
 
 .chart-color-7 {
-	color: #4CAF50;
+	color: #E1BEE7; 
 }
 
 .chart-color-8 {
-	color: #FFEB3B; /* YELLOW */
+   color: #4A148C; 
 }
 
 .chart-color-9 {
-	color: #FF9800;
+	color: #9C27B0; 
 }
 
 .chart-color-10 {
