@@ -865,7 +865,7 @@ $.fn.propertyPage = function(opts) {
 								$(contentTabs)
 										.append(
 											'<li class="tab' + idx + ' ' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
-											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + ( this.name ? this.name : getResource(this.categoryKey + '.label') ) + '</span></a></li>');
+											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + getResourceOrDefault(this.categoryKey + '.label', this.name) + '</span></a></li>');
 								
 								
 								
@@ -927,6 +927,7 @@ $.fn.propertyPage = function(opts) {
 															func();
 														});
 													}
+													
 												}
 											},
 											initialized: function(widget) {
