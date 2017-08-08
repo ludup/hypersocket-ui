@@ -557,7 +557,8 @@ $.fn.tabPage = function(opts) {
 				  title : '', 
 				  icon : 'fa-th', 
 				  showAdditionalTabButtons: false,
-				  i18nNamespace: ''},
+				  i18nNamespace: '',
+				  changed: false},
 				opts);
 	
 	makeBooleanSafe(options);
@@ -579,9 +580,12 @@ $.fn.tabPage = function(opts) {
 		+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
 		+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
-	
+
+	var lastTab = null;
 	$.each(options.tabs,
 		function(idx, o) {
+			if(!lastTab)
+				lastTab = $('#' + this.id);
 			$(contentTabs)
 					.append(
 						'<li class="class_default" id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
@@ -590,7 +594,6 @@ $.fn.tabPage = function(opts) {
 		});
 	
 	$('#tabTemp' + propertyDiv).remove();
-
 	$('.' +  propertyDiv + 'Tab').click(function(e) {
 		e.preventDefault();
 		if(!options.showAdditionalTabButtons) {
@@ -604,6 +607,12 @@ $.fn.tabPage = function(opts) {
 		$('.code').each(function() {
 			$(this).data('codeMirror').refresh();
 		});
+		if(options.changed) {
+			var tid = $(this)[0].parentNode.id;
+			var tab = $('#' + tid.substring(0, tid.length - 2));
+			options.changed(tab, lastTab);
+			lastTab = tab;
+		}
 	});
 
 	$('.' +  propertyDiv + 'Tab').first().tab('show');
