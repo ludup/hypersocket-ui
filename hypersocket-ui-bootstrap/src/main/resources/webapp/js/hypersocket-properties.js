@@ -1510,7 +1510,8 @@ $.fn.propertyPage = function(opts) {
 								}
 
 							}, null, function() {
-								stopSpin($(applyButton).find('i'));
+								$(applyButton).find('i').removeClass('fa-spin');
+								$(applyButton).find('i').removeClass('fa-spinner');
 							});
 						});
 					}
