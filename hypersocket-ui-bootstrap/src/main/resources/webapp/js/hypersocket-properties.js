@@ -557,7 +557,8 @@ $.fn.tabPage = function(opts) {
 				  title : '', 
 				  icon : 'fa-th', 
 				  showAdditionalTabButtons: false,
-				  i18nNamespace: ''},
+				  i18nNamespace: '',
+				  changed: false},
 				opts);
 	
 	makeBooleanSafe(options);
@@ -590,7 +591,7 @@ $.fn.tabPage = function(opts) {
 		});
 	
 	$('#tabTemp' + propertyDiv).remove();
-
+	var lastTab = null;
 	$('.' +  propertyDiv + 'Tab').click(function(e) {
 		e.preventDefault();
 		if(!options.showAdditionalTabButtons) {
@@ -604,6 +605,12 @@ $.fn.tabPage = function(opts) {
 		$('.code').each(function() {
 			$(this).data('codeMirror').refresh();
 		});
+		if(options.changed) {
+			var tid = $(this)[0].parentNode.id;
+			var tab = $('#' + tid.substring(0, tid.length - 2));
+			options.changed(tab, lastTab);
+			lastTab = tab;
+		}
 	});
 
 	$('.' +  propertyDiv + 'Tab').first().tab('show');
