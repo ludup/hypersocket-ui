@@ -1298,7 +1298,7 @@ $.fn.autoComplete = function(data) {
 			null,
 			function(data) {
 				buildData(options.isResourceList ? data.resources : data);
-				if(!options.remoteSearch || !options.setOnLoad)
+				if(!options.url || !options.setOnLoad)
 					updateValue(options.value, false);
 				else {
 					updateValue(options.setOnLoad, true);
