@@ -37,7 +37,7 @@ function validate(widget, value, widgetsByResourceKey) {
 		return false;
 	} else {
 		$(options.errorElementId).removeClass('error');
-		if(options.name !== '')
+		if(options.description)
 			$(options.errorElementId).text(options.description);
 		else
 			$(options.errorElementId).text(getResourceWithNamespace(options.i18nNamespace, options.resourceKey + '.info'));
