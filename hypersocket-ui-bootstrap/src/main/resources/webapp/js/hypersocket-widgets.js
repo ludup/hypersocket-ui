@@ -976,7 +976,8 @@ $.fn.autoComplete = function(data) {
 			icon: 'fa-search',
 			sortOptions: true,
 			doNotInit: false,
-			selectFirst: false
+			selectFirst: false,
+			setOnLoad: false
 		}, data);
 	
 	var callback;
@@ -1108,7 +1109,10 @@ $.fn.autoComplete = function(data) {
 		}
 		$('#' + id).val('');
 		thisWidget.data('selectedObject', null);
-		if($('#input_' + id).data('values')) {
+		options.setOnLoad = val;
+		var values = $('#input_' + id).data('values');
+		if(values) {
+			options.setOnLoad = false;
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
 					
@@ -1294,7 +1298,12 @@ $.fn.autoComplete = function(data) {
 			null,
 			function(data) {
 				buildData(options.isResourceList ? data.resources : data);
-				updateValue(options.value, false);
+				if(!options.remoteSearch || !options.setOnLoad)
+					updateValue(options.value, false);
+				else {
+					updateValue(options.setOnLoad, true);
+					options.setOnLoad = false;
+				}
 				createDropdown('', false, false);
 			});
 	} else if(options.values && !options.remoteSearch) {
@@ -4029,14 +4038,21 @@ $.fn.logoInput = function(data) {
 	var _showOrHideTextFields = function() {
 		var txtSrc = $('#' + id + 'TextSource').val();
 		if(txtSrc == 'icon') {
+			if(!options.disabled)
+				$('#' + id + 'Icon').data('widget').enable();
+			$('#' + id + 'Text').attr('disabled', 'disabled');
 			$('#' + id + 'Text').hide();
 			$('#' + id + 'Icon').show();
 		}
 		else if(txtSrc == 'text') {
+			if(!options.disabled)
+				$('#' + id + 'Text').removeAttr('disabled');
+			$('#' + id + 'Icon').attr('disabled', 'disabled');
 			$('#' + id + 'Text').show();
 			$('#' + id + 'Icon').hide();
 		}
 		else {
+			$('#' + id + 'Text').attr('disabled', 'disabled');
 			$('#' + id + 'Icon').hide();
 			$('#' + id + 'Text').hide();
 		}
@@ -4137,7 +4153,7 @@ $.fn.logoInput = function(data) {
 	 					if(arr.length > 3) {
 	 						var txt = decodeURIComponent(arr[3]);
 	 						var txtSource = txt;
-	 						if(txtSource == 'auto' || txtSource == 'autoicon' || txtSource == 'autotext') {
+	 						if(txtSource == 'auto' || txtSource == 'autoicon' || txtSource == 'autoname') {
 		 						$('#' + id + 'Text').val('');
 	 						}
 	 						else {
@@ -5511,7 +5527,6 @@ $.fn.multipleRows = function(data) {
 		
 		$('.delButton').off('click');
 		$('.delButton').on('click', function() {
-			debugger;
 			$(this).closest('.rowParent').remove();
 			if(options.showAdd) {
 				$('#' + id + 'NewRow').show();
