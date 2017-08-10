@@ -1063,7 +1063,6 @@ $.fn.autoComplete = function(data) {
 			});
 			$('#auto_' + id + ' .optionSelect').off('click');
 			$('#auto_' + id + ' .optionSelect').on('click', function() {
-				
 				var value = $(this).data('value');
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
@@ -1204,7 +1203,6 @@ $.fn.autoComplete = function(data) {
 						processURL(callback, url),
 						null,
 						function(data) {
-							
 							if(data.success) {
 								buildData(options.isResourceList ? data.resources : data);
 								callback.setValue(newValue);
@@ -1306,14 +1304,13 @@ $.fn.autoComplete = function(data) {
 			updateValue(options.value, false);
 		} else {
 			if(options.value && options.value !== '') {
-				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + options.value + "&searchColumn=" + options.valueAttr;
+				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + (options.nameIsResourceKey ? getResource(options.value) : options.value) + "&searchColumn=" + options.valueAttr;
 				if(options.searchParams) {
 					url += '&' + options.searchParams;
 				}
 				getJSON(processURL(callback, url),
 						null,
 						function(data) {
-							
 							var map = [];
 							$.each(data.rows, function(idx, obj) {
 								map[obj[options.valueAttr]] = obj;
@@ -3288,7 +3285,11 @@ $.fn.namePairInput = function(data) {
 				showEmptyRow: false,
 				password: false,
 				showNameVariables: false,
-				showValueVariables: false
+				showValueVariables: false,
+				nameAutoComplete: false,
+				valueAutoComplete: false,
+				nameIsResourceKey: false,
+				valueAttr: 'value'
 			}, data);
 	
 	var id =  $(this).attr('id') + "NamePairInput";
@@ -3425,7 +3426,16 @@ $.fn.namePairInput = function(data) {
  	 						var renderField = new Function('div', 'val', options.renderNameFunc);
  	 						renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'), undefined);
  	 					}
- 	 				} else {
+ 	 				} else if(options.nameAutoComplete){
+ 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').autoComplete({
+ 	 						url: options.nameAutoCompleteUrl,
+ 	 						nameIsResourceKey: options.nameIsResourceKey,
+ 	 						isResourceList: options.isResourceList,
+ 	 						remoteSearch: options.remoteSearch,
+ 	 						value: values ? values[0] : ''  ,
+ 	 						valueAttr: options.valueAttr
+ 	 					});
+ 	 				}else{
 	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
 	 	 					variables: nameVariables,
 	 	 					url: options.nameVariablesUrl,
@@ -3447,6 +3457,15 @@ $.fn.namePairInput = function(data) {
  	 							var renderField = new Function('div', 'val', options.renderValueFunc);
 	 	 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), undefined);
  	 						}
+ 	 					} else if(options.valueAutoComplete){
+ 	 						$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').autoComplete({
+ 	 	 						url: options.valueAutoCompleteUrl,
+ 	 	 						nameIsResourceKey: options.valueIsResourceKey,
+ 	 	 						isResourceList: options.isResourceList,
+ 	 	 						remoteSearch: options.remoteSearch,
+ 	 	 						value: values ? values[0] : ''  ,
+ 	 	 						valueAttr: options.valueAttr
+ 	 	 					});
  	 					} else {
  	 						var inputType = 'text';
  	 	 					if(options.password){
@@ -5511,7 +5530,6 @@ $.fn.multipleRows = function(data) {
 		
 		$('.delButton').off('click');
 		$('.delButton').on('click', function() {
-			debugger;
 			$(this).closest('.rowParent').remove();
 			if(options.showAdd) {
 				$('#' + id + 'NewRow').show();
