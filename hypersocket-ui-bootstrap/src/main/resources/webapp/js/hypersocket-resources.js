@@ -641,7 +641,6 @@ $.fn.resourceTable = function(params) {
 								var selected = widget.getObject();
 								$('#searchValue').remove();
 								$('.search input[placeholder="Search"]').hide();
-								debugger;
 								if(!selected.disableOptions) {
 									if(selected.renderOptions) {
 										$('#searchColumn').parent().append('<div id="searchValue" class="toolbarWidget"></div>');
@@ -681,7 +680,6 @@ $.fn.resourceTable = function(params) {
 					}
 		    		
 		    		if(options.searchFiltersUrl) {
-		    			debugger;
 		    			getJSON(options.searchFiltersUrl, null, function(data) {
 		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="toolbarWidget" id="filterColumn"></div></div>');
 		    				var filters = [];
@@ -1323,10 +1321,10 @@ $.fn.samePageResourceView = function(params, params2) {
 				      displayMode: 'create',
 					  complete: function() {
 						  showView(dialog);
+						  addActions(true);
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete();
 						  }
-						  addActions(true);
 						  
 					  },
 					  onPropertyChange: function(resourceKey, widget) {
@@ -1503,10 +1501,10 @@ $.fn.samePageResourceView = function(params, params2) {
 				    icon: dialogOptions.icon, 
 					complete: function() {
 						showView(dialog);
+						addActions(true);
 						if(dialogOptions.propertyOptions.complete) {
 							dialogOptions.propertyOptions.complete(params2);
 						}
-						addActions(true);
 					}});
 		
 		
