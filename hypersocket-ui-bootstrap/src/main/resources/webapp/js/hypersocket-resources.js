@@ -255,12 +255,13 @@ $.fn.resourceTable = function(params) {
 	}
 
 	$.each(options.fields,function(idx, obj) {
-		var c = { field : obj.name,
-				title: getResource(options.resourceKey + "." + obj.name + '.label'),
-				align: obj.align ? obj.align : 'left',
-				sortable: obj.sortable || obj.name === options.sortName,
-				formatter: obj.formatter
-		};
+		var c= $.extend({
+			field : obj.name,
+			title: getResource(options.resourceKey + "." + obj.name + '.label'),
+			align: obj.align ? obj.align : 'left',
+			sortable: obj.sortable || obj.name === options.sortName,
+			formatter: obj.formatter
+		}, obj);
 		if(obj.width) {
 			c.width = obj.width;
 		}
