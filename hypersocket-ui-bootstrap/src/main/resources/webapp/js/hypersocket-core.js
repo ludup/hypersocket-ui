@@ -198,7 +198,7 @@ function checkBadges(schedule) {
 		if(data.success) {
 			$.each(data.resources, function(idx, obj) {
 				if(obj.badge!=null) {
-					$('#' + obj.resourceKey).find('span').after('<span class="menuBadge badge">' + obj.badge + '</span>');
+					$('#' + obj.resourceKey).find('span').after('<span class="menuBadge badge' + (obj.cssClass ? ' ' + obj.cssClass : '') + '">' + obj.badge + '</span>');
 				}
 			});
 		}
