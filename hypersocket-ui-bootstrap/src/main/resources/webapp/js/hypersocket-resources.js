@@ -57,7 +57,7 @@ $.fn.resourceDialog = function(params, params2) {
 	$(this).bootstrapResourceDialog(params, params2);
 };
 
-function saveResource(resource, buttonElement, options, mode, closeCallback) {
+function saveResource(resource, buttonElement, options, mode, closeCallback, alwaysCallback) {
 	var icon = buttonElement.find('i');
 	startSpin(icon, 'fa-save');
 	
@@ -114,7 +114,11 @@ function saveResource(resource, buttonElement, options, mode, closeCallback) {
 			log("Resource object creation failed " + data.message);
 			showError(data.message);
 		}
-	}, null, function() { stopSpin(icon, 'fa-save');});
+	}, null, function() { 
+		stopSpin(icon, 'fa-save');
+		if(alwaysCallback)
+			alwaysCallback();
+	});
 }
 
 $.fn.resourceTable = function(params) {
