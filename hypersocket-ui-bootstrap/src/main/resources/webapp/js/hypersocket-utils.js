@@ -288,6 +288,16 @@ function replaceAll(string, find, replace) {
   return string.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
 
+$.fn.insertClass = function(index, classes) {
+	var cls = [];
+	var cv = $(this).attr('class')
+	if(cv) {
+		cls = cv.split(' ');
+	}
+	cls.splice(index, 0, classes.split(' '));
+	$(this).attr('class', cls.join(' '));
+}
+
 $.fn.getCursorPosition = function () {
     var el = $(this).get(0);
     var pos = 0;
