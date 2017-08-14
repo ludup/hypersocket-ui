@@ -1295,12 +1295,19 @@ $.fn.propertyPage = function(opts) {
 									if(i > 0 && !show) {
 										break;
 									}
-									if(dependsValue[i].startsWith('!')) {
-										dependsValue[i] = dependsValue[i].substring(1);
-										show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);
-									} else {
-										var v = w2[i].getValue();
-										show = (v == makeVariableSafe(dependsValue[i]));
+									
+									var ors = dependsValue[i].split('|');
+									for(j = 0 ; j < ors.length; j++) {	
+										if(j > 0 && show) {
+											break;
+										}								
+										if(ors[j].startsWith('!')) {
+											ors[j] = ors[j].substring(1);
+											show = w2[i].getValue() != makeVariableSafe(ors[j]);
+										} else {
+											var v = w2[i].getValue();
+											show = (v == makeVariableSafe(ors[j]));
+										}
 									}
 								}
 								
