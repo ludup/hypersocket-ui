@@ -1541,7 +1541,8 @@ $.fn.propertyPage = function(opts) {
 			self.data('propertyOptions', options);
 			
 			setTimeout(function() {
-				funcVisibility();
+				if(funcVisibility)
+					funcVisibility();
 				if (options.complete) {
 					options.complete();
 				}
