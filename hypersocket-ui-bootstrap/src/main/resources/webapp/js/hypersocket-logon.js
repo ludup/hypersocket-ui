@@ -174,7 +174,7 @@ function processLogon(data, opts, message) {
 				} else if(this.type == 'checkbox') {
 				    $('#logonForm')
                             .append(
-                                '<div class="checkbox"><label id="'+ this.resourceKey + '">'
+                                '<div class="checkbox"><label id="'+ this.resourceKey + 'Label">'
                                 + '<input  type="' + this.type + '" name="'
                                 + this.resourceKey
                                 + '" id="' + this.resourceKey + '" value="' + this.defaultValue
@@ -279,7 +279,7 @@ function processLogon(data, opts, message) {
 						$.each(
 							data['formTemplate']['inputFields'],
 							function() {
-								
+								debugger;
 							    var elem = $('#' + this.resourceKey);
 								var name = encodeURIComponent(this.resourceKey);
 								var value = encodeURIComponent(elem.val());
