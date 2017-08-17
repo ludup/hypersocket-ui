@@ -119,7 +119,7 @@ function processLogon(data, opts, message) {
 					});
 					return;
 				} else if(this.type == 'html') {
-					$('#logonForm').append('<div id="' + this.resourceKey + '"></div>');
+					$('#logonForm').append('<div id="' + this.resourceKey + '" class="center"></div>');
 					$('#' + this.resourceKey).html(replacePaths(this.defaultValue));
 					return;
 				} else if(this.type =='img') {
@@ -226,7 +226,7 @@ function processLogon(data, opts, message) {
 			if(data.formTemplate.showLogonButton) {
 				$('#logonForm').append(
 						'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
-							+ (data.last ? (data.formTemplate.logonButtonResourceKey ? getResource(data.formTemplate.logonButtonResourceKey) : getResource(data.lastButtonResourceKey)) : getResource("text.next")) 
+							+ (data.formTemplate.logonButtonResourceKey ? getResourceOrText(data.formTemplate.logonButtonResourceKey) : getResource("text.next")) 
 							+ '&nbsp;<i class="fa ' + (data.formTemplate.logonButtonIcon ? data.formTemplate.logonButtonIcon : 'fa-sign-in') + '"></i></button>');
 			}
 			
