@@ -215,6 +215,7 @@
     }
     
     function getAttributeNames() {
+    	
     	var variables = $('#triggerModal').data('selectedEvent').attributeNames;
     	
     	if($('#triggerModal').data('parentEvents')) {
@@ -284,7 +285,6 @@
 				}
 			}
 		});
-		$('#triggerModal').data('selectedEvent', triggerEvent.getObject());
 		
 		
 		
@@ -369,25 +369,46 @@
 				}
 			},
 			displayResource: function(resource) {
-
+				
+				
 				$('#triggerResourceId').val(resource.id);
 				$('#triggerParentId').val(resource.parentId);
 				$('#triggerName').val(resource.name);
+				triggerEvent.setValue(resource.event);
+				triggerEvent.disable();
 
-				var parentResource = $('#triggerModal').data('parentResource');
-				if(parentResource) {
-					var sself = this;
-					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
-						triggerEvent.setValue(data.resources[0].resourceKey);
-						triggerEvent.disable();
-						sself._setupProperties(resource);
+				triggerResult.setValue(resource.result);
+				triggerAllRealms.setValue(resource.allRealms);
+				
+				if(resource.allConditions)
+					$.each(resource.allConditions, function(idx, obj) {
+						addConditionRow('rowAll', obj);
 					});
-				} 
-				else {
-					triggerEvent.setValue(resource.event);
-					triggerEvent.disable();
-					this._setupProperties(resource);
-				}
+				
+				if(resource.anyConditions)
+					$.each(resource.anyConditions, function(idx, obj) {
+						addConditionRow('rowAny', obj);
+					});
+				
+				triggerTask.disable();
+				triggerTask.setValue(resource.resourceKey);
+
+				$('#tabProperties').propertyPage({ 
+					url : 'triggers/properties/' + resource.id, 
+					showButtons : false, 
+					i18nNamespace: 'triggers',
+					canUpdate : currentMenu.canUpdate, 
+					useTemplates : true,
+					variables: getAttributeNames(),
+					propertyTabsLast: true,
+					additionalTabs : [ {
+						id : "tabConditions",
+						name : getResource("tabConditions.label")
+					}],
+					complete: function() {
+						$('#allTabs').show();
+					}
+				});
 				
 			},
 			validate: function() {
@@ -462,24 +483,6 @@
 					resource.anyConditions.push(condition);
 				});
 				return resource;
-			},
-			_setupProperties: function(resource) {
-
-				triggerResult.setValue(resource.result);
-				triggerAllRealms.setValue(resource.allRealms);
-				
-				if(resource.allConditions)
-					$.each(resource.allConditions, function(idx, obj) {
-						addConditionRow('rowAll', obj);
-					});
-				
-				if(resource.anyConditions)
-					$.each(resource.anyConditions, function(idx, obj) {
-						addConditionRow('rowAny', obj);
-					});
-				
-				triggerTask.setValue(resource.resourceKey);
-				triggerTask.disable();
 			}
 		});
 		
