@@ -1,0 +1,332 @@
+<div id="contentCsvCharts" class="col-md-12" style="padding-left: 0px">
+	<div id="csvChartsDialog"></div>
+	<div id="additionalActions"></div>
+	<div id="realmsContent"></div>
+</div>
+<div id="linkDialog" class="modal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 localize="linkAccount.label"></h4>
+			</div>
+			<div class="modal-body">
+				<div class="propertyItem form-group">
+					<label for="file" class="col-md-3 control-label"
+						   localize="primaryAccount.label"></label>
+					<div class="propertyValue col-md-9">
+						<div id="primaryAccount"></div>
+						<div>
+							<span class="help-block" localize="primaryAccount.info"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(
+			function() {
+
+				var disableDecoration = false;
+				
+				var title = getResource('users.title');
+				
+				$('#contentCsvCharts').localize();
+				$('#linkDialog').localize();
+				var fields = [ {
+					name : "icon",
+					width: 40,
+					formatter: function(value, obj, index) {
+						return '<div class="center"><i class="fa fa-2x ' 
+						+ getResourceOrDefault(obj.realmModule + '.icon', 'fa-user') + '"></i></div>';
+					}
+				}];
+
+				
+					var resourcePage = $('#contentCsvCharts').ajaxResourcePage(
+
+							{
+								id: 'Automation',
+								tableUrl : "/automations/csv",
+								resourceUrl : "automations/automation",
+								title : title,
+								icon : 'fa-user',
+								disableDecoration: disableDecoration,
+								fields : fields,
+// 								searchFields: searchFields,
+								resourceKey : 'automation',
+								canCreate : false,
+								canUpdate : false,
+								checkReadOnly: false,
+// 								additionalButtons: buttons,
+// 								toolbarButtonsUrl: 'menus/tableActions/usersToolbar',
+								canDelete : false,
+								checkDelete: function(row) {
+									return !row.readOnly;
+								},
+// 								detailFormatter: ownerRealm ? undefined : function(index, resource, $element) {
+// 									$element.extendedResourcePanel({resourceKey: "principalTabs",
+// 																	   resource: resource,
+// 																	   data: {parentContainer : '#contentUsers'}
+// 																	});
+// 				    	    	},
+// 								additionalActions : actions,
+								checkbox : true,
+								complete : function() {
+									loadComplete();
+								},
+// 								validate : function(create) {
+// 									if ($('#userName').val().trim() == '') {
+// 										showError("error.nameRequired");
+// 										return false;
+// 									}
+									
+// 									if(!$('#userProperties').validateProperties()) {
+// 										showError("error.correctValidationErrors");
+// 										return false;
+// 									}
+									
+// 									if(create) {
+// 										if($('#userPassword').val().trim() == '') {
+// 											showError("error.passwordEmpty");
+// 											return false;
+// 										}
+// 										if($('#userPassword').val().trim() != $('#userConfirmPassword').val().trim()) {
+// 											showError("error.passwordsNotMatched");
+// 											return false;
+// 										}
+// 									}
+									
+// 									return true;
+// 								},
+// 								clearDialog : function(create) {
+// 									$('#userName').val('');
+// 									$('#userName').attr('disabled', !create),
+// 									$('#userId').val('');
+// 									$('#userPassword').val('');
+// 									$('#userConfirmPassword').val('');
+// 									$('#userProperties').clearProperties();
+// 									$('#tabUserGroups').remove();
+
+// 									if(create) {
+// 										$('.createOnly').show();
+// 										$('#disableNotifications').prop('checked', true);
+// 										var resourceCategory = currentRealm.resourceCategory;
+// 										if($('#principalType').length > 0) {
+// 											if($('#principalType').widget().getValue() !== '') {
+// 												resourceCategory = $('#principalType').widget().getValue();
+// 											}
+// 										}
+										
+										
+// 										$('#userProperties').parent().append($('#tabPassword').detach());
+// 										$('#tabPassword').removeAttr("style");
+// 										$('#userProperties').empty();
+										
+// 										var tabs = [];
+// 										if(currentRealm.resourceCategory === resourceCategory) {
+											
+// 											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-xs-12"></div></div>');
+											
+// 											$('#tabUserGroupsContent').multipleSearchInput({
+// 												nameAttr : 'principalName',
+// 												disabled: !currentMenu.canUpdate,
+// 												selectedIsObjectList: true,
+// 												valueAttr: 'id',
+// 												url: apiUrl + '/groups/table'
+// 											});
+											
+// 											tabs.push({
+// 														id : "tabUserGroups",
+// 														name : getResource("label.groups")
+// 											});
+// 										}
+								
+// 										tabs.push({
+// 												id : "tabPassword",
+// 												name : getResource("label.password")
+// 										});
+										
+// 										$('#passwordPolicy').empty();
+// 										$('#passwordPolicy').passwordPolicy({
+// 											policy: 'default',
+// 											showGenerator: true,
+// 											passwordElement: $('#userPassword'),
+// 											confirmElement: $('#userConfirmPassword'),
+// 											usernameElement: $('#userName')
+// 										});
+										
+// 										$('#userProperties').propertyPage({
+// 											url : apiUrl + '/user/template/' + userRealm.resourceCategory,
+// 											showButtons : false,
+// 											displayMode: 'admin,create',
+// 											useTemplates : true,
+// 											propertyTabsLast: false,
+// 											i18nNamespace: userRealm.resourceCategory,
+// 											canUpdate : true,
+// 											useFilters: true,
+// 											additionalTabs : tabs
+// 										});
+// 									} else {
+// 										$('.createOnly').hide();
+// 									}
+// 								},
+// 								createResource : function() {
+
+// 									user = new Object();
+// 									user.id = $('#userId').val().trim();
+// 									user.name = $('#userName').val().trim();
+// 									user.password = $('#userPassword').val().trim();
+// 									user.forceChange = $('#userForceChange').prop('checked') ? true : false;
+									
+// 									$('#userProperties').saveProperties(false,
+// 											function(items) {
+// 												user.properties = items;
+// 											});
+// 									user.groups = $('#tabUserGroupsContent').widget().getValue();
+									
+// 									if(!$('#disableNotifications').prop('checked')) {
+// 										user.properties.push(new PropertyItem('disableNotifications', "true"));
+// 									}
+// 									return user;
+// 								},
+// 								resourceCreated : function(resource) {
+									
+// 								},
+// 								deleted : function(resource) {
+
+// 								},
+// 								displayResource : function(resource, readOnly, copy) {
+
+// 									var resourceCategory = currentRealm.resourceCategory;
+// 									if($('#principalType').length > 0) {
+// 										if($('#principalType').widget().getValue() !== '') {
+// 											resourceCategory = $('#principalType').widget().getValue();
+// 										}
+// 									}
+									
+// 									$('#userName').val(resource.name);
+// 									if(copy) {
+// 										$('#userName').attr('disabled', false);
+// 									} else {
+// 										$('#userName').attr('disabled', readOnly || $('#userName').attr('disabled'));
+// 									}
+// 									$('#userId').val(resource.id);
+									
+// 									$('#tabPassword').hide();
+// 									$('#tabUserGroups').remove();
+																		
+// 									getJSON(apiUrl + '/groups/user/' + resource.id, null, function(data) {
+									
+// 										var tabs = [];
+// 										if(currentRealm.resourceCategory === resourceCategory) {
+// 											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-xs-12"></div></div>');
+// 											$('#tabUserGroupsContent').multipleSearchInput({
+// 												nameAttr : 'principalName',
+// 												disabled: !currentMenu.canUpdate,
+// 												selectedIsObjectList: true,
+// 												selected : data.resources,
+// 												valueAttr: 'id',
+// 												url: "currentRealm/groups/table"
+// 											});
+						
+// 											tabs.push({
+// 														id : "tabUserGroups",
+// 														name : getResource("label.groups")
+// 											});
+// 										} 
+
+// 										if(copy) {
+// 											tabs.push({
+// 													id : "tabPassword",
+// 													name : getResource("label.password")
+// 												});
+// 										}
+										
+// 										$('#userProperties').parent().append($('#tabPassword').detach());
+										
+// 										$('#userProperties').empty();
+// 										$('#userProperties').propertyPage({
+// 											url : apiUrl + '/user/properties/' + resource.id,
+// 											showButtons : false,
+// 											displayMode: 'admin,update',
+// 											canUpdate : true,
+// 											propertyTabsLast: false,
+// 											i18nNamespace: userRealm.resourceCategory,
+// 											useFilters: true,
+// 											additionalTabs : tabs,
+// 											complete: function() {
+// 												if(tabs.length > 1) {
+// 													$('#tabPassword').removeAttr("style");
+// 												}
+// 											}
+// 										});
+
+// 										$('#addUserModal').modal('show');
+
+// 									});
+									
+// 								},
+// 								searchFilters: searchFilters,
+// 								searchFiltersUrl: 'realms/users/filters',
+// 								complete : function() {
+									
+// 									if(currentRealm.resourceCategory !== 'local') {
+// // 										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="principalType" id="principalType"></div></div>');
+										
+// // 										var filters = new Array();
+									
+// // 										filters.push({name: getResource('all.accounts'), value: ''});
+// // 										filters.push({name: getResource('local.accounts') , value: 'filter.accounts.local'});
+// // 										filters.push({name:  getResource("realm." + currentRealm.resourceCategory + '.accounts') , value: 'filter.accounts.remote'});
+										
+// // 										getJSON('realms/users/filters', null, function(data) {
+											
+// // 											$.each(data.resources, function(idx, obj) {
+// // 												filters.push({ value: obj, name: getResource(obj)});
+// // 											});
+// // 											$('#principalType').textDropdown({
+// // 												values: filters,
+// // 												value: '',
+// // 												changed: function(widget) {
+// // 													$('.search input[placeholder="Search"]').val('');
+// // 													resourcePage.refresh();
+// // 												},
+// // 												sortOptions: false
+// // 											});
+// // 										});
+// 									} 
+
+// 									if(!ownerRealm) {
+// 										$('#contentUsers').find('.panel-heading').last().append(
+// 												'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">' 
+// 												+ getResource('configure.remote.text') + '</a></div></div>');
+// 										$('#configureUsers').click(function(e) {
+// 											e.preventDefault();
+// 											$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
+// 										});
+										
+// 										/** $('#contentUsers').find('.fixed-table-toolbar').last().append(
+// 												'<div class="tableToolbar pull-right search"><div><a id="resetRealm" href="#">' 
+// 												+ getResource('reset.remote.text') + '</a></div></div>');
+// 										$('#resetRealm').click(function(e) {
+// 											e.preventDefault();
+// 											getJSON('realms/reset/' + currentRealm.id, null, function(data) {
+// 												if(data.success) {
+// 													showSuccess(data.message);
+// 												} else {
+// 													showError(data.message);
+// 												}
+// 											});
+// 										}); **/
+// 									}
+									
+// 									loadComplete();
+								
+							});
+					
+
+			});
+</script>
