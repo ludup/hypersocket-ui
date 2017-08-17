@@ -236,7 +236,7 @@ function processLogon(data, opts, message) {
 		}
 		
 		if(!data.postAuthentication) {
-			if(!data.first && data.formTemplate.showStartAgain) {
+			if(data.formTemplate.overrideStartAgain || (!data.first && data.formTemplate.showStartAgain)) {
 				$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 				$('#resetLogon').click(function(e) {
 					e.preventDefault();
