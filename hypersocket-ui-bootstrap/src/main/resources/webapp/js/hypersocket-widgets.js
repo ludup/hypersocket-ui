@@ -5768,7 +5768,7 @@ $.fn.fileTree = function(data) {
 					'<div class="row" style="margin-bottom:25px;">'
 				+	'	<div style="height:400px;" class="col-md-6">'
 				+	'		<label>' + getResource(options.fileTreeResourceKey) + '</label>'
-				+	'		<div class="panel panel-body" id="' + id + 'TreeView" style="height:100%;"></div>'
+				+	'		<div class="panel panel-body" id="' + id + 'TreeView" style="height:100%; overflow: auto;"></div>'
 				+	'	</div>'
 				+	'	<div class="col-md-1" style="padding-top:140px; padding-left:0px; padding-right:0px;">'
 				+	'		<button id="' + id + 'Include" class="btn btn-small btn-primary" style="margin-bottom:10px; width:100%;"><i class="fa fa-chevron-right" style="margin:0px;"></i></button>'
@@ -5885,6 +5885,9 @@ $.fn.fileTree = function(data) {
 		  		},
 		  		"mp4" : {
 		  			"icon" : "fa fa-2x fa-file-video-o"
+		  		},
+		  		"error" : {
+		  			"icon" : "fa fa-2x fa-times"
 		  		},
 		  		"default" : {
 		  			"icon" : "fa fa-2x fa-file-file-o"
