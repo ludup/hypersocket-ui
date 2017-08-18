@@ -57,7 +57,7 @@ $.fn.resourceDialog = function(params, params2) {
 	$(this).bootstrapResourceDialog(params, params2);
 };
 
-function saveResource(resource, buttonElement, options, mode, closeCallback) {
+function saveResource(resource, buttonElement, options, mode, closeCallback, alwaysCallback) {
 	var icon = buttonElement.find('i');
 	startSpin(icon, 'fa-save');
 	
@@ -114,7 +114,11 @@ function saveResource(resource, buttonElement, options, mode, closeCallback) {
 			log("Resource object creation failed " + data.message);
 			showError(data.message);
 		}
-	}, null, function() { stopSpin(icon, 'fa-save');});
+	}, null, function() { 
+		stopSpin(icon, 'fa-save');
+		if(alwaysCallback)
+			alwaysCallback();
+	});
 }
 
 $.fn.resourceTable = function(params) {
@@ -251,12 +255,13 @@ $.fn.resourceTable = function(params) {
 	}
 
 	$.each(options.fields,function(idx, obj) {
-		var c = { field : obj.name,
-				title: getResource(options.resourceKey + "." + obj.name + '.label'),
-				align: obj.align ? obj.align : 'left',
-				sortable: obj.sortable || obj.name === options.sortName,
-				formatter: obj.formatter
-		};
+		var c= $.extend({
+			field : obj.name,
+			title: getResource(options.resourceKey + "." + obj.name + '.label'),
+			align: obj.align ? obj.align : 'left',
+			sortable: obj.sortable || obj.name === options.sortName,
+			formatter: obj.formatter
+		}, obj);
 		if(obj.width) {
 			c.width = obj.width;
 		}
