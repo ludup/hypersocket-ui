@@ -230,6 +230,7 @@ function home(data) {
 	currentRealm = data.session.currentRealm;
 	currentRole = data.currentRole;
 	currentMenu = null;
+	homeMenu = null;
 	var message = data.bannerMsg;
 	var showLocales = data.showLocales;
 	getJSON('menus', null, function(data) {
@@ -272,12 +273,15 @@ function home(data) {
 								allMenus[this.resourceKey] = this;
 								if(currentMenu==null && this.home) {
 									currentMenu = this;
+									homeMenu = this;
 								}	
+								
 							});
 
 							
 							if(currentMenu==null && this.home) {
 								currentMenu = this;
+								homeMenu = this;
 							}	
 
 						});
@@ -477,6 +481,10 @@ function home(data) {
 			var loadThisMenu = getAnchorByName("menu");
 			if(loadThisMenu !== '') {
 				currentMenu = allMenus[loadThisMenu];;
+			}
+			
+			if(!currentMenu) {
+				currentMenu = homeMenu;
 			}
 
 			$('#' + currentMenu.id).addClass('active');
