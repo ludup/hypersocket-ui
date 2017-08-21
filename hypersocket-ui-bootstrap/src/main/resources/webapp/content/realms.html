@@ -13,6 +13,22 @@
 					
 					var actions = new Array();
 					
+					actions.push({
+								resourceKey : 'managRealm',
+								iconClass : 'fa-gear',
+								action : function(resource, callback) {
+									getJSON('session/switchRealm/' + resource.id, null,
+											function(data) {
+												if (!data.success) {
+													showError(data.errorMsg);
+												} else { 
+													document.location.reload();
+												}
+											});
+								},
+								enabled : true
+					});
+					
 					if(data.resources.length > 0) {
 						$.each(data.resources, function(idx, action) {
 							var div = action.resourceKey + 'Div';

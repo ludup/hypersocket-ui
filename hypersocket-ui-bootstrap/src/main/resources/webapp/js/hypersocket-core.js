@@ -158,9 +158,13 @@ function startLogon(opts) {
 				home(data);
 			}
 			$('#userInf').empty();
+			
 			if(currentRole) {
 				$('#userInf').append(getResource('text.loggedIn').format(
 						data.session.currentPrincipal.name, data.session.currentRealm.name, currentRole.name));
+			} else if(data.session.impersonatedPrincipal) { 
+				$('#userInf').append(getResource('text.loggedInImpersonating').format(
+						data.session.inheritedPrincipal.name, data.session.currentRealm.name, data.session.currentPrincipal.name));
 			} else {
 				$('#userInf').append(getResource('text.loggedInNoRole').format(
 						data.session.currentPrincipal.name, data.session.currentRealm.name));
@@ -310,6 +314,7 @@ function home(data) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
 						if(data.success) {
+							
 							log('Loading original principals view of users');
 							window.location = '${uiPath}#menu=users';
 						} else {
