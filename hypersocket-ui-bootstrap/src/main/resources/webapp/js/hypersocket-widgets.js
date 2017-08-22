@@ -979,7 +979,6 @@ $.fn.autoComplete = function(data) {
 			selectFirst: false,
 			setOnLoad: false
 		}, data);
-	
 	var callback;
 	var id = $(this).attr('id') + "AutoComplete";
 	var thisWidget = $(this);
@@ -1207,6 +1206,7 @@ $.fn.autoComplete = function(data) {
 						processURL(callback, url),
 						null,
 						function(data) {
+							
 							if(data.success) {
 								buildData(options.isResourceList ? data.resources : data);
 								callback.setValue(newValue);
@@ -1313,13 +1313,14 @@ $.fn.autoComplete = function(data) {
 			updateValue(options.value, false);
 		} else {
 			if(options.value && options.value !== '') {
-				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + (options.nameIsResourceKey ? getResource(options.value) : options.value) + "&searchColumn=" + options.valueAttr;
+				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
 				if(options.searchParams) {
 					url += '&' + options.searchParams;
 				}
 				getJSON(processURL(callback, url),
 						null,
 						function(data) {
+							
 							var map = [];
 							$.each(data.rows, function(idx, obj) {
 								map[obj[options.valueAttr]] = obj;
@@ -3294,11 +3295,7 @@ $.fn.namePairInput = function(data) {
 				showEmptyRow: false,
 				password: false,
 				showNameVariables: false,
-				showValueVariables: false,
-				nameAutoComplete: false,
-				valueAutoComplete: false,
-				nameIsResourceKey: false,
-				valueAttr: 'value'
+				showValueVariables: false
 			}, data);
 	
 	var id =  $(this).attr('id') + "NamePairInput";
@@ -3435,16 +3432,7 @@ $.fn.namePairInput = function(data) {
  	 						var renderField = new Function('div', 'val', options.renderNameFunc);
  	 						renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'), undefined);
  	 					}
- 	 				} else if(options.nameAutoComplete){
- 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').autoComplete({
- 	 						url: options.nameAutoCompleteUrl,
- 	 						nameIsResourceKey: options.nameIsResourceKey,
- 	 						isResourceList: options.isResourceList,
- 	 						remoteSearch: options.remoteSearch,
- 	 						value: values ? values[0] : ''  ,
- 	 						valueAttr: options.valueAttr
- 	 					});
- 	 				}else{
+ 	 				} else {
 	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
 	 	 					variables: nameVariables,
 	 	 					url: options.nameVariablesUrl,
@@ -3466,15 +3454,6 @@ $.fn.namePairInput = function(data) {
  	 							var renderField = new Function('div', 'val', options.renderValueFunc);
 	 	 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), undefined);
  	 						}
- 	 					} else if(options.valueAutoComplete){
- 	 						$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').autoComplete({
- 	 	 						url: options.valueAutoCompleteUrl,
- 	 	 						nameIsResourceKey: options.valueIsResourceKey,
- 	 	 						isResourceList: options.isResourceList,
- 	 	 						remoteSearch: options.remoteSearch,
- 	 	 						value: values ? values[0] : ''  ,
- 	 	 						valueAttr: options.valueAttr
- 	 	 					});
  	 					} else {
  	 						var inputType = 'text';
  	 	 					if(options.password){
@@ -3539,6 +3518,79 @@ $.fn.namePairInput = function(data) {
 	$(this).addClass('widget');
 	return callback;
 }
+
+$.fn.namePairsAutoComplete = function(data) {
+	var options = $.extend(
+			{  
+				renderNameFunc: '$(div).autoComplete({url: "' + data.url + '",'
+															+	'nameIsResourceKey: ' + data.nameIsResourceKey + ','
+															+	'isResourceList: ' + data.isResourceList + ','
+															+	'remoteSearch: ' + data.remoteSearch + ','
+															+	'valueAttr: "' + data.valueAttr + '",'
+															+	'value: val'
+															+ '})'
+				
+			}, data);
+	
+	var id =  $(this).attr('id') + "NamePairsAutoComplete";
+	
+	var html = 	'<div id="' + id + '" class="propertyItem form-group"></div>';
+	$(this).append(html);
+	var namePairInput = $('#' + id).namePairInput(options);
+	
+	var callback = {
+ 			getValue: function() {
+ 				return namePairInput.getValue();
+ 			},
+ 			setValue: function(val) {
+ 				return namePairInput.setValue(val);
+ 			},
+ 			disable: function() {
+ 				return namePairInput.disabled();
+ 			},
+ 			enable: function() {
+ 				return namePairInput.enabled();
+ 			},
+ 			addRows: function(val, values){
+ 				return namePairInput.addRows(val, values);
+ 			},
+ 			removeRows: function(){
+ 				return namePairInput.removeRows();
+ 			},
+ 			options: function() {
+ 				return options;
+ 			},
+ 			clear: function() {
+ 				if($('#' + id).find('.widget').length) {
+ 					$('#' + id).find('.widget').each(function() {
+ 						$(this).widget().setValue('');
+ 					});
+ 				}
+ 			},
+ 			getInput: function() {
+ 				return $('#' + id);
+ 			}
+ 		};
+
+ 	$('#' + id).change(function(e) {
+ 		if(options.changed) {
+ 			options.changed(callback);
+ 		}
+ 	});
+ 	
+ 	if(options.values) {
+ 		callback.setValue(options.values);
+ 	}
+ 	
+	if(options.disabled || options.readOnly) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+	
+};
 
 $.fn.fileUploadInput = function(data) {
 	
