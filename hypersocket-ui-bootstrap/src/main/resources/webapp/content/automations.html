@@ -36,23 +36,6 @@
 	</div>
 </div>
 <div id="contentTriggers"></div>
-<div id="contentTrigger" class="panel panel-default" style="display: none;">
-
-		<div class="spacer20px"></div>
-		<div class="row">
-			<div class="col-md-9" id="schemeArea">
-				<div id="triggerTasks" style="overflow: auto; height: 800px">
-					<div id="rootTrigger">
-					</div>
-					<div id="triggerView" class="trigger-same-row"></div>
-				</div>
-				<div class="spacer20px"></div>
-			</div>
-			<div class="col-md-3" id="triggerArea">
-				<div id="triggerIcons"></div>
-			</div>
-		</div>
-</div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		
@@ -91,6 +74,7 @@
 				$('div[dialog-for="contentTriggers"]').resourceDialog({
 					resourceKey: 'automation',
 					resourceUrl : "automations/trigger",
+					divName: 'contentAutomations',
 					showCreate: function() {
 // 						$(document).data('triggerModalCallback').loadParent(null, null, 1);
 					},
@@ -195,10 +179,6 @@
 							complete : function() {
 								loadComplete();
 							},
-							//selected: function(row) {
-
-								//renderDiagram(row, resourcePage);
-							//}
 							detailView: true,
 							detailFormatter: function(index, resource, element) {
 								// Here element is the jquery object where you can render the view and resource is the table rows resource.
@@ -208,9 +188,7 @@
 									+	'	<div class="row">'
 									+	'		<div class="col-md-12" id="schemeArea' + resource.id + '">'	
 									+	'			<div id="triggerTasks' + resource.id + '" style="overflow: auto; height: 300px">'		
-									+	'				<div id="rootTrigger' + resource.id + '" class="triggerShape trigger-same-row" style="position: absolute; left: 50px; top: 50px;">'			
-									+	'					<span id="rootEvent' + resource.id + '" class="triggerContent"></span>'				
-									+	'				</div>'			
+									+	'				<div id="rootTrigger' + resource.id + '"></div>'			
 									+	'			</div>'		
 									+	'			<div class="spacer20px"></div>'		
 									+	'		</div>'	
@@ -233,14 +211,12 @@
 		
 // 		jsPlumb.empty($('#triggerView'));
 		triggerList = [];
-		
 		if(automation) {
 
 			$('#contentTrigger' + automation.id).show();
-			$('#rootTrigger' + automation.id).data('automation', automation);
 			
-			$('#rootTrigger' + automation.id).append(
-					"<div style='top: 25px; left: 25px; position: absolute;' class='triggerShape trigger-same-row' id='automationDiagram_" + automation.id + "'>"
+			$('#rootTrigger' + rootId).append(
+					"<div style='top: 50px; left: 50px; position: absolute;' class='triggerShape trigger-same-row' id='automationDiagram_" + automation.id + "'>"
 				+	"	<div class='triggerContent'>"
 				+	"		<span class='triggerText'>"	+ automation.name + "</span>"
 				+	"		<a data-trigger='"+ automation.id + "' class='addTriggerIcon triggerIcon' href=''>"
@@ -248,16 +224,18 @@
 				+	"		</a>"
 				+	"	</div>"
 				+	"</div>");
-			
+			$('#automationDiagram_' + automation.id).data('automation', automation);
 			$('.addTriggerIcon').off('click');
 			$('.addTriggerIcon').on('click', function(e) {
 				e.preventDefault();
-				var automation = $(this).closest('.triggerShape').parent().data('automation');
-// 				var automation = $('#rootTrigger' + automation.id).data('automation');
-				debugger;
+				var automation = $(this).closest('.triggerShape').data('automation');
 				getJSON('triggers/taskResults/' + automation.resourceKey, null, function(data) {
 					$(document).data('triggerModalCallback').loadParent(automation, null, 1);
-					$('div[dialog-for="contentTriggers"]').resourceDialog('create');
+					$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
+						resourceCreated: function(resource) {
+							renderDiagram(resource, resourcePage, rootId, jsPlumbInstance);
+						}
+					});
 				});
 			});
         	
@@ -268,11 +246,11 @@
         		getState(triggerList, false, function(data){
 					resourceList = data.resources;
 					$.each(automation.childTriggers, function(idx, obj) {
-	        			addTask(obj, automation, top+50, left+50, jsPlumbInstance);	
+	        			addTask(obj, automation, top+50, left+50, rootId, jsPlumbInstance);	
 	        		});
-					jsPlumbInstance.draggable($('.triggerShape'));
+					jsPlumbInstance.draggable($('.triggerDraggable'));
 					
-					$('.triggerShape').draggable({
+					$('.triggerDraggable').draggable({
 				        stop: function(e){
 				            if($(this).data('trigger')){
 				            	preferences = new Object();
@@ -280,7 +258,8 @@
 				            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
 					            saveState($(this).attr('id'), preferences, false);
 				            }
-				        }
+				        },
+				        containment: $('#triggerTasks' + rootId)
 				    });
 					
 					$('.addIcon').off('click');
@@ -289,7 +268,11 @@
 						var trigger = $(this).closest('.triggerShape').data('trigger');
 						getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
 							$(document).data('triggerModalCallback').loadParent(trigger, null, 0);
-							$('div[dialog-for="contentTriggers"]').resourceDialog('create');
+							$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
+								resourceCreated: function(resource) {
+									renderDiagram(resource, resourcePage, rootId, jsPlumbInstance);
+								}
+							});
 						});
 					});
 					
@@ -322,7 +305,7 @@
 									  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
 											if(data.success) {
 												showSuccess(data.message);
-												renderDiagram(data.resource, resourcePage);
+												renderDiagram(data.resource, resourcePage, rootId, jsPlumbInstance);
 												resourcePage.refresh();
 											} else {
 												showError(data.message)
@@ -336,7 +319,7 @@
 									  deleteJSON('automations/trigger/' + automation.id + '/' + trigger.id, null, function(data) {
 											if(data.success) {
 												showSuccess(data.message);
-												renderDiagram(null, resourcePage);
+												renderDiagram(null, resourcePage, rootId, jsPlumbInstance);
 												resourcePage.refresh();
 											} else {
 												showError(data.message)
@@ -404,8 +387,7 @@
 		}
 	}
 	
-	function addTask(trigger, parent, top, left, jsPlumbInstance) {
-		
+	function addTask(trigger, parent, top, left, rootId, jsPlumbInstance) {
 		var triggerClass = "blueTrigger";
 		if(trigger.result == 'EVENT_FAILURE') {
 			triggerClass = "redTrigger";
@@ -422,8 +404,8 @@
 				return false;
 			}
 		});
-		$('#triggerView').append(
-					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape " + triggerClass + " trigger-same-row' id='automationDiagram_" + trigger.id + "'>"
+		$('#rootTrigger' + rootId).append(
+					"<div style='top: " + top + "px; left: " + left + "px; position: absolute;' class='triggerShape triggerDraggable " + triggerClass + " trigger-same-row' id='automationDiagram_" + trigger.id + "'>"
 				+	"	<div class='triggerContent'>"
 				+	"		<span class='triggerText'>"	+ trigger.name + "</span>"
 				+	"		<a data-trigger='"+ trigger.id + "' class='addIcon triggerIcon' href=''>"
@@ -457,7 +439,7 @@
 		if(trigger.childTriggers) {
 			$.each(trigger.childTriggers, function(idx, childTrigger) {
 				left+=175;
-				addTask(childTrigger, trigger, top, left, jsPlumbInstance);
+				addTask(childTrigger, trigger, top, left, rootId, jsPlumbInstance);
 			});
 		}
 	}
