@@ -374,7 +374,7 @@ function home(data) {
 					if(obj.resourceKey === 'realms') {
 						if (data.realms) {
 							if(data.realms.length > 0) {
-								loadRealms(data.realms);
+								loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
 							}
 						}
 						return;
@@ -637,7 +637,7 @@ function doShutdown(option, autoLogoff, url) {
 
 }
 
-function loadRealms(realms) {
+function loadRealms(realms, session) {
 
 	var deletedCurrentRealm = true;
 	$.each(realms, function() {
@@ -671,17 +671,14 @@ function loadRealms(realms) {
 	$('#currentRealm').append('<a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a>');
 	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 	
-	$('#realm').append('<li class="dropdown-header">' + getResource('text.selectRealm') + '</li>')
-	$.each(realms, function() {
-		$('#realm').append(
-			'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
-	});
-	
-	$('#realm').append('<li class="divider"></li>');
-	
+	debugger;
+	if(session.principalRealm.id != currentRealm.id) {
+			$('#realm').append(
+				'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + session.principalRealm.id + '">' + getResource("switchRealm.back").format(session.principalRealm.name) + '</a></li>');
+	}
 	
 	$('#realm').append(
-			'<li role="presentation"><a id="manageRealms" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + getResource('text.manageRealms') + '</a></li>');
+			'<li role="presentation"><a id="manageRealms" href="#" role="menuitem" tabindex="-1">' + getResource('text.manageRealms') + '</a></li>');
 
 	$('#manageRealms').click(function(e) {
 		e.preventDefault();
@@ -754,7 +751,7 @@ function loadRoles(roles) {
 
 function reloadRealms() {
 	getJSON(basePath + "/api/realms/list", null, function(data) {
-		loadRealms(data.resources);
+		loadRealms(data.resources, $(document).data('session'));
 		// This should not be needed but some areas reload the page and so the state does not get updated
 		// http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear
 		$('body').removeClass('modal-open');
