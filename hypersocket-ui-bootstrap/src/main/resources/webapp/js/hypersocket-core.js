@@ -369,14 +369,12 @@ function home(data) {
 			});
 
 			if(allMenus['navigation']) {
+				
+				loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
+				
 				$.each(allMenus['navigation'].menus, function(idx, obj) {
 					
 					if(obj.resourceKey === 'realms') {
-						if (data.realms) {
-							if(data.realms.length > 0) {
-								loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
-							}
-						}
 						return;
 					}
 					
@@ -638,18 +636,7 @@ function doShutdown(option, autoLogoff, url) {
 }
 
 function loadRealms(realms, session) {
-
-	var deletedCurrentRealm = true;
-	$.each(realms, function() {
-		if (currentRealm.id === this.id) {
-			deletedCurrentRealm = false;
-		}
-	});
-
-	if (deletedCurrentRealm) {
-		currentRealm = realms[0];
-	}
-	
+	debugger;
 	var func = function(realm) {
 		getJSON('session/switchRealm/' + realm, null,
 			function(data) {
@@ -660,6 +647,11 @@ function loadRealms(realms, session) {
 				}
 			});
 	};
+	
+	if(!realms && session.principalRealm.id === currentRealm.id) {
+		$('#currentRealm').remove();
+		return;
+	}
 
 	if(!$('#currentRealm').length) {
 		$('#main-menu-toggle').parent().after('<li id="currentRealm" class="navicon" data-toggle="tooltip" title="' 
@@ -671,21 +663,22 @@ function loadRealms(realms, session) {
 	$('#currentRealm').append('<a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a>');
 	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 	
-	debugger;
 	if(session.principalRealm.id != currentRealm.id) {
 			$('#realm').append(
 				'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + session.principalRealm.id + '">' + getResource("switchRealm.back").format(session.principalRealm.name) + '</a></li>');
 	}
 	
-	$('#realm').append(
-			'<li role="presentation"><a id="manageRealms" href="#" role="menuitem" tabindex="-1">' + getResource('text.manageRealms') + '</a></li>');
-
-	$('#manageRealms').click(function(e) {
-		e.preventDefault();
-		$('.active').removeClass('active');
-		$('#currentRealm i').addClass('active');
-		loadMenu(allMenus['realms']);
-	});
+	if(realms) {
+		$('#realm').append(
+				'<li role="presentation"><a id="manageRealms" href="#" role="menuitem" tabindex="-1">' + getResource('text.manageRealms') + '</a></li>');
+	
+		$('#manageRealms').click(function(e) {
+			e.preventDefault();
+			$('.active').removeClass('active');
+			$('#currentRealm i').addClass('active');
+			loadMenu(allMenus['realms']);
+		});
+	}
 	
 	$('.realmSelect').on(
 		'click', function(evt) {
@@ -694,10 +687,6 @@ function loadRealms(realms, session) {
 		}
 	);
 
-	
-	if (deletedCurrentRealm) {
-		func(currentRealm.id);
-	}
 }
 
 function loadRoles(roles) {
