@@ -64,7 +64,7 @@ $.fn.passwordPolicy = function(data) {
 	}
 	
 	var thisDiv = $(this);
-	
+	thisDiv.empty();
 	getJSON(url, null, function(data) {
 
 		if(!data.success) {
