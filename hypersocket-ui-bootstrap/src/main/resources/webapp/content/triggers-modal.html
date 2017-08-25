@@ -44,7 +44,7 @@
 								<div>
 								<span class="help-block" localize="event.result.info"></span>
 							</div>
-						</div>	
+						</div>
 					</div>
 					<div class="propertyItem form-group requiresEvent">
 						<label class="col-xs-3 control-label" localize="event.task.label"></label>
@@ -95,6 +95,7 @@
 				</div>
 				<input type="hidden" id="triggerResourceId" name="triggerResourceId" value="" />
 				<input type="hidden" id="triggerParentId" name="triggerParentId" value="" />
+				<input type="hidden" id="triggerAttachmentId" name="triggerAttachmentId" value="" />
 				<div class="modal-footer"></div>
 			</div>
 		</div>
@@ -125,7 +126,7 @@
     			 + '    <div class="propertyValue col-xs-4">'
     			 + '        <input type="hidden" class="conditionId" name="conditionId" value="' + (condition ? condition.id : '') + '">'
     			 + '        <select ' + conditionId.format('attribute') + ' class="form-control attributeKey">';
-    	
+
     	html += '<option disabled>' + getResource("text.sourceEvent") + '</option>'
     	var tmp = [];
     	var tmp2 = [];
@@ -285,9 +286,37 @@
 			}
 		});
 		$('#triggerModal').data('selectedEvent', triggerEvent.getObject());
-		
-		
-		
+
+		var loadTriggerProperties = function() {
+			/* If 'displaying' is set to anything other than false, we assume we are editing
+			   the trigger and so load the properties not the empty templates. If we need to load
+			   the templates, we get task to use directly from the selection widget which should have
+			   been set by this point */
+
+			$('#tabProperties').propertyPage({
+				url : displaying ? 'triggers/properties/' + displaying : 'triggers/task/' + triggerTask.getValue(),
+				showButtons : false,
+				i18nNamespace: 'triggers',
+				canUpdate : currentMenu.canUpdate,
+				useTemplates : true,
+				variables: getAttributeNames(),
+				propertyTabsLast: true,
+				additionalTabs : [ {
+					id : "tabConditions",
+					name : getResource("tabConditions.label")
+				}],
+				complete: function() {
+					$('#allTabs').show();
+				}
+			});
+			
+			if(displaying) {
+				/* Disable as the very last thing we do set events can be fired up to this point */
+				triggerEvent.disable();
+				triggerTask.disable();
+			}
+		};
+
 		var displaying = false;
 		var triggerTask = $('#triggerTask').autoComplete({
 			url: 'triggers/tasks',
@@ -301,22 +330,7 @@
 				$('#tabProperties').empty();
 				if(widget.getObject() && widget.getObject().value != '') {
 					if(triggerTask.isEnabled()) {
-						$('#tabProperties').propertyPage({ 
-							url : 'triggers/task/' + widget.getObject().name, 
-							showButtons : false, 
-							i18nNamespace: 'triggers',
-							canUpdate : currentMenu.canUpdate, 
-							useTemplates : true,
-							variables: getAttributeNames(),
-							propertyTabsLast: true,
-							additionalTabs : [ {
-								id : "tabConditions",
-								name : getResource("tabConditions.label")
-							}],
-							complete: function() {
-								$('#allTabs').show();
-							}
-						});
+						loadTriggerProperties(widget.getObject().name);
 					}
 				} else {
 					$('.requiresEvent').hide();
@@ -344,10 +358,10 @@
 				if(parentResource && create) {
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						triggerEvent.setValue(data.resources[0].resourceKey);
-						triggerEvent.disable();	
+						triggerEvent.disable();
 					});
-				} 
-				
+				}
+				displaying = false;
 				triggerResult.selectFirst();
 				$('.tabPropertiesTab').first().trigger('click');
 				$('.addButton').attr('disabled', true);
@@ -372,21 +386,47 @@
 
 				$('#triggerResourceId').val(resource.id);
 				$('#triggerParentId').val(resource.parentId);
+				$('#triggerAttachmentId').val(resource.attachmentId);
 				$('#triggerName').val(resource.name);
 
+
+				/* Clear the event and task so when we set them, events are fired. This
+				   is what triggers loading of the properties. Also make sure these
+				   are enabled so events are fired */
+				triggerEvent.setValue('');
+				triggerTask.setValue('');
+				triggerEvent.enable();
+				triggerTask.enable();
+
 				var parentResource = $('#triggerModal').data('parentResource');
+				var sself = this;
+
+				/* Flag that we are displaying a trigger not creating. This gives loadTriggerProperties()
+				   the URL it needs. */
+
+				displaying = resource.id;
 				if(parentResource) {
-					var sself = this;
+					/* This is for an 'Automation' */
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
-						triggerEvent.setValue(data.resources[0].resourceKey);
-						triggerEvent.disable();
 						sself._setupProperties(resource);
+						triggerEvent.setValue(data.resources[0].resourceKey);
+
+						/* Triggers loading of properties. */
+						loadTemplates = false;
+						triggerTask.setValue(resource.resourceKey);
 					});
-				} 
+				}
 				else {
+					/* This is a 'Trigger' */
+
 					triggerEvent.setValue(resource.event);
-					triggerEvent.disable();
-					this._setupProperties(resource);
+
+					/* Add the conditions now the event is selected */
+					sself._setupProperties(resource);
+
+					/* Triggers loading of properties.*/
+					loadTemplates = false;
+					triggerTask.setValue(resource.resourceKey);
 				}
 				
 			},
@@ -416,7 +456,8 @@
 				resource = new Object();
 				resource.id = $('#triggerResourceId').val();
 				resource.parentId = $('#triggerParentId').val();
-				if(resource.parentId=='' && $('#triggerModal').data('triggerType')==1) {
+				resource.attachmentId = $('#triggerAttachmentId').val();
+				if(resource.parentId=='' && $('#triggerModal').data('parentResource')) {
 					resource.parentId = $('#triggerModal').data('parentResource').id;
 				}
 				resource.name = $('#triggerName').val();
@@ -424,15 +465,11 @@
 				resource.task = triggerTask.getValue();
 				resource.result = triggerResult.getValue();
 				resource.allRealms = triggerAllRealms.getValue();
-				
-				if($('#triggerModal').data('parentResource')) {
-					resource.parentId = $('#triggerModal').data('parentResource').id;
-				}
-				
+
 				resource.type = $('#triggerModal').data('triggerType');
 				
 				$('#tabProperties').saveProperties(true, function(items) {
-					resource.properties = items;	
+					resource.properties = items;
 				});
 				
 				resource.allConditions = new Array();
@@ -444,7 +481,7 @@
 					condition.attributeKey = $(this).find('.attributeKey').first().val();
 					condition.conditionKey = $(this).find('.conditionKey').first().val();
 					condition.conditionValue = $(this).find('.conditionValue').first().val();
-					
+
 					log("Adding all condition " + condition.attributeKey + "/" + condition.conditionKey + "=" + condition.conditionValue);
 					resource.allConditions.push(condition);
 				});
@@ -472,14 +509,11 @@
 					$.each(resource.allConditions, function(idx, obj) {
 						addConditionRow('rowAll', obj);
 					});
-				
+
 				if(resource.anyConditions)
 					$.each(resource.anyConditions, function(idx, obj) {
 						addConditionRow('rowAny', obj);
 					});
-				
-				triggerTask.setValue(resource.resourceKey);
-				triggerTask.disable();
 			}
 		});
 		

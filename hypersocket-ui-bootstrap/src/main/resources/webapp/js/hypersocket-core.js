@@ -158,9 +158,13 @@ function startLogon(opts) {
 				home(data);
 			}
 			$('#userInf').empty();
+			
 			if(currentRole) {
 				$('#userInf').append(getResource('text.loggedIn').format(
 						data.session.currentPrincipal.name, data.session.currentRealm.name, currentRole.name));
+			} else if(data.session.impersonatedPrincipal) { 
+				$('#userInf').append(getResource('text.loggedInImpersonating').format(
+						data.session.inheritedPrincipal.name, data.session.currentRealm.name, data.session.currentPrincipal.name));
 			} else {
 				$('#userInf').append(getResource('text.loggedInNoRole').format(
 						data.session.currentPrincipal.name, data.session.currentRealm.name));
@@ -226,6 +230,7 @@ function home(data) {
 	currentRealm = data.session.currentRealm;
 	currentRole = data.currentRole;
 	currentMenu = null;
+	homeMenu = null;
 	var message = data.bannerMsg;
 	var showLocales = data.showLocales;
 	getJSON('menus', null, function(data) {
@@ -268,12 +273,15 @@ function home(data) {
 								allMenus[this.resourceKey] = this;
 								if(currentMenu==null && this.home) {
 									currentMenu = this;
+									homeMenu = this;
 								}	
+								
 							});
 
 							
 							if(currentMenu==null && this.home) {
 								currentMenu = this;
+								homeMenu = this;
 							}	
 
 						});
@@ -310,6 +318,7 @@ function home(data) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
 						if(data.success) {
+							
 							log('Loading original principals view of users');
 							window.location = '${uiPath}#menu=users';
 						} else {
@@ -360,14 +369,12 @@ function home(data) {
 			});
 
 			if(allMenus['navigation']) {
+				
+				loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
+				
 				$.each(allMenus['navigation'].menus, function(idx, obj) {
 					
 					if(obj.resourceKey === 'realms') {
-						if (data.realms) {
-							if(data.realms.length > 0) {
-								loadRealms(data.realms);
-							}
-						}
 						return;
 					}
 					
@@ -472,6 +479,10 @@ function home(data) {
 			var loadThisMenu = getAnchorByName("menu");
 			if(loadThisMenu !== '') {
 				currentMenu = allMenus[loadThisMenu];;
+			}
+			
+			if(!currentMenu) {
+				currentMenu = homeMenu;
 			}
 
 			$('#' + currentMenu.id).addClass('active');
@@ -624,19 +635,8 @@ function doShutdown(option, autoLogoff, url) {
 
 }
 
-function loadRealms(realms) {
-
-	var deletedCurrentRealm = true;
-	$.each(realms, function() {
-		if (currentRealm.id === this.id) {
-			deletedCurrentRealm = false;
-		}
-	});
-
-	if (deletedCurrentRealm) {
-		currentRealm = realms[0];
-	}
-	
+function loadRealms(realms, session) {
+	debugger;
 	var func = function(realm) {
 		getJSON('session/switchRealm/' + realm, null,
 			function(data) {
@@ -647,6 +647,11 @@ function loadRealms(realms) {
 				}
 			});
 	};
+	
+	if(!realms && session.principalRealm.id === currentRealm.id) {
+		$('#currentRealm').remove();
+		return;
+	}
 
 	if(!$('#currentRealm').length) {
 		$('#main-menu-toggle').parent().after('<li id="currentRealm" class="navicon" data-toggle="tooltip" title="' 
@@ -658,24 +663,22 @@ function loadRealms(realms) {
 	$('#currentRealm').append('<a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-database"></i></a>');
 	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 	
-	$('#realm').append('<li class="dropdown-header">' + getResource('text.selectRealm') + '</li>')
-	$.each(realms, function() {
+	if(session.principalRealm.id != currentRealm.id) {
+			$('#realm').append(
+				'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + session.principalRealm.id + '">' + getResource("switchRealm.back").format(session.principalRealm.name) + '</a></li>');
+	}
+	
+	if(realms) {
 		$('#realm').append(
-			'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
-	});
+				'<li role="presentation"><a id="manageRealms" href="#" role="menuitem" tabindex="-1">' + getResource('text.manageRealms') + '</a></li>');
 	
-	$('#realm').append('<li class="divider"></li>');
-	
-	
-	$('#realm').append(
-			'<li role="presentation"><a id="manageRealms" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + getResource('text.manageRealms') + '</a></li>');
-
-	$('#manageRealms').click(function(e) {
-		e.preventDefault();
-		$('.active').removeClass('active');
-		$('#currentRealm i').addClass('active');
-		loadMenu(allMenus['realms']);
-	});
+		$('#manageRealms').click(function(e) {
+			e.preventDefault();
+			$('.active').removeClass('active');
+			$('#currentRealm i').addClass('active');
+			loadMenu(allMenus['realms']);
+		});
+	}
 	
 	$('.realmSelect').on(
 		'click', function(evt) {
@@ -684,10 +687,6 @@ function loadRealms(realms) {
 		}
 	);
 
-	
-	if (deletedCurrentRealm) {
-		func(currentRealm.id);
-	}
 }
 
 function loadRoles(roles) {
@@ -741,7 +740,7 @@ function loadRoles(roles) {
 
 function reloadRealms() {
 	getJSON(basePath + "/api/realms/list", null, function(data) {
-		loadRealms(data.resources);
+		loadRealms(data.resources, $(document).data('session'));
 		// This should not be needed but some areas reload the page and so the state does not get updated
 		// http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear
 		$('body').removeClass('modal-open');
