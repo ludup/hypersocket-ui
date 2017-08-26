@@ -269,6 +269,7 @@ function validateInputType(type){
 		case 'sql' :
 		case 'slider' :
 		case 'namePairs' :
+		case 'namePairsAutoComplete' :
 		case 'date' :
 		case 'time' : 
 		case 'checkbox' : return true;	
@@ -1016,8 +1017,15 @@ $.fn.propertyPage = function(opts) {
 											});
 											
 											widget = $('#' + tab + '_value' + inputId).namePairInput(obj);
-			
-										} else if (obj.inputType == 'textarea' 
+										}else if (obj.inputType == 'namePairsAutoComplete') {
+												var widgetOptions = $.extend(obj, {
+													values : splitFix(obj.value),
+													isArrayValue: true
+												});
+												
+												widget = $('#' + tab + '_value' + inputId).namePairsAutoComplete(obj);
+				
+										} else if (obj.inputType == 'textarea'
 											|| obj.inputType == 'text' 
 											|| obj.inputType == 'password' 
 											|| obj.inputType == 'number' 

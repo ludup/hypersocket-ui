@@ -979,7 +979,6 @@ $.fn.autoComplete = function(data) {
 			selectFirst: false,
 			setOnLoad: false
 		}, data);
-	
 	var callback;
 	var id = $(this).attr('id') + "AutoComplete";
 	var thisWidget = $(this);
@@ -1001,6 +1000,7 @@ $.fn.autoComplete = function(data) {
 				}
 			});
 		}
+		debugger;
 		$('#input_' + id).data('values', values);
 		$('#input_' + id).data('map', map);
 		if(options.selectedValue){
@@ -1011,6 +1011,7 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	var createDropdown = function(text, show, prefiltered) {
+		debugger;
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
@@ -1064,7 +1065,6 @@ $.fn.autoComplete = function(data) {
 			});
 			$('#auto_' + id + ' .optionSelect').off('click');
 			$('#auto_' + id + ' .optionSelect').on('click', function() {
-				
 				var value = $(this).data('value');
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
@@ -1315,7 +1315,7 @@ $.fn.autoComplete = function(data) {
 			updateValue(options.value, false);
 		} else {
 			if(options.value && options.value !== '') {
-				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + options.value + "&searchColumn=" + options.valueAttr;
+				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
 				if(options.searchParams) {
 					url += '&' + options.searchParams;
 				}
@@ -3520,6 +3520,79 @@ $.fn.namePairInput = function(data) {
 	$(this).addClass('widget');
 	return callback;
 }
+
+$.fn.namePairsAutoComplete = function(data) {
+	var options = $.extend(
+			{  
+				renderNameFunc: '$(div).autoComplete({url: "' + data.url + '",'
+															+	'nameIsResourceKey: ' + data.nameIsResourceKey + ','
+															+	'isResourceList: ' + data.isResourceList + ','
+															+	'remoteSearch: ' + data.remoteSearch + ','
+															+	'valueAttr: "' + data.valueAttr + '",'
+															+	'value: val'
+															+ '})'
+				
+			}, data);
+	
+	var id =  $(this).attr('id') + "NamePairsAutoComplete";
+	
+	var html = 	'<div id="' + id + '" class="propertyItem form-group"></div>';
+	$(this).append(html);
+	var namePairInput = $('#' + id).namePairInput(options);
+	
+	var callback = {
+ 			getValue: function() {
+ 				return namePairInput.getValue();
+ 			},
+ 			setValue: function(val) {
+ 				return namePairInput.setValue(val);
+ 			},
+ 			disable: function() {
+ 				return namePairInput.disabled();
+ 			},
+ 			enable: function() {
+ 				return namePairInput.enabled();
+ 			},
+ 			addRows: function(val, values){
+ 				return namePairInput.addRows(val, values);
+ 			},
+ 			removeRows: function(){
+ 				return namePairInput.removeRows();
+ 			},
+ 			options: function() {
+ 				return options;
+ 			},
+ 			clear: function() {
+ 				if($('#' + id).find('.widget').length) {
+ 					$('#' + id).find('.widget').each(function() {
+ 						$(this).widget().setValue('');
+ 					});
+ 				}
+ 			},
+ 			getInput: function() {
+ 				return $('#' + id);
+ 			}
+ 		};
+
+ 	$('#' + id).change(function(e) {
+ 		if(options.changed) {
+ 			options.changed(callback);
+ 		}
+ 	});
+ 	
+ 	if(options.values) {
+ 		callback.setValue(options.values);
+ 	}
+ 	
+	if(options.disabled || options.readOnly) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+	
+};
 
 $.fn.fileUploadInput = function(data) {
 	
