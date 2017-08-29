@@ -269,6 +269,7 @@ function validateInputType(type){
 		case 'sql' :
 		case 'slider' :
 		case 'namePairs' :
+		case 'namePairsAutoComplete' :
 		case 'date' :
 		case 'time' : 
 		case 'checkbox' : return true;	
@@ -877,7 +878,7 @@ $.fn.propertyPage = function(opts) {
 								$(contentTabs)
 										.append(
 											'<li class="tab' + idx + ' ' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
-											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + getResourceOrDefault(this.categoryKey + '.label', this.name) + '</span></a></li>');
+											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + (this.name ? this.name : getResource(this.categoryKey + '.label')) + '</span></a></li>');
 								
 								
 								
@@ -1016,8 +1017,15 @@ $.fn.propertyPage = function(opts) {
 											});
 											
 											widget = $('#' + tab + '_value' + inputId).namePairInput(obj);
-			
-										} else if (obj.inputType == 'textarea' 
+										}else if (obj.inputType == 'namePairsAutoComplete') {
+												var widgetOptions = $.extend(obj, {
+													values : splitFix(obj.value),
+													isArrayValue: true
+												});
+												
+												widget = $('#' + tab + '_value' + inputId).namePairsAutoComplete(obj);
+				
+										} else if (obj.inputType == 'textarea'
 											|| obj.inputType == 'text' 
 											|| obj.inputType == 'password' 
 											|| obj.inputType == 'number' 
