@@ -3806,7 +3806,7 @@ $.fn.fileUploadInput = function(data) {
  				$('#' + id + 'UpdateProgress').css("width",  "0%");
  				var formData = new FormData();
  				formData.append('file', $('#' + id + 'File')[0].files[0]);
- 				
+ 				formData.append('publicFile', options.publicFile);
  		        var xhr = new XMLHttpRequest();
  		        xhr.upload.addEventListener("progress", uploadProgress, false);
  		        xhr.onreadystatechange=function()
@@ -4375,7 +4375,7 @@ $.fn.logoInput = function(data) {
  				$('#' + id + 'UpdateProgress').css("width",  "0%");
  				var formData = new FormData();
  				formData.append('file', $('#' + id + 'File')[0].files[0]);
- 				
+ 				formData.append('publicFile', options.publicFile);
  		        var xhr = new XMLHttpRequest();
  		        xhr.upload.addEventListener("progress", uploadProgress, false);
  		        xhr.onreadystatechange=function()
@@ -4946,6 +4946,7 @@ $.fn.html5Upload = function(data) {
  	 	 				}
  	 					var formData = new FormData();
  	 					formData.append('file', files[index]);
+ 	 					formData.append('publicFile', options.publicFile);
  	 					var progressFileIndex = fileIndex;
  	 					
  	 					drawRow(file.name, file.size);
