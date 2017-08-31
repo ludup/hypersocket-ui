@@ -5732,12 +5732,13 @@ $.fn.fileTree = function(data) {
 	var id = $(this).attr('id');
 	
 	var include = function(node){
-			
-		if(node.children && node.children.length){
+//		if(node.children && node.children.length){
+		if(node.id == '#' || node.text == '/'){
 			for(var index = 0; index < node.children.length; index++){
 				include($('#' + id + 'TreeView').jstree().get_node(node.children[index]));
 			}
 		}else{
+			
 			var fullPath = node.text;
 			for(var index = 0; index < node.parents.length - 2; index++){
 				fullPath = $('#' + id + 'TreeView').jstree().get_node(node.parents[index]).text + '/' + fullPath;
@@ -5748,9 +5749,10 @@ $.fn.fileTree = function(data) {
 	
 	var addFullPath = function(fullPath){
 		var found = false;
-		
+		$('#' + id + 'Included option[value^="' + fullPath + '"]').remove();
 		$('#' + id + 'Included option').each(function(index, option){
-			if($(option).attr('value') == fullPath){
+			
+			if(fullPath.startsWith($(option).attr('value'))){
 				found = true;
 				return false;
 			}else if($(option).attr('value') > fullPath){
@@ -5919,11 +5921,21 @@ $.fn.fileTree = function(data) {
 				"animation" : 0,
 			    "multiple" : true,
 			    "themes" : { "stripes" : false },
-			    'data' : function(obj, cb) {
-			    	getJSON(options.url, null, function(data) {
-			    		cb.call(this, data);
-			    	});
-			    } 
+			    "data": {
+			    	"url" : function(node){
+			    		var url = basePath + '/api/' + options.url + "/"
+			    		if(node.original && node.original.virtualPath){
+			    			url = url + "asd";
+			    		}
+		    			return url;
+			    	},
+			    	"data" : function(node){
+			    		if(node.original && node.original.virtualPath){
+			    			return {"token": getCsrfToken(), "path": node.original.virtualPath};
+			    		}
+			    		return {"token": getCsrfToken()};
+			    	}
+			    }
 			},
 			"types" : {
 		  		"folder" : {
@@ -5968,7 +5980,7 @@ $.fn.fileTree = function(data) {
 			},
 			
 			"plugins" : [
-				"contextmenu", "crrm", "types"
+				"crrm", "types", "json_data"
 			]
 		});
 		
