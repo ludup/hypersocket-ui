@@ -5730,9 +5730,7 @@ $.fn.roles = function(data) {
 
 $.fn.fileTree = function(data) {
 	var id = $(this).attr('id');
-	
 	var include = function(node){
-//		if(node.children && node.children.length){
 		if(node.id == '#' || node.text == '/'){
 			for(var index = 0; index < node.children.length; index++){
 				include($('#' + id + 'TreeView').jstree().get_node(node.children[index]));
@@ -5915,7 +5913,6 @@ $.fn.fileTree = function(data) {
 		});
 		
 		var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id ;
-		
 		$('#' + id + 'TreeView').jstree({
 			"core" : {
 				"animation" : 0,
@@ -5923,7 +5920,7 @@ $.fn.fileTree = function(data) {
 			    "themes" : { "stripes" : false },
 			    "data": {
 			    	"url" : function(node){
-			    		var url = basePath + '/api/' + options.url + "/"
+			    		var url = basePath + '/api/' + options.url;
 		    			return url;
 			    	},
 			    	"data" : function(node){
@@ -5945,6 +5942,9 @@ $.fn.fileTree = function(data) {
 		            		}
 		            	});
 		            	return data;
+			    	},
+			    	"error": function(error){
+			    		showError(getResource('shareAction.folderNotAccessible'));
 			    	}
 			    }
 			},
