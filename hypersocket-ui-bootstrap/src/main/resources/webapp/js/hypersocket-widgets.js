@@ -5924,9 +5924,6 @@ $.fn.fileTree = function(data) {
 			    "data": {
 			    	"url" : function(node){
 			    		var url = basePath + '/api/' + options.url + "/"
-			    		if(node.original && node.original.virtualPath){
-			    			url = url + "asd";
-			    		}
 		    			return url;
 			    	},
 			    	"data" : function(node){
@@ -5934,6 +5931,20 @@ $.fn.fileTree = function(data) {
 			    			return {"token": getCsrfToken(), "path": node.original.virtualPath};
 			    		}
 			    		return {"token": getCsrfToken()};
+			    	},
+			    	"success": function (data) {
+		            	$.each(data, function(index, object){
+		            		if((object.fileType == 'FOLDER' || object.fileType == 'ROOT') && object.children && object.children.length > 0){
+		            			$.each(object.children, function(index, children){
+				            		if(children.fileType == 'FOLDER'){
+				            			children.children = true;
+				            		}
+				            	});
+		            		}else if(object.fileType == 'FOLDER' && !object.children){
+		            			object.children = true;
+		            		}
+		            	});
+		            	return data;
 			    	}
 			    }
 			},
