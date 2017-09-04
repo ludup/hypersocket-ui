@@ -5731,14 +5731,13 @@ $.fn.roles = function(data) {
 
 $.fn.fileTree = function(data) {
 	var id = $(this).attr('id');
-	
 	var include = function(node){
-			
-		if(node.children && node.children.length){
+		if(node.id == '#' || node.text == '/'){
 			for(var index = 0; index < node.children.length; index++){
 				include($('#' + id + 'TreeView').jstree().get_node(node.children[index]));
 			}
 		}else{
+			
 			var fullPath = node.text;
 			for(var index = 0; index < node.parents.length - 2; index++){
 				fullPath = $('#' + id + 'TreeView').jstree().get_node(node.parents[index]).text + '/' + fullPath;
@@ -5749,9 +5748,10 @@ $.fn.fileTree = function(data) {
 	
 	var addFullPath = function(fullPath){
 		var found = false;
-		
+		$('#' + id + 'Included option[value^="' + fullPath + '"]').remove();
 		$('#' + id + 'Included option').each(function(index, option){
-			if($(option).attr('value') == fullPath){
+			
+			if(fullPath.startsWith($(option).attr('value'))){
 				found = true;
 				return false;
 			}else if($(option).attr('value') > fullPath){
@@ -5842,7 +5842,7 @@ $.fn.fileTree = function(data) {
 					'<div class="row" style="margin-bottom:25px;">'
 				+	'	<div style="height:400px;" class="col-md-6">'
 				+	'		<label>' + getResource(options.fileTreeResourceKey) + '</label>'
-				+	'		<div class="panel panel-body" id="' + id + 'TreeView" style="height:100%;"></div>'
+				+	'		<div class="panel panel-body" id="' + id + 'TreeView" style="height:100%; overflow: auto;"></div>'
 				+	'	</div>'
 				+	'	<div class="col-md-1" style="padding-top:140px; padding-left:0px; padding-right:0px;">'
 				+	'		<button id="' + id + 'Include" class="btn btn-small btn-primary" style="margin-bottom:10px; width:100%;"><i class="fa fa-chevron-right" style="margin:0px;"></i></button>'
@@ -5914,17 +5914,40 @@ $.fn.fileTree = function(data) {
 		});
 		
 		var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id ;
-		
 		$('#' + id + 'TreeView').jstree({
 			"core" : {
 				"animation" : 0,
 			    "multiple" : true,
 			    "themes" : { "stripes" : false },
-			    'data' : function(obj, cb) {
-			    	getJSON(options.url, null, function(data) {
-			    		cb.call(this, data);
-			    	});
-			    } 
+			    "data": {
+			    	"url" : function(node){
+			    		var url = basePath + '/api/' + options.url;
+		    			return url;
+			    	},
+			    	"data" : function(node){
+			    		if(node.original && node.original.virtualPath){
+			    			return {"token": getCsrfToken(), "path": node.original.virtualPath};
+			    		}
+			    		return {"token": getCsrfToken()};
+			    	},
+			    	"success": function (data) {
+		            	$.each(data, function(index, object){
+		            		if((object.fileType == 'FOLDER' || object.fileType == 'ROOT') && object.children && object.children.length > 0){
+		            			$.each(object.children, function(index, children){
+				            		if(children.fileType == 'FOLDER'){
+				            			children.children = true;
+				            		}
+				            	});
+		            		}else if(object.fileType == 'FOLDER' && !object.children){
+		            			object.children = true;
+		            		}
+		            	});
+		            	return data;
+			    	},
+			    	"error": function(error){
+			    		showError(getResource('shareAction.folderNotAccessible'));
+			    	}
+			    }
 			},
 			"types" : {
 		  		"folder" : {
@@ -5960,13 +5983,16 @@ $.fn.fileTree = function(data) {
 		  		"mp4" : {
 		  			"icon" : "fa fa-2x fa-file-video-o"
 		  		},
+		  		"error" : {
+		  			"icon" : "fa fa-2x fa-times"
+		  		},
 		  		"default" : {
 		  			"icon" : "fa fa-2x fa-file-file-o"
 		  		}
 			},
 			
 			"plugins" : [
-				"contextmenu", "crrm", "types"
+				"crrm", "types", "json_data"
 			]
 		});
 		
