@@ -3325,26 +3325,27 @@ $.fn.namePairInput = function(data) {
 	
 	var nameVariables = options.nameVariables.concat(options.variables);
 	var valueVariables = options.valueVariables.concat(options.variables);
-	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
-			+	'	<div id="' + id + 'NamePairs" ></div>'
-			+	'	<div id="' + id + 'NewRow" class="row">'
-			+	'		<div class="propertyValue col-xs-10">'
-			+	'			<span class="help-block">&nbsp;</span>'
-			+	'		</div>'
-			+	'		<div class="propertyValue col-xs-1 dialogActions">'
-			+	'			<a id="' + id + 'AddPair" href="#" class="btn btn-info addButton">'
-			+	'				<i class="fa fa-plus"></i>'
-			+	'			</a>'
-			+	'		</div>'
-			+	'	</div>'
-			+	'</div>';
 	
 	
-	$(this).append(html);
-	
-	$('#' + id + 'AddPair').click(function() {
-		$('#' + id).parent().widget().addRows(1);
-	});
+	if(!$(this).data('created')){
+		var html = 	'<div id="' + id + '" class="propertyItem form-group">'
+		+	'	<div id="' + id + 'NamePairs" ></div>'
+		+	'	<div id="' + id + 'NewRow" class="row">'
+		+	'		<div class="propertyValue col-xs-10">'
+		+	'			<span class="help-block">&nbsp;</span>'
+		+	'		</div>'
+		+	'		<div class="propertyValue col-xs-1 dialogActions">'
+		+	'			<a id="' + id + 'AddPair" href="#" class="btn btn-info addButton">'
+		+	'				<i class="fa fa-plus"></i>'
+		+	'			</a>'
+		+	'		</div>'
+		+	'	</div>'
+		+	'</div>';
+		$(this).append(html);
+		$('#' + id + 'AddPair').click(function() {
+			$('#' + id).parent().widget().addRows(1);
+		});
+	}
 	
 	var callback = {
  			getValue: function() {
@@ -3428,11 +3429,11 @@ $.fn.namePairInput = function(data) {
  	 				$('#' + id + 'NamePairs').append(html);
  	 				if(options.renderNameFunc) {
  	 					if(values) {
- 	 						var renderField = new Function('div', 'val', options.renderNameFunc);
- 	 						renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'), decodeURIComponent(values[0]));
+ 	 						var renderField = new Function('div', 'val', 'list', options.renderNameFunc);
+ 	 						renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'), decodeURIComponent(values[0]), options.autoCompleteList);
  	 					} else {
- 	 						var renderField = new Function('div', 'val', options.renderNameFunc);
- 	 						renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'), undefined);
+ 	 						var renderField = new Function('div', 'val', 'list', options.renderNameFunc);
+ 	 						renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName'), undefined, options.autoCompleteList);
  	 					}
  	 				} else {
 	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
@@ -3518,80 +3519,109 @@ $.fn.namePairInput = function(data) {
 	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
+	$(this).data('created', true);
 	return callback;
 }
 
 $.fn.namePairsAutoComplete = function(data) {
-	var options = $.extend(
-			{  
-				renderNameFunc: '$(div).autoComplete({url: "' + data.url + '",'
-															+	'nameIsResourceKey: ' + data.nameIsResourceKey + ','
-															+	'isResourceList: ' + data.isResourceList + ','
-															+	'remoteSearch: ' + data.remoteSearch + ','
-															+	'valueAttr: "' + data.valueAttr + '",'
-															+	'value: val'
-															+ '})'
-				
-			}, data);
+	var options = $.extend({}, data);
+	var div = $(this);
+	var id =  div.attr('id') + "NamePairsAutoComplete";
 	
-	var id =  $(this).attr('id') + "NamePairsAutoComplete";
-	
-	var html = 	'<div id="' + id + '" class="propertyItem form-group"></div>';
-	$(this).append(html);
-	var namePairInput = $('#' + id).namePairInput(options);
-	
-	var callback = {
- 			getValue: function() {
- 				return namePairInput.getValue();
- 			},
- 			setValue: function(val) {
- 				return namePairInput.setValue(val);
- 			},
- 			disable: function() {
- 				return namePairInput.disabled();
- 			},
- 			enable: function() {
- 				return namePairInput.enabled();
- 			},
- 			addRows: function(val, values){
- 				return namePairInput.addRows(val, values);
- 			},
- 			removeRows: function(){
- 				return namePairInput.removeRows();
- 			},
- 			options: function() {
- 				return options;
- 			},
- 			clear: function() {
- 				if($('#' + id).find('.widget').length) {
- 					$('#' + id).find('.widget').each(function() {
- 						$(this).widget().setValue('');
- 					});
- 				}
- 			},
- 			getInput: function() {
- 				return $('#' + id);
- 			}
- 		};
-
- 	$('#' + id).change(function(e) {
- 		if(options.changed) {
- 			options.changed(callback);
- 		}
- 	});
- 	
- 	if(options.values) {
- 		callback.setValue(options.values);
- 	}
- 	
-	if(options.disabled || options.readOnly) {
-		callback.disable();
+	if(!$(this).data('created')) {
+		var html = 	'<div id="' + id + '" class="propertyItem form-group"></div>';
+		div.append(html);
 	}
 	
-	$(this).data('widget', callback);
-	$(this).addClass('widget');
-	return callback;
+	div.addClass('widget');
+	var namePairInput = $('#' + id).namePairInput(options);
+	var callback;
+	function declareCallback(){
+		callback = {
+	 			getValue: function() {
+	 				return namePairInput.getValue();
+	 			},
+	 			setValue: function(val) {
+	 				return namePairInput.setValue(val);
+	 			},
+	 			disable: function() {
+	 				return namePairInput.disabled();
+	 			},
+	 			enable: function() {
+	 				return namePairInput.enabled();
+	 			},
+	 			addRows: function(val, values){
+	 				return namePairInput.addRows(val, values);
+	 			},
+	 			removeRows: function(){
+	 				return namePairInput.removeRows();
+	 			},
+	 			options: function() {
+	 				return options;
+	 			},
+	 			clear: function() {
+	 				if($('#' + id).find('.widget').length) {
+	 					$('#' + id).find('.widget').each(function() {
+	 						div.widget().setValue('');
+	 					});
+	 				}
+	 			},
+	 			getInput: function() {
+	 				return $('#' + id);
+	 			}
+	 		};
+
+	 	$('#' + id).change(function(e) {
+	 		if(options.changed) {
+	 			options.changed(callback);
+	 		}
+	 	});
+	 	
+	 	if(options.values) {
+	 		callback.setValue(options.values);
+	 	}
+	 	
+		if(options.disabled || options.readOnly) {
+			callback.disable();
+		}
+		
+		
+		return callback;
+	}
 	
+	if(options.url && options.url != ''){
+		getJSON(options.url, null, function(data){
+			options = $.extend(
+					{  
+						autoCompleteList: options.isResourceList ? data.rows : data,
+						renderNameFunc: '$(div).autoComplete({nameIsResourceKey: ' + options.nameIsResourceKey + ','
+														+	'isResourceList: ' + options.isResourceList + ','
+														+	'valueAttr: "' + options.valueAttr + '",'
+														+	'value: val,'
+														+	'values: list'
+														+ '})'
+						
+					}, options);
+			
+			namePairInput = $('#' + id).namePairInput(options);
+		});
+	}else{
+		options = $.extend(
+				{  
+					renderNameFunc: '$(div).autoComplete({nameIsResourceKey: ' + options.nameIsResourceKey + ','
+													+	'isResourceList: ' + options.isResourceList + ','
+													+	'valueAttr: "' + options.valueAttr + '",'
+													+	'value: val,'
+													+	'values: list'
+													+ '})'
+					
+				}, options);
+		
+		namePairInput = $('#' + id).namePairInput(options);
+	}
+	div.data('widget', callback);
+	div.data('created', true);
+	return declareCallback();
 };
 
 $.fn.fileUploadInput = function(data) {
