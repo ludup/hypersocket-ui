@@ -636,7 +636,7 @@ function doShutdown(option, autoLogoff, url) {
 }
 
 function loadRealms(realms, session) {
-	debugger;
+	
 	var func = function(realm) {
 		getJSON('session/switchRealm/' + realm, null,
 			function(data) {

@@ -1000,7 +1000,7 @@ $.fn.autoComplete = function(data) {
 				}
 			});
 		}
-		debugger;
+		
 		$('#input_' + id).data('values', values);
 		$('#input_' + id).data('map', map);
 		if(options.selectedValue){
@@ -1011,7 +1011,7 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	var createDropdown = function(text, show, prefiltered) {
-		debugger;
+		
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
@@ -4960,6 +4960,7 @@ $.fn.html5Upload = function(data) {
  			},
  			upload: function(files){
  				if(!options.disabled){
+ 					
  	 				if(!files instanceof Array){
  	 					files = [files];
  	 				}
@@ -4976,7 +4977,7 @@ $.fn.html5Upload = function(data) {
  	 	 				}
  	 					var formData = new FormData();
  	 					formData.append('file', files[index]);
- 	 					formData.append('publicFile', options.publicFile);
+ 	 					//formData.append('publicFile', options.publicFile ? options.publicFile : "false");
  	 					var progressFileIndex = fileIndex;
  	 					
  	 					drawRow(file.name, file.size);
