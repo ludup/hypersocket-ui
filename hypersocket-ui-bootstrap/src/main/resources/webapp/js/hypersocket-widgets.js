@@ -3694,7 +3694,7 @@ $.fn.fileUploadInput = function(data) {
 			formattedHtml +=	'	<span>' + fileSize + '</span><br>'
 						+	'	<span>' + data.md5Sum + '</span>';
 			if(options.showDownloadLink) {
-				formattedHtml +=   '   <br><span><a href="' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '</a></span>';			
+				formattedHtml +=   '   <br><span><a href="' + basePath + '/api/files/download/' + data.shortCode + '/' + data.fileName + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '</a></span>';			
 			}
 		}
 					
@@ -3836,7 +3836,6 @@ $.fn.fileUploadInput = function(data) {
  				$('#' + id + 'UpdateProgress').css("width",  "0%");
  				var formData = new FormData();
  				formData.append('file', $('#' + id + 'File')[0].files[0]);
- 				formData.append('publicFile', options.publicFile);
  		        var xhr = new XMLHttpRequest();
  		        xhr.upload.addEventListener("progress", uploadProgress, false);
  		        xhr.onreadystatechange=function()
@@ -3865,7 +3864,7 @@ $.fn.fileUploadInput = function(data) {
  		        		} 
  		        	} 
  		        }
- 		        xhr.open("POST", options.url);
+ 		        xhr.open("POST",  options.url + (options.publicFile ? '/true' : '/false'));
  		        xhr.setRequestHeader("X-Csrf-Token", getCsrfToken());
  		        xhr.send(formData);
  		        
@@ -4405,7 +4404,7 @@ $.fn.logoInput = function(data) {
  				$('#' + id + 'UpdateProgress').css("width",  "0%");
  				var formData = new FormData();
  				formData.append('file', $('#' + id + 'File')[0].files[0]);
- 				formData.append('publicFile', options.publicFile);
+
  		        var xhr = new XMLHttpRequest();
  		        xhr.upload.addEventListener("progress", uploadProgress, false);
  		        xhr.onreadystatechange=function()
@@ -4434,7 +4433,7 @@ $.fn.logoInput = function(data) {
  		        		} 
  		        	} 
  		        }
- 		        xhr.open("POST", options.url);
+ 		        xhr.open("POST", options.url + (options.publicFile ? '/true' : '/false'));
  		        xhr.setRequestHeader("X-Csrf-Token", getCsrfToken());
  		        xhr.send(formData);
  		        
@@ -4977,7 +4976,6 @@ $.fn.html5Upload = function(data) {
  	 	 				}
  	 					var formData = new FormData();
  	 					formData.append('file', files[index]);
- 	 					//formData.append('publicFile', options.publicFile ? options.publicFile : "false");
  	 					var progressFileIndex = fileIndex;
  	 					
  	 					drawRow(file.name, file.size);
@@ -5002,7 +5000,7 @@ $.fn.html5Upload = function(data) {
  	 				    		}
  	 				            return xhrobj;
  	 				        },
- 	 				        url: options.url,
+ 	 				        url: options.url + (options.publicFile ? '/true' : '/false'),
  	 				        type: "POST",
  	 				        contentType:false,
  	 				        processData: false,
