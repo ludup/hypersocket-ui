@@ -5000,7 +5000,7 @@ $.fn.html5Upload = function(data) {
  	 				    		}
  	 				            return xhrobj;
  	 				        },
- 	 				        url: options.url + (options.publicFile ? '/true' : '/false'),
+ 	 				        url: options.url,
  	 				        type: "POST",
  	 				        contentType:false,
  	 				        processData: false,
