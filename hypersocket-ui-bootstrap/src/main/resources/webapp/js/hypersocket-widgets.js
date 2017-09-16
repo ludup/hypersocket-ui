@@ -3864,7 +3864,7 @@ $.fn.fileUploadInput = function(data) {
  		        		} 
  		        	} 
  		        }
- 		        xhr.open("POST",  options.url + (options.publicFile ? '/true' : '/false'));
+ 		        xhr.open("POST",  options.url + (options.publicFile ? '/true' : ''));
  		        xhr.setRequestHeader("X-Csrf-Token", getCsrfToken());
  		        xhr.send(formData);
  		        
