@@ -20,6 +20,7 @@
 <link href="${uiPath}/css/codemirror.css" rel="stylesheet">
 <link href="${uiPath}/css/bootstrap-slider.min.css" rel="stylesheet">
 <link href="${uiPath}/css/datepicker3.css" rel="stylesheet">
+<link href="${uiPath}/css/themes/default/style.min.css" rel="stylesheet">
 <!-- 	Do not remove this next line as it allows other extension to plugin stylesheets to the index page -->
 ${stylesheets}
 
@@ -262,6 +263,20 @@ ${stylesheets}
 					</div>
 				</div>
 			</div>
+			<div class="propertyItem form-group credsDiv">
+				<label class="col-md-3 control-label" localize="mount.password.label"></label>
+				<div class="propertyValue col-md-9">
+					<div id="example23"></div>
+					<div>
+						<span class="help-block" localize="mount.password.info"></span>
+					</div>
+					<div id="fileSelectorSpan"></div><br/>
+					<button id="fileSelectorAny" class="btn btn-primary">Any</button>
+					<button id="fileSelectorFolder" class="btn btn-primary">Folder</button>
+					<button id="fileSelectorFile" class="btn btn-primary">File</button>
+					<button id="fileSelectorDisable" class="btn btn-primary">Disable</button>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -283,6 +298,7 @@ ${stylesheets}
 	<script src="${uiPath}/js/jquery-ui.min.js"></script>
 	<script src="${uiPath}/js/bootstrap.min.js"></script>
 	<script src="${uiPath}/js/bootbox.min.js"></script>
+	<script src="${uiPath}/js/jstree.js"></script>
 	<script src="${uiPath}/js/jquery.bootpag.min.js"></script>
 	<script src="${uiPath}/js/spin-min.js"></script>
 	<script src="${uiPath}/js/jquery.hotkeys.js"></script>
@@ -294,6 +310,8 @@ ${stylesheets}
 	<script src="${uiPath}/js/hypersocket-widgets.js"></script>
 	<script src="${uiPath}/js/hypersocket-forms.js"></script>
 	<script src="${uiPath}/js/hypersocket-properties.js"></script>
+	<script src="${uiPath}/js/he.js"></script>
+	<script src="${uiPath}/js/fileSelector.js"></script>
 
 	<script type="text/javascript">
 	
@@ -383,7 +401,7 @@ ${stylesheets}
 				
 				$('#example17').booleanInput({ value: true});
 				
-				$('#example18').switchInput({ value: false});
+// 				$('#example18').switchInput({ value: false});
 				
 				$('#example19').imageInput({ value: uiPath + "images/hypersocket.png"});
 				
@@ -412,6 +430,36 @@ ${stylesheets}
 					{ name: "Weeks", value: "w" },
 					{ name: "Months", value: "m" },
 					{ name: "Years", value: "y" }]
+				});
+				$('#example23').fileSelector({
+					url: 'fileShares/tree',
+					fileTreeResourceKey: 'File Selector',
+					type: 'folder',
+// 					value: '/test2/testFile1.xls'
+					value: 'test2/New folder/',
+					disabled: false,
+					changed: function(widget){
+						$('#fileSelectorSpan').text(widget.getValue());
+					}
+				});
+				$('#fileSelectorAny').click(function(){
+					$('#example23').widget().options().type = 'any';
+				});
+				$('#fileSelectorFolder').click(function(){
+					$('#example23').widget().options().type = 'folder';
+				});
+				$('#fileSelectorFile').click(function(){
+					$('#example23').widget().options().type = 'file';
+				});
+				$('#fileSelectorDisable').click(function(){
+					if($('#fileSelectorDisable').text() == 'Disable'){
+						$('#fileSelectorDisable').text('Enable');
+						$('#example23').widget().disable();
+					}else{
+						$('#fileSelectorDisable').text('Disable');
+						$('#example23').widget().enable();
+					}
+					
 				});
 			});
 		});
