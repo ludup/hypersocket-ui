@@ -4656,7 +4656,8 @@ $.fn.multipleFileUpload = function(data) {
  	 					disabled: options.disabled,
  	 					showDownloadButton: options.showDownloadButton,
  	 					showUploadButton: options.showUploadButton,
- 	 					automaticUpload: options.automaticUpload
+ 	 					automaticUpload: options.automaticUpload,
+ 	 					publicFile: options.publicFile
  	 				});
  	 				if(options.showRemoveLine && !options.disabled){
  	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').before('<a href="#" class="btn btn-danger" id="' + id + 'RemoveButton' + rowNum + '"><i class="fa fa-minus"></i></a>');
