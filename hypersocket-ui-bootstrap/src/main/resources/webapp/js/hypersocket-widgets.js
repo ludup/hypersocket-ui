@@ -6042,5 +6042,333 @@ $.fn.fileTree = function(data) {
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
+}
 
-};
+$.fn.namePair = function(data) {
+	
+	var init = false;
+	var options = $.extend(
+			{  
+				disabled : false, 
+				readOnly: false,
+				disableName: false,
+				columnWeight: 'equal',
+				valueVariables: [],
+				nameVariables: [],
+				variables: [],
+				onlyName: false,
+				password: false,
+				showNameVariables: false,
+				showValueVariables: false
+			}, data);
+	
+	var id =  $(this).attr('id') + "NamePair";
+	
+	var nameWeight = 'col-xs-6';
+	var valueWeight = 'col-xs-6';
+	if(options.columnWeight=='nameHeavy') {
+		nameWeight = 'col-xs-8';
+		valueWeight = 'col-xs-4';
+	}else if(options.columnWeight=='valueHeavy'){
+		nameWeight = 'col-xs-4';
+		valueWeight = 'col-xs-8';
+	}else if(options.columnWeight=='separateLines'){
+		nameWeight = 'col-xs-12';
+		valueWeight = 'col-xs-12';
+	}
+	
+	var nameVariables = options.nameVariables.concat(options.variables);
+	var valueVariables = options.valueVariables.concat(options.variables);
+	
+	if(!$(this).data('created')){
+		html =	'<div id="' + id + 'Input" class="row namePair">';
+		if(options.onlyName){
+			html += '	<div id="' + id + 'InputName" class="form-group propertyValue col-xs-10 namePairName"></div>' 
+		}else{
+			html += '	<div id="' + id + 'InputName" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
+				 +	'	<div id="' + id + 'InputValue" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'; 
+		}
+			 
+		html +=  '</div>';
+		
+		$(this).append(html);
+		if(options.renderNameFunc) {
+			options.renderNameFunc($('#' + id + 'InputName'), options);
+		} else {
+			var value = '';
+			if(options.value){
+				value = options.value.split('=')[0];
+			}
+			$('#' + id + 'InputName').textInput({
+				variables: nameVariables,
+				url: options.nameVariablesUrl,
+				getUrlData: function(data) {
+					return data.resources;
+				},
+				disabled: options.disabled || options.disableName,
+				value: value,
+				showVariables: options.showNameVariables
+			});
+		}
+		if(!options.onlyName){
+			if(options.renderValueFunc) {
+				options.renderValueFunc($('#' + id + 'InputValue'), options);
+			} else {
+				var inputType = 'text';
+				if(options.password){
+					inputType = 'password';
+				}
+				var value = '';
+				if(options.value && options.value.split('=').length > 1){
+					value = options.value.split('=')[1];
+				}
+				$('#' + id + 'InputValue').textInput({
+ 					variables: valueVariables,
+ 					url: options.valueVariablesUrl,
+ 					inputType: inputType,
+ 					getUrlData: function(data) {
+ 						return data.resources;
+ 					},
+ 					disabled: options.disabled,
+ 					value: value,
+ 					showVariables: options.showValueVariables
+ 				});
+			}
+		}
+	}
+	
+	var callback = {
+ 			getValue: function() {
+ 				var value = '';
+ 				if(init) {
+ 					return value;
+ 				}
+				name = encodeURIComponent($('#' + id + 'InputName').widget().getValue());
+				if(options.onlyName) {
+ 					value = name;
+				} else {
+ 					value = name + '=' + encodeURIComponent($('#' + id + 'InputValue').widget().getValue());
+				}
+ 				return value;
+ 			},
+ 			setValue: function(val) {
+ 				if(val && val != ''){
+ 					valuePair = val.split('=');
+ 					$('#' + id + 'InputName').widget().setValue(valuePair[0]);
+ 					if(valuePair.length > 1){
+ 						$('#' + id + 'InputValue').widget().setValue(valuePair[1]);
+ 					}
+ 				}
+ 				if(options.changed) {
+ 		 			options.changed(callback);
+ 		 		}
+ 			},
+ 			disable: function() {
+ 				$('#' + id + 'InputName').widget().disable();
+ 				if(!options.onlyName) {
+ 					$('#' + id + 'InputValue').widget().disable();
+ 				}
+ 				options.disabled = true;
+ 			},
+ 			enable: function() {
+ 				$('#' + id + 'InputName').widget().enable();
+ 				if(!options.onlyName) {
+ 					$('#' + id + 'InputValue').widget().enable();
+ 				}
+ 				options.disabled = false;
+ 			},
+ 			options: function() {
+ 				return options;
+ 			},
+ 			clear: function() {
+ 				$('#' + id + 'InputName').widget().clear();
+ 				if(!options.onlyName) {
+ 					$('#' + id + 'InputValue').widget().clear();
+ 				}
+ 			},
+ 			getInput: function() {
+ 				return $('#' + id);
+ 			}
+ 		};
+
+ 	$('#' + id).change(function(e) {
+ 		if(options.changed) {
+ 			options.changed(callback);
+ 		}
+ 	});
+ 	
+ 	if(options.value) {
+ 		callback.setValue(options.value);
+ 	}
+ 	
+	if(options.disabled || options.readOnly) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	$(this).data('created', true);
+	return callback;
+}
+
+$.fn.autoCompleteNamePair = function(data) {
+	var options = $.extend(
+			{  
+				
+			}, data);
+	var autoCompleteNamePairOptions = {
+		renderNameFunc: function(div, options){
+			div.autoComplete(options);
+		},
+		url: options.url,
+		nameIsResourceKey: options.nameIsResourceKey,
+		isResourceList: options.isResourceList,
+		readOnly: options.readOnly,
+		disableName: options.disableName,
+		columnWeight: options.columnWeight,
+		valueVariables: options.valueVariables,
+		nameVariables: options.nameVariables,
+		variables: options.variables,
+		onlyName: options.onlyName,
+		password: options.password,
+		showNameVariables: options.showNameVariables,
+		showValueVariables: options.showValueVariables,
+		disabled: options.disabled
+	}
+	var id =  $(this).attr('id') + "autoCompleteNamePair";
+	var namePair = $(this).namePair(autoCompleteNamePairOptions);
+	
+	var callback = {
+		getValue: function() {
+			return namePair.getValue();
+		},
+		setValue: function(val) {
+			namePair.setValue(val);
+			if(options.changed) {
+	 			options.changed(callback);
+	 		}
+		},
+		disable: function() {
+			namePair.disable();
+			options.disabled = true;
+		},
+		enable: function() {
+			namePair.enable();
+			options.disabled = false;
+		},
+		options: function() {
+			return options;
+		},
+		clear: function() {
+			namePair.clear();
+		},
+		getInput: function() {
+			return $('#' + id);
+		}
+	};
+	
+	$('#' + id).change(function(e) {
+ 		if(options.changed) {
+ 			options.changed(callback);
+ 		}
+ 	});
+ 	
+ 	if(options.value) {
+ 		callback.setValue(options.value);
+ 	}
+ 	
+	if(options.disabled || options.readOnly) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	$(this).data('created', true);
+	return callback;
+}
+
+$.fn.autoCompleteNamePairs = function(data) {
+	var options = $.extend(
+			{
+				disable: function(element){
+					element.children('.widget').widget().disable();
+				},
+				enable: function(element){
+					element.children('.widget').widget().enable();
+				},
+				render: function(element, value) {
+					autoCompleteNamePairOptions.value = value;
+					element.autoCompleteNamePair(autoCompleteNamePairOptions);
+				},
+				generateValue: function(element){
+					return element.children('.widget').widget().getValue();
+				},
+				clear: function(element){
+					element.children('.widget').widget().clear();
+				}
+			}, data);
+	var autoCompleteNamePairOptions = {
+			url: options.url,
+			nameIsResourceKey: options.nameIsResourceKey,
+			isResourceList: options.isResourceList,
+			readOnly: options.readOnly,
+			disableName: options.disableName,
+			columnWeight: options.columnWeight,
+			valueVariables: options.valueVariables,
+			nameVariables: options.nameVariables,
+			variables: options.variables,
+			onlyName: options.onlyName,
+			password: options.password,
+			showNameVariables: options.showNameVariables,
+			showValueVariables: options.showValueVariables,
+			disabled: options.disabled
+	};
+	var id =  $(this).attr('id') + "autoCompleteNamePairs";
+	$(this).append('<div id="' + id + '"></div>');
+	
+	var multipleRows = $('#' + id).multipleRows(options);
+	
+	var callback = {
+		getValue: function() {
+			return multipleRows.getValue();
+		},
+		setValue: function(val) {
+			multipleRows.setValue(val);
+			if(options.changed) {
+	 			options.changed(callback);
+	 		}
+		},
+		disable: function() {
+			multipleRows.disable();
+			options.disabled = true;
+		},
+		enable: function() {
+			multipleRows.enable();
+			options.disabled = false;
+		},
+		options: function() {
+			return options;
+		},
+		clear: function() {
+			multipleRows.clear();
+		},
+		getInput: function() {
+			return $('#' + id);
+		}
+	};
+	
+	$('#' + id).change(function(e) {
+ 		if(options.changed) {
+ 			options.changed(callback);
+ 		}
+ 	});
+ 	
+	if(options.disabled || options.readOnly) {
+		callback.disable();
+	}
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	$(this).data('created', true);
+	return callback;
+}
