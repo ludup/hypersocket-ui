@@ -675,114 +675,113 @@ $.fn.propertyPage = function(opts) {
 	
 	$(this).empty();
 	var self = $(this);
-	var url = options.url;
 	
-	/* Allow parameters to be either dynamically generation from
-	 * a function or a fixed string. Either of which may be either
-	 * a string list of parameters or a JavaScript object (that 
-	 * will get encoded)
-	 * 
-	 * The URL can still contain parameters too.
-	 */
-	if(options.parameters) {
-		var parmob;
-		if(typeof options.parameters === 'string')
-			parmob= options.parameters;
-		else
-			parmob = options.parameters();
-		if(typeof options.parameters == 'string') {
-			if(url.indexOf('?') == -1)
-				url += '?' + parmob;
-			else
-				url += '&' + parmob;
-			url += parmob;
-		}
-		else {
-			for(k in parmob) {
-				if(url.indexOf('?') == -1)
-					url += '?' + k + '=' + encodeURIComponent(parmob[k]);
-				else
-					url += '&' + k + '=' + encodeURIComponent(parmob[k]);
+	var handleData = function(data) {
+		if((data.resources && data.resources.length == 0)
+				&& (!options.additionalTabs || options.additionalTabs.length == 0)) {
+			if (options.complete) {
+				options.complete();
 			}
+			return;
 		}
-	}
-	
-	getJSON(
-		url,
-		null,
-		function(data) {
-			
-			if((data.resources && data.resources.length == 0)
-					&& (!options.additionalTabs || options.additionalTabs.length == 0)) {
-				if (options.complete) {
-					options.complete();
+		contentTabs = '#' + propertyDiv + 'Tabs';
+		contentActions = '#' + propertyDiv + 'Actions';
+		revertButton = '#' + propertyDiv + 'Revert';
+		applyButton = '#' + propertyDiv + 'Apply';
+		panel = '#' + propertyDiv + 'Panel';
+
+		$('#' + propertyDiv)
+					.append(
+						'<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
+						+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
+						+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
+						+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
+						+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
+		
+		if (options.showButtons) {
+			$(panel)
+					.append(
+						'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' 
+						+ propertyDiv + 'Revert"><i class="fa fa-ban"></i>' + getResource(options.revertText)
+						+ '</button><button class="btn btn-small btn-primary" id="' + propertyDiv 
+						+ 'Apply"><i class="fa fa-save"></i>' + getResource(options.applyText) + '</button></div>');
+		}
+
+		var first = true;
+		var filterPrefix = "_" + Date.now() + "_";
+		
+		var createAdditionalTabs = function() {
+			$.each(options.additionalTabs,
+					function(idx, o) {
+				var hide = false;
+				if(o.checkDisplay && !o.checkDisplay()) {
+					hide = true;
 				}
-				return;
-			}
-			contentTabs = '#' + propertyDiv + 'Tabs';
-			contentActions = '#' + propertyDiv + 'Actions';
-			revertButton = '#' + propertyDiv + 'Revert';
-			applyButton = '#' + propertyDiv + 'Apply';
-			panel = '#' + propertyDiv + 'Panel';
-
-			$('#' + propertyDiv)
+				$(contentTabs)
 						.append(
-							'<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
-							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
-							+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
-							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
-							+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
+							'<li class="' + filterPrefix + 'default" id="' + this.id + 'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + '><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
+				$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
+				$('#' + this.id).addClass('tab-pane');
+			});
+		};
+		
+		if (options.additionalTabs && options.propertyTabsLast) {
+			createAdditionalTabs();
+		}
+		
+		
+		if(data.resources) {
 			
-			if (options.showButtons) {
-				$(panel)
-						.append(
-							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' 
-							+ propertyDiv + 'Revert"><i class="fa fa-ban"></i>' + getResource(options.revertText)
-							+ '</button><button class="btn btn-small btn-primary" id="' + propertyDiv 
-							+ 'Apply"><i class="fa fa-save"></i>' + getResource(options.applyText) + '</button></div>');
-			}
+			var widgets = new Array();
+			var tabs = new Array();
+			var filters = new Array();
+			$.each(	data.resources,
+						function(idx) {
 
-			var first = true;
-			var filterPrefix = "_" + Date.now() + "_";
-			
-			var createAdditionalTabs = function() {
-				$.each(options.additionalTabs,
-						function(idx, o) {
-					var hide = false;
-					if(o.checkDisplay && !o.checkDisplay()) {
-						hide = true;
-					}
-					$(contentTabs)
-							.append(
-								'<li class="' + filterPrefix + 'default" id="' + this.id + 'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + '><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
-					$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
-					$('#' + this.id).addClass('tab-pane');
-				});
-			};
-			
-			if (options.additionalTabs && options.propertyTabsLast) {
-				createAdditionalTabs();
-			}
-			
-			
-			if(data.resources) {
-				
-				var widgets = new Array();
-				var tabs = new Array();
-				var filters = new Array();
-				$.each(	data.resources,
-							function(idx) {
+							if(this.hidden) {
+								return;
+							}
+							
+							if(this.displayMode && this.displayMode != '') {
+								if(!options.displayMode.contains(this.displayMode)) {
+									return;
+								}
+							}
+							
+							if(this.systemOnly) {
+								if($(document).data('session') && $(document).data('session').currentRealm) {
+									if(!$(document).data('session').currentRealm.system) {
+										return;
+									}
+								} else {
+									return;
+								}
+							} else if(this.nonSystem) {
+								if($(document).data('session') && $(document).data('session').currentRealm) {
+									if($(document).data('session').currentRealm.system) {
+										return;
+									}
+								} else {
+									return;
+								}
+							}
+							
+							var tab = propertyDiv + "Tab" + Math.abs(this.id);
 
+							// Overwrite template values with any items
+							// passed in options
+							var values = [];
+							if(options.items) {
+								$.each(options.items, function() {
+									values[this.id] = this.value;
+								});
+							}
+							
+							var toSort = [];
+							$.each(this.templates, function() {
 								if(this.hidden) {
 									return;
 								}
-								
-								if(this.displayMode && this.displayMode != '') {
-									if(!options.displayMode.contains(this.displayMode)) {
-										return;
-									}
-								}
-								
 								if(this.systemOnly) {
 									if($(document).data('session') && $(document).data('session').currentRealm) {
 										if(!$(document).data('session').currentRealm.system) {
@@ -800,762 +799,774 @@ $.fn.propertyPage = function(opts) {
 										return;
 									}
 								}
-								
-								var tab = propertyDiv + "Tab" + Math.abs(this.id);
+								if(values[this.resourceKey]) {
+									this.value = values[this.resourceKey];
+								}
+								toSort.push(this);
+							});
 
-								// Overwrite template values with any items
-								// passed in options
-								var values = [];
-								if(options.items) {
-									$.each(options.items, function() {
-										values[this.id] = this.value;
-									});
-								}
-								
-								var toSort = [];
-								$.each(this.templates, function() {
-									if(this.hidden) {
-										return;
-									}
-									if(this.systemOnly) {
-										if($(document).data('session') && $(document).data('session').currentRealm) {
-											if(!$(document).data('session').currentRealm.system) {
-												return;
-											}
-										} else {
-											return;
-										}
-									} else if(this.nonSystem) {
-										if($(document).data('session') && $(document).data('session').currentRealm) {
-											if($(document).data('session').currentRealm.system) {
-												return;
-											}
-										} else {
-											return;
-										}
-									}
-									if(values[this.resourceKey]) {
-										this.value = values[this.resourceKey];
-									}
-									toSort.push(this);
-								});
-	
-								if(toSort.length == 0) {
-									return;
-								}
-								
-								toSort.sort(function(a, b) {
-									if (a.weight < b.weight) {
-										return -1;
-									} else if (a.weight > b.weight) {
-										return 1;
-									}
-									return 0;
-								});
-								
+							if(toSort.length == 0) {
+								return;
+							}
 							
-								if(toSort.length  == 0) {
-									// Do not display this category because
-									// there are no properties to show.
-									log(this.categoryKey + " will not be displayed because there are no properties to show");
-									return;
+							toSort.sort(function(a, b) {
+								if (a.weight < b.weight) {
+									return -1;
+								} else if (a.weight > b.weight) {
+									return 1;
 								}
-								
-								
-								var tabfilterClass = filterPrefix + "default";
-								var categoryKey = this.categoryKey;
-								var categoryNamespace = this.categoryNamespace ? this.categoryNamespace : options.i18nNamespace;
-								
-								if(options.useFilters) {
-									if(this.filter && this.filter != 'default') {
-										if($.inArray(this.filter, filters) == -1) {
-											filters.push(this.filter);
-										}
-										tabfilterClass = filterPrefix + this.filter;
+								return 0;
+							});
+							
+						
+							if(toSort.length  == 0) {
+								// Do not display this category because
+								// there are no properties to show.
+								log(this.categoryKey + " will not be displayed because there are no properties to show");
+								return;
+							}
+							
+							
+							var tabfilterClass = filterPrefix + "default";
+							var categoryKey = this.categoryKey;
+							var categoryNamespace = this.categoryNamespace ? this.categoryNamespace : options.i18nNamespace;
+							
+							if(options.useFilters) {
+								if(this.filter && this.filter != 'default') {
+									if($.inArray(this.filter, filters) == -1) {
+										filters.push(this.filter);
 									}
+									tabfilterClass = filterPrefix + this.filter;
 								}
-								
-								$(contentTabs)
-										.append(
-											'<li class="tab' + idx + ' ' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
-											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + (this.name ? this.name : getResource(this.categoryKey + '.label')) + '</span></a></li>');
-								
-								
-								
-								first = false;
-	
-								$('#' + propertyDiv + 'Content').append(
-									'<div id="' + tab + '" class="tab-pane"/>');
-								
-								tabs.push(this);
-								
-								$.each(toSort, function() {
+							}
+							
+							$(contentTabs)
+									.append(
+										'<li class="tab' + idx + ' ' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
+										+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + getResourceOrDefault(this.categoryKey + '.label', this.name) + '</span></a></li>');
+							
+							
+							
+							first = false;
 
-										
-										makeBooleanSafe(this);
-										makeBooleanSafe(this.attributes);
-										obj = $.extend(this, this.attributes);
+							$('#' + propertyDiv + 'Content').append(
+								'<div id="' + tab + '" class="tab-pane"/>');
+							
+							tabs.push(this);
+							
+							$.each(toSort, function() {
+
 									
-										if(obj.options && !Array.isArray(obj.options)) {
-											var tmp = obj.options.split(",");
-											var arr = new Array();
-											$.each(tmp, function(idx, obj) {
-												arr.push({ name: obj, value: obj});
-											});
-											obj.options = arr;
-											obj.nameAttr = 'name';
-											obj.valueAttr = 'value';
+									makeBooleanSafe(this);
+									makeBooleanSafe(this.attributes);
+									obj = $.extend(this, this.attributes);
+								
+									if(obj.options && !Array.isArray(obj.options)) {
+										var tmp = obj.options.split(",");
+										var arr = new Array();
+										$.each(tmp, function(idx, obj) {
+											arr.push({ name: obj, value: obj});
+										});
+										obj.options = arr;
+										obj.nameAttr = 'name';
+										obj.valueAttr = 'value';
+									}
+									
+									var widget; 
+									var inputId = Math.abs(this.id);
+									var inputTab = tab;
+									var inputObj = this;
+									
+									var allowEdit = options.canUpdate;
+									
+									if(allowEdit && obj.editMode && obj.editMode != '') {
+										if(!options.displayMode.contains(obj.editMode)) {
+											allowEdit = false;
 										}
-										
-										var widget; 
-										var inputId = Math.abs(this.id);
-										var inputTab = tab;
-										var inputObj = this;
-										
-										var allowEdit = options.canUpdate;
-										
-										if(allowEdit && obj.editMode && obj.editMode != '') {
-											if(!options.displayMode.contains(obj.editMode)) {
-												allowEdit = false;
+									}
+									obj = $.extend({
+										changed : function(widget) {
+											if(options.onPropertyChange) {
+												options.onPropertyChange(widget.options().resourceKey, widget);
+											}
+											if(!$('#' + propertyDiv).validateProperty(widget)) {
+												if (options.showButtons && options.maintainButtonState) {
+													$(revertButton).attr('disabled', true);
+													$(applyButton).attr('disabled', true);
+												}
+											} else {
+												widget.getInput().data('updated', true);
+												if (options.showButtons && options.maintainButtonState) {
+													$(revertButton).attr('disabled', false);
+													$(applyButton).attr('disabled', false);
+												}
+												if(widget.options().visibilityCallbacks) {
+													$.each(widget.options().visibilityCallbacks, function(idx, func) {
+														func();
+													});
+												}
+												
+											}
+										},
+										initialized: function(widget) {
+											this.changed(widget);
+										},
+										displayMode: '',
+										getUrlData: function(data) {
+											return data.resources;
+										},
+										disabled : !allowEdit  || obj.readOnly || obj.disabled,
+										variables: options.variables,
+										errorElementId: '#' + tab + '_helpspan' + inputId,
+										i18nNamespace: categoryNamespace,
+										resourceKeyTemplate: (categoryNamespace && categoryNamespace != '' ? (categoryNamespace + '.{0}') : '{0}')
+									}, obj);
+									
+									if(options.defaults[obj.resourceKey]) {
+										obj.value = options.defaults[obj.resourceKey];
+									}
+									
+									makeBooleanSafe(obj);
+									if(obj.url) {
+										obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
+									}
+									
+									if(obj.displayMode && obj.displayMode != '') {
+										if(!options.displayMode.contains(obj.displayMode)) {
+											if(!obj.disableMode) {
+												return;
+											}
+											obj.disabled = true
+										}
+									}
+									
+									var filterClass = tabfilterClass;
+									
+									if(options.useFilters) {
+										if(filterClass== (filterPrefix + 'default')) {
+											if(obj.filter && obj.filter != 'default') {
+												if($.inArray(obj.filter, filters) == -1) {
+													filters.push(obj.filter);
+												}
+												filterClass = filterPrefix + obj.filter;
 											}
 										}
-										obj = $.extend({
-											changed : function(widget) {
-												if(options.onPropertyChange) {
-													options.onPropertyChange(widget.options().resourceKey, widget);
-												}
-												if(!$('#' + propertyDiv).validateProperty(widget)) {
-													if (options.showButtons && options.maintainButtonState) {
-														$(revertButton).attr('disabled', true);
-														$(applyButton).attr('disabled', true);
-													}
-												} else {
-													widget.getInput().data('updated', true);
-													if (options.showButtons && options.maintainButtonState) {
-														$(revertButton).attr('disabled', false);
-														$(applyButton).attr('disabled', false);
-													}
-													if(widget.options().visibilityCallbacks) {
-														$.each(widget.options().visibilityCallbacks, function(idx, func) {
-															func();
-														});
-													}
-													
-												}
+									}
+									
+									if(obj.hidden) {
+										obj.inputType = 'hidden';
+									}
+									
+									if(obj.inputType!='hidden') {
+										var sizeClass = 'col-md-9';
+										if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
+											sizeClass = 'col-md-' + obj.numCols;
+										}
+
+										$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + inputId + '"/></div>');
+										$('#' + tab + '_item' + inputId).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
+												+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');
+										$('#' + tab + '_item' + inputId).append('<div class="propertyValue ' + sizeClass + '" id="' + tab + '_value' + inputId + '"></div>');
+
+										if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
+											sizeClass = 'col-md-' + (9 - obj.numCols);
+											$('#' + tab + '_item' + inputId).append('<div class="' + sizeClass + '">&nbsp;</div>');
+										}
+									} 
+
+
+									if (obj.inputType == 'namePairs') {
+										var widgetOptions = $.extend(obj, {
+											values : splitFix(obj.value),
+											isArrayValue: true
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).namePairInput(obj);
+									} else if (obj.inputType == 'namePairsAutoComplete') {
+										var widgetOptions = $.extend(obj, {
+											values : splitFix(obj.value),
+											isArrayValue: true
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).namePairsAutoComplete(obj);
+									} else if (obj.inputType == 'textarea' 
+										|| obj.inputType == 'text' 
+										|| obj.inputType == 'password' 
+										|| obj.inputType == 'number' 
+										|| obj.inputType == 'long'
+										|| obj.inputType == 'integer') {
+										
+										var widgetOptions = $.extend(obj, {
+								    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).textInput(obj);
+		
+									} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java' || obj.inputType=='sql') {
+								    	
+										widget = $('#' + tab + '_value' + inputId).codeInput(obj);
+								    								    	
+								    } else if(obj.inputType == 'xml' || obj.inputType == 'html') {
+								    	
+								    	widget = $('#' + tab + '_value' + inputId).htmlInput(obj);
+								    	
+								    } else if(obj.inputType == 'color') {
+								    	
+								    	widget = $('#' + tab + '_value' + inputId).colorInput(obj);
+								    	
+								    } else if(obj.inputType == 'editor') {
+								    	
+								    	widget = $('#' + tab + '_value' + inputId).editor(obj);
+								    	
+								    } else if(obj.inputType == 'rich') {
+								    	
+								    	widget = $('#' + tab + '_value' + inputId).richInput(obj);
+								    	
+								    } else if (obj.inputType == 'select') {
+
+								    	var widgetOptions = $.extend(obj, {
+								    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
+								    		notSetResourceKey: obj.emptySelectionResourceKey
+										});
+								    	
+								    	widget = $('#' + tab + '_value' + inputId).selectButton(obj);
+
+									} else if (obj.inputType == 'dropdown') {
+										
+								    	var widgetOptions = $.extend(obj, {
+								    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
+								    		notSetResourceKey: obj.emptySelectionResourceKey
+										});
+								    	
+								    	widget = $('#' + tab + '_value' + inputId).textDropdown(obj);
+
+									} else if (obj.inputType == 'textAndSelect') {
+
+										obj = $.extend(obj, {
+											selectOptions: obj.options
+										});
+										
+										var values;
+										if(obj.value) {
+											values = obj.value.split('=');
+										
+											obj.textValue = decodeURIComponent(values[0]);
+											obj.selectValue = decodeURIComponent(values[1]);
+										}
+										
+								    	obj.valueTemplate = '{0}={1}';
+								    	widget = $('#' + tab + '_value' + inputId).textAndSelect(obj);
+
+									} else if (obj.inputType == 'autoComplete') {
+
+										var url;
+										if(obj.url && options.resource) {
+											url = obj.url.replace('{id}', options.resource);
+										} else { 
+											url = obj.url;
+										}
+										
+										var widgetOptions = $.extend(obj, {
+											url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).autoComplete(widgetOptions);
+										
+
+									} else if (obj.inputType == 'countries') { 
+										
+										var widgetOptions = $.extend(obj, {
+											values : countries,
+											nameAttr: 'name',
+											valueAttr: 'code'
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).autoComplete(widgetOptions);
+
+									} else if (obj.inputType == 'logoInput') { 
+										var widgetOptions = $.extend(obj, {
+											url : basePath + '/api/files/file',
+											typeCallback: function() {
+												return options.typeCallback ? options.typeCallback() : 'default';
 											},
-											initialized: function(widget) {
-												this.changed(widget);
-											},
-											displayMode: '',
-											getUrlData: function(data) {
-												return data.resources;
-											},
-											disabled : !allowEdit  || obj.readOnly || obj.disabled,
-											variables: options.variables,
-											errorElementId: '#' + tab + '_helpspan' + inputId,
-											i18nNamespace: categoryNamespace,
-											resourceKeyTemplate: (categoryNamespace && categoryNamespace != '' ? (categoryNamespace + '.{0}') : '{0}')
+											defaultTextCallback : function() {
+												return options.resourceNameCallback ? options.resourceNameCallback() : ( options.resourceNameField ? $(options.resourceNameField).val() : 'X X' );
+											}
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).logoInput(obj);
+										if(options.resourceNameField) {
+											$(options.resourceNameField).on('input', function(){
+												widget.defaultTextChanged();
+											});
+										}
+
+									} else if (obj.inputType == 'fileInput') { 
+										
+										var widgetOptions = $.extend(obj, {
+											url : basePath + '/api/files/file'
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).fileUploadInput(obj);
+
+									} else if (obj.inputType == 'multipleFileInput') { 
+										
+										var widgetOptions = $.extend(obj, {
+											isArrayValue: true,
+											values: splitFix(obj.value),
+											url : basePath + '/api/files/file'
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).multipleFileUpload(widgetOptions);
+									} else if (obj.inputType == 'html5Upload') { 
+										
+										var widgetOptions = $.extend(obj, {
+											isArrayValue: true,
+											values: splitFix(obj.value),
+											url : basePath + '/api/files/file'
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).html5Upload(widgetOptions);
+
+									} else if (obj.inputType == 'multipleSelect') {
+										var url;
+										if(obj.url && options.resource) {
+											url = obj.url.replace('{id}', options.resource);
+										} else { 
+											url = obj.url;
+										}
+										
+										var widgetOptions = $.extend(obj, {
+											selected : splitFix(obj.value), 
+											isArrayValue: true,
+											url: url
+										});
+										
+										widget = $('#' + tab + '_value' + inputId).multipleSelect(widgetOptions);
+											
+									} else if (obj.inputType == 'multipleTextInput') {
+										
+										var widgetOptions = $.extend(obj, {
+											values : splitFix(obj.value),
+											isArrayValue: true
+										});
+
+										widget = $('#' + tab + '_value' + inputId).multipleTextInput(widgetOptions);
+
+									} else if (obj.inputType == 'multipleSearchInput') {
+										var widgetOptions = $.extend({
+											url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url),
+											isNamePairValue: true,
+											values: obj.isNamePairValue == false ? splitFix(obj.value) : splitNamePairs(obj.value)
 										}, obj);
 										
-										if(options.defaults[obj.resourceKey]) {
-											obj.value = options.defaults[obj.resourceKey];
+										widget = $('#' + tab + '_value' + inputId).multipleSearchInput(widgetOptions);
+
+									} else if (obj.inputType == 'multipleNamePairInput') {
+										var widgetOptions = $.extend({
+											url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url),
+											values: obj.isNamePairValue == false ? splitFix(obj.value) : splitNamePairs(obj.value)
+										}, obj);
+										
+										widgetOptions.isNamePairValue = true;
+										widget = $('#' + tab + '_value' + inputId).multipleNamePairInput(widgetOptions);
+
+									} else if (obj.inputType == 'date') {
+										
+										widget = $('#' + tab + '_value' + inputId).dateInput(obj);
+										
+									} else if (obj.inputType == 'time') {
+										
+										widget = $('#' + tab + '_value' + inputId).timeInput(obj);
+										
+									} else if (obj.inputType == 'button') {
+										
+										widget = $('#' + tab + '_value' + inputId).buttonAction(obj);
+										
+									} else if (obj.inputType == 'boolean') {
+										
+										widget = $('#' + tab + '_value' + inputId).booleanInput(obj);
+										
+									} else if (obj.inputType == 'switch') {
+
+										widget = $('#' + tab + '_value' + inputId).switchInput(obj);
+										
+									} else if (obj.inputType == 'image') {
+										
+										widget = $('#' + tab + '_value' + inputId).imageInput(obj);
+
+									} else if (obj.inputType == 'slider') {
+
+										widget = $('#' + tab + '_value' + inputId).sliderInput(obj);
+
+									} else {
+										var func = $('#' + tab + '_value' + inputId)[obj.inputType];
+										if(func) {
+											widget = $('#' + tab + '_value' + inputId)[obj.inputType](obj);
 										}
+									}
+									
+									if(obj.inputType != 'hidden') {
 										
-										makeBooleanSafe(obj);
-										if(obj.url) {
-											obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
-										}
-										
-										if(obj.displayMode && obj.displayMode != '') {
-											if(!options.displayMode.contains(obj.displayMode)) {
-												if(!obj.disableMode) {
-													return;
-												}
-												obj.disabled = true
-											}
-										}
-										
-										var filterClass = tabfilterClass;
-										
-										if(options.useFilters) {
-											if(filterClass== (filterPrefix + 'default')) {
-												if(obj.filter && obj.filter != 'default') {
-													if($.inArray(obj.filter, filters) == -1) {
-														filters.push(obj.filter);
-													}
-													filterClass = filterPrefix + obj.filter;
-												}
-											}
-										}
-										
-										if(obj.hidden) {
-											obj.inputType = 'hidden';
-										}
-										
-										if(obj.inputType!='hidden') {
-											var sizeClass = 'col-md-9';
-											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
-												sizeClass = 'col-md-' + obj.numCols;
-											}
-
-											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + inputId + '"/></div>');
-											$('#' + tab + '_item' + inputId).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
-													+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');
-											$('#' + tab + '_item' + inputId).append('<div class="propertyValue ' + sizeClass + '" id="' + tab + '_value' + inputId + '"></div>');
-
-											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
-												sizeClass = 'col-md-' + (9 - obj.numCols);
-												$('#' + tab + '_item' + inputId).append('<div class="' + sizeClass + '">&nbsp;</div>');
-											}
-										} 
-
-
-										if (obj.inputType == 'namePairs') {
-											var widgetOptions = $.extend(obj, {
-												values : splitFix(obj.value),
-												isArrayValue: true
-											});
-											
-											widget = $('#' + tab + '_value' + inputId).namePairInput(obj);
-										}else if (obj.inputType == 'namePairsAutoComplete') {
-												var widgetOptions = $.extend(obj, {
-													values : splitFix(obj.value),
-													isArrayValue: true
-												});
-												
-												widget = $('#' + tab + '_value' + inputId).namePairsAutoComplete(obj);
-				
-										} else if (obj.inputType == 'textarea'
-											|| obj.inputType == 'text' 
-											|| obj.inputType == 'password' 
-											|| obj.inputType == 'number' 
-											|| obj.inputType == 'long'
-											|| obj.inputType == 'integer') {
-											
-											var widgetOptions = $.extend(obj, {
-									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
-											});
-											
-											widget = $('#' + tab + '_value' + inputId).textInput(obj);
-			
-										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java' || obj.inputType=='sql') {
-									    	
-											widget = $('#' + tab + '_value' + inputId).codeInput(obj);
-									    								    	
-									    } else if(obj.inputType == 'xml' || obj.inputType == 'html') {
-									    	
-									    	widget = $('#' + tab + '_value' + inputId).htmlInput(obj);
-									    	
-									    } else if(obj.inputType == 'color') {
-									    	
-									    	widget = $('#' + tab + '_value' + inputId).colorInput(obj);
-									    	
-									    } else if(obj.inputType == 'editor') {
-									    	
-									    	widget = $('#' + tab + '_value' + inputId).editor(obj);
-									    	
-									    } else if(obj.inputType == 'rich') {
-									    	
-									    	widget = $('#' + tab + '_value' + inputId).richInput(obj);
-									    	
-									    } else if (obj.inputType == 'select') {
-
-									    	var widgetOptions = $.extend(obj, {
-									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
-									    		notSetResourceKey: obj.emptySelectionResourceKey
-											});
-									    	
-									    	widget = $('#' + tab + '_value' + inputId).selectButton(obj);
-
-										} else if (obj.inputType == 'dropdown') {
-											
-									    	var widgetOptions = $.extend(obj, {
-									    		url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
-									    		notSetResourceKey: obj.emptySelectionResourceKey
-											});
-									    	
-									    	widget = $('#' + tab + '_value' + inputId).textDropdown(obj);
-
-										} else if (obj.inputType == 'textAndSelect') {
-
-											obj = $.extend(obj, {
-												selectOptions: obj.options
-											});
-											
-											var values;
-											if(obj.value) {
-												values = obj.value.split('=');
-											
-												obj.textValue = decodeURIComponent(values[0]);
-												obj.selectValue = decodeURIComponent(values[1]);
-											}
-											
-									    	obj.valueTemplate = '{0}={1}';
-									    	widget = $('#' + tab + '_value' + inputId).textAndSelect(obj);
-
-										} else if (obj.inputType == 'autoComplete') {
-
-											var url;
-											if(obj.url && options.resource) {
-												url = obj.url.replace('{id}', options.resource);
-											} else { 
-												url = obj.url;
-											}
-											
-											var widgetOptions = $.extend(obj, {
-												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url), 
-											});
-											
-											widget = $('#' + tab + '_value' + inputId).autoComplete(widgetOptions);
-											
-
-										} else if (obj.inputType == 'countries') { 
-											
-											var widgetOptions = $.extend(obj, {
-												values : countries,
-												nameAttr: 'name',
-												valueAttr: 'code'
-											});
-											
-											widget = $('#' + tab + '_value' + inputId).autoComplete(widgetOptions);
-
-										} else if (obj.inputType == 'logoInput') { 
-											var widgetOptions = $.extend(obj, {
-												url : basePath + '/api/files/file',
-												typeCallback: function() {
-													return options.typeCallback ? options.typeCallback() : 'default';
-												},
-												defaultTextCallback : function() {
-													return options.resourceNameCallback ? options.resourceNameCallback() : ( options.resourceNameField ? $(options.resourceNameField).val() : 'X X' );
-												}
-											});
-											
-											widget = $('#' + tab + '_value' + inputId).logoInput(obj);
-											if(options.resourceNameField) {
-												$(options.resourceNameField).on('input', function(){
-													widget.defaultTextChanged();
-												});
-											}
-
-										} else if (obj.inputType == 'fileInput') { 
-											
-											var widgetOptions = $.extend(obj, {
-												url : basePath + '/api/files/file'
-											});
-											
-											widget = $('#' + tab + '_value' + inputId).fileUploadInput(obj);
-
-										} else if (obj.inputType == 'multipleFileInput') { 
-											
-											var widgetOptions = $.extend(obj, {
-												isArrayValue: true,
-												values: splitFix(obj.value),
-												url : basePath + '/api/files/file'
-											});
-											
-											widget = $('#' + tab + '_value' + inputId).multipleFileUpload(widgetOptions);
-										} else if (obj.inputType == 'html5Upload') { 
-											
-											var widgetOptions = $.extend(obj, {
-												isArrayValue: true,
-												values: splitFix(obj.value),
-												url : basePath + '/api/files/file'
-											});
-											
-											widget = $('#' + tab + '_value' + inputId).html5Upload(widgetOptions);
-
-										} else if (obj.inputType == 'multipleSelect') {
-											var url;
-											if(obj.url && options.resource) {
-												url = obj.url.replace('{id}', options.resource);
-											} else { 
-												url = obj.url;
-											}
-											
-											var widgetOptions = $.extend(obj, {
-												selected : splitFix(obj.value), 
-												isArrayValue: true,
-												url: url
-											});
-											
-											widget = $('#' + tab + '_value' + inputId).multipleSelect(widgetOptions);
-												
-										} else if (obj.inputType == 'multipleTextInput') {
-											
-											var widgetOptions = $.extend(obj, {
-												values : splitFix(obj.value),
-												isArrayValue: true
-											});
-	
-											widget = $('#' + tab + '_value' + inputId).multipleTextInput(widgetOptions);
-
-										} else if (obj.inputType == 'multipleSearchInput') {
-											var widgetOptions = $.extend({
-												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url),
-												isNamePairValue: true,
-												values: obj.isNamePairValue == false ? splitFix(obj.value) : splitNamePairs(obj.value)
-											}, obj);
-											
-											widget = $('#' + tab + '_value' + inputId).multipleSearchInput(widgetOptions);
-
-										} else if (obj.inputType == 'multipleNamePairInput') {
-											var widgetOptions = $.extend({
-												url : (obj.url && options.resource ? obj.url.replace('{id}', options.resource.id) : obj.url),
-												values: obj.isNamePairValue == false ? splitFix(obj.value) : splitNamePairs(obj.value)
-											}, obj);
-											
-											widgetOptions.isNamePairValue = true;
-											widget = $('#' + tab + '_value' + inputId).multipleNamePairInput(widgetOptions);
-
-										} else if (obj.inputType == 'date') {
-											
-											widget = $('#' + tab + '_value' + inputId).dateInput(obj);
-											
-										} else if (obj.inputType == 'time') {
-											
-											widget = $('#' + tab + '_value' + inputId).timeInput(obj);
-											
-										} else if (obj.inputType == 'button') {
-											
-											widget = $('#' + tab + '_value' + inputId).buttonAction(obj);
-											
-										} else if (obj.inputType == 'boolean') {
-											
-											widget = $('#' + tab + '_value' + inputId).booleanInput(obj);
-											
-										} else if (obj.inputType == 'switch') {
-
-											widget = $('#' + tab + '_value' + inputId).switchInput(obj);
-											
-										} else if (obj.inputType == 'image') {
-											
-											widget = $('#' + tab + '_value' + inputId).imageInput(obj);
-
-										} else if (obj.inputType == 'slider') {
-
-											widget = $('#' + tab + '_value' + inputId).sliderInput(obj);
-
+										if(!widget) {
+											log("Cannot find input for widget " + obj.inputType);
 										} else {
-											var func = $('#' + tab + '_value' + inputId)[obj.inputType];
-											if(func) {
-												widget = $('#' + tab + '_value' + inputId)[obj.inputType](obj);
-											}
-										}
-										
-										if(obj.inputType != 'hidden') {
 											
-											if(!widget) {
-												log("Cannot find input for widget " + obj.inputType);
-											} else {
-												
-												widget = $.extend({
-													showTab: function() {
-														$('a[name="link_' + categoryKey + '"]').tab('show');
-													}
-												}, widget);
-												widget.getInput().addClass('propertyInput');
-												widget.getInput().data('widget', widget);
-												
-												$(document).data(obj.resourceKey, widget);
-												widgets.push(widget);
-												
-												$('#' + tab + '_value' + inputId).append(
-														'<div class="clear"><span id="' + tab + '_helpspan' + inputId + '" class="help-block">' 
-														+  ( obj.description ? obj.description : getResourceWithNamespace(categoryNamespace, obj.resourceKey + '.info') ) 
+											widget = $.extend({
+												showTab: function() {
+													$('a[name="link_' + categoryKey + '"]').tab('show');
+												}
+											}, widget);
+											widget.getInput().addClass('propertyInput');
+											widget.getInput().data('widget', widget);
+											
+											$(document).data(obj.resourceKey, widget);
+											widgets.push(widget);
+											
+											$('#' + tab + '_value' + inputId).append(
+													'<div class="clear"><span id="' + tab + '_helpspan' + inputId + '" class="help-block">' 
+													+  ( obj.description ? obj.description : getResourceWithNamespace(categoryNamespace, obj.resourceKey + '.info') ) 
 
-														+ '</span></div>');
-											}
+													+ '</span></div>');
 										}
-										
-									});
-	
-							});
-				
-				var widgetMap = [];
-				$.each(widgets, function(idx, widget) {
-					widgetMap[widget.options().resourceKey] = widget;
+									}
+									
+								});
+
+						});
+			
+			var widgetMap = [];
+			$.each(widgets, function(idx, widget) {
+				widgetMap[widget.options().resourceKey] = widget;
+			});
+			
+			$(document).data('widgetMap', widgetMap);
+			
+			options.widgets = widgetMap;
+			
+			var funcVisibility = function() {
+				$.each(widgets, function(idx, w) {
+					if(w.options().visibilityDependsOn) {
+						var props = w.options().visibilityDependsOn.split(',');
+						var w2 = [];
+						for(i=0;i<props.length;i++) {
+							w2.push($(document).data(props[i]));
+							if(!w2[i]) {
+								log("WARNING: " + w.options().resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
+								return;
+							}
+						}
+
+						w.getInput().parents('.propertyItem').hide();
+						w.getInput().parents('.propertyItem').addClass('hiddenWidget');
+						var visibilityCallback = function() {
+							
+							var dependsValue = w.options().visibilityDependsValue.toString().split(',');
+							var show = false;
+							for(i=0;i<w2.length;i++) {
+								if(i > 0 && !show) {
+									break;
+								}
+								
+								var ors = dependsValue[i].split('|');
+								for(j = 0 ; j < ors.length; j++) {	
+									if(j > 0 && show) {
+										break;
+									}								
+									if(ors[j].startsWith('!')) {
+										ors[j] = ors[j].substring(1);
+										show = w2[i].getValue() != makeVariableSafe(ors[j]);
+									} else {
+										var v = w2[i].getValue();
+										show = (v == makeVariableSafe(ors[j]));
+									}
+								}
+							}
+							
+							if(show) {
+								if(w.options().resetOnVisibilityChange) {
+									w.reset();
+								}
+								w.getInput().parents('.propertyItem').show();
+								w.getInput().parents('.propertyItem').removeClass('hiddenWidget');
+								
+							} else {
+								if(w.options().clearOnVisibilityChange) {
+									w.clear();
+								}
+								w.getInput().parents('.propertyItem').hide();
+								w.getInput().parents('.propertyItem').addClass('hiddenWidget');
+							}
+						}
+						visibilityCallback();
+						for(i=0;i<w2.length;i++) {
+							if(!w2[i].options().visibilityCallbacks) {
+								w2[i].options().visibilityCallbacks = new Array();
+							}
+							w2[i].options().visibilityCallbacks.push(visibilityCallback);
+						}
+					}
+					
 				});
 				
-				$(document).data('widgetMap', widgetMap);
-				
-				options.widgets = widgetMap;
-				
-				var funcVisibility = function() {
-					$.each(widgets, function(idx, w) {
-						if(w.options().visibilityDependsOn) {
-							var props = w.options().visibilityDependsOn.split(',');
-							var w2 = [];
-							for(i=0;i<props.length;i++) {
-								w2.push($(document).data(props[i]));
-								if(!w2[i]) {
-									log("WARNING: " + w.options().resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
-									return;
-								}
-							}
-	
-							w.getInput().parents('.propertyItem').hide();
-							w.getInput().parents('.propertyItem').addClass('hiddenWidget');
-							var visibilityCallback = function() {
-								
-								var dependsValue = w.options().visibilityDependsValue.toString().split(',');
-								var show = false;
-								for(i=0;i<w2.length;i++) {
-									if(i > 0 && !show) {
-										break;
-									}
-									
-									var ors = dependsValue[i].split('|');
-									for(j = 0 ; j < ors.length; j++) {	
-										if(j > 0 && show) {
-											break;
-										}								
-										if(ors[j].startsWith('!')) {
-											ors[j] = ors[j].substring(1);
-											show = w2[i].getValue() != makeVariableSafe(ors[j]);
-										} else {
-											var v = w2[i].getValue();
-											show = (v == makeVariableSafe(ors[j]));
-										}
-									}
-								}
-								
-								if(show) {
-									if(w.options().resetOnVisibilityChange) {
-										w.reset();
-									}
-									w.getInput().parents('.propertyItem').show();
-									w.getInput().parents('.propertyItem').removeClass('hiddenWidget');
-									
-								} else {
-									if(w.options().clearOnVisibilityChange) {
-										w.clear();
-									}
-									w.getInput().parents('.propertyItem').hide();
-									w.getInput().parents('.propertyItem').addClass('hiddenWidget');
-								}
-							}
-							visibilityCallback();
-							for(i=0;i<w2.length;i++) {
-								if(!w2[i].options().visibilityCallbacks) {
-									w2[i].options().visibilityCallbacks = new Array();
-								}
-								w2[i].options().visibilityCallbacks.push(visibilityCallback);
+				$.each(tabs, function(idx, t) {
+					if(t.visibilityDependsOn) {
+						
+						var props = t.visibilityDependsOn.split(',');
+						var w2 = [];
+						for(i=0;i<props.length;i++) {
+							w2.push($(document).data(props[i]));
+							if(!w2[i]) {
+								log("WARNING: " + t.resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
+								return;
 							}
 						}
 						
-					});
-					
-					$.each(tabs, function(idx, t) {
-						if(t.visibilityDependsOn) {
+						// Hide tab
+						$('.tab' + idx).addClass('visibility');
+						$('.tab' + idx).hide();
+						var visibilityCallback = function() {
 							
-							var props = t.visibilityDependsOn.split(',');
-							var w2 = [];
-							for(i=0;i<props.length;i++) {
-								w2.push($(document).data(props[i]));
-								if(!w2[i]) {
-									log("WARNING: " + t.resourceKey + " visibility depends on " + props[i] + " but a property with that resource key does not exist");
-									return;
+							var dependsValue = t.visibilityDependsValue.toString().split(',');
+							var show = false;
+							for(i=0;i<w2.length;i++) {
+								if(i > 0 && !show) {
+									break;
+								}
+								if(dependsValue[i].startsWith('!')) {
+									dependsValue[i] = dependsValue[i].substring(1);
+									show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);							
+								} else {
+									var v = w2[i].getValue();
+									show = v == makeVariableSafe(dependsValue[i]);
 								}
 							}
 							
-							// Hide tab
-							$('.tab' + idx).addClass('visibility');
-							$('.tab' + idx).hide();
+							if(show) {
+								// Show tab
+								$('.tab' + idx).show();
+								$('.tab' + idx).removeClass('visibility');
+							} else {
+								// Hide tab
+								$('.tab' + idx).hide();
+								$('.tab' + idx).addClass('visibility');
+							}
+						}
+						visibilityCallback();
+						for(i=0;i<w2.length;i++) {
+							if(!w2[i].options().visibilityCallbacks) {
+								w2[i].options().visibilityCallbacks = new Array();
+							}
+							w2[i].options().visibilityCallbacks.push(visibilityCallback);
+						}
+					}
+				});
+			
+				
+				$.each(widgets, function(idx, w) {
+					if(w.options().valueChanges) {
+						var w2 = $(document).data(w.options().valueChanges);
+						if(!w2) {
+							log("WARNING: " + w.options().resourceKey + " value changes " + w.options().valueChanges + " but a property with that resource key does not exist");
+						} else {
 							var visibilityCallback = function() {
-								
-								var dependsValue = t.visibilityDependsValue.toString().split(',');
-								var show = false;
-								for(i=0;i<w2.length;i++) {
-									if(i > 0 && !show) {
-										break;
-									}
-									if(dependsValue[i].startsWith('!')) {
-										dependsValue[i] = dependsValue[i].substring(1);
-										show = w2[i].getValue() != makeVariableSafe(dependsValue[i]);							
-									} else {
-										var v = w2[i].getValue();
-										show = v == makeVariableSafe(dependsValue[i]);
-									}
-								}
-								
-								if(show) {
-									// Show tab
-									$('.tab' + idx).show();
-									$('.tab' + idx).removeClass('visibility');
-								} else {
-									// Hide tab
-									$('.tab' + idx).hide();
-									$('.tab' + idx).addClass('visibility');
+								var val = w.options().attributes["value" + w.getValue()];
+								if(val) {
+									w2.setValue(val);
 								}
 							}
 							visibilityCallback();
-							for(i=0;i<w2.length;i++) {
-								if(!w2[i].options().visibilityCallbacks) {
-									w2[i].options().visibilityCallbacks = new Array();
-								}
-								w2[i].options().visibilityCallbacks.push(visibilityCallback);
+							if(!w.options().visibilityCallbacks) {
+								w.options().visibilityCallbacks = new Array();
 							}
+							w.options().visibilityCallbacks.push(visibilityCallback);
 						}
-					});
-				
-					
-					$.each(widgets, function(idx, w) {
-						if(w.options().valueChanges) {
-							var w2 = $(document).data(w.options().valueChanges);
-							if(!w2) {
-								log("WARNING: " + w.options().resourceKey + " value changes " + w.options().valueChanges + " but a property with that resource key does not exist");
-							} else {
-								var visibilityCallback = function() {
-									var val = w.options().attributes["value" + w.getValue()];
-									if(val) {
-										w2.setValue(val);
-									}
-								}
-								visibilityCallback();
-								if(!w.options().visibilityCallbacks) {
-									w.options().visibilityCallbacks = new Array();
-								}
-								w.options().visibilityCallbacks.push(visibilityCallback);
-							}
-						}
-					});
-				}
-				
-				if(filters.length > 0 && options.useFilters) {
-					$('#' + propertyDiv + 'PropertyFilter').append('<a href="#" class="click_default">' + getResource('default.label') + '</a>');
-					filters.push('default');
-					$.each(filters, function(idx, filter) {
-						if(filter!='default') {
-							$('#' + propertyDiv + 'PropertyFilter').append(' | <a href="#" class="click_' + filter + '">' + getResource(filter + '.label') + '</a>');
-							$('.' + filterPrefix + filter).hide();
-						}
-						$('.click_' + filter).on('click', function(e) {
-							e.preventDefault();
-							$.each(filters, function(i,f) {
-								if(f!=filter) {
-									if(f!='default' || !options.alwaysShowStandardFilter)
-										$('.' + filterPrefix + f).hide();
-								}
-							});
-							log('Filtering to ' + filter);
-							$('.' + filterPrefix + filter).show();
-							$('.visibility').hide();
-							$('li.' + filterPrefix + filter + ':first a').tab('show');
-						});
-					});
-				}
-			}
-			
-			if (options.additionalTabs && !options.propertyTabsLast) {
-				createAdditionalTabs();
-			}
-			
-			$('#tabTemp' + propertyDiv).remove();
-
-			$('.' +  propertyDiv + 'Tab').click(function(e) {
-				e.preventDefault();
-				if(!options.showAdditionalTabButtons) {
-					if($(this).hasClass(propertyDiv + 'Tab2')) {
-						$('#' + propertyDiv + 'Actions').hide();
-					} else {
-						$('#' + propertyDiv + 'Actions').show();
 					}
-				}
-				$(this).tab('show');
-				$('.code').each(function() {
-					$(this).data('codeMirror').refresh();
 				});
-			});
+			}
+			
+			if(filters.length > 0 && options.useFilters) {
+				$('#' + propertyDiv + 'PropertyFilter').append('<a href="#" class="click_default">' + getResource('default.label') + '</a>');
+				filters.push('default');
+				$.each(filters, function(idx, filter) {
+					if(filter!='default') {
+						$('#' + propertyDiv + 'PropertyFilter').append(' | <a href="#" class="click_' + filter + '">' + getResource(filter + '.label') + '</a>');
+						$('.' + filterPrefix + filter).hide();
+					}
+					$('.click_' + filter).on('click', function(e) {
+						e.preventDefault();
+						$.each(filters, function(i,f) {
+							if(f!=filter) {
+								if(f!='default' || !options.alwaysShowStandardFilter)
+									$('.' + filterPrefix + f).hide();
+							}
+						});
+						log('Filtering to ' + filter);
+						$('.' + filterPrefix + filter).show();
+						$('.visibility').hide();
+						$('li.' + filterPrefix + filter + ':first a').tab('show');
+					});
+				});
+			}
+		}
+		
+		if (options.additionalTabs && !options.propertyTabsLast) {
+			createAdditionalTabs();
+		}
+		
+		$('#tabTemp' + propertyDiv).remove();
 
-			$('.' +  propertyDiv + 'Tab').first().tab('show');
+		$('.' +  propertyDiv + 'Tab').click(function(e) {
+			e.preventDefault();
+			if(!options.showAdditionalTabButtons) {
+				if($(this).hasClass(propertyDiv + 'Tab2')) {
+					$('#' + propertyDiv + 'Actions').hide();
+				} else {
+					$('#' + propertyDiv + 'Actions').show();
+				}
+			}
+			$(this).tab('show');
 			$('.code').each(function() {
 				$(this).data('codeMirror').refresh();
 			});
-			
-			if (options.showButtons) {
-				
-				if(options.maintainButtonState) {
-					$(revertButton).attr('disabled', true);
-					$(applyButton).attr('disabled', true);
-				}
-				
-				$(revertButton).click(function() {
-					
-					if(options.revertButtonClick) {
-						options.revertButtonClick($(revertButton));
-					} else {
-						$('.propertyInput').each(function(i, obj) {
-							widget = $(this).data('widget');
-							widget.reset();
-						});
-						if(options.maintainButtonState) {
-							$(revertButton).attr('disabled', true);
-							$(applyButton).attr('disabled', true);
-						}
-					}
-				});
-				$(applyButton).click(function() {
-
-					if(options.applyButtonClick) {
-						options.applyButtonClick($(applyButton));
-					} else {
-						if(!$('#' + propertyDiv).validateProperties()) {
-							showError("error.correctValidationErrors");
-							return;
-						}
-						
-						startSpin($(applyButton).find('i'));
-						
-						$('#' + propertyDiv).saveProperties(false, function(items) {
-							postJSON(options.url, items, function(data) {
-	
-								if (data.success) {
-									showSuccess(data.message);
-									
-									$('.propertyInput', '#' + propertyDiv).each(function(i, obj) {
-										var item = $('#' + obj.id);
-										item.data('updated', false);
-										
-									});
-									
-									if(options.onPropertiesChange) {
-										var updatedWidgets = [];
-										$.each(items, function(idx, obj) {
-											updatedWidgets.push($(document).data(obj.id));
-										});
-										options.onPropertiesChange(updatedWidgets);
-									}
-									
-								} else {
-									showError(data.message);
-								}
-								
-								
-								if(options.maintainButtonState) {
-									$(revertButton).attr('disabled', true);
-									$(applyButton).attr('disabled', true);
-								}
-
-							}, null, function() {
-								$(applyButton).find('i').removeClass('fa-spin');
-								$(applyButton).find('i').removeClass('fa-spinner');
-							});
-						});
-					}
-
-				});
-			}
-
-			self.data('propertyOptions', options);
-			
-			setTimeout(function() {
-				if(funcVisibility)
-					funcVisibility();
-				if (options.complete) {
-					options.complete();
-				}
-			}, 1000);
 		});
+
+		$('.' +  propertyDiv + 'Tab').first().tab('show');
+		$('.code').each(function() {
+			$(this).data('codeMirror').refresh();
+		});
+		
+		if (options.showButtons) {
+			
+			if(options.maintainButtonState) {
+				$(revertButton).attr('disabled', true);
+				$(applyButton).attr('disabled', true);
+			}
+			
+			$(revertButton).click(function() {
+				
+				if(options.revertButtonClick) {
+					options.revertButtonClick($(revertButton));
+				} else {
+					$('.propertyInput').each(function(i, obj) {
+						widget = $(this).data('widget');
+						widget.reset();
+					});
+					if(options.maintainButtonState) {
+						$(revertButton).attr('disabled', true);
+						$(applyButton).attr('disabled', true);
+					}
+				}
+			});
+			$(applyButton).click(function() {
+
+				if(options.applyButtonClick) {
+					options.applyButtonClick($(applyButton));
+				} else {
+					if(!$('#' + propertyDiv).validateProperties()) {
+						showError("error.correctValidationErrors");
+						return;
+					}
+					
+					startSpin($(applyButton).find('i'));
+					
+					$('#' + propertyDiv).saveProperties(false, function(items) {
+						postJSON(options.url, items, function(data) {
+
+							if (data.success) {
+								showSuccess(data.message);
+								
+								$('.propertyInput', '#' + propertyDiv).each(function(i, obj) {
+									var item = $('#' + obj.id);
+									item.data('updated', false);
+									
+								});
+								
+								if(options.onPropertiesChange) {
+									var updatedWidgets = [];
+									$.each(items, function(idx, obj) {
+										updatedWidgets.push($(document).data(obj.id));
+									});
+									options.onPropertiesChange(updatedWidgets);
+								}
+								
+							} else {
+								showError(data.message);
+							}
+							
+							
+							if(options.maintainButtonState) {
+								$(revertButton).attr('disabled', true);
+								$(applyButton).attr('disabled', true);
+							}
+
+						}, null, function() {
+							$(applyButton).find('i').removeClass('fa-spin');
+							$(applyButton).find('i').removeClass('fa-spinner');
+						});
+					});
+				}
+
+			});
+		}
+
+		self.data('propertyOptions', options);
+		
+		setTimeout(function() {
+			if(funcVisibility)
+				funcVisibility();
+			if (options.complete) {
+				options.complete();
+			}
+		}, 1000);
+	};
+	
+
+	if(options.url) {
+		var url = options.url;
+		
+		/* Allow parameters to be either dynamically generation from
+		 * a function or a fixed string. Either of which may be either
+		 * a string list of parameters or a JavaScript object (that 
+		 * will get encoded)
+		 * 
+		 * The URL can still contain parameters too.
+		 */
+		if(options.parameters) {
+			var parmob;
+			if(typeof options.parameters === 'string')
+				parmob= options.parameters;
+			else
+				parmob = options.parameters();
+			if(typeof options.parameters == 'string') {
+				if(url.indexOf('?') == -1)
+					url += '?' + parmob;
+				else
+					url += '&' + parmob;
+				url += parmob;
+			}
+			else {
+				for(k in parmob) {
+					if(url.indexOf('?') == -1)
+						url += '?' + k + '=' + encodeURIComponent(parmob[k]);
+					else
+						url += '&' + k + '=' + encodeURIComponent(parmob[k]);
+				}
+			}
+		}
+		
+		getJSON(
+			url,
+			null,
+			function(data) {
+				handleData(data);
+			});
+	}
+	else if(options.resources) {
+		handleData({
+			resources: options.resources
+		});
+	}
 };
 
 

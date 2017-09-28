@@ -1303,7 +1303,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#mainContainer').addClass('col-sm-12');
 		$('#main-menu').hide();
 		$('#mainContent').hide();
-
+		//dialogOptions.tableView.hide();
 		view.show();
 	}
 	
@@ -1317,19 +1317,18 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		dialogOptions.clearDialog(true);
 		if(dialogOptions.propertyOptions) {
-			 var propertyOptions = $.extend({},
+			var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,
 					{ url: dialogOptions.propertyOptions.templateUrl,
+					  parameters: dialogOptions.propertyOptions.parameters,
 				      title: getResource(dialogOptions.resourceKey + '.create.title').formatAll(dialogOptions.propertyOptions.resourceArgsCallback ? dialogOptions.propertyOptions.resourceArgsCallback(params2) : dialogOptions.propertyOptions.resourceArgs),
 				      icon: dialogOptions.icon,
-				      parameters: dialogOptions.propertyOptions.parameters,
-				      displayMode: 'create',
 					  complete: function() {
 						  showView(dialog);
-						  addActions(true);
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete();
 						  }
+						  addActions(true);
 						  
 					  },
 					  onPropertyChange: function(resourceKey, widget) {
@@ -1339,20 +1338,23 @@ $.fn.samePageResourceView = function(params, params2) {
 						  }
 					  }
 			});
-			if(propertyOptions.additionalTabs) {
-				$.each(propertyOptions.additionalTabs, function(idx, obj) {
+			if(dialogOptions.propertyOptions.additionalTabs) {
+				$.each(dialogOptions.propertyOptions.additionalTabs, function(idx, obj) {
 					$('body').append($('#' + obj.id).detach());
 				});
 			}
-			$(propertyOptions.propertySelector).empty();
-			$(propertyOptions.propertySelector).propertyPage(propertyOptions);
+			$(dialogOptions.propertyOptions.propertySelector).empty();
+			dialogOptions.propertyOptions.propertyCallback = $(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
 			addActions(true);
 		}
 		
 		return;
-		
+
+	} else if(params === 'refresh') {
+		dialogOptions.propertyOptions.propertyCallback.reload(true);
+		return;
 	} else if(params === 'edit') {
 		
 		dialogOptions.clearDialog(false);
@@ -1460,10 +1462,10 @@ $.fn.samePageResourceView = function(params, params2) {
 						  resource: params2,
 						  complete: function() {
 							  showView(dialog)
+							  addActions(true, true);
 							  if(dialogOptions.propertyOptions.complete) {
 								  dialogOptions.propertyOptions.complete(copiedResource);
 							  }
-							  addActions(true, true);
 						  }	
 				});
 				if(dialogOptions.propertyOptions.additionalTabs) {
@@ -1946,11 +1948,16 @@ $.fn.extendedResourcePanel = function(params){
                 $tabContentHolder.append('<div id=' + tabId + '></div>');
                 $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){
                     var elements = $('#' + tabId + ' [data-id]');
+                    var extendedTabContent = 'extendedTabContent' + '_' + options.resource.id;
                     $.each(elements, function(i, element) {
                         $(element).attr('id', $(element).attr('data-id') + '_' + options.resource.id);
+                        if($(element).hasClass('extendedTabContent')) {
+                            $(element).removeClass('extendedTabContent')
+                            .addClass(extendedTabContent);
+                        }
                     });
-                    if($('#' + tabId).children('.extendedTabContent').length > 0) {
-                        $('#' + tabId).children('.extendedTabContent').data('initPage')(options.resource, options.data, value.readOnly);
+                    if($('.' + extendedTabContent).length > 0) {
+                        $('.' + extendedTabContent).data('initPage')(options.resource, options.data);
                     }
                 });
             });

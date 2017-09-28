@@ -604,6 +604,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				hasPermission(m.getUpdatePermission()) && m.canUpdate(),
 				hasPermission(m.getDeletePermission()) && m.canDelete(),
 				m.getIcon(), m.getData(), m.isHidden());
+
+		for(MenuRegistration c : m.getMenus()) {
+			menu.getMenuIds().add(c.getId());
+		}
 		
 		return menu;
 
@@ -620,8 +624,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		Collection<MenuRegistration> menus;
 		if(resourceKey == null)
 			menus = rootMenus.values();
-		else
-			menus = allMenus.get(resourceKey).getMenus();
+		else {
+			MenuRegistration m = allMenus.get(resourceKey);
+			if(m == null)
+				menus = Collections.emptyList();
+			else
+				menus = m.getMenus();
+		}	
 		
 		List<Menu> userMenus = new ArrayList<Menu>();
 

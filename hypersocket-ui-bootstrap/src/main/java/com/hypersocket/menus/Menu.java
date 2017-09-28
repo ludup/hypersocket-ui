@@ -22,6 +22,7 @@ public class Menu {
 	boolean isDefault;
 	String data;
 	List<Menu> menus = new ArrayList<Menu>();
+	List<String> menuIds = new ArrayList<String>();
 	
 	public Menu(MenuRegistration m, boolean canCreate, boolean canUpdate, boolean canDelete, String icon, String data, boolean hidden) {
 		this.bundle = m.bundle;
@@ -135,5 +136,8 @@ public class Menu {
 	public boolean isHome() {
 		return isDefault;
 	}
-	
+
+	public List<String> getMenuIds() {
+		return menuIds;
+	}
 }

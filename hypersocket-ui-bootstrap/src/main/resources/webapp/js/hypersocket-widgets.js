@@ -1789,7 +1789,7 @@ $.fn.multipleSelect = function(data) {
 				$.each(options.getUrlData(data),
 					function(idx, obj) {
 					var newElement;
-					if(options.valuesIsObjectList) {
+					if(options.valuesIsObjectList || options.isNamePairValue) {
 						newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey 
 								? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
 										: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
@@ -1808,7 +1808,7 @@ $.fn.multipleSelect = function(data) {
 				if (options.selected) {
 					$.each(options.selected, function(idx, id) {
 						var selectedOpt;
-						if (options.selectedIsObjectList) {
+						if (options.selectedIsObjectList || options.isNamePairValue) {
 							selectedOpt = $('#' + select.attr('id') + ' li[value="' + he.encode(id[options.valueAttr]) + '"]');
 						} else {
 							selectedOpt = $('#' + select.attr('id') + ' li[value="' + he.encode(id) + '"]');

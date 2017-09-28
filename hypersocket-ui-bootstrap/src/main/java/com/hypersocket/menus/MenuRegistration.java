@@ -72,6 +72,10 @@ public class MenuRegistration {
 		this.resourceName = url;
 		this.weight = weight;
 	}
+	
+	public String getBundle() {
+		return bundle;
+	}
 
 	public String getId() {
 		return resourceKey;
