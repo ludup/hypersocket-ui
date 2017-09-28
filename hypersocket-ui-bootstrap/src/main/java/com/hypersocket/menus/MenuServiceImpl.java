@@ -123,7 +123,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_PERSONAL, "", null, 100, null, null, null, null));
+				MenuService.MENU_PERSONAL, "", null, 100, null, null, null, null) {
+			@Override
+			public boolean canRead() {
+				return getCurrentPrincipal().getRealm().equals(getCurrentRealm());
+			}
+		});
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
 				"fa-hourglass-start", "sessions", 99999,
