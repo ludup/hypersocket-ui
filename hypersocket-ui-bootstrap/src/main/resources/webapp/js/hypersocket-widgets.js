@@ -5829,12 +5829,9 @@ $.fn.fileTree = function(data) {
 			 		}
 				},
 				getValue: function() {
-					var values = '';
+					var values = [];
 					$('#' + id + 'Included option').each(function(index, option){
-						if(values != ''){
-							values = values + ']|[';
-						}
-						values = values + $(option).val(); 
+						values.push($(option).val());
 					});
 					return values;
 				},

@@ -1245,6 +1245,11 @@ $.fn.propertyPage = function(opts) {
 										} else {
 											var func = $('#' + tab + '_value' + inputId)[obj.inputType];
 											if(func) {
+												if(obj.isArrayValue) {
+													obj = $.extend(obj, {
+														values : splitFix(obj.value)
+													});
+												}
 												widget = $('#' + tab + '_value' + inputId)[obj.inputType](obj);
 											}
 										}
