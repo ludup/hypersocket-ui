@@ -262,6 +262,16 @@ ${stylesheets}
 					</div>
 				</div>
 			</div>
+			<div class="propertyItem form-group credsDiv">
+				<label class="col-md-3 control-label"
+					localize="mount.password.label"></label>
+				<div class="propertyValue col-md-9">
+					<div id="example23"></div>
+					<div>
+						<span class="help-block" localize="mount.password.info"></span>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -290,10 +300,13 @@ ${stylesheets}
 	<script src="${uiPath}/js/codemirror.js"></script>
 	<script src="${uiPath}/js/bootstrap-slider.min.js"></script>
 	<script src="${uiPath}/js/bootstrap-datepicker.js"></script>
+	<script src="${uiPath}/js/js-cookie.js"></script>
+	<script src="${uiPath}/js/js-sha256.js"></script>
 	<script src="${uiPath}/js/hypersocket-utils.js"></script>
 	<script src="${uiPath}/js/hypersocket-widgets.js"></script>
 	<script src="${uiPath}/js/hypersocket-forms.js"></script>
 	<script src="${uiPath}/js/hypersocket-properties.js"></script>
+	<script src="${uiPath}/js/he.js"></script>
 
 	<script type="text/javascript">
 	
@@ -383,7 +396,7 @@ ${stylesheets}
 				
 				$('#example17').booleanInput({ value: true});
 				
-				$('#example18').switchInput({ value: false});
+// 				$('#example18').switchInput({ value: false});
 				
 				$('#example19').imageInput({ value: uiPath + "images/hypersocket.png"});
 				
@@ -412,6 +425,18 @@ ${stylesheets}
 					{ name: "Weeks", value: "w" },
 					{ name: "Months", value: "m" },
 					{ name: "Years", value: "y" }]
+				});
+				
+				$('#example23').autoCompleteNamePairs({
+					disabled : false,
+					disableName: false,
+					readOnly: false,
+					columnWeight: 'equal',
+					onlyName: false,
+					password: false,
+					isResourceList: true,
+					nameIsResourceKey: true,
+					url: 'auditFilters/attributes'
 				});
 			});
 		});
