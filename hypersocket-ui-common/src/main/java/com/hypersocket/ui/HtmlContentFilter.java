@@ -33,7 +33,7 @@ public class HtmlContentFilter implements ContentFilter {
 	List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
 	List<FilterExtender> extenders = new ArrayList<FilterExtender>();
 	
-	String brandCompany = "Hypersocket Limited";
+	String brandCompany = "LogonBox Limited";
 	String companyUrl = "https://www.hypersocket.com/";
 	String brandIcon = "/images/favicon.ico";
 	String brandImage = "/images/hypersocket.png";
