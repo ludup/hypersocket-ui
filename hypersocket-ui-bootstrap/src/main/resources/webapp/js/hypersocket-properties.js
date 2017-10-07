@@ -270,6 +270,7 @@ function validateInputType(type){
 		case 'slider' :
 		case 'namePairs' :
 		case 'namePairsAutoComplete' :
+		case 'autoCompleteNamePairs' :
 		case 'date' :
 		case 'time' : 
 		case 'checkbox' : return true;	
@@ -1024,7 +1025,13 @@ $.fn.propertyPage = function(opts) {
 												});
 												
 												widget = $('#' + tab + '_value' + inputId).namePairsAutoComplete(obj);
-				
+										}else if (obj.inputType == 'autoCompleteNamePairs') {
+											var widgetOptions = $.extend(obj, {
+												values : splitFix(obj.value),
+												isArrayValue: true
+											});
+											
+											widget = $('#' + tab + '_value' + inputId).autoCompleteNamePairs(obj);
 										} else if (obj.inputType == 'textarea'
 											|| obj.inputType == 'text' 
 											|| obj.inputType == 'password' 
@@ -1238,6 +1245,11 @@ $.fn.propertyPage = function(opts) {
 										} else {
 											var func = $('#' + tab + '_value' + inputId)[obj.inputType];
 											if(func) {
+												if(obj.isArrayValue) {
+													obj = $.extend(obj, {
+														values : splitFix(obj.value)
+													});
+												}
 												widget = $('#' + tab + '_value' + inputId)[obj.inputType](obj);
 											}
 										}
