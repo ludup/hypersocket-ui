@@ -256,7 +256,7 @@ function processLogon(data, opts, message) {
 			$('#' + obj.label).click(function(e) {
 				e.preventDefault();
 
-				if(obj.isLogonApiLink) {
+				if(obj.logonApiLink) {
 					getJSON(obj.defaultValue, null, function(data){
 					   	if(!checkRedirect(data))
 					   		processLogon(data, opts);
