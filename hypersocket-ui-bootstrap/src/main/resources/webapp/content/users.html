@@ -252,13 +252,14 @@
 								searchFields: searchFields,
 								resourceKey : 'user',
 								canCreate : currentMenu.canCreate,
-								canUpdate : true,
+								canUpdate : currentMenu.canUpdate,
+								canCopy: currentMenu.canUpdate,
 								checkReadOnly: false,
 								additionalButtons: buttons,
 								toolbarButtonsUrl: 'menus/tableActions/usersToolbar',
 								canDelete : true,
 								checkDelete: function(row) {
-									return !row.readOnly;
+									return currentMenu.canDelete && !row.readOnly;
 								},
 								detailFormatter: ownerRealm ? undefined : function(index, resource, $element) {
 									$element.extendedResourcePanel({resourceKey: "principalTabs",
@@ -490,7 +491,7 @@
 // 										});
 									} 
 
-									if(!ownerRealm) {
+									if(!ownerRealm && menuList.realmAdmin) {
 										$('#contentUsers').find('.panel-heading').last().append(
 												'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">' 
 												+ getResource('configure.remote.text') + '</a></div></div>');

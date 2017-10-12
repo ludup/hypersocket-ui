@@ -8,7 +8,7 @@ public class AbstractTableAction {
 	String resourceKey;
 	String iconClass;
 	String url;
-	PermissionType permission;
+	PermissionType[] permissions;
 	int weight;
 	String enableFunction;
 	String displayFunction;
@@ -22,7 +22,19 @@ public class AbstractTableAction {
 		this.resourceKey = resourceKey;
 		this.iconClass = iconClass;
 		this.url = url;
-		this.permission = permission;
+		this.permissions = new PermissionType[] {permission};
+		this.weight = weight;
+		this.enableFunction = enableFunction;
+		this.displayFunction = displayFunction;
+	}
+	
+	public AbstractTableAction(String resourceKey, String iconClass,
+			String url, int weight, 
+			String enableFunction, String displayFunction, PermissionType... permissions) {
+		this.resourceKey = resourceKey;
+		this.iconClass = iconClass;
+		this.url = url;
+		this.permissions = permissions;
 		this.weight = weight;
 		this.enableFunction = enableFunction;
 		this.displayFunction = displayFunction;
@@ -72,12 +84,12 @@ public class AbstractTableAction {
 		this.url = url;
 	}
 
-	public PermissionType getPermission() {
-		return permission;
+	public PermissionType[] getPermissions() {
+		return permissions;
 	}
 
-	public void setPermission(PermissionType permission) {
-		this.permission = permission;
+	public void setPermissions(PermissionType[] permissions) {
+		this.permissions = permissions;
 	}
 
 	public int getWeight() {

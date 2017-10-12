@@ -382,8 +382,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null));
 
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
-				"setPassword", "fa-key", "password", UserPermission.UPDATE, 0,
-				null, null) {
+				"setPassword", "fa-key", "password", 0,
+				null, null, UserPermission.UPDATE, PasswordPermission.RESET) {
 			public boolean isEnabled() {
 				return !realmService.isReadOnly(getCurrentRealm());
 			}
@@ -391,20 +391,15 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"impersonateUser", "fa-male", "impersonateUser",
-				null, 0, null, "canImpersonateUser") {
-			@Override
-			public boolean isEnabled() {
-				return permissionService.hasAdministrativePermission(getCurrentPrincipal());
-			}
-		});
+				UserPermission.IMPERSONATE, 0, null, "canImpersonateUser"));
 
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"suspendUser", "fa-ban", "suspendUser",
-				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isSuspended"));
+				UserPermission.LOCK, 0, null, "isSuspended"));
 
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"resumeUser", "fa-check", "resumeUser",
-				SystemPermission.SYSTEM_ADMINISTRATION, 0, null, "isResumed"));
+				UserPermission.UNLOCK, 0, null, "isResumed"));
 
 		registerTableAction(MenuService.ACTIONS_REALMS,
 				new AbstractTableAction("defaultRealm", "fa-tag",
@@ -573,19 +568,26 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}
 
 		List<AbstractTableAction> results = new ArrayList<AbstractTableAction>();
-
+		
 		for (AbstractTableAction action : registeredActions.get(table)) {
 
-			if (action.getPermission() != null) {
-				if (!hasPermission(action.getPermission())) {
-					continue;
+			boolean hasPermission = true;
+			if (action.getPermissions() != null) {
+				hasPermission = false;
+				for(PermissionType t : action.getPermissions()) {
+					hasPermission = hasPermission(t);
+					if(hasPermission) {
+						break;
+					}
 				}
 			}
 
-			if (!action.isEnabled()) {
-				continue;
+			if(hasPermission) {
+				if (!action.isEnabled()) {
+					continue;
+				}
+				results.add(action);
 			}
-			results.add(action);
 
 		}
 

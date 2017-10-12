@@ -119,6 +119,11 @@ public class MenuController extends AuthenticatedController {
 					.getPrincipal(request))) {
 				list.setSystemAdmin(true);
 			}
+			
+			if (permissionService.hasAdministrativePermission(sessionUtils
+					.getPrincipal(request))) {
+				list.setRealmAdmin(true);
+			}
 
 			try {
 				permissionService.verifyPermission(
