@@ -203,6 +203,7 @@ $.fn.resourceTable = function(params) {
 						+ 'class="fa fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
 			
 				$('.dismiss-icon').click(function(e) {
+					e.preventDefault();
 					var prefs = new Object();
 					prefs.show = false;
 					saveState(divName+'-infoPanel', prefs, true, function() {
@@ -355,7 +356,8 @@ $.fn.resourceTable = function(params) {
 								$(document).on(
 									'click',
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
-									function() {
+									function(e) {
+										e.preventDefault();
 										var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 										act.action(resource, function(resource) {
@@ -421,7 +423,8 @@ $.fn.resourceTable = function(params) {
 								$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
 								$(document).on('click',
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
-									function() {
+									function(e) {
+										e.preventDefault();
 										var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 										act.action(resource, function(resource) {
@@ -445,7 +448,8 @@ $.fn.resourceTable = function(params) {
 			$(document).on(
 				'click',
 				'#' + divName + 'Actions' + id + ' .row-edit',
-				function() {
+				function(e) {
+					e.preventDefault();
 					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 					if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
@@ -460,7 +464,8 @@ $.fn.resourceTable = function(params) {
 				$(document).on(
 					'click',
 					'#' + divName + 'Actions' + id + ' .row-copy',
-					function() {
+					function(e) {
+						e.preventDefault();
 						var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 						var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 						options.view.copyResource(resource);
@@ -483,8 +488,8 @@ $.fn.resourceTable = function(params) {
 				$(document).on(
 					'click',
 					'#' + divName + 'Actions' + id + ' .row-delete',
-					function() {
-						
+					function(e) {
+						e.preventDefault();
 						log("Entering resource delete for id " + id);
 	
 						var row = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
@@ -531,7 +536,8 @@ $.fn.resourceTable = function(params) {
 	if (options.canCreate) {
 
 		$('#' + divName + 'Actions').append('<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa ' + options.createButtonIcon + '"></i>' + getResource(options.createButtonText) + '</button>');
-		$('#' + divName + 'Add').click(function() {
+		$('#' + divName + 'Add').click(function(e) {
+			e.preventDefault();
 			if (options.showCreate) {
 				options.showCreate();
 			}
@@ -755,7 +761,8 @@ $.fn.resourceTable = function(params) {
 
                         $('#' + divName + 'BulkTableAction').hide();
 
-                        $('#' + divName + 'BulkTableAction').click(function(){
+                        $('#' + divName + 'BulkTableAction').click(function(e){
+                        	e.preventDefault();
                             var bulkAction = $('#' + bulkAssignableTarget).bulkAssignmentDialog({
                                 resource : resourceType,
                                 modalCallback : function(data) {$('#' + divName + 'Placeholder').bootstrapTable('refresh');}
@@ -772,6 +779,7 @@ $.fn.resourceTable = function(params) {
 									+ action.icon + '"></i></button>');
 							
 							$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
+								e.preventDefault();
 								if(action.action) {
 									action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
 										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
@@ -795,6 +803,7 @@ $.fn.resourceTable = function(params) {
 								$('#' + div).load(uiPath + '/content/' + action.url + '.html');
 
 								$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
+									e.preventDefault();
 									if($('#' + action.resourceKey).data('action')) {
 										var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
 										$('#' + action.resourceKey).data('action')(arr, function() {
@@ -812,6 +821,7 @@ $.fn.resourceTable = function(params) {
                         if($('#multipleDelete' + divName).length == 0) {
                             $('#' + divName +  ' .fixed-table-toolbar').find('.btn-group').first().prepend('<button id="multipleDelete' + divName +'" class="btn btn-default" type="button" name="multipleDelete' + divName +'" title="Delete"><i class="fa fa-trash"></i></button>');
                             $('#multipleDelete' + divName).click(function(e) {
+                            	e.preventDefault();
                                 var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
                                 if(arr.length > 0) {
                                     var ids = [];
@@ -928,7 +938,8 @@ $.fn.resourceTable = function(params) {
 											renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><span>' + getResource(act.resourceKey + ".label") + '</span>&nbsp;&nbsp;<i class="fa ' + act.iconClass + '"></i></a></li>';
 						
 											$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
-											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
+											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function(e) {
+												e.preventDefault();
 												act.action(resource, function(resource) {
 													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 													checkBadges(false);
@@ -968,7 +979,8 @@ $.fn.resourceTable = function(params) {
 													+ act.resourceKey + ' btn-action" href="#" data-toggle="tooltip" data-placement="top" title="' 
 													+ getResource(act.resourceKey + ".label") + '"><i class="fa ' + act.iconClass + '"></i></a>';
 											$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
-											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
+											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function(e) {
+												e.preventDefault();
 												act.action(resource, function(resource) {
 													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 													checkBadges(false);
@@ -986,7 +998,8 @@ $.fn.resourceTable = function(params) {
 							if(!options.disableEditView) {
 								renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate && !resource.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
 								$(document).off('click', '#' + resource.id + 'GridOptions .row-edit');
-								$(document).on('click', '#' + resource.id + 'GridOptions .row-edit', function() {
+								$(document).on('click', '#' + resource.id + 'GridOptions .row-edit', function(e) {
+									e.preventDefault();
 									if(options.showEdit) {
 										options.showEdit(resource);
 									}
@@ -997,7 +1010,8 @@ $.fn.resourceTable = function(params) {
 									}
 								});
 								$(document).off('click', '#' + resource.id + 'GridDiv img');
-								$(document).on('click', '#' + resource.id + 'GridDiv img', function() {
+								$(document).on('click', '#' + resource.id + 'GridDiv img', function(e) {
+									e.preventDefault();
 									if(options.showEdit) {
 										options.showEdit(resource);
 									}
@@ -1011,7 +1025,8 @@ $.fn.resourceTable = function(params) {
 								if(options.canCopy) {
 									renderedActions += '<a class="btn btn-info row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-copy');
-									$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function() {
+									$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function(e) {
+										e.preventDefault();
 										if(options.showCopy) {
 											options.showCopy(resource);
 										}
@@ -1020,7 +1035,8 @@ $.fn.resourceTable = function(params) {
 								}
 								
 								$(document).off('click', '#' + resource.id + 'GridDiv img');
-								$(document).on('click', '#' + resource.id + 'GridDiv img', function() {
+								$(document).on('click', '#' + resource.id + 'GridDiv img', function(e) {
+									e.preventDefault();
 									if(options.showEdit) {
 										options.showEdit(resource);
 									}
@@ -1042,7 +1058,8 @@ $.fn.resourceTable = function(params) {
 								if(canDelete) {
 									renderedActions += '<a class="btn btn-danger row-delete btn-action" href="#"><i class="fa fa-trash-o"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-delete');
-									$(document).on('click', '#' + resource.id + 'GridOptions .row-delete', function() {
+									$(document).on('click', '#' + resource.id + 'GridOptions .row-delete', function(e) {
+										e.preventDefault();
 										log("Entering resource delete for id " + resource.id);
 										bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(resource.name), function(confirmed) {
 											if (confirmed) {
@@ -1084,7 +1101,8 @@ $.fn.resourceTable = function(params) {
 				$('#' + divName + 'Actions').append(
 					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>' + getResource(this.resourceKey + '.label') + '</button>');
 				var button = this;
-				$('#' + this.resourceKey).click(function() {
+				$('#' + this.resourceKey).click(function(e) {
+					e.preventDefault();
 					if(button.action) {
 						button.action(function() {
 							$('#' + divName + 'Placeholder').bootstrapTable('refresh');
@@ -1145,7 +1163,8 @@ $.fn.resourceTable = function(params) {
 				+ getResource('text.toggleViewMode') + '"><i class="glyphicon fa ' + currentView.icon + '"></button>');
 		
 		
-    	$('#' + divName + 'ToggleGrid').click(function(){
+    	$('#' + divName + 'ToggleGrid').click(function(e){
+    		e.preventDefault();
     		var prev = views[0];
     		var v = views.pop();
     		views.unshift(v);
@@ -1268,7 +1287,8 @@ $.fn.samePageResourceView = function(params, params2) {
 		dialog.find('.panel-body').first().after(html);
 		
 		if(save) {
-			$('#' + dialog.attr('id') + 'Save').click(function() {
+			$('#' + dialog.attr('id') + 'Save').click(function(e) {
+				e.preventDefault();
 				var resource = dialogOptions.createResource();
 				if(copy) {
 					resource.id = null;
@@ -1290,7 +1310,8 @@ $.fn.samePageResourceView = function(params, params2) {
 				});
 			});
 		}
-		$('#' + dialog.attr('id') + 'Cancel').click(function() {
+		$('#' + dialog.attr('id') + 'Cancel').click(function(e) {
+			e.preventDefault();
 			dialog.samePageResourceView('close');
 		});
 	
@@ -1618,7 +1639,8 @@ $.fn.bulkAssignmentDialog = function(options) {
                     '<button type="button" id="' + id + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.update") + '</button>');
         $('#' + id + "Action").off('click');
 
-        $('#' + id + "Action").on('click', function() {
+        $('#' + id + "Action").on('click', function(e) {
+        	e.preventDefault();
             var bulkAssignment = new Object();
             bulkAssignment.roleIds = $('#' + id + 'RoleComponent').multipleSelectValues();
             bulkAssignment.resourceIds = $('#' + id + 'ResourceComponent').multipleSelectValues();
@@ -1736,7 +1758,8 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.create") + '</button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
 
-		$('#' + $(this).attr('id') + "Action").on('click', function() {	
+		$('#' + $(this).attr('id') + "Action").on('click', function(e) {
+			e.preventDefault();
 			var buttonElement = $(this);
 			var func = function() {
 				saveResource(dialogOptions.createResource(), buttonElement, dialogOptions, 'create', function() {
@@ -1826,15 +1849,16 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 							+ button.cssClass + '"><i class="fa ' 
 							+ button.icon + '"></i>' 
 							+ getResource(button.resourceKey) + '</button>');
-					$('#' + button.id + 'Action').click(function() {
+					$('#' + button.id + 'Action').click(function(e) {
+						e.preventDefault();
 						onclick(button, $('#' + button.id + 'Action'));
 					});
 				});
 			}
 			
 			$('#' + $(this).attr('id') + "Action").off('click');
-			$('#' + $(this).attr('id') + "Action").on('click', function() {
-
+			$('#' + $(this).attr('id') + "Action").on('click', function(e) {
+				e.preventDefault();
 				var resource = dialogOptions.createResource();
 				if(params === 'copy') {
 					resource.id = null;
