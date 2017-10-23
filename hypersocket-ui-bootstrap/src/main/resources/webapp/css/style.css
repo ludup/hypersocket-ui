@@ -2201,7 +2201,7 @@ select[multiple] {
 form#logonForm {
 	color: #34495e;
 	margin-top: 50px;
-	padding-bottom: 20px;
+	padding: 15px;
 	width: 600px;
 }
 
@@ -2246,7 +2246,7 @@ button#logonButton {
 	
 form#logonForm {
 	margin-top: 50px;
-	padding-bottom: 20px;
+	padding: 15px;
 }
 
 .form-signin {

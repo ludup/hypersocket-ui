@@ -51,7 +51,7 @@ $.fn.passwordPolicy = function(data) {
 				policy: 'currentPrincipal',
 				showGenerator: true,
 				showPolicyName: false,
-				title: getResource('passwordRules.text')
+				title: getResource('passwordRules.text'),
 			}, data);
 	
 	var url;
@@ -270,7 +270,7 @@ $.fn.passwordPolicy = function(data) {
 					+ getResource("suggestedPassword.text")
 					+ '</strong></span></div>');
 			
-			thisDiv.append('<div id="generatedPassword"><span id="suggestedPassword" class="success"></span><span>&nbsp;&nbsp;</span><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
+			thisDiv.append('<div id="generatedPassword"><div id="passwordHolder"><span id="suggestedPassword" class="success"></span></div><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
 					 + getResource("regeneratePassword.text") + '"><i class="fa fa-2x fa-refresh"></i></a></div>');
 			
 			thisDiv.append('<div id="passwordStrength"></div>');
@@ -308,7 +308,32 @@ $.fn.passwordPolicy = function(data) {
 					options.confirmElement.val($('#suggestedPassword').text());
 					options.confirmElement.trigger('change');
 				});
+				
+				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a href="#" class="copyPassword" data-toggle="tooltip" data-placement="top" title="'
+						 + getResource("copyCredentials.text") + '"><i class="fa fa-2x fa-copy"></i></a>');
+			
+				var opts = {
+					    text: function(e) {
+					    	var pwd = $('#suggestedPassword').text();
+					        return pwd;
+					    }
+				};
+				
+				if(options.bootstrapContainer) {
+					opts.container = document.getElementById(options.bootstrapContainer);
+				}
+				
+				var clipboard = new Clipboard('.copyPassword', opts);
+				
+				clipboard.on('success', function(e) {
+					showSuccess("Copied password to clipboard");
+				});
+				
+				clipboard.on('error', function(e) {
+					showError("Clipboard error!");
+				});
 			}
+			
 			
 			$('[data-toggle="tooltip"]').tooltip();
 		}

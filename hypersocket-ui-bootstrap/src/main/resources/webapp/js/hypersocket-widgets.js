@@ -5573,16 +5573,16 @@ $.fn.multipleRows = function(data) {
 					element.textInput({ }).setValue(value);
 				},
 				generateValue: function(element) {
-					log('Unimplemented generateValue');
+					return element.widget().getValue();
 				},
 				enable: function(element) {
-					log('Unimplemented enable');
+					element.widget().enable();
 				},
 				disable: function(element) {
-					log('Unimplemented disable');
+					element.widget().disable();
 				}, 
 				clear: function(element) {
-					log('Unimplemented clear');
+					element.widget().clear();
 				}
 			}, data);
 	
@@ -5658,7 +5658,7 @@ $.fn.multipleRows = function(data) {
 				var res = [];
 				$('#' + id + 'Rows').children().each(function(idx, row) {
 					if($(row).find('.widget').length > 0) {
-						res.push(options.generateValue($(row)));
+						res.push(options.generateValue($(row).find('.widget').first()));
 					}
 				});
 				
@@ -5670,12 +5670,12 @@ $.fn.multipleRows = function(data) {
 			},
 			disable: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					options.disable($(this));
+					options.disable($(row).find('.widget').first());
 				});
 			},
 			enable: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					options.enable($(this));
+					options.enable($(row).find('.widget').first());
 				});
 			},
 			options: function() {
@@ -5686,7 +5686,7 @@ $.fn.multipleRows = function(data) {
 			}, 
 			clear: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
-					options.clear($(this));
+					options.clear($(row).find('.widget').first());
 				});
 			}
 	}

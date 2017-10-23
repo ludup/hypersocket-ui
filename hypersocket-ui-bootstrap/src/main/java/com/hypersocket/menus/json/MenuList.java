@@ -23,6 +23,7 @@ public class MenuList {
 
 	List<Menu> menus = new ArrayList<Menu>();
 	boolean isSystemAdmin = false;
+	boolean isRealmAdmin = false;
 	List<Realm> realms;
 	
 	public MenuList() {
@@ -53,8 +54,16 @@ public class MenuList {
 		return isSystemAdmin;
 	}
 	
+	public boolean isRealmAdmin() {
+		return isRealmAdmin;
+	}
+	
 	public void setSystemAdmin(boolean isSystemAdmin) {
 		this.isSystemAdmin = isSystemAdmin;
+	}
+	
+	public void setRealmAdmin(boolean isRealmAdmin) {
+		this.isRealmAdmin = isRealmAdmin;
 	}
 	
 	public void setRealms(List<Realm> realms) {

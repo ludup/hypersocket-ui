@@ -60,8 +60,9 @@
 			labelResourceKey: "suspendUser.minutes"
 		});
 
-		$('#suspendUser').data('action', function(resource) {
+		$('#suspendUser').data('action', function(resource, callback) {
 			$('#suspendUser').data('resource', resource);
+			$('#suspendUser').data('callback', callback);
 			$('#suspendUser').resourceDialog('create');
 		});
 		
@@ -87,6 +88,9 @@
 			},
 			validate : function() {
 				return true;
+			},
+			resourceSaved: function() {
+				$('#suspendUser').data('callback')();
 			}
 		});
 	});

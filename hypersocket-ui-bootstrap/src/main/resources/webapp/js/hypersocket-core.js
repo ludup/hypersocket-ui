@@ -5,6 +5,7 @@ var currentRealm = null;
 var currentRole = null;
 var countries = null;
 var restartAutoLogoff = false;
+var menuList = null;
 var allMenus = new Array();
 
 doAjax({
@@ -236,7 +237,8 @@ function home(data) {
 	getJSON('menus', null, function(data) {
 
 			log("Received menus");
-
+			menuList = data;
+			
 			$('#menu').empty();
 
 			$.each(
