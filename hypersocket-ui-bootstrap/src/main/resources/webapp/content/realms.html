@@ -49,21 +49,6 @@
 						});
 					 }
 
-					var buttons = [];
-// 					buttons.push({
-// 				  		resourceKey: 'realmImport',
-// 						buttonClass: 'btn-primary',
-// 						icon: 'fa-upload',
-// 						action: function(callback) {
-// 							if(!$('#importRealmPlaceholder').length) {
-// 								$('body').append('<div id="importRealmPlaceholder"></div>');
-// 							}
-// 							$('#importRealmPlaceholder').load(uiPath + "content/importRealmDialog.html", function(){
-// 								$('#importRealm').data('importUrl', 'realms/import');
-// 								$('#importRealm').data('action')(callback);
-// 							});
-// 						}
-// 				  	});
 					$('#realmsContent')
 						.ajaxResourcePage(
 							{ id: 'Realm',
@@ -82,7 +67,6 @@
 							  canCreate : currentMenu.canCreate, 
 							  canUpdate : currentMenu.canUpdate, 
 							  canDelete : currentMenu.canDelete,
-							  additionalButtons : buttons,
 							  additionalActions : actions,
 							  checkbox : true,
 							  validate : function() {
@@ -157,6 +141,7 @@
 									{ url : 'realms/realm/properties/' + resource.id, 
 										showButtons : false, 
 										resource: resource,
+										useFilters: true,
 										i18nNamespace: $('#typeButton').widget().getSelectedObject().module,
 										displayMode: 'admin,update,parent',
 										canUpdate : currentMenu.canUpdate && !readOnly,
