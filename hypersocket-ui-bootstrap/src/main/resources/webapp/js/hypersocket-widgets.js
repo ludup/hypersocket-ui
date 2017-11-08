@@ -5656,10 +5656,8 @@ $.fn.multipleRows = function(data) {
 			},
 			getValue: function() {
 				var res = [];
-				$('#' + id + 'Rows').children().each(function(idx, row) {
-					if($(row).find('.widget').length > 0) {
-						res.push(options.generateValue($(row).find('.widget').first()));
-					}
+				$('#' + id + 'Rows .rowInput').each(function(idx, row) {
+					res.push(options.generateValue($(this)));
 				});
 				
 				return res;
@@ -6288,20 +6286,20 @@ $.fn.autoCompleteNamePairs = function(data) {
 	var options = $.extend(
 			{
 				disable: function(element){
-					element.children('.widget').widget().disable();
+					element.widget().disable();
 				},
 				enable: function(element){
-					element.children('.widget').widget().enable();
+					element.widget().enable();
 				},
 				render: function(element, value) {
 					autoCompleteNamePairOptions.value = value;
 					element.autoCompleteNamePair(autoCompleteNamePairOptions);
 				},
 				generateValue: function(element){
-					return element.children('.widget').widget().getValue();
+					return element.widget().getValue();
 				},
 				clear: function(element){
-					element.children('.widget').widget().clear();
+					element.widget().clear();
 				}
 			}, data);
 	var autoCompleteNamePairOptions = {
