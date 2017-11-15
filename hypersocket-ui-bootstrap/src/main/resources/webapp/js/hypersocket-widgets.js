@@ -2066,7 +2066,14 @@ $.fn.multipleSearchInput = function(data) {
 
 		var callback = {
 			setValue: function(val) {
-				// Cannot be done yet.
+				toSelect.empty();
+				$.each(val, function(idx, obj) {
+					var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + '</span>&ensp;<i class="fa fa-times"></i></li>');
+					var cross = newElement.find('i');
+					processCrossDeletable(cross, obj);
+					toSelect.append(newElement);
+					addListeners(newElement);
+				});
 			},
 			getValue: function() {
 				result = new Array();
@@ -5711,9 +5718,16 @@ $.fn.roles = function(data) {
 		}
 	
 	if(!$('#' + roleDivId).data('created')) {
-	
-		var div = '<div id="' + roleDivId  + '"></div>';
-	
+		var div = '<div class="propertyItem form-group">' +
+			'<div>' +
+				'<label class="col-md-3 control-label optionalField">' + getResource('roles.label') + '</label>' + 
+				'<div class="propertyValue col-md-9">' +
+					'<div id="' + roleDivId + '" class="roles"></div>' +
+				'<span class="help-block">' + getResource('roles.info') + '</span>' +
+				'</div>' +
+			'</div>' +
+		'</div>';
+		
 		$(this).append(div);
 		
 		$('#' + roleDivId).multipleSearchInput(widgetConfig);
