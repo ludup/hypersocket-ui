@@ -974,6 +974,9 @@ $.fn.propertyPage = function(opts) {
 										makeBooleanSafe(obj);
 										if(obj.url) {
 											obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
+											if(options.urlProcessor) {
+												obj.url = options.urlProcessor(obj.url);
+											}
 										}
 										
 										if(obj.displayMode && obj.displayMode != '') {

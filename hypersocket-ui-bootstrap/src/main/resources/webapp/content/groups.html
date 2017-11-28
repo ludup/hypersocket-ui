@@ -74,21 +74,6 @@
 		});
 	
 		
-		$('#groupProperties').propertyPage({
-			url : apiUrl + '/group/template/' + groupRealm.resourceCategory,
-			showButtons : false,
-			useTemplates : true,
-			canUpdate : currentMenu.canUpdate,
-			additionalTabs : [ {
-				id : "tabGroupUsers",
-				name : getResource("label.users")
-			},
-			{
-				id : "tabGroupGroups",
-				name : getResource("label.groups")
-			}]
-		});
-		
 		$('#contentGroups').ajaxResourcePage(
 				{
 				id: 'Group',
@@ -130,6 +115,9 @@
 							showButtons : false,
 							useTemplates : true,
 							canUpdate : currentMenu.canUpdate,
+							urlProcessor: function(url) {
+								return url.replace('$' + '{realmApi}', apiUrl);
+							},
 							additionalTabs : [ {
 								id : "tabGroupUsers",
 								name : getResource("label.users")
@@ -182,6 +170,9 @@
 						url : apiUrl + '/group/properties/' + resource.id,
 						showButtons : false,
 						useTemplates : true,
+						urlProcessor: function(url) {
+							return url.replace('$' + '{realmApi}', apiUrl);
+						},
 						canUpdate : currentMenu.canUpdate,
 						additionalTabs : [ {
 							id : "tabGroupUsers",

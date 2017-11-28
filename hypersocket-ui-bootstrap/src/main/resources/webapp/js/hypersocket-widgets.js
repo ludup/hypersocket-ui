@@ -16,9 +16,11 @@ function processURL(widget, url) {
 	    
 	    // The result can be accessed through the `m`-variable.
 	    m.forEach(function(match, groupIndex) {
-	    	var w = $(document).data('widgetMap')[m[1]];
-	    	if(w) {
-	    		url = url.replace(match, w.getValue());
+	    	if($(document).data('widgetMap')) {
+		    	var w = $(document).data('widgetMap')[m[1]];
+		    	if(w) {
+		    		url = url.replace(match, w.getValue());
+		    	}
 	    	}
 	    });
 	}

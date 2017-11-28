@@ -144,25 +144,6 @@
 						});
 					 }
 
-					$('#userProperties').propertyPage({
-						url : apiUrl + '/user/template/' + userRealm.resourceCategory,
-						showButtons : false,
-						displayMode: 'create,admin',
-						useTemplates : true,
-						propertyTabsLast: false,
-						i18nNamespace: userRealm.resourceCategory,
-						canUpdate : true,
-						displayMode: 'admin,create',
-						useFilters: true,
-						additionalTabs : [ {
-							id : "tabUserGroups",
-							name : getResource("label.groups")
-						},{
-							id : "tabPassword",
-							name : getResource("label.password")
-						} ]
-					});
-
 					var searchFields = [{
 						name: 'name'
 					}, {
@@ -351,6 +332,7 @@
 										$('#passwordPolicy').empty();
 										$('#passwordPolicy').passwordPolicy({
 											policy: 'default',
+											realm: userRealm.id,
 											showGenerator: true,
 											passwordElement: $('#userPassword'),
 											confirmElement: $('#userConfirmPassword'),
@@ -369,6 +351,9 @@
 											displayMode: 'admin,create',
 											useTemplates : true,
 											propertyTabsLast: false,
+											urlProcessor: function(url) {
+												return url.replace('$' + '{realmApi}', apiUrl);
+											},
 											i18nNamespace: userRealm.resourceCategory,
 											canUpdate : true,
 											useFilters: true,
@@ -445,6 +430,16 @@
 										$('#pageContent').startSpin();
 									}
 									
+									$('#passwordPolicy').empty();
+									$('#passwordPolicy').passwordPolicy({
+										policy: 'principal',
+										principalId: resource.id,
+										showGenerator: true,
+										passwordElement: $('#userPassword'),
+										confirmElement: $('#userConfirmPassword'),
+										usernameElement: $('#userName')
+									});
+									
 									getJSON(apiUrl + '/groups/user/' + resource.id, null, function(data) {
 									
 										var tabs = [];
@@ -481,6 +476,9 @@
 											displayMode: 'admin,update',
 											canUpdate : true,
 											propertyTabsLast: false,
+											urlProcessor: function(url) {
+												return url.replace('$' + '{realmApi}', apiUrl);
+											},
 											i18nNamespace: userRealm.resourceCategory,
 											useFilters: true,
 											additionalTabs : tabs,
