@@ -18,6 +18,8 @@ public class PrincipalExtendedService {
     private void postConstruct() {
         menuService.registerExtendedInformationTab("principalTabs",
                 new TabRegistration("principalGroupMapping", "tabs/principalGroupMapping", UserPermission.UPDATE, 100));
+        menuService.registerExtendedInformationTab("secondaryTabs",
+                new TabRegistration("principalGroupMapping", "tabs/principalGroupMapping", UserPermission.UPDATE, 100));
         menuService.registerExtendedInformationTab("principalTabs",
                 new TabRegistration("principalRoleMapping", "tabs/principalRoleMapping", UserPermission.UPDATE, 200));
     }

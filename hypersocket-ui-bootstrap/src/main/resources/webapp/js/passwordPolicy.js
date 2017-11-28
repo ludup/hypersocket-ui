@@ -334,8 +334,12 @@ $.fn.passwordPolicy = function(data) {
 				});
 			}
 			
-			
 			$('[data-toggle="tooltip"]').tooltip();
+		}
+		
+		
+		if(options.complete) {
+			options.complete();
 		}
 	});
 }

@@ -261,11 +261,18 @@
 								checkDelete: function(row) {
 									return currentMenu.canDelete && !row.readOnly;
 								},
-								detailFormatter: ownerRealm ? undefined : function(index, resource, $element) {
-									$element.extendedResourcePanel({resourceKey: "principalTabs",
-																	   resource: resource,
-																	   data: {parentContainer : '#contentUsers'}
-																	});
+								detailFormatter: ownerRealm ? 
+										function(index, resource, $element) {
+												$element.extendedResourcePanel({resourceKey: "secondaryTabs",
+													resource: resource,
+													data: {parentContainer : '#contentUsers'}
+							  			});
+								}
+								: function(index, resource, $element) {
+												$element.extendedResourcePanel({resourceKey: "principalTabs",
+													resource: resource,
+													data: {parentContainer : '#contentUsers'}
+										  });
 				    	    	},
 								additionalActions : actions,
 								checkbox : true,
@@ -349,6 +356,12 @@
 											confirmElement: $('#userConfirmPassword'),
 											usernameElement: $('#userName')
 										});
+
+										if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
+											$('#subMenuPageContent').startSpin();
+										} else {
+											$('#pageContent').startSpin();
+										}
 										
 										$('#userProperties').propertyPage({
 											url : apiUrl + '/user/template/' + userRealm.resourceCategory,
@@ -359,8 +372,23 @@
 											i18nNamespace: userRealm.resourceCategory,
 											canUpdate : true,
 											useFilters: true,
-											additionalTabs : tabs
+											additionalTabs : tabs,
+											complete: function() {
+												if(tabs.length > 1) {
+													$('#tabPassword').removeAttr("style");
+												}
+
+												if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
+													$('#subMenuPageContent').stopSpin();
+												} else {
+													$('#pageContent').stopSpin();
+												}
+												
+												$('#addUserModal').modal('show');
+											}
 										});
+										
+										return true;
 									} else {
 										$('.createOnly').hide();
 									}
@@ -409,7 +437,14 @@
 									
 									$('#tabPassword').hide();
 									$('#tabUserGroups').remove();
-																		
+									$('#userProperties').empty();
+									
+									if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
+										$('#subMenuPageContent').startSpin();
+									} else {
+										$('#pageContent').startSpin();
+									}
+									
 									getJSON(apiUrl + '/groups/user/' + resource.id, null, function(data) {
 									
 										var tabs = [];
@@ -439,7 +474,7 @@
 										
 										$('#userProperties').parent().append($('#tabPassword').detach());
 										
-										$('#userProperties').empty();
+										
 										$('#userProperties').propertyPage({
 											url : apiUrl + '/user/properties/' + resource.id,
 											showButtons : false,
@@ -453,13 +488,19 @@
 												if(tabs.length > 1) {
 													$('#tabPassword').removeAttr("style");
 												}
+
+												if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
+													$('#subMenuPageContent').stopSpin();
+												} else {
+													$('#pageContent').stopSpin();
+												}
+												
+												$('#addUserModal').modal('show');
 											}
 										});
-
-										$('#addUserModal').modal('show');
-
 									});
 									
+									return true;
 								},
 								searchFilters: searchFilters,
 								searchFiltersUrl: 'realms/users/filters',

@@ -75,7 +75,7 @@
 	
 		
 		$('#groupProperties').propertyPage({
-			url : apiUrl + '/group/template/' + currentRealm.resourceCategory,
+			url : apiUrl + '/group/template/' + groupRealm.resourceCategory,
 			showButtons : false,
 			useTemplates : true,
 			canUpdate : currentMenu.canUpdate,
@@ -96,7 +96,7 @@
 				title: title,
 				icon: 'fa-users',
 				resourceUrl : apiUrl + "/group",
-				deleteResourcesUrl : "currentRealm/bulk/groups",
+				deleteResourcesUrl : apiUrl + "/bulk/groups",
 				fields : [ { name: "name"} ],
 				resourceKey : 'group',
 				disableDecoration: disableDecoration,
@@ -126,7 +126,7 @@
 					
 					if(create) {
 						$('#groupProperties').propertyPage({
-							url : apiUrl + '/group/template/' + currentRealm.resourceCategory,
+							url : apiUrl + '/group/template/' + groupRealm.resourceCategory,
 							showButtons : false,
 							useTemplates : true,
 							canUpdate : currentMenu.canUpdate,
