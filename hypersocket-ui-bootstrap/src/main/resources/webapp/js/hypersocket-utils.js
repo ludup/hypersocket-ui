@@ -934,6 +934,14 @@ function isReplacementVariable(value) {
 	}
 }
 
+function containsReplacement(value) {
+	if(typeof value == 'string') {
+		return value.trim().indexOf('${') > -1 && value.trim().indexOf('}') > value.trim().indexOf('${');
+	} else {
+		return false;
+	}
+}
+
 function getVariableName(value) {
 	return value.trim().substring(2, value.trim().length - 1);
 }

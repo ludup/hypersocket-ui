@@ -71,7 +71,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 	}
 	
 	if(obj.allowAttribute) {
-		if(isReplacementVariable(value)) {
+		if(isReplacementVariable(value) || containsReplacement(value)) {
 			return true;
 		}
 	}
@@ -968,6 +968,7 @@ $.fn.propertyPage = function(opts) {
 										}, obj);
 										
 										if(options.defaults[obj.resourceKey]) {
+											debugger;
 											obj.value = options.defaults[obj.resourceKey];
 										}
 										
@@ -975,7 +976,7 @@ $.fn.propertyPage = function(opts) {
 										if(obj.url) {
 											obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
 											if(options.urlProcessor) {
-												obj.url = options.urlProcessor(obj.url);
+												obj.url = options.urlProcessor(obj.url, options.resource);
 											}
 										}
 										

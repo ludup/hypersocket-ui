@@ -13,12 +13,12 @@ function processURL(widget, url) {
 	    if (m.index === regex.lastIndex) {
 	        regex.lastIndex++;
 	    }
-	    
 	    // The result can be accessed through the `m`-variable.
 	    m.forEach(function(match, groupIndex) {
 	    	if($(document).data('widgetMap')) {
 		    	var w = $(document).data('widgetMap')[m[1]];
 		    	if(w) {
+		    		log("Replacing value " + w.getValue());
 		    		url = url.replace(match, w.getValue());
 		    	}
 	    	}
@@ -1071,7 +1071,8 @@ $.fn.autoComplete = function(data) {
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
 				thisWidget.data('selectedObject', obj);
-				$('#' + id).val(value);
+				$('#' + id).val(value.toString());
+				log("Setting value " + value);
 				$('#input_' + id).val($(this).text());
 				$('[data-toggle="dropdown"]').parent().removeClass('open');
 				
@@ -1317,6 +1318,7 @@ $.fn.autoComplete = function(data) {
 			updateValue(options.value, false);
 		} else {
 			if(options.value && options.value !== '') {
+				$('#' + id).val(options.value);
 				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
 				if(options.searchParams) {
 					url += '&' + options.searchParams;
