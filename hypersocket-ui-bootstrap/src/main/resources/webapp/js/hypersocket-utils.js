@@ -316,6 +316,7 @@ $.fn.getCursorPosition = function () {
 $.fn.startSpin = function () {
 
 	if(!$(this).find('.sk-fading-circle').length) {
+		$('.showOnComplete').hide();
 		$.each($(this).children(), function(idx, element) {
 			if($(element).is(":visible")) {
 				$(element).data('state', true);
@@ -346,6 +347,7 @@ $.fn.stopSpin = function () {
 	if(me.length) {
 		setTimeout(function() {
 			me.find('.sk-fading-circle').remove();
+			$('.showOnComplete').show();
 			$.each(me.children(), function(idx, element) {
 				if($(element).data('state')) {
 					$(element).show();
@@ -927,6 +929,14 @@ function isNotGmail(email){
 function isReplacementVariable(value) {
 	if(typeof value == 'string') {
 		return value.trim().startsWith('${') && value.trim().endsWith('}');
+	} else {
+		return false;
+	}
+}
+
+function containsReplacement(value) {
+	if(typeof value == 'string') {
+		return value.trim().indexOf('${') > -1 && value.trim().indexOf('}') > value.trim().indexOf('${');
 	} else {
 		return false;
 	}

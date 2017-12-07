@@ -74,21 +74,6 @@
 		});
 	
 		
-		$('#groupProperties').propertyPage({
-			url : apiUrl + '/group/template/' + currentRealm.resourceCategory,
-			showButtons : false,
-			useTemplates : true,
-			canUpdate : currentMenu.canUpdate,
-			additionalTabs : [ {
-				id : "tabGroupUsers",
-				name : getResource("label.users")
-			},
-			{
-				id : "tabGroupGroups",
-				name : getResource("label.groups")
-			}]
-		});
-		
 		$('#contentGroups').ajaxResourcePage(
 				{
 				id: 'Group',
@@ -96,7 +81,7 @@
 				title: title,
 				icon: 'fa-users',
 				resourceUrl : apiUrl + "/group",
-				deleteResourcesUrl : "currentRealm/bulk/groups",
+				deleteResourcesUrl : apiUrl + "/bulk/groups",
 				fields : [ { name: "name"} ],
 				resourceKey : 'group',
 				disableDecoration: disableDecoration,
@@ -126,10 +111,13 @@
 					
 					if(create) {
 						$('#groupProperties').propertyPage({
-							url : apiUrl + '/group/template/' + currentRealm.resourceCategory,
+							url : apiUrl + '/group/template/' + groupRealm.resourceCategory,
 							showButtons : false,
 							useTemplates : true,
 							canUpdate : currentMenu.canUpdate,
+							urlProcessor: function(url) {
+								return url.replace('$' + '{realmApi}', apiUrl);
+							},
 							additionalTabs : [ {
 								id : "tabGroupUsers",
 								name : getResource("label.users")
@@ -182,6 +170,9 @@
 						url : apiUrl + '/group/properties/' + resource.id,
 						showButtons : false,
 						useTemplates : true,
+						urlProcessor: function(url) {
+							return url.replace('$' + '{realmApi}', apiUrl);
+						},
 						canUpdate : currentMenu.canUpdate,
 						additionalTabs : [ {
 							id : "tabGroupUsers",

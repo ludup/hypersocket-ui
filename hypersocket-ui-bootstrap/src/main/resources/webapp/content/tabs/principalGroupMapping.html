@@ -12,7 +12,7 @@ $(document).ready(function() {
 
         _$('#principalGroupMapping').localize();
 
-            getJSON('currentRealm/groups/user/' + resource.id, null, function(response){
+            getJSON($(document).data('apiUrl') + '/groups/user/' + resource.id, null, function(response){
                 if(response.resources) {
                     var initObj = {
                         disabled: readOnly,
@@ -25,7 +25,7 @@ $(document).ready(function() {
                         preAddCallback : function(data){
                        
                              var groupId = data.id;
-                             patchJSON('currentRealm/group/' + groupId + '/user/' + resource.id, null, function(data){
+                             patchJSON($(document).data('apiUrl') + '/group/' + groupId + '/user/' + resource.id, null, function(data){
                                  if(data.success){
                                      showSuccess(data.message);
                                  }else{
@@ -39,7 +39,7 @@ $(document).ready(function() {
                             
                                 var callback = el.data('widget');
                                 var groupId = $(evt.target).data('value').id;
-                                deleteJSON('currentRealm/group/' + groupId + '/user/' + resource.id, null, function(response){
+                                deleteJSON($(document).data('apiUrl') + '/group/' + groupId + '/user/' + resource.id, null, function(response){
                                     if(response.success){
                                         showSuccess(response.message);
                                     }else{
@@ -53,7 +53,7 @@ $(document).ready(function() {
                         objectDeletable : function(obj){
                             return !obj.allUsers;
                         },
-                        url : 'currentRealm/groups/filter/' + resource.id
+                        url : $(document).data('apiUrl') + '/groups/filter/' + resource.id
                     };
                     el.multipleSearchInput(initObj);
                 }

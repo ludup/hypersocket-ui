@@ -60,7 +60,11 @@ $.fn.passwordPolicy = function(data) {
 	if(options.policy === 'currentPrincipal') {
 		url = 'passwordPolicys/myPolicy';
 	} else if(options.policy === 'default') { 
-		url = 'passwordPolicys/default';
+		if(options.realm) {
+			url = 'passwordPolicys/default/' + options.realm;
+		} else {
+			url = 'passwordPolicys/default';
+		}
 	} else {
 		url = 'passwordPolicys/policy/' + options.principalId
 	}
@@ -394,8 +398,12 @@ $.fn.passwordPolicy = function(data) {
 				});
 			}
 			
-			
 			$('[data-toggle="tooltip"]').tooltip();
+		}
+		
+		
+		if(options.complete) {
+			options.complete();
 		}
 	});
 }

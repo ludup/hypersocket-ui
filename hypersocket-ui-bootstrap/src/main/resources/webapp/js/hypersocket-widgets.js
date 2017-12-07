@@ -13,12 +13,14 @@ function processURL(widget, url) {
 	    if (m.index === regex.lastIndex) {
 	        regex.lastIndex++;
 	    }
-	    
 	    // The result can be accessed through the `m`-variable.
 	    m.forEach(function(match, groupIndex) {
-	    	var w = $(document).data('widgetMap')[m[1]];
-	    	if(w) {
-	    		url = url.replace(match, w.getValue());
+	    	if($(document).data('widgetMap')) {
+		    	var w = $(document).data('widgetMap')[m[1]];
+		    	if(w) {
+		    		log("Replacing value " + w.getValue());
+		    		url = url.replace(match, w.getValue());
+		    	}
 	    	}
 	    });
 	}
@@ -1069,7 +1071,8 @@ $.fn.autoComplete = function(data) {
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
 				thisWidget.data('selectedObject', obj);
-				$('#' + id).val(value);
+				$('#' + id).val(value.toString());
+				log("Setting value " + value);
 				$('#input_' + id).val($(this).text());
 				$('[data-toggle="dropdown"]').parent().removeClass('open');
 				
@@ -1315,6 +1318,7 @@ $.fn.autoComplete = function(data) {
 			updateValue(options.value, false);
 		} else {
 			if(options.value && options.value !== '') {
+				$('#' + id).val(options.value);
 				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
 				if(options.searchParams) {
 					url += '&' + options.searchParams;
@@ -2066,7 +2070,14 @@ $.fn.multipleSearchInput = function(data) {
 
 		var callback = {
 			setValue: function(val) {
-				// Cannot be done yet.
+				toSelect.empty();
+				$.each(val, function(idx, obj) {
+					var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + '</span>&ensp;<i class="fa fa-times"></i></li>');
+					var cross = newElement.find('i');
+					processCrossDeletable(cross, obj);
+					toSelect.append(newElement);
+					addListeners(newElement);
+				});
 			},
 			getValue: function() {
 				result = new Array();
@@ -5656,10 +5667,8 @@ $.fn.multipleRows = function(data) {
 			},
 			getValue: function() {
 				var res = [];
-				$('#' + id + 'Rows').children().each(function(idx, row) {
-					if($(row).find('.widget').length > 0) {
-						res.push(options.generateValue($(row).find('.widget').first()));
-					}
+				$('#' + id + 'Rows .rowInput').each(function(idx, row) {
+					res.push(options.generateValue($(this)));
 				});
 				
 				return res;
@@ -5713,9 +5722,16 @@ $.fn.roles = function(data) {
 		}
 	
 	if(!$('#' + roleDivId).data('created')) {
-	
-		var div = '<div id="' + roleDivId  + '"></div>';
-	
+		var div = '<div class="propertyItem form-group">' +
+			'<div>' +
+				'<label class="col-md-3 control-label optionalField">' + getResource('roles.label') + '</label>' + 
+				'<div class="propertyValue col-md-9">' +
+					'<div id="' + roleDivId + '" class="roles"></div>' +
+				'<span class="help-block">' + getResource('roles.info') + '</span>' +
+				'</div>' +
+			'</div>' +
+		'</div>';
+		
 		$(this).append(div);
 		
 		$('#' + roleDivId).multipleSearchInput(widgetConfig);
@@ -6288,20 +6304,20 @@ $.fn.autoCompleteNamePairs = function(data) {
 	var options = $.extend(
 			{
 				disable: function(element){
-					element.children('.widget').widget().disable();
+					element.widget().disable();
 				},
 				enable: function(element){
-					element.children('.widget').widget().enable();
+					element.widget().enable();
 				},
 				render: function(element, value) {
 					autoCompleteNamePairOptions.value = value;
 					element.autoCompleteNamePair(autoCompleteNamePairOptions);
 				},
 				generateValue: function(element){
-					return element.children('.widget').widget().getValue();
+					return element.widget().getValue();
 				},
 				clear: function(element){
-					element.children('.widget').widget().clear();
+					element.widget().clear();
 				}
 			}, data);
 	var autoCompleteNamePairOptions = {

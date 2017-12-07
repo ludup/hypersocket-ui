@@ -144,25 +144,6 @@
 						});
 					 }
 
-					$('#userProperties').propertyPage({
-						url : apiUrl + '/user/template/' + userRealm.resourceCategory,
-						showButtons : false,
-						displayMode: 'create,admin',
-						useTemplates : true,
-						propertyTabsLast: false,
-						i18nNamespace: userRealm.resourceCategory,
-						canUpdate : true,
-						displayMode: 'admin,create',
-						useFilters: true,
-						additionalTabs : [ {
-							id : "tabUserGroups",
-							name : getResource("label.groups")
-						},{
-							id : "tabPassword",
-							name : getResource("label.password")
-						} ]
-					});
-
 					var searchFields = [{
 						name: 'name'
 					}, {
@@ -261,11 +242,18 @@
 								checkDelete: function(row) {
 									return currentMenu.canDelete && !row.readOnly;
 								},
-								detailFormatter: ownerRealm ? undefined : function(index, resource, $element) {
-									$element.extendedResourcePanel({resourceKey: "principalTabs",
-																	   resource: resource,
-																	   data: {parentContainer : '#contentUsers'}
-																	});
+								detailFormatter: ownerRealm ? 
+										function(index, resource, $element) {
+												$element.extendedResourcePanel({resourceKey: "secondaryTabs",
+													resource: resource,
+													data: {parentContainer : '#contentUsers'}
+							  			});
+								}
+								: function(index, resource, $element) {
+												$element.extendedResourcePanel({resourceKey: "principalTabs",
+													resource: resource,
+													data: {parentContainer : '#contentUsers'}
+										  });
 				    	    	},
 								additionalActions : actions,
 								checkbox : true,
@@ -344,11 +332,18 @@
 										$('#passwordPolicy').empty();
 										$('#passwordPolicy').passwordPolicy({
 											policy: 'default',
+											realm: userRealm.id,
 											showGenerator: true,
 											passwordElement: $('#userPassword'),
 											confirmElement: $('#userConfirmPassword'),
 											usernameElement: $('#userName')
 										});
+
+										if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
+											$('#subMenuPageContent').startSpin();
+										} else {
+											$('#pageContent').startSpin();
+										}
 										
 										$('#userProperties').propertyPage({
 											url : apiUrl + '/user/template/' + userRealm.resourceCategory,
@@ -356,11 +351,29 @@
 											displayMode: 'admin,create',
 											useTemplates : true,
 											propertyTabsLast: false,
+											urlProcessor: function(url) {
+												return url.replace('$' + '{realmApi}', apiUrl);
+											},
 											i18nNamespace: userRealm.resourceCategory,
 											canUpdate : true,
 											useFilters: true,
-											additionalTabs : tabs
+											additionalTabs : tabs,
+											complete: function() {
+												if(tabs.length > 1) {
+													$('#tabPassword').removeAttr("style");
+												}
+
+												if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
+													$('#subMenuPageContent').stopSpin();
+												} else {
+													$('#pageContent').stopSpin();
+												}
+												
+												$('#addUserModal').modal('show');
+											}
 										});
+										
+										return true;
 									} else {
 										$('.createOnly').hide();
 									}
@@ -409,7 +422,24 @@
 									
 									$('#tabPassword').hide();
 									$('#tabUserGroups').remove();
-																		
+									$('#userProperties').empty();
+									
+									if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
+										$('#subMenuPageContent').startSpin();
+									} else {
+										$('#pageContent').startSpin();
+									}
+									
+									$('#passwordPolicy').empty();
+									$('#passwordPolicy').passwordPolicy({
+										policy: 'principal',
+										principalId: resource.id,
+										showGenerator: true,
+										passwordElement: $('#userPassword'),
+										confirmElement: $('#userConfirmPassword'),
+										usernameElement: $('#userName')
+									});
+									
 									getJSON(apiUrl + '/groups/user/' + resource.id, null, function(data) {
 									
 										var tabs = [];
@@ -439,13 +469,16 @@
 										
 										$('#userProperties').parent().append($('#tabPassword').detach());
 										
-										$('#userProperties').empty();
+										
 										$('#userProperties').propertyPage({
 											url : apiUrl + '/user/properties/' + resource.id,
 											showButtons : false,
 											displayMode: 'admin,update',
 											canUpdate : true,
 											propertyTabsLast: false,
+											urlProcessor: function(url) {
+												return url.replace('$' + '{realmApi}', apiUrl);
+											},
 											i18nNamespace: userRealm.resourceCategory,
 											useFilters: true,
 											additionalTabs : tabs,
@@ -453,13 +486,19 @@
 												if(tabs.length > 1) {
 													$('#tabPassword').removeAttr("style");
 												}
+
+												if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
+													$('#subMenuPageContent').stopSpin();
+												} else {
+													$('#pageContent').stopSpin();
+												}
+												
+												$('#addUserModal').modal('show');
 											}
 										});
-
-										$('#addUserModal').modal('show');
-
 									});
 									
+									return true;
 								},
 								searchFilters: searchFilters,
 								searchFiltersUrl: 'realms/users/filters',

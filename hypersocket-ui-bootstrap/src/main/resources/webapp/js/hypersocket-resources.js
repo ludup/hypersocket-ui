@@ -177,7 +177,7 @@ $.fn.resourceTable = function(params) {
 
 	var html = '';
 	if(!options.disableDecoration) {
-		html += '<div class="panel panel-default"><div class="panel-heading"><h2><i class="fa '
+		html += '<div class="panel panel-default showOnComplete" style="display: none"><div class="panel-heading"><h2><i class="fa '
 			+ options.icon + '"></i><span class="break">' 
 			+ options.title + '</span></h2></div>';
 	}
@@ -1356,7 +1356,10 @@ $.fn.samePageResourceView = function(params, params2) {
 	} else if(params === 'edit') {
 		
 		dialogOptions.clearDialog(false);
-		dialogOptions.displayResource(params2, false);
+		var selfShow = dialogOptions.displayResource(params2, false, function() {
+			addActions(true);
+			showView(dialog);
+		});
 		
 		if(dialogOptions.propertyOptions) {
 			var propertyOptions = $.extend({},
@@ -1722,7 +1725,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 
 		log("Creating resource dialog");
 
-		dialogOptions.clearDialog(true);
+		var selfShow = dialogOptions.clearDialog(true);
 		removeMessage();
 
 		if(dialogOptions.propertyOptions)
@@ -1755,14 +1758,17 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 				func();
 			}
 		});
-		dialog.modal('show');
+		
+		if(!selfShow) {
+			dialog.modal('show');
+		}
 		return;
 
 	} else if (params === 'edit' || params === 'read' || params === 'copy') {
 		var readOnly = params==='read';
 		dialogOptions.clearDialog(false);
 		removeMessage();
-		
+		var selfShow = false;
 		if(params === 'copy') {
 			if(dialogOptions.remoteCopy) {
 				var copiedResource = $.extend(true, {}, params2);
@@ -1781,10 +1787,10 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			} else {
 				var copiedResource = $.extend(true, {}, params2);
 				copiedResource.name = copiedResource.name + ' (' + getResource('text.copy') + ')';
-				dialogOptions.displayResource(copiedResource, readOnly, true);
+				selfShow = dialogOptions.displayResource(copiedResource, readOnly, true);
 			}
 		} else {
-			dialogOptions.displayResource(params2, readOnly, false);
+			selfShow = dialogOptions.displayResource(params2, readOnly, false);
 		}
 		if(readOnly) {
 			$(this).find('.modal-title').text(
@@ -1877,7 +1883,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			});
 		}
 		
-		dialog.modal('show');
+		if(!selfShow) {
+			dialog.modal('show');
+		}
 		return;
 
 	} else if (params === 'close') {

@@ -71,7 +71,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 	}
 	
 	if(obj.allowAttribute) {
-		if(isReplacementVariable(value)) {
+		if(isReplacementVariable(value) || containsReplacement(value)) {
 			return true;
 		}
 	}
@@ -765,6 +765,15 @@ $.fn.propertyPage = function(opts) {
 				createAdditionalTabs();
 			}
 			
+			data.resources.sort(function(a,b) {
+				if(a.weight > b.weight) {
+					return 1;
+				} else if(a.weight < b.weight) {
+					return -1;
+				} else {
+					return 0;
+				}
+			});
 			
 			if(data.resources) {
 				
@@ -959,12 +968,16 @@ $.fn.propertyPage = function(opts) {
 										}, obj);
 										
 										if(options.defaults[obj.resourceKey]) {
+											debugger;
 											obj.value = options.defaults[obj.resourceKey];
 										}
 										
 										makeBooleanSafe(obj);
 										if(obj.url) {
 											obj.url = obj.url.replace('$' + '{uiPath}', '${uiPath}').replace('$' + '{basePath}', '${basePath}');
+											if(options.urlProcessor) {
+												obj.url = options.urlProcessor(obj.url, options.resource);
+											}
 										}
 										
 										if(obj.displayMode && obj.displayMode != '') {

@@ -376,6 +376,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		registerExtendedInformationTab("principalTabs",
                 new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.UPDATE, 0));
+		registerExtendedInformationTab("secondaryTabs",
+                new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.UPDATE, 0));
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
