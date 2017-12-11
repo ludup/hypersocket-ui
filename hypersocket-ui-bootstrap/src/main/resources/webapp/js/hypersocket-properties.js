@@ -444,15 +444,6 @@ function validateAll(widget,value,conditions){
     }
 }
 
-function validateRegex(regex,value){
-	if(value) {
-		var patt = new RegExp(regex) ;
-		return patt.test(value);
-	} else {
-		return false;
-	}
-}
-
 function getWidget(resourceKey) {
 	var widget = undefined;
 	$('.widget').each(function(idx, obj) {

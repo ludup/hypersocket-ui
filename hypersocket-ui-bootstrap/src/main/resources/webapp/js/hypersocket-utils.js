@@ -926,6 +926,15 @@ function isNotGmail(email){
 	return validateRegex("^(.(?!@gmail\.com))*$",email);
 }
 
+function validateRegex(regex,value){
+	if(value) {
+		var patt = new RegExp(regex) ;
+		return patt.test(value);
+	} else {
+		return false;
+	}
+}
+
 function isReplacementVariable(value) {
 	if(typeof value == 'string') {
 		return value.trim().startsWith('${') && value.trim().endsWith('}');
@@ -940,6 +949,20 @@ function containsReplacement(value) {
 	} else {
 		return false;
 	}
+}
+
+function startSpin(element, iconClass) {
+	element.removeClass(iconClass);
+	element.addClass('fa-spin');
+	element.addClass('fa-spinner');
+	element.parent().attr('disabled', true);
+}
+
+function stopSpin(element, iconClass) {
+	element.removeClass('fa-spin');
+	element.removeClass('fa-spinner');
+	element.addClass(iconClass);
+	element.parent().attr('disabled', false);
 }
 
 function getVariableName(value) {

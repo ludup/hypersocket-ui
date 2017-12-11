@@ -5342,15 +5342,17 @@ $.fn.wizardPage = function(data) {
 		$('.panel').first().show();
 		$('.collapse').first().collapse('show');
 		
-		return {
-			reset: function() {
-				$('#resetForm').click();
-			},
-			showError: function(str) {
-				
-			}
-		}
+		
 	});
+		
+	return {
+		reset: function() {
+			$('#resetForm').click();
+		},
+		showError: function(str) {
+			
+		}
+	}
 }
 
 $.fn.textAndSelect = function(data) {

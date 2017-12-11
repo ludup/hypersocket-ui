@@ -48,23 +48,6 @@ $.ajaxSetup({ error : function(xmlRequest) {
 }, cache : false });
 
 
-
-
-function startSpin(element, iconClass) {
-	element.removeClass(iconClass);
-	element.addClass('fa-spin');
-	element.addClass('fa-spinner');
-	element.parent().attr('disabled', true);
-}
-
-function stopSpin(element, iconClass) {
-	element.removeClass('fa-spin');
-	element.removeClass('fa-spinner');
-	element.addClass(iconClass);
-	element.parent().attr('disabled', false);
-}
-
-
 function PropertyItem(id, value) {
 	this.id = id;
 	this.value = value;
