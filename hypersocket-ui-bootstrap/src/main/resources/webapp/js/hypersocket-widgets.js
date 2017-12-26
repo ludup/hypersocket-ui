@@ -5307,15 +5307,18 @@ $.fn.wizardPage = function(data) {
 						
 						
 					} else {
+						stopSpin($('#button' + idx).find('i'), options.doneIcon);
+						
 						if(options.done) {
 							options.pageDone = true;
-							stopSpin($('#button' + idx).find('i'), options.doneIcon);
 							$('#button' + idx).find('span').text(getResource(options.doneText));
 						} else {
 							$('#button' + idx).attr('disabled', true);
-							if(options.hideResetOnComplete) {
-								$('#resetForm').hide();
-							}
+						}
+						
+						$('.backButton').attr('disabled', true);
+						if(options.hideResetOnComplete) {
+							$('#resetForm').hide();
 						}
 					}
 				}, function() {
