@@ -52,6 +52,8 @@ $.fn.passwordPolicy = function(data) {
 				showGenerator: true,
 				showPolicyName: false,
 				title: getResource('passwordRules.text'),
+				showRulesDefault: false,
+				showGeneratorDefault: true
 			}, data);
 	
 	var url;
@@ -72,21 +74,26 @@ $.fn.passwordPolicy = function(data) {
 	getJSON(url, null, function(data) {
 
 		if(!data.success) {
-			
-			thisDiv.append('<h4>' + options.title + '</h4>');
-			
+			var passwordRulesContent;
+			if(options.showRulesDefault){
+				thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + options.title + '</h4>');
+				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" styloe="padding-left: 30px;"></div>').find('#passwordRulesContent');
+			}else{
+				thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h4>');
+				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
+			}
 			if(data.message == 'Unsupported') {
-				thisDiv.append('<span><em>' 
+				passwordRulesContent.append('<span><em>' 
 						+ getResource("unsupported.text")
 						+ '</em></span><br>');
 			}
 			else {
 				if(options.currentPrincipal) {
-					thisDiv.append('<span><em>' 
+					passwordRulesContent.append('<span><em>' 
 							+ getResource("noRestrictions.text")
 							+ '</em></span><br>');
 				} else {				
-					thisDiv.append('<span><em>' 
+					passwordRulesContent.append('<span><em>' 
 							+ getResource("noRestrictionsOther.text")
 							+ '</em></span><br>');
 				}
@@ -95,12 +102,22 @@ $.fn.passwordPolicy = function(data) {
 		} else {
 			var policy = data.resource;
 			
-			if(options.showPolicyName) {
-				thisDiv.append('<h4>' + policy.name + '</h4>');
-			} else {
-				thisDiv.append('<h4>' + options.title + '</h4>');
+			var passwordRulesContent;
+			if(options.showRulesDefault){
+				if(options.showPolicyName) {
+					thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + policy.name + '</h4>');
+				} else {
+					thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + options.title + '</h4>');
+				}
+				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
+			}else{
+				if(options.showPolicyName) {
+					thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + policy.name + '</h4>');
+				} else {
+					thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h4>');
+				}
+				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}
-			
 			if(options.passwordElement && options.confirmElement) {
 				
 				options.passwordElement.on('change', function() {
@@ -136,34 +153,34 @@ $.fn.passwordPolicy = function(data) {
 				});
 			}
 
-			thisDiv.append('<span>' 
+			passwordRulesContent.append('<span>' 
 					+ getResource("minLength.text").format(policy.minimumLength)
 					+ '</span><br>');
-			thisDiv.append('<span>' 
+			passwordRulesContent.append('<span>' 
 					+ getResource("maxLength.text").format(policy.maximumLength)
 					+ '</span><br>');
 			if(policy.minimumAge > 0) {
 				if(policy.minimumAge == 1) {
-					thisDiv.append('<span>' 
+					passwordRulesContent.append('<span>' 
 							+ getResource("oneDay.text")
 							+ '</span><br>');
 				} else {
-					thisDiv.append('<span>' 
+					passwordRulesContent.append('<span>' 
 							+ getResource("minAge.text").format(policy.minimumAge)
 							+ '</span><br>');
 				}
 			}
 			if(policy.maximumAge > 0) {
-				thisDiv.append('<span>' 
+				passwordRulesContent.append('<span>' 
 					+ getResource("maximumAge.text").format(policy.maximumAge)
 					+ '</span><br>');
 			} else {
 				if(options.currentPrincipal) {
-					thisDiv.append('<span>' 
+					passwordRulesContent.append('<span>' 
 						+ getResource("noExpire.text")
 						+ '</span><br>');
 				} else {
-					thisDiv.append('<span>' 
+					passwordRulesContent.append('<span>' 
 							+ getResource("noExpireOther.text")
 							+ '</span><br>');
 				}
@@ -171,16 +188,16 @@ $.fn.passwordPolicy = function(data) {
 			
 			if(policy.minimumDigits > 0 || policy.minimumLower > 0 || policy.minimumUpper > 0 || policy.minimumSymbol > 0) {
 		
-				thisDiv.append('<span></span><br><span><em>'
+				passwordRulesContent.append('<span></span><br><span><em>'
 						+ getResource('mustContain.text').format(policy.minimumCriteriaMatches) + ':</em></span><br><br>');
 				
 				if(policy.minimumDigits > 0) {
 					if(policy.minimumDigits == 1) {
-						thisDiv.append('<span>' 
+						passwordRulesContent.append('<span>' 
 								+ getResource("oneDigit.text")
 								+ '</span><br>');
 					} else {
-						thisDiv.append('<span>' 
+						passwordRulesContent.append('<span>' 
 								+ getResource("minDigits.text").format(policy.minimumDigits)
 								+ '</span><br>');
 					}
@@ -188,11 +205,11 @@ $.fn.passwordPolicy = function(data) {
 				
 				if(policy.minimumLower > 0) {
 					if(policy.minimumLower == 1) {
-						thisDiv.append('<span>' 
+						passwordRulesContent.append('<span>' 
 								+ getResource("oneLower.text")
 								+ '</span><br>');
 					} else {
-						thisDiv.append('<span>' 
+						passwordRulesContent.append('<span>' 
 								+ getResource("minLower.text").format(policy.minimumLower)
 								+ '</span><br>');
 					}
@@ -200,11 +217,11 @@ $.fn.passwordPolicy = function(data) {
 				
 				if(policy.minimumUpper > 0) {
 					if(policy.minimumUpper == 1) {
-						thisDiv.append('<span>' 
+						passwordRulesContent.append('<span>' 
 								+ getResource("oneUpper.text")
 								+ '</span><br>');
 					} else {
-						thisDiv.append('<span>' 
+						passwordRulesContent.append('<span>' 
 								+ getResource("minUpper.text").format(policy.minimumDigits)
 								+ '</span><br>');
 					}
@@ -212,11 +229,11 @@ $.fn.passwordPolicy = function(data) {
 				
 				if(policy.minimumSymbol > 0) {
 					if(policy.minimumSymbol == 1) {
-						thisDiv.append('<span>' 
+						passwordRulesContent.append('<span>' 
 								+ getResource("oneSymbol.text")
 								+ '</span><br>');
 					} else {
-						thisDiv.append('<span>' 
+						passwordRulesContent.append('<span>' 
 								+ getResource("minSymbol.text").format(policy.minimumSymbol)
 								+ '</span><br>');
 					}
@@ -225,21 +242,21 @@ $.fn.passwordPolicy = function(data) {
 				
 			}
 			
-			thisDiv.append('<span></span><br>');
+			passwordRulesContent.append('<span></span><br>');
 			
 			if(!policy.containDictionaryWord) {
-				thisDiv.append('<span><em>' 
+				passwordRulesContent.append('<span><em>' 
 						+ getResource("noDictionary.text")
 						+ '</em></span><br>');
 			}
 			
 			if(!policy.containUsername) {
 				if(options.currentPrincipal) {
-					thisDiv.append('<span><em>' 
+					passwordRulesContent.append('<span><em>' 
 							+ getResource("noUsername.text")
 							+ '</em></span><br>');
 				} else {
-					thisDiv.append('<span><em>' 
+					passwordRulesContent.append('<span><em>' 
 							+ getResource("noUsernameOther.text")
 							+ '</em></span><br>');
 				}
@@ -247,16 +264,33 @@ $.fn.passwordPolicy = function(data) {
 			
 			if(policy.passwordHistory > 0) {
 				if(options.currentPrincipal) {
-					thisDiv.append('<span><em>' 
+					passwordRulesContent.append('<span><em>' 
 							+ getResource("passwordHistory.text").format(policy.passwordHistory)
 							+ '</em></span><br>');
 				} else {
-					thisDiv.append('<span><em>' 
+					passwordRulesContent.append('<span><em>' 
 							+ getResource("passwordHistoryOther.text").format(policy.passwordHistory)
 							+ '</em></span><br>');
 				}
 			}
 		}
+		
+		$('#passwordRulesContent').prev().find('a').click(function(){
+			$('#passwordRulesContent').toggle();
+			if($('#passwordRulesContent:visible').length != 0){
+				$(this).find('i').removeClass('glyphicon-plus');
+				$(this).find('i').removeClass('icon-plus');
+				
+				$(this).find('i').addClass('glyphicon-minus');
+				$(this).find('i').addClass('icon-minus');
+			}else{
+				$(this).find('i').removeClass('glyphicon-minus');
+				$(this).find('i').removeClass('icon-minus');
+				
+				$(this).find('i').addClass('glyphicon-plus');
+				$(this).find('i').addClass('icon-plus');
+			}
+		});
 
 		if(options.showGenerator && policy) {
 			thisDiv.append('<span></span><br>');
@@ -270,14 +304,40 @@ $.fn.passwordPolicy = function(data) {
 			  return password;
 			}
 
-			thisDiv.append('<div><span><strong>' 
+			var passwordGeneratorContent;
+			if(options.showGeneratorDefault){
+				thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h4>');
+				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="padding-left: 30px;"></div>').find('#passwordGeneratorContent');
+			}else{
+				thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h4>');
+				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="display: none; padding-left: 30px;"></div>').find('#passwordGeneratorContent');
+			}
+			
+			$('#passwordGeneratorContent').prev().find('a').click(function(){
+				$('#passwordGeneratorContent').toggle();
+				if($('#passwordGeneratorContent:visible').length != 0){
+					$(this).find('i').removeClass('glyphicon-plus');
+					$(this).find('i').removeClass('icon-plus');
+					
+					$(this).find('i').addClass('glyphicon-minus');
+					$(this).find('i').addClass('icon-minus');
+				}else{
+					$(this).find('i').removeClass('glyphicon-minus');
+					$(this).find('i').removeClass('icon-minus');
+					
+					$(this).find('i').addClass('glyphicon-plus');
+					$(this).find('i').addClass('icon-plus');
+				}
+			});
+			
+			passwordGeneratorContent.append('<div><span><strong>' 
 					+ getResource("suggestedPassword.text")
 					+ '</strong></span></div>');
 			
-			thisDiv.append('<div id="generatedPassword"><div id="passwordHolder"><span id="suggestedPassword" class="success"></span></div><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
+			passwordGeneratorContent.append('<div id="generatedPassword"><div id="passwordHolder"><span id="suggestedPassword" class="success"></span></div><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
 					 + getResource("regeneratePassword.text") + '"><i class="fa fa-2x fa-refresh"></i></a></div>');
 			
-			thisDiv.append('<div id="passwordStrength"></div>');
+			passwordGeneratorContent.append('<div id="passwordStrength"></div>');
 			
 			$('#passwordStrength').sliderInput({
 				min: policy.minimumLength,
