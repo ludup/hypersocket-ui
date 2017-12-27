@@ -315,6 +315,7 @@ $.fn.getCursorPosition = function () {
 
 $.fn.startSpin = function () {
 
+	var _self = $(this);
 	if(!$(this).find('.sk-fading-circle').length) {
 		$('.showOnComplete').hide();
 		$.each($(this).children(), function(idx, element) {
@@ -339,6 +340,12 @@ $.fn.startSpin = function () {
 				+'<div class="sk-circle12 sk-circle"></div>'
 				+'</div>');
 	}
+	
+	return {
+		stopSpin: function() {
+			_self.stopSpin();
+		}
+	};
 }
 
 $.fn.stopSpin = function () {
