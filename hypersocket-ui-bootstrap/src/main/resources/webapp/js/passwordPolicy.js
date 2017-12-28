@@ -50,7 +50,7 @@ $.fn.passwordPolicy = function(data) {
 			{  
 				policy: 'currentPrincipal',
 				showGenerator: true,
-				showPolicyName: false,
+				showPolicyName: true,
 				title: getResource('passwordRules.text'),
 				showRulesDefault: false,
 				showGeneratorDefault: true
@@ -300,6 +300,7 @@ $.fn.passwordPolicy = function(data) {
 			  
 			  while (!isStrongEnough(password, policy, false)) {
 			    password = generatePassword(policy.minimumLength + (policy.minimumLength / 2), false, new RegExp("[\\w\\d" + RegExp.escape(policy.validSymbols) + "]"));
+			    log('Generated ' + password);
 			  }
 			  return password;
 			}
