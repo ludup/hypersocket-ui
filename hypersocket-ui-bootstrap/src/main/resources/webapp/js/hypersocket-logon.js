@@ -88,7 +88,7 @@ function processLogon(data, opts, message) {
 					$('#logonForm').append('<input type="' + this.type + '" name="' 
 								+ this.resourceKey + '" autocomplete="off" id="' 
 								+ this.resourceKey + '" value="' 
-								+ this.defaultValue + '"/>');
+								+ stripNull(this.defaultValue) + '"/>');
 					return;
 				} else if (this.type == 'p') {
 					if(this.valueResourceKey) {
@@ -102,7 +102,7 @@ function processLogon(data, opts, message) {
 					if(this.valueResourceKey) {
 						$('#logonForm').append('<pre>' + getResource(this.defaultValue) + '</pre>');
 					} else {
-						$('#logonForm').append('<pre>' + this.defaultValue + '</pre>');
+						$('#logonForm').append('<pre>' + stripNull(this.defaultValue) + '</pre>');
 					}
 					
 					return;
@@ -189,7 +189,7 @@ function processLogon(data, opts, message) {
 						+ this.resourceKey + '" placeholder="'
 						+ (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 						+ '" id="' + this.resourceKey + '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
-						+ '">' + this.defaultValue + '</textarea></div>');
+						+ '">' + stripNull(this.defaultValue) + '</textarea></div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
 						setFocus = true;
@@ -200,7 +200,7 @@ function processLogon(data, opts, message) {
 								'<div class="logonInput"><input class="form-control" type="' + this.type + '" name="'
 								+ this.resourceKey + '" placeholder="'
 								+ (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
-								+ '" id="' + this.resourceKey + '" value="' + this.defaultValue
+								+ '" id="' + this.resourceKey + '" value="' + stripNull(this.defaultValue)
 								+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 								+ '"/></div>');
 					if(!setFocus) {
