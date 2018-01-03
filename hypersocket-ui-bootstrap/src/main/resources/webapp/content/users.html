@@ -185,7 +185,11 @@
 					},{
 						name : "principalStatus",
 						formatter: function(value, obj, index) {
-							return getResource(value + '.label');
+							if(obj.suspended) {
+								return getResource('suspended.label');
+							} else {
+								return getResource(value + '.label');
+							}
 						}
 					},{
 						name : "expires",
