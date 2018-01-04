@@ -36,18 +36,6 @@
 	$(document).ready(function() {
 		$('#contentRoles').localize();
 
-		$('#tabPermissionsContent').multipleSelect({
-			nameIsResourceKey : true,
-			nameAttr : 'resourceKey',
-			selectedIsObjectList: true,
-			disabled: !currentMenu.canUpdate,
-			url: 'permissions/list',
-			getUrlData: function(data) {
-				return data.permissions;
-			}
-		});
-
-
 		$('#tabGroupsContent').multipleSearchInput({
 			nameAttr : 'principalName',
 			valueAttr: 'id',
@@ -64,10 +52,7 @@
 			disabled: !currentMenu.canUpdate,
 			url: 'currentRealm/users/table'
 		});
-	
-		
-		
-		
+
 		$('#contentRoles').ajaxResourcePage(
 				{
 				id: 'Role',
@@ -118,10 +103,23 @@
 					$('#roleId').val('');
 					$('#tabUsersContent').multipleSearchInput();
 					$('#tabGroupsContent').multipleSearchInput();
-					$('#tabPermissionsContent').multipleSelect();
+					
+					$('#tabPermissionsContent').multipleSelect({
+						nameIsResourceKey : true,
+						nameAttr : 'resourceKey',
+						selectedIsObjectList: true,
+						selected: [],
+						disabled: !currentMenu.canUpdate,
+						selectAllIfEmpty: false,
+						url: 'permissions/list',
+						getUrlData: function(data) {
+							return data.permissions;
+						}
+					});
 					
 					$('#tabGroupsContent').widget().enable();
 					$('#tabUsersContent').widget().enable();
+					
 					if(create) {
 						$('#roleProperties').propertyPage({
 							url : 'roles/template',
@@ -167,29 +165,35 @@
 					$('#roleId').val(resource.id);
 					$('#name').val(resource.name);
 					$('#name').attr('disabled', readOnly);
-					var users = new Array();
-					var groups = new Array();
-					$.each(resource.principals, function(idx, obj) {
-						if(obj.type == 'USER') {
-							users.push(obj);
-						} else if(obj.type == 'GROUP') {
-							groups.push(obj);
-						}
+					
+					getJSON('roles/principals/' + resource.id, null, function(data) {
+						var users = new Array();
+						var groups = new Array();
+						$.each(data.resources, function(idx, obj) {
+							if(obj.type == 'USER') {
+								users.push(obj);
+							} else if(obj.type == 'GROUP') {
+								groups.push(obj);
+							}
+						});
+	 	 			  	$('#tabUsersContent').multipleSearchInput({
+	 						selected : users,
+	 						disabled: resource.personalRole || resource.allUsers || readOnly
+	 					});
+	 					$('#tabGroupsContent').multipleSearchInput({
+	 						selected : groups,
+	 						disabled: resource.personalRole || resource.allUsers || readOnly
+	 					});
 					});
- 	 			  	$('#tabUsersContent').multipleSearchInput({
- 						selected : users,
- 						disabled: resource.personalRole || resource.allUsers || readOnly
- 					});
- 					$('#tabGroupsContent').multipleSearchInput({
- 						selected : groups,
- 						disabled: resource.personalRole || resource.allUsers || readOnly
- 					});
- 					$('#tabPermissionsContent').multipleSelect({
- 						selected : resource.permissions,
- 						disabled: resource.allPermissions || readOnly,
- 						selectAllIfEmpty: resource.allPermissions
- 					});
- 					
+					
+					getJSON('roles/permissions/' + resource.id, null, function(data) {
+						$('#tabPermissionsContent').multipleSelect({
+	 						selected : data.resources,
+	 						disabled: resource.allPermissions || readOnly,
+	 						selectAllIfEmpty: resource.allPermissions
+	 					});
+					});
+
  					$('#roleProperties').propertyPage({
  						url : 'roles/properties/' + resource.id,
  						showButtons : false,
