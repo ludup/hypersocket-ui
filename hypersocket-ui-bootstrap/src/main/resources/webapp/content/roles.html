@@ -40,23 +40,23 @@
 			nameIsResourceKey : true,
 			nameAttr : 'resourceKey',
 			selectedIsObjectList: true,
+			selected: [],
 			disabled: !currentMenu.canUpdate,
+			selectAllIfEmpty: false,
 			url: 'permissions/list',
 			getUrlData: function(data) {
 				return data.permissions;
 			}
 		});
-
-
+		
 		$('#tabRoleGroups').multipleSearchInput({
 			nameAttr : 'principalName',
 			valueAttr: 'id',
 			selectedIsObjectList: true,
 			disabled: !currentMenu.canUpdate,
 			url: 'currentRealm/groups/table'
-		});
-
-
+		});	
+		
 		$('#tabRoleUsers').multipleSearchInput({
 			nameAttr : 'principalName',
 			valueAttr: 'id',
@@ -64,9 +64,6 @@
 			disabled: !currentMenu.canUpdate,
 			url: 'currentRealm/users/table'
 		});
-	
-		
-		
 		
 		$('#contentRoles').ajaxResourcePage(
 				{
@@ -95,8 +92,9 @@
 				clearDialog : function(create) {
 					$('#name').val('');
 					$('#roleId').val('');
+					
 					$('#tabRoleUsers').multipleSearchInput();
-					$('#tabRoleGroups').multipleSearchInput();
+					$('#tabRoleGroups').multipleSearchInput()
 					$('#tabRolePermissions').multipleSelect();
 					
 					if(create) {
@@ -143,27 +141,36 @@
 					$('#roleId').val(resource.id);
 					$('#name').val(resource.name);
 					$('#name').attr('disabled', readOnly);
-					var users = new Array();
-					var groups = new Array();
-					$.each(resource.principals, function(idx, obj) {
-						if(obj.type == 'USER') {
-							users.push(obj);
-						} else if(obj.type == 'GROUP') {
-							groups.push(obj);
-						}
+
+					getJSON('roles/principals/' + resource.id, null, function(data) {
+						var users = new Array();
+						var groups = new Array();
+						$.each(data.resources, function(idx, obj) {
+							if(obj.principalType == 'USER') {
+								users.push(obj);
+							} else if(obj.principalType == 'GROUP') {
+								groups.push(obj);
+							}
+						});
+	 	 			  	$('#tabRoleUsers').multipleSearchInput({
+	 						selected : users,
+	 						disabled: resource.personalRole || resource.allUsers || readOnly,
+	 						url: 'currentRealm/users/table'
+	 					});
+	 					$('#tabRoleGroups').multipleSearchInput({
+	 						selected : groups,
+	 						disabled: resource.personalRole || resource.allUsers || readOnly,
+	 						url: 'currentRealm/groups/table'
+	 					});
 					});
- 	 			  	$('#tabRoleUsers').multipleSearchInput({
- 						selected : users,
- 						disabled: resource.allUsers || readOnly
- 					});
- 					$('#tabRoleGroups').multipleSearchInput({
- 						selected : groups,
- 						disabled: resource.allUsers || readOnly
- 					});
- 					$('#tabRolePermissions').multipleSelect({
- 						selected : resource.permissions,
- 						disabled: resource.allPermissions || readOnly
- 					});
+					
+					getJSON('roles/permissions/' + resource.id, null, function(data) {
+						$('#tabRolePermissions').multipleSelect({
+	 						selected : data.resources,
+	 						disabled: resource.allPermissions || readOnly,
+	 						selectAllIfEmpty: resource.allPermissions
+	 					});
+					});
  					
  					$('#roleProperties').propertyPage({
  						url : 'roles/properties/' + resource.id,

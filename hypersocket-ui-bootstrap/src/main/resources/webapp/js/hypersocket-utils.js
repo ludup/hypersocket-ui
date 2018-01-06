@@ -661,7 +661,7 @@ function log(str) {
 }
 
 function stripNull(str) {
-	return str==null ? "" : str;
+	return str==null ? "" : str ? str : "";
 }
 
 function isIE () {

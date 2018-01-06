@@ -854,7 +854,7 @@ $.fn.autoComplete = function(data) {
 			createDropdown(text, true, false);
 		} else {
 			getJSON(
-					options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text,
+					options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + stripNull(text),
 					null,
 					function(data) {
 						
@@ -1006,7 +1006,7 @@ $.fn.autoComplete = function(data) {
 		updateValue(options.value, false);
 	} else if(options.remoteSearch) {
 		if(options.value !== '') {
-			getJSON(options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + options.value + "&searchColumn=" + options.valueAttr,
+			getJSON(options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + stripNull(options.value) + "&searchColumn=" + options.valueAttr,
 					null,
 					function(data) {
 						
