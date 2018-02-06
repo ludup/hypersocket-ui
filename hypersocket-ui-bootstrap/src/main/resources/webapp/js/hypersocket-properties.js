@@ -756,17 +756,17 @@ $.fn.propertyPage = function(opts) {
 				createAdditionalTabs();
 			}
 			
-			data.resources.sort(function(a,b) {
-				if(a.weight > b.weight) {
-					return 1;
-				} else if(a.weight < b.weight) {
-					return -1;
-				} else {
-					return 0;
-				}
-			});
-			
 			if(data.resources) {
+				
+				data.resources.sort(function(a,b) {
+					if(a.weight > b.weight) {
+						return 1;
+					} else if(a.weight < b.weight) {
+						return -1;
+					} else {
+						return 0;
+					}
+				});
 				
 				var widgets = new Array();
 				var tabs = new Array();
