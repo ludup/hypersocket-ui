@@ -633,7 +633,7 @@ function loadRealms(realms, session) {
 			});
 	};
 	
-	if(!realms && session.principalRealm.id === currentRealm.id) {
+	if(session.impersonating || (!realms && session.principalRealm.id === currentRealm.id)) {
 		$('#currentRealm').remove();
 		return;
 	}
