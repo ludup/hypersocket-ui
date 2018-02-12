@@ -752,9 +752,6 @@ $.fn.resourceTable = function(params) {
                                 + divName + 'BulkTableAction" class="btn btn-default" title="'
                                 + getResource('bulk.assignment.tab.title') + '"><i class="fa fa-exchange"></i></button>');
 
-
-                        $('#' + divName + 'BulkTableAction').hide();
-
                         $('#' + divName + 'BulkTableAction').click(function(){
                             var bulkAction = $('#' + bulkAssignableTarget).bulkAssignmentDialog({
                                 resource : resourceType,
