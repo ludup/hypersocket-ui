@@ -260,7 +260,9 @@ function home(data) {
 								
 							});
 							
-							$(menu).append('<li' + (this.hidden ? ' style="display:none"' : '') + '><a id="' + this.id + '" href="#menu=' + (firstChild ? firstChild.resourceKey : this.resourceKey) + '" class="sideMenu"><i class="fa ' 
+							$(menu).append('<li' + (this.hidden ? ' style="display:none"' : '') + '><a id="' 
+									+ this.id + '" href="#menu=' + (firstChild ? firstChild.resourceKey : this.resourceKey) 
+									+ '" class="sideMenu"><i class="fa ' 
 									+ this.icon + '"></i><span class="hidden-sm text">' 
 									+ getResource(this.resourceKey + '.label') + '</span></span></a></li>');
 							$('#' + this.id).data('menu', this);
@@ -268,10 +270,7 @@ function home(data) {
 								$(".sideMenu").removeClass("active");
 								$(this).addClass("active");
 							});
-							
-							
 
-							
 							if(currentMenu==null && this.home) {
 								currentMenu = this;
 								homeMenu = this;
@@ -290,6 +289,7 @@ function home(data) {
 					break;
 				}
 			}
+			
 			checkBadges(true);
 			
 			$('#navMenu')
@@ -366,7 +366,7 @@ function home(data) {
 					
 					$('#navMenu').append('<li class="navicon" id="' + this.id 
 							+ '"><a data-toggle="tooltip" title="' + getResource(this.resourceKey + '.label') 
-							+ '" data-placement="bottom" href="#menu=' + this.resourceKey + '"><i class="fa ' + this.icon + '"></i></a></li>');
+							+ '" data-placement="bottom" href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><i class="fa ' + this.icon + '"></i></a></li>');
 					
 					$('#' + this.id).data('menu', this);
 					$('#' + this.id).click(function(e) {
@@ -844,9 +844,10 @@ function loadMenu(menu) {
 function loadSubPage(menu, element) {
 	$('#subMenuIconPanel').find('.large-button-active').removeClass('large-button-active');
 	$('#subMenuIconPanel').find('.small-button-active').removeClass('small-button-active');
-	log(element.data().value);
-	element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').addClass('large-button-active');
-	element.parent().parent().find('.small-button[id="buttonSmall_' + element.data().value + '"]').addClass('small-button-active');
+	if(element.data() && element.data().value) {
+		element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').addClass('large-button-active');
+		element.parent().parent().find('.small-button[id="buttonSmall_' + element.data().value + '"]').addClass('small-button-active');
+	}
 	$('#subMenuPageContent').startSpin();
 	loadWait();
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
