@@ -25,7 +25,7 @@
 						buttonClass: 'btn-danger',
 						icon: 'fa-step-backward',
 						action: function(callback) {
-							window.location = $(document).data('accounts.returnTo');
+							window.location.hash = $(document).data('accounts.returnTo');
 						}
 					});
 					title = getResource('ownerRealm.users.title').format(userRealm.name);

@@ -47,8 +47,11 @@ $.ajaxSetup({ error : function(xmlRequest) {
 	} 
 }, cache : false });
 
-window.onhashchange = function() {       
-    loadMenu(allMenus[getAnchorByName('menu')]);
+window.onhashchange = function() {  
+	$('#pageContent').empty();
+	var name = getAnchorByName('menu');
+	log('Loading menu ' + name);
+    loadMenu(allMenus[name]);
 }
 
 function PropertyItem(id, value) {
@@ -758,6 +761,9 @@ function loadWait() {
 
 function loadMenu(menu) {
 
+	if(!menu) {
+		debugger;
+	}
 	log("Loading menu " + menu.resourceKey);
 	
 	if (currentMenu) {
