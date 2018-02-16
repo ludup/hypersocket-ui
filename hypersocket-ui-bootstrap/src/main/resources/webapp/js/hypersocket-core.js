@@ -472,8 +472,18 @@ function home(data) {
 			}
 
 			$('#' + currentMenu.id).addClass('active');
-			//loadMenu(currentMenu);
-			window.location.hash = 'menu=' + currentMenu.resourceKey;
+
+			if(window.location.hash && window.location.hash.indexOf('menu=' + currentMenu.resourceKey) > -1) {
+				/**
+				 * We are loading a URL that already has the #menu=<resourceKey> we are after so simply load menu
+				 */
+				loadMenu(currentMenu);
+			} else {
+				/**
+				 * Anchor is different so change it and let the default handler load the menu
+				 */
+				window.location.hash = 'menu=' + currentMenu.resourceKey;
+			}
 			
 			if(message != null && message.length > 0) {
 				if(message.startsWith('info=')) {
