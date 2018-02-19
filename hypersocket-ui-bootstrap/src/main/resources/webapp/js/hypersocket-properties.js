@@ -944,9 +944,9 @@ $.fn.propertyPage = function(opts) {
 													
 												}
 											},
-											initialized: function(widget) {
-												this.changed(widget);
-											},
+//											initialized: function(widget) {
+//												this.changed(widget);
+//											},
 											displayMode: '',
 											getUrlData: function(data) {
 												return data.resources;
@@ -959,7 +959,7 @@ $.fn.propertyPage = function(opts) {
 										}, obj);
 										
 										if(options.defaults[obj.resourceKey]) {
-											debugger;
+											
 											obj.value = options.defaults[obj.resourceKey];
 										}
 										

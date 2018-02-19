@@ -96,7 +96,7 @@
 								realm.type = $('#typeButton').widget().getValue();
 								realm.id = $('#id').val();
 
-								$('#realmProperties').saveProperties(true,
+								$('#realmProperties').saveProperties(false,
 									function(items) {
 										realm.properties = items;
 								});

@@ -11,31 +11,35 @@
 				var apiUrl = 'currentRealm';
 				var disableDecoration = false;
 				var buttons = [];
-				var userRealm = $(document).data('userRealm');
+				
 				var ownerRealm;
-				if(userRealm) {
+				var realmName = getAnchorByName('realmName');
+				var realmId = getAnchorByName('realmId');
+				var realmCategory = getAnchorByName('realmCategory');
+				
+				if(realmId) {
 					ownerRealm = true;
 				}
 				var title = getResource('users.title');
-				if(userRealm) {
-					apiUrl = 'ownerRealm/' + userRealm.id;
+				if(realmId) {
+					apiUrl = 'ownerRealm/' + realmId;
 					disableDecoration = true;
 					buttons.push({
 						resourceKey: 'backButton',
 						buttonClass: 'btn-danger',
 						icon: 'fa-step-backward',
 						action: function(callback) {
-							window.location.hash = $(document).data('accounts.returnTo');
+							window.location.hash = "menu=" + getAnchorByName('returnTo');
 						}
 					});
-					title = getResource('ownerRealm.users.title').format(userRealm.name);
+					title = getResource('ownerRealm.users.title').format(realmName);
 				} else {
-					userRealm = currentRealm;
+					realmId = currentRealm.id;
+					realmCategory = currentRealm.resourceCategory;
 				}
 
 				$(document).data('apiUrl', apiUrl);
-				$(document).data('workingRealm', userRealm);
-				$(document).data('userRealm', null);
+
 				$('#realmsContent').load(uiPath + '/content/realmsDialog.html', function() {
 					
 					$('#realmsContent').localize();
@@ -337,7 +341,7 @@
 										$('#passwordPolicy').empty();
 										$('#passwordPolicy').passwordPolicy({
 											policy: 'default',
-											realm: userRealm.id,
+											realm: realmId,
 											showGenerator: true,
 											passwordElement: $('#userPassword'),
 											confirmElement: $('#userConfirmPassword'),
@@ -351,7 +355,7 @@
 										}
 										
 										$('#userProperties').propertyPage({
-											url : apiUrl + '/user/template/' + userRealm.resourceCategory,
+											url : apiUrl + '/user/template/' + realmCategory,
 											showButtons : false,
 											displayMode: 'admin,create',
 											useTemplates : true,
@@ -359,7 +363,7 @@
 											urlProcessor: function(url) {
 												return url.replace('$' + '{realmApi}', apiUrl);
 											},
-											i18nNamespace: userRealm.resourceCategory,
+											i18nNamespace: realmCategory,
 											canUpdate : true,
 											useFilters: true,
 											additionalTabs : tabs,
@@ -484,7 +488,7 @@
 											urlProcessor: function(url) {
 												return url.replace('$' + '{realmApi}', apiUrl);
 											},
-											i18nNamespace: userRealm.resourceCategory,
+											i18nNamespace: realmCategory,
 											useFilters: true,
 											additionalTabs : tabs,
 											complete: function() {

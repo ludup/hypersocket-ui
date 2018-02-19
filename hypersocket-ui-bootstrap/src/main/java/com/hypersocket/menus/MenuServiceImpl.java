@@ -107,6 +107,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_NAV, "", null, 0, null, null, null, null));
+		
+		registerMenu(new HiddenMenuRegistration(RESOURCE_BUNDLE,
+				MenuService.MENU_PAGES, "", null, 0, null, null, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_DASHBOARD, "fa-pie-chart", null, 0, null,
 				null, null, null) {

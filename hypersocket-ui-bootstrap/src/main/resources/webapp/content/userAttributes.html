@@ -198,13 +198,7 @@ $(document).ready(function() {
 	});
 	
 
-	$('#attributeRoles').multipleSearchInput({
-		url: 'roles/table',
-		isNamePairValue: false,
-		selectedIsObjectList : true,
-		resourceKey : 'userAttribute',
-		disabled: !currentMenu.canUpdate
-	});
+	$('#attributeRoles').roles();
 
 	
 	$('#attributeReadOnly').switchInput({
@@ -284,7 +278,7 @@ $(document).ready(function() {
 						}
 					return true;
 				},
-				clearDialog : function() {
+				clearDialog : function(create) {
 					$('#attributeId').val('');
 					$('#attributeName').val('');
 					$('#attributeCategoryAutocomplete').data('widget').clear();
@@ -296,7 +290,15 @@ $(document).ready(function() {
 					$('#attributeReadOnly').data('widget').setValue(false);
 					$('#attributeEncrypted').data('widget').setValue(false);
 					$('#attributeVariableName').val('');
-					$('#attributeRoles').multipleSearchInput({ disabled: false });
+					
+					$('#attributeRoles').widget().clear();
+					if((create && currentMenu.canCreate) || (!create && currentMenu.canUpdate)) {
+						$('#attributeRoles').widget().enable();
+					} else {
+						$('#attributeRoles').widget().disable();
+					}
+					
+					$('.tabPropertiesTab').first().trigger('click');
 				},
 				createResource : function() {
 					resource = new Object();
@@ -311,7 +313,7 @@ $(document).ready(function() {
 					resource.readOnly = $('#attributeReadOnly').data('widget').getValue()
 					resource.encrypted = $('#attributeEncrypted').data('widget').getValue();
 					resource.variableName = $('#attributeVariableName').val();
-					resource.roles = $('#attributeRoles').multipleSelectValues();
+					resource.roles = $('#attributeRoles').widget().getValue();
 					
 					return resource;
 				},
@@ -328,14 +330,11 @@ $(document).ready(function() {
 					$('#attributeEncrypted').data('widget').setValue(resource.encrypted);
 					$('#attributeVariableName').val(resource.variableName);
 					
-					$('#attributeRoles').multipleSearchInput({
-						url: 'roles/table',
-						isNamePairValue: false,
-						selected : resource.roles,
-						selectedIsObjectList : true,
-						resourceKey : 'userAttribute',
-						disabled: readOnly || resource.resource != null
-					});
+					$('#attributeRoles').widget().setValue(resource.roles);
+					
+					if(readOnly) {
+						$('#attributeRoles').widget().disable();
+					} 
 				},
 				complete : function() {
 					loadComplete();

@@ -86,6 +86,7 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 			}
 			checkBadges(false);
 			showSuccess(data.message);
+			$('.showOnComplete').show();
 		} else if(data.confirmation) {
 			
 			bootbox.confirm({
@@ -355,7 +356,8 @@ $.fn.resourceTable = function(params) {
 								$(document).on(
 									'click',
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
-									function() {
+									function(e) {
+										e.preventDefault();
 										var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 										act.action(resource, function(resource) {
@@ -445,7 +447,9 @@ $.fn.resourceTable = function(params) {
 			$(document).on(
 				'click',
 				'#' + divName + 'Actions' + id + ' .row-edit',
-				function() {
+				function(e) {
+					e.preventDefault();
+					history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
 					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 					if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
@@ -543,7 +547,86 @@ $.fn.resourceTable = function(params) {
 		$('[data-toggle="tooltip"]').tooltip();
 	});
 	
-	getState(divName + 'Placeholder', true, function(data){
+	var callback = {
+			refresh: function() {
+				$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+				checkBadges(false);
+			},
+			refreshView: function(resource) {
+				options.view.refreshView(resource);
+			},
+			close: function() {
+				options.view.closeResource();
+			},
+			openPage: function(page) {
+				options.view.openPage(page);
+			},
+			options: function() {
+				return options;
+			},
+			showCreate: function(callback) {
+				options.currentView = 'create';
+				if(options.showCreate) {
+					options.showCreate();
+				}
+				options.view.createResource(callback);
+			},
+			showEdit: function(resource, callback) {
+				options.currentView = 'edit';
+				if(options.showEdit) {
+					options.showEdit(resource);
+				}
+				options.view.editResource(resource);
+			},
+			showRead: function(resource, callback) {
+				options.currentView = 'read';
+				if(options.showView) {
+					options.showView(resource);
+				}
+				options.view.viewResource(resource);
+			},
+			showCopy: function(resource, callback) {
+				options.currentView = 'copy';
+				if(options.showCopy) {
+					options.showCopy(resource);
+				}
+				options.view.copyResource(resource);
+			},
+			saveResource: function(buttonElement, closeCallback) {
+				saveResource(options.createResource(), buttonElement, options, options.currentView, closeCallback);
+			},
+			deleteResource: function(resource, callback) {
+				if (options.canDelete) {
+					var canDelete = !resource.system;
+					if(options.checkDelete) {
+						canDelete = !resource.system && options.checkDelete(resource);
+					}
+					
+					if(canDelete) {
+						log("Entering resource delete for id " + resource.id);
+						bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(resource.name), function(confirmed) {
+							if (confirmed) {
+								deleteJSON(options.resourceUrl + "/" + resource.id, null, function(data) {
+									if (data.success) {
+										if (options.resourceDeleted) {
+											options.resourceDeleted(resource, data.message);
+										}
+										$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
+										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+										showSuccess(data.message);
+										checkBadges(false);
+									} else {
+										showError(data.message);
+									}
+								});
+							}
+						});
+					}
+				}
+			}
+		};
+	
+	getState(divName + 'Placeholder', true, function(data) {
 		if(data.success && data.resources.length && data.resources[0].preferences){
 			var preferences = JSON.parse(data.resources[0].preferences);
 			if(preferences && preferences.sortName){
@@ -556,6 +639,7 @@ $.fn.resourceTable = function(params) {
 				options.pageSize = preferences.pageSize;
 			}
 		}
+		
 		$('#' + divName + 'Placeholder').bootstrapTable({
 		    pagination: options.pagination,
 		    checkbox: options.checkbox,
@@ -1155,92 +1239,24 @@ $.fn.resourceTable = function(params) {
     		}
     	});
 		
-		if (options.complete) {
-			options.complete();
+    	var resourceId = getAnchorByName('resource');
+		debugger;
+		if(resourceId) {
+			setTimeout(function() {
+				getJSON(options.resourceUrl + '/' + resourceId, null, function(data) {
+					callback.showEdit(data);
+				});
+			}, 100);
+			
+				
+		} else {
+			if (options.complete) {
+				options.complete();
+			}
 		}
-		
+
 	});
 		
-	
-	var callback = {
-		refresh: function() {
-			$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-			checkBadges(false);
-		},
-		refreshView: function(resource) {
-			options.view.refreshView(resource);
-		},
-		close: function() {
-			options.view.closeResource();
-		},
-		openPage: function(page) {
-			options.view.openPage(page);
-		},
-		options: function() {
-			return options;
-		},
-		showCreate: function(callback) {
-			options.currentView = 'create';
-			if(options.showCreate) {
-				options.showCreate();
-			}
-			options.view.createResource(callback);
-		},
-		showEdit: function(resource, callback) {
-			options.currentView = 'edit';
-			if(options.showEdit) {
-				options.showEdit(resource);
-			}
-			options.view.editResource(resource);
-		},
-		showRead: function(resource, callback) {
-			options.currentView = 'read';
-			if(options.showView) {
-				options.showView(resource);
-			}
-			options.view.viewResource(resource);
-		},
-		showCopy: function(resource, callback) {
-			options.currentView = 'copy';
-			if(options.showCopy) {
-				options.showCopy(resource);
-			}
-			options.view.copyResource(resource);
-		},
-		saveResource: function(buttonElement, closeCallback) {
-			saveResource(options.createResource(), buttonElement, options, options.currentView, closeCallback);
-		},
-		deleteResource: function(resource, callback) {
-			if (options.canDelete) {
-				var canDelete = !resource.system;
-				if(options.checkDelete) {
-					canDelete = !resource.system && options.checkDelete(resource);
-				}
-				
-				if(canDelete) {
-					log("Entering resource delete for id " + resource.id);
-					bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(resource.name), function(confirmed) {
-						if (confirmed) {
-							deleteJSON(options.resourceUrl + "/" + resource.id, null, function(data) {
-								if (data.success) {
-									if (options.resourceDeleted) {
-										options.resourceDeleted(resource, data.message);
-									}
-									$('#' + divName + 'Placeholder').bootstrapTable('remove', {field: 'id', values: [resource.id]});
-									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-									showSuccess(data.message);
-									checkBadges(false);
-								} else {
-									showError(data.message);
-								}
-							});
-						}
-					});
-				}
-			}
-		}
-	}
-	
 	$(this).data('callback', callback);
 	return callback;
 };
@@ -1372,7 +1388,7 @@ $.fn.samePageResourceView = function(params, params2) {
 							  dialogOptions.propertyOptions.complete(params2);
 						  }
 						  addActions(true);
-						  
+						  $('.sk-fading-circle').remove();
 					  },
 					  onPropertyChange: function(resourceKey, widget) {
 						  if(dialogOptions.propertyOptions.onPropertyChange) {
@@ -1390,6 +1406,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		} else {
 			showView(dialog);
 			addActions(true);
+			$('.sk-fading-circle').remove();
 		}
 		
 		return;
@@ -1495,9 +1512,11 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#mainContainer').addClass('col-md-10');
 		$('#mainContainer').removeClass('col-sm-12');
 		$('#mainContainer').addClass('col-sm-11');
+		$('.showOnComplete').show();
 		$('#main-menu').show();
 		$('#mainContent').show();
 		window.scrollTo(0,0);
+		history.pushState(null, "", "#menu=" + getAnchorByName('menu'));
 		return;
 	} else if(params === 'refreshView') {
 		var propertyOptions = $.extend({},
@@ -1554,12 +1573,14 @@ $.fn.samePageResourceView = function(params, params2) {
 			dialog.samePageResourceView('create', callback);
 		},
 		editResource: function(resource) {
+			$('#mainContainer').startSpin();
 			dialog.samePageResourceView('edit', resource);
 		},
 		refreshView: function(resource) {
 			dialog.samePageResourceView('refreshView', resource);
 		},
 		viewResource: function(resource) {
+			$('#mainContainer').startSpin();
 			dialog.samePageResourceView('read', resource);
 		},
 		copyResource: function(resource) {

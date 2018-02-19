@@ -5735,34 +5735,94 @@ $.fn.roles = function(data) {
 				'<span class="help-block">' + getResource('roles.info') + '</span>' +
 				'</div>' +
 			'</div>' +
+		'</div>' + 
+		'<div class="propertyItem form-group">' +
+			'<div>' +
+				'<label class="col-md-3 control-label optionalField">' + getResource('users.label') + '</label>' + 
+				'<div class="propertyValue col-md-9">' +
+					'<div id="' + roleDivId + 'Users" class="users"></div>' +
+				'<span class="help-block">' + getResource('users.info') + '</span>' +
+				'</div>' +
+			'</div>' +
+		'</div>' + 
+		'<div class="propertyItem form-group">' +
+			'<div>' +
+				'<label class="col-md-3 control-label optionalField">' + getResource('groups.label') + '</label>' + 
+				'<div class="propertyValue col-md-9">' +
+					'<div id="' + roleDivId + 'Groups" class="groups"></div>' +
+				'<span class="help-block">' + getResource('groups.info') + '</span>' +
+				'</div>' +
+			'</div>' +
 		'</div>';
-		
 		$(this).append(div);
 		
 		$('#' + roleDivId).multipleSearchInput(widgetConfig);
+		$('#' + roleDivId + 'Users').multipleSearchInput({
+			url: 'currentRealm/users/table',
+			isNamePairValue: false,
+			selectedIsObjectList : true,
+			disabled: options.disabled,
+			nameAttr: 'principalName'
+		});
+		$('#' + roleDivId + 'Groups').multipleSearchInput({
+			url: 'currentRealm/groups/table',
+			isNamePairValue: false,
+			selectedIsObjectList : true,
+			disabled: options.disabled,
+			nameAttr: 'principalName'
+		});
 	} 
 	
 	if(options.selected) {
 		widgetConfig.selected = options.selected;
 		$('#' + roleDivId).multipleSearchInput(widgetConfig);
 	}
-	var roleCallback = $('#' + roleDivId).data('widget');
+	
+	var roleCallback = $('#' + roleDivId).widget();
+	var userCallback = $('#' + roleDivId + 'Users').widget();
+	var groupsCallback = $('#' + roleDivId + 'Groups').widget();
 	
 	var callback = {
 			setValue: function(val) {
-				roleCallback.setValue(val);
+				var roles = [];
+				var groups = [];
+				var users = [];
+				
+				$.each(val, function(idx, obj) {
+					if(obj.type === 'USER') {
+						users.push(obj);
+					} else if(obj.type === 'GROUP') {
+						groups.push(obj);
+					} else {
+						roles.push(obj);
+					}
+				});
+				
+				roleCallback.setValue(roles);
+				userCallback.setValue(users);
+				groupsCallback.setValue(groups);
 			},
 			getValue: function() {
-				return roleCallback.getValue();
+				var res  = [];
+				res = res.concat(roleCallback.getValue());
+				res = res.concat(userCallback.getValue());
+				res = res.concat(groupsCallback.getValue());
+				return res;
 			},
 			reset: function() {
 				roleCallback.reset();
+				userCallback.reset();
+				groupsCallback.reset();
 			},
 			disable: function() {
 				roleCallback.disable();
+				userCallback.disable();
+				groupsCallback.disable();
 			},
 			enable: function() {
 				roleCallback.enable();
+				userCallback.enable();
+				groupsCallback.enable();
 			},
 			options: function() {
 				return options;
@@ -5772,6 +5832,8 @@ $.fn.roles = function(data) {
 			}, 
 			clear: function() {
 				roleCallback.clear();
+				userCallback.clear();
+				groupsCallback.clear();
 			}
 	}
 	

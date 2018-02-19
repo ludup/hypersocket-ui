@@ -48,7 +48,16 @@ $.ajaxSetup({ error : function(xmlRequest) {
 }, cache : false });
 
 window.onhashchange = function() {  
-	$('#pageContent').empty();
+	if($('#pageContent').length > 0) {
+		$('#pageContent').remove();
+		$('#mainContainer').removeClass('col-md-12');
+		$('#mainContainer').addClass('col-md-10');
+		$('#mainContainer').removeClass('col-sm-12');
+		$('#mainContainer').addClass('col-sm-11');
+		$('#main-menu').show();
+		$('#mainContent').show();
+	}
+	
 	var name = getAnchorByName('menu');
 	log('Loading menu ' + name);
     loadMenu(allMenus[name]);
@@ -240,14 +249,25 @@ function home(data) {
 							.append(
 								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') + '><span>' + getResource(this.resourceKey + '.label') + '</span></div>');
 
+					var root = this;
+					var navigation = this.resourceKey === 'navigation';
+					var page = this.resourceKey === 'pages';
+					
 					if (this.menus.length > 0) {
 						var menu = '#sub_' + this.id;
 						$("#menu").append(
 							'<ul id="sub_' + this.id + '" class="nav nav-sidebar"/>');
+						
 						$.each(this.menus, function() {
 							
 							allMenus[this.resourceKey] = this;
 							
+							this.page = page;
+							if(page) {
+								this.hidden = true;
+							}
+							this.parent = root;
+							this.sidebar = page && true;
 							var parent = this;
 							var firstChild = null;
 							$.each(this.menus, function() {
@@ -255,6 +275,7 @@ function home(data) {
 									firstChild = this;
 								}
 								this.parent = parent;
+								this.section = true;
 								allMenus[this.resourceKey] = this;
 								if(currentMenu==null && this.home) {
 									currentMenu = this;
@@ -281,6 +302,7 @@ function home(data) {
 
 						});
 					} 
+					
 			});
 			
 			if(currentMenu==null) {
@@ -448,7 +470,7 @@ function home(data) {
 
 			// Load current page
 			$(contentDiv).append(
-				'<div id="mainContainer" class="col-md-10 col-sm-11 main"><div id="informationBar"/><div id="mainContent"/></div>');
+				'<div id="mainContainer" class="col-md-10 col-sm-11 main"><div id="informationBar" class="showOnComplete"/><div id="mainContent"/></div>');
 
 			
 			// Setup header actions
@@ -772,7 +794,7 @@ function loadWait() {
 function loadMenu(menu) {
 
 	if(!menu) {
-		debugger;
+		
 	}
 	log("Loading menu " + menu.resourceKey);
 	
@@ -780,13 +802,18 @@ function loadMenu(menu) {
 		$('.active').removeClass('active');
 	}
 
+	var isPageMenu = menu.parent && menu.parent.resourceKey === 'pages';
+	
 	var subPage = null;
-	if(menu.parent) {
-		subPage = menu.resourceKey;
-		menu = menu.parent;
+	if(!menu.page) {
+		if(menu.section) {
+			subPage = menu.resourceKey;
+			menu = menu.parent;
+		}
 	}
 	
 	currentMenu = menu;
+
 	
 	if(currentMenu.id === 'realms') {
 		$('#currentRealm i').addClass('active');
@@ -803,7 +830,7 @@ function loadMenu(menu) {
 	$('div[role="dialog"]').remove();
 	$('#mainContent').data('loadComplete', false);
 
-	if(menu.menus.length > 0) {
+	if(!menu.page && menu.menus.length > 0) {
 
 		allMenus[this.resourceKey] = this;
 		
@@ -853,7 +880,28 @@ function loadMenu(menu) {
 	} else {
 	
 		loadWait();
-		$('#mainContent').load(uiPath + '/content/' + menu.resourceName + '.html');
+		
+		if(menu.parent && menu.parent.resourceKey === 'pages') {
+			
+			if(!$('#pageContent').length) {
+				$('#mainContainer').append('<div id="pageContent"></div>');
+			}
+			$('#pageContent').load(uiPath + '/content/' + menu.resourceName + '.html');
+
+			$('#mainContainer').removeClass('col-md-10');
+			$('#mainContainer').addClass('col-md-12');
+			$('#mainContainer').removeClass('col-sm-11');
+			$('#mainContainer').addClass('col-sm-12');
+			$('#main-menu').hide();
+			$('#mainContent').hide();
+
+			$('#pageContent').show(); 
+		} else {
+			$('#pageContent').remove();
+			$('#main-menu').show();
+			$('#mainContent').load(uiPath + '/content/' + menu.resourceName + '.html');
+			$('#mainContent').show();
+		}
 	}
 }
 
