@@ -108,7 +108,8 @@
 	
     function addConditionRow(divId, condition) {
     	
-    	var event = $('#triggerModal').data('selectedEvent');
+    	//var event = $('#triggerModal').data('selectedEvent');
+    	var event = $('#triggerEvent').widget().getObject();
     	var parentEvents = $('#triggerModal').data('parentEvents');
     	
     	var conditions = $('#triggerModal').data('conditions');
@@ -216,7 +217,8 @@
     }
     
     function getAttributeNames() {
-    	var variables = $('#triggerModal').data('selectedEvent').attributeNames;
+    	//var variables = $('#triggerModal').data('selectedEvent').attributeNames;
+    	var variables = $('#triggerEvent').widget().getObject().attributeNames;
     	
     	if($('#triggerModal').data('parentEvents')) {
     		var parentEvents = $('#triggerModal').data('parentEvents');
@@ -279,13 +281,13 @@
 									});
 						}
 					}
-					$('#triggerModal').data('selectedEvent', widget.getObject());
+					//$('#triggerModal').data('selectedEvent', widget.getObject());
 				} else {
 					$('.requiresEvent').hide();
 				}
 			}
 		});
-		$('#triggerModal').data('selectedEvent', triggerEvent.getObject());
+		//$('#triggerModal').data('selectedEvent', triggerEvent.getObject());
 
 		var loadTriggerProperties = function() {
 			/* If 'displaying' is set to anything other than false, we assume we are editing
@@ -408,9 +410,10 @@
 				if(parentResource) {
 					/* This is for an 'Automation' */
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
-						sself._setupProperties(resource);
+						
 						triggerEvent.setValue(data.resources[0].resourceKey);
-
+						sself._setupProperties(resource);
+						
 						/* Triggers loading of properties. */
 						loadTemplates = false;
 						triggerTask.setValue(resource.resourceKey);
