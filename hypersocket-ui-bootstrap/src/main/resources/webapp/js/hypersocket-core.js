@@ -809,6 +809,9 @@ function loadMenu(menu) {
 		if(menu.section) {
 			subPage = menu.resourceKey;
 			menu = menu.parent;
+		} 
+		else if(menu.menus.length > 0) {
+			subPage = menu.menus[0].resourceKey;
 		}
 	}
 	
