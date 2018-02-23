@@ -1984,6 +1984,13 @@ select[multiple] {
 	height: 40px;
 }
 
+.sk-message {
+    margin-top: 60px;
+    margin-left: -100px;
+    margin-right: -100px;
+    text-align: center;
+}
+
 .sk-fading-circle .sk-circle {
 	width: 100%;
 	height: 100%;

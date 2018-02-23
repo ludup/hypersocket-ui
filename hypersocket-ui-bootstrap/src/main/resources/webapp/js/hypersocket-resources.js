@@ -497,7 +497,7 @@ $.fn.resourceTable = function(params) {
 						bootbox.confirm(getResource(options.resourceKey + ".delete.desc")
 								.format(resource.name), function(confirmed) {
 							if (confirmed) {
-								
+								$('#mainContainer').startSpin(getResource("text.deleting").format(resource.name));
 								deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
 									if (data.success) {
 										if (options.resourceDeleted) {
@@ -513,6 +513,7 @@ $.fn.resourceTable = function(params) {
 									} else {
 										showError(data.message);
 									}
+									$('#mainContainer').stopSpin();
 								});
 							}
 					});

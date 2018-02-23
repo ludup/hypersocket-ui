@@ -313,8 +313,11 @@ $.fn.getCursorPosition = function () {
     return pos;
 }
 
-$.fn.startSpin = function () {
+$.fn.startSpin = function (message) {
 
+	if(!message) {
+		message = getResource('pleaseWait.text');
+	}
 	var _self = $(this);
 	if(!$(this).find('.sk-fading-circle').length) {
 		$('.showOnComplete').hide();
@@ -338,6 +341,7 @@ $.fn.startSpin = function () {
 				+'<div class="sk-circle10 sk-circle"></div>'
 				+'<div class="sk-circle11 sk-circle"></div>'
 				+'<div class="sk-circle12 sk-circle"></div>'
+				+'<div class="sk-message"><p>' + getResourceOrText(message) + '</p></div>'
 				+'</div>');
 	}
 	
