@@ -1010,7 +1010,8 @@ $.fn.resourceTable = function(params) {
 											renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><span>' + getResource(act.resourceKey + ".label") + '</span>&nbsp;&nbsp;<i class="fa ' + act.iconClass + '"></i></a></li>';
 						
 											$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
-											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
+											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function(e) {
+												e.preventDefault();
 												act.action(resource, function(resource) {
 													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 													checkBadges(false);
