@@ -36,6 +36,7 @@
 				} else {
 					realmId = currentRealm.id;
 					realmCategory = currentRealm.resourceCategory;
+					history.pushState(null, "", '#menu=' + getAnchorByName('menu') + '&realmId=' + realmId + '&realmCategory=' + realmCategory);
 				}
 
 				$(document).data('apiUrl', apiUrl);
