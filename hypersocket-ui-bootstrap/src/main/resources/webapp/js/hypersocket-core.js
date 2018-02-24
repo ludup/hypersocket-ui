@@ -794,7 +794,7 @@ function loadWait() {
 function loadMenu(menu) {
 
 	if(!menu) {
-		
+		return;
 	}
 	log("Loading menu " + menu.resourceKey);
 	
