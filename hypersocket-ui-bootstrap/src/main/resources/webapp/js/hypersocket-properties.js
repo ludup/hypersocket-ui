@@ -784,6 +784,14 @@ $.fn.propertyPage = function(opts) {
 									}
 								}
 								
+								if(this.view && this.view != '') {
+									if(options.view) {
+										if(options.view !== this.view) {
+											return;
+										}
+									}
+								}
+								
 								if(this.systemOnly) {
 									if($(document).data('session') && $(document).data('session').currentRealm) {
 										if(!$(document).data('session').currentRealm.system) {
@@ -980,6 +988,13 @@ $.fn.propertyPage = function(opts) {
 											}
 										}
 										
+										if(this.view && this.view != '') {
+											if(options.view) {
+												if(options.view !== this.view) {
+													return;
+												}
+											}
+										}
 										var filterClass = tabfilterClass;
 										
 										if(options.useFilters) {

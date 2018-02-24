@@ -271,7 +271,7 @@ function home(data) {
 							var parent = this;
 							var firstChild = null;
 							$.each(this.menus, function() {
-								if(!firstChild) {
+								if(!firstChild && !this.hidden) {
 									firstChild = this;
 								}
 								this.parent = parent;
@@ -811,6 +811,13 @@ function loadMenu(menu) {
 			menu = menu.parent;
 		} 
 		else if(menu.menus.length > 0) {
+//			$.each(menu.menus, function(idx, obj) {
+//				if(!obj.hidden) {
+//					subPage = obj.resourceKey;
+//					return true;
+//				}
+//				return false;
+//			});
 			subPage = menu.menus[0].resourceKey;
 		}
 	}

@@ -199,9 +199,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "browserLaunchable",
 				"fa-globe", "browserLaunchable", 300, null, null, null, null) {
 			@Override
-			public boolean isHidden() {
+			public boolean canRead() {
 				return browserService.getPersonalResourceCount(
-						getCurrentPrincipal(), "") == 0;
+						getCurrentPrincipal(), "") > 0;
 			}
 		}, MenuService.MENU_MY_RESOURCES);
 

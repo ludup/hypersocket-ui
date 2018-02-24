@@ -1242,7 +1242,7 @@ $.fn.resourceTable = function(params) {
     	});
 		
     	var resourceId = getAnchorByName('resource');
-		debugger;
+		
 		if(resourceId) {
 			setTimeout(function() {
 				getJSON(options.resourceUrl + '/' + resourceId, null, function(data) {
