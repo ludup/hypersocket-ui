@@ -133,8 +133,10 @@ $.fn.passwordPolicy = function(data) {
 						}
 						postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
 							if(data.success) {
+								options.passwordElement.css("background-color", "#C8E6C9");
 								options.passwordElement.after('<i class="fa fa-check success passwordValidationIcon"></i>');
 							} else {
+								options.passwordElement.css("background-color", "#FFCDD2");
 								options.passwordElement.after('<i class="fa fa-times error passwordValidationIcon"></i>');
 							}
 						}, "json");
@@ -146,8 +148,10 @@ $.fn.passwordPolicy = function(data) {
 					
 					options.confirmElement.siblings('i').remove();
 					if(options.confirmElement.val() === options.passwordElement.val()) {
+						options.confirmElement.css("background-color", "#C8E6C9");
 						options.confirmElement.after('<i class="fa fa-check success passwordValidationIcon"></i>');
 					} else {
+						options.confirmElement.css("background-color", "#FFCDD2");
 						options.confirmElement.after('<i class="fa fa-times error passwordValidationIcon"></i>');
 					}
 				});
