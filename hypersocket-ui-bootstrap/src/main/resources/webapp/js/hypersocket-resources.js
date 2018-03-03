@@ -814,6 +814,9 @@ $.fn.resourceTable = function(params) {
 								},
 								sortOptions: false
 							});
+			    			if(options.defaultFilter) {
+			    				$('#filterColumn').widget().setValue(options.defaultFilter);
+			    			}
 		    			});
 		    		} else if(options.searchFilters) {
 		    			$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter By:</label><div class="toolbarWidget" id="filterColumn"></div></div>');
@@ -821,10 +824,17 @@ $.fn.resourceTable = function(params) {
 							values: options.searchFilters,
 							changed: function(widget) {
 								$('.search input[placeholder="Search"]').val('');
-								resourcePage.refresh();
-								loadSearchColumns(widget.getSelectedObject().searchColumns);
+								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+								var arr = [];
+								if(widget.getSelectedObject().useDefaultColumns) {
+									arr = searchColumns.slice();
+								}
+								loadSearchColumns(arr.concat(widget.getSelectedObject().searchColumns));
 							}
 						});
+		    			if(options.defaultFilter) {
+		    				$('#filterColumn').widget().setValue(options.defaultFilter);
+		    			}
 		    		}
 
                     if(options.bulkAssignment) {
