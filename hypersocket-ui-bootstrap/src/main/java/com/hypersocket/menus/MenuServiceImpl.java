@@ -31,6 +31,7 @@ import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.config.SystemConfigurationService;
+import com.hypersocket.html.HtmlTemplateResourcePermission;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.message.MessageResourcePermission;
 import com.hypersocket.message.MessageResourceService;
@@ -448,6 +449,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 
 		}, "messageMenu");
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				"htmlTemplates", "fa-code", "htmlTemplates", 9999,
+				HtmlTemplateResourcePermission.READ,
+				HtmlTemplateResourcePermission.CREATE,
+				HtmlTemplateResourcePermission.UPDATE,
+				HtmlTemplateResourcePermission.DELETE), "messageMenu");
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageConfiguration", "fa-gears",
 				"messageSettings", Integer.MAX_VALUE, MessageResourcePermission.READ, null, null,
