@@ -123,11 +123,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				return permissionService.hasAdministrativePermission(getCurrentPrincipal());
 			}
 		}, MenuService.MENU_NAV);
-		
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_REALMS, "fa-database", "realms", 1,
-				RealmPermission.READ, RealmPermission.CREATE,
-				RealmPermission.UPDATE, RealmPermission.DELETE), MenuService.MENU_NAV);
 
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,

@@ -381,11 +381,12 @@ function home(data) {
 
 			if(allMenus['navigation']) {
 				
-				loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
+				
 				
 				$.each(allMenus['navigation'].menus, function(idx, obj) {
 					
 					if(obj.resourceKey === 'realms') {
+						loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
 						return;
 					}
 					
