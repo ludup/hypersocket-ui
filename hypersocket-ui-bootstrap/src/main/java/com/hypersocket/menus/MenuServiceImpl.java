@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import com.hypersocket.attributes.role.RoleAttributePermission;
 import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
+import com.hypersocket.automation.AutomationResourcePermission;
+import com.hypersocket.automation.AutomationResourceServiceImpl;
 import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certificates.CertificateResourceService;
@@ -49,6 +51,8 @@ import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.session.SessionPermission;
+import com.hypersocket.triggers.TriggerResourcePermission;
+import com.hypersocket.triggers.TriggerResourceServiceImpl;
 import com.hypersocket.ui.IndexPageFilter;
 
 @Service
@@ -480,7 +484,28 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				}
 			}
 		}, MenuService.MENU_MY_PROFILE);
+	
+		registerMenu(new MenuRegistration(
+				TriggerResourceServiceImpl.RESOURCE_BUNDLE, "triggersMenu",
+				"fa-flash", null, 200),
+				MenuService.MENU_BUSINESS_RULES);
 		
+		registerMenu(new MenuRegistration(
+				TriggerResourceServiceImpl.RESOURCE_BUNDLE, "triggers",
+				"fa-flash", "triggers", 200, TriggerResourcePermission.READ,
+				TriggerResourcePermission.CREATE,
+				TriggerResourcePermission.UPDATE,
+				TriggerResourcePermission.DELETE),
+				"triggersMenu");
+
+		registerMenu(new MenuRegistration(
+				AutomationResourceServiceImpl.RESOURCE_BUNDLE, "automations",
+				"fa-clock-o", "automations", 100,
+				AutomationResourcePermission.READ,
+				AutomationResourcePermission.CREATE,
+				AutomationResourcePermission.UPDATE,
+				AutomationResourcePermission.DELETE),
+				MenuService.MENU_BUSINESS_RULES);
 	}
 
 	@Override
