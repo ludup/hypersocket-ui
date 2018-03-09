@@ -45,7 +45,6 @@ import com.hypersocket.permissions.SystemPermission;
 import com.hypersocket.realm.GroupPermission;
 import com.hypersocket.realm.PasswordPermission;
 import com.hypersocket.realm.ProfilePermission;
-import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
