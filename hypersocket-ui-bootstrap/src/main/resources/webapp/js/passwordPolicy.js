@@ -52,7 +52,7 @@ $.fn.passwordPolicy = function(data) {
 				showGenerator: true,
 				showPolicyName: true,
 				title: getResource('passwordRules.text'),
-				showRulesDefault: false,
+				showRulesDefault: true,
 				showGeneratorDefault: true
 			}, data);
 	
@@ -76,10 +76,10 @@ $.fn.passwordPolicy = function(data) {
 		if(!data.success) {
 			var passwordRulesContent;
 			if(options.showRulesDefault){
-				thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + options.title + '</h4>');
+				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + options.title + '</h5>');
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" styloe="padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}else{
-				thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h4>');
+				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h5>');
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}
 			if(data.message == 'Unsupported') {
@@ -105,16 +105,16 @@ $.fn.passwordPolicy = function(data) {
 			var passwordRulesContent;
 			if(options.showRulesDefault){
 				if(options.showPolicyName) {
-					thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + policy.name + '</h4>');
+					thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + policy.name + '</h5>');
 				} else {
-					thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + options.title + '</h4>');
+					thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + options.title + '</h5>');
 				}
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}else{
 				if(options.showPolicyName) {
-					thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + policy.name + '</h4>');
+					thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + policy.name + '</h5>');
 				} else {
-					thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h4>');
+					thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h5>');
 				}
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}
@@ -311,10 +311,10 @@ $.fn.passwordPolicy = function(data) {
 
 			var passwordGeneratorContent;
 			if(options.showGeneratorDefault){
-				thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h4>');
+				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
 				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="padding-left: 30px;"></div>').find('#passwordGeneratorContent');
 			}else{
-				thisDiv.append('<h4><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h4>');
+				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
 				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="display: none; padding-left: 30px;"></div>').find('#passwordGeneratorContent');
 			}
 			
