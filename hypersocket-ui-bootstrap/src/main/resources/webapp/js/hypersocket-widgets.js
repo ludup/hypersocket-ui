@@ -1066,7 +1066,8 @@ $.fn.autoComplete = function(data) {
 						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
 			});
 			$('#auto_' + id + ' .optionSelect').off('click');
-			$('#auto_' + id + ' .optionSelect').on('click', function() {
+			$('#auto_' + id + ' .optionSelect').on('click', function(e) {
+				e.preventDefault();
 				var value = $(this).data('value');
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
