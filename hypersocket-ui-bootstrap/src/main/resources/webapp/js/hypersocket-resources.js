@@ -955,7 +955,7 @@ $.fn.resourceTable = function(params) {
 		    	if (options.logo) {
 		    		
 		    		log("Rendering logo");
-		    		
+		    		$('#' + divName + 'Grid').empty();
 		    		$('#' + divName + 'Placeholder').parent().append('<div id="' + divName + 'Grid" class="fixed-table-container" style="padding-bottom: 0px; display: none;"></div>');
 		    		
 		    		var gridResourceList = $('#' + divName + 'Placeholder').bootstrapTable('getData');
