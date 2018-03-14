@@ -14,15 +14,14 @@ function processURL(widget, url) {
 	        regex.lastIndex++;
 	    }
 	    // The result can be accessed through the `m`-variable.
-	    m.forEach(function(match, groupIndex) {
-	    	if($(document).data('widgetMap')) {
-		    	var w = $(document).data('widgetMap')[m[1]];
-		    	if(w) {
-		    		log("Replacing value " + w.getValue());
-		    		url = url.replace(match, w.getValue());
-		    	}
+    	if($(document).data('widgetMap')) {
+	    	var w = $(document).data('widgetMap')[m[1]];
+	    	if(w) {
+	    		log("Replacing value " + w.getValue());
+	    		url = url.replace(m[0], w.getValue());
 	    	}
-	    });
+    	}
+	
 	}
 	
 	return url;
@@ -544,9 +543,6 @@ $.fn.richInput = function(data) {
 					  options.changed(callback);
 				  }
 			  });
-			  
-			  // TODO Whats this?
-			  /* $('.tabPropertiesTab').first().trigger('click'); */
 		  }		  
 	});	
 	$(this).data('widget', callback);
@@ -817,7 +813,7 @@ $.fn.selectButton = function(data) {
 							}
 						});
 						
-						if(selected==null) {
+						if(selected==null && !options.emptySelectionAllowed) {
 							loading = true;
 							var val = $('.selectButton_' + id).first().trigger('click');
 							loading = false;
@@ -988,7 +984,12 @@ $.fn.autoComplete = function(data) {
 	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
 			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : 'class="form-control"') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>' 
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>' 
-			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"') + '><a href="#" id="click_' + id + '"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
+			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"') 
+			+ '><a href="#" id="click_' + id + '" class="drop_' + id + '"><i id="spin_' + id + '" class="drop_' + id + ' fa ' + options.icon + '"></i></a></span></div>');
+	
+	if(options.remoteSearch) {
+		$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+	}
 	
 	var buildData = function(values) {
 		var map = [];
@@ -1013,7 +1014,6 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	var createDropdown = function(text, show, prefiltered) {
-		
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
@@ -1073,7 +1073,6 @@ $.fn.autoComplete = function(data) {
 				thisWidget.data('selectedObject', obj);
 				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value.toString());
-				log("Setting value " + value);
 				$('#input_' + id).val($(this).text());
 				$('[data-toggle="dropdown"]').parent().removeClass('open');
 				
@@ -1132,6 +1131,7 @@ $.fn.autoComplete = function(data) {
 	};
 	
 	var doDropdown = function(text) {
+		
 		$('#spin_' + id).removeClass('fa-search');
 		$('#spin_' + id).addClass('fa-spin');
 		$('#spin_' + id).addClass('fa-spinner');
@@ -1152,21 +1152,10 @@ $.fn.autoComplete = function(data) {
 							var map = [];
 							$.each(data.rows, function(idx, obj) {
 								map[obj[options.valueAttr]] = obj;
-								/**
-								 * We don't want to set value here. It makes the dropdown unresponsive
-								 * when there is only one option.
-								 */
-//								if(options.value) {
-//									if(obj[options.valueAttr]==options.value) {
-//										log("Found value with " + options.value);
-//										thisWidget.data('selectedObject', obj);
-//										$('#' + id).val(options.value);
-//										$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-//									}
-//								}
 							});
 							$('#input_' + id).data('map', map);
 						} else {
+							$('#auto_' + id).empty();
 							if(text=='') {
 								$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 							} else {
@@ -1178,15 +1167,6 @@ $.fn.autoComplete = function(data) {
 		}
 		
 	};
-	
-	$('#input_' + id).change(function() {
-		updateValue($(this).val(), true);
-	});
-	
-	$('#input_' + id).keyup(function() {
-		var text = $(this).val();
-		doDropdown(text);
-	});
 	
 	var remoteDropdown = false;
 	callback = {
@@ -1215,6 +1195,9 @@ $.fn.autoComplete = function(data) {
 							
 							if(data.success) {
 								buildData(options.isResourceList ? data.resources : data);
+								if(options.alwaysDropdown) {
+									createDropdown("", false, false);
+								} 
 								callback.setValue(newValue);
 							}
 						});
@@ -1281,8 +1264,8 @@ $.fn.autoComplete = function(data) {
  			}
 	};
 
-	$('#click_' + id).click(function(e){
-		
+	$('.drop' + id).click(function(e){
+		e.preventDefault();
 		if(options.alwaysDropdown) {
 			createDropdown("", true, false);
 		} else {
@@ -1292,60 +1275,76 @@ $.fn.autoComplete = function(data) {
 		}
 	});
 	
+	
+	$('#input_' + id).change(function() {
+		updateValue($(this).val(), true);
+	});
+	
+	$('#input_' + id).keyup(function() {
+		if(options.alwaysDropdown) {
+			createDropdown("", true, false);
+		} else {
+			var text = $(this).val();
+			doDropdown(text);
+		}
+	});
+	
 	if(options.disabled) {
 		callback.disable();
 	}
 	
-	if(options.url && !options.remoteSearch && !options.doNotInit) {
-		getJSON(
-			processURL(callback, options.url),
-			null,
-			function(data) {
-				buildData(options.isResourceList ? data.resources : data);
-				if(!options.url || !options.setOnLoad)
-					updateValue(options.value, false);
-				else {
-					updateValue(options.setOnLoad, true);
-					options.setOnLoad = false;
-				}
-				createDropdown('', false, false);
-			});
-	} else if(options.values && !options.remoteSearch) {
-		buildData(options.values);
-		updateValue(options.value, false);
-		createDropdown('', false, false);
-	} else if(options.remoteSearch) {
-		if(isReplacementVariable(options.value)) {
+	if(!options.doNotInit) {
+		if(options.url && !options.remoteSearch) {
+			getJSON(
+				processURL(callback, options.url),
+				null,
+				function(data) {
+					buildData(options.isResourceList ? data.resources : data);
+					if(!options.url || !options.setOnLoad)
+						updateValue(options.value, options.alwaysFireChange);
+					else {
+						updateValue(options.setOnLoad, true);
+						options.setOnLoad = false;
+					}
+					createDropdown('', false, false);
+				});
+		} else if(options.values && !options.remoteSearch) {
+			buildData(options.values);
 			updateValue(options.value, false);
-		} else {
-			if(options.value && options.value !== '') {
-				$('#' + id).val(options.value);
-				var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
-				if(options.searchParams) {
-					url += '&' + options.searchParams;
-				}
-				getJSON(processURL(callback, url),
-						null,
-						function(data) {
-							
-							var map = [];
-							$.each(data.rows, function(idx, obj) {
-								map[obj[options.valueAttr]] = obj;
-								if(obj[options.valueAttr]==options.value) {
-									thisWidget.data('selectedObject', obj);
-									$('#' + id).val(options.value);
-									$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-								}
-							});
-							$('#input_' + id).data('values', data.rows);
-							$('#input_' + id).data('map', map);
-						});
+			createDropdown('', false, false);
+		} else if(options.remoteSearch) {
+			if(isReplacementVariable(options.value)) {
+				updateValue(options.value, false);
 			} else {
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');	
+				if(options.value && options.value !== '') {
+					$('#' + id).val(options.value);
+					var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
+					if(options.searchParams) {
+						url += '&' + options.searchParams;
+					}
+					getJSON(processURL(callback, url),
+							null,
+							function(data) {
+								
+								var map = [];
+								$.each(data.rows, function(idx, obj) {
+									map[obj[options.valueAttr]] = obj;
+									if(obj[options.valueAttr]==options.value) {
+										thisWidget.data('selectedObject', obj);
+										$('#' + id).val(options.value);
+										$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+									}
+								});
+								$('#input_' + id).data('values', data.rows);
+								$('#input_' + id).data('map', map);
+							});
+				} else {
+					$('#auto_' + id).empty();
+					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');	
+				}
 			}
 		}
 	}
-	
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	
