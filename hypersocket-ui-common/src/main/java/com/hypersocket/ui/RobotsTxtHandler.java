@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.hypersocket.config.SystemConfigurationService;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.HttpRequestHandler;
 import com.hypersocket.server.handlers.HttpResponseProcessor;
@@ -19,7 +20,8 @@ public class RobotsTxtHandler extends HttpRequestHandler {
 	@Autowired
 	HypersocketServer server; 
 	
-	String robotsTxt = "User-agent: *\r\nDisallow: /\r\n";
+	@Autowired
+	SystemConfigurationService configurationService;
 	
 	public RobotsTxtHandler() {
 		super("robots.txt", Integer.MAX_VALUE-1);
@@ -28,10 +30,6 @@ public class RobotsTxtHandler extends HttpRequestHandler {
 	@PostConstruct
 	public void postConstruct() {
 		server.registerHttpHandler(this);
-	}
-	
-	public void setRobotsTxt(String robotsTxt) {
-		this.robotsTxt = robotsTxt;
 	}
 
 	@Override
@@ -46,7 +44,7 @@ public class RobotsTxtHandler extends HttpRequestHandler {
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		
-		byte[] b = robotsTxt.getBytes("UTF-8");
+		byte[] b = configurationService.getValue("server.robotsTxt").getBytes("UTF-8");
 		response.setContentLength(b.length);
 		response.getOutputStream().write(b);
 		
