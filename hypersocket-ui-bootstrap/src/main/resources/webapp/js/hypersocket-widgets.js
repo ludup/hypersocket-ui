@@ -813,7 +813,7 @@ $.fn.selectButton = function(data) {
 							}
 						});
 						
-						if(selected==null && !options.emptySelectionAllowed) {
+						if(selected==null && !obj.emptySelectionAllowed) {
 							loading = true;
 							var val = $('.selectButton_' + id).first().trigger('click');
 							loading = false;
