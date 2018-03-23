@@ -500,6 +500,36 @@ div.tablePages ul.pagination {
 	height: 400px;
 }
 
+#firstSteps {
+	overflow: auto;
+}
+
+.firstStep {
+	margin-bottom: 20px;
+}
+
+#featureReel {
+	overflow: auto;
+}
+
+#featureReelCarousel {
+	margin-top: 40px;
+}
+
+.carousel-control, .carousel-control:visited, .carousel-control:active {
+    width: 20px;
+    font-size: 20px;
+    color: #000;
+    text-shadow: none;
+}
+
+.carousel-control:hover  {
+    width: 20px;
+    font-size: 20px;
+    color: #eee;
+    text-shadow: none;
+}
+
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover,
 	.pagination>.active>span:hover, .pagination>.active>a:focus,
 	.pagination>.active>span:focus {

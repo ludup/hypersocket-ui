@@ -1,4 +1,4 @@
-<div id="myCarousel" class="carousel slide" data-ride="carousel"
+<div id="featureReelCarousel" class="carousel slide" data-ride="carousel"
 	data-interval="false">
 	<!-- Indicators -->
 	<ol class="carousel-indicators"></ol>
@@ -9,10 +9,10 @@
 	<!-- Left and right controls -->
 	<a class="left carousel-control" href="#myCarousel" role="button"
 		data-slide="prev" style="background-image: none"> <span class="glyphicon glyphicon-chevron-left"
-		aria-hidden="true" style="color: #428bca"></span> <span class="sr-only">Previous</span>
+		aria-hidden="true"></span> <span class="sr-only">Previous</span>
 	</a> <a class="right carousel-control" href="#myCarousel" role="button"
 		data-slide="next" style="background-image: none"> <span class="glyphicon glyphicon-chevron-right"
-		aria-hidden="true" style="color: #428bca"></span> <span class="sr-only">Next</span>
+		aria-hidden="true"></span> <span class="sr-only">Next</span>
 	</a>
 </div>
 
@@ -33,7 +33,7 @@
 				if(idx % 3 == 0){
 					$('.carousel-inner').append('<div class="item" style="text-align: center"></div>');
 				}
-				$('.carousel-inner div.item').last().append('<div style="display: inline-block;"><p>' + obj.name + '</p><iframe width="200" style="padding: 10px" src="' + obj.url + '" frameborder="0"allowfullscreen></iframe></div>');
+				$('.carousel-inner div.item').last().append('<div style="display: inline-block;"><iframe width="200" style="padding: 10px" src="' + obj.url + '" frameborder="0"allowfullscreen></iframe><p>' + obj.name + '</p></div>');
 			});
 			$('.carousel-inner').children().first().addClass('active');
 	   });

@@ -187,23 +187,21 @@ public class ClientDownloadServiceImpl extends AbstractAuthenticatedServiceImpl 
 				if(line.startsWith("#")) {
 					continue;
 				}
-				int idx = line.indexOf('=');
-				if(idx==-1) {
-					log.error("Invalid properties line " + line);
+				String[] items = line.split(";");
+				
+				if(items.length < 4) {
 					continue;
 				}
-				String url = line.substring(0,idx);
-				String desc = line.substring(idx+1);
+				String url = items[0];
+				
 				url = url.replace("${version}", HypersocketVersion.getVersion());
 				
 	
-				String icon = "fa-file-o";
-				if ((idx = desc.indexOf(';')) > -1) {
-					icon = desc.substring(0, idx);
-					desc = desc.substring(idx + 1);
-				}
-	
-				downloads.add(new DownloadFile(new URL(url), icon, desc));
+				String icon = items[1];
+				String desc = items[2];
+				String subsystem = items[3];
+				
+				downloads.add(new DownloadFile(new URL(url), icon, subsystem, desc));
 			}
 		} catch (IOException e) {
 			log.error("Failed to load download list", e);

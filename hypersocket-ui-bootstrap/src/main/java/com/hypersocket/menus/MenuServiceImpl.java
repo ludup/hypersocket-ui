@@ -123,7 +123,19 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		}, MenuService.MENU_NAV);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DASHBOARD_HELPZONE,
+				"fa-question-circle", "helpzone", Integer.MIN_VALUE,
+				SessionPermission.READ, null, null, null,
+				null) {
 
+					@Override
+					public boolean isHome() {
+						return true;
+					}
+			
+		}, MenuService.MENU_DASHBOARD);
+		
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_PERSONAL, "", null, 100, null, null, null, null) {
 			@Override

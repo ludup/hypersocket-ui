@@ -743,7 +743,10 @@ $.fn.resourceTable = function(params) {
 								}
 								
 								$('.search input[placeholder="Search"]').val('');
-								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+//								if(!doNotRefresh) {
+//									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+//									doNotRefresh = false;
+//								}
 							}
 						});
 						$('#searchColumn').widget().setValue(columns[0].name);

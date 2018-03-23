@@ -53,6 +53,7 @@ $.fn.passwordPolicy = function(data) {
 				showPolicyName: true,
 				title: getResource('passwordRules.text'),
 				showRulesDefault: true,
+				showZxcvbn: true,
 				showGeneratorDefault: true
 			}, data);
 	
@@ -69,15 +70,94 @@ $.fn.passwordPolicy = function(data) {
 		url = 'passwordPolicys/policy/' + options.principalId
 	}
 	
+	if(options.buttonElement) {
+		$(options.buttonElement).prop('disabled', true);
+	}
+	
 	var thisDiv = $(this);
 	thisDiv.empty();
+	
+	if(options.buttonElement) {
+		$(options.buttonElement).prop('disabled', true);
+	}
+	
+	var validate = function() {
+		
+		$('#suggestions').empty();
+		
+		if(options.buttonElement) {
+			$(options.buttonElement).prop('disabled', true);
+		}
+		
+		if(options.passwordElement.val()!=='') {
+			
+			var result = zxcvbn(options.passwordElement.val());
+			
+			var feedback = false;
+			if(result.feedback.suggestions.length > 0 || result.feedback.warning) {
+				if(result.feedback.warning) {
+					$('#suggestions').append('<span class="error">' + result.feedback.warning + '</span><br>');
+					feedback = true;
+				}
+			} 
+		
+			if(!feedback) {
+				var params = new Object();
+				params.password = encodeURIComponent(options.passwordElement.val());
+				if(options.principalId) {
+					params.id = options.principalId;
+				}
+				if(options.usernameField) {
+					options.username = options.passwordElement.val();
+				}
+				
+				postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
+					if(data.success) {
+						if(!feedback) {
+							if(options.passwordElement.val() == options.confirmElement.val()) {
+								$('#suggestions').append('<span class="success">Password looks good</span>');
+							} else {
+								$('#suggestions').append('<span class="warning">Password is good but needs confirming</span>');
+							}
+							if(options.buttonElement) {
+								$(options.buttonElement).prop('disabled', false);
+							}
+							return;
+						}
+					} else {
+						$('#suggestions').append('<span class="error">Password does not conform to password policy</span>');
+					}
+					if(options.buttonElement) {
+						$(options.buttonElement).prop('disabled', true);
+					}
+				}, "json");
+			}
+		
+		}
+	}
+	
+	var executeWitDelay = function() {
+		
+		if(options.timeout) {
+			clearTimeout(options.timeout);
+		}
+		options.timeout = setTimeout(validate, 500);
+	}
+	
+	if(options.passwordElement) {
+		thisDiv.append('<div id="suggestions" style="padding-bottom: 10px;"></div>');
+		options.passwordElement.keyup(executeWitDelay);	
+		options.confirmElement.keyup(executeWitDelay);
+	}
+
+	
 	getJSON(url, null, function(data) {
 
 		if(!data.success) {
 			var passwordRulesContent;
 			if(options.showRulesDefault){
 				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + options.title + '</h5>');
-				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" styloe="padding-left: 30px;"></div>').find('#passwordRulesContent');
+				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}else{
 				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h5>');
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
@@ -117,44 +197,6 @@ $.fn.passwordPolicy = function(data) {
 					thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h5>');
 				}
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
-			}
-			if(options.passwordElement && options.confirmElement) {
-				
-				options.passwordElement.on('change', function() {
-					options.passwordElement.siblings('i').remove();
-					if(options.passwordElement.val()!=='') {
-						var params = new Object();
-						params.password = encodeURIComponent(options.passwordElement.val());
-						if(options.principalId) {
-							params.id = options.principalId;
-						}
-						if(options.usernameField) {
-							options.username = options.passwordElement.val();
-						}
-						postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
-							if(data.success) {
-								options.passwordElement.css("background-color", "#C8E6C9");
-								options.passwordElement.after('<i class="fa fa-check success passwordValidationIcon"></i>');
-							} else {
-								options.passwordElement.css("background-color", "#FFCDD2");
-								options.passwordElement.after('<i class="fa fa-times error passwordValidationIcon"></i>');
-							}
-						}, "json");
-					
-					}
-				});
-				
-				options.confirmElement.on('change', function() {
-					
-					options.confirmElement.siblings('i').remove();
-					if(options.confirmElement.val() === options.passwordElement.val()) {
-						options.confirmElement.css("background-color", "#C8E6C9");
-						options.confirmElement.after('<i class="fa fa-check success passwordValidationIcon"></i>');
-					} else {
-						options.confirmElement.css("background-color", "#FFCDD2");
-						options.confirmElement.after('<i class="fa fa-times error passwordValidationIcon"></i>');
-					}
-				});
 			}
 
 			passwordRulesContent.append('<span>' 
@@ -295,7 +337,7 @@ $.fn.passwordPolicy = function(data) {
 				$(this).find('i').addClass('icon-plus');
 			}
 		});
-
+		
 		if(options.showGenerator && policy) {
 			thisDiv.append('<span></span><br>');
 
@@ -373,9 +415,8 @@ $.fn.passwordPolicy = function(data) {
 				$('#insertPassword').click(function(e) {
 					e.preventDefault();
 					options.passwordElement.val($('#suggestedPassword').text());
-					options.passwordElement.trigger('change');
 					options.confirmElement.val($('#suggestedPassword').text());
-					options.confirmElement.trigger('change');
+					validate();
 				});
 				
 				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a href="#" class="copyPassword" data-toggle="tooltip" data-placement="top" title="'
@@ -406,7 +447,7 @@ $.fn.passwordPolicy = function(data) {
 			$('[data-toggle="tooltip"]').tooltip();
 		}
 		
-		
+		validate();
 		if(options.complete) {
 			options.complete();
 		}

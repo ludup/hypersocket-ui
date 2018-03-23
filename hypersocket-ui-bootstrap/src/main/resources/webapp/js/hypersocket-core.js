@@ -7,6 +7,7 @@ var countries = null;
 var restartAutoLogoff = false;
 var menuList = null;
 var allMenus = new Array();
+var systemAdmin;
 
 doAjax({
     url: uiPath + 'json/countries.json',
@@ -401,6 +402,8 @@ function home(data) {
 					});
 				});
 			}
+			
+			systemAdmin = data.systemAdmin;
 			
 			if(data.systemAdmin) {
 				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="fa fa-power-off"></i></a></li>');

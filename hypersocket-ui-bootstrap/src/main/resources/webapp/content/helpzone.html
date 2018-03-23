@@ -41,7 +41,7 @@
 					 $('#' + value.contentPath).load(uiPath + '/content/' + value.contentPath + '.html');
 			    } else {
 					if(value.large){
-						$('#feedLarge').append('<div id="' + value.contentPath + '" style="margin-bottom: 30px;"></div>');
+						$('#feedLarge').append('<div id="' + value.contentPath + '"></div>');
 						$('#' + value.contentPath).load(uiPath + '/content/' + value.contentPath + '.html',
 								function(){
 									if(getResourceNoDefault(value.resourceKey)){
