@@ -309,6 +309,9 @@
 				}],
 				complete: function() {
 					$('#allTabs').show();
+				},
+				urlProcessor: function(url) {
+					return url.replace('$' + '{realmApi}', "currentRealm");
 				}
 			});
 			
