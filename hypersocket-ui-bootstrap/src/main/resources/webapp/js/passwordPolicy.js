@@ -87,6 +87,8 @@ $.fn.passwordPolicy = function(data) {
 		
 		if(options.buttonElement) {
 			$(options.buttonElement).prop('disabled', true);
+		} else if(options.buttonCallback) {
+			options.buttonCallback(true);
 		}
 		
 		if(options.passwordElement.val()!=='') {
@@ -97,8 +99,10 @@ $.fn.passwordPolicy = function(data) {
 			if(result.feedback.suggestions.length > 0 || result.feedback.warning) {
 				if(result.feedback.warning) {
 					$('#suggestions').append('<span class="error">' + result.feedback.warning + '</span><br>');
-					feedback = true;
+				} else if(result.feedback.suggestions.length > 0) {
+					$('#suggestions').append('<span class="error">' + result.feedback.suggestions[0] + '</span><br>');
 				}
+				feedback = true;
 			} 
 		
 			if(!feedback) {
@@ -121,6 +125,8 @@ $.fn.passwordPolicy = function(data) {
 							}
 							if(options.buttonElement) {
 								$(options.buttonElement).prop('disabled', false);
+							} else if(options.buttonCallback) {
+								options.buttonCallback(false);
 							}
 							return;
 						}
@@ -129,6 +135,8 @@ $.fn.passwordPolicy = function(data) {
 					}
 					if(options.buttonElement) {
 						$(options.buttonElement).prop('disabled', true);
+					} else if(options.buttonCallback) {
+						options.buttonCallback(true);
 					}
 				}, "json");
 			}
