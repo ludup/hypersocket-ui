@@ -298,12 +298,12 @@
 										$(document).data('triggerModalCallback').loadParent(null, null, 0);
 										$(document).data('triggerModalCallback').displayResource(resource);
 									} else {
-// 										getJSON('triggers/parentEvents/' + resource.id, null, function(data) {
-// 											$(document).data('triggerModalCallback').loadParent(resource, data.resources, 0);
-// 											$(document).data('triggerModalCallback').displayResource(resource);	
-// 										});
-										$(document).data('triggerModalCallback').loadParent(resource.parent, null, 0);
-										$(document).data('triggerModalCallback').displayResource(resource);
+										getJSON('triggers/parentEvents/' + resource.id, null, function(data) {
+											$(document).data('triggerModalCallback').loadParent(resource, data.resources, 0);
+											$(document).data('triggerModalCallback').displayResource(resource);	
+										});
+// 										$(document).data('triggerModalCallback').loadParent(resource.parent, null, 0);
+// 										$(document).data('triggerModalCallback').displayResource(resource);
 									}
 								},
 								complete : function() {

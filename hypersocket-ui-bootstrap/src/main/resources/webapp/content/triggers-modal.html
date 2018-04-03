@@ -108,7 +108,6 @@
 	
     function addConditionRow(divId, condition) {
     	
-    	//var event = $('#triggerModal').data('selectedEvent');
     	var event = $('#triggerEvent').widget().getObject();
     	var parentEvents = $('#triggerModal').data('parentEvents');
     	
@@ -128,17 +127,42 @@
     			 + '        <input type="hidden" class="conditionId" name="conditionId" value="' + (condition ? condition.id : '') + '">'
     			 + '        <select ' + conditionId.format('attribute') + ' class="form-control attributeKey">';
 
-    	html += '<option disabled>' + getResource("text.sourceEvent") + '</option>'
+  
+    	html += '<option disabled>' + getResource("text.defaultAttributes") + '</option>';
+
     	var tmp = [];
     	var tmp2 = [];
+    	
     	$.each(event.attributeNames, function(idx, obj) {
-    		var resource = event.i18nNamespace != '' && !obj.startsWith('attr.') && !obj.startsWith('currentUser.') ? getResource(event.i18nNamespace + '.' + obj) : getResource(obj);
+    		if(!obj.startsWith('default.')) {
+    			return;
+    		}
+    		var resource = event.i18nNamespace != '' ? getResource(event.i18nNamespace + '.' + obj) : getResource(obj);
+    		tmp[resource] = obj;
+    		tmp2.push(resource);
+    	});
+    	
+    	$.each(tmp2.sort(), function(idx, obj) {
+    		html += '<option value="' + tmp[obj] + '">&nbsp;&nbsp;&nbsp;' + obj + '</option>';
+    	});  
+    	
+    	html += '<option disabled>' + getResource("text.sourceEvent") + '</option>';
+    	tmp = [];
+    	tmp2 = [];
+    	
+    	debugger;
+    	
+    	$.each(event.attributeNames, function(idx, obj) {
+    		if(obj.startsWith('default.')) {
+    			return;
+    		}
+    		var resource = event.i18nNamespace != '' ? getResource(event.i18nNamespace + '.' + obj) : getResource(obj);
     		tmp[resource] = obj;
     		tmp2.push(resource);
     	});
 
     	$.each(tmp2.sort(), function(idx, obj) {
-    		html += '<option value="' + tmp[obj] + '">' + obj + '</option>';
+    		html += '<option value="' + tmp[obj] + '">&nbsp;&nbsp;&nbsp;' + obj + '</option>';
     	});   
     	
     	
@@ -147,17 +171,18 @@
     		$.each(parentEvents, function(i, parentEvent) {
     	
     			tmp2 = [];
+    			tmp = [];
     			html += '<option disabled>' + getResource(parentEvent.resourceKey) + '</option>';
 		    	$.each(parentEvent.attributeNames, function(idx, obj) {
-		    		if(obj.startsWith('currentUser.')) {
+		    		if(obj.startsWith('default.')) {
 		    			return;
 		    		}
-		    		var resource = parentEvent.i18nNamespace != '' && !obj.startsWith('attr.') && !obj.startsWith('currentUser.') ? getResource(parentEvent.i18nNamespace + '.' + obj) : getResource(obj);
+		    		var resource = parentEvent.i18nNamespace != '' ? getResource(parentEvent.i18nNamespace + '.' + obj) : getResource(obj);
 		    		tmp[resource] = obj;
 		    		tmp2.push(resource);
 		    	});
 		    	$.each(tmp2.sort(), function(idx, obj) {
-		    		html += '<option value="event' + (parentEvents.length - i - 1) + ":" + tmp[obj] + '">' + obj + '</option>';
+		    		html += '<option value="event' + (parentEvents.length - i - 1) + ":" + tmp[obj] + '">&nbsp;&nbsp;&nbsp;' + obj + '</option>';
 		    	});   
     		});
     	}
@@ -217,8 +242,8 @@
     }
     
     function getAttributeNames() {
-    	//var variables = $('#triggerModal').data('selectedEvent').attributeNames;
-    	var variables = $('#triggerEvent').widget().getObject().attributeNames;
+    	
+    	var variables = [];
     	
     	if($('#triggerModal').data('parentEvents')) {
     		var parentEvents = $('#triggerModal').data('parentEvents');
@@ -229,7 +254,7 @@
     		});
     	}
     	
-    	return variables;
+    	return $('#triggerEvent').widget().getObject().attributeNames.concat(variables);
     }
     
 	$(document).ready(function() {
@@ -376,6 +401,7 @@
 			},
 			loadParent: function(parentResource, parentEvents, triggerType) {
 
+				debugger;
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);
