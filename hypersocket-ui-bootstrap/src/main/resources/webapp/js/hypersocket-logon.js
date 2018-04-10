@@ -32,12 +32,6 @@ function showLogon(credentials, opts, message) {
 		url += '/' + opts.scheme;
 	}
 	
-	if(credentials && window.location.search.length > 0) {
-		/* Make sure any URL parameters are passed on as well (e.g. redirectHome), but
-		 * only do this when actually sending credentials */
-		credentials += '&' + window.location.search.substring(1);
-	}
-	
 	postFORM(url, credentials, function(data) {
 	   	if(!checkRedirect(data))
 	   		processLogon(data, opts, message);
