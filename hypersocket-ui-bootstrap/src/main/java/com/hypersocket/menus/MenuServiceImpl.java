@@ -35,6 +35,8 @@ import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.config.SystemConfigurationService;
 import com.hypersocket.html.HtmlTemplateResourcePermission;
 import com.hypersocket.i18n.I18NService;
+import com.hypersocket.interfaceState.UserInterfaceState;
+import com.hypersocket.interfaceState.UserInterfaceStateService;
 import com.hypersocket.message.MessageResourcePermission;
 import com.hypersocket.message.MessageResourceService;
 import com.hypersocket.password.policy.PasswordPolicyResourcePermission;
@@ -96,6 +98,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Autowired
 	private SystemConfigurationService systemConfigurationService; 
 	
+	@Autowired
+	private UserInterfaceStateService interfaceStateService; 
+	
 	List<MenuFilter> filters = new ArrayList<MenuFilter>();
 	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
 
@@ -127,10 +132,17 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"fa-question-circle", "helpzone", Integer.MIN_VALUE,
 				SessionPermission.READ, null, null, null,
 				null) {
-
+					@Override
+					public boolean canRead() {
+						UserInterfaceState state = interfaceStateService.getStateByName("showHelpZone", getCurrentRealm());
+						if(state==null) {
+							return true;
+						}
+						return Boolean.valueOf(state.getPreferences());
+					}
 					@Override
 					public boolean isHome() {
-						return true;
+						return canRead();
 					}
 			
 		}, MenuService.MENU_DASHBOARD);
@@ -153,6 +165,25 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_MY_PROFILE, "fa-tags", null, 200, null, null,
 				null, null), MenuService.MENU_PERSONAL);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "userhelpzone",
+				"fa-question-circle", "userhelpzone", 100, ProfilePermission.READ, null,
+				ProfilePermission.UPDATE, null) {
+			@Override
+			public boolean isHome() {
+				return true; // If this is overridden it must be weighted lower than this
+			}
+			
+			@Override
+			public boolean canRead() {
+				try {
+					return realmService.getUserProfileTemplates(
+							getCurrentPrincipal()).size() > 0;
+				} catch (AccessDeniedException e) {
+					return false;
+				}
+			}
+		}, MenuService.MENU_MY_PROFILE);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "details",
 				"fa-tags", "details", 200, ProfilePermission.READ, null,
 				ProfilePermission.UPDATE, null) {

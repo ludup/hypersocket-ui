@@ -1,6 +1,6 @@
 <div id="contentRoles">
 	<div class="modal" id="addRoleForm" tabindex="-1" role="dialog" dialog-for="contentRoles">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -18,9 +18,65 @@
 						</div>
 					</div>
 					<div id="roleProperties"></div>
-					<div id="tabRoleUsers"><div id="tabUsersContent" class="col-xs-12"></div></div>
-					<div id="tabRoleGroups"><div id="tabGroupsContent" class="col-xs-12"></div></div>
-					<div id="tabRolePermissions"><div id="tabPermissionsContent" class="col-xs-12"></div></div>
+					<div id="tabRolePrincipals" style="overflow:auto">
+							<div class="col-xs-12">
+								<label class="col-md-3 control-label" localize="allUsers.label"></label>
+								<div class="propertyValue col-md-9">
+									<div id="allUsers"></div>
+									<div>
+										<span class="help-block" localize="role.allUsers.info"></span>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 hideUsers">
+								<label class="col-md-3 control-label" localize="users.label"></label>
+								<div class="propertyValue col-md-9">
+									<div id="tabUsersContent"></div>
+									<div>
+										<span class="help-block" localize="role.users.info"></span>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 hideUsers">
+								<label class="col-md-3 control-label" localize="groups.label"></label>
+								<div class="propertyValue col-md-9">
+									<div id="tabGroupsContent"></div>
+									<div>
+										<span class="help-block" localize="role.groups.info"></span>
+									</div>
+								</div>
+							</div>
+					</div>
+					
+					<div id="tabRolePermissions">
+						<div class="col-xs-12">
+								<label class="col-md-3 control-label" localize="allPerms.label"></label>
+								<div class="propertyValue col-md-9">
+									<div id="allPerms"></div>
+									<div>
+										<span class="help-block" localize="role.allPerms.info"></span>
+									</div>
+								</div>
+							</div>
+						<div class="col-xs-12 hidePerms">
+							<label class="col-md-3 control-label" localize="permissions.label"></label>
+							<div class="propertyValue col-md-9">
+								<div id="tabPermissionsContent"></div>
+								<div>
+									<span class="help-block" localize="role.permissions.info"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tabRoleRealms">
+						<label class="col-md-3 control-label" localize="realms.label"></label>
+							<div class="propertyValue col-md-9">
+								<div id="tabRealmsContent"></div>
+								<div>
+									<span class="help-block" localize="role.realms.info"></span>
+								</div>
+							</div>
+					</div>
 					<input name="roleId" id="roleId" type="hidden" class="formInput" />
 
 				</div>
@@ -36,6 +92,40 @@
 	$(document).ready(function() {
 		$('#contentRoles').localize();
 
+		$('#allUsers').switchInput({
+			changed: function(widget) {
+				if(widget.getValue()) {
+					$('.hideUsers').hide();
+				} else {
+					$('.hideUsers').show();
+				}
+			}
+		});
+		
+		$('#allPerms').switchInput({
+			changed: function(widget) {
+				if(widget.getValue()) {
+					$('.hidePerms').hide();
+				} else {
+					$('.hidePerms').show();
+				}
+			}
+		});
+		
+		$('#tabRealmsContent').multipleSelect({
+			nameIsResourceKey: false,
+			nameAttr : 'name',
+			valueAttr: 'id',
+			selectedIsObjectList: true,
+			selected: [],
+			disabled: !currentMenu.canUpdate,
+			selectAllIfEmpty: false,
+			url: 'realms/children',
+			getUrlData: function(data) {
+				return data.resources;
+			}
+		});
+		
 		$('#tabGroupsContent').multipleSearchInput({
 			nameAttr : 'principalName',
 			valueAttr: 'id',
@@ -103,7 +193,7 @@
 					$('#roleId').val('');
 					$('#tabUsersContent').multipleSearchInput();
 					$('#tabGroupsContent').multipleSearchInput();
-					
+					$('#tabRealmsContent').multipleSelect();
 					$('#tabPermissionsContent').multipleSelect({
 						nameIsResourceKey : true,
 						nameAttr : 'resourceKey',
@@ -119,6 +209,10 @@
 					
 					$('#tabGroupsContent').widget().enable();
 					$('#tabUsersContent').widget().enable();
+					$('#allUsers').widget().enable();
+					$('#allPerms').widget().enable();
+					$('#allUsers').widget().setValue(false);
+					$('#allPerms').widget().setValue(false);
 					
 					if(create) {
 						$('#roleProperties').propertyPage({
@@ -128,14 +222,14 @@
 							displayMode: 'admin',
 							canUpdate : currentMenu.canUpdate,
 							additionalTabs : [ {
-								id : "tabRoleUsers",
-								name : getResource("label.users")
-							},{
-								id : "tabRoleGroups",
-								name : getResource("label.groups")
+								id : "tabRolePrincipals",
+								name : getResource("label.principals")
 							},{
 								id : "tabRolePermissions",
 								name : getResource("label.permissions")
+							},{
+								id : "tabRoleRealms",
+								name : getResource("label.realms")
 							} ]
 						});
 					}
@@ -148,6 +242,9 @@
 					role.users = $('#tabUsersContent').widget().getValue();
 					role.groups = $('#tabGroupsContent').widget().getValue();
 					role.permissions = $('#tabPermissionsContent').widget().getValue();
+					role.realms = $('#tabRealmsContent').widget().getValue();
+					role.allUsers = $('#allUsers').widget().getValue();
+					role.allPerms = $('#allPerms').widget().getValue();
 					
 					$('#roleProperties').saveProperties(true,
 							function(items) {
@@ -165,6 +262,20 @@
 					$('#roleId').val(resource.id);
 					$('#name').val(resource.name);
 					$('#name').attr('disabled', readOnly);
+					
+					$('#allUsers').widget().setValue(resource.allUsers);
+					if(resource.system) {
+						$('#allUsers').widget().disable();
+					} else {
+						$('#allUsers').widget().enable();
+					}
+					
+					$('#allPerms').widget().setValue(resource.allPermissions);
+					if(resource.system) {
+						$('#allPerms').widget().disable();
+					} else {
+						$('#allPerms').widget().enable();
+					}
 					
 					getJSON('roles/principals/' + resource.id, null, function(data) {
 						var users = new Array();
@@ -194,6 +305,15 @@
 	 					});
 					});
 
+					getJSON('roles/realms/' + resource.id, null, function(data) {
+						$('#tabRealmsContent').multipleSelect({
+	 						selected : data.resources,
+	 						nameIsResourceKey: false,
+	 						disabled: readOnly,
+	 						selectAllIfEmpty: resource.allPermissions
+	 					});
+					});
+					
  					$('#roleProperties').propertyPage({
  						url : 'roles/properties/' + resource.id,
  						showButtons : false,
@@ -201,14 +321,14 @@
  						displayMode: 'admin',
  						canUpdate : currentMenu.canUpdate,
  						additionalTabs : [ {
- 							id : "tabRoleUsers",
- 							name : getResource("label.users")
- 						},{
- 							id : "tabRoleGroups",
- 							name : getResource("label.groups")
+ 							id : "tabRolePrincipals",
+ 							name : getResource("label.principals")
  						},{
  							id : "tabRolePermissions",
  							name : getResource("label.permissions")
+ 						},{
+ 							id : "tabRoleRealms",
+ 							name : getResource("label.realms")
  						} ]
  					});
 				},

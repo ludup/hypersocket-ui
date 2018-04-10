@@ -21,6 +21,7 @@ function logon(credentials, opts) {
 
 function showLogon(credentials, opts, message) {
 
+	debugger;
 	log("Showing logon");
 
 	if(opts.logonStarted) {
@@ -55,6 +56,8 @@ function processLogon(data, opts, message) {
 		opts.processResponse(data);
 	}
 
+	debugger;
+	
 	if (!data.success) {
 
 		opts.formContent.empty();

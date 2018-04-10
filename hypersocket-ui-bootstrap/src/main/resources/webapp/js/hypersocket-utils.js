@@ -1132,6 +1132,16 @@ function saveState(name, preferences, specific, callback){
 	});
 }
 
+function saveNonJsonState(name, preferences, specific, callback){
+	var state = {'name': name, 'specific': specific, 'preferences': preferences};
+	postJSON('interfaceState/state', state, function(data) {
+		if(callback){
+			callback(data);
+		}
+	});
+}
+
+
 function getState(name, specific, callback){
 	if(Object.prototype.toString.call(name) != '[object Array]') {
 		name = [name];

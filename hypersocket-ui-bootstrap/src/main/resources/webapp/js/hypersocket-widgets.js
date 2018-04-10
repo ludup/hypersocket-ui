@@ -3227,19 +3227,19 @@ $.fn.imageInput = function(options) {
 
 
 $.fn.sliderInput = function(options) {
-	
+
 	var id = $(this).attr('id') + "SliderInput";
-	var obj = $.extend(
-			{   min: parseInt(options.min),
-			    max: parseInt(options.max),
-			    step: options.step ? parseInt(options.step) : 1,
+	var obj = $.extend(options,
+			{   min: parseFloat(options.min),
+			    max: parseFloat(options.max),
+			    step: options.step ? parseFloat(options.step) : 1,
 			    handle: options.handle ? options.handle : 'square',
 			    tooltip: options.tooltip ? options.tooltip : 'show',
-			    value: parseInt(options.value),
+			    value: parseFloat(options.value),
 			    formater: function(value) {
 			    	return getResource(obj.labelResourceKey).format(value);
 			    }
-			}, options);
+			});
 	
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 	
@@ -3249,13 +3249,13 @@ $.fn.sliderInput = function(options) {
 	
 	var callback = {
 			setValue: function(val) {
-				$('#' + id).slider('setValue', val);
+				$('#' + id).slider('setValue', parseFloat(val));
 			},
 			getValue: function() {
 				return $('#' + id).val();
 			},
 			reset: function() {
-				$('#' + id).slider('setValue', obj.value);
+				$('#' + id).slider('setValue', parseFloat(obj.value));
 			},
 			disable: function() {
 				$('#' + id).attr('disabled', true);
@@ -3270,7 +3270,7 @@ $.fn.sliderInput = function(options) {
 				return $('#' + id);
 			}, 
 			clear: function() {
-				$('#' + id).slider('setValue', obj.value);
+				$('#' + id).slider('setValue', parseFloat(obj.value));
 			}
 	};
 

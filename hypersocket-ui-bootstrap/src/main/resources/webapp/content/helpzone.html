@@ -17,14 +17,13 @@
 	$(document).ready(function() {
 		$('#overviewContent').localize();
 		getState('showHelpZone', false, function(state){
-			var showHelpZone = true;
+			var showHelpZone = 'true';
 			if(state.resources && state.resources.length){
-				var showHelpZone = JSON.parse(state.resources[0].preferences).showHelpZone;
+				var showHelpZone = state.resources[0].preferences;
 			}
-			$('#showHelpZoneSwitch').attr('checked', showHelpZone);
+			$('#showHelpZoneSwitch').attr('checked', showHelpZone === 'true');
 			$('#showHelpZoneSwitch').change(function() {
-				saveState('showHelpZone', {'showHelpZone': $(this).is(':checked') }, false, function(state){
-					window.location.reload();
+				saveNonJsonState('showHelpZone', $(this).is(':checked'), false, function(state){
 				});
 			});
 		});

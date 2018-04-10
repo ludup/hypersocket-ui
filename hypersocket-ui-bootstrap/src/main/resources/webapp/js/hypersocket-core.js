@@ -141,8 +141,8 @@ function startLogon(opts) {
 			}
 		},
 		logonCompleted: function(data) {
-		
-			if(data.homePage) {
+			debugger;
+			if(data.homePage && data.homePage!=='') {
 				log('Opening user home page ' + data.homePage);
 				window.open(data.homePage, "_self", false);
 			} else {
@@ -380,14 +380,14 @@ function home(data) {
 				}
 			});
 
+			loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
+			
 			if(allMenus['navigation']) {
-				
-				
-				
+
 				$.each(allMenus['navigation'].menus, function(idx, obj) {
 					
 					if(obj.resourceKey === 'realms') {
-						loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
+						//loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
 						return;
 					}
 					
@@ -928,6 +928,7 @@ function loadSubPage(menu, element) {
 	}
 	$('#subMenuPageContent').startSpin();
 	loadWait();
+	currentMenu = menu;
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
 		if ($(window).width() < 959) {
 			$('#main-menu').addClass('hidden-xs');
