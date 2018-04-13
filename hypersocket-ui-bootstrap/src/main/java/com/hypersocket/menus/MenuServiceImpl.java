@@ -213,7 +213,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION, 
-				SystemPermission.SYSTEM_ADMINISTRATION), MenuService.MENU_NAV);
+				SystemPermission.SYSTEM_ADMINISTRATION) {
+				@Override
+				public boolean canRead() {
+					return getCurrentRealm().isSystem();
+				}
+		}, MenuService.MENU_NAV);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
 				"fa-gears", "settings", 2,
