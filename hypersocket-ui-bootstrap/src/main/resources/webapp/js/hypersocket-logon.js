@@ -3,7 +3,7 @@ var submitLogon;
 /**
  * Perform a logon against the REST API and/or show logon form in the specified
  * div id.
- * 
+ *
  * @param credentials
  */
 function logon(credentials, opts) {
@@ -13,7 +13,7 @@ function logon(credentials, opts) {
 	submitLogon = function(params) {
 		logon(params, opts);
 	};
-	
+
 	loadResources(function() {
 		showLogon(credentials, opts);
 	});
@@ -27,12 +27,18 @@ function showLogon(credentials, opts, message) {
 	if(opts.logonStarted) {
 		opts.logonStarted();
 	}
-	
+
+	if(credentials && window.location.search.length > 0) {
+		/* Make sure any URL parameters are passed on as well (e.g. redirectHome), but
+		 * only do this when actually sending credentials */
+		credentials += '&' + window.location.search.substring(1);
+	}
+
 	var url = basePath + '/api/logon';
 	if(opts.scheme) {
 		url += '/' + opts.scheme;
 	}
-	
+
 	postFORM(url, credentials, function(data) {
 	   	if(!checkRedirect(data))
 	   		processLogon(data, opts, message);
@@ -61,36 +67,36 @@ function processLogon(data, opts, message) {
 	if (!data.success) {
 
 		opts.formContent.empty();
-		
+
 		if(opts.processForm) {
 			opts.processForm(data);
 		}
-		
+
 		log("Logon form present");
 		removeMessage();
-		
+
 		opts.formContent.append(
 			'<form id="logonForm" autocomplete="off" class="panel panel-default ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/>');
 
 		if (data['errorMsg']) {
 			showError(data['errorMsg']);
-		} 
-		
-		
+		}
+
+
 		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
-		
+
 		var links = new Array();
 		var scripts = new Array();
 		var setFocus = false;
 		if(data.formTemplate) {
-			
+
 			$('#logonForm').before('<h1 class="form-scheme-heading">' + getResource(data.formTemplate.scheme + '.logon.title') + '</h1>');
 
 			$.each(data.formTemplate.inputFields, function() {
 				if (this.type == 'hidden') {
-					$('#logonForm').append('<input type="' + this.type + '" name="' 
-								+ this.resourceKey + '" autocomplete="off" id="' 
-								+ this.resourceKey + '" value="' 
+					$('#logonForm').append('<input type="' + this.type + '" name="'
+								+ this.resourceKey + '" autocomplete="off" id="'
+								+ this.resourceKey + '" value="'
 								+ stripNull(this.defaultValue) + '"/>');
 					return;
 				} else if (this.type == 'p') {
@@ -99,7 +105,7 @@ function processLogon(data, opts, message) {
 					} else {
 						$('#logonForm').append('<p class="center">' + this.defaultValue + '</p>');
 					}
-					
+
 					return;
 				} else if (this.type == 'pre') {
 					if(this.valueResourceKey) {
@@ -107,7 +113,7 @@ function processLogon(data, opts, message) {
 					} else {
 						$('#logonForm').append('<pre>' + stripNull(this.defaultValue) + '</pre>');
 					}
-					
+
 					return;
 				} else if(this.type == 'a') {
 					links.push(this);
@@ -118,7 +124,7 @@ function processLogon(data, opts, message) {
 				} else if(this.type == 'div') {
 					$('#logonForm').append('<div id="' + this.resourceKey + '"></div>');
 					$('#' + this.resourceKey).load(replacePaths(this.defaultValue), function() {
-						
+
 					});
 					return;
 				} else if(this.type == 'html') {
@@ -129,10 +135,10 @@ function processLogon(data, opts, message) {
 					$('#logonForm').append('<div class="center"><img id="' + this.resourceKey + '" src="' + replacePaths(this.defaultValue) + '"></img></div>');
 					return;
 				}
-			
+
 				if (this.type == 'select') {
-					
-					$('#logonForm').append('<div class="logonInput"><select class="logonSelect" name="' 
+
+					$('#logonForm').append('<div class="logonInput"><select class="logonSelect" name="'
 							+ this.resourceKey + '" id="' + this.resourceKey
 							+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 							+ '"/></div>');
@@ -153,7 +159,7 @@ function processLogon(data, opts, message) {
 					});
 					var changeFunc = this.onChange;
 					$('#' + currentKey).change(function() {
-						
+
 						if(window[changeFunc]) {
 							window[changeFunc]($(this), opts);
 						}
@@ -164,7 +170,7 @@ function processLogon(data, opts, message) {
 //					currentKey = this.resourceKey + 'Select';
 //					var changeFunc = this.onChange;
 //					var options = this.options;
-//					
+//
 //					$('#' + currentKey).textDropdown({
 //						values: options,
 //						selectedIsObjectList: true,
@@ -211,7 +217,7 @@ function processLogon(data, opts, message) {
 						setFocus = true;
 					}
 				}
-	
+
 			});
 		}
 
@@ -221,23 +227,23 @@ function processLogon(data, opts, message) {
 				window[script.resourceKey](script.defaultValue);
 			}
 		});
-		
+
 		if(data.formTemplate) {
 			if(!data.postAuthentication) {
 				$('#logonForm').append('<div class="form-signin-warning">' + getResource(data.formTemplate.scheme + '.warning.title') + '</div>');
 			}
 			if(data.formTemplate.showLogonButton) {
 				$('#logonForm').append(
-						'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">' 
-							+ (data.formTemplate.logonButtonResourceKey ? getResourceOrText(data.formTemplate.logonButtonResourceKey) : getResource("text.next")) 
+						'<button id="logonButton" class="btn btn-lg btn-primary btn-block" type="submit">'
+							+ (data.formTemplate.logonButtonResourceKey ? getResourceOrText(data.formTemplate.logonButtonResourceKey) : getResource("text.next"))
 							+ '&nbsp;<i class="fa ' + (data.formTemplate.logonButtonIcon ? data.formTemplate.logonButtonIcon : 'fa-sign-in') + '"></i></button>');
 			}
-			
+
 			if(!data.postAuthentication) {
 				$('#logonForm').after('<p class="form-signin-security form-signin-warning">' + getResource(data.formTemplate.scheme + '.security.title') + '</p>');
 			}
 		}
-		
+
 		if(!data.postAuthentication) {
 			if(data.formTemplate.overrideStartAgain || (!data.first && data.formTemplate.showStartAgain)) {
 				$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
@@ -249,13 +255,13 @@ function processLogon(data, opts, message) {
 				});
 			}
 		}
-		
+
 		$.each(links, function(idx, obj) {
-			
-			$('#logonForm').append('<div class="logonLink center"><a id="' 
-					+ this.label + '" href="#">' 
+
+			$('#logonForm').append('<div class="logonLink center"><a id="'
+					+ this.label + '" href="#">'
 					+ getResource(this.resourceKey) + '</a></div>');
-		
+
 			$('#' + obj.label).click(function(e) {
 				e.preventDefault();
 
@@ -269,7 +275,7 @@ function processLogon(data, opts, message) {
 				}
 			});
 		});
-		
+
 		$('#logonButton')
 				.click(
 					function(evt) {
@@ -282,11 +288,11 @@ function processLogon(data, opts, message) {
 						$.each(
 							data['formTemplate']['inputFields'],
 							function() {
-								
+
 							    var elem = $('#' + this.resourceKey);
 								var name = encodeURIComponent(this.resourceKey);
 								var value = encodeURIComponent(elem.val());
-                                
+
 								if(elem.is(':checkbox')) {
 								    credentials = credentials + '&' + name + '=' + elem.is(':checked');
 								} else {
@@ -309,16 +315,16 @@ function processLogon(data, opts, message) {
 	} else {
 		log("User is logged in");
 		$(document).data('session', data.session);
-		
+
 		if(opts.logonCompleted) {
 			opts.logonCompleted(data);
 		}
-		
+
 		stopSpin($('#logonButton i'), 'fa-sign-in');
 
 	}
 
-	
+
 }
 
 
