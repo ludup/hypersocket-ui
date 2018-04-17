@@ -20,8 +20,6 @@ function logon(credentials, opts) {
 }
 
 function showLogon(credentials, opts, message) {
-
-	debugger;
 	log("Showing logon");
 
 	if(opts.logonStarted) {
@@ -61,8 +59,6 @@ function processLogon(data, opts, message) {
 	if(opts.processResponse) {
 		opts.processResponse(data);
 	}
-
-	debugger;
 	
 	if (!data.success) {
 

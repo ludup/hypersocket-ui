@@ -141,7 +141,6 @@ function startLogon(opts) {
 			}
 		},
 		logonCompleted: function(data) {
-			debugger;
 			if(data.homePage && data.homePage!=='') {
 				log('Opening user home page ' + data.homePage);
 				window.open(data.homePage, "_self", false);

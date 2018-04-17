@@ -1,3 +1,128 @@
+<div id="contentExportUsers">
+	<form id="csvForm" action="${apiPath}/currentRealm/csv" method="POST" autocomplete="off">
+		<div class="modal" id="exportCSVForm" tabindex="-1" role="dialog" dialog-for="contentExportUsers">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" localize="audit.exportCSV.label"></h4>
+					</div>
+					<div class="modal-body">
+						<div class="propertyItem form-group">
+							<label class="col-xs-3 control-label" localize="audit.filename.label"></label>
+							<div class="propertyValue col-xs-9">
+								<input type="text" class="form-control"
+									placeholder="" id="csvFilename" maxlength="" name="filename" value="export.csv">
+								<div>
+									<span class="help-block" localize="audit.filename.info"></span>
+								</div>
+							</div>
+						</div>
+						<div id="auditFilterProperties">
+							<div class="row">
+								<div class="col-xs-12 propertyFilter" id="auditFilterPropertiesPropertyFilter"></div>
+							</div>
+							<div id="auditFilterPropertiesPanel" class="panel panel-default">
+								<div class="panel-heading">
+									<h2><i class="fa fa-th"></i><span class="break"></span></h2>
+									<ul id="csvPropertiesTabs" class="nav nav-tabs">
+										<li class="class_default active csvTab" id="csvPreferencesTab">
+											<a class="active auditFilterPropertiesTab" href="#tab-2139007948" name="link_auditFilter.events">
+												<span localize="users.exportCSV.preferences.tab"></span>
+											</a>
+										</li>
+										<li class="class_default csvTab" id="csvAttributesTab">
+											<a class="auditFilterPropertiesTab" href="#tab-1740160243" name="link_auditFilter.status">
+												<span localize="users.exportCSV.attributes.tab"></span>
+											</a>
+										</li>
+									</ul>
+								</div>
+								<div class="panel-body">
+									<div id="csvContent" class="tab-content">
+										<div id="csvPreferencesContent" class="tab-pane active">
+											<div class="propertyItem form-group class_default">
+												<div class="propertyItem form-group">
+													<label class="col-xs-3 control-label" localize="audit.outputHeaders.label"></label>
+													<div class="propertyValue col-xs-9">
+														<div id="csvOutputHeaders" name="csvOutputHeaders"></div>
+														<div>
+															<span class="help-block" localize="audit.outputHeaders.info"></span>
+														</div>
+													</div>
+												</div>
+												<div class="propertyItem form-group">
+													<label class="col-xs-3 control-label" localize="audit.delimiter.label"></label>
+													<div class="propertyValue col-xs-9">
+														<input type="text" class="form-control"
+															placeholder="" id="csvDelimiter" maxlength="" name="delimiter" value=",">
+														<div>
+															<span class="help-block" localize="audit.delimiter.info"></span>
+														</div>
+													</div>
+												</div>
+												<div class="propertyItem form-group">
+													<label class="col-xs-3 control-label" localize="audit.terminate.label"></label>
+													<div class="propertyValue col-xs-9">
+														<div id="csvTerminate"></div>
+														<div>
+															<span class="help-block" localize="audit.terminate.info"></span>
+														</div>
+													</div>
+												</div>
+												<div class="propertyItem form-group">
+													<label class="col-xs-3 control-label" localize="audit.wrap.label"></label>
+													<div class="propertyValue col-xs-9">
+														<input type="text" class="form-control"
+															placeholder="" id="csvWrap" maxlength="" name="wrap" value='"'>
+														<div>
+															<span class="help-block" localize="audit.wrap.info"></span>
+														</div>
+													</div>
+												</div>
+												<div class="propertyItem form-group">
+													<label class="col-xs-3 control-label" localize=audit.escape.label></label>
+													<div class="propertyValue col-xs-9">
+														<input type="text" class="form-control"
+															placeholder="" id="csvEscape" maxlength="" name="escape" value="\">
+														<div>
+															<span class="help-block" localize="audit.escape.info"></span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div id="csvAttributesContent" class="tab-pane">
+											<label class="col-xs-3 control-label" localize=audit.attributes.label></label>
+											<div class="propertyValue col-xs-9">
+												<div id="csvAttributes"></div>
+												<span class="help-block" localize="audit.attributes.info"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<input type="hidden" id="csvAttributesInput" name="attributes"></input>
+					<input type="hidden" id="sortColumn" name="sortColumn"></input>
+					<input type="hidden" id="sortOrder" name="sortOrder"></input>
+					<input type="hidden" id="searchColumnHidden" name="searchColumn"></input>
+					<input type="hidden" id="searchHidden" name="searchPattern"></input>
+					<input type="hidden" id="filter" name="filter"></input>
+					<input type="hidden" id="outputHeaders" name="outputHeaders"></input>
+					<input type="hidden" id="terminateHidden" name="terminate"></input>
+					<div class="modal-footer">
+						<button id="exportButton" class="btn btn-primary"><i class="fa fa-save"></i><span localize="audit.export.label"></span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+
 <div id="contentUsers" class="col-md-12" style="padding-left: 0px">
 	<div id="userDialog"></div>
 	<div id="additionalActions"></div>
@@ -11,12 +136,13 @@
 				var apiUrl = 'currentRealm';
 				var disableDecoration = false;
 				var buttons = [];
-				
+
 				var ownerRealm;
 				var realmName = getAnchorByName('realmName');
 				var realmId = getAnchorByName('realmId');
 				var realmCategory = getAnchorByName('realmCategory');
-				
+			    var csvFormUrl = $('#csvForm').attr('action');
+
 				if(realmId) {
 					ownerRealm = true;
 				}
@@ -39,29 +165,120 @@
 					history.pushState(null, "", '#menu=' + getAnchorByName('menu') + '&realmId=' + realmId + '&realmCategory=' + realmCategory);
 				}
 
+				buttons.push({
+					resourceKey: 'exportToCSV',
+					buttonClass: 'btn-primary',
+					icon: 'fa-download',
+					action: function(callback) {
+
+						$('#csvPreferencesTab').addClass('active');
+				   		$('#csvPreferencesContent').addClass('active');
+				   		$('#csvAttributesTab').removeClass('active');
+				   		$('#csvAttributesContent').removeClass('active');
+						$('#exportCSVForm').modal('show');
+						$('#csvAttributes').empty().removeData();
+						$('#csvAttributes').multipleSearchInput({
+							nameAttr: 'name',
+							valueAttr: 'name',
+							isNamePairValue: false,
+							nameIsResourceKey: true,
+							url: 'currentRealm/attributes',
+							changed: function(obj){
+								$('#csvAttributesInput').val(obj.getValue().toString());
+							}
+						});
+						$('#csvTerminate').empty().removeData();
+
+						getJSON('realms/eol/', null, function(data){
+							var terminateList = [];
+							$.each(data.resources, function(index, terminate){
+								terminateList.push(terminate);
+							});
+							$('#csvTerminate').selectButton({
+					    			nameAttr: 'name',
+					    			valueAttr: 'value',
+					    			nameIsResourceKey: false,
+					    			changed: function(obj){
+					    				$('#terminateHidden').val(obj.getValue());
+					    			},
+					    			options: terminateList,
+					    		});
+						});
+		        	}
+				});
+
+	            $('#exportButton').click(function(){
+
+	            	$('#sortColumn').val($('#contentUsersPlaceholder').bootstrapTable('getOptions').sortName);
+	            	$('#sortOrder').val($('#contentUsersPlaceholder').bootstrapTable('getOptions').sortOrder);
+
+	            	$('#searchColumnHidden').val($('#searchColumn').widget().getValue());
+	            	$('#searchHidden').val($('.search input[placeholder="Search"]').val());
+	            	$('#filterHidden').val($('#filterColumn').widget().getValue());
+
+	            	$('#outputHeaders').val($('#csvOutputHeaders').widget().getValue());
+
+					if($('#csvDelimiter').val().length != 1) {
+						showError(getResource("users.exportCSV.delimiter.error"));
+						return false;
+					} else if($('#csvWrap').val().length != 1) {
+						showError(getResource("users.exportCSV.wrap.error"));
+						return false;
+					} else if($('#csvEscape').val().length != 1) {
+						showError(getResource("users.exportCSV.escape.error"));
+						return false;
+					}
+					$('#terminateHidden').val($('#csvTerminate').widget().getValue());
+					$('#csvForm').find('button.close').click();
+					$('#csvForm').attr('action', csvFormUrl + '?token=' + getCsrfToken());
+	            	$('#csvForm').submit();
+			    });
+
+	            $('#csvOutputHeaders').switchInput({
+					value: true,
+					changed: function(widget) {
+
+					}
+				});
+
+			    $('.csvTab').click(function(){
+			    	if($(this).attr('id') == 'csvPreferencesTab'){
+			    		$('#csvPreferencesTab').addClass('active');
+			    		$('#csvPreferencesContent').addClass('active');
+			    		$('#csvAttributesTab').removeClass('active');
+			    		$('#csvAttributesContent').removeClass('active');
+			    	}else{
+			    		$('#csvAttributesTab').addClass('active');
+			    		$('#csvAttributesContent').addClass('active');
+			    		$('#csvPreferencesTab').removeClass('active');
+			    		$('#csvPreferencesContent').removeClass('active');
+			    	}
+			    });
+
 				$(document).data('apiUrl', apiUrl);
 
 				$('#realmsContent').load(uiPath + '/content/realmsDialog.html', function() {
-					
+
 					$('#realmsContent').localize();
-					
+					$('#contentExportUsers').localize();
+
 					$('div[dialog-for="realmsContent"]').resourceDialog(
-						{ resourceUrl : "realms/realm", 
-						  resourceKey : 'realm', 
+						{ resourceUrl : "realms/realm",
+						  resourceKey : 'realm',
 						  validate : function() {
-							  
+
 							removeMessage();
-							  
+
 							if ($('#name').val() == '') {
 								showError(getResource("text.nameRequired"));
 								return false;
 							}
-							
+
 							if(!$('#realmProperties').validateProperties()) {
 								showError("error.correctValidationErrors");
 								return false;
 							}
-							
+
 							return true;
 						}, clearDialog : function(create) {
 							$('#name').val("");
@@ -79,7 +296,7 @@
 								function(items) {
 									realm.properties = items;
 							});
-							
+
 							return realm;
 						}, confirmed: function(resource, args) {
 							if('realm.knownHosts' in resource.properties) {
@@ -88,7 +305,7 @@
 									pr.value += ']|[';
 								pr.value += args[3];
 							}
-							else {						
+							else {
 								resource.properties.push(new PropertyItem('realm.knownHosts', args[3]));
 							}
 						}, resourceUpdated : function(resource) {
@@ -100,27 +317,27 @@
 
 							$('#id').val(resource.id);
 							$('#name').val(resource.name);
-							
+
 							if(resource.resourceCategory!=='local') {
 								$('#typeButton').widget().disable();
 							}
-							
+
 							$('#typeButton').widget().setValue(resource.resourceCategory);
 							$('#realmProperties').propertyPage(
-								{ url : 'realms/realm/properties/' + resource.id, 
-									showButtons : false, 
+								{ url : 'realms/realm/properties/' + resource.id,
+									showButtons : false,
 									useFilters: true,
 									resource: resource,
 									i18nNamespace: $('#typeButton').widget().getSelectedObject().module,
 									displayMode: 'admin,update',
 									canUpdate : currentMenu.canUpdate && !readOnly,
-									
+
 							});
 						}
 					});
 
 				});
-				
+
 				$('#userDialog').load(uiPath + '/content/userDialog.html', function() {
 
 				$('#contentUsers').localize();
@@ -168,12 +385,12 @@
 							});
 						}
 					}];
-					
+
 					var fields = [ {
 						name : "icon",
 						width: 40,
 						formatter: function(value, obj, index) {
-							return '<div class="center"><i class="fa fa-2x ' 
+							return '<div class="center"><i class="fa fa-2x '
 							+ getResourceOrDefault(obj.realmModule + '.icon', 'fa-user') + '"></i></div>';
 						}
 					},{
@@ -213,7 +430,7 @@
 						searchFilters.push({name: getResource('local.accounts') , value: 'filter.accounts.local', useDefaultColumns: true, searchColumns: []});
 						searchFilters.push({name:  getResource("realm." + currentRealm.resourceCategory + '.accounts') , value: 'filter.accounts.remote', useDefaultColumns: true, searchColumns: []});
 					}
-					
+
 					if(ownerRealm) {
 						fields.push({
 							name: 'parentPrincipal',
@@ -252,7 +469,7 @@
 								checkDelete: function(row) {
 									return currentMenu.canDelete && !row.readOnly;
 								},
-								detailFormatter: ownerRealm ? 
+								detailFormatter: ownerRealm ?
 										function(index, resource, $element) {
 												$element.extendedResourcePanel({resourceKey: "secondaryTabs",
 													resource: resource,
@@ -272,12 +489,12 @@
 										showError("error.nameRequired");
 										return false;
 									}
-									
+
 									if(!$('#userProperties').validateProperties()) {
 										showError("error.correctValidationErrors");
 										return false;
 									}
-									
+
 									if(create) {
 										if($('#userPassword').val().trim() == '') {
 											showError("error.passwordEmpty");
@@ -288,7 +505,7 @@
 											return false;
 										}
 									}
-									
+
 									return true;
 								},
 								clearDialog : function(create) {
@@ -309,17 +526,17 @@
 												resourceCategory = $('#principalType').widget().getValue();
 											}
 										}
-										
-										
+
+
 										$('#userProperties').parent().append($('#tabPassword').detach());
 										$('#tabPassword').removeAttr("style");
 										$('#userProperties').empty();
-										
+
 										var tabs = [];
 										if(currentRealm.resourceCategory === resourceCategory) {
-											
+
 											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-xs-12"></div></div>');
-											
+
 											$('#tabUserGroupsContent').multipleSearchInput({
 												nameAttr : 'principalName',
 												disabled: !currentMenu.canUpdate,
@@ -327,18 +544,18 @@
 												valueAttr: 'id',
 												url: apiUrl + '/groups/table'
 											});
-											
+
 											tabs.push({
 														id : "tabUserGroups",
 														name : getResource("label.groups")
 											});
 										}
-								
+
 										tabs.push({
 												id : "tabPassword",
 												name : getResource("label.password")
 										});
-										
+
 										$('#passwordPolicy').empty();
 										$('#passwordPolicy').passwordPolicy({
 											policy: 'default',
@@ -354,7 +571,7 @@
 										} else {
 											$('#pageContent').startSpin();
 										}
-										
+
 										$('#userProperties').propertyPage({
 											url : apiUrl + '/user/template/' + realmCategory,
 											showButtons : false,
@@ -378,11 +595,11 @@
 												} else {
 													$('#pageContent').stopSpin();
 												}
-												
+
 												$('#addUserModal').modal('show');
 											}
 										});
-										
+
 										return true;
 									} else {
 										$('.createOnly').hide();
@@ -395,20 +612,20 @@
 									user.name = $('#userName').val().trim();
 									user.password = $('#userPassword').val().trim();
 									user.forceChange = $('#userForceChange').prop('checked') ? true : false;
-									
+
 									$('#userProperties').saveProperties(false,
 											function(items) {
 												user.properties = items;
 											});
 									user.groups = $('#tabUserGroupsContent').widget().getValue();
-									
+
 									if(!$('#disableNotifications').prop('checked')) {
 										user.properties.push(new PropertyItem('disableNotifications', "true"));
 									}
 									return user;
 								},
 								resourceCreated : function(resource) {
-									
+
 								},
 								deleted : function(resource) {
 
@@ -421,7 +638,7 @@
 											resourceCategory = $('#principalType').widget().getValue();
 										}
 									}
-									
+
 									$('#userName').val(resource.name);
 									if(copy) {
 										$('#userName').attr('disabled', false);
@@ -429,17 +646,17 @@
 										$('#userName').attr('disabled', readOnly || $('#userName').attr('disabled'));
 									}
 									$('#userId').val(resource.id);
-									
+
 									$('#tabPassword').hide();
 									$('#tabUserGroups').remove();
 									$('#userProperties').empty();
-									
+
 									if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
 										$('#subMenuPageContent').startSpin();
 									} else {
 										$('#pageContent').startSpin();
 									}
-									
+
 									$('#passwordPolicy').empty();
 									$('#passwordPolicy').passwordPolicy({
 										policy: 'principal',
@@ -449,9 +666,9 @@
 										confirmElement: $('#userConfirmPassword'),
 										usernameElement: $('#userName')
 									});
-									
+
 									getJSON(apiUrl + '/groups/user/' + resource.id, null, function(data) {
-									
+
 										var tabs = [];
 										if(currentRealm.resourceCategory === resourceCategory) {
 											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-xs-12"></div></div>');
@@ -463,12 +680,12 @@
 												valueAttr: 'id',
 												url: "currentRealm/groups/table"
 											});
-						
+
 											tabs.push({
 														id : "tabUserGroups",
 														name : getResource("label.groups")
 											});
-										} 
+										}
 
 										if(copy) {
 											tabs.push({
@@ -476,10 +693,10 @@
 													name : getResource("label.password")
 												});
 										}
-										
+
 										$('#userProperties').parent().append($('#tabPassword').detach());
-										
-										
+
+
 										$('#userProperties').propertyPage({
 											url : apiUrl + '/user/properties/' + resource.id,
 											showButtons : false,
@@ -502,29 +719,29 @@
 												} else {
 													$('#pageContent').stopSpin();
 												}
-												
+
 												$('#addUserModal').modal('show');
 											}
 										});
 									});
-									
+
 									return true;
 								},
 								searchFilters: searchFilters,
 								searchFiltersUrl: 'realms/users/filters',
 								complete : function() {
-									
+
 									if(currentRealm.resourceCategory !== 'local') {
 // 										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="principalType" id="principalType"></div></div>');
-										
+
 // 										var filters = new Array();
-									
+
 // 										filters.push({name: getResource('all.accounts'), value: ''});
 // 										filters.push({name: getResource('local.accounts') , value: 'filter.accounts.local'});
 // 										filters.push({name:  getResource("realm." + currentRealm.resourceCategory + '.accounts') , value: 'filter.accounts.remote'});
-										
+
 // 										getJSON('realms/users/filters', null, function(data) {
-											
+
 // 											$.each(data.resources, function(idx, obj) {
 // 												filters.push({ value: obj, name: getResource(obj)});
 // 											});
@@ -538,19 +755,19 @@
 // 												sortOptions: false
 // 											});
 // 										});
-									} 
+									}
 
 									if(!ownerRealm && menuList.realmAdmin) {
 										$('#contentUsers').find('.panel-heading').last().append(
-												'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">' 
+												'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">'
 												+ getResource('configure.remote.text') + '</a></div></div>');
 										$('#configureUsers').click(function(e) {
 											e.preventDefault();
 											$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
 										});
-										
+
 										/** $('#contentUsers').find('.fixed-table-toolbar').last().append(
-												'<div class="tableToolbar pull-right search"><div><a id="resetRealm" href="#">' 
+												'<div class="tableToolbar pull-right search"><div><a id="resetRealm" href="#">'
 												+ getResource('reset.remote.text') + '</a></div></div>');
 										$('#resetRealm').click(function(e) {
 											e.preventDefault();
@@ -563,13 +780,13 @@
 											});
 										}); **/
 									}
-									
+
 									loadComplete();
 								}
 							});
-					
+
 				});
-				
+
 				});
 
 			});

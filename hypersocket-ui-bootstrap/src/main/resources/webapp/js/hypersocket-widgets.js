@@ -21,32 +21,32 @@ function processURL(widget, url) {
 	    		url = url.replace(m[0], w.getValue());
 	    	}
     	}
-	
+
 	}
-	
+
 	return url;
 }
 /**
  * Attach an event handler to an element, so that when clicked, it will
- * copy some text to the clipboard. 
- * 
+ * copy some text to the clipboard.
+ *
  * Options:
  * 		text: The text to copy to the clipboard
- * 
- * TODO 
+ *
+ * TODO
  * 1. Provide an option to use a callback instead of fixed text
  */
 $.fn.clipboardCopy = function(data) {
 	var options = $.extend(
-	{  
-		text: false, 
-		disabled : false 
+	{
+		text: false,
+		disabled : false
 	}, data);
-	
-	
+
+
 	var id = $(this).attr('id') + "ClipboardCopy";
 	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
-	
+
 	$(this).on('click', function() {
 		$(this).append('<input type="text" id="' + id + 'Text" name="' + id + 'Text"/>');
 		$('#' + id + 'Text').val(options.text);
@@ -57,10 +57,10 @@ $.fn.clipboardCopy = function(data) {
 			console.log('Copying text command was ' + msg);
 		} catch (err) {
 			console.log('Oops, unable to copy');
-		}		
+		}
 		$('#' + id + 'Text').remove();
 	});
-	
+
 	var callback = {
  			disable: function() {
  				$('#' + id).attr('disabled', true);
@@ -76,7 +76,7 @@ $.fn.clipboardCopy = function(data) {
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -84,7 +84,7 @@ $.fn.clipboardCopy = function(data) {
 
 /**
 * Displays a text input with button to insert a set of variables.
-* 
+*
 * Options:
 *   id:
 *   resourceKey:
@@ -99,76 +99,76 @@ $.fn.clipboardCopy = function(data) {
 *   variables: []                 // The variables to display
 *   url							  // A url that returns a json array which will be used as the set of variables
 **/
- 
+
 $.fn.textInput = function(data) {
-	
+
 	var options = $.extend(
-			{  
-				variableTemplate: '$\{{0}\}', 
-				disabled : false, 
+			{
+				variableTemplate: '$\{{0}\}',
+				disabled : false,
 				inputType: 'text',
-				readOnly: false, 
-				maxlength: -1, 
+				readOnly: false,
+				maxlength: -1,
 				valueIsResourceKey: false,
 				showVariables: false,
 				getUrlData: function(data) {
 					return data;
 				}
 			}, data);
-	
+
 	var id = 'input' + $(this).attr('id') + "TextInput";
 	var hasVariables = (options.variables && options.variables.length > 0);
 	if(hasVariables && options.variables.constructor !== Array) {
 		options.variables = options.variables.split(',');
-	} 
+	}
 	if(options.showVariables && !options.url) {
 		options.url = 'currentRealm/user/variableNames';
 	}
-	
+
 	var html = '';
 
 	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
-	
+
 	if(options.inputType=='textarea') {
-	
+
 		if(options.variables || options.url) {
 			html += '<div class="input-group">';
 		}
-				
-		var html ='<textarea name="' + name + '" id="' + id + '" class="form-control" value="' 
-				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + ' cols="' 
-				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" ' 
+
+		var html ='<textarea name="' + name + '" id="' + id + '" class="form-control" value="'
+				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + ' cols="'
+				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" '
 				+ (options.maxlength > -1 ? 'maxlength="' + options.maxlength  + '"' : '' )
 				+ (options.font ? 'style="font-family: ' + options.font + '"' : '')
 				+ '></textarea>';
-		
+
 		if(options.variables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
 		    	+ 'data-toggle="dropdown">${}</span></div>';
 		}
 
-			    
+
 	} else {
-		
+
 		var html = '';
 		if(hasVariables || options.url) {
 			html += '<div class="input-group">';
 		}
-		
+
 		var type = options.inputType != 'text' && options.inputType != 'password' ? 'text' : options.inputType;
 		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" autocomplete="off" value=""'
 					+ (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
-		
-		
+
+
 		if(hasVariables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
 		 	  + 'data-toggle="dropdown">${}</span></div>';
 		}
-  
+
 	}
-	
+
 	$(this).append(html);
-	
+
 	$('#' + id).val(stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value));
 	if(options.placeholder) {
 		$('#' + id).prop('placeholder', getResourceOrDefault(options.placeholder));
@@ -177,7 +177,7 @@ $.fn.textInput = function(data) {
  		$.each(options.variables, function(idx, obj) {
  			$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
  		});
- 		
+
  		$('.' + id + 'Class').click(function(e) {
 			e.preventDefault();
 			var position = $('#' + id).getCursorPosition();
@@ -185,13 +185,13 @@ $.fn.textInput = function(data) {
 	 		var newContent = content.substr(0, position) + $(this).text() + content.substr(position);
 	 		$('#' + id).val(newContent);
 		});
-	
+
  	} else if(options.url) {
  		getJSON(options.url, null, function(data) {
  			$.each(options.getUrlData(data), function(idx, obj) {
  	 			$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
  	 		});
- 		
+
  			$('.' + id + 'Class').click(function(e) {
  				e.preventDefault();
  				var position = $('#' + id).getCursorPosition();
@@ -201,7 +201,7 @@ $.fn.textInput = function(data) {
  			});
  		});
  	}
- 	
+
  	var callback = {
  			setValue: function(val) {
  				$('#' + id).val(val);
@@ -236,11 +236,11 @@ $.fn.textInput = function(data) {
 	 		}
  		}
  	});
- 	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -257,15 +257,15 @@ function getCodeMirrorWidth() {
 }
 
 $.fn.htmlInput = function(data) {
-	
+
 	var options = $.extend(
-			{ disabled : false, 
+			{ disabled : false,
 			  value: '',
 			  inputType: 'html',
 			  lineNumbers: true,
-			  size: 'normal'}, 
+			  size: 'normal'},
 		data);
-		
+
 	var id = $(this).attr('id') +  'HtmlInput';
 
 	var heightCss = '';
@@ -285,7 +285,7 @@ $.fn.htmlInput = function(data) {
 		  remove_script_host : false,
 		  readOnly: options.disabled
 	});
-	
+
 	var callback = {
  			setValue: function(val) {
  				myCodeMirror.setValue(val);
@@ -318,41 +318,41 @@ $.fn.htmlInput = function(data) {
  				myCodeMirror.setSize(w,h);
  			}
  		};
-	
+
 	myCodeMirror.on("change", function(cm, change) {
 		  if(options.change) {
 			  options.changed(callback);
 		  }
 	});
-	
+
 	$('#' + id).data('codeMirror', myCodeMirror);
 	$('#' + id).show();
-	
+
 	setTimeout(function() {
 	    myCodeMirror.refresh();
 	},1);
-	
+
 	$(window).resize(function() {
 		$('#' + id).width(getCodeMirrorWidth());
 	});
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
 }
 
 $.fn.codeInput = function(data) {
-	
+
 	var options = $.extend(
-			{ disabled : false, 
+			{ disabled : false,
 			  value: '',
 			  inputType: 'html',
 			  lineNumbers: true,
-			  size: 'normal'}, 
+			  size: 'normal'},
 		data);
-		
+
 	var id = $(this).attr('id') +  'CodeInput';
-	
+
 	var heightCss = '';
 	if(options.size==='small') {
 		heightCss = 'height: 75px';
@@ -361,14 +361,14 @@ $.fn.codeInput = function(data) {
 	}
 
 	$(this).append('<div class="code form-control" id="' + id + '" style="width: ' + getCodeMirrorWidth() + 'px; ' + heightCss + '"></div>');
-	
+
 	var myCodeMirror = CodeMirror(document.getElementById(id), {
 		  value: options.value,
 		  mode:  options.inputType=='java' ? 'text/x-java' : options.inputType,
 		  lineNumbers: options.lineNumbers,
 		  readOnly: options.disabled
 	});
-	
+
 	var callback = {
  			setValue: function(val) {
  				myCodeMirror.setValue(val);
@@ -399,24 +399,24 @@ $.fn.codeInput = function(data) {
  				myCodeMirror.setValue('');
  			}
  		};
-	
+
 	myCodeMirror.on("change", function(cm, change) {
 		  if(options.changed) {
 			  options.changed(callback);
 		  }
 	});
-	
+
 	$('#' + id).data('codeMirror', myCodeMirror);
 	$('#' + id).show();
-	
+
 	setTimeout(function() {
 	    myCodeMirror.refresh();
 	},1);
-	
+
 	$(window).resize(function() {
 		$('#' + id).width(getCodeMirrorWidth());
 	});
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -441,7 +441,7 @@ $.fn.richInput = function(data) {
 				  ],
 		  toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor emoticons' },
 	data);
-	
+
 	var id = $(this).attr('id');
 
 	var callback = {
@@ -478,7 +478,7 @@ $.fn.richInput = function(data) {
  				this.editor.setContent('');
  			}
  		};
-	
+
 	var lastCallback = $(this).data('widget');
 	if(lastCallback) {
 		/* Remove the previous editor cleanly - https://stackoverflow.com/questions/4651676/how-do-i-remove-tinymce-and-then-re-add-it#4655467 */
@@ -488,7 +488,7 @@ $.fn.richInput = function(data) {
 			tinymce.EditorManager.editors.splice(i, 1);
 		}
 	}
-	
+
 	tinymce.init({
 		  selector: '#' + id,
 		  height: options.height,
@@ -508,8 +508,8 @@ $.fn.richInput = function(data) {
 		  ],
 		  /*
 		   * https://stackoverflow.com/questions/41724713/tinymce-get-http-fast-fonts-error-in-console
-		   * 
-		   * BPS - leaving this in results in 404 error in console, doesn't seem to have any 
+		   *
+		   * BPS - leaving this in results in 404 error in console, doesn't seem to have any
 		   * effect so I am not sure of the original intention here
 		   */
 		  /*content_css: [
@@ -520,22 +520,22 @@ $.fn.richInput = function(data) {
 			  callback.editor = editor;
 			  var newval = options.value;
 			  if(!newval) {
-				  var tagName = $('#' + id).prop('tagName'); 
-				  if(tagName == 'textarea' || tagName == 'input' || tagName == 'TEXTAREA' || tagName == 'INPUT') 
+				  var tagName = $('#' + id).prop('tagName');
+				  if(tagName == 'textarea' || tagName == 'input' || tagName == 'TEXTAREA' || tagName == 'INPUT')
 					  newval = $('#' + id).val();
 				  else
 					  newval = $('#' + id).html();
 			  }
-			  
+
 			  callback.originalValue = newval;
 			  editor.setContent(newval);
-			  
+
 			  if(options.focus) {
-			      this.editor.execCommand('mceFocus', true, id);                   
+			      this.editor.execCommand('mceFocus', true, id);
 			  }
-			  
+
 			  editor.on('change', function(e) {
-				  var tagName = $('#' + id).prop('tagName'); 
+				  var tagName = $('#' + id).prop('tagName');
 				  if(tagName == 'textarea' || tagName == 'input' || tagName == 'TEXTAREA' || tagName == 'INPUT') {
 					  $('#' + id).val(callback.getValue());
 				  }
@@ -543,11 +543,11 @@ $.fn.richInput = function(data) {
 					  options.changed(callback);
 				  }
 			  });
-		  }		  
-	});	
+		  }
+	});
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
-	
+
 	return callback;
 }
 
@@ -558,12 +558,12 @@ $.fn.richInput = function(data) {
 $.fn.editor = function(data) {
 
 	var options = $.extend(
-		{ disabled : false, 
-		  value: ''}, 
+		{ disabled : false,
+		  value: ''},
 	data);
-	
+
 	var id =$(this).attr('id') + 'Editor';
-	
+
 	$(this).append( '<div class="btn-toolbar" data-role="editor-toolbar" data-target="#' + id + '">'
   + '  <div class="btn-group">'
   + '    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>'
@@ -656,7 +656,7 @@ $.fn.editor = function(data) {
  				$('#' + id).trigger('change');
  			},
  			disable: function() {
- 				
+
  			},
  			enable: function() {
 
@@ -677,7 +677,7 @@ $.fn.editor = function(data) {
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -688,39 +688,39 @@ $.fn.editor = function(data) {
  * A buttonised dropdown
  */
 $.fn.selectButton = function(data) {
-	
+
 	var obj = $.extend(
-		{ nameAttr: 'name', 
-			valueAttr: 'value', 
-			nameIsResourceKey : false, 
-			resourceKeyTemplate: '{0}', 
+		{ nameAttr: 'name',
+			valueAttr: 'value',
+			nameIsResourceKey : false,
+			resourceKeyTemplate: '{0}',
 			disabled : false,
 			onLoad: false,
-			value: '', 
+			value: '',
 			sortOptions: true,
 			notSetResourceKey: 'text.notSet',
 			getUrlData: function(data) {
 				return data;
 			}
 		}, data);
-	
+
 	var id = $(this).attr('id') + "SelectButton";
-	
+
 	var name = (obj && obj.resourceKey != null ) ? formatResourceKey(obj.resourceKey) : $(this).attr('id') ;
 
-	$(this).append('<div class="btn-group"><input id="' 
-			 + id + '" type="hidden" name="select_value_' + id + '" value=""><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" name="selectBtn_'+ name +'"><span id="select_button_' 
+	$(this).append('<div class="btn-group"><input id="'
+			 + id + '" type="hidden" name="select_value_' + id + '" value=""><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" name="selectBtn_'+ name +'"><span id="select_button_'
 			 + id + '">' + getResource(obj.notSetResourceKey) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
 			 + 'select_' + id + '" name="select_' + name +'" class="dropdown-menu' + (obj.dropdownPosition ? ' ' + obj.dropdownPosition : '') + '" role="menu"></div>');
 
 	var selected = null;
-	
+
 	if(obj.emptySelectionAllowed) {
 		$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
-				+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + getResource(obj.notSetResourceKey) + '">' 
+				+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + getResource(obj.notSetResourceKey) + '">'
 				+ getResource(obj.notSetResourceKey) + '</a></li>');
 	}
-	
+
 	var loading = true;
 	var callback = {
 			setValue: function(val) {
@@ -731,7 +731,7 @@ $.fn.selectButton = function(data) {
 				} else {
 					$('#select_button_' + id).text(getResource(options.notSetText));
 				}
-				
+
 			},
 			changed: function() {
 				if(!loading) {
@@ -752,16 +752,16 @@ $.fn.selectButton = function(data) {
 				return selected.data('resource');
 			},
 			load: function(loadCallback) {
-				
+
 				$('#select_' + id).empty();
 				if(obj.emptySelectionAllowed) {
 					$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
-							+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + getResource(obj.notSetResourceKey) + '">' 
+							+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + getResource(obj.notSetResourceKey) + '">'
 							+ getResource(obj.notSetResourceKey) + '</a></li>');
 				}
 				var listItem;
 				if (obj.options) {
-					
+
 					if(obj.sortOptions) {
 						obj.options.sort(function(a,b) {
 							if(obj.nameIsResourceKey) {
@@ -771,13 +771,13 @@ $.fn.selectButton = function(data) {
 							}
 						});
 					}
-					
+
 					var ignoreValues = [];
 					if(obj.ignoreValues) {
 						ignoreValues = obj.ignoreValues.split(',');
 					}
 					for (var i = 0; i < obj.options.length; i++) {
-						
+
 						var ignore = false;
 						for(var x = 0; x < ignoreValues.length; x++) {
 							if(ignoreValues[x] ==  obj.options[i][obj.valueAttr]) {
@@ -786,8 +786,8 @@ $.fn.selectButton = function(data) {
 						}
 						if(!ignore) {
 							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
-							$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="' 
-									+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">' 
+							$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="'
+									+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">'
 									+ listItem + '</a></li>');
 							if (obj.value == obj.options[i][obj.valueAttr]) {
 								selected = obj.options[i];
@@ -796,40 +796,40 @@ $.fn.selectButton = function(data) {
 								if(obj.initialized) {
 									obj.initialized(callback);
 								}
-							} 
+							}
 							$('#data_' + id + "_" + i).data('resource', obj.options[i]);
 						}
 					}
-					
+
 
 					$('.selectButton_' + id).on('click',
 						function(evt) {
 							evt.preventDefault();
-							
+
 							$('#' + id).val($(this).attr('data-value'));
 							$('#select_button_' + id).text($(this).attr('data-label'));
 							if(obj.changed) {
 								obj.changed(callback);
 							}
 						});
-						
+
 						if(selected==null && !obj.emptySelectionAllowed) {
 							loading = true;
 							var val = $('.selectButton_' + id).first().trigger('click');
 							loading = false;
 						}
-						
-				
+
+
 					if(loadCallback) {
 						loadCallback(callback);
 					}
 
-				} 
+				}
 				else if (obj.url) {
 
 					getJSON(obj.url, null,
 						function(data) {
-						
+
 						var items = obj.getUrlData(data);
 						if(obj.sortOptions) {
 							items.sort(function(a,b) {
@@ -848,25 +848,25 @@ $.fn.selectButton = function(data) {
 								}
 							});
 						}
-						
-						
+
+
 						var ignoreValues = [];
 						if(obj.ignoreValues) {
 							ignoreValues = obj.ignoreValues.split(',');
 						}
-						
-						$.each(items, function(idx, option) {	
-									
+
+						$.each(items, function(idx, option) {
+
 							for(var x = 0; x < ignoreValues.length; x++) {
 								if(ignoreValues[x] ==  option[obj.valueAttr]) {
 									return;
 								}
 							}
-							
+
 							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj.nameAttr])) : option[obj.nameAttr];
-							
-							$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="' 
-									+ stripNull(option[obj.valueAttr]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">' 
+
+							$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="'
+									+ stripNull(option[obj.valueAttr]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">'
 									+ listItem + '</a></li>');
 							/**
 							 * Use == NOT === because types may vary but we still want string "1" to equal 1
@@ -890,13 +890,13 @@ $.fn.selectButton = function(data) {
 										obj.changed(callback);
 									}
 						});
-							
+
 						if(selected==null && !obj.emptySelectionAllowed) {
 							loading = true;
 							var val = $('.selectButton_' + id).first().trigger('click');
 							loading = false;
 						}
-						
+
 						if(loadCallback) {
 							loadCallback(callback);
 						}
@@ -924,7 +924,7 @@ $.fn.selectButton = function(data) {
 			},
  			clear: function() {
  				if(obj.emptySelectionAllowed) {
- 					$('#' + id).val('');			
+ 					$('#' + id).val('');
  				} else {
  					$('#' + id).val(obj.value);
  				}
@@ -933,7 +933,7 @@ $.fn.selectButton = function(data) {
  			},
 			reset: function() {
 				if(obj.emptySelectionAllowed) {
- 					$('#' + id).val('');			
+ 					$('#' + id).val('');
  				} else {
  					$('#' + id).val(obj.value);
  				}
@@ -944,13 +944,13 @@ $.fn.selectButton = function(data) {
  				$('.selectButton_' + id).first().trigger('click');
  			}
 		};
-	
+
 	callback.load(obj.onLoad);
-	
+
 	if(obj.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	loading = false;
@@ -961,14 +961,14 @@ $.fn.selectButton = function(data) {
  * A text box that shows a dropdown for auto-completion
  */
 $.fn.autoComplete = function(data) {
-	
+
 	var options = $.extend(
-		{ valueAttr : 'value', 
-			nameAttr : 'name', 
-			nameIsResourceKey : false, 
-			selectedIsObjectList : false, 
+		{ valueAttr : 'value',
+			nameAttr : 'name',
+			nameIsResourceKey : false,
+			selectedIsObjectList : false,
 			isResourceList: true,
-			disabled : false, 
+			disabled : false,
 			remoteSearch: false,
 			resourceKeyTemplate: '{0}',
 			icon: 'fa-search',
@@ -980,17 +980,17 @@ $.fn.autoComplete = function(data) {
 	var callback;
 	var id = $(this).attr('id') + "AutoComplete";
 	var thisWidget = $(this);
-	
-	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
-			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : 'class="form-control"') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>' 
-			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>' 
-			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"') 
+
+	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id
+			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : 'class="form-control"') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
+			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>'
+			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"')
 			+ '><a href="#" id="click_' + id + '" class="drop_' + id + '"><i id="spin_' + id + '" class="drop_' + id + ' fa ' + options.icon + '"></i></a></span></div>');
-	
+
 	if(options.remoteSearch) {
 		$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 	}
-	
+
 	var buildData = function(values) {
 		var map = [];
 		if(values) {
@@ -1003,7 +1003,7 @@ $.fn.autoComplete = function(data) {
 				}
 			});
 		}
-		
+
 		$('#input_' + id).data('values', values);
 		$('#input_' + id).data('map', map);
 		if(options.selectedValue){
@@ -1012,7 +1012,7 @@ $.fn.autoComplete = function(data) {
 			$('#' + id).parent().parent().data('widget').setValue(values[0][options.valueAttr]);
 		}
 	};
-	
+
 	var createDropdown = function(text, show, prefiltered) {
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
@@ -1048,7 +1048,7 @@ $.fn.autoComplete = function(data) {
 			selected.sort(function(a, b) {
 				var nameA = options.nameIsResourceKey ? getResource(a[options.nameAttr]) : a[options.nameAttr];
 				var nameB = options.nameIsResourceKey ? getResource(b[options.nameAttr]) : b[options.nameAttr];
-				
+
 				if(nameA > nameB) {
 					return 1;
 				}
@@ -1058,11 +1058,11 @@ $.fn.autoComplete = function(data) {
 				return 0;
 			});
 		}
-		
+
 		$('#auto_' + id).empty();
 		if(selected.length > 0 && (text != '' || options.alwaysDropdown)) {
 			$.each(selected, function(idx, obj) {
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">' 
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
 						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
 			});
 			$('#auto_' + id + ' .optionSelect').off('click');
@@ -1075,24 +1075,24 @@ $.fn.autoComplete = function(data) {
 				$('#' + id).val(value.toString());
 				$('#input_' + id).val($(this).text());
 				$('[data-toggle="dropdown"]').parent().removeClass('open');
-				
+
 				if(options.changed) {
 					options.changed(callback);
 				}
 			});
 
 		} else {
-			
+
 			if(text=='') {
 				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 			} else {
 				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
 			}
-			
+
 		}
 		$('#input_' + id).dropdown();
 		$('[data-toggle="dropdown"]').parent().removeClass('open');
-		
+
 		if(show) {
 			$('#input_' + id).dropdown('toggle');
 		}
@@ -1100,7 +1100,7 @@ $.fn.autoComplete = function(data) {
 		$('#spin_' + id).removeClass('fa-spinner');
 		$('#spin_' + id).addClass('fa-search');
 	}
-	
+
 	var updateValue = function(val, event) {
 		if(val && val.toString().startsWith('${') && val.toString().endsWith('}')) {
 			$('#' + id).val(val);
@@ -1118,7 +1118,7 @@ $.fn.autoComplete = function(data) {
 			options.setOnLoad = false;
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
 				if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
-					
+
 					thisWidget.data('selectedObject', obj);
 					$('#' + id).val(obj[options.valueAttr]);
 					$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
@@ -1129,13 +1129,13 @@ $.fn.autoComplete = function(data) {
 			});
 		}
 	};
-	
+
 	var doDropdown = function(text) {
-		
+
 		$('#spin_' + id).removeClass('fa-search');
 		$('#spin_' + id).addClass('fa-spin');
 		$('#spin_' + id).addClass('fa-spinner');
-		
+
 		if(!options.remoteSearch) {
 			createDropdown(text, true, false);
 		} else {
@@ -1147,7 +1147,7 @@ $.fn.autoComplete = function(data) {
 					null,
 					function(data) {
 						$('#input_' + id).data('values', data.rows);
-						
+
 						if(data.rows && data.rows.length > 0) {
 							var map = [];
 							$.each(data.rows, function(idx, obj) {
@@ -1165,9 +1165,9 @@ $.fn.autoComplete = function(data) {
 						createDropdown(text, true, true);
 					});
 		}
-		
+
 	};
-	
+
 	var remoteDropdown = false;
 	callback = {
 			setValue: function(val) {
@@ -1192,23 +1192,23 @@ $.fn.autoComplete = function(data) {
 						processURL(callback, url),
 						null,
 						function(data) {
-							
+
 							if(data.success) {
 								buildData(options.isResourceList ? data.resources : data);
 								if(options.alwaysDropdown) {
 									createDropdown("", false, false);
-								} 
+								}
 								callback.setValue(newValue);
 							}
 						});
 				} else if(options.values && !options.remoteSearch) {
 					buildData(options.values);
 					callback.setValue(newValue);
-				} 
+				}
 			},
 			/**
 			 * LDP - Reset should not have a newValue. It should initialise from options.
-			 * Added reload method instead if you want to set a specific value and reload 
+			 * Added reload method instead if you want to set a specific value and reload
 			 * at the same time.
 			 */
 			reset: function() {
@@ -1237,7 +1237,7 @@ $.fn.autoComplete = function(data) {
 				$('#input_' + id).val('');
 
 				$('#auto_' + id).empty();
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');	
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
  			},
  			addItem: function(item, select){
  				exists = false;
@@ -1274,12 +1274,12 @@ $.fn.autoComplete = function(data) {
 			}
 		}
 	});
-	
-	
+
+
 	$('#input_' + id).change(function() {
 		updateValue($(this).val(), true);
 	});
-	
+
 	$('#input_' + id).keyup(function() {
 		if(options.alwaysDropdown) {
 			createDropdown("", true, false);
@@ -1288,11 +1288,11 @@ $.fn.autoComplete = function(data) {
 			doDropdown(text);
 		}
 	});
-	
+
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	if(!options.doNotInit) {
 		if(options.url && !options.remoteSearch) {
 			getJSON(
@@ -1325,7 +1325,7 @@ $.fn.autoComplete = function(data) {
 					getJSON(processURL(callback, url),
 							null,
 							function(data) {
-								
+
 								var map = [];
 								$.each(data.rows, function(idx, obj) {
 									map[obj[options.valueAttr]] = obj;
@@ -1340,16 +1340,16 @@ $.fn.autoComplete = function(data) {
 							});
 				} else {
 					$('#auto_' + id).empty();
-					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');	
+					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 				}
 			}
 		}
 	}
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
-	
+
 	return callback;
-	
+
 }
 
 $.fn.textDropdown = function(data) {
@@ -1380,7 +1380,7 @@ $.fn.multipleSelect = function(data) {
 		element.remove();
 		addListeners(newElement);
 	}
-	
+
 	var addElementBefore = function(elementToAdd, element){
 		var newElement = elementToAdd.clone();
 		newElement.find('i').removeClass('fa-arrow-down').addClass('fa-arrow-up');
@@ -1396,7 +1396,7 @@ $.fn.multipleSelect = function(data) {
 		elementToAdd.remove();
 		addListeners(newElement);
 	}
-	
+
 	var removeElement = function(element){
 		var newElement = element.clone();
 		newElement.find('i').removeClass('fa-arrow-up').addClass('fa-arrow-down');
@@ -1424,7 +1424,7 @@ $.fn.multipleSelect = function(data) {
 	}
 
 	dragSrcEl = null;
-	
+
 	var handleDragStart = function(e){
 		if(multipleSelectDisabled){
 			return;
@@ -1433,7 +1433,7 @@ $.fn.multipleSelect = function(data) {
 		e.dataTransfer.effectAllowed = 'move';
 		e.dataTransfer.setData('text/html', this.innerHTML);
 	}
-	
+
 	var handleDragOver = function(e){
 		if(multipleSelectDisabled){
 			return;
@@ -1444,10 +1444,10 @@ $.fn.multipleSelect = function(data) {
 		e.dataTransfer.dropEffect = 'move';
 		return false;
 	}
-	
+
 	var handleDragEnter = function(e) {
 
-		
+
 		if(!multipleSelectDisabled
 			&& dragSrcEl != this
 			&& (!$(dragSrcEl).hasClass(id + 'excludedDraggable') || !$(this).hasClass(id + 'excludedDraggable'))
@@ -1459,18 +1459,18 @@ $.fn.multipleSelect = function(data) {
 			)){
 			this.classList.add('overMultipleSearchInput');
 		}/*else if(!multipleSelectDisabled && $(dragSrcEl).hasClass(id + 'includedDraggable') && $(this).closest('[name="ExcludedSelect_' + id + '"]').length == 1){
-			
+
 			$(this).closest('.excludedSelect')[0].classList.add('overMultipleSearchInput');
 		}*/
 	}
-	
+
 	var handleDragLeave = function(e) {
 		if(!multipleSelectDisabled){
 			this.classList.remove('overMultipleSearchInput');
 		}
-		
+
 	}
-	
+
 	var handleDrop = function (e) {
 		if(multipleSelectDisabled){
 			return;
@@ -1478,7 +1478,7 @@ $.fn.multipleSelect = function(data) {
 		if (e.stopPropagation) {
 			e.stopPropagation();
 		}
-		
+
 		if(dragSrcEl && dragSrcEl != this && ($(dragSrcEl).hasClass(id + 'includedDraggable') || $(dragSrcEl).hasClass(id + 'excludedDraggable'))) {
 			if($(dragSrcEl).hasClass(id + 'includedDraggable') && ($(this).attr('id') == id + 'Excluded' || $(this).closest('div.excludedSelect').length)){
 				removeElement($(dragSrcEl));
@@ -1516,10 +1516,10 @@ $.fn.multipleSelect = function(data) {
 			}
 			$(this).removeClass('overMultipleSearchInput');
 		}
-		
+
 		return false;
 	}
-	
+
 	var handleDragEnd = function (e) {
 		if(multipleSelectDisabled){
 			return;
@@ -1527,7 +1527,7 @@ $.fn.multipleSelect = function(data) {
 		$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
 		dragSrcEl = null;
 	}
-	
+
 	var addListeners = function(newElement){
 		var element = document.getElementById($(newElement).attr('id'));
 		element.addEventListener('dragenter', handleDragEnter, false);
@@ -1541,9 +1541,9 @@ $.fn.multipleSelect = function(data) {
 	}
 
 	if ($(this).data('created')) {
-		
+
 		options = $(this).widget().options();
-		
+
 		var options = $.extend(options, data);
 		if ((options.selected && options.selected.length == 0) && options.selectAllIfEmpty) {
 			var allExcludedOptions = $('#' + id + 'ExcludedSelect li');
@@ -1562,7 +1562,7 @@ $.fn.multipleSelect = function(data) {
 		}
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
-		
+
 		if (options.selected) {
 			$.each(options.selected,function(idx, id) {
 				var selectedOpt;
@@ -1579,8 +1579,8 @@ $.fn.multipleSelect = function(data) {
 
 		if (data && data.insert) {
 			$.each(data.insert,function(idx, obj) {
-				newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'includedDraggable"><span>' 
-						+ (options.nameIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined 
+				newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'includedDraggable"><span>'
+						+ (options.nameIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined
 								? he.encode(obj[options.nameAttr]) : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
 				removeElement(newElement);
 			});
@@ -1630,12 +1630,12 @@ $.fn.multipleSelect = function(data) {
 
 		var options = $
 				.extend(
-					{ valueAttr : 'id', 
-						nameAttr : 'name', 
-						nameIsResourceKey : false, 
-						selectAllIfEmpty : false, 
-						selectedIsObjectList : false, 
-						disabled : false, 
+					{ valueAttr : 'id',
+						nameAttr : 'name',
+						nameIsResourceKey : false,
+						selectAllIfEmpty : false,
+						selectedIsObjectList : false,
+						disabled : false,
 						valuesIsObjectList: true,
 						resourceKeyTemplate: '{0}',
 						excludedLabelResourceKey: 'text.excluded',
@@ -1713,32 +1713,32 @@ $.fn.multipleSelect = function(data) {
 	 				$('#' + id).multipleSelect();
 	 			}
 		};
-		
+
 		$('#' + id + 'Excluded').remove();
 		$('#' + id + 'Included').remove();
-		
+
 		var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id ;
 
 		//$(this).addClass('container-fluid');
-		
+
 		$(this).append('<div id="' + id + '"></div>');
-		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><label>' + getResource(options.excludedLabelResourceKey) + '</label><div class="excludedList col-md-5 formInput form-control excludedSelect" id="' + id 
+		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><label>' + getResource(options.excludedLabelResourceKey) + '</label><div class="excludedList col-md-5 formInput form-control excludedSelect" id="' + id
 				+ 'Excluded"></div></div>');
-		
+
 		$('#' + id + 'Excluded').append(
 					'<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'id="' + id
 						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"/>');
-		
-		$('#' + id).append('<div id="' + id + 'IncludedList" class="includedList1"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="includedList col-md-5 formInput form-control includedSelect" id="' + id 
+
+		$('#' + id).append('<div id="' + id + 'IncludedList" class="includedList1"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="includedList col-md-5 formInput form-control includedSelect" id="' + id
 				+ 'Included"></div></div>');
-	
-		$('#' + id + 'Included').append('<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') 
+
+		$('#' + id + 'Included').append('<ul ' + (!options.disabled ? '' : 'disabled="disabled" ')
 				+ 'id="' + id + 'IncludedSelect" name="IncludedSelect_' + name + '"/>');
 
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
 	}
-	
+
 	addListeners($('#' + id + 'Excluded'));
 	addListeners($('#' + id + 'Included'));
 
@@ -1746,7 +1746,7 @@ $.fn.multipleSelect = function(data) {
 		options.options = options.variables;
 		options.valuesIsObjectList = false;
 	}
-	
+
 	if (options.options || options.values) {
 		if(options.values) {
 			options.options = options.values;
@@ -1755,12 +1755,12 @@ $.fn.multipleSelect = function(data) {
 			function(idx, obj) {
 				var newElement;
 				if(options.valuesIsObjectList) {
-					newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey 
+					newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
 							? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
 								: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
-					
+
 				} else {
-					newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + obj + '"><span>' + (options.nameIsResourceKey 
+					newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + obj + '"><span>' + (options.nameIsResourceKey
 							? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
 								: getResource(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
 				}
@@ -1794,11 +1794,11 @@ $.fn.multipleSelect = function(data) {
 					function(idx, obj) {
 					var newElement;
 					if(options.valuesIsObjectList) {
-						newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey 
+						newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
 								? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
 										: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
 					} else {
-						newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj) + '"><span>' + (options.nameIsResourceKey 
+						newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj) + '"><span>' + (options.nameIsResourceKey
 								? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
 									: getResource(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
 					}
@@ -1828,7 +1828,7 @@ $.fn.multipleSelect = function(data) {
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
@@ -1894,13 +1894,13 @@ $.fn.multipleSearchInput = function(data) {
 	}
 
 	dragSrcEl = null;
-	
+
 	var handleDragStart = function(e){
 		dragSrcEl = this;
 		e.dataTransfer.effectAllowed = 'move';
 		e.dataTransfer.setData('text/html', this.innerHTML);
 	}
-	
+
 	var handleDragOver = function(e){
 		if (e.preventDefault) {
 			e.preventDefault();
@@ -1908,20 +1908,20 @@ $.fn.multipleSearchInput = function(data) {
 		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
 			e.dataTransfer.dropEffect = 'move';
 		}
-		
+
 		return false;
 	}
-	
+
 	var handleDragEnter = function(e) {
 		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
 			this.classList.add('overMultipleSearchInput');
 		}
 	}
-	
+
 	var handleDragLeave = function(e) {
 		this.classList.remove('overMultipleSearchInput');
 	}
-	
+
 	var handleDrop = function (e) {
 		if (e.stopPropagation) {
 			e.stopPropagation();
@@ -1938,7 +1938,7 @@ $.fn.multipleSearchInput = function(data) {
 			if (options.changed) {
 				options.changed(callback);
 			}
-			
+
 			$('#' + dragSrcEl.id).find('i').click(function(e){
 				removeElement(e);
 			});
@@ -1952,7 +1952,7 @@ $.fn.multipleSearchInput = function(data) {
 	var handleDragEnd = function (e) {
 		$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
 	}
-	
+
 	var addListeners = function(newElement){
 		if(options.allowOrdering){
 			var element = document.getElementById($(newElement).attr('id'));
@@ -1964,7 +1964,7 @@ $.fn.multipleSearchInput = function(data) {
 			element.addEventListener('dragend', handleDragEnd, false);
 		}
 	}
-	
+
 	if ($(this).data('created')) {
 		options = $(this).widget().options();
 
@@ -1986,24 +1986,24 @@ $.fn.multipleSearchInput = function(data) {
 				addListeners(newElement);
 			});
 		}
-		
+
 		if(data && data.disabled) {
 			$(this).widget().disable();
 		} else {
 			$(this).widget().enable();
 		}
-		
+
 		return;
 
 	} else {
 
 		var options = $
 				.extend(
-					{ valueAttr : 'id', 
-						nameAttr : 'name', 
-						nameIsResourceKey : false, 
-						selectAllIfEmpty : false, 
-						selectedIsObjectList : false, 
+					{ valueAttr : 'id',
+						nameAttr : 'name',
+						nameIsResourceKey : false,
+						selectAllIfEmpty : false,
+						selectedIsObjectList : false,
 						disabled : false,
 						isNamePairValue: true,
 						addOnSelect: true,
@@ -2011,7 +2011,7 @@ $.fn.multipleSearchInput = function(data) {
 					data);
 
 		var name = ((data && data.resourceKey != null ) ? formatResourceKey(data.resourceKey) : id) ;
-		
+
 		$('#' + id + 'Excluded').remove();
 		$('#' + id + 'Included').remove();
 
@@ -2061,8 +2061,8 @@ $.fn.multipleSearchInput = function(data) {
 			}
 		});
 
-		$('#' + id + 'Included').append('<div class="formInput form-control includedSelect">' + 
-					'<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + ' id="' 
+		$('#' + id + 'Included').append('<div class="formInput form-control includedSelect">' +
+					'<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + ' id="'
 							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '" /></div>');
 
 		var select = $('#' + id + 'ExcludedSelect');
@@ -2154,7 +2154,7 @@ $.fn.multipleSearchInput = function(data) {
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
@@ -2166,7 +2166,7 @@ $.fn.multipleSearchInput = function(data) {
 $.fn.multipleTextInput = function(data) {
 
 	var id = $(this).attr('id');
-	
+
 	var removeElement = function(e){
 		$(e.target).parent().remove();
 		toSelect.data('updated', true);
@@ -2174,15 +2174,15 @@ $.fn.multipleTextInput = function(data) {
 			options.changed(callback);
 		}
 	}
-	
+
 	dragSrcEl = null;
-	
+
 	var handleDragStart = function(e){
 		dragSrcEl = this;
 		e.dataTransfer.effectAllowed = 'move';
 		e.dataTransfer.setData('text/html', this.innerHTML);
 	}
-	
+
 	var handleDragOver = function(e){
 		if (e.preventDefault) {
 			e.preventDefault();
@@ -2190,20 +2190,20 @@ $.fn.multipleTextInput = function(data) {
 		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
 			e.dataTransfer.dropEffect = 'move';
 		}
-		
+
 		return false;
 	}
-	
+
 	var handleDragEnter = function(e) {
 		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
 			this.classList.add('overMultipleSearchInput');
 		}
 	}
-	
+
 	var handleDragLeave = function(e) {
 		this.classList.remove('overMultipleSearchInput');
 	}
-	
+
 	var handleDrop = function (e) {
 		if (e.stopPropagation) {
 			e.stopPropagation();
@@ -2223,7 +2223,7 @@ $.fn.multipleTextInput = function(data) {
 			$('[id="' + dragSrcEl.id + '"]').find('i').click(function(e){
 				removeElement(e);
 			});
-			
+
 			$('[id="' + this.id + '"]').find('i').click(function(e){
 				removeElement(e);
 			});
@@ -2235,7 +2235,7 @@ $.fn.multipleTextInput = function(data) {
 		$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
 		dragSrcEl = null;
 	}
-	
+
 	var addListeners = function(newElement){
 		if(options.allowOrdering){
 			var element = document.getElementById($(newElement).attr('id'));
@@ -2247,7 +2247,7 @@ $.fn.multipleTextInput = function(data) {
 			element.addEventListener('dragend', handleDragEnd, false);
 		}
 	}
-	
+
 	var removeListeners = function(newElement){
 		if(options.allowOrdering){
 			var element = document.getElementById($(newElement).attr('id'));
@@ -2259,7 +2259,7 @@ $.fn.multipleTextInput = function(data) {
 			element.removeEventListener('dragend', handleDragEnd, false);
 		}
 	}
-	
+
 	if ($(this).data('created')) {
 
 		options = $(this).widget().options();
@@ -2275,8 +2275,8 @@ $.fn.multipleTextInput = function(data) {
 
 		if(data && data.values) {
 			options.values = data.values;
-		} 
-		
+		}
+
 		if (options.values) {
 			$.each(options.values, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + he.encode(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
@@ -2294,17 +2294,17 @@ $.fn.multipleTextInput = function(data) {
 
 		var options = $
 				.extend(
-					{ valueAttr : 'id', 
-						nameAttr : 'name', 
-						nameIsResourceKey : false, 
-						selectAllIfEmpty : false, 
-						selectedIsObjectList : false, 
+					{ valueAttr : 'id',
+						nameAttr : 'name',
+						nameIsResourceKey : false,
+						selectAllIfEmpty : false,
+						selectedIsObjectList : false,
 						disabled : false,
 						isArrayValue: true },
 					data);
 
 		var name = ((data && data.resourceKey != null ) ? formatResourceKey(data.resourceKey) : id) ;
-		
+
 		$('#' + id + 'Excluded').remove();
 		$('#' + id + 'Included').remove();
 
@@ -2356,7 +2356,7 @@ $.fn.multipleTextInput = function(data) {
 
 		$('#' + id).append('<div class="includedList" id="' + id + 'Included"></div>');
 		$('#' + id + 'Included').append('<div class=" formInput form-control includedSelect">'
-					+ '<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
+					+ '<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="'
 							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '"/></div>');
 
 		var toSelect = $('#' + id + 'IncludedSelect');
@@ -2388,7 +2388,7 @@ $.fn.multipleTextInput = function(data) {
 					$('#' + id + 'IncludedSelect li i').off();
 					$('#' + id + 'IncludedSelect li i').css('cursor', 'default');
 				},
-				enable: function() {					
+				enable: function() {
 					$('#' + id + 'Excluded').widget().enable();
 					if(options.allowOrdering){
 						$('#' + id + 'IncludedSelect li').attr('draggable', true);
@@ -2415,7 +2415,7 @@ $.fn.multipleTextInput = function(data) {
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
 			var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
-			
+
 			newElement.find('i.fa.fa-times').click(function(e){
 				removeElement(e);
 			});
@@ -2423,11 +2423,11 @@ $.fn.multipleTextInput = function(data) {
 			addListeners(newElement);
 		});
 	}
-	
+
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
@@ -2440,7 +2440,7 @@ $.fn.multipleTextInput = function(data) {
 $.fn.multipleNamePairInput = function(data) {
 
 	var id = $(this).attr('id');
-	
+
 	var removeElement = function(e){
 		$(e.target).parent().remove();
 		toSelect.data('updated', true);
@@ -2448,15 +2448,15 @@ $.fn.multipleNamePairInput = function(data) {
 			options.changed(callback);
 		}
 	}
-	
+
 	dragSrcEl = null;
-	
+
 	var handleDragStart = function(e){
 		dragSrcEl = this;
 		e.dataTransfer.effectAllowed = 'move';
 		e.dataTransfer.setData('text/html', this.innerHTML);
 	}
-	
+
 	var handleDragOver = function(e){
 		if (e.preventDefault) {
 			e.preventDefault();
@@ -2464,20 +2464,20 @@ $.fn.multipleNamePairInput = function(data) {
 		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
 			e.dataTransfer.dropEffect = 'move';
 		}
-		
+
 		return false;
 	}
-	
+
 	var handleDragEnter = function(e) {
 		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
 			this.classList.add('overMultipleSearchInput');
 		}
 	}
-	
+
 	var handleDragLeave = function(e) {
 		this.classList.remove('overMultipleSearchInput');
 	}
-	
+
 	var handleDrop = function (e) {
 		if (e.stopPropagation) {
 			e.stopPropagation();
@@ -2497,7 +2497,7 @@ $.fn.multipleNamePairInput = function(data) {
 			$('[id="' + dragSrcEl.id + '"]').find('i').click(function(e){
 				removeElement(e);
 			});
-			
+
 			$('[id="' + this.id + '"]').find('i').click(function(e){
 				removeElement(e);
 			});
@@ -2509,7 +2509,7 @@ $.fn.multipleNamePairInput = function(data) {
 		$('#' + id + 'IncludedSelect li.overMultipleSearchInput').removeClass('overMultipleSearchInput');
 		dragSrcEl = null;
 	}
-	
+
 	var addListeners = function(newElement){
 		if(options.allowOrdering){
 			var element = document.getElementById($(newElement).attr('id'));
@@ -2521,7 +2521,7 @@ $.fn.multipleNamePairInput = function(data) {
 			element.addEventListener('dragend', handleDragEnd, false);
 		}
 	}
-	
+
 	var removeListeners = function(newElement){
 		if(options.allowOrdering){
 			var element = document.getElementById($(newElement).attr('id'));
@@ -2533,7 +2533,7 @@ $.fn.multipleNamePairInput = function(data) {
 			element.removeEventListener('dragend', handleDragEnd, false);
 		}
 	}
-	
+
 	if ($(this).data('created')) {
 
 		options = $(this).widget().options();
@@ -2549,12 +2549,12 @@ $.fn.multipleNamePairInput = function(data) {
 
 		if(data && data.values) {
 			options.values = data.values;
-		} 
-		
+		}
+
 		if (options.values) {
 			$.each(options.values, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" '
-						+ (options.allowOrdering ? 'draggable="true" class="draggable ' 
+						+ (options.allowOrdering ? 'draggable="true" class="draggable '
 								+ id + 'Draggable" ' : '' ) + '><span>' + decodeFormParameter(obj[options.nameAttr])
 								+ '</span>&ensp;<i class="fa fa-times"></i></li>');
 				newElement.data('value', decodeFormParameter(obj[options.valueAttr]));
@@ -2573,12 +2573,12 @@ $.fn.multipleNamePairInput = function(data) {
 
 		var options = $
 				.extend(
-					{ valueAttr : 'id', 
-						nameAttr : 'name', 
+					{ valueAttr : 'id',
+						nameAttr : 'name',
 						valueAttr: 'value',
-						nameIsResourceKey : false, 
-						selectAllIfEmpty : false, 
-						selectedIsObjectList : false, 
+						nameIsResourceKey : false,
+						selectAllIfEmpty : false,
+						selectedIsObjectList : false,
 						disabled : false,
 						isArrayValue: true,
 						namePlaceholder: 'Name',
@@ -2588,7 +2588,7 @@ $.fn.multipleNamePairInput = function(data) {
 
 		options.isNamePairValue = true;
 		var name = ((data && data.resourceKey != null ) ? formatResourceKey(data.resourceKey) : id) ;
-		
+
 		$('#' + id + 'Excluded').remove();
 		$('#' + id + 'Included').remove();
 
@@ -2601,12 +2601,12 @@ $.fn.multipleNamePairInput = function(data) {
 				variables: options.variables,
 				placeholder: options.namePlaceholder
 		});
-		
+
 		var valueInput = $('#' + id + 'Value').textInput({
 			isPropertyInput: false,
 			variables: options.variables,
 			placeholder: options.valuePlaceholder
-			
+
 		});
 
 		var searchAction = function() {
@@ -2640,13 +2640,13 @@ $.fn.multipleNamePairInput = function(data) {
 		});
 
 		$('#' + id + 'ExcludedSearchAddButton').click(function(e) {
-			
+
            searchAction();
         });
 
 		$('#' + id).append('<div class="includedList" id="' + id + 'Included"></div>');
 		$('#' + id + 'Included').append('<div class=" formInput form-control includedSelect">'
-					+ '<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="' 
+					+ '<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="'
 							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '"/></div>');
 
 		var toSelect = $('#' + id + 'IncludedSelect');
@@ -2657,7 +2657,7 @@ $.fn.multipleNamePairInput = function(data) {
 				},
 				getValue: function() {
 					result = new Array();
-					
+
 					$('#' + id + 'IncludedSelect li').each(function() {
 						result.push(he.encode($(this).data('name')) + '=' + he.encode($(this).data('value')));
 					});
@@ -2678,7 +2678,7 @@ $.fn.multipleNamePairInput = function(data) {
 					$('#' + id + 'IncludedSelect li i').off();
 					$('#' + id + 'IncludedSelect li i').css('cursor', 'default');
 				},
-				enable: function() {					
+				enable: function() {
 					$('#' + id + 'Excluded').widget().enable();
 					if(options.allowOrdering){
 						$('#' + id + 'IncludedSelect li').attr('draggable', true);
@@ -2704,15 +2704,15 @@ $.fn.multipleNamePairInput = function(data) {
 
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
-			
-			var newElement = $('<li id="' + id + 'Li' 
-					+ obj[options.valueAttr] + '" ' 
+
+			var newElement = $('<li id="' + id + 'Li'
+					+ obj[options.valueAttr] + '" '
 					+ (options.allowOrdering ? 'draggable="true" class="draggable '
-							+ id + 'Draggable"' : '' ) + '><span>' 
+							+ id + 'Draggable"' : '' ) + '><span>'
 							+ decodeFormParameter(obj[options.nameAttr]) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 			newElement.data('value', decodeFormParameter(obj[options.valueAttr]));
 			newElement.data('name', decodeFormParameter(obj[options.nameAttr]));
-			
+
 			newElement.find('i.fa.fa-times').click(function(e){
 				removeElement(e);
 			});
@@ -2720,11 +2720,11 @@ $.fn.multipleNamePairInput = function(data) {
 			addListeners(newElement);
 		});
 	}
-	
+
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
@@ -2736,11 +2736,11 @@ $.fn.multipleNamePairInput = function(data) {
 **/
 
 $.fn.dateInput = function(options) {
-	
+
 	var id = $(this).attr('id') + "DateInput";
- 
+
     var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
-    
+
 	var options = $.extend(
 			{   format: "yyyy-mm-dd",
 			    startView: 0,
@@ -2749,11 +2749,11 @@ $.fn.dateInput = function(options) {
 			    forceParse: false,
 			    autoclose: true
 			},  options);
-	
+
 	$(this).append('<div id="' + id + '" class="input-group date">'
-			+ '<input id="' + id + 'Field" type="text" name="date_' + name + '" class="form-control" value="' + options.value + '">' 
+			+ '<input id="' + id + 'Field" type="text" name="date_' + name + '" class="form-control" value="' + options.value + '">'
 			+ '<span class="input-group-addon"><i class="fa fa-calendar"></i></span></div>');
-	
+
 	$('#' + id).datepicker(options).on('show', function() {
 		// Fix for being in a modal
 		var modal = $('#' + id).closest('.modal');
@@ -2765,7 +2765,7 @@ $.fn.dateInput = function(options) {
 		var zIndexModal = $(modal).css('z-index');
 			$(datePicker).css('z-index', zIndexModal + 1);
 	});
-	
+
 	var callback = {
 			setValue: function(val) {
 				$('#' + id + 'Field').val(val);
@@ -2798,11 +2798,11 @@ $.fn.dateInput = function(options) {
 			options.changed(callback);
 		}
 	});
-	
+
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -2814,9 +2814,9 @@ $.fn.dateInput = function(options) {
 $.fn.timeInput = function(options) {
 
 	var id = $(this).attr('id') + "TimeInput";
-	
+
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
-	
+
 	var options = $.extend(
 			{   template: 'dropdown',
 				minuteStep: 1,
@@ -2830,17 +2830,17 @@ $.fn.timeInput = function(options) {
 				modalBackdrop: false,
 				showWidgetOnAddonClick: true
 			},  options);
-	
+
 	$(this).append('<div class="input-group bootstrap-timepicker">'
 			+ '<input id="' + id + '" type="text" name="time_' + name + '" class="input-small form-control">'
 			+ '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span></div>');
-	
+
 	$('#'+ id).timepicker(options);
-	
+
 	$('#' + id).click(function(e) {
 		$('#' + id).timepicker('showWidget');
 	});
-	
+
 	var callback = {
 			setValue: function(val) {
 				$('#' + id).timepicker('setTime', val);
@@ -2867,7 +2867,7 @@ $.fn.timeInput = function(options) {
  				$('#' + id).timepicker('setTime', false);
  			}
 	};
-	
+
 	$('#'+ id).timepicker().on('changeTime.timepicker', function(e) {
 	    if(options.changed) {
 	    	options.changed(callback);
@@ -2880,17 +2880,17 @@ $.fn.timeInput = function(options) {
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
-	
+
 };
 
 $.fn.buttonAction = function(options) {
-	
+
 	var id = $(this).attr('id') + "ButtonAction";
-	
+
 	var obj = $.extend(
 			{   readOnly: false,
 			    disabled: false,
@@ -2898,10 +2898,10 @@ $.fn.buttonAction = function(options) {
 			    buttonIcon: 'fa-save',
 			    buttonLabel: 'button'
 			},  options);
-	
+
 	$(this).append(
-		'<button class="btn ' + obj.buttonClass 
-				+ '" id="' + id + '"><i class="fa ' + obj.buttonIcon 
+		'<button class="btn ' + obj.buttonClass
+				+ '" id="' + id + '"><i class="fa ' + obj.buttonIcon
 				+ '"></i>' + getResource(obj.buttonLabel) + '</button>');
 
 	var el = $('#'+ id);
@@ -2913,10 +2913,10 @@ $.fn.buttonAction = function(options) {
 			eval(obj.eval) ;
 		}
 	});
-	
+
 	var callback = {
 			setValue: function(val) {
-				
+
 			},
 			getValue: function() {
 				return "";
@@ -2937,14 +2937,14 @@ $.fn.buttonAction = function(options) {
 				return $('#' + id);
 			},
  			clear: function() {
- 				
+
  			}
 	};
 
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -2952,14 +2952,14 @@ $.fn.buttonAction = function(options) {
 
 
 $.fn.booleanInput = function(options) {
-	
+
 	var id =  $(this).attr('id') + "BooleanInput";
-	
+
 	var obj = $.extend(
 			{   readOnly: false,
 			    disabled: false
 			},  options);
-	
+
 	$(this).append('<input type="checkbox" class="form-control" id="' + id + '" name="' + id + '" value="true"' + (stripNull(obj.value) == true ? ' checked' : '') + '/>');
 
 	var callback = {
@@ -2992,7 +2992,7 @@ $.fn.booleanInput = function(options) {
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -3000,9 +3000,9 @@ $.fn.booleanInput = function(options) {
 
 
 $.fn.switchInput = function(options) {
-	
+
 	var id = $(this).attr('id') + "SwitchInput";
-	
+
 	var obj = $.extend(
 			{   readOnly: false,
 			    disabled: false,
@@ -3015,7 +3015,7 @@ $.fn.switchInput = function(options) {
 	obj.size = 'small';
 
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
-		
+
 	var callback = {
 			setValue: function(val) {
 				$('#' + id).bootstrapSwitch('state', val);
@@ -3048,24 +3048,24 @@ $.fn.switchInput = function(options) {
 			options.changed(callback);
 		}
 	};
-	
+
 	$(this).append('<label class="switch"><input type="checkbox" class="switch-input" id="'
-			+ id + '" name="chk_' + name + '" value="true"' 
-			+ '><span class="switch-label" data-on="' 
-			+ getResource(obj.onResourceKey) + '" data-off="' 
+			+ id + '" name="chk_' + name + '" value="true"'
+			+ '><span class="switch-label" data-on="'
+			+ getResource(obj.onResourceKey) + '" data-off="'
 			+ getResource(obj.offResourceKey) + '"></span> <span class="switch-handle"></span></label>');
 
 	$('#' + id).bootstrapSwitch(obj);
-	
+
 	$(this).find('.bootstrap-switch-primary').addClass('btn-primary');
 	$(this).find('.bootstrap-switch-default').addClass('btn-default');
 	$(this).find('.bootstrap-switch-primary').removeClass('bootstrap-switch-primary');
 	$(this).find('.bootstrap-switch-default').removeClass('bootstrap-switch-default');
-	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	if(obj.value) {
 		callback.setValue(true);
 	}
@@ -3075,20 +3075,20 @@ $.fn.switchInput = function(options) {
 };
 
 $.fn.colorInput = function(options) {
-	
+
 	var id = $(this).attr('id') + "ColorInput";
-	
+
 	var obj = $.extend(
 			{   format: 'hex',
 				color: options.value,
 			},  options);
 
 
-	$(this).append('<div id="' + id  + '" class="input-group colorpicker-component"><input type="text" value="' 
+	$(this).append('<div id="' + id  + '" class="input-group colorpicker-component"><input type="text" value="'
 			+ obj.value + '" class="form-control"/><span class="input-group-addon"><i></i></span></div>');
 
 	$('#' + id).colorpicker(obj);
-	
+
 	var callback = {
 			setValue: function(val) {
 				$('#' + id).colorpicker('getValue', val);
@@ -3121,11 +3121,11 @@ $.fn.colorInput = function(options) {
 			options.changed(callback);
 		}
 	});
-	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	if(obj.value) {
 		callback.setValue(obj.value);
 	}
@@ -3136,24 +3136,24 @@ $.fn.colorInput = function(options) {
 
 
 $.fn.imageInput = function(options) {
-	
+
 	var id = $(this).attr('id') + "ImageInput";
-	
+
 	var obj = $.extend(
 			{   readOnly: false,
 			    disabled: false,
 			},  options);
-	
-	
+
+
 
 	$(this).append('<input type="file" class="form-control" id="' + id + '" name="input' + id + '"/>');
-	$(this).append('<a id="reset' + id + '" href="#" style="display: none" class="imageReset">Reset</a><br>');	
-	
+	$(this).append('<a id="reset' + id + '" href="#" style="display: none" class="imageReset">Reset</a><br>');
+
 	if(obj.value && obj.value !== '') {
 		$('#reset' + id).show();
 		$(this).append('<img id="image' + id + '" class="imagePreview" src="' + obj.value + '">');
 	}
-	
+
 	var input = $('#' + id);
 
 	var callback = {
@@ -3165,7 +3165,7 @@ $.fn.imageInput = function(options) {
 					$('#reset' + id).hide();
 					$('#image' + id).remove();
 				}
-				
+
 			},
 			getValue: function() {
 				return input.data('encoded');
@@ -3191,7 +3191,7 @@ $.fn.imageInput = function(options) {
  				this.setValue('');
  			}
 	};
-	
+
 	$('#reset' + id).click(function(e) {
 		e.preventDefault();
 		callback.setValue('');
@@ -3199,7 +3199,7 @@ $.fn.imageInput = function(options) {
 			options.changed(callback);
 		}
 	});
-	
+
 	input.change(function() {
 		var reader = new FileReader();
 		reader.onload = function(readerEvt) {
@@ -3208,18 +3208,18 @@ $.fn.imageInput = function(options) {
 			var fileName = input.val().split('/').pop().split('\\').pop();
 			input.data('encoded', fileName + ";" + encoded);
 		};
-	
+
 		reader.readAsBinaryString(input[0].files[0]);
-		
+
 		if(options.changed) {
 			options.changed(callback);
 		}
 	});
-	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -3240,13 +3240,13 @@ $.fn.sliderInput = function(options) {
 			    	return getResource(obj.labelResourceKey).format(value);
 			    }
 			});
-	
+
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
-	
+
 	$(this).append('<input class="form-control" id="' + id + '" data-slider-id="slider_' + id + '" name="slider_' + name + '" value="' + obj.value + '" type="text">');
 
 	var slider = $('#' + id).slider(obj);
-	
+
 	var callback = {
 			setValue: function(val) {
 				$('#' + id).slider('setValue', parseFloat(val));
@@ -3268,7 +3268,7 @@ $.fn.sliderInput = function(options) {
 			},
 			getInput: function() {
 				return $('#' + id);
-			}, 
+			},
 			clear: function() {
 				$('#' + id).slider('setValue', parseFloat(obj.value));
 			}
@@ -3279,24 +3279,24 @@ $.fn.sliderInput = function(options) {
 			   options.changed(callback)
 		   }
 	});
-	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
 };
 
 $.fn.namePairInput = function(data) {
-	
+
 	var init = false;
 	var options = $.extend(
-			{  
+			{
 				text: "Add name/value pair",
 				maxRows : 0,
-				disabled : false, 
+				disabled : false,
 				readOnly: false,
 				disableName: false,
 				columnWeight: 'equal',
@@ -3310,17 +3310,17 @@ $.fn.namePairInput = function(data) {
 				showNameVariables: false,
 				showValueVariables: false
 			}, data);
-	
+
 	var id =  $(this).attr('id') + "NamePairInput";
-	
+
 	if(!rowNum){
 		var rowNum = 0;
 	}
-	
+
 	if(getResourceNoDefault(options.text)) {
 		options.text = getResourceNoDefault(options.text);
 	}
-	
+
 	var nameWeight = 'col-xs-5';
 	var valueWeight = 'col-xs-5';
 	if(options.columnWeight=='nameHeavy') {
@@ -3333,11 +3333,11 @@ $.fn.namePairInput = function(data) {
 		nameWeight = 'col-xs-10';
 		valueWeight = 'col-xs-10';
 	}
-	
+
 	var nameVariables = options.nameVariables.concat(options.variables);
 	var valueVariables = options.valueVariables.concat(options.variables);
-	
-	
+
+
 	if(!$(this).data('created')){
 		var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 		+	'	<div id="' + id + 'NamePairs" ></div>'
@@ -3357,7 +3357,7 @@ $.fn.namePairInput = function(data) {
 			$('#' + id).parent().widget().addRows(1);
 		});
 	}
-	
+
 	var callback = {
  			getValue: function() {
  				var values = [];
@@ -3372,7 +3372,7 @@ $.fn.namePairInput = function(data) {
  						value = encodeURIComponent($(this).find('.namePairValue').widget().getValue());
  	 					values.push(name + '=' + value);
  					}
- 					
+
  				});
  				return values;
  			},
@@ -3385,7 +3385,7 @@ $.fn.namePairInput = function(data) {
  					}
  					callback.addRows(1, valuePair);
  				});
- 				
+
  				if(options.showEmptyRow) {
  					if($('#' + id + 'NamePairs').children().length == 0) {
  						callback.addRows(1);
@@ -3425,16 +3425,16 @@ $.fn.namePairInput = function(data) {
  					html = '';
  	 				html =	'<div class="row namePairInput">';
  	 				if(options.onlyName){
- 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue col-xs-10 namePairName"></div>' 
+ 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue col-xs-10 namePairName"></div>'
  	 				}else{
  	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
- 	 						 +	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'; 
+ 	 						 +	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>';
  	 				}
  	 				html += '	<div class="propertyValue col-xs-1 dialogActions">';
  	 				if(!options.readOnly && !options.disabled) {
  	 					html +=  '<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>';
  	 				}
-	 					 
+
 	 				html +=  '</div></div>';
 
  	 				$('#' + id + 'NamePairs').append(html);
@@ -3460,7 +3460,7 @@ $.fn.namePairInput = function(data) {
  	 				}
  	 				if(!options.onlyName){
  	 					if(options.renderValueFunc) {
- 	 						
+
  	 						if(values) {
 	 	 						var renderField = new Function('div', 'val', options.renderValueFunc);
 	 	 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), decodeURIComponent(values[1]));
@@ -3519,15 +3519,15 @@ $.fn.namePairInput = function(data) {
  			options.changed(callback);
  		}
  	});
- 	
+
  	if(options.values) {
  		callback.setValue(options.values);
  	}
- 	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	$(this).data('created', true);
@@ -3538,12 +3538,12 @@ $.fn.namePairsAutoComplete = function(data) {
 	var options = $.extend({}, data);
 	var div = $(this);
 	var id =  div.attr('id') + "NamePairsAutoComplete";
-	
+
 	if(!$(this).data('created')) {
 		var html = 	'<div id="' + id + '" class="propertyItem form-group"></div>';
 		div.append(html);
 	}
-	
+
 	div.addClass('widget');
 	var namePairInput = $('#' + id).namePairInput(options);
 	var callback;
@@ -3587,23 +3587,23 @@ $.fn.namePairsAutoComplete = function(data) {
 	 			options.changed(callback);
 	 		}
 	 	});
-	 	
+
 	 	if(options.values) {
 	 		callback.setValue(options.values);
 	 	}
-	 	
+
 		if(options.disabled || options.readOnly) {
 			callback.disable();
 		}
-		
-		
+
+
 		return callback;
 	}
-	
+
 	if(options.url && options.url != ''){
 		getJSON(options.url, null, function(data){
 			options = $.extend(
-					{  
+					{
 						autoCompleteList: options.isResourceList ? data.rows : data,
 						renderNameFunc: '$(div).autoComplete({nameIsResourceKey: ' + options.nameIsResourceKey + ','
 														+	'isResourceList: ' + options.isResourceList + ','
@@ -3611,23 +3611,23 @@ $.fn.namePairsAutoComplete = function(data) {
 														+	'value: val,'
 														+	'values: list'
 														+ '})'
-						
+
 					}, options);
-			
+
 			namePairInput = $('#' + id).namePairInput(options);
 		});
 	}else{
 		options = $.extend(
-				{  
+				{
 					renderNameFunc: '$(div).autoComplete({nameIsResourceKey: ' + options.nameIsResourceKey + ','
 													+	'isResourceList: ' + options.isResourceList + ','
 													+	'valueAttr: "' + options.valueAttr + '",'
 													+	'value: val,'
 													+	'values: list'
 													+ '})'
-					
+
 				}, options);
-		
+
 		namePairInput = $('#' + id).namePairInput(options);
 	}
 	div.data('widget', callback);
@@ -3636,10 +3636,10 @@ $.fn.namePairsAutoComplete = function(data) {
 };
 
 $.fn.fileUploadInput = function(data) {
-	
-	
+
+
 	var options = $.extend(
-			{  
+			{
 				disabled : false,
 				useUUID: true,
 				showUploadButton: true,
@@ -3651,7 +3651,7 @@ $.fn.fileUploadInput = function(data) {
 					return data;
 				}
 			}, data);
-	
+
 	var id = $(this).attr('id') + "FileUpload";
 	var html =	'<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
@@ -3664,24 +3664,24 @@ $.fn.fileUploadInput = function(data) {
 			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
 			+	'	</div>'
 			+	'</div>';
-	
-	
+
+
 	$(this).append(html);
 	$('#' + id + 'UpdateProgressHolder').css('height', '12px');
 	$('#' + id + 'UpdateProgressHolder').hide();
-	
+
 	if(!options.showUploadButton){
 		$('#' + id + 'UploadButton').hide();
 		//$('#' + id + 'File').parent().removeClass('col-xs-11').addClass('col-xs-12');
 	}
-	
+
 	var uploadProgress = function(evt){
 		if (evt.lengthComputable) {
 			var width = Math.round(evt.loaded * 100 / evt.total);
 			$('#' + id + 'UpdateProgress').css("width", width + "%");
 		}
 	}
-	
+
 	var showInfoFormat = function(data){
 		fileSize = data.fileSize + ' Bytes';
 		if(data.fileSize > 1024 * 1024){
@@ -3693,27 +3693,27 @@ $.fn.fileUploadInput = function(data) {
 			formattedHtml +=	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
 			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>';
 			if(options.showDownloadLink) {
-				formattedHtml +=   '  <br><span>' + getResource('text.url') + '</span>';			
+				formattedHtml +=   '  <br><span>' + getResource('text.url') + '</span>';
 			}
 		}
 
 		formattedHtml +=	'</div>'
 					+	'<div class="file-upload-info">'
 					+	'	<span>' + data.fileName + '</span><br>';
-		
+
 		if(options.detailedView) {
 			formattedHtml +=	'	<span>' + fileSize + '</span><br>'
 						+	'	<span>' + data.md5Sum + '</span>';
 			if(options.showDownloadLink) {
-				formattedHtml +=   '   <br><span><a href="' + basePath + '/api/files/download/' + data.shortCode + '/' + data.fileName + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '</a></span>';			
+				formattedHtml +=   '   <br><span><a href="' + basePath + '/api/files/download/' + data.shortCode + '/' + data.fileName + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '</a></span>';
 			}
 		}
-					
+
 		formattedHtml +=	'</div>';
-		
+
 		return formattedHtml;
 	}
-	
+
 	var showInfo = function(data){
 		fileSize = data.fileSize + ' KB';
 		if(data.fileSize > 1024 * 1024){
@@ -3724,7 +3724,7 @@ $.fn.fileUploadInput = function(data) {
 		$('#' + id + 'File').hide();
 		if(!options.disabled && options.showDeleteButton) {
 			$('#' + id + 'Buttons').append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
-		} 
+		}
 
 		if(options.showDownloadButton){
 			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
@@ -3747,7 +3747,7 @@ $.fn.fileUploadInput = function(data) {
 			callback.download();
 		});
 	}
-	
+
 	var callback = {
  			getValue: function() {
  				if(!$('#' + id + 'Info').length){
@@ -3767,7 +3767,7 @@ $.fn.fileUploadInput = function(data) {
  			},
  			setValue: function(uuid) {
  				getJSON('files/file/' + uuid, null, function(data){
- 					
+
  					if(data.success) {
 	 					if($('#' + id + 'Info').length){
 	 						$('#' + id + 'Info').empty();
@@ -3785,7 +3785,7 @@ $.fn.fileUploadInput = function(data) {
 	 	 				}else{
 	 	 					showInfo(data.resource);
 	 	 				}
-	 					
+
 	 					if(options.disabled) {
 	 						callback.disable();
 	 					}
@@ -3839,7 +3839,7 @@ $.fn.fileUploadInput = function(data) {
  				return $(this).data('needsUpload');
  			},
  			upload: function(notify) {
- 				
+
  				if($('#' + id + 'File').val() == ''){
  					return false;
  				}
@@ -3871,14 +3871,14 @@ $.fn.fileUploadInput = function(data) {
 	 		        			if(notify) {
 	 		        				notify(false);
 	 		        			}
-	 		        		} 
- 		        		} 
- 		        	} 
+	 		        		}
+ 		        		}
+ 		        	}
  		        }
  		        xhr.open("POST",  options.url + (options.publicFile ? '/true' : ''));
  		        xhr.setRequestHeader("X-Csrf-Token", getCsrfToken());
  		        xhr.send(formData);
- 		        
+
  		        return true;
  			},
  			uploadBlob: function(blobInfo) {
@@ -3889,7 +3889,7 @@ $.fn.fileUploadInput = function(data) {
 
  		        var xhr = new XMLHttpRequest();
  		        xhr.upload.addEventListener("progress", uploadProgress, false);
- 		       
+
  		        xhr.onreadystatechange=function()
 		        {
 		        	if (xhr.readyState==4 && xhr.status!=0)
@@ -3912,9 +3912,9 @@ $.fn.fileUploadInput = function(data) {
 	 		        			if(notify) {
 	 		        				notify(false);
 	 		        			}
-	 		        		} 
-		        		} 
-		        	} 
+	 		        		}
+		        		}
+		        	}
 		        }
 		        xhr.open("POST", options.url);
 		        xhr.send(formData);
@@ -3940,7 +3940,7 @@ $.fn.fileUploadInput = function(data) {
 						callback.disable();
 					}
  				});
- 				
+
  			},
  			download: function(){
  				uuid = $('#' + id + 'Info').data('uuid');
@@ -3953,9 +3953,9 @@ $.fn.fileUploadInput = function(data) {
  				return $('#' + id);
  			}
  		};
-	
+
 	$('#' + id + 'UploadButton').click(function(){
-		
+
 		callback.upload();
 	});
 
@@ -3965,15 +3965,15 @@ $.fn.fileUploadInput = function(data) {
 			callback.upload();
 		}
 	});
-	
+
  	if(options.value) {
  		callback.setValue(options.value);
  	}
- 	
+
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -3983,7 +3983,7 @@ $.fn.fileUploadInput = function(data) {
 $.fn.logoInput = function(data) {
 	var generated = true;
 	var options = $.extend(
-			{  
+			{
 				disabled : false,
 				showUploadButton: true,
 				showDownloadButton: true,
@@ -3995,11 +3995,11 @@ $.fn.logoInput = function(data) {
 					return data;
 				}
 			}, data);
-	
+
 	var imagePath = basePath + "/api/logo/default/default/" + options.previewSize + "_auto_auto_auto.png";
-	
+
 	var id = $(this).attr('id') + "FileUpload";
-	
+
 	var generatorHtml =	'<div id="' + id + 'Generator" class="logo-generator">'
 		+	'<div class="logo-text-container logo-row">'
         +	'<span class="help-block">' + getResource('logo.text.label') + ':</span>'
@@ -4036,8 +4036,8 @@ $.fn.logoInput = function(data) {
 	    +	'</div></div>'
         +	'</div>'
     	+	'</div>';
-	
-	
+
+
 	var uploadHtml =  '<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
@@ -4060,24 +4060,24 @@ $.fn.logoInput = function(data) {
 			+	'</div>'
 			+	uploadHtml
 			+	'</div>';
-	
+
 	$(this).append(html);
-	
+
 	$('#' + id + 'UpdateProgressHolder').css('height', '12px');
 	$('#' + id + 'UpdateProgressHolder').hide();
-	
+
 	if(!options.showUploadButton){
 		$('#' + id + 'UploadButton').parent().hide();
 		$('#' + id + 'File').parent().removeClass('col-xs-11').addClass('col-xs-12');
 	}
-	
+
 	var uploadProgress = function(evt){
 		if (evt.lengthComputable) {
 			var width = Math.round(evt.loaded * 100 / evt.total);
 			$('#' + id + 'UpdateProgress').css("width", width + "%");
 		}
 	}
-	
+
 	var showInfoFormat = function(data){
 		fileSize = data.fileSize + ' Bytes';
 		if(data.fileSize > 1024 * 1024){
@@ -4088,12 +4088,12 @@ $.fn.logoInput = function(data) {
 		formattedHtml +=	'</div>'
 					+	'<div class="file-upload-info">'
 					+	'	<span>' + data.fileName + '</span></br>';
-		
+
 		formattedHtml +=	'</div>';
-		
+
 		return formattedHtml;
 	}
-	
+
 	var rebuildPreview = function(data) {
 		var val = callback.getValue();
 		var prefix = "logo://";
@@ -4113,9 +4113,9 @@ $.fn.logoInput = function(data) {
 				$('#' + id + 'Preview').attr('src', basePath + '/api/' + val);
 		}
 	}
-	
+
 	var showInfo = function(data){
-			
+
 		fileSize = data.fileSize + ' KB';
 		if(data.fileSize > 1024 * 1024){
 			fileSize = (Math.round((data.fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
@@ -4147,7 +4147,7 @@ $.fn.logoInput = function(data) {
 		generated = false;
 		rebuildPreview();
 	}
-	
+
 	var _showOrHideTextFields = function() {
 		var txtSrc = $('#' + id + 'TextSource').val();
 		if(txtSrc == 'icon') {
@@ -4170,7 +4170,7 @@ $.fn.logoInput = function(data) {
 			$('#' + id + 'Text').hide();
 		}
 	}
-	
+
 	var _doClear = function() {
 		$('#' + id + 'Shape').val('autotype');
 		$('#' + id + 'TextSource').val('auto');
@@ -4184,7 +4184,7 @@ $.fn.logoInput = function(data) {
 		rebuildPreview();
 			 // How to clear file input?
 	}
-	
+
 	var callback = {
 			defaultTextChanged: function() {
 				rebuildPreview();
@@ -4202,7 +4202,7 @@ $.fn.logoInput = function(data) {
  					}
  					if(text == '')
  						text = 'autoname';
- 					
+
  					// Colour
  					var colSource = $('#' + id + 'ColourSource').val();
  					var col = colSource;
@@ -4210,7 +4210,7 @@ $.fn.logoInput = function(data) {
  						col = $('#' + id + 'FixedColour').colorpicker('getValue', '#000000');
  					if(!col || col == '')
  						col = "autotype";
- 					
+
  					// Shape
  					var shape = $('#' + id + 'Shape').val();
  					if(!shape || shape == '')
@@ -4234,12 +4234,12 @@ $.fn.logoInput = function(data) {
 	 						spec = spec.slice(0, idx);
 	 					}
 	 					var arr = spec.split("_");
-	 					
+
 	 					if(arr.length > 1)
 	 						$('#' + id + 'Shape').val(arr[1] == 'auto' ? 'autotype' : arr[1]);
 	 					else
 							$('#' + id + 'Shape').val('autotype');
-	 					
+
 	 					if(arr.length > 2) {
 	 						var col = decodeURIComponent(arr[2]);
 	 						if(col.slice(0, 1) == '#')
@@ -4262,7 +4262,7 @@ $.fn.logoInput = function(data) {
 	 					}
 	 					var src = $('#' + id + 'ColourSource').val();
 	 	 				$('#' + id + 'FixedColour').colorpicker(src == 'autoname' || src == 'autotype' || options.disabled ? 'disable' : 'enable');
-	 					
+
 	 					if(arr.length > 3) {
 	 						var txt = decodeURIComponent(arr[3]);
 	 						var txtSource = txt;
@@ -4276,7 +4276,7 @@ $.fn.logoInput = function(data) {
 		 							icon.setValue(txt.slice(4));
 	 							}
 	 							else {
-		 							txtSource = 'text';		 							
+		 							txtSource = 'text';
 		 							$('#' + id + 'Text').val(txt);
 		 							icon.setValue('');
 	 							}
@@ -4300,14 +4300,14 @@ $.fn.logoInput = function(data) {
 	 	 				else {
 	 	 	 				$('#' + id + 'Text').attr('disabled', 'disabled');
 	 	 	 				icon.enable();
-	 	 				}			
+	 	 				}
 	 					$('#' + id + 'Generator').show();
  						$('#' + id + 'Separator').show();
 	 					generated = true;
 	 					rebuildPreview();
 	 					_showOrHideTextFields();
 	 				}
-	 				else { 	
+	 				else {
 	 					var idx = uuid.indexOf('/');
 	 					if(idx == -1) {
 			 				getJSON('files/file/' + uuid, null, function(data){
@@ -4328,7 +4328,7 @@ $.fn.logoInput = function(data) {
 				 	 				}else{
 				 	 					showInfo(data.resource);
 				 	 				}
-				 					
+
 				 					if(options.disabled) {
 				 						callback.disable();
 				 					}
@@ -4407,7 +4407,7 @@ $.fn.logoInput = function(data) {
  				return $(this).data('needsUpload');
  			},
  			upload: function(notify) {
- 				
+
  				if($('#' + id + 'File').val() == ''){
  					return false;
  				}
@@ -4440,14 +4440,14 @@ $.fn.logoInput = function(data) {
 	 		        			if(notify) {
 	 		        				notify(false);
 	 		        			}
-	 		        		} 
- 		        		} 
- 		        	} 
+	 		        		}
+ 		        		}
+ 		        	}
  		        }
  		        xhr.open("POST", options.url + (options.publicFile ? '/true' : '/false'));
  		        xhr.setRequestHeader("X-Csrf-Token", getCsrfToken());
  		        xhr.send(formData);
- 		        
+
  		        return true;
  			},
  			remove: function() {
@@ -4486,26 +4486,26 @@ $.fn.logoInput = function(data) {
  				return $('#' + id);
  			}
  		};
-	
+
 	$('#' + id + 'UploadButton').click(function(){
-		
+
 		callback.upload();
 	});
-	
+
 	$('#' + id + 'File').change(function() {
 		$(this).data('needsUpload', true);
 		if(options.changed) {
 			options.changed(callback);
 		}
 	});
-	
+
 	$('#' + id + 'Shape').change(function() {
 		rebuildPreview();
 		if(options.changed) {
 			options.changed(callback);
 		}
 	});
-	
+
 	$('#' + id + 'TextSource').change(function() {
 		rebuildPreview();
 		_showOrHideTextFields();
@@ -4513,7 +4513,7 @@ $.fn.logoInput = function(data) {
 			options.changed(callback);
 		}
 	});
-	
+
 	$('#' + id + 'ColourSource').change(function() {
 		rebuildPreview();
 		var src = $('#' + id + 'ColourSource').val();
@@ -4528,11 +4528,11 @@ $.fn.logoInput = function(data) {
 		valueAttr : 'name',
 		nameIsResourceKey: false,
 		changed: function(widget) {
-			rebuildPreview();			
+			rebuildPreview();
 		}
 	});
 	$('#' + id + 'Icon').hide();
-	
+
 	$('#' + id + 'Text').on('input', function(){
 		rebuildPreview();
 		if(options.changed) {
@@ -4549,27 +4549,27 @@ $.fn.logoInput = function(data) {
 			options.changed(callback);
 		}
 	});;
-	
+
  	if(options.value) {
  		callback.setValue(options.value);
  	}
- 	
+
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
 }
 
 $.fn.multipleFileUpload = function(data) {
-	
+
 	var options = $.extend(
-			{  
+			{
 				text: "",
 				maxRows : 0,
-				disabled : false, 
+				disabled : false,
 				values: [],
 				showEmptyRow: false,
 				showUploadButton: true,
@@ -4581,9 +4581,9 @@ $.fn.multipleFileUpload = function(data) {
 				automaticUpload: false,
 				url: 'files/file'
 			}, data);
-	
+
 	var id = $(this).attr('id') + "MultipleFileUpload";
-	
+
 	if(!rowNum){
 		var rowNum = 0;
 	}
@@ -4591,7 +4591,7 @@ $.fn.multipleFileUpload = function(data) {
 	if(options.maxRows <= 0){
 		maxRows = 10;
 	}
-	
+
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 			+	'	<div id="' + id + 'FileUploads"></div>'
 			+	'	<div id="' + id + 'NewRow">'
@@ -4605,19 +4605,19 @@ $.fn.multipleFileUpload = function(data) {
 				+	'					<i class="fa fa-plus"></i>'
 				+   '				</a>';
 	}
-	
+
 	html +=	'			</div>'
 	+	'		</div>'
 	+	'	</div>'
 	+	'</div>';
-	
-	
+
+
 	$(this).append(html);
-	
+
 	$('#' + id + 'AddRow').click(function() {
 		$('#' + id).parent().data('widget').addRows(1);
 	});
-	
+
 	var callback = {
  			getValue: function() {
  				values = [];
@@ -4677,7 +4677,7 @@ $.fn.multipleFileUpload = function(data) {
  	 						$('#' + id + 'NewRow').show();
  	 					});
  	 				}
- 	 				
+
  	 				if(maxRows != 0 && $('#' + id + 'FileUploads').children().length == maxRows){
  	 					$('#' + id + 'NewRow').hide();
  	 				}
@@ -4728,25 +4728,25 @@ $.fn.multipleFileUpload = function(data) {
  			options.changed(callback);
  		}
  	});
- 	
+
  	if(options.values) {
  		callback.setValue(options.values);
  	}
- 	
+
  	if(options.showEmptyRow) {
 		if($('#' + id + 'FileUploads').children().length == 0) {
 			callback.addRows(1);
 		}
 	}
- 	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	if(rowNum==0 && options.showEmptyRow) {
 		callback.addRows(1);
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -4754,7 +4754,7 @@ $.fn.multipleFileUpload = function(data) {
 
 $.fn.html5Upload = function(data) {
 	var options = $.extend(
-		{  
+		{
 			text: data.showFileInputLink == false ? getResource('dragAndDrop.text') : getResource('dragAndDrop.fileInput.text'),
 			disabledText: getResource('dragAndDrop.disabledText'),
 			maxFiles: 0,
@@ -4791,9 +4791,9 @@ $.fn.html5Upload = function(data) {
 		});
 		$('#' + id + 'FileInput').change(function () {
 		    callback.upload($(this)[0].files);
-		});		
+		});
 	}
-	
+
 	var dropArea = $('#' + id + 'Area');
 	dropArea.on('dragenter', function (e){
 		e.stopPropagation();
@@ -4822,7 +4822,7 @@ $.fn.html5Upload = function(data) {
 			$(this).removeClass('fileDragAndDrop-hover');
 		}
 	});
-	
+
 	var getFileSize = function(fileSize) {
 		if(fileSize > 1024 * 1024){
 			fileSize = (Math.round((fileSize / (1024 * 1024)) * 100)/100).toFixed(0) + ' MB';
@@ -4833,11 +4833,11 @@ $.fn.html5Upload = function(data) {
 		}
 		return fileSize;
 	}
-	
+
 	var drawRow = function(fileName, fileSize, uuid){
 		fileSize = getFileSize(fileSize);
-		
-		var fileRow = 
+
+		var fileRow =
 					'<tr id="' + id + 'ListElementDiv_' + fileIndex + '" style="height:40px;" class="' + id + 'ListEventDiv">'
 				+	'	<td class="dragAndDrop-info dragAndDrop-name">'
 				+	'		<span class="optionalField">' + fileName + '</span>'
@@ -4853,7 +4853,7 @@ $.fn.html5Upload = function(data) {
 				+	'	<td>'
 				+	'		<div id="' + id + 'Buttons_' + fileIndex + '">';
 		if(options.showCancel){
-			fileRow = fileRow +	
+			fileRow = fileRow +
 					'			<a class="btn btn-danger dragAndDrop-cancel" href="#" id="' + id + 'Cancel_' + fileIndex + '"><i class="fa fa-ban"></i></a>';
 		}
 		if(options.showDownload){
@@ -4864,7 +4864,7 @@ $.fn.html5Upload = function(data) {
 			fileRow = fileRow +
 					'			<a class="btn btn-danger dragAndDrop-remove" href="#" id="' + id + 'Remove_' + fileIndex + '" disabled="disabled"><i class="fa fa-trash-o"></i></a>';
 		}
-		fileRow = fileRow	
+		fileRow = fileRow
 				+	'		</div>'
 				+	'	</td>'
 				+	'</tr>';
@@ -4897,7 +4897,7 @@ $.fn.html5Upload = function(data) {
 		}
 		fileIndex++;
 	}
-	
+
 	var checkUploadsFinished = function(){
 		var uploadsFinished = true;
       	$('.' + id + 'ListEventDiv').each(function(){
@@ -4910,7 +4910,7 @@ $.fn.html5Upload = function(data) {
       		$('#' + id + 'ProgressText').hide();
       	}
 	}
-	
+
 	var callback = {
  			getValue: function() {
  				values = [];
@@ -4922,7 +4922,7 @@ $.fn.html5Upload = function(data) {
  				});
  				return values;
  			},
- 			
+
  			setValue: function(val) {
  				if(!(val instanceof Array)){
  					val = [val];
@@ -4935,7 +4935,7 @@ $.fn.html5Upload = function(data) {
  	 				});
  				});
  			},
- 			
+
  			disable: function() {
  				$('#' + id + 'List').find('a').each(function(){
  					$(this).attr('disabled', 'disabled');
@@ -4971,7 +4971,7 @@ $.fn.html5Upload = function(data) {
  			},
  			upload: function(files){
  				if(!options.disabled){
- 					
+
  	 				if(!files instanceof Array){
  	 					files = [files];
  	 				}
@@ -4981,7 +4981,7 @@ $.fn.html5Upload = function(data) {
  	 	 					showError(getResource('dragAndDrop.maxFileNum.error').replace('{0}', options.maxFiles));
  	 	 					return;
  	 	 				}
- 	 					
+
  	 					if(options.maxBytes > 0 && file.size > options.maxBytes){
  	 	 					showError(getResource('dragAndDrop.maxBytes.error').replace('{0}', options.maxBytes));
  	 	 					return;
@@ -4989,7 +4989,7 @@ $.fn.html5Upload = function(data) {
  	 					var formData = new FormData();
  	 					formData.append('file', files[index]);
  	 					var progressFileIndex = fileIndex;
- 	 					
+
  	 					drawRow(file.name, file.size);
  	 					$('#' + id + 'ProgressText').show();
  	 				    var jqXHR=doAjax({
@@ -5038,7 +5038,7 @@ $.fn.html5Upload = function(data) {
  				    				}
  	 				        		return;
  	 				        	}
- 	 				        	
+
  	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('uuid', data.resource.name);
  	 				            if(options.showCancel){
  	 				        		$('#' + id + 'Cancel_' + progressFileIndex).attr('disabled', 'disabled');
@@ -5091,7 +5091,7 @@ $.fn.html5Upload = function(data) {
  						});
  	 				});
  				}
- 				
+
  			},
  			download: function(index){
  				var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
@@ -5111,7 +5111,7 @@ $.fn.html5Upload = function(data) {
  				}else{
  					$('#' + id + 'ListElementDiv_' + index).remove();
  				}
- 				
+
  			},
  			options: function() {
  				return options;
@@ -5129,51 +5129,51 @@ $.fn.html5Upload = function(data) {
  			options.changed(callback);
  		}
  	});
- 	
+
  	if(options.values) {
  		callback.setValue(options.values);
  	}
- 	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
 }
 
 $.fn.wizardPage = function(data) {
-	
+
 	var options = $.extend(
-			{  
+			{
 				allowReset: true,
 				allowBack: false
 			}, data);
-	
-	
+
+
 	if(options.allowReset) {
 		$(this).append('<div class="propertyItem form-group buttonBar">' +
 						'<a id="resetForm" href="#" localize="text.reset"></a>' +
 					'</div>');
 	}
-	
+
 	$(this).append('<div id="wizardPages" class="panel-group" id="accordion" role="tablist" aria-multiselectable="false"></div>');
 
 	$.each(options.steps, function(index, obj) {
-	
+
 			var page = $.extend({
 				titleText: getResource('text.step') + '. ' + (index+1),
 				titleIcon: 'fa-flash',
 				buttonText: 'text.next',
 				buttonIcon: 'fa-forward'
 			}, obj);
-			
-			
+
+
 			var html;
-			
+
 			if(options.useNumberIcons) {
-				
+
 				html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
 				+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
 				+ ' 	<h5 class="panel-title wizardTitle"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i>'
@@ -5186,7 +5186,7 @@ $.fn.wizardPage = function(data) {
 				+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
 				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 				+ '	<div class="panel-body"><div id="page' + index + '"></div>';
-				
+
 			} else {
 				html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
 					+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
@@ -5200,7 +5200,7 @@ $.fn.wizardPage = function(data) {
 					+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 					+ '	<div class="panel-body"><div id="page' + index + '"></div>';
 			}
-				
+
 			if(page.onNext) {
 				html += '		<div class="propertyItem form-group buttonBar">';
 				if(index > 0) {
@@ -5213,34 +5213,34 @@ $.fn.wizardPage = function(data) {
 					+ '			</button>'
 					+ '		</div>';
 			}
-		
+
 			html += '</div>'
 				+ '</div>'
 				+ '</div>';
-		
+
 			$('#wizardPages').append(html);
 			$('#panel' + index).data('page', page);
 			$('#panel' + index).data('index', index);
-			
+
 			$('#' + page.pageDiv).detach().appendTo('#page' + index).show();
-		
+
 		});
-		
+
 		$('.wizardPage').first().show();
-		
+
 		$(this).localize();
-		
+
 		$('.backButton').click(function() {
-			
+
 			$('.wizardError').remove();
 			var page = $(this).closest('.panel').data('page');
 			var idx = $(this).closest('.panel').data('index');
-			
+
 			var previousPage = idx - 1;
 			$('.pageState' + idx).attr('disabled', true);
-			
+
 			var previousPageW = $('#panel' + previousPage).data('page');
-			
+
 			var doShow = function() {
 				$('.pageState' + previousPage).attr('disabled', false);
 				$('.pageState' + idx).attr('disabled', false);
@@ -5258,40 +5258,40 @@ $.fn.wizardPage = function(data) {
 				doShow();
 			}
 		});
-		
+
 		$('.nextButton').click(function() {
-		
+
 			if(options.pageDone) {
 				options.done();
 				return;
 			}
 			var page = $(this).closest('.panel').data('page');
 			var idx = $(this).closest('.panel').data('index');
-		
+
 			if(page.onNext) {
 				var clicked = false;
 				startSpin($('#button' + idx).find('i'), page.buttonIcon);
-				
+
 				var onError = function(val) {
 					$('.wizardError').remove();
 					$('#page' + idx).prepend('<div class="wizardError alert alert-danger"><i class="fa fa-warning"></i> <span>' + val + '</span></p>')
 				};
-				
+
 				page.onNext(function() {
-	
+
 					if(clicked) {
 						return;
 					}
-					
+
 					clicked = true;
-					
+
 					if(options.steps.length > idx + 1) {
 						stopSpin($('#button' + idx).find('i'), page.buttonIcon);
 						var nextPage = idx + 1;
 						$('.pageState' + idx).attr('disabled', true);
-						
+
 						var nextPageW = $('#panel' + nextPage).data('page');
-						
+
 						var doShow = function() {
 							$('#panel' + nextPage).show();
 							$('#collapse' + idx).collapse('hide');
@@ -5304,18 +5304,18 @@ $.fn.wizardPage = function(data) {
 						} else {
 							doShow();
 						}
-						
-						
+
+
 					} else {
 						stopSpin($('#button' + idx).find('i'), options.doneIcon);
-						
+
 						if(options.done) {
 							options.pageDone = true;
 							$('#button' + idx).find('span').text(getResource(options.doneText));
 						} else {
 							$('#button' + idx).attr('disabled', true);
 						}
-						
+
 						$('.backButton').attr('disabled', true);
 						if(options.hideResetOnComplete) {
 							$('#resetForm').hide();
@@ -5325,77 +5325,77 @@ $.fn.wizardPage = function(data) {
 					stopSpin($('#button' + idx).find('i'), page.buttonIcon);
 				}, onError);
 			}
-		
+
 		});
-		
+
 		$('#resetForm').click(function() {
-		
+
 		$.each(options.steps, function(idx, obj) {
 			$('.pageState' + idx).attr('disabled', false);
 			if(obj.onReset) {
 				obj.onReset();
 			}
 		});
-		
+
 		$('.nextButton').attr('disabled', false);
-		
+
 		$('.panel:gt(0)').hide();
 		$('.collapse:gt(0)').collapse('hide');
-		
+
 		$('.panel').first().show();
 		$('.collapse').first().collapse('show');
-		
-		
+
+
 	});
-		
+
 	return {
 		reset: function() {
 			$('#resetForm').click();
 		},
 		showError: function(str) {
-			
+
 		}
 	}
 }
 
 $.fn.textAndSelect = function(data) {
-	
+
 	var options = $.extend({
 		selectValue: '',
 		textValue: '',
 		valueTemplate: '{0}={1}'
 	}, data);
-	
-	var selectOptions = {	
-		nameAttr: options.nameAttr, 
-		valueAttr: options.valueAttr, 
-		nameIsResourceKey : options.nameIsResourceKey, 
-		resourceKeyTemplate: '{0}', 
-		disabled : options.disabled, 
+
+	var selectOptions = {
+		nameAttr: options.nameAttr,
+		valueAttr: options.valueAttr,
+		nameIsResourceKey : options.nameIsResourceKey,
+		resourceKeyTemplate: '{0}',
+		disabled : options.disabled,
 		notSetResourceKey: 'text.notSet',
 		getUrlData: options.getUrlData,
 		options: data.selectOptions,
 		value: data.selectValue
 	};
-	
+
 	var textOptions = {
 		value: data.textValue,
 		disabled: false
 	};
-	
+
 	var textId = $(this).attr('id') + 'Text';
 	var selectId = $(this).attr('id') + 'Select';
-	
+
 	$(this).append('<div class="propertyItem form-group">' +
 			'<div class="row"><div class="col-xs-6" id="' + textId + '"></div><div class="col-xs-6" id="' +  selectId + '"></div></div>');
 
 	var textInput = $('#' + textId).textInput(textOptions);
-	
+
 	var selectInput = $('#' + selectId).selectButton(selectOptions);
-	
+
 	var callback = {
 			setValue: function(val) {
-				
+
 			},
 			getValue: function() {
 				return options.valueTemplate.format(
@@ -5419,29 +5419,29 @@ $.fn.textAndSelect = function(data) {
 			},
 			getInput: function() {
 				return $('#' + textId);
-			}, 
+			},
 			clear: function() {
 				textInput.clear();
 				textInput.clear();
 			}
 	}
-			
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
 }
 
 $.fn.feedbackPanel = function(data) {
-	
-	var options = $.extend({  
+
+	var options = $.extend({
 	}, data);
-	
+
 	var div = $(this);
 	div.empty();
-	
+
 	var processFeedback = function(feedback) {
 		var last;
-		
+
 		$('#feedbackNext').remove();
 		$.each(feedback, function(idx, result) {
 			last = result;
@@ -5467,7 +5467,7 @@ $.fn.feedbackPanel = function(data) {
 						 + '</div></div>');
 			}
 		});
-		
+
 		var ret = last && last.finished;
 		if(ret) {
 			if(options.finished) {
@@ -5479,11 +5479,11 @@ $.fn.feedbackPanel = function(data) {
 		}
 		return ret;
 	}
-	
+
 	doAjax({
 		method: 'post',
-		url: basePath + '/api/' + options.startUrl, 
-		data: options.startParameters ? $.param(options.startParameters) : null, 
+		url: basePath + '/api/' + options.startUrl,
+		data: options.startParameters ? $.param(options.startParameters) : null,
 		dataType: 'json',
 		success: function(data) {
 			if(!data.success) {
@@ -5500,12 +5500,12 @@ $.fn.feedbackPanel = function(data) {
 						} else {
 							if(!processFeedback(data.resource.feedback)) {
 								setTimeout(updateFunc, 500);
-							} 
-							
+							}
+
 						}
 					});
 				}
-				
+
 				setTimeout(updateFunc, 500);
 			}
 		}
@@ -5513,29 +5513,29 @@ $.fn.feedbackPanel = function(data) {
 };
 
 $.fn.accordionPage = function(data) {
-	
+
 	var options = $.extend(
-			{  
+			{
 				open: true,
 				openOne: true,
 				closeable: true
 			}, data);
-	
+
 	var id = $(this).attr('id') + "AccordionPage";
 	$(this).append('<div id="' + id + '" class="panel-group" role="tablist" aria-multiselectable="false"></div>');
 
 	$.each(options.steps, function(index, obj) {
-	
+
 		var page = $.extend({
 			titleText: getResource('text.step') + '. ' + (index+1),
 			titleIcon: 'fa-flash'
 		}, obj);
-		
+
 		var parent = '#' + id + 'Panel' + index;
 		if(options.openOne){
 			var parent = '#' + id;
 		}
-		var html = 
+		var html =
 				'<div id="' + id + 'Panel' + index + '" class="accordion-group panel panel-default wizardPage">'
 			+	'	<div class="panel-heading accordion-header" role="tab" id="' + id + 'Heading' + index + '">'
 			+	' 		<h4 class="panel-title wizardTitle">'
@@ -5573,14 +5573,14 @@ $.fn.accordionPage = function(data) {
 			}
 		});
 		$('#' + page.pageDiv).detach().appendTo('#' + id + 'Page' + index).show();
-		
+
 	});
 }
 
 $.fn.multipleRows = function(data) {
-	
+
 	var options = $.extend(
-			{  
+			{
 				maxRows: 0,
 				count: 0,
 				showAdd: true,
@@ -5596,17 +5596,17 @@ $.fn.multipleRows = function(data) {
 				},
 				disable: function(element) {
 					element.widget().disable();
-				}, 
+				},
 				clear: function(element) {
 					element.widget().clear();
 				}
 			}, data);
-	
+
 	var id = $(this).attr('id') + "Multiple";
 
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
-	+	'	<div class="col-xs-11" id="' + id + 'Header"></div>' 
-	+	'	<div class="col-xs-1"></div>' 
+	+	'	<div class="col-xs-11" id="' + id + 'Header"></div>'
+	+	'	<div class="col-xs-1"></div>'
 	+   '   </div>'
 	+	'	<div id="' + id + 'Rows" ></div>'
 	+	'	<div id="' + id + 'NewRow">'
@@ -5619,19 +5619,19 @@ $.fn.multipleRows = function(data) {
 	+	'			</a>'
 	+	'		</div>'
 	+	'   </div>';
-	
+
 	$(this).append(html);
-	
+
 	if(options.renderHeader) {
 		options.renderHeader($('#' + id + 'Header'));
 	}
-	
+
 	if(!options.showAdd) {
 		$('#' + id + 'NewRow').hide();
 	}
-	
+
 	var addRow = function(val) {
-		
+
 		var elementId = id + options.count++;
 		$('#' + id + 'Rows').append(
 				 '    <div class="rowParent">'
@@ -5641,10 +5641,10 @@ $.fn.multipleRows = function(data) {
 				+	'		<a href="#" class="btn btn-danger delButton">'
 				+	'			<i class="fa fa-minus"></i>'
 				+	'		</a>'
-				+ '       </div></div>'); 
-		
+				+ '       </div></div>');
+
 		options.render($('#' + id + 'Rows').find('.rowInput').last(), val);
-		
+
 		$('.delButton').off('click');
 		$('.delButton').on('click', function() {
 			$(this).closest('.rowParent').remove();
@@ -5652,17 +5652,17 @@ $.fn.multipleRows = function(data) {
 				$('#' + id + 'NewRow').show();
 			}
 		});
-		
+
 		if(options.maxRows != 0 && $('#' + id + 'Rows').children().length == options.maxRows) {
 			$('#' + id + 'NewRow').hide();
 		}
 	};
-	
+
 	$('#' + id + 'AddRow').click(function() {
 		addRow();
 	});
-	
-	
+
+
 	var callback = {
 			setValue: function(val) {
 				$('#' + id + 'Rows').children().remove();
@@ -5675,7 +5675,7 @@ $.fn.multipleRows = function(data) {
 				$('#' + id + 'Rows .rowInput').each(function(idx, row) {
 					res.push(options.generateValue($(this)));
 				});
-				
+
 				return res;
 			},
 			reset: function() {
@@ -5697,14 +5697,14 @@ $.fn.multipleRows = function(data) {
 			},
 			getInput: function() {
 				return $('#' + id);
-			}, 
+			},
 			clear: function() {
 				$('#' + id + 'Rows').children().each(function(idx, row) {
 					options.clear($(row).find('.widget').first());
 				});
 			}
 	}
-	
+
 	if(options.value) {
 		callback.setValue(splitFix(options.value));
 	}
@@ -5717,7 +5717,7 @@ $.fn.roles = function(data) {
 	var options = $.extend({}, data);
 	var divId = $(this).attr('id');
 	var roleDivId = "roles" + divId;
-	
+
 	var widgetConfig = {
 			url: 'roles/table',
 			isNamePairValue: false,
@@ -5725,29 +5725,29 @@ $.fn.roles = function(data) {
 			resourceKey : options.resourceKey,
 			disabled: options.disabled
 		}
-	
+
 	if(!$('#' + roleDivId).data('created')) {
 		var div = '<div class="propertyItem form-group">' +
 			'<div>' +
-				'<label class="col-md-3 control-label optionalField">' + getResource('roles.label') + '</label>' + 
+				'<label class="col-md-3 control-label optionalField">' + getResource('roles.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + '" class="roles"></div>' +
 				'<span class="help-block">' + getResource('roles.info') + '</span>' +
 				'</div>' +
 			'</div>' +
-		'</div>' + 
+		'</div>' +
 		'<div class="propertyItem form-group">' +
 			'<div>' +
-				'<label class="col-md-3 control-label optionalField">' + getResource('users.label') + '</label>' + 
+				'<label class="col-md-3 control-label optionalField">' + getResource('users.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Users" class="users"></div>' +
 				'<span class="help-block">' + getResource('users.info') + '</span>' +
 				'</div>' +
 			'</div>' +
-		'</div>' + 
+		'</div>' +
 		'<div class="propertyItem form-group">' +
 			'<div>' +
-				'<label class="col-md-3 control-label optionalField">' + getResource('groups.label') + '</label>' + 
+				'<label class="col-md-3 control-label optionalField">' + getResource('groups.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Groups" class="groups"></div>' +
 				'<span class="help-block">' + getResource('groups.info') + '</span>' +
@@ -5755,7 +5755,7 @@ $.fn.roles = function(data) {
 			'</div>' +
 		'</div>';
 		$(this).append(div);
-		
+
 		$('#' + roleDivId).multipleSearchInput(widgetConfig);
 		$('#' + roleDivId + 'Users').multipleSearchInput({
 			url: 'currentRealm/users/table',
@@ -5771,23 +5771,23 @@ $.fn.roles = function(data) {
 			disabled: options.disabled,
 			nameAttr: 'principalName'
 		});
-	} 
-	
+	}
+
 	if(options.selected) {
 		widgetConfig.selected = options.selected;
 		$('#' + roleDivId).multipleSearchInput(widgetConfig);
 	}
-	
+
 	var roleCallback = $('#' + roleDivId).widget();
 	var userCallback = $('#' + roleDivId + 'Users').widget();
 	var groupsCallback = $('#' + roleDivId + 'Groups').widget();
-	
+
 	var callback = {
 			setValue: function(val) {
 				var roles = [];
 				var groups = [];
 				var users = [];
-				
+
 				$.each(val, function(idx, obj) {
 					if(obj.type === 'USER') {
 						users.push(obj);
@@ -5797,7 +5797,7 @@ $.fn.roles = function(data) {
 						roles.push(obj);
 					}
 				});
-				
+
 				roleCallback.setValue(roles);
 				userCallback.setValue(users);
 				groupsCallback.setValue(groups);
@@ -5829,14 +5829,14 @@ $.fn.roles = function(data) {
 			},
 			getInput: function() {
 				return roleCallback.getInput();
-			}, 
+			},
 			clear: function() {
 				roleCallback.clear();
 				userCallback.clear();
 				groupsCallback.clear();
 			}
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
@@ -5850,7 +5850,7 @@ $.fn.fileTree = function(data) {
 				include($('#' + id + 'TreeView').jstree().get_node(node.children[index]));
 			}
 		}else{
-			
+
 			var fullPath = node.text;
 			for(var index = 0; index < node.parents.length - 2; index++){
 				fullPath = $('#' + id + 'TreeView').jstree().get_node(node.parents[index]).text + '/' + fullPath;
@@ -5858,12 +5858,12 @@ $.fn.fileTree = function(data) {
 			addFullPath('/' + fullPath);
 		}
 	}
-	
+
 	var addFullPath = function(fullPath){
 		var found = false;
 		$('#' + id + 'Included option[value^="' + fullPath + '"]').remove();
 		$('#' + id + 'Included option').each(function(index, option){
-			
+
 			if(fullPath.startsWith($(option).attr('value'))){
 				found = true;
 				return false;
@@ -5880,15 +5880,15 @@ $.fn.fileTree = function(data) {
 
 	if ($(this).data('created')) {
 		options = $(this).widget().options();
-		
+
 		return;
 
 	} else {
 
 		var options = $.extend(
-		{	valueAttr : 'id', 
-			nameAttr : 'name', 
-			nameIsResourceKey : false, 
+		{	valueAttr : 'id',
+			nameAttr : 'name',
+			nameIsResourceKey : false,
 			disabled : false,
 			fileTreeResourceKey: 'text.fileTree',
 			includedLabelResourceKey: 'text.included',
@@ -5919,7 +5919,7 @@ $.fn.fileTree = function(data) {
 					return values;
 				},
 				reset: function() {
-					
+
 				},
 				disable: function() {
 					options.disabled = true;
@@ -5947,7 +5947,7 @@ $.fn.fileTree = function(data) {
 	 				$('#' + id + 'Included option').remove();
 	 			}
 		};
-		
+
 		$('#' + id).append(
 					'<div class="row" style="margin-bottom:25px;">'
 				+	'	<div style="height:400px;" class="col-md-6">'
@@ -5966,17 +5966,17 @@ $.fn.fileTree = function(data) {
 				+	'		</select>'
 				+	'	</div>'
 				+	'</div>');
-		
+
 		if(options.values && options.values.length){
 			$.each(options.values, function(index, value){
 				$('#' + id + 'Included').append('<option value="' + value + '">' + value + '</option>');
 			});
-			
+
 			if(options.changed) {
 	 			options.changed(callback);
 	 		}
 		}
-		
+
 		$('#' + id + 'Include').click(function(){
 			if(!options.disabled){
 				var selected = $('#' + id + 'TreeView').jstree('get_selected', true);
@@ -5988,13 +5988,13 @@ $.fn.fileTree = function(data) {
 				}
 			}
 		});
-		
+
 		$('#' + id + 'IncludeAll').click(function(){
 			if(!options.disabled){
 				include($('#' + id + 'TreeView').jstree().get_node('#'));
 			}
 		});
-		
+
 		$('#' + id + 'Exclude').click(function(){
 			if(!options.disabled){
 				var selected = $('#' + id + 'Included').val();
@@ -6012,7 +6012,7 @@ $.fn.fileTree = function(data) {
 		 		}
 			}
 		});
-		
+
 		$('#' + id + 'ExcludeAll').click(function(){
 			if(!options.disabled){
 				var numIncluded = $('#' + id + 'Included option').length;
@@ -6022,7 +6022,7 @@ $.fn.fileTree = function(data) {
 				}
 			}
 		});
-		
+
 		var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id ;
 		$('#' + id + 'TreeView').jstree({
 			"core" : {
@@ -6100,12 +6100,12 @@ $.fn.fileTree = function(data) {
 		  			"icon" : "fa fa-2x fa-file-file-o"
 		  		}
 			},
-			
+
 			"plugins" : [
 				"crrm", "types", "json_data"
 			]
 		});
-		
+
 		$('#' + id + 'TreeView').on("open_node.jstree", function (e, data) {
 			data.instance.set_icon(data.node, 'fa fa-2x fa-folder-open-o');
 		});
@@ -6117,7 +6117,7 @@ $.fn.fileTree = function(data) {
 	if(options.disabled) {
 		callback.disable();
 	}
-	
+
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
@@ -6125,11 +6125,11 @@ $.fn.fileTree = function(data) {
 }
 
 $.fn.namePair = function(data) {
-	
+
 	var init = false;
 	var options = $.extend(
-			{  
-				disabled : false, 
+			{
+				disabled : false,
 				readOnly: false,
 				disableName: false,
 				columnWeight: 'equal',
@@ -6141,9 +6141,9 @@ $.fn.namePair = function(data) {
 				showNameVariables: false,
 				showValueVariables: false
 			}, data);
-	
+
 	var id =  $(this).attr('id') + "NamePair";
-	
+
 	var nameWeight = 'col-xs-6';
 	var valueWeight = 'col-xs-6';
 	if(options.columnWeight=='nameHeavy') {
@@ -6156,21 +6156,21 @@ $.fn.namePair = function(data) {
 		nameWeight = 'col-xs-12';
 		valueWeight = 'col-xs-12';
 	}
-	
+
 	var nameVariables = options.nameVariables.concat(options.variables);
 	var valueVariables = options.valueVariables.concat(options.variables);
-	
+
 	if(!$(this).data('created')){
 		html =	'<div id="' + id + 'Input" class="row namePair">';
 		if(options.onlyName){
-			html += '	<div id="' + id + 'InputName" class="form-group propertyValue col-xs-10 namePairName"></div>' 
+			html += '	<div id="' + id + 'InputName" class="form-group propertyValue col-xs-10 namePairName"></div>'
 		}else{
 			html += '	<div id="' + id + 'InputName" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
-				 +	'	<div id="' + id + 'InputValue" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>'; 
+				 +	'	<div id="' + id + 'InputValue" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>';
 		}
-			 
+
 		html +=  '</div>';
-		
+
 		$(this).append(html);
 		if(options.renderNameFunc) {
 			options.renderNameFunc($('#' + id + 'InputName'), options);
@@ -6216,7 +6216,7 @@ $.fn.namePair = function(data) {
 			}
 		}
 	}
-	
+
 	var callback = {
  			getValue: function() {
  				var value = '';
@@ -6276,15 +6276,15 @@ $.fn.namePair = function(data) {
  			options.changed(callback);
  		}
  	});
- 	
+
  	if(options.value) {
  		callback.setValue(options.value);
  	}
- 	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	$(this).data('created', true);
@@ -6293,8 +6293,8 @@ $.fn.namePair = function(data) {
 
 $.fn.autoCompleteNamePair = function(data) {
 	var options = $.extend(
-			{  
-				
+			{
+
 			}, data);
 	var autoCompleteNamePairOptions = {
 		renderNameFunc: function(div, options){
@@ -6317,7 +6317,7 @@ $.fn.autoCompleteNamePair = function(data) {
 	}
 	var id =  $(this).attr('id') + "autoCompleteNamePair";
 	var namePair = $(this).namePair(autoCompleteNamePairOptions);
-	
+
 	var callback = {
 		getValue: function() {
 			return namePair.getValue();
@@ -6346,21 +6346,21 @@ $.fn.autoCompleteNamePair = function(data) {
 			return $('#' + id);
 		}
 	};
-	
+
 	$('#' + id).change(function(e) {
  		if(options.changed) {
  			options.changed(callback);
  		}
  	});
- 	
+
  	if(options.value) {
  		callback.setValue(options.value);
  	}
- 	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	$(this).data('created', true);
@@ -6405,9 +6405,9 @@ $.fn.autoCompleteNamePairs = function(data) {
 	};
 	var id =  $(this).attr('id') + "autoCompleteNamePairs";
 	$(this).append('<div id="' + id + '"></div>');
-	
+
 	var multipleRows = $('#' + id).multipleRows(options);
-	
+
 	var callback = {
 		getValue: function() {
 			return multipleRows.getValue();
@@ -6436,17 +6436,17 @@ $.fn.autoCompleteNamePairs = function(data) {
 			return $('#' + id);
 		}
 	};
-	
+
 	$('#' + id).change(function(e) {
  		if(options.changed) {
  			options.changed(callback);
  		}
  	});
- 	
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
-	
+
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	$(this).data('created', true);
