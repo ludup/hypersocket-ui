@@ -646,7 +646,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		for (AbstractTableAction action : registeredActions.get(table)) {
 
-			boolean hasPermission = true;
+			boolean hasPermission = action.canRead();
 			if (action.getPermissions() != null) {
 				hasPermission = false;
 				for(PermissionType t : action.getPermissions()) {
