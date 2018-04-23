@@ -44,6 +44,10 @@ public class AbstractTableAction {
 		return enableFunction;
 	}
 	
+	public boolean canRead() {
+		return true;
+	}
+	
 	public void setEnableFunction(String enableFunction) {
 		this.enableFunction = enableFunction;
 	}
