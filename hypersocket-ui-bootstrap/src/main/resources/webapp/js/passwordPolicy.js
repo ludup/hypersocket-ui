@@ -91,7 +91,7 @@ $.fn.passwordPolicy = function(data) {
 			options.buttonCallback(true);
 		}
 		
-		if(options.passwordElement.val()!=='') {
+		if(options.passwordElement && options.passwordElement.val()!=='') {
 			
 			var result = zxcvbn(options.passwordElement.val());
 			
