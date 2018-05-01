@@ -980,13 +980,13 @@ $.fn.autoComplete = function(data) {
 	var callback;
 	var id = $(this).attr('id') + "AutoComplete";
 	var thisWidget = $(this);
-	
-	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id 
-			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : 'class="form-control"') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>' 
-			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>' 
-			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"') 
-			+ '><a href="#" id="click_' + id + '" class="drop_' + id + '"><i id="spin_' + id + '" class="drop_' + id + ' fa ' + options.icon + '"></i></a></span></div>');
-	
+
+	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id
+			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : 'class="form-control"') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
+			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>'
+			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"')
+			+ '><a href="#" id="click_' + id + '"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
+
 	if(options.remoteSearch) {
 		$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 	}
@@ -1235,7 +1235,7 @@ $.fn.autoComplete = function(data) {
  			clear: function() {
  				$('#' + id).val('');
 				$('#input_' + id).val('');
-
+				thisWidget.data('selectedObject', null);
 				$('#auto_' + id).empty();
 				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');	
  			},
@@ -1264,7 +1264,7 @@ $.fn.autoComplete = function(data) {
  			}
 	};
 
-	$('.drop' + id).click(function(e){
+	var f = function(e) {
 		e.preventDefault();
 		if(options.alwaysDropdown) {
 			createDropdown("", true, false);
@@ -1273,9 +1273,11 @@ $.fn.autoComplete = function(data) {
 				options.clicked(callback);
 			}
 		}
-	});
+	};
 	
-	
+
+	$('#click_' + id).click(f);
+
 	$('#input_' + id).change(function() {
 		updateValue($(this).val(), true);
 	});
