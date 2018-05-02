@@ -499,11 +499,11 @@ $.fn.localize = function() {
 
 	$('[localize]', '#' + $(this).attr('id')).each(function(i,obj) {
 		text = replacePaths(getResource([$(obj).attr('localize')]));
-		if($(this).attr('allowHtml')) {
+		//if($(this).attr('allowHtml')) {
 			$(obj).html(text);
-		} else {
-			$(obj).text(text);
-		}
+		//} else {
+		//	$(obj).text(text);
+		//}
 	});
 };
 
