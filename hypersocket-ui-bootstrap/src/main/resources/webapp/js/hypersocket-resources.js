@@ -111,6 +111,29 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 			    }
 			});
 
+		} else if(data.information) {
+			
+			bootbox.confirm({
+			    message: data.message.format(data.args),
+			    buttons: {
+			        confirm: {
+			            label: getResource('text.ok'),
+			            className: 'btn-success'
+			        }
+			    },
+			    callback: function (result) {
+			        if(result) {
+			        	var proceed = true;
+			        	if(options.confirmed) {
+			        		proceed = !options.confirmed(resource, data.args);
+			        	}
+			        	if(proceed) {
+			        		saveResource(resource, buttonElement, options, mode, closeCallback);
+			        	}
+			        }
+			    }
+			});
+
 		} else {
 			log("Resource object creation failed " + data.message);
 			showError(data.message);
