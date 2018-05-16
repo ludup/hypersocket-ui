@@ -165,24 +165,24 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_MY_PROFILE, "fa-tags", null, 200, null, null,
 				null, null), MenuService.MENU_PERSONAL);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "userhelpzone",
-				"fa-question-circle", "userhelpzone", 100, ProfilePermission.READ, null,
-				ProfilePermission.UPDATE, null) {
-			@Override
-			public boolean isHome() {
-				return true; // If this is overridden it must be weighted lower than this
-			}
-			
-			@Override
-			public boolean canRead() {
-				try {
-					return realmService.getUserProfileTemplates(
-							getCurrentPrincipal()).size() > 0;
-				} catch (AccessDeniedException e) {
-					return false;
-				}
-			}
-		}, MenuService.MENU_MY_PROFILE);
+//		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "userhelpzone",
+//				"fa-question-circle", "userhelpzone", 100, ProfilePermission.READ, null,
+//				ProfilePermission.UPDATE, null) {
+//			@Override
+//			public boolean isHome() {
+//				return true; // If this is overridden it must be weighted lower than this
+//			}
+//			
+//			@Override
+//			public boolean canRead() {
+//				try {
+//					return realmService.getUserProfileTemplates(
+//							getCurrentPrincipal()).size() > 0;
+//				} catch (AccessDeniedException e) {
+//					return false;
+//				}
+//			}
+//		}, MenuService.MENU_MY_PROFILE);
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "details",
 				"fa-tags", "details", 200, ProfilePermission.READ, null,
