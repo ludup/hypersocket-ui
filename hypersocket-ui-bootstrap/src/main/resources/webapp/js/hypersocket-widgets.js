@@ -101,7 +101,6 @@ $.fn.clipboardCopy = function(data) {
 **/
 
 $.fn.textInput = function(data) {
-
 	var options = $.extend(
 			{
 				variableTemplate: '$\{{0}\}',
@@ -111,6 +110,7 @@ $.fn.textInput = function(data) {
 				maxlength: -1,
 				valueIsResourceKey: false,
 				showVariables: false,
+				showScript: false,
 				getUrlData: function(data) {
 					return data;
 				}
@@ -143,7 +143,7 @@ $.fn.textInput = function(data) {
 				+ '></textarea>';
 
 		if(options.variables || options.url) {
-			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
+			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="input-group-addon dropdown-toggle unselectable" '
 		    	+ 'data-toggle="dropdown">${}</span></div>';
 		}
 
@@ -161,7 +161,7 @@ $.fn.textInput = function(data) {
 
 
 		if(hasVariables || options.url) {
-			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span class="input-group-addon dropdown-toggle unselectable" '
+			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="input-group-addon dropdown-toggle unselectable" '
 		 	  + 'data-toggle="dropdown">${}</span></div>';
 		}
 
@@ -172,6 +172,57 @@ $.fn.textInput = function(data) {
 	$('#' + id).val(stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value));
 	if(options.placeholder) {
 		$('#' + id).prop('placeholder', getResourceOrDefault(options.placeholder));
+	}
+	if(options.showScript) {
+		var self = $(this);
+		var morphToScriptEditor = function(e) {
+			debugger;
+			var html ='<div id="' + id + '_propertyScript"></div>';
+			self.prepend(html);
+			var initVal = $('#' + id).val();
+			var openStart = initVal.indexOf('$(script');
+			var scriptType = false;
+			if (openStart != -1) {
+				var openStartEnd = initVal.indexOf(')', openStart);
+				if (openStartEnd != -1) {
+					scriptType = initVal.substring(openStart + 9, openStartEnd).trim();
+					initVal = initVal.substring(openStartEnd + 1);
+				}
+			}
+			if(!scriptType)
+				scriptType = 'javascript';
+			var closeStart = initVal.lastIndexOf('$(/script)');
+			if(closeStart != -1)
+				initVal = initVal.substring(0, closeStart);
+			var editorWidget = $('#' + id + '_propertyScript').codeInput({
+				disabled : false,
+				value: initVal,
+				inputType: scriptType,
+				lineNumbers: true,
+				size: 'normal',
+				changed: function(callback) {
+					var val = callback.getValue().trim();
+					if(val.length == 0)
+						$('#' + id).val('');
+					else
+						$('#' + id).val('$(script ' + scriptType + ')' + val + '$(/script)');
+				}
+			});
+			$('#' + id).hide();
+			$('#variableToggle' + id).hide();
+			self.prepend('<a ref="#" id="closeScriptEditor' + id + '">' + getResource('textInput.simpleVariable') + '</a>');
+			$('#closeScriptEditor' + id).click(function() {
+				$(this).remove();
+				$('#' + id + '_propertyScript').remove();
+				$('#variableToggle' + id).show();
+				$('#' + id).show();
+			});
+		}
+		if(options.value && options.value.startsWith('$(script')) {
+			morphToScriptEditor();
+		}
+		$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Script">' + getResource('textInput.insertScript') + '</a></li>');
+		$('.' + id + 'Script').click(morphToScriptEditor);
 	}
  	if(hasVariables) {
  		$.each(options.variables, function(idx, obj) {
@@ -6141,7 +6192,9 @@ $.fn.namePair = function(data) {
 				onlyName: false,
 				password: false,
 				showNameVariables: false,
-				showValueVariables: false
+				showValueVariables: false,
+				showNameScript: false,
+				showValueScript: false
 			}, data);
 
 	var id =  $(this).attr('id') + "NamePair";
@@ -6189,7 +6242,8 @@ $.fn.namePair = function(data) {
 				},
 				disabled: options.disabled || options.disableName,
 				value: value,
-				showVariables: options.showNameVariables
+				showVariables: options.showNameVariables,
+				showScript: options.showNamecript
 			});
 		}
 		if(!options.onlyName){
@@ -6213,7 +6267,8 @@ $.fn.namePair = function(data) {
  					},
  					disabled: options.disabled,
  					value: value,
- 					showVariables: options.showValueVariables
+ 					showVariables: options.showValueVariables,
+ 					showScript: options.showValueScript
  				});
 			}
 		}
@@ -6315,6 +6370,8 @@ $.fn.autoCompleteNamePair = function(data) {
 		password: options.password,
 		showNameVariables: options.showNameVariables,
 		showValueVariables: options.showValueVariables,
+		showNameScript: options.showNameScript,
+		showValueScript: options.showValueScript,
 		disabled: options.disabled
 	}
 	var id =  $(this).attr('id') + "autoCompleteNamePair";
@@ -6403,6 +6460,8 @@ $.fn.autoCompleteNamePairs = function(data) {
 			password: options.password,
 			showNameVariables: options.showNameVariables,
 			showValueVariables: options.showValueVariables,
+			showNameScript: options.showNameScript,
+			showValueScript: options.showValueScript,
 			disabled: options.disabled
 	};
 	var id =  $(this).attr('id') + "autoCompleteNamePairs";
