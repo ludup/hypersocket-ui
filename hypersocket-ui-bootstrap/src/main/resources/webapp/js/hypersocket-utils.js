@@ -247,7 +247,12 @@ dateFormat.i18n = {
 
 // For convenience...
 Date.prototype.format = function (mask, utc) {
-    return dateFormat(this, mask, utc);
+	try {
+		return dateFormat(this, mask, utc);
+	}
+	catch(e) {
+		return 'Error. ' + e;
+	}
 };
 
 function makeVariableSafe(v) {
