@@ -662,6 +662,7 @@ function loadRealms(realms, session) {
 				if (!data.success) {
 					showError(data.errorMsg);
 				} else { 
+					document.location.hash = 'menu=' + getAnchorByName('menu');
 					document.location.reload();
 				}
 			});
