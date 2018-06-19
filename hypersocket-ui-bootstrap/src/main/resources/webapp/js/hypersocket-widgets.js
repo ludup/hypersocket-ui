@@ -1035,8 +1035,8 @@ $.fn.autoComplete = function(data) {
 	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id
 			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : 'class="form-control"') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>'
-			+ '<span class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"')
-			+ '><a href="#" id="click_' + id + '"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
+			+ '<span id="click_' + id + '" class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"')
+			+ '><a href="#"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
 
 	if(options.remoteSearch) {
 		$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
