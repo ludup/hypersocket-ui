@@ -54,7 +54,8 @@ $.fn.passwordPolicy = function(data) {
 				title: getResource('passwordRules.text'),
 				showRulesDefault: true,
 				showZxcvbn: true,
-				showGeneratorDefault: true
+				showGeneratorDefault: true,
+				additionalAnalysis: true
 			}, data);
 	
 	var url;
@@ -92,18 +93,21 @@ $.fn.passwordPolicy = function(data) {
 		}
 		
 		if(options.passwordElement && options.passwordElement.val()!=='') {
-			
-			var result = zxcvbn(options.passwordElement.val());
-			
 			var feedback = false;
-			if(result.feedback.suggestions.length > 0 || result.feedback.warning) {
-				if(result.feedback.warning) {
-					$('#suggestions').append('<span class="error">' + result.feedback.warning + '</span><br>');
-				} else if(result.feedback.suggestions.length > 0) {
-					$('#suggestions').append('<span class="error">' + result.feedback.suggestions[0] + '</span><br>');
-				}
-				feedback = true;
-			} 
+			if(options.additionalAnalysis) {
+        			var result = zxcvbn(options.passwordElement.val());
+        			if(options.additionalAnalysis) {
+        			    if(result.feedback.suggestions.length > 0 || result.feedback.warning) {
+        				if(result.feedback.warning) {
+                				$('#suggestions').append('<span class="error">' + result.feedback.warning + '</span><br>');
+                			} else if(result.feedback.suggestions.length > 0) {
+                				$('#suggestions').append('<span class="error">' + result.feedback.suggestions[0] + '</span><br>');
+                			}
+                			feedback = true;
+        			    } 
+        			}
+			}
+    			
 		
 			if(!feedback) {
 				var params = new Object();
@@ -213,6 +217,9 @@ $.fn.passwordPolicy = function(data) {
 			passwordRulesContent.append('<span>' 
 					+ getResource("maxLength.text").format(policy.maximumLength)
 					+ '</span><br>');
+			
+			options.additionalAnalysis = policy.additionalAnalysis;
+			
 			if(policy.minimumAge > 0) {
 				if(policy.minimumAge == 1) {
 					passwordRulesContent.append('<span>' 
