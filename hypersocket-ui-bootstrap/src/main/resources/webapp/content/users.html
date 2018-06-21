@@ -396,7 +396,7 @@
 					},{
 						name : "name",
 						formatter: function(value, obj, index) {
-							return obj.principalName;
+							return '<span data-user-name="' + obj.principalName + '" class="user-detail">' + obj.principalName + '</span>';
 						}
 					}, {
 						name : "principalDesc",
