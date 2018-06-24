@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.hypersocket.netty.HttpRequestDispatcherHandler;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.server.handlers.impl.RedirectException;
@@ -43,7 +44,9 @@ public class IndexPageFilter implements ContentFilter {
 	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) throws RedirectException {
 		
 		String uri = request.getRequestURI();
-		if(redirectPage!=null && !server.isAliasFor(redirectPage, uri)) {
+		String foo = request.getPathTranslated();
+
+		if(request.getAttribute(HttpRequestDispatcherHandler.BROWSER_URI) == null && redirectPage!=null && !server.isAliasFor(redirectPage, uri)) {
 			String redirectUri = redirectPage.replace("${apiPath}", server.getApiPath());
 			redirectUri = redirectPage.replace("${uiPath}", server.getUiPath());
 			redirectUri = redirectPage.replace("${basePath}", server.getBasePath());
@@ -55,6 +58,8 @@ public class IndexPageFilter implements ContentFilter {
 				throw new RedirectException(redirectUri);
 			}
 		}
+		
+		
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("stylesheets", generateStylesheets());
 		resolver.addToken("scripts", generateScripts());
