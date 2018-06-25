@@ -215,6 +215,15 @@
 					$('#allPerms').widget().setValue(false);
 					
 					if(create) {
+						var r = [];
+						r.push(currentRealm);
+						$('#tabRealmsContent').multipleSelect({
+	 						selected : r,
+	 						nameIsResourceKey: false,
+	 						disabled: false,
+	 						selectAllIfEmpty: false
+	 					});
+						
 						$('#roleProperties').propertyPage({
 							url : 'roles/template',
 							showButtons : false,
@@ -310,7 +319,7 @@
 	 						selected : data.resources,
 	 						nameIsResourceKey: false,
 	 						disabled: readOnly,
-	 						selectAllIfEmpty: resource.allPermissions
+	 						selectAllIfEmpty: false
 	 					});
 					});
 					

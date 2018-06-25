@@ -44,7 +44,6 @@ public class IndexPageFilter implements ContentFilter {
 	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) throws RedirectException {
 		
 		String uri = request.getRequestURI();
-		String foo = request.getPathTranslated();
 
 		if(request.getAttribute(HttpRequestDispatcherHandler.BROWSER_URI) == null && redirectPage!=null && !server.isAliasFor(redirectPage, uri)) {
 			String redirectUri = redirectPage.replace("${apiPath}", server.getApiPath());

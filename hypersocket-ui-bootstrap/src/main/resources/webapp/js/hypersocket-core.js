@@ -379,14 +379,12 @@ function home(data) {
 				}
 			});
 
-			loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
-			
 			if(allMenus['navigation']) {
 
 				$.each(allMenus['navigation'].menus, function(idx, obj) {
 					
 					if(obj.resourceKey === 'realms') {
-						//loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
+						loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
 						return;
 					}
 					
@@ -690,7 +688,7 @@ function loadRealms(realms, session) {
 			$('#realm').append(
 				'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + session.principalRealm.id + '">' + getResource("switchRealm.back").format(session.principalRealm.name) + '</a></li>');
 	}
-	
+
 	if(realms) {
 		$('#realm').append(
 				'<li role="presentation"><a id="manageRealms" href="#menu=realms" role="menuitem" tabindex="-1">' + getResource('text.manageRealms') + '</a></li>');
