@@ -191,11 +191,18 @@ function processLogon(data, opts, message) {
 				} else if(this.type == 'textarea') {
 					$('#logonForm')
 					.append(
-						'<div class="logonInput"><textarea class="form-control" " name="'
-						+ this.resourceKey + '" placeholder="'
-						+ (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
-						+ '" id="' + this.resourceKey + '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
-						+ '">' + stripNull(this.defaultValue) + '</textarea></div>');
+						'<div class="logonInput">'
+							+ (isIE() ?
+									 ('<div class="clear"><span class="help-block">' 
+									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
+									+ '</span></div>') : '')
+						+ '<textarea class="form-control" " name="'
+						+ this.resourceKey + '"'
+							+ (isIE() ? '' :
+							    (' placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '"'))
+						+ ' id="' + this.resourceKey + '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
+						+ '">' + stripNull(this.defaultValue) + '</textarea>' 
+						+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
 						setFocus = true;
@@ -203,12 +210,18 @@ function processLogon(data, opts, message) {
 				}else {
 					$('#logonForm')
 							.append(
-								'<div class="logonInput"><input class="form-control" type="' + this.type + '" name="'
-								+ this.resourceKey + '" placeholder="'
-								+ (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
-								+ '" id="' + this.resourceKey + '" value="' + stripNull(this.defaultValue)
+								'<div class="logonInput">' 
+									+ (isIE() ?
+									 ('<div class="clear"><span class="help-block">' 
+									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
+									+ '</span></div>') : '')
+								+ '<input class="form-control" type="' + this.type + '" name="' + this.resourceKey + '"'
+								+ (isIE() ? '' :
+										(' placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '"'))
+								+ ' id="' + this.resourceKey + '" value="' + stripNull(this.defaultValue)
 								+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
-								+ '"/></div>');
+								+ '">' 
+								+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
 						setFocus = true;
