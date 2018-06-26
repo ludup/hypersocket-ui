@@ -69,13 +69,24 @@
 						</div>
 					</div>
 					<div id="tabRoleRealms">
-						<label class="col-md-3 control-label" localize="realms.label"></label>
+						<div class="col-xs-12">
+							<label class="col-md-3 control-label" localize="allRealms.label"></label>
 							<div class="propertyValue col-md-9">
-								<div id="tabRealmsContent"></div>
+								<div id="allRealms"></div>
 								<div>
-									<span class="help-block" localize="role.realms.info"></span>
+									<span class="help-block" localize="role.allRealms.info"></span>
 								</div>
 							</div>
+						</div>
+						<div class="col-xs-12 hideRealms">
+							<label class="col-md-3 control-label" localize="realms.label"></label>
+								<div class="propertyValue col-md-9">
+									<div id="tabRealmsContent"></div>
+									<div>
+										<span class="help-block" localize="role.realms.info"></span>
+									</div>
+								</div>
+						</div>
 					</div>
 					<input name="roleId" id="roleId" type="hidden" class="formInput" />
 
@@ -108,6 +119,16 @@
 					$('.hidePerms').hide();
 				} else {
 					$('.hidePerms').show();
+				}
+			}
+		});
+		
+		$('#allRealms').switchInput({
+			changed: function(widget) {
+				if(widget.getValue()) {
+					$('.hideRealms').hide();
+				} else {
+					$('.hideRealms').show();
 				}
 			}
 		});
@@ -211,8 +232,10 @@
 					$('#tabUsersContent').widget().enable();
 					$('#allUsers').widget().enable();
 					$('#allPerms').widget().enable();
+					$('#allRealms').widget().enable();
 					$('#allUsers').widget().setValue(false);
 					$('#allPerms').widget().setValue(false);
+					$('#allRealms').widget().setValue(false);
 					
 					if(create) {
 						var r = [];
@@ -254,6 +277,7 @@
 					role.realms = $('#tabRealmsContent').widget().getValue();
 					role.allUsers = $('#allUsers').widget().getValue();
 					role.allPerms = $('#allPerms').widget().getValue();
+					role.allRealms = $('#allRealms').widget().getValue();
 					
 					$('#roleProperties').saveProperties(true,
 							function(items) {
@@ -284,6 +308,13 @@
 						$('#allPerms').widget().disable();
 					} else {
 						$('#allPerms').widget().enable();
+					}
+					
+					$('#allRealms').widget().setValue(resource.allRealms);
+					if(resource.system) {
+						$('#allRealms').widget().disable();
+					} else {
+						$('#allRealms').widget().enable();
 					}
 					
 					getJSON('roles/principals/' + resource.id, null, function(data) {
