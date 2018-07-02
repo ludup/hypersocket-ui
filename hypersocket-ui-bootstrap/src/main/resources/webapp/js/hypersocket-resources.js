@@ -1259,6 +1259,8 @@ $.fn.resourceTable = function(params) {
 		if(views[0].onShow) {
 			views[0].onShow();
 		}
+		
+		
 		$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.pull-right').append('<button id="' 
 				+ divName + 'ToggleGrid" class="btn btn-default" type="button" name="grid" title="' 
 				+ getResource('text.toggleViewMode') + '"><i class="glyphicon fa ' + currentView.icon + '"></button>');
@@ -1276,6 +1278,7 @@ $.fn.resourceTable = function(params) {
     			views[0].onShow();
     		}
     	});
+		
 		
     	var resourceId = getAnchorByName('resource');
 		
@@ -2009,9 +2012,13 @@ $.fn.extendedResourcePanel = function(params){
                 tabArray.push({id : tabId, name: getResource(value.resourceKey + '.label')});
                 $tabContentHolder.append('<div id=' + tabId + '></div>');
                 $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){
-                    var elements = $('#' + tabId + ' [data-id]');
+                    var elements = $('#' + tabId).find('[data-id]');
                     $.each(elements, function(i, element) {
                         $(element).attr('id', $(element).attr('data-id') + '_' + options.resource.id);
+                    });
+                    elements = $('#' + tabId).find('[dialog-for]');
+                    $.each(elements, function(i, element) {
+                        $(element).attr('dialog-for', $(element).attr('dialog-for') + '_' + options.resource.id);
                     });
                     if($('#' + tabId).children('.extendedTabContent').length > 0) {
                         $('#' + tabId).children('.extendedTabContent').data('initPage')(options.resource, options.data, value.readOnly);
