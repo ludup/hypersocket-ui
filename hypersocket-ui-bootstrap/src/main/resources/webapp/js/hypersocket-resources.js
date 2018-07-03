@@ -1201,7 +1201,7 @@ $.fn.resourceTable = function(params) {
 					return;
 				}
 				$('#' + divName + 'Actions').append(
-					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>' + getResource(this.resourceKey + '.label') + '</button>');
+					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>&nbsp;' + getResource(this.resourceKey + '.label') + '</button>');
 				var button = this;
 				$('#' + this.resourceKey).click(function() {
 					if(button.action) {
