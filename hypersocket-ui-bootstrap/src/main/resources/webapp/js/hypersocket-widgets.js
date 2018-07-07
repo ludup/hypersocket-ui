@@ -176,7 +176,6 @@ $.fn.textInput = function(data) {
 	if(options.showScript) {
 		var self = $(this);
 		var morphToScriptEditor = function(e) {
-			debugger;
 			var html ='<div id="' + id + '_propertyScript"></div>';
 			self.prepend(html);
 			var initVal = $('#' + id).val();
