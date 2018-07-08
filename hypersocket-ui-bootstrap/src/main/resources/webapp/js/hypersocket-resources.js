@@ -187,6 +187,7 @@ $.fn.resourceTable = function(params) {
 		bulkAssignment: false,
 		assignable: false,
 		rowStyle: false,
+		loaded: false,
 		}, params);
 
 	options.tableView = $('#' + divName);
@@ -1190,6 +1191,8 @@ $.fn.resourceTable = function(params) {
 						$('#' + divName + 'Grid').append('<div class="template" style="float:left; width:100%; height:0px;"></div>');
 		    		}
 				}
+		    	if(options.loaded)
+		    		options.loaded($('#' + divName + 'Placeholder').bootstrapTable('getData'));
 		    }
 		});
 
