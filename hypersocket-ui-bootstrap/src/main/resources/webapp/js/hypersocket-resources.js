@@ -667,6 +667,17 @@ $.fn.resourceTable = function(params) {
 			setFields: function(fields) {
 
 				var columns = [];
+				if(options.checkbox) {
+				    columns.push({
+				        checkbox : true
+				    });
+				}
+
+				if(options.radio) {
+			        columns.push({
+			            radio : true
+			        });
+			    }
 				$.each(fields,function(idx, obj) {
 					var c= $.extend({
 						field : obj.name,
