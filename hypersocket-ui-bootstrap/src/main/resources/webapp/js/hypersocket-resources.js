@@ -663,6 +663,31 @@ $.fn.resourceTable = function(params) {
 						});
 					}
 				}
+			},
+			setFields: function(fields) {
+
+				var columns = [];
+				$.each(fields,function(idx, obj) {
+					var c= $.extend({
+						field : obj.name,
+						title: getResource(options.resourceKey + "." + obj.name + '.label'),
+						align: obj.align ? obj.align : 'left',
+						sortable: obj.sortable || obj.name === options.sortName,
+						formatter: obj.formatter
+					}, obj);
+					if(obj.width) {
+						c.width = obj.width;
+					}
+					columns.push(c);	
+				});
+				columns.push({ field : "actions",
+					align:'right',
+					formatter: renderActions,
+					width: 175
+				});
+				$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
+					columns: columns
+				});
 			}
 		};
 	
