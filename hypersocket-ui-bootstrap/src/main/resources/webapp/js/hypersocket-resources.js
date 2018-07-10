@@ -238,7 +238,17 @@ $.fn.resourceTable = function(params) {
 			
 		});
 	}
-	
+
+
+	var psl;
+	options = $.extend({
+		onDialogClose: function() {
+			if(psl) {
+		        removeEventListener('popstate', psl, false);
+			}
+			history.pushState(null, "", "#menu=" + getAnchorByName('menu'));
+		}
+	}, options);
 	if(options.resourceView === 'samePage') {
 		options.view = $('div[dialog-for="' + divName + '"]').samePageResourceView(options);
 	} else {
@@ -477,6 +487,11 @@ $.fn.resourceTable = function(params) {
 					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 					if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
+						psl = function() {
+							options.view.closeResource();
+					        removeEventListener('popstate', psl, false);
+				        };
+				        addEventListener('popstate', psl, false);
 						options.view.editResource(resource);
 					} else {
 						options.view.viewResource(resource);
@@ -1281,23 +1296,17 @@ $.fn.resourceTable = function(params) {
     			views[0].onShow();
     		}
     	});
-		
+
+		if (options.complete) {
+			options.complete();
+		}
 		
     	var resourceId = getAnchorByName('resource');
-		
 		if(resourceId) {
-			setTimeout(function() {
-				getJSON(options.resourceUrl + '/' + resourceId, null, function(data) {
-					callback.showEdit(data);
-				});
-			}, 100);
-			
-				
-		} else {
-			if (options.complete) {
-				options.complete();
-			}
-		}
+			getJSON(options.resourceUrl + '/' + resourceId, null, function(data) {
+				callback.showEdit(data);
+			});
+		} 
 
 	});
 		
@@ -1542,11 +1551,14 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		return;
 	} else if(params === 'close') {
-		
+		debugger;
 		if(dialogOptions) {
 			dialog.hide();
 			if(dialogOptions.onClose) {
 				dialogOptions.onClose();
+			}
+			if(dialogOptions.onDialogClose) {
+				dialogOptions.onDialogClose();
 			}
 			
 			dialogOptions.parent.show();
@@ -1560,7 +1572,6 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#main-menu').show();
 		$('#mainContent').show();
 		window.scrollTo(0,0);
-		history.pushState(null, "", "#menu=" + getAnchorByName('menu'));
 		return;
 	} else if(params === 'refreshView') {
 		var propertyOptions = $.extend({},
@@ -1602,10 +1613,17 @@ $.fn.samePageResourceView = function(params, params2) {
 	dialog.hide();
 	$('#mainContent').after(dialog.detach());
 	
-	var options = $.extend(
-			{ hasResourceTable : true,
-			  parent: parent, },
-			  params);
+	var options = $.extend({
+		hasResourceTable : true,
+		parent: parent,
+		onDialogClose: false,
+	}, params);
+
+	if(options.onDialogClose) {
+		dialog.on('hidden.bs.modal', function () {
+			options.onDialogClose();
+		});
+	}
 	
 	dialog.data('options', options);
 	
@@ -1616,9 +1634,9 @@ $.fn.samePageResourceView = function(params, params2) {
 		createResource: function(callback) {
 			dialog.samePageResourceView('create', callback);
 		},
-		editResource: function(resource) {
+		editResource: function(resource, options) {
 			$('#mainContainer').startSpin();
-			dialog.samePageResourceView('edit', resource);
+			dialog.samePageResourceView('edit', resource, options);
 		},
 		refreshView: function(resource) {
 			dialog.samePageResourceView('refreshView', resource);
@@ -1778,9 +1796,12 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 
 	var dialog = $(this);
 	var parent = $(this).parent();
-	var options = $.extend(
-		{ dialogWidth : 700, dialogHeight : 'auto', hasResourceTable : true },
-		params);
+	var options = $.extend({ 
+		dialogWidth : 700, 
+		dialogHeight : 'auto', 
+		hasResourceTable : true,
+		onDialogClose: false
+	}, params);
 	var dialogOptions = $(this).data('options');
 
 	if (params === 'create') {
@@ -1965,6 +1986,12 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			alert("Bad usage, resourceKey not set");
 		} else {
 			$(this).data('options', options);
+		}
+		
+		if(options.onDialogClose) {
+			dialog.on('hidden.bs.modal', function () {
+				options.onDialogClose();
+			});
 		}
 	}
 	

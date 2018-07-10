@@ -4605,7 +4605,7 @@ $.fn.logoInput = function(data) {
 		}
 	});;
 
- 	if(options.value) {
+ 	if(options.value || options.value === '') {
  		callback.setValue(options.value);
  	}
 
