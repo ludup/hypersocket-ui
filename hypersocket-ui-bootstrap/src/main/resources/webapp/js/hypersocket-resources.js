@@ -158,6 +158,7 @@ $.fn.resourceTable = function(params) {
 		striped	: true,
 		method : 'get',
 		pagination : true,
+		paginationVAlign: 'bottom',
 		parameters: false,
 		page : 1,
 		pageSize: 25,
@@ -718,6 +719,7 @@ $.fn.resourceTable = function(params) {
 		
 		$('#' + divName + 'Placeholder').bootstrapTable({
 		    pagination: options.pagination,
+		    paginationVAlign: options.paginationVAlign,
 		    checkbox: options.checkbox,
 		    radio: options.radio,
 		    showHeader: true,
