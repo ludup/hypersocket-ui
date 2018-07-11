@@ -788,6 +788,10 @@ $.fn.resourceTable = function(params) {
     		    		}
 		    		}
 		    	}
+	    		else {
+	    			if(options.search)
+	    				params.search = $('#' + divName + ' .search input[placeholder="Search"]').val();
+	    		}
 		    	if(options.queryParams) {
 		    		options.queryParams(params);
 		    	}
