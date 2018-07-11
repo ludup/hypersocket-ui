@@ -23,6 +23,7 @@
 					<div id="tabGroupUsers" class="tabContent"></div>
 					<div id="tabGroupGroups" class="tabContent"></div>
 					<input type="hidden" name="groupId" id="groupId"/>
+					<input type="hidden" id="searchColumnHidden" name="searchColumn"></input>
 
 				</div>
 				<div class="modal-footer"></div>
@@ -76,6 +77,26 @@
 			url: apiUrl + '/groups/table'
 		});
 	
+		var searchFields = [{
+			name: 'name'
+		}, {
+			name: 'organizationalUnit',
+			renderOptions: function(element, refresh) {
+				element.autoComplete({
+					remoteSearch: false,
+					url: apiUrl + '/organizationalUnits',
+					nameAttr: 'dn',
+					valueAttr: 'dn',
+					changed: refresh
+				});
+			}
+		}];
+
+		var fields = [ {
+			name : "name"
+		}, {
+			name : "organizationalUnit"
+		}];
 		
 		$('#contentGroups').ajaxResourcePage(
 				{
@@ -83,9 +104,11 @@
 				tableUrl : apiUrl + "/groups/table",
 				title: title,
 				icon: 'fa-users',
+				additionalActionsId: 'groupAdditionalActions',
 				resourceUrl : apiUrl + "/group",
 				deleteResourcesUrl : apiUrl + "/bulk/groups",
-				fields : [ { name: "name"} ],
+				fields : fields,
+				searchFields: searchFields,
 				resourceKey : 'group',
 				disableDecoration: disableDecoration,
 				canCreate: currentMenu.canCreate,

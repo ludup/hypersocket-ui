@@ -378,7 +378,7 @@
 						renderOptions: function(element, refresh) {
 							element.autoComplete({
 								remoteSearch: false,
-								url: 'currentRealm/organizationalUnits',
+								url: apiUrl + '/organizationalUnits',
 								nameAttr: 'dn',
 								valueAttr: 'dn',
 								changed: refresh

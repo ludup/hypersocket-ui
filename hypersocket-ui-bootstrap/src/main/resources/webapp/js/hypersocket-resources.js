@@ -152,6 +152,7 @@ $.fn.resourceTable = function(params) {
 	log("Creating resource table for div " + divName);
 
 	var options = $.extend({
+		additionalActionsId: 'additionalActions', 
 		checkbox: false,
 		radio: false,
 		divName : divName,
@@ -317,8 +318,8 @@ $.fn.resourceTable = function(params) {
 	}
 	
 	
-	if(!$('#additionalActions').length) {
-		$('body').append('<div id="additionalActions"></div>');
+	if(!$('#' + options.additionalActionsId).length) {
+		$('body').append('<div id="' + options.additionalActionsId + '"></div>');
 	}
 	
 	if(options.exportUrl) {
@@ -763,17 +764,28 @@ $.fn.resourceTable = function(params) {
 		    	}
 		    },
 		    queryParams: function(params) {
+
+	    		delete params.searchColumn;
+	    		delete params.search;
+	    		delete params.filter;
 		    	
-		    	if($('#filterColumn').length > 0) {
-					params.filter = $('#filterColumn').widget().getValue();
+		    	if($('#' + divName + 'filterColumn').length > 0) {
+		    		var val = $('#' + divName + 'filterColumn').widget().getValue();
+		    		if(val && val.length >0)
+		    			params.filter = val;
 				}
 		    	
-		    	if($('#searchColumn').widget()) {
-		    		
-		    		params.searchColumn = $('#searchColumn').widget().getValue();
-		    		var selected = $('#searchColumn').widget().getObject();
-		    		if(selected && selected.renderOptions && $('#searchValue').widget()) {
-		    			params.search = $('#searchValue').widget().getValue();
+		    	if($('#' + divName + 'searchColumn').widget()) {
+		    		var val = $('#' + divName + 'searchColumn').widget().getValue();
+		    		if(val && val.length > 0) {
+    		    		params.searchColumn = val;
+    		    		var selected = $('#' + divName + 'searchColumn').widget().getObject();
+    		    		if(selected) {
+    		    			if(selected.renderOptions)
+    		    				params.search = $('#' + divName + 'searchValue').widget().getValue();
+    		    			else
+    		    				params.search = $('#' + divName + ' .search input[placeholder="Search"]').val();
+    		    		}
 		    		}
 		    	}
 		    	if(options.queryParams) {
@@ -798,42 +810,38 @@ $.fn.resourceTable = function(params) {
 		    		log("Rendering search");
 		    		
 		    		var loadSearchColumns = function(columns) {
-		    			if(!$('#searchHolder').length) {
-		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div id="searchHolder" class="tableToolbar pull-right search"><label>Search:</label><div class="toolbarWidget" id="searchColumn"></div></div>');
+		    			if(!$('#' + divName + 'searchHolder').length) {
+		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div id="' + divName + 'searchHolder" class="tableToolbar pull-right search"><label>Search:</label><div class="toolbarWidget" id="' + divName + 'searchColumn"></div></div>');
 		    			}
-		    			$('#searchColumn').empty();
-		    			$('#searchColumn').textDropdown({
+		    			$('#' + divName + 'searchColumn').empty();
+		    			$('#' + divName + 'searchColumn').textDropdown({
 							values: columns,
 							changed: function(widget) {
 								var selected = widget.getObject();
-								$('#searchValue').remove();
-								$('.search input[placeholder="Search"]').hide();
-								if(!selected.disableOptions) {
+								$('#' + divName + 'searchValue').remove();
+								$('#' + divName + ' .search input[placeholder="Search"]').hide();
+								if(selected && !selected.disableOptions) {
 									if(selected.renderOptions) {
-										$('#searchColumn').parent().append('<div id="searchValue" class="toolbarWidget"></div>');
-										selected.renderOptions($('#searchValue'), function() {
+										$('#' + divName + 'searchColumn').parent().append('<div id="' + divName + 'searchValue" class="toolbarWidget"></div>');
+										selected.renderOptions($('#' + divName + 'searchValue'), function() {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 										});
 									} else {
-										$('.search input[placeholder="Search"]').show();
+										$('#' + divName + ' .search input[placeholder="Search"]').show();
 									}
 								}
-								
-								$('.search input[placeholder="Search"]').val('');
-//								if(!doNotRefresh) {
-//									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-//									doNotRefresh = false;
-//								}
+								else
+									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 							}
 						});
-						$('#searchColumn').widget().setValue(columns[0].name);
+						$('#' + divName + 'searchColumn').widget().setValue(columns[0].name);
 		    		}
 		    		
 		    		if(options.searchColumnsUrl) {
 		    			getJSON(options.searchColumnUrl, null, function(data) {
 		    				$.each(data.resources, function(idx, obj) {
 								var div = obj.resourceKey + 'Div';
-								$('#additionalActions').append('<div id="' + div + '"></div>');
+								$('#' + options.additionalActionsId).append('<div id="' + div + '"></div>');
 								$('#' + div).load(uiPath + '/content/' + obj.url + '.html');
 
 								searchColumns.push({ value : obj.column,
@@ -851,7 +859,7 @@ $.fn.resourceTable = function(params) {
 		    		
 		    		if(options.searchFiltersUrl) {
 		    			getJSON(options.searchFiltersUrl, null, function(data) {
-		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="toolbarWidget" id="filterColumn"></div></div>');
+		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
 		    				var filters = [];
 		    				if(options.searchFilters) {
 		    					filters = options.searchFilters;
@@ -864,11 +872,11 @@ $.fn.resourceTable = function(params) {
 		    					if(obj.searchColumns) {
 		    						$.each(obj.searchColumns, function(idx, obj) {
 										var div = obj.resourceKey + 'Div';
-										if(!$('#additionalActions').length) {
-											$(body).append('<div id="additionalActions"></div>')
+										if(!$('#' + options.additionalActionsId).length) {
+											$(body).append('<div id="' + options.additionalActionsId + '"></div>')
 										}
 										if(!$('#' + div).length) {
-											$('#additionalActions').append('<div id="' + div + '"></div>');
+											$('#' + options.additionalActionsId).append('<div id="' + div + '"></div>');
 											$('#' + div).load(uiPath + '/content/' + obj.url + '.html');
 		    							}
 										searchColumns.push({ value : obj.column,
@@ -880,11 +888,13 @@ $.fn.resourceTable = function(params) {
 				    				});
 		    					}
 		    				});
-		    				$('#filterColumn').textDropdown({
+		    				$('#' + divName + 'filterColumn').textDropdown({
 								values: filters,
 								value: '',
 								changed: function(widget) {
-									$('.search input[placeholder="Search"]').val('');
+									$('#' + divName + 'searchValue').remove();
+									$('#' + divName + ' .search input[placeholder="Search"]').hide();
+									$('#' + divName + ' .search input[placeholder="Search"]').val('');
 									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 									var arr = [];
 									if(widget.getSelectedObject().useDefaultColumns) {
@@ -895,15 +905,17 @@ $.fn.resourceTable = function(params) {
 								sortOptions: false
 							});
 			    			if(options.defaultFilter) {
-			    				$('#filterColumn').widget().setValue(options.defaultFilter);
+			    				$('#' + divName + 'filterColumn').widget().setValue(options.defaultFilter);
 			    			}
 		    			});
 		    		} else if(options.searchFilters) {
-		    			$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter By:</label><div class="toolbarWidget" id="filterColumn"></div></div>');
-		    			$('#filterColumn').textDropdown({
+		    			$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter By:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
+		    			$('#' + divName + 'filterColumn').textDropdown({
 							values: options.searchFilters,
 							changed: function(widget) {
-								$('.search input[placeholder="Search"]').val('');
+								$('#' + divName + 'searchValue').remove();
+								$('#' + divName + ' .search input[placeholder="Search"]').hide();
+								$('#' + divName + ' .search input[placeholder="Search"]').val('');
 								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 								var arr = [];
 								if(widget.getSelectedObject().useDefaultColumns) {
@@ -913,7 +925,7 @@ $.fn.resourceTable = function(params) {
 							}
 						});
 		    			if(options.defaultFilter) {
-		    				$('#filterColumn').widget().setValue(options.defaultFilter);
+		    				$('#' + divName + 'filterColumn').widget().setValue(options.defaultFilter);
 		    			}
 		    		}
 
@@ -963,7 +975,7 @@ $.fn.resourceTable = function(params) {
 										+ action.icon + '"></i></button>');
 								
 								var div = action.resourceKey + 'Div';
-								$('#additionalActions').append('<div id="' + div + '"></div>');
+								$('#' + options.additionalActionsId).append('<div id="' + div + '"></div>');
 								$('#' + div).load(uiPath + '/content/' + action.url + '.html');
 
 								$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
@@ -1589,7 +1601,6 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		return;
 	} else if(params === 'close') {
-		debugger;
 		if(dialogOptions) {
 			dialog.hide();
 			if(dialogOptions.onClose) {
