@@ -186,7 +186,9 @@ $.fn.textInput = function(data) {
 	 		$('#' + id).val(newContent);
 		});
 	
- 	} else if(options.url) {
+ 	} 
+ 	
+ 	if(options.url) {
  		getJSON(options.url, null, function(data) {
  			$.each(options.getUrlData(data), function(idx, obj) {
  	 			$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
