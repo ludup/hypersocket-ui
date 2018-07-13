@@ -78,8 +78,9 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 		if (data.success) {
 			
 			log("Resource object created");
+			stopSpin(icon, 'fa-save');
 			if(closeCallback) {
-				closeCallback();
+				closeCallback(data.resource);
 			}
 			if (options.resourceCreated) {
 				options.resourceCreated(data.resource);
@@ -108,6 +109,8 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 			        	}
 			        	saveResource(resource, buttonElement, options, mode, closeCallback);
 			        }
+			        else
+			    		stopSpin(icon, 'fa-save');
 			    }
 			});
 
@@ -130,6 +133,8 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 			        	if(proceed) {
 			        		saveResource(resource, buttonElement, options, mode, closeCallback);
 			        	}
+			        	else
+			        		stopSpin(icon, 'fa-save');
 			        }
 			    }
 			});
@@ -137,9 +142,10 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 		} else {
 			log("Resource object creation failed " + data.message);
 			showError(data.message);
+			stopSpin(icon, 'fa-save');
 		}
 	}, null, function() { 
-		stopSpin(icon, 'fa-save');
+		log('Finalising save');
 		if(alwaysCallback)
 			alwaysCallback();
 	});
@@ -1378,7 +1384,6 @@ $.fn.samePageResourceView = function(params, params2) {
 	var dialogOptions = $(this).data('options');
 	
 	var addActions = function(save, copy) {
-		
 		var html = '<div class="panel-footer">';
 		html+= '<button id="' + dialog.attr('id') + 'Cancel" + class="btn btn-danger"><i class="fa fa-ban"></i>' + getResource('text.cancel') + '</button>';
 		if(save) {
@@ -1393,7 +1398,7 @@ $.fn.samePageResourceView = function(params, params2) {
 				if(copy) {
 					resource.id = null;
 				}
-				saveResource(resource, $('#' + dialog.attr('id') + 'Save'), dialogOptions, params, function() {
+				saveResource(resource, $('#' + dialog.attr('id') + 'Save'), dialogOptions, params, function(resource) {
 					if(dialogOptions.stayOnPageAfterSave) {
 						if(dialogOptions.onSave)
 							dialogOptions.onSave(resource);
@@ -1491,11 +1496,11 @@ $.fn.samePageResourceView = function(params, params2) {
 					  resource: params2,
 				  	  complete: function() {
 						  showView(dialog);
+						  addActions(true);
+						  $('.sk-fading-circle').remove();
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(params2);
 						  }
-						  addActions(true);
-						  $('.sk-fading-circle').remove();
 					  },
 					  onPropertyChange: function(resourceKey, widget) {
 						  if(dialogOptions.propertyOptions.onPropertyChange) {
