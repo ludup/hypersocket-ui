@@ -510,7 +510,8 @@ $.fn.richInput = function(data) {
  				return this.editor.getContent();
  			},
  			removeWidget: function() {
- 				this.editor.remove();
+ 				if(this.editor)
+ 					this.editor.remove();
  			},
  			reset: function() {
  				this.editor.setContent(this.originalValue);
