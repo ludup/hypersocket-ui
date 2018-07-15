@@ -492,7 +492,8 @@ $.fn.resourceTable = function(params) {
 				function(e) {
 					e.preventDefault();
 					history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
-					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
+					var tr = $(this).closest("tr").get(0);
+					var curRow = $(tr).data('index'); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 					if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
 						psl = function() {
