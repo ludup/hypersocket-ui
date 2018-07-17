@@ -196,7 +196,28 @@ $.fn.resourceTable = function(params) {
 		assignable: false,
 		rowStyle: false,
 		loaded: false,
+		onReady: false,
 		}, params);
+	
+	
+	/* Track when the table is COMPLETELY ready, i.e. data is loaded, header Dom is ready, 
+	 * table Dom is ready.
+	 */
+	var checkReady = {
+		readyDone: false,
+		tableReady: false,
+		headerReady: false,
+		dataReady: false,
+		check: function() {
+			if(this.readyDone)
+				return;
+			if(this.tableReady && this.headerReady && this.dataReady) {
+				this.readyDone = true;
+				if(options.onReady)
+					options.onReady($('#' + divName));
+			}
+		}
+	};
 
 	options.tableView = $('#' + divName);
 	
@@ -814,6 +835,10 @@ $.fn.resourceTable = function(params) {
 		    	saveState(divName + 'Placeholder', {'pageSize': size, 'sortOrder': order, 'sortName': name}, true);
 		    },
 		    classes: 'table table-hover ' + divName,
+		    onPostBody: function() {
+		    	checkReady.tableReady = true;
+		    	checkReady.check();
+		    },
 		    onPostHeader: function() {
 		    	
 		    	if($('#searchRendered' + divName).length == 0) {
@@ -1058,6 +1083,9 @@ $.fn.resourceTable = function(params) {
 
 					$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').last().append('<div id="searchRendered' + divName + '"></div>');
 		    	}
+		    	
+		    	checkReady.headerReady = true;
+		    	checkReady.check();
 		    },
 		    onLoadSuccess: function() {
 		    	
@@ -1269,6 +1297,9 @@ $.fn.resourceTable = function(params) {
 				}
 		    	if(options.loaded)
 		    		options.loaded($('#' + divName + 'Placeholder').bootstrapTable('getData'));
+
+		    	checkReady.dataReady = true;
+		    	checkReady.check();
 		    }
 		});
 
