@@ -3799,11 +3799,12 @@ $.fn.fileUploadInput = function(data) {
 			function(confirmed) {
 				if(confirmed){
 					callback.remove();
-				}
-				if(options.changed) {
-					options.changed(callback);
+					if(options.changed) {
+						options.changed(callback);
+					}
 				}
 			});
+			return false;
 		});
 		$('#' + id + 'DownloadButton').click(function(){
 			callback.download();
@@ -4198,6 +4199,7 @@ $.fn.logoInput = function(data) {
 					callback.remove();
 				}
 			});
+			return false;
 		});
 		$('#' + id + 'DownloadButton').click(function(){
 			callback.download();
@@ -4737,6 +4739,9 @@ $.fn.multipleFileUpload = function(data) {
  	 					$('#' + id + 'RemoveButton' + rowNum).click(function(){
  	 						$(this).closest('.fileUpload').remove();
  	 						$('#' + id + 'NewRow').show();
+ 	 						if(options.changed)
+ 	 							options.changed(callback);
+ 	 						return false;
  	 					});
  	 				}
 
