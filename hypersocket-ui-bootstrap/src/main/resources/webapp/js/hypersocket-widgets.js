@@ -3901,7 +3901,6 @@ $.fn.fileUploadInput = function(data) {
  				return $(this).data('needsUpload');
  			},
  			upload: function(notify) {
-
  				if($('#' + id + 'File').val() == ''){
  					return false;
  				}
@@ -4678,6 +4677,7 @@ $.fn.multipleFileUpload = function(data) {
 
 	$('#' + id + 'AddRow').click(function() {
 		$('#' + id).parent().data('widget').addRows(1);
+		return false;
 	});
 
 	var callback = {
