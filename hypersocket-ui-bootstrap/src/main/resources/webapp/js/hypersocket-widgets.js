@@ -2813,7 +2813,7 @@ $.fn.dateInput = function(options) {
 			},  options);
 
 	$(this).append('<div id="' + id + '" class="input-group date">'
-			+ '<input id="' + id + 'Field" type="text" name="date_' + name + '" class="form-control" value="' + options.value + '">'
+			+ '<input id="' + id + 'Field" type="text" name="date_' + name + '" class="form-control" value="' + ( options.value ? options.value : '' ) + '">'
 			+ '<span class="input-group-addon"><i class="fa fa-calendar"></i></span></div>');
 
 	$('#' + id).datepicker(options).on('show', function() {
@@ -2830,7 +2830,7 @@ $.fn.dateInput = function(options) {
 
 	var callback = {
 			setValue: function(val) {
-				$('#' + id + 'Field').val(val);
+				$('#' + id + 'Field').val(val ? val : '');
 			},
 			getValue: function() {
 				return $('#' + id + 'Field').val();
