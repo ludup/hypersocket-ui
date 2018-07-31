@@ -421,7 +421,9 @@ $.fn.resourceTable = function(params) {
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
 									function(e) {
 										e.preventDefault();
-										var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
+										
+										var tr = $(this).closest("tr").get(0);
+										var curRow = $(tr).data('index'); 
 										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 										act.action(resource, function(resource) {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
