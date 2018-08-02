@@ -496,25 +496,31 @@ $.fn.richInput = function(data) {
 	data);
 
 	var id = $(this).attr('id');
+	var tn = $(this).prop('tagName');
+	if(tn !== 'TEXTAREA' ) {
+		id = 'rich' + id;
+		$(this).append('<div class="form-control" id="' + id + '"></div>');
+	}
 
-	var callback = {
+	var callback;
+	callback = {
 			editor: false,
 			originalValue: '',
  			setValue: function(val) {
- 				this.editor.setContent(val);
+ 				callback.editor.setContent(val);
  				if(options.changed) {
  					options.changed(callback);
  				}
  			},
  			getValue: function() {
- 				return this.editor.getContent();
+ 				return callback.editor.getContent();
  			},
  			removeWidget: function() {
- 				if(this.editor)
- 					this.editor.remove();
+ 				if(callback.editor)
+ 					callback.editor.remove();
  			},
  			reset: function() {
- 				this.editor.setContent(this.originalValue);
+ 				callback.editor.setContent(callback.originalValue);
  			},
  			disable: function() {
  				$('#' + id).attr('disabled', true);
@@ -529,7 +535,7 @@ $.fn.richInput = function(data) {
  				return $('#' + id);
  			},
  			clear: function() {
- 				this.editor.setContent('');
+ 				callback.editor.setContent('');
  			}
  		};
 
@@ -571,6 +577,7 @@ $.fn.richInput = function(data) {
 		    '//www.tinymce.com/css/codepen.min.css'
 		  ],*/
 		  init_instance_callback : function(editor) {
+			  debugger;
 			  callback.editor = editor;
 			  var newval = options.value;
 			  if(!newval) {
@@ -585,7 +592,7 @@ $.fn.richInput = function(data) {
 			  editor.setContent(newval);
 
 			  if(options.focus) {
-			      this.editor.execCommand('mceFocus', true, id);
+				  callback.editor.execCommand('mceFocus', true, id);
 			  }
 
 			  editor.on('change', function(e) {

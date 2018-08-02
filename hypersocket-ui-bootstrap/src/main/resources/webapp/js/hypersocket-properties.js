@@ -265,6 +265,7 @@ function validateInputType(type){
 		case 'java' :
 		case 'javascript' :
 		case 'html' :
+		case 'rich' :
 		case 'xml' :
 		case 'sql' :
 		case 'slider' :
