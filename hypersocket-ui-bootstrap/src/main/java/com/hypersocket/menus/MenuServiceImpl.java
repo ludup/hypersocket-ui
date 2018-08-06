@@ -33,6 +33,7 @@ import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.config.SystemConfigurationService;
+import com.hypersocket.dashboard.OverviewWidgetService;
 import com.hypersocket.html.HtmlTemplateResourcePermission;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.interfaceState.UserInterfaceState;
@@ -101,6 +102,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	@Autowired
 	private UserInterfaceStateService interfaceStateService; 
 	
+	@Autowired
+	private OverviewWidgetService widgetService; 
+	
 	List<MenuFilter> filters = new ArrayList<MenuFilter>();
 	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
 
@@ -144,9 +148,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 					public boolean canRead() {
 						UserInterfaceState state = interfaceStateService.getStateByName("showHelpZone", getCurrentRealm());
 						if(state==null) {
-							return true;
+							return widgetService.hasActiveWidgets("helpzone");
 						}
-						return Boolean.valueOf(state.getPreferences());
+						return Boolean.valueOf(state.getPreferences()) && widgetService.hasActiveWidgets("helpzone");
 					}
 					@Override
 					public boolean isHome() {
