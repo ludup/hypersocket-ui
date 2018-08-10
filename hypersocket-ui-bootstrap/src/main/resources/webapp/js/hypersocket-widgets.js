@@ -577,7 +577,7 @@ $.fn.richInput = function(data) {
 		    '//www.tinymce.com/css/codepen.min.css'
 		  ],*/
 		  init_instance_callback : function(editor) {
-			  debugger;
+			  
 			  callback.editor = editor;
 			  var newval = options.value;
 			  if(!newval) {
@@ -1138,7 +1138,6 @@ $.fn.autoComplete = function(data) {
 				var value = $(this).data('value');
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
-				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value.toString());
 				$('#input_' + id).val($(this).text());
 				$('[data-toggle="dropdown"]').parent().removeClass('open');
@@ -1241,6 +1240,7 @@ $.fn.autoComplete = function(data) {
 				updateValue(val, true);
 			},
 			getValue: function() {
+				
 				return $('#' + id).val();
 			},
 			getObject: function() {
@@ -1271,6 +1271,41 @@ $.fn.autoComplete = function(data) {
 				} else if(options.values && !options.remoteSearch) {
 					buildData(options.values);
 					callback.setValue(newValue);
+				} else if(options.remoteSearch) {
+					var url = options.url + '?iDisplayStart=0&iDisplayLength=10&searchColumn=' + options.valueAttr + '&sSearch=' + newValue;
+					if(options.searchParams) {
+						url += '&' + options.searchParams;
+					}
+					getJSON(processURL(thisWidget.widget(), url),
+							null,
+							function(data) {
+								$('#input_' + id).data('values', data.rows);
+
+								if(data.rows && data.rows.length > 0) {
+									var map = [];
+									$.each(data.rows, function(idx, obj) {
+										map[obj[options.valueAttr]] = obj;
+									});
+									
+									var obj = map[newValue];
+									thisWidget.data('selectedObject', obj);
+									$('#' + id).val(newValue.toString());
+									$('#input_' + id).val(obj[options.nameAttr]);
+									$('[data-toggle="dropdown"]').parent().removeClass('open');
+
+									if(options.changed) {
+										options.changed(callback);
+									}
+								} else {
+									$('#auto_' + id).empty();
+									if(text=='') {
+										$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+									} else {
+										$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+									}
+								}
+
+							});
 				}
 			},
 			/**
