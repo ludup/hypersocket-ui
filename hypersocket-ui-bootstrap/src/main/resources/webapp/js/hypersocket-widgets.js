@@ -5075,7 +5075,7 @@ $.fn.html5Upload = function(data) {
 			},
  			clear: function() {
  				$('#' + id + 'List').find('tr').each(function(index, file){
- 					callback.remove($(this).data('fileIndex'));
+ 					$('#' + id + 'ListElementDiv_' + $(this).data('fileIndex')).remove();
  				});
  			},
  			upload: function(files){
@@ -5214,13 +5214,11 @@ $.fn.html5Upload = function(data) {
  				if($('#' + id + 'ListElementDiv_' + index).data('uuid')){
  					var uuid = $('#' + id + 'ListElementDiv_' + index).data('uuid');
  	 				deleteJSON(options.url + '/' + uuid, null, function(data){
- 	 				//getJSON(basePath + '/api/fs/delete/', null, function(data){
  	 					$('#' + id + 'ListElementDiv_' + index).remove();
  	 				});
- 				}else{
+ 				} else{
  					$('#' + id + 'ListElementDiv_' + index).remove();
  				}
-
  			},
  			options: function() {
  				return options;
