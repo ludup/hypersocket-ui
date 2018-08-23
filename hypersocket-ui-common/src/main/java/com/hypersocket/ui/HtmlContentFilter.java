@@ -107,6 +107,10 @@ public class HtmlContentFilter implements ContentFilter {
 	public void setCompany(String brandCompany) {
 		this.brandCompany = brandCompany;
 	}
+	
+	public String getCompany() {
+		return brandCompany;
+	}
 
 	public void setCompanyUrl(String companyUrl) {
 		this.companyUrl = companyUrl;
