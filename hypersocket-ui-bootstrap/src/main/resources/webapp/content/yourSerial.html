@@ -1,11 +1,11 @@
 <div>
-    <p id="serialNumber"></p>
+    <p id="serialNumber2"></p>
  </div>
 <script type="text/javascript">
     $(document).ready(function() {
     	getJSON('server/version', null, function(data) {
             var inf = data.message.split(';');
-            $('#serialNumber').append(inf[1]);
+            $('#serialNumber2').append(inf[1]);
         });
     });
 
