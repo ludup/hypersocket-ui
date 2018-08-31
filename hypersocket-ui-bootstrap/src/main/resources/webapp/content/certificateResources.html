@@ -121,6 +121,8 @@
 							canUpdate: currentMenu.canUpdate,
 							canDelete: currentMenu.canDelete,
 							checkbox : true,
+							confirmationButtonSuccess: 'text.confirmDNS',
+							confirmationButtonCancel: 'text.cancelDNS',
 							validate : function() {
 
 								if ($('#resourceName').val() == '') {
@@ -135,6 +137,10 @@
 								}
 								
 								return true;
+							},
+							confirmed: function(resource, args) {
+								resource.properties.push(new PropertyItem('confirmedDNS', 'true'));
+								resource.properties.push(new PropertyItem('existingOrder', args[1]));
 							},
 							clearDialog : function(create) {
 								

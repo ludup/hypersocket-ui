@@ -94,11 +94,11 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 			    message: data.message.format(data.args),
 			    buttons: {
 			        confirm: {
-			            label: getResource('text.yes'),
+			            label: getResource(options.confirmationButtonSuccess),
 			            className: 'btn-success'
 			        },
 			        cancel: {
-			            label: getResource('text.no'),
+			            label: getResource(options.confirmationButtonCancel),
 			            className: 'btn-danger'
 			        }
 			    },
@@ -186,6 +186,8 @@ $.fn.resourceTable = function(params) {
 		disableActionsDropdown: false,
 		createButtonText: "text.add",
 		createButtonIcon: "fa-plus-circle",
+		confirmationButtonSuccess: 'text.yes',
+		confirmationButtonCancel: 'text.no',
 		logo: false,
 		defaultView: 'table',
 		logoResourceTypeCallback: false,
