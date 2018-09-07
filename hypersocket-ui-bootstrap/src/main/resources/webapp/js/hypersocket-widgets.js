@@ -1288,14 +1288,16 @@ $.fn.autoComplete = function(data) {
 									});
 									
 									var obj = map[newValue];
-									thisWidget.data('selectedObject', obj);
-									$('#' + id).val(newValue.toString());
-									$('#input_' + id).val(obj[options.nameAttr]);
-									$('[data-toggle="dropdown"]').parent().removeClass('open');
-
-									if(options.changed) {
-										options.changed(callback);
-									}
+									if(obj) {
+										thisWidget.data('selectedObject', obj);
+										$('#' + id).val(newValue.toString());
+										$('#input_' + id).val(obj[options.nameAttr]);
+										$('[data-toggle="dropdown"]').parent().removeClass('open');
+	
+										if(options.changed) {
+											options.changed(callback);
+										}
+								    }
 								} else {
 									$('#auto_' + id).empty();
 									if(text=='') {
