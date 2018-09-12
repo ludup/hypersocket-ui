@@ -756,7 +756,7 @@ $.fn.resourceTable = function(params) {
 								$('.search input[placeholder="Search"]').hide();
 								if(!selected.disableOptions) {
 									if(selected.renderOptions) {
-										$('#searchColumn').parent().append('<div id="searchValue" class="toolbarWidget"></div>');
+										$('#searchColumn').parent().append('<div id="searchValue" class="toolbarWidget searchValue"></div>');
 										selected.renderOptions($('#searchValue'), function() {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 										});

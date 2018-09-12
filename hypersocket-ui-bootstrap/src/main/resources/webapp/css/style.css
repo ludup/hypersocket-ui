@@ -202,7 +202,7 @@ pre {
 	float: none;
 }
 
-#searchValue {
+.searchValue {
 	margin-left: 10px;
 }
 
