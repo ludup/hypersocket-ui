@@ -4870,6 +4870,7 @@ $.fn.html5Upload = function(data) {
 			disabledText: getResource('dragAndDrop.disabledText'),
 			maxFiles: 0,
 			maxBytes: 0,
+			useUUID: true,
 			disabled: false,
 			values: [],
 			showFileInputLink: true,
@@ -5150,7 +5151,10 @@ $.fn.html5Upload = function(data) {
  	 				        		return;
  	 				        	}
 
- 	 				        	$('#' + id + 'ListElementDiv_' + progressFileIndex).data('uuid', data.resource.name);
+ 	 				        	if(options.useUUID)
+ 	 				        		$('#' + id + 'ListElementDiv_' + progressFileIndex).data('uuid', data.resource.name);
+ 	 				        	else
+ 	 				        		$('#' + id + 'ListElementDiv_' + progressFileIndex).data('uuid', data.resource.id);
  	 				            if(options.showCancel){
  	 				        		$('#' + id + 'Cancel_' + progressFileIndex).attr('disabled', 'disabled');
  	 				        	}
