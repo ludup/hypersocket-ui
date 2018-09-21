@@ -192,6 +192,7 @@ $.fn.resourceTable = function(params) {
 		defaultView: 'table',
 		logoResourceTypeCallback: false,
 		hasResourceTable: true,
+		showViewButtons: true,
 		onSave : false,
 		stayOnPageAfterSave: false,
 		bulkAssignment: false,
@@ -1415,7 +1416,6 @@ $.fn.resourcePage = function() {
 }
 
 $.fn.samePageResourceView = function(params, params2) {
-
 	var dialog = $(this);
 	var dialogOptions = $(this).data('options');
 	
@@ -1475,7 +1475,6 @@ $.fn.samePageResourceView = function(params, params2) {
 		showView($('#pageContent'));
 		
 	} else if (params === 'create') {
-		
 		dialogOptions.clearDialog(true);
 		if(dialogOptions.propertyOptions) {
 			 var propertyOptions = $.extend({},
@@ -1487,7 +1486,8 @@ $.fn.samePageResourceView = function(params, params2) {
 				      displayMode: 'create',
 					  complete: function() {
 						  showView(dialog);
-						  addActions(true);
+						  if(dialogOptions.showViewButtons)
+							  addActions(true);
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete();
 						  }
@@ -1509,7 +1509,8 @@ $.fn.samePageResourceView = function(params, params2) {
 			$(propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
-			addActions(true);
+			if(dialogOptions.showViewButtons)
+				addActions(true);
 		}
 		
 		return;
@@ -1518,7 +1519,8 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 		dialogOptions.clearDialog(false);
 		var selfShow = dialogOptions.displayResource(params2, false, function() {
-			addActions(true);
+			if(dialogOptions.showViewButtons)
+				addActions(true);
 			showView(dialog);
 		});
 		
@@ -1532,7 +1534,8 @@ $.fn.samePageResourceView = function(params, params2) {
 					  resource: params2,
 				  	  complete: function() {
 						  showView(dialog);
-						  addActions(true);
+						  if(dialogOptions.showViewButtons)
+							  addActions(true);
 						  $('.sk-fading-circle').remove();
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(params2);
@@ -1553,7 +1556,8 @@ $.fn.samePageResourceView = function(params, params2) {
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
-			addActions(true);
+			if(dialogOptions.showViewButtons)
+				addActions(true);
 			$('.sk-fading-circle').remove();
 		}
 		
@@ -1577,7 +1581,8 @@ $.fn.samePageResourceView = function(params, params2) {
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(params2);
 						  }
-						  addActions(false);
+						  if(dialogOptions.showViewButtons)
+							  addActions(false);
 						  
 					  }	
 			});
@@ -1590,7 +1595,8 @@ $.fn.samePageResourceView = function(params, params2) {
 			$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 		} else {
 			showView(dialog);
-			addActions(false);
+			if(dialogOptions.showViewButtons)
+				addActions(false);
 		}
 		
 		return;
@@ -1628,7 +1634,8 @@ $.fn.samePageResourceView = function(params, params2) {
 							  if(dialogOptions.propertyOptions.complete) {
 								  dialogOptions.propertyOptions.complete(copiedResource);
 							  }
-							  addActions(true, true);
+								if(dialogOptions.showViewButtons)
+								  addActions(true, true);
 						  }	
 				});
 				if(dialogOptions.propertyOptions.additionalTabs) {
@@ -1640,7 +1647,8 @@ $.fn.samePageResourceView = function(params, params2) {
 				$(dialogOptions.propertyOptions.propertySelector).propertyPage(propertyOptions);
 			} else {
 				showView(dialog);
-				addActions(true, true);
+				if(dialogOptions.showViewButtons)
+					addActions(true, true);
 			}
 		}
 		
@@ -1674,7 +1682,8 @@ $.fn.samePageResourceView = function(params, params2) {
 				    icon: dialogOptions.icon, 
 					complete: function() {
 						showView(dialog);
-						addActions(true);
+						if(dialogOptions.showViewButtons)
+							addActions(true);
 						if(dialogOptions.propertyOptions.complete) {
 							dialogOptions.propertyOptions.complete(params2);
 						}

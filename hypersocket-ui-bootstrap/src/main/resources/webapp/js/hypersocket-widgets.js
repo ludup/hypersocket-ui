@@ -483,6 +483,7 @@ $.fn.richInput = function(data) {
 	var options = $.extend(
 		{ disabled : false,
 		  height: 500,
+		  pasteDataImages: false,
 		  inline: false,
 		  focus: false,
 		  menubar: false,
@@ -536,6 +537,9 @@ $.fn.richInput = function(data) {
  			},
  			clear: function() {
  				callback.editor.setContent('');
+ 			},
+ 			focus: function() {
+ 				callback.editor.focus();
  			}
  		};
 
@@ -558,7 +562,7 @@ $.fn.richInput = function(data) {
 		  relative_urls: false,
 		  convert_urls: false,
 		  remove_script_host : false,
-		  plugins: options.plugins,
+		  paste_data_images: options.pasteDataImages,
 		  toolbar1: options.toolbar1,
 		  toolbar2: options.toolbar2,
 		  image_advtab: true,
