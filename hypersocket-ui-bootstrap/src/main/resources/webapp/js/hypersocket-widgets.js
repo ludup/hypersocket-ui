@@ -487,6 +487,9 @@ $.fn.richInput = function(data) {
 		  inline: false,
 		  focus: false,
 		  menubar: false,
+		  usePlugins: false,
+		  extraPlugins: false,
+		  tinyMCEOptions: false,
 		  plugins: [
 				    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
 				    'searchreplace wordcount visualblocks visualchars code fullscreen',
@@ -553,7 +556,7 @@ $.fn.richInput = function(data) {
 		}
 	}
 
-	tinymce.init({
+	var tinyopts = {
 		  selector: '#' + id,
 		  height: options.height,
 		  theme: 'modern',
@@ -566,6 +569,7 @@ $.fn.richInput = function(data) {
 		  toolbar1: options.toolbar1,
 		  toolbar2: options.toolbar2,
 		  image_advtab: true,
+		  plugins: options.plugins,
 		  templates: [
 		    { title: 'Test template 1', content: 'Test 1' },
 		    { title: 'Test template 2', content: 'Test 2' }
@@ -609,7 +613,15 @@ $.fn.richInput = function(data) {
 				  }
 			  });
 		  }
-	});
+	};
+	if(options.usePlugins) 
+		tinyopts.plugins = options.plugins;
+	if(options.extraPlugins)
+		if(tinyopts.plugins) tinyopts.plugins += options.extraPlugins; else tinyopts.plugins = options.extraPlugins;
+	if(options.tinyMCEOptions) 
+		tinyopts = $.extend(options.tinyMCEOptions, tinyopts);
+	
+	tinymce.init(tinyopts);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 
