@@ -539,8 +539,8 @@ $.fn.resourceTable = function(params) {
 					'click',
 					'#' + divName + 'Actions' + id + ' .row-copy',
 					function() {
-						var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
-						var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+						var row = parseInt($('#' + divName + ' [data-uniqueid="' + id + '"]').data('index'));
+						var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[row];
 						options.view.copyResource(resource);
 				});
 			}
@@ -565,7 +565,7 @@ $.fn.resourceTable = function(params) {
 						
 						log("Entering resource delete for id " + id);
 	
-						var row = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
+						var row = parseInt($('#' + divName + ' [data-uniqueid="' + id + '"]').data('index'));
 						var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[row];
 	
 						bootbox.confirm(getResource(options.resourceKey + ".delete.desc")
