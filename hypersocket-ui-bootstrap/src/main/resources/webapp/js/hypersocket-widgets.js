@@ -524,7 +524,8 @@ $.fn.richInput = function(data) {
  					callback.editor.remove();
  			},
  			reset: function() {
- 				callback.editor.setContent(callback.originalValue);
+ 				if(callback.editor)
+ 					callback.editor.setContent(callback.originalValue);
  			},
  			disable: function() {
  				$('#' + id).attr('disabled', true);
