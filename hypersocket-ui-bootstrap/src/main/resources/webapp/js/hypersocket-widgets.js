@@ -2478,7 +2478,7 @@ $.fn.multipleTextInput = function(data) {
         });
 
 		$('#' + id).append('<div class="includedList" id="' + id + 'Included"></div>');
-		$('#' + id + 'Included').append('<div class=" formInput form-control includedSelect">'
+		$('#' + id + 'Included').append('<div class=" formInput form-control includedSelect wrap">'
 					+ '<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'multiple="multiple" id="'
 							+ id + 'IncludedSelect" name="IncludedSelect_' + name + '"/></div>');
 
@@ -2537,7 +2537,7 @@ $.fn.multipleTextInput = function(data) {
 
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
-			var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
+			var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span class="wrap">' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
 
 			newElement.find('i.fa.fa-times').click(function(e){
 				removeElement(e);
