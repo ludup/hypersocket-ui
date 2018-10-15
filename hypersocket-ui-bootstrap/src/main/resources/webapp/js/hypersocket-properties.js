@@ -1020,8 +1020,9 @@ $.fn.propertyPage = function(opts) {
 											}
 
 											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + inputId + '"/></div>');
-											$('#' + tab + '_item' + inputId).append('<label class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
-													+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');
+											if(!obj.noLabel)
+    											$('#' + tab + '_item' + inputId).append('<label id="" class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
+    													+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');
 											$('#' + tab + '_item' + inputId).append('<div class="propertyValue ' + sizeClass + '" id="' + tab + '_value' + inputId + '"></div>');
 
 											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
