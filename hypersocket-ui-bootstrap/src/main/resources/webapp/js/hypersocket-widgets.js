@@ -135,7 +135,7 @@ $.fn.textInput = function(data) {
 			html += '<div class="input-group">';
 		}
 				
-		var html ='<textarea name="' + name + '" id="' + id + '" class="form-control" value="' 
+		html ='<textarea name="' + name + '" id="' + id + '" class="form-control" value="' 
 				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + ' cols="' 
 				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" ' 
 				+ (options.maxlength > -1 ? 'maxlength="' + options.maxlength  + '"' : '' )
@@ -148,9 +148,12 @@ $.fn.textInput = function(data) {
 		}
 
 			    
-	} else {
+	} else if(options.inputType=='paragraph') {
 		
-		var html = '';
+		html += '<pre  id="' + id + '" class="form-control"></pre>';
+		
+	} else {
+		html = '';
 		if(hasVariables || options.url) {
 			html += '<div class="input-group">';
 		}
@@ -206,7 +209,11 @@ $.fn.textInput = function(data) {
  	
  	var callback = {
  			setValue: function(val) {
- 				$('#' + id).val(val);
+ 				if(options.inputType=='paragraph') {
+ 					$('#' + id).text(val);
+ 				} else {
+ 					$('#' + id).val(val);
+ 				}
  			},
  			getValue: function() {
  				return $('#' + id).val();
