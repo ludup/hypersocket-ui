@@ -134,10 +134,10 @@ $.fn.textInput = function(data) {
 		if(options.variables || options.url) {
 			html += '<div class="input-group">';
 		}
-
-		var html ='<textarea name="' + name + '" id="' + id + '" class="form-control" value="'
-				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + ' cols="'
-				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" '
+				
+		html ='<textarea name="' + name + '" id="' + id + '" class="form-control" value="' 
+				+ stripNull(options.value) + '"' + (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + ' cols="' 
+				+ (options.cols ? options.cols : 30) + '" rows="' + (options.rows ? options.rows : 5) + '" ' 
 				+ (options.maxlength > -1 ? 'maxlength="' + options.maxlength  + '"' : '' )
 				+ (options.font ? 'style="font-family: ' + options.font + '"' : '')
 				+ '></textarea>';
@@ -147,10 +147,14 @@ $.fn.textInput = function(data) {
 		    	+ 'data-toggle="dropdown">${}</span></div>';
 		}
 
-
+			    
+	} else if(options.inputType=='paragraph') {
+		
+		html += '<pre  id="' + id + '" class="form-control"></pre>';
+		
 	} else {
+		html = '';
 
-		var html = '';
 		if(hasVariables || options.url) {
 			html += '<div class="input-group">';
 		}
@@ -257,7 +261,11 @@ $.fn.textInput = function(data) {
 
  	var callback = {
  			setValue: function(val) {
- 				$('#' + id).val(val);
+ 				if(options.inputType=='paragraph') {
+ 					$('#' + id).text(val);
+ 				} else {
+ 					$('#' + id).val(val);
+ 				}
  			},
  			getValue: function() {
  				return $('#' + id).val();
