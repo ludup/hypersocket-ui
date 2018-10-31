@@ -63,7 +63,10 @@
 									useFilters: true,
 									canUpdate : currentMenu.canUpdate, 
 									useTemplates : true,
-									propertyTabsLast: false
+									propertyTabsLast: false,
+									urlProcessor: function(url) {
+										return url.replace('$' + '{realmApi}', 'currentRealm');
+									}
 								});
 							}
 						}
@@ -171,7 +174,10 @@
 											i18nNamespace: 'automations',
 											useFilters: true,
 											canUpdate : currentMenu.canUpdate && !readOnly,
-											propertyTabsLast: false
+											propertyTabsLast: false,
+											urlProcessor: function(url) {
+												return url.replace('$' + '{realmApi}', 'currentRealm');
+											}
 								});
 								displaying = false;
 							
