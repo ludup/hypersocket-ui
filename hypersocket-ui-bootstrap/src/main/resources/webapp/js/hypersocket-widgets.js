@@ -1064,7 +1064,8 @@ $.fn.autoComplete = function(data) {
 			sortOptions: true,
 			doNotInit: false,
 			selectFirst: false,
-			setOnLoad: false
+			setOnLoad: false,
+			formatter: false
 		}, data);
 	var callback;
 	var id = $(this).attr('id') + "AutoComplete";
@@ -1151,10 +1152,17 @@ $.fn.autoComplete = function(data) {
 		$('#auto_' + id).empty();
 		if(selected.length > 0 && (text != '' || options.alwaysDropdown)) {
 			$.each(selected, function(idx, obj) {
-				if(options.valueAttr in obj)
-    				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
-    						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
-    			else
+				if(options.valueAttr in obj) {
+    				if(options.formatter) {
+        				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
+        						+ options.formatter(obj, idx, thisWidget) + '</a></li>');
+    				}
+    				else {
+        				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
+        						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
+    				}
+				}
+				else
     				throw 'No attribute with name of ' + options.valueAttr + ' in the autocomplete options object. Is your options.valueAttr correct?';
 			});
 			$('#auto_' + id + ' .optionSelect').off('click');
