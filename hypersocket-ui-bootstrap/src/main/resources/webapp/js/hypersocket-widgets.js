@@ -515,13 +515,20 @@ $.fn.richInput = function(data) {
 	}
 
 	var callback;
+	var textOnInit = false;
+	
 	callback = {
 			editor: false,
 			originalValue: '',
  			setValue: function(val) {
- 				callback.editor.setContent(val);
- 				if(options.changed) {
- 					options.changed(callback);
+ 				if(!callback.editor) {
+ 					textOnInit = val;
+ 				}
+ 				else {
+     				callback.editor.setContent(val);
+     				if(options.changed) {
+     					options.changed(callback);
+     				}
  				}
  			},
  			getValue: function() {
@@ -555,6 +562,8 @@ $.fn.richInput = function(data) {
  			}
  		};
 
+
+	
 	var lastCallback = $(this).data('widget');
 	if(lastCallback) {
 		/* Remove the previous editor cleanly - https://stackoverflow.com/questions/4651676/how-do-i-remove-tinymce-and-then-re-add-it#4655467 */
@@ -563,6 +572,15 @@ $.fn.richInput = function(data) {
 			tinymce.EditorManager.execCommand('mceRemoveEditor',true, lastCallback.editor.id);
 			tinymce.EditorManager.editors.splice(i, 1);
 		}
+	}
+	else {
+		/* Try find by ID instead */
+		$.each(tinymce.EditorManager.editors, function(idx, option) {
+			if(this.id === id) {
+				tinymce.EditorManager.execCommand('mceRemoveEditor', true, this.id);
+				tinymce.EditorManager.editors.splice(idx, 1);
+			}
+		});
 	}
 
 	var tinyopts = {
@@ -594,9 +612,8 @@ $.fn.richInput = function(data) {
 		    '//www.tinymce.com/css/codepen.min.css'
 		  ],*/
 		  init_instance_callback : function(editor) {
-			  
 			  callback.editor = editor;
-			  var newval = options.value;
+			  var newval = textOnInit ? textOnInit : options.value;
 			  if(!newval) {
 				  var tagName = $('#' + id).prop('tagName');
 				  if(tagName == 'textarea' || tagName == 'input' || tagName == 'TEXTAREA' || tagName == 'INPUT')
@@ -5075,7 +5092,7 @@ $.fn.html5Upload = function(data) {
  				$.each(val, function(index, uuid){
  					getJSON('files/file/' + uuid, null, function(data){
  	 					if(data.success) {
- 	 						drawRow(data.resource.fileName, data.resource.fileSize, data.resource.name);
+ 	 						drawRow(data.resource.fileName, data.resource.fileSize, options.useUUID ? data.resource.name : data.resource.id);
  	 					}
  	 				});
  				});
