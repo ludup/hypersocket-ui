@@ -1066,10 +1066,12 @@ $.fn.selectButton = function(data) {
 $.fn.autoComplete = function(data) {
 
 	var options = $.extend(
-		{ valueAttr : 'value',
-			nameAttr : 'name',
-			nameIsResourceKey : false,
-			selectedIsObjectList : false,
+		{ 
+			valueAttr : 'value', 
+			nameAttr : 'name', 
+			nameIsResourceKey : false, 
+			selectedIsObjectList : false, 
+			variableTemplate: '$\{{0}\}',
 			isResourceList: true,
 			disabled : false,
 			remoteSearch: false,
@@ -1085,15 +1087,48 @@ $.fn.autoComplete = function(data) {
 	var id = $(this).attr('id') + "AutoComplete";
 	var thisWidget = $(this);
 
-	$(this).append('<div class="dropdown input-group"><input type="hidden" id="' + id
-			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : 'class="form-control"') + ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
-			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>'
-			+ '<span id="click_' + id + '" class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"')
-			+ '><a href="#"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>');
-
+	var hasVariables = (options.variables && options.variables.length > 0);
+	
+    var html = '<div class="input-group dropdown"><input type="hidden" id="' + id
+			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" data-toggle="dropdown"' : 'class="form-control"')
+			+ ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
+			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>';
+    
+    html += '<span id="click_' + id + '" class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"')
+	+ '><a href="#"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>';
+    	
+	if(hasVariables || options.variablesUrl) {
+		html += '<div class="dropdown floatRight"><ul id="vars_' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><a href="#" class="dropdown-toggle unselectable" data-toggle="dropdown">${} Insert Variable</span></div>';
+	} 
+	
+	$(this).append(html);
+	
 	if(options.remoteSearch) {
 		$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 	}
+	
+ 	if(hasVariables) {
+ 		$.each(options.variables, function(idx, obj) {
+ 			$('#vars_' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
+ 		});
+ 		
+ 		$('.' + id + 'Class').click(function(e) {
+			e.preventDefault();
+			var obj = new Object();
+			obj[options.valueAttr] = $(this).text();
+			obj[options.nameAttr] = $(this).text()
+			thisWidget.data('selectedObject', obj);
+			thisWidget.data('selectedObject', obj);
+			$('#' + id).val($(this).text());
+			$('#input_' + id).val($(this).text());
+			$('[data-toggle="dropdown"]').parent().removeClass('open');
+			
+			if(options.changed) {
+				options.changed(callback);
+			}
+		});
+	
+ 	}
 
 	var buildData = function(values) {
 		var map = [];
@@ -2176,6 +2211,7 @@ $.fn.multipleSearchInput = function(data) {
 			remoteSearch: true,
 			searchParams: options.searchParams,
 			url: options.url,
+			variables: options.variables,
 			nameAttr: options.nameAttr,
 			valueAttr: options.valueAttr,
 			selectedIsObjectList: true,
