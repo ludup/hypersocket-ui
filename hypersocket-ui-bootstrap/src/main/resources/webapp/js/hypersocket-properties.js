@@ -1495,15 +1495,9 @@ $.fn.propertyPage = function(opts) {
 					}
 				}
 				$(this).tab('show');
-				$('.code').each(function() {
-					$(this).data('codeMirror').refresh();
-				});
 			});
 
 			$('.' +  propertyDiv + 'Tab').first().tab('show');
-			$('.code').each(function() {
-				$(this).data('codeMirror').refresh();
-			});
 			
 			if (options.showButtons) {
 				

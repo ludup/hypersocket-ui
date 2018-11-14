@@ -427,7 +427,8 @@ $.fn.codeInput = function(data) {
 		  value: options.value,
 		  mode:  options.inputType=='java' ? 'text/x-java' : options.inputType,
 		  lineNumbers: options.lineNumbers,
-		  readOnly: options.disabled
+		  readOnly: options.disabled,
+		  autoRefresh: true
 	});
 
 	var callback = {
@@ -469,10 +470,6 @@ $.fn.codeInput = function(data) {
 
 	$('#' + id).data('codeMirror', myCodeMirror);
 	$('#' + id).show();
-
-	setTimeout(function() {
-	    myCodeMirror.refresh();
-	},1);
 
 	$(window).resize(function() {
 		$('#' + id).width(getCodeMirrorWidth());

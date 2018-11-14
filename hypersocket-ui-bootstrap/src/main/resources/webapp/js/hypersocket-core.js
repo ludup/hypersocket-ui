@@ -779,7 +779,12 @@ function loadComplete(pageChange) {
 function loadWait() {
 
 	if($('#mainContent').data('pageChange')) {
-		$('#mainContent').data('pageChange')();
+		try {
+			$('#mainContent').data('pageChange')();
+		}
+		catch(e) {
+			console.log('ERROR: Page change handler failed.' + e);
+		}
 		$('#mainContent').data('pageChange', null);
 	}
 	
