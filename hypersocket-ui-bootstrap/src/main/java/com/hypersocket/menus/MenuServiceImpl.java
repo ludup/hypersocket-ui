@@ -173,6 +173,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				SessionPermission.READ, null, null, SessionPermission.DELETE,
 				null), MenuService.MENU_DASHBOARD);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "jobs",
+				"fa-tasks", "jobs", 999988,
+				SystemPermission.SYSTEM, null, null, SystemPermission.SYSTEM,
+				null), MenuService.MENU_DASHBOARD);
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_MY_PROFILE, "fa-tags", null, 200, null, null,
 				null, null), MenuService.MENU_PERSONAL);
