@@ -2345,3 +2345,7 @@ form#logonForm {
 .form-signin-security {
 	padding-top: 20px;
 }
+
+.underline {
+	text-decoration: underline;
+}
