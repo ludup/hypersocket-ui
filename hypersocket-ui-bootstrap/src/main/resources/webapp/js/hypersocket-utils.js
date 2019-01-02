@@ -321,6 +321,44 @@ $.fn.getCursorPosition = function () {
     return pos;
 }
 
+$.fn.startSpin2 = function (message) {
+
+	if(!message) {
+		message = getResource('pleaseWait.text');
+	}
+	var _self = $(this);
+	if(!$(this).find('.sk-fading-circle').length) {
+		$.each($(this).children(), function(idx, element) {
+			if($(element).is(":visible")) {
+				$(element).data('state', true);
+				$(element).hide();
+			}
+		});
+		
+		$(this).append('<div class="sk-fading-circle">'
+				+'<div class="sk-circle1 sk-circle"></div>'
+				+'<div class="sk-circle2 sk-circle"></div>'
+				+'<div class="sk-circle3 sk-circle"></div>'
+				+'<div class="sk-circle4 sk-circle"></div>'
+				+'<div class="sk-circle5 sk-circle"></div>'
+				+'<div class="sk-circle6 sk-circle"></div>'
+				+'<div class="sk-circle7 sk-circle"></div>'
+				+'<div class="sk-circle8 sk-circle"></div>'
+				+'<div class="sk-circle9 sk-circle"></div>'
+				+'<div class="sk-circle10 sk-circle"></div>'
+				+'<div class="sk-circle11 sk-circle"></div>'
+				+'<div class="sk-circle12 sk-circle"></div>'
+				+'<div class="sk-message"><p>' + getResourceOrText(message) + '</p></div>'
+				+'</div>');
+	}
+	
+	return {
+		stopSpin: function() {
+			_self.stopSpin();
+		}
+	};
+}
+
 $.fn.startSpin = function (message) {
 
 	if(!message) {
@@ -367,6 +405,24 @@ $.fn.stopSpin = function () {
 		setTimeout(function() {
 			me.find('.sk-fading-circle').remove();
 			$('.showOnComplete').show();
+			$.each(me.children(), function(idx, element) {
+				if($(element).data('state')) {
+					$(element).show();
+					$(element).data('state', null);
+				}
+			});
+		    
+		}, 100);
+	}
+
+}
+
+$.fn.stopSpin2 = function () {
+
+	var me = $(this).find('.sk-fading-circle').parent();
+	if(me.length) {
+		setTimeout(function() {
+			me.find('.sk-fading-circle').remove();
 			$.each(me.children(), function(idx, element) {
 				if($(element).data('state')) {
 					$(element).show();
