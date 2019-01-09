@@ -5544,6 +5544,10 @@ $.fn.wizardPage = function(data) {
 
 	});
 
+	if(options.complete) {
+		options.complete();
+	}
+	
 	return {
 		reset: function() {
 			$('#resetForm').click();
