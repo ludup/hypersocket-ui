@@ -320,6 +320,10 @@ function processLogon(data, opts, message) {
 							'<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + data['bannerMsg'] + '</p></div><div class="col-md-3"></div>');
 			}
 		}
+		
+		if(data.formTemplate && data.formTemplate.startAuthentication) {
+			$('#logonButton').click();
+		}
 
 	} else {
 		log("User is logged in");
