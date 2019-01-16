@@ -3894,7 +3894,7 @@ $.fn.fileUploadInput = function(data) {
 			formattedHtml +=	'	<span>' + fileSize + '</span><br>'
 						+	'	<span>' + data.md5Sum + '</span>';
 			if(options.showDownloadLink) {
-				formattedHtml +=   '   <br><span><a href="' + basePath + '/api/files/download/' + data.shortCode + '/' + data.fileName + '">' + basePath + '/api/files/public/' + data.shortCode + '/' + data.fileName + '</a></span>';
+				formattedHtml +=   '   <br><span><a href="' + basePath + '/api/files/download/' + data.shortCode + '/' + data.fileName + '">' + basePath + '/api/files/download/' + data.shortCode + '/' + data.fileName + '</a></span>';
 			}
 		}
 
@@ -4133,7 +4133,7 @@ $.fn.fileUploadInput = function(data) {
  			},
  			download: function(){
  				uuid = $('#' + id + 'Info').data('uuid');
- 				window.location = basePath + '/api/files/public/' + uuid + '?token=' + getCsrfToken();
+ 				window.location = basePath + '/api/files/download/' + uuid + '?token=' + getCsrfToken();
  			},
  			options: function() {
  				return options;
