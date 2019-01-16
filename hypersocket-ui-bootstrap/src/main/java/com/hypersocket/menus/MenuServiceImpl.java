@@ -367,7 +367,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_ACCESS_CONTROL,
-						"fa-unlock-alt", null, 200, null, null, null, null),
+						"fa-users", null, 200, null, null, null, null),
 				MenuService.MENU_SYSTEM);
 
 		registerMenu(new RealmMenuRegistration(RESOURCE_BUNDLE, "users",
