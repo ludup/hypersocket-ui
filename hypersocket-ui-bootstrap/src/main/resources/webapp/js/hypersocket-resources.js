@@ -94,11 +94,11 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 			    message: data.message.format(data.args),
 			    buttons: {
 			        confirm: {
-			            label: getResource(options.confirmationButtonSuccess),
+			            label: getResource(options.confirmationButtonSuccess ? options.confirmationButtonSuccess : 'text.yes'),
 			            className: 'btn-success'
 			        },
 			        cancel: {
-			            label: getResource(options.confirmationButtonCancel),
+			            label: getResource(options.confirmationButtonCancel ? options.confirmationButtonCancel : 'text.no'),
 			            className: 'btn-danger'
 			        }
 			    },
