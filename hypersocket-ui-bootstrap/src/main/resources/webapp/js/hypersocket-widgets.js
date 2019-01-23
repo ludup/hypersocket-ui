@@ -6660,3 +6660,55 @@ $.fn.autoCompleteNamePairs = function(data) {
 	$(this).data('created', true);
 	return callback;
 }
+
+$.fn.switchingHtmlContent = function(data) {
+	
+	
+	var id =  $(this).attr('id') + "switchingHtmlContent";
+	$(this).append('<div id="' + id + '"><div id="' + id + 'Panel"><a id="' + id + 'ClickRich" href="#"></a> | <a id="' + id + 'ClickHtml" href="#"></a></div><div id="' + id + 'richInput"></div><div id="' + id + 'htmlInput"></div></div>');
+
+	
+	$('#' + id + 'ClickRich').click(function(e) {
+		
+	});
+	
+	$('#' + id + 'ClickHtml').click(function(e) {
+		
+	});
+	
+	
+	
+	var callback = {
+			getValue: function() {
+				return multipleRows.getValue();
+			},
+			setValue: function(val) {
+				multipleRows.setValue(val);
+				if(options.changed) {
+		 			options.changed(callback);
+		 		}
+			},
+			disable: function() {
+				multipleRows.disable();
+				options.disabled = true;
+			},
+			enable: function() {
+				multipleRows.enable();
+				options.disabled = false;
+			},
+			options: function() {
+				return options;
+			},
+			clear: function() {
+				multipleRows.clear();
+			},
+			getInput: function() {
+				return $('#' + id);
+			}
+	};
+	
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	$(this).data('created', true);
+	return callback;
+}
