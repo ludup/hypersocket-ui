@@ -1,8 +1,11 @@
 package com.hypersocket.ui;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class DateDataPoint {
+public class DateDataPoint implements Serializable {
+
+	private static final long serialVersionUID = 7516920190945705147L;
 
 	Date x;
 	long y;
