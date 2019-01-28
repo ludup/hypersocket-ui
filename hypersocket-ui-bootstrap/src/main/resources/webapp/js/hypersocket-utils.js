@@ -104,7 +104,7 @@ if (!('contains' in String.prototype)) {
  * work out what the paths are.
  */
 $('script').each(function(idx, script) {
-	if($(this).attr('src').length > 0) {
+	if($(this).attr('src') && $(this).attr('src').length > 0) {
 		if($(this).attr('src').endsWith('hypersocket-utils.js')) {
 			var src = $(this).attr('src');
 			var idx = 1;
