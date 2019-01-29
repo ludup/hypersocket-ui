@@ -324,7 +324,7 @@ $.fn.getCursorPosition = function () {
 $.fn.startSpin2 = function (message) {
 
 	if(!message) {
-		message = getResource('pleaseWait.text');
+		message = getResourceOrDefault('pleaseWait.text', "Please wait...");
 	}
 	var _self = $(this);
 	if(!$(this).find('.sk-fading-circle').length) {
@@ -348,7 +348,7 @@ $.fn.startSpin2 = function (message) {
 				+'<div class="sk-circle10 sk-circle"></div>'
 				+'<div class="sk-circle11 sk-circle"></div>'
 				+'<div class="sk-circle12 sk-circle"></div>'
-				+'<div class="sk-message"><p>' + getResourceOrText(message) + '</p></div>'
+				+'<div class="sk-message"><p>' + message + '</p></div>'
 				+'</div>');
 	}
 	
@@ -509,11 +509,15 @@ function replacePaths(value) {
 }
 
 function getResourceOrDefault(key, alt) {
-	var result = $(document).data('i18n')[key];
-	if(!result) {
-		result = alt;
+	if($(document).data('i18n')) {
+		var result = $(document).data('i18n')[key];
+		if(!result) {
+			result = alt;
+		}
+		return result;
+	} else {
+		return alt;
 	}
-	return result;
 };
 
 
@@ -522,19 +526,27 @@ function getTooltip(key, element) {
 }
 
 function getResourceNoDefault(key) {
-	var result = $(document).data('i18n')[key];
-	if(!result) {
+	if($(document).data('i18n')) {
+		var result = $(document).data('i18n')[key];
+		if(!result) {
+			return undefined;
+		}
+		return result;
+	} else {
 		return undefined;
 	}
-	return result;
 };
 
 function getResourceOrText(key) {
-	var result = $(document).data('i18n')[key];
-	if(!result) {
+	if($(document).data('i18n')) {
+		var result = $(document).data('i18n')[key];
+		if(!result) {
+			return key;
+		}
+		return result;
+	} else {
 		return key;
 	}
-	return result;
 };
 
 function getResourceWithNamespace(namespace, key) {
