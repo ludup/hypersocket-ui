@@ -1485,6 +1485,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		
 	} else if (params === 'create') {
 		dialogOptions.clearDialog(true);
+		
 		if(dialogOptions.propertyOptions) {
 			 var propertyOptions = $.extend({},
 					dialogOptions.propertyOptions,

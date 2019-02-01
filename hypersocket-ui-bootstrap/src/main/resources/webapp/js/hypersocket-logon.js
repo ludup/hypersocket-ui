@@ -86,7 +86,9 @@ function processLogon(data, opts, message) {
 		var setFocus = false;
 		if(data.formTemplate) {
 
-			$('#logonForm').before('<h1 class="form-scheme-heading">' + getResource(data.formTemplate.scheme + '.logon.title') + '</h1>');
+			$('#logonForm').before('<h1 class="form-scheme-heading">' 
+					+ getResource(data.formTemplate.scheme 
+					+ '.logon.title') + '</h1>');
 
 			$.each(data.formTemplate.inputFields, function() {
 				if (this.type == 'hidden') {
