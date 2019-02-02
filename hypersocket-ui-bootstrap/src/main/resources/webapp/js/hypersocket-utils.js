@@ -3,6 +3,7 @@
  */
 var hasShutdown = false;
 var polling = false;
+var baseUrl = '${baseUrl}';
 var basePath = '${appPath}';
 var uiPath = '${uiPath}';
 
@@ -18,6 +19,7 @@ function getCsrfToken() {
 function doAjax(options) {
 	options = $.extend(
 			{  
+			   xhrFields: { withCredentials: true },
 			   beforeSend: function(request) {
 				  request.setRequestHeader("X-Csrf-Token", getCsrfToken());
 			   }
@@ -664,6 +666,16 @@ function isFunction(functionToCheck) {
 	return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
 }
 
+function resolveUrl(url) {
+	if(!url.startsWith('/')) {
+		url = basePath + '/api/' + url;
+	} 
+	if(!url.startsWith('http:') && !url.startsWith('https:')) {
+		url = baseUrl + url;
+	}
+	return url;
+}
+
 function getJSON(url, params, callback, errorCallback) {
 	if(isFunction(url)) {
 		url = url();
@@ -672,9 +684,7 @@ function getJSON(url, params, callback, errorCallback) {
 		params = params();
 	}
 
-	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
-		url = window.location.origin + basePath + '/api/' + url;
-	}
+	url = resolveUrl(url);
 	
 	log("GET: " + url);
 	
@@ -709,11 +719,11 @@ function getJSON(url, params, callback, errorCallback) {
 };
 
 function backgroundJSON(url, params, callback) {
-	log("GET: " + url);
 	
-	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
-		url = basePath + '/api/' + url;
-	}
+	
+	url = resolveUrl(url);
+	
+	log("GET: " + url);
 	
 	return doAjax({
 		type: "GET",
@@ -726,11 +736,10 @@ function backgroundJSON(url, params, callback) {
 
 function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 	
-	log("POST: " + url);
+
+	url = resolveUrl(url);
 	
-	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
-		url = basePath + '/api/' + url;
-	}
+	log("POST: " + url);
 	
 	return doAjax({
 		type: "POST",
@@ -770,11 +779,9 @@ function postJSON(url, params, callback, errorCallback, alwaysCallback) {
 
 function postFORM(url, params, callback, errorCallback, alwaysCallback) {
 	
-	log("POST FORM: " + url);
+	url = resolveUrl(url);
 	
-	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
-		url = basePath + '/api/' + url;
-	}
+	log("POST FORM: " + url);
 	
 	return doAjax({
 		type: "POST",
@@ -813,12 +820,11 @@ function postFORM(url, params, callback, errorCallback, alwaysCallback) {
 };
 
 function deleteJSON(url, params, callback, errorCallback) {
+
 	
+	url = resolveUrl(url);
+
 	log("DELETE: " + url);
-	
-	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
-		url = basePath + '/api/' + url;
-	}
 	
 	return doAjax({
 		type: "DELETE",
@@ -849,11 +855,11 @@ function deleteJSON(url, params, callback, errorCallback) {
 
 function patchJSON(url, params, callback, errorCallback, alwaysCallback) {
 
+	
+	url = resolveUrl(url);
+	
 	log("PATCH: " + url);
-
-	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
-		url = basePath + '/api/' + url;
-	}
+	
 
 	return doAjax({
 		type: "PATCH",
@@ -891,7 +897,7 @@ function pollForServerContact() {
 	polling = true;
 	doAjax({
 		type: "GET",
-	    url:  basePath + '/api/session/peek',
+	    url:  baseUrl + basePath + '/api/session/peek',
 	    dataType: 'json',
 	    contentType: 'application/json',
 	    success: function() {

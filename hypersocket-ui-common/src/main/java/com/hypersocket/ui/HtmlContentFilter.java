@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import com.hypersocket.HypersocketVersion;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.ContentFilter;
+import com.hypersocket.servlet.request.Request;
 import com.hypersocket.utils.ITokenResolver;
 import com.hypersocket.utils.TokenReplacementReader;
 
@@ -53,6 +54,7 @@ public class HtmlContentFilter implements ContentFilter {
 	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) {
 
 		MapTokenResolver resolver = new MapTokenResolver();
+		resolver.addToken("baseUrl", Request.generateBaseUrl(request));
 		resolver.addToken("appPath", server.getApplicationPath());
 		resolver.addToken("basePath", server.getBasePath());
 		resolver.addToken("uiPath", server.getUiPath());
