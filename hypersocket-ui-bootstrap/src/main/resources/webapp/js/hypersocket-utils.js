@@ -671,12 +671,12 @@ function getJSON(url, params, callback, errorCallback) {
 	if(isFunction(params)) {
 		params = params();
 	}
+
+	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
+		url = window.location.origin + basePath + '/api/' + url;
+	}
 	
 	log("GET: " + url);
-	
-	if(!url.startsWith('/') && !url.startsWith('http:') && !url.startsWith('https:')) {
-		url = basePath + '/api/' + url;
-	}
 	
 	return doAjax({
 		type: "GET",
