@@ -538,28 +538,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				}
 			}
 		}, MenuService.MENU_MY_PROFILE);
-	
-		registerMenu(new MenuRegistration(
-				TriggerResourceServiceImpl.RESOURCE_BUNDLE, "triggersMenu",
-				"fa-flash", null, 200),
-				MenuService.MENU_BUSINESS_RULES);
-		
-		registerMenu(new MenuRegistration(
-				TriggerResourceServiceImpl.RESOURCE_BUNDLE, "triggers",
-				"fa-flash", "triggers", 200, TriggerResourcePermission.READ,
-				TriggerResourcePermission.CREATE,
-				TriggerResourcePermission.UPDATE,
-				TriggerResourcePermission.DELETE),
-				"triggersMenu");
-
-		registerMenu(new MenuRegistration(
-				AutomationResourceServiceImpl.RESOURCE_BUNDLE, "automations",
-				"fa-clock-o", "automations", 100,
-				AutomationResourcePermission.READ,
-				AutomationResourcePermission.CREATE,
-				AutomationResourcePermission.UPDATE,
-				AutomationResourcePermission.DELETE),
-				MenuService.MENU_BUSINESS_RULES);
 	}
 
 	@Override
@@ -594,7 +572,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	}
 
 	@Override
-	public boolean registerMenu(MenuRegistration module, String parentModule) {
+	public synchronized boolean registerMenu(MenuRegistration module, String parentModule) {
 
 		/**
 		 * Top navigation menu is special case and processed differently so just hide any
