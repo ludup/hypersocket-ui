@@ -25,8 +25,6 @@ import org.springframework.stereotype.Service;
 import com.hypersocket.attributes.role.RoleAttributePermission;
 import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
-import com.hypersocket.automation.AutomationResourcePermission;
-import com.hypersocket.automation.AutomationResourceServiceImpl;
 import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certificates.CertificateResourceService;
@@ -53,8 +51,6 @@ import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.session.SessionPermission;
-import com.hypersocket.triggers.TriggerResourcePermission;
-import com.hypersocket.triggers.TriggerResourceServiceImpl;
 import com.hypersocket.ui.IndexPageFilter;
 
 @Service
