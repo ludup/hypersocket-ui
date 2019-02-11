@@ -188,6 +188,7 @@ pre {
 
 .logonInput {
 	position: relative;
+	overflow: auto;
 }
 
 .excludedList {
