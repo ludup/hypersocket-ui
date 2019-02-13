@@ -1506,7 +1506,8 @@ $.fn.propertyPage = function(opts) {
 					$(applyButton).attr('disabled', true);
 				}
 				
-				$(revertButton).click(function() {
+				$(revertButton).click(function(e) {
+					e.preventDefault();
 					
 					if(options.revertButtonClick) {
 						options.revertButtonClick($(revertButton));
@@ -1521,7 +1522,8 @@ $.fn.propertyPage = function(opts) {
 						}
 					}
 				});
-				$(applyButton).click(function() {
+				$(applyButton).click(function(e) {
+					e.preventDefault();
 
 					if(options.applyButtonClick) {
 						options.applyButtonClick($(applyButton));

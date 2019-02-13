@@ -126,11 +126,15 @@ function processLogon(data, opts, message) {
 					});
 					return;
 				} else if(this.type == 'html') {
-					$('#logonForm').append('<div id="' + this.resourceKey + '" class="center"></div>');
+					$('#logonForm').append('<div id="' + this.resourceKey + '" class="' + this.classes + '"></div>');
 					$('#' + this.resourceKey).html(replacePaths(this.defaultValue));
 					return;
 				} else if(this.type =='img') {
-					$('#logonForm').append('<div class="center"><img id="' + this.resourceKey + '" src="' + replacePaths(this.defaultValue) + '"></img></div>');
+					if(this.url) {
+						$('#logonForm').append('<div class="center"><a href="' + this.url + '"><img id="' + this.resourceKey + '" src="' + replacePaths(this.defaultValue) + '"></img></a></div>');
+					} else {
+						$('#logonForm').append('<div class="center"><img id="' + this.resourceKey + '" src="' + replacePaths(this.defaultValue) + '"></img></div>');
+					}
 					return;
 				}
 

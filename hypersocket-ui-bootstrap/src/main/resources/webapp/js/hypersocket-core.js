@@ -35,6 +35,27 @@ $.fn.spin = function(opts) {
 	return this;
 };
 
+$.fn.countries = function(obj) {
+	
+	var id = $(this).attr('id');
+	
+	doAjax({
+	    url: uiPath + 'json/countries.json',
+	    dataType: "text",
+	    success: function(data) {
+	    	var list = $.parseJSON(data);
+	    	
+	    	var widgetOptions = $.extend(obj, {
+	    		values : list,
+	    		nameAttr: 'name',
+	    		valueAttr: 'code'
+	    	});
+	    
+	    	$('#' + id).autoComplete(widgetOptions);
+	    }
+	});
+};
+
 $.ajaxSetup({ error : function(xmlRequest) {
 
 	log("AJAX ERROR: " + xmlRequest.status);
@@ -290,7 +311,8 @@ function home(data) {
 									+ this.icon + '"></i><span class="hidden-sm text">' 
 									+ getResource(this.resourceKey + '.label') + '</span></span></a></li>');
 							$('#' + this.id).data('menu', this);
-							$('#' + this.id).click(function() {
+							$('#' + this.id).click(function(e) {
+								e.preventDefault();
 								$(".sideMenu").removeClass("active");
 								$(this).addClass("active");
 							});
@@ -569,10 +591,12 @@ function showShutdownDialog(option, logoff) {
 '</div>';
 	$(shutdownModal).modal('show');
 
-	$('#buttonShutdown').click(function(){
+	$('#buttonShutdown').click(function(e) {
+		e.preventDefault();
 		shutdown('shutdown');
 	});
-	$('#buttonRestart').click(function(){
+	$('#buttonRestart').click(function(e) {
+		e.preventDefault();
 		shutdown('restart');
 	});
 
