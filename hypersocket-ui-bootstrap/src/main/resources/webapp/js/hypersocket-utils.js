@@ -507,13 +507,7 @@ function getResource(key) {
 };
 
 function replacePaths(value) {
-	while(value.indexOf("$" + "{uiPath}") > -1) {
-		value = value.replace("$" + "{uiPath}", uiPath);
-	}
-	while(value.indexOf("$" + "{basePath}") > -1) {
-		value = value.replace("$" + "{basePath}", basePath);
-	}
-	return value;
+	return value.replace("$" + "{uiPath}", uiPath).replace("$" + "{basePath}", basePath);
 }
 
 function getResourceOrDefault(key, alt) {
@@ -658,8 +652,7 @@ function showMessage(text, icon, alertClass, fade, fadeCallback, element) {
 	element.prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 1050; height: 50px"/>');
 	$('#systemMessage').append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + text + '</span><i id="messageDismiss" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
 	
-	$('#messageDismiss').click(function(e) {
-		e.preventDefault();
+	$('#messageDismiss').click(function() {
 		doFade();
 	});
 	
@@ -1187,8 +1180,7 @@ function showDashboardMessage(text, icon, alertClass, fade, fadeCallback) {
 	$('#dynamicDashboardMessages').prepend('<div id="dashboardMessage' + messageNum + '" class="alert ' + alertClass + '"/>');
 	$(messageDiv).append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span><i id="messageDismiss' + messageNum + '" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
 	
-	$('#messageDismiss' + messageNum).click(function(e) {
-		e.preventDefault();
+	$('#messageDismiss' + messageNum).click(function() {
 		doFade();
 	});
 	

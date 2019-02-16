@@ -3675,8 +3675,7 @@ $.fn.namePairInput = function(data) {
 	 	 	 				});
  	 					}
  	 				}
- 	 				$('.removePair').click(function(e){
- 	 					e.preventDefault();
+ 	 				$('.removePair').click(function(){
  	 					$(this).closest('.namePairInput').remove();
  	 					$('#' + id + 'NewRow').show();
  	 				});

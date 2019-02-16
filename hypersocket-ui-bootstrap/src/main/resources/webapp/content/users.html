@@ -207,8 +207,7 @@
 		        	}
 				});
 
-	            $('#exportButton').click(function(e) {
-	    			e.preventDefault();
+	            $('#exportButton').click(function(){
 
 	            	$('#sortColumn').val($('#contentUsersPlaceholder').bootstrapTable('getOptions').sortName);
 	            	$('#sortOrder').val($('#contentUsersPlaceholder').bootstrapTable('getOptions').sortOrder);
@@ -242,8 +241,7 @@
 					}
 				});
 
-			    $('.csvTab').click(function(e) {
-					e.preventDefault();
+			    $('.csvTab').click(function(){
 			    	if($(this).attr('id') == 'csvPreferencesTab'){
 			    		$('#csvPreferencesTab').addClass('active');
 			    		$('#csvPreferencesContent').addClass('active');

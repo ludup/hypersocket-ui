@@ -88,8 +88,7 @@
 						+	'	</a>'
 						+	'</li>');
 					$('#message_' + value.messageId).data('messageData', {'messageId': value.messageId, 'subject': subject, 'messageBody': messageBody});
-					$('#message_' + value.messageId).click(function(e) {
-						e.preventDefault();
+					$('#message_' + value.messageId).click(function(){
 						messageData = $(this).data('messageData');
 						messageModal =
 								'<div class="modal" id="messageModal_' + messageData.messageId + '" tabindex="-1" role="dialog">'
@@ -110,16 +109,14 @@
 		});
 	}
 	
-	$('#prevPage').click(function(e) {
-		e.preventDefault();
+	$('#prevPage').click(function(){
 		if(!$(this).hasClass('disabled')){
 			pageNum--;
 			getMessages();
 		}
 	});
 	
-	$('#nextPage').click(function(e) {
-		e.preventDefault();
+	$('#nextPage').click(function(){
 		if(!$(this).hasClass('disabled')){
 			pageNum++;
 			getMessages();

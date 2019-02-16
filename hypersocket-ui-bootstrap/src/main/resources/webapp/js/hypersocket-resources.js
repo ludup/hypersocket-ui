@@ -610,8 +610,7 @@ $.fn.resourceTable = function(params) {
 	if (options.canCreate) {
 
 		$('#' + divName + 'Actions').append('<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa ' + options.createButtonIcon + '"></i>' + getResource(options.createButtonText) + '</button>');
-		$('#' + divName + 'Add').click(function(e) {
-			e.preventDefault();
+		$('#' + divName + 'Add').click(function() {
 			if (options.showCreate) {
 				options.showCreate();
 			}
@@ -981,8 +980,7 @@ $.fn.resourceTable = function(params) {
                                 + divName + 'BulkTableAction" class="btn btn-default" title="'
                                 + getResource('bulk.assignment.tab.title') + '"><i class="fa fa-exchange"></i></button>');
 
-                        $('#' + divName + 'BulkTableAction').click(function(e) {
-                			e.preventDefault();
+                        $('#' + divName + 'BulkTableAction').click(function(){
                             var bulkAction = $('#' + bulkAssignableTarget).bulkAssignmentDialog({
                                 resource : resourceType,
                                 modalCallback : function(data) {$('#' + divName + 'Placeholder').bootstrapTable('refresh');}
@@ -1320,8 +1318,7 @@ $.fn.resourceTable = function(params) {
 				$('#' + divName + 'Actions').append(
 					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>&nbsp;' + getResource(this.resourceKey + '.label') + '</button>');
 				var button = this;
-				$('#' + this.resourceKey).click(function(e) {
-					e.preventDefault();
+				$('#' + this.resourceKey).click(function() {
 					if(button.action) {
 						button.action(function() {
 							$('#' + divName + 'Placeholder').bootstrapTable('refresh');
@@ -1384,8 +1381,7 @@ $.fn.resourceTable = function(params) {
 				+ getResource('text.toggleViewMode') + '"><i class="glyphicon fa ' + currentView.icon + '"></button>');
 		
 		
-    	$('#' + divName + 'ToggleGrid').click(function(e) {
-			e.preventDefault();
+    	$('#' + divName + 'ToggleGrid').click(function(){
     		var prev = views[0];
     		var v = views.pop();
     		views.unshift(v);
@@ -1433,8 +1429,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		dialog.find('.panel-body').first().after(html);
 		
 		if(save) {
-			$('#' + dialog.attr('id') + 'Save').click(function(e) {
-				e.preventDefault();
+			$('#' + dialog.attr('id') + 'Save').click(function() {
 				var resource = dialogOptions.createResource();
 				if(copy) {
 					resource.id = null;
@@ -1465,8 +1460,7 @@ $.fn.samePageResourceView = function(params, params2) {
 				});
 			});
 		}
-		$('#' + dialog.attr('id') + 'Cancel').click(function(e) {
-			e.preventDefault();
+		$('#' + dialog.attr('id') + 'Cancel').click(function() {
 			dialog.samePageResourceView('close');
 		});
 	
@@ -2043,8 +2037,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 							+ button.cssClass + '"><i class="fa ' 
 							+ button.icon + '"></i>' 
 							+ getResource(button.resourceKey) + '</button>');
-					$('#' + button.id + 'Action').click(function(e) {
-						e.preventDefault();
+					$('#' + button.id + 'Action').click(function() {
 						onclick(button, $('#' + button.id + 'Action'));
 					});
 				});
