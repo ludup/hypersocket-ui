@@ -401,7 +401,7 @@
 			},
 			loadParent: function(parentResource, parentEvents, triggerType) {
 
-				
+				debugger;
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);
@@ -436,6 +436,7 @@
 				   the URL it needs. */
 
 				displaying = resource.id;
+				debugger;
 				if(parentResource) {
 					/* This is for an 'Automation'???? LDP why? triggers can have parents too!±! */
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {

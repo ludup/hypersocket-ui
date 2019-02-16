@@ -299,8 +299,10 @@
 										$(document).data('triggerModalCallback').displayResource(resource);
 									} else {
 										getJSON('triggers/parentEvents/' + resource.id, null, function(data) {
-											$(document).data('triggerModalCallback').loadParent(resource, data.resources, 0);
-											$(document).data('triggerModalCallback').displayResource(resource);	
+											getJSON('triggers/trigger/' + resource.parentId, null, function(parent) {
+												$(document).data('triggerModalCallback').loadParent(parent, data.resources, 0);
+												$(document).data('triggerModalCallback').displayResource(resource);	
+											});
 										});
 // 										$(document).data('triggerModalCallback').loadParent(resource.parent, null, 0);
 // 										$(document).data('triggerModalCallback').displayResource(resource);
@@ -396,11 +398,13 @@
 					e.preventDefault();
 					var trigger = $(this).closest('.triggerShape').data('trigger');
 					getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
-						$(document).data('triggerModalCallback').loadParent(trigger, data.resources, 0);
-						$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
-							resourceCreated: function(resource) {
-								renderDiagram(resource, resourcePage, rootId, jsPlumbInstance);
-							}
+						getJSON('triggers/trigger/' + trigger.parentId, null, function(parent) {
+							$(document).data('triggerModalCallback').loadParent(parent, data.resources, 0);
+							$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
+								resourceCreated: function(resource) {
+									renderDiagram(resource, resourcePage, rootId, jsPlumbInstance);
+								}
+							});
 						});
 					});
 				});
