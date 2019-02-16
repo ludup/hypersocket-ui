@@ -35,6 +35,27 @@ $.fn.spin = function(opts) {
 	return this;
 };
 
+$.fn.countries = function(obj) {
+	
+	var id = $(this).attr('id');
+	
+	doAjax({
+	    url: uiPath + 'json/countries.json',
+	    dataType: "text",
+	    success: function(data) {
+	    	var list = $.parseJSON(data);
+	    	
+	    	var widgetOptions = $.extend(obj, {
+	    		values : list,
+	    		nameAttr: 'name',
+	    		valueAttr: 'code'
+	    	});
+	    
+	    	$('#' + id).autoComplete(widgetOptions);
+	    }
+	});
+};
+
 $.ajaxSetup({ error : function(xmlRequest) {
 
 	log("AJAX ERROR: " + xmlRequest.status);

@@ -507,7 +507,13 @@ function getResource(key) {
 };
 
 function replacePaths(value) {
-	return value.replace("$" + "{uiPath}", uiPath).replace("$" + "{basePath}", basePath);
+	while(value.indexOf("$" + "{uiPath}") > -1) {
+		value = value.replace("$" + "{uiPath}", uiPath);
+	}
+	while(value.indexOf("$" + "{basePath}") > -1) {
+		value = value.replace("$" + "{basePath}", basePath);
+	}
+	return value;
 }
 
 function getResourceOrDefault(key, alt) {
