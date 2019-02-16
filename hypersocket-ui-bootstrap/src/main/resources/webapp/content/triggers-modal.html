@@ -437,7 +437,7 @@
 
 				displaying = resource.id;
 				if(parentResource) {
-					/* This is for an 'Automation' */
+					/* This is for an 'Automation'???? LDP why? triggers can have parents too!±! */
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						
 						triggerEvent.setValue(data.resources[0].resourceKey);
