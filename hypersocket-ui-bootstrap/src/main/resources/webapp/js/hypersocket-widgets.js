@@ -3998,7 +3998,8 @@ $.fn.fileUploadInput = function(data) {
 					$('#' + id + 'RemoveButton').remove();
 					$('#' + id + 'DownloadButton').remove();
 					$('#' + id + 'UpdateProgressHolder').hide();
-					$('#' + id + 'UploadButton').click(function(){
+					$('#' + id + 'UploadButton').click(function(e){
+						e.preventDefault();
 						callback.upload();
 					});
 					if(options.disabled) {
@@ -4123,7 +4124,8 @@ $.fn.fileUploadInput = function(data) {
 					}
 					$('#' + id + 'RemoveButton').remove();
 					$('#' + id + 'DownloadButton').remove();
-					$('#' + id + 'UploadButton').click(function(){
+					$('#' + id + 'UploadButton').click(function(e){
+						e.preventDefault();
 						callback.upload();
 					});
 					if(options.disabled) {
@@ -4144,8 +4146,8 @@ $.fn.fileUploadInput = function(data) {
  			}
  		};
 
-	$('#' + id + 'UploadButton').click(function(){
-
+	$('#' + id + 'UploadButton').click(function(e){
+		e.preventDefault();
 		callback.upload();
 	});
 
@@ -4652,7 +4654,8 @@ $.fn.logoInput = function(data) {
 					$('#' + id + 'RemoveButton').parent().append('<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>');
 					$('#' + id + 'RemoveButton').remove();
 					$('#' + id + 'DownloadButton').remove();
-					$('#' + id + 'UploadButton').click(function(){
+					$('#' + id + 'UploadButton').click(function(e){
+						e.preventDefault();
 						callback.upload();
 					});
 					if(options.disabled) {
@@ -4678,8 +4681,8 @@ $.fn.logoInput = function(data) {
  			}
  		};
 
-	$('#' + id + 'UploadButton').click(function(){
-
+	$('#' + id + 'UploadButton').click(function(e){
+		e.preventDefault();
 		callback.upload();
 	});
 
@@ -4805,7 +4808,8 @@ $.fn.multipleFileUpload = function(data) {
 
 	$(this).append(html);
 
-	$('#' + id + 'AddRow').click(function() {
+	$('#' + id + 'AddRow').click(function(e) {
+		e.preventDefault();
 		$('#' + id).parent().data('widget').addRows(1);
 		return false;
 	});
@@ -4864,7 +4868,8 @@ $.fn.multipleFileUpload = function(data) {
  	 				});
  	 				if(options.showRemoveLine && !options.disabled){
  	 					$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').find('a').before('<a href="#" class="btn btn-danger" id="' + id + 'RemoveButton' + rowNum + '"><i class="fa fa-minus"></i></a>');
- 	 					$('#' + id + 'RemoveButton' + rowNum).click(function(){
+ 	 					$('#' + id + 'RemoveButton' + rowNum).click(function(e){
+ 	 						e.preventDefault();
  	 						$(this).closest('.fileUpload').remove();
  	 						$('#' + id + 'NewRow').show();
  	 						if(options.changed)
