@@ -5658,7 +5658,27 @@ $.fn.feedbackPanel = function(data) {
 			if($('#' + id).length) {
 				$('#' + id).remove();
 			}
-			if(result.status === 'SUCCESS') {
+			if(result.status === 'CONFIRM') {
+				bootbox.confirm({
+				    message: result.error.format(result.args),
+				    buttons: {
+				        confirm: {
+				            label: getResource(result.options.confirmationButtonSuccess ? result.options.confirmationButtonSuccess : 'text.yes'),
+				            className: 'btn-success'
+				        },
+				        cancel: {
+				            label: getResource(result.options.confirmationButtonCancel ? result.options.confirmationButtonCancel : 'text.no'),
+				            className: 'btn-danger'
+				        }
+				    },
+				    callback: function (cbresult) {
+				    	if(options.confirmed) {
+			        		options.confirmed(cbresult, result);
+				    	}
+				    }
+				});
+			}
+			else if(result.status === 'SUCCESS') {
 				div.append('<div id="' + id + '" class="row feedback-row">'
 				 + '<div class="col-xs-12 feedback-success"><i class="fa fa-check-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
 			} else if(result.status === 'INFO') {
@@ -5673,6 +5693,9 @@ $.fn.feedbackPanel = function(data) {
 						 + '</div></div>');
 			}
 		});
+		
+		if(last && last.status === 'CONFIRM')
+			return true;
 
 		var ret = last && last.finished;
 		if(ret) {
