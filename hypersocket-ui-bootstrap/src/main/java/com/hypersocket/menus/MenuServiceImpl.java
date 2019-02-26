@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hypersocket.ApplicationContextServiceImpl;
 import com.hypersocket.attributes.role.RoleAttributePermission;
 import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
@@ -32,6 +33,7 @@ import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.config.SystemConfigurationService;
 import com.hypersocket.dashboard.OverviewWidgetService;
+import com.hypersocket.email.EmailNotificationService;
 import com.hypersocket.html.HtmlTemplateResourcePermission;
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.interfaceState.UserInterfaceState;
@@ -482,7 +484,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null) {
 			@Override
 			public boolean canRead() {
-				return systemConfigurationService.getBooleanValue("smtp.on");
+				return ApplicationContextServiceImpl.getInstance().getBean(EmailNotificationService.class).isEnabled();
 			}
 		}, MENU_BUSINESS_RULES);
 
@@ -496,7 +498,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			@Override
 			public boolean canRead() {
 				try {
-					return messageService.getResourceCount(getCurrentRealm(), "", "") > 0;
+					return ApplicationContextServiceImpl.getInstance().getBean(EmailNotificationService.class).isEnabled()
+							&& messageService.getResourceCount(getCurrentRealm(), "", "") > 0;
 				} catch (AccessDeniedException e) {
 					return false;
 				}
@@ -509,11 +512,35 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				HtmlTemplateResourcePermission.READ,
 				HtmlTemplateResourcePermission.CREATE,
 				HtmlTemplateResourcePermission.UPDATE,
-				HtmlTemplateResourcePermission.DELETE), "messageMenu");
+				HtmlTemplateResourcePermission.DELETE) {
+
+			@Override
+			public boolean canRead() {
+				try {
+					return ApplicationContextServiceImpl.getInstance().getBean(EmailNotificationService.class).isEnabled()
+							&& messageService.getResourceCount(getCurrentRealm(), "", "") > 0;
+				} catch (AccessDeniedException e) {
+					return false;
+				}
+			}
+
+		}, "messageMenu");
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageConfiguration", "fa-gears",
 				"messageSettings", Integer.MAX_VALUE, MessageResourcePermission.READ, null, null,
-				null), "messageMenu");
+				null) {
+
+			@Override
+			public boolean canRead() {
+				try {
+					return ApplicationContextServiceImpl.getInstance().getBean(EmailNotificationService.class).isEnabled()
+							&& messageService.getResourceCount(getCurrentRealm(), "", "") > 0;
+				} catch (AccessDeniedException e) {
+					return false;
+				}
+			}
+
+		}, "messageMenu");
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_TOOLS, "",
 				null, 99999, null, null, null, null, null));
