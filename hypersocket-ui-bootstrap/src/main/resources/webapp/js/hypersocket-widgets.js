@@ -3542,7 +3542,8 @@ $.fn.namePairInput = function(data) {
 		+	'	</div>'
 		+	'</div>';
 		$(this).append(html);
-		$('#' + id + 'AddPair').click(function() {
+		$('#' + id + 'AddPair').click(function(e) {
+			e.preventDefault();
 			$('#' + id).parent().widget().addRows(1);
 		});
 	}
