@@ -31,7 +31,6 @@ import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.config.ConfigurationService;
-import com.hypersocket.config.SystemConfigurationService;
 import com.hypersocket.dashboard.OverviewWidgetService;
 import com.hypersocket.email.EmailNotificationService;
 import com.hypersocket.html.HtmlTemplateResourcePermission;
@@ -93,9 +92,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	@Autowired
 	private ConfigurationService configurationService; 
-	
-	@Autowired
-	private SystemConfigurationService systemConfigurationService; 
 	
 	@Autowired
 	private UserInterfaceStateService interfaceStateService; 
