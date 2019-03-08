@@ -2350,3 +2350,14 @@ form#logonForm {
 .underline {
 	text-decoration: underline;
 }
+
+.overview-step {
+	display: inline-block;
+	width: 22em;
+	vertical-align: top;
+	margin-right: 2em;
+}
+
+.overview-step img {
+	max-width: 20em;
+}
