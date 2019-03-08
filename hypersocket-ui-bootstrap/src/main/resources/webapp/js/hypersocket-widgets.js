@@ -1081,7 +1081,8 @@ $.fn.autoComplete = function(data) {
 			doNotInit: false,
 			selectFirst: false,
 			setOnLoad: false,
-			formatter: false
+			formatter: false,
+			maxResults: 100
 		}, data);
 	var callback;
 	var id = $(this).attr('id') + "AutoComplete";
@@ -1287,7 +1288,7 @@ $.fn.autoComplete = function(data) {
 		if(!options.remoteSearch) {
 			createDropdown(text, true, false);
 		} else {
-			var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + text;
+			var url = options.url + '?iDisplayStart=0&iDisplayLength=' + options.maxResults + '&sSearch=' + text;
 			if(options.searchParams) {
 				url += '&' + options.searchParams;
 			}
@@ -1354,7 +1355,7 @@ $.fn.autoComplete = function(data) {
 					buildData(options.values);
 					callback.setValue(newValue);
 				} else if(options.remoteSearch) {
-					var url = options.url + '?iDisplayStart=0&iDisplayLength=10&searchColumn=' + options.valueAttr + '&sSearch=' + newValue;
+					var url = options.url + '?iDisplayStart=0&iDisplayLength=' + options.maxResults + '&searchColumn=' + options.valueAttr + '&sSearch=' + newValue;
 					if(options.searchParams) {
 						url += '&' + options.searchParams;
 					}
@@ -1506,7 +1507,7 @@ $.fn.autoComplete = function(data) {
 			} else {
 				if(options.value && options.value !== '') {
 					$('#' + id).val(options.value);
-					var url = options.url + '?iDisplayStart=0&iDisplayLength=10&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
+					var url = options.url + '?iDisplayStart=0&iDisplayLength=' + options.maxResults + '&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
 					if(options.searchParams) {
 						url += '&' + options.searchParams;
 					}
