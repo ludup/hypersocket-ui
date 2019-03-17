@@ -275,7 +275,7 @@
 						e.preventDefault();
 						var trigger = $(this).closest('.triggerShape').data('trigger');
 						getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
-							$(document).data('triggerModalCallback').loadParent(trigger, null, 0);
+							$(document).data('triggerModalCallback').loadParent(trigger, data.resources, 0);
 							$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
 								resourceCreated: function(resource) {
 									renderDiagram(resource, resourcePage, rootId, jsPlumbInstance);
@@ -294,9 +294,11 @@
 							$(document).data('triggerModalCallback').loadParent(automation, null, 1);	
 							$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
 						} else {
-							getJSON('triggers/trigger/' + trigger.parentId, null, function(data) {
-								$(document).data('triggerModalCallback').loadParent(data, null, 0);	
-									$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
+							getJSON('triggers/parentEvents/' + trigger.parentId, null, function(data) {
+								getJSON('triggers/trigger/' + trigger.parentId, null, function(parent) {
+									$(document).data('triggerModalCallback').loadParent(parent, data.resources, 0);	
+										$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
+								});
 							});
 						}
 					});
