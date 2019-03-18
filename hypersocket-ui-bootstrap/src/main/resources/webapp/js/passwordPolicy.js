@@ -53,9 +53,9 @@ $.fn.passwordPolicy = function(data) {
 				showPolicyName: true,
 				title: getResource('passwordRules.text'),
 				showRulesDefault: true,
-				showZxcvbn: true,
+				showZxcvbn: false,
 				showGeneratorDefault: true,
-				additionalAnalysis: true
+				additionalAnalysis: false
 			}, data);
 	
 	var url;
