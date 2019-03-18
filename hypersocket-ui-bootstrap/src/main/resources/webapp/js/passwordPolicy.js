@@ -93,57 +93,41 @@ $.fn.passwordPolicy = function(data) {
 		}
 		
 		if(options.passwordElement && options.passwordElement.val()!=='') {
-			var feedback = false;
-			if(options.additionalAnalysis) {
-        			var result = zxcvbn(options.passwordElement.val());
-        			if(options.additionalAnalysis) {
-        			    if(result.feedback.suggestions.length > 0 || result.feedback.warning) {
-        				if(result.feedback.warning) {
-                				$('#suggestions').append('<span class="error">' + result.feedback.warning + '</span><br>');
-                			} else if(result.feedback.suggestions.length > 0) {
-                				$('#suggestions').append('<span class="error">' + result.feedback.suggestions[0] + '</span><br>');
-                			}
-                			feedback = true;
-        			    } 
-        			}
+
+			var params = new Object();
+			params.password = encodeURIComponent(options.passwordElement.val());
+			if(options.principalId) {
+				params.id = options.principalId;
 			}
-    			
-		
-			if(!feedback) {
-				var params = new Object();
-				params.password = encodeURIComponent(options.passwordElement.val());
-				if(options.principalId) {
-					params.id = options.principalId;
-				}
-				if(options.usernameField) {
-					options.username = options.passwordElement.val();
-				}
-				
-				postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
-					if(data.success) {
-						if(!feedback) {
-							if(options.passwordElement.val() == options.confirmElement.val()) {
-								$('#suggestions').append('<span class="success">Password looks good</span>');
-							} else {
-								$('#suggestions').append('<span class="warning">Password is good but needs confirming</span>');
-							}
-							if(options.buttonElement) {
-								$(options.buttonElement).prop('disabled', false);
-							} else if(options.buttonCallback) {
-								options.buttonCallback(false);
-							}
-							return;
+			if(options.usernameField) {
+				options.username = options.passwordElement.val();
+			}
+			
+			postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
+				if(data.success) {
+					if(!feedback) {
+						if(options.passwordElement.val() == options.confirmElement.val()) {
+							$('#suggestions').append('<span class="success">Password looks good</span>');
+						} else {
+							$('#suggestions').append('<span class="warning">Password is good but needs confirming</span>');
 						}
-					} else {
-						$('#suggestions').append('<span class="error">Password does not conform to password policy</span>');
+						if(options.buttonElement) {
+							$(options.buttonElement).prop('disabled', false);
+						} else if(options.buttonCallback) {
+							options.buttonCallback(false);
+						}
+						return;
 					}
-					if(options.buttonElement) {
-						$(options.buttonElement).prop('disabled', true);
-					} else if(options.buttonCallback) {
-						options.buttonCallback(true);
-					}
-				}, "json");
-			}
+				} else {
+					$('#suggestions').append('<span class="error">Password does not conform to password policy</span>');
+				}
+				if(options.buttonElement) {
+					$(options.buttonElement).prop('disabled', true);
+				} else if(options.buttonCallback) {
+					options.buttonCallback(true);
+				}
+			}, "json");
+			
 		
 		}
 	}
