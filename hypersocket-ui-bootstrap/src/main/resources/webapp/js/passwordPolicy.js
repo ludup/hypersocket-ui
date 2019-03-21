@@ -105,19 +105,17 @@ $.fn.passwordPolicy = function(data) {
 			
 			postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
 				if(data.success) {
-					if(!feedback) {
-						if(options.passwordElement.val() == options.confirmElement.val()) {
-							$('#suggestions').append('<span class="success">Password looks good</span>');
-						} else {
-							$('#suggestions').append('<span class="warning">Password is good but needs confirming</span>');
-						}
-						if(options.buttonElement) {
-							$(options.buttonElement).prop('disabled', false);
-						} else if(options.buttonCallback) {
-							options.buttonCallback(false);
-						}
-						return;
+					if(options.passwordElement.val() == options.confirmElement.val()) {
+						$('#suggestions').append('<span class="success">Password looks good</span>');
+					} else {
+						$('#suggestions').append('<span class="warning">Password is good but needs confirming</span>');
 					}
+					if(options.buttonElement) {
+						$(options.buttonElement).prop('disabled', false);
+					} else if(options.buttonCallback) {
+						options.buttonCallback(false);
+					}
+					return;
 				} else {
 					$('#suggestions').append('<span class="error">Password does not conform to password policy</span>');
 				}
