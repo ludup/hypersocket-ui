@@ -1322,8 +1322,10 @@ $.fn.autoComplete = function(data) {
 			setValue: function(val) {
 				updateValue(val, true);
 			},
+			getInputValue: function() {
+				return $('#input_' + id).val();
+			},
 			getValue: function() {
-				
 				return $('#' + id).val();
 			},
 			getObject: function() {
