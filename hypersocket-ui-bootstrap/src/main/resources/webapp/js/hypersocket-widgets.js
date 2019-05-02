@@ -26,6 +26,15 @@ function processURL(widget, url) {
 
 	return url;
 }
+
+function checkGetParams(url) {
+	if(url.indexOf('?') > -1) {
+		return url + '&';
+	}
+	return url + '?';
+}
+
+
 /**
  * Attach an event handler to an element, so that when clicked, it will
  * copy some text to the clipboard.
@@ -1288,7 +1297,7 @@ $.fn.autoComplete = function(data) {
 		if(!options.remoteSearch) {
 			createDropdown(text, true, false);
 		} else {
-			var url = options.url + '?iDisplayStart=0&iDisplayLength=' + options.maxResults + '&sSearch=' + text;
+			var url = checkGetParams(options.url) + 'iDisplayStart=0&iDisplayLength=' + options.maxResults + '&sSearch=' + text;
 			if(options.searchParams) {
 				url += '&' + options.searchParams;
 			}
@@ -1357,7 +1366,7 @@ $.fn.autoComplete = function(data) {
 					buildData(options.values);
 					callback.setValue(newValue);
 				} else if(options.remoteSearch) {
-					var url = options.url + '?iDisplayStart=0&iDisplayLength=' + options.maxResults + '&searchColumn=' + options.valueAttr + '&sSearch=' + newValue;
+					var url = checkGetParams(options.url) + 'iDisplayStart=0&iDisplayLength=' + options.maxResults + '&searchColumn=' + options.valueAttr + '&sSearch=' + newValue;
 					if(options.searchParams) {
 						url += '&' + options.searchParams;
 					}
@@ -1509,7 +1518,7 @@ $.fn.autoComplete = function(data) {
 			} else {
 				if(options.value && options.value !== '') {
 					$('#' + id).val(options.value);
-					var url = options.url + '?iDisplayStart=0&iDisplayLength=' + options.maxResults + '&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
+					var url = checkGetParams(options.url) + 'iDisplayStart=0&iDisplayLength=' + options.maxResults + '&sSearch=' + (options.nameIsResourceKey ? encodeURIComponent(getResource(options.value)) : options.value) + "&searchColumn=" + options.valueAttr;
 					if(options.searchParams) {
 						url += '&' + options.searchParams;
 					}
