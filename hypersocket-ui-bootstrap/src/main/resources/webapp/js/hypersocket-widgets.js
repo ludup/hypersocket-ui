@@ -5888,7 +5888,8 @@ $.fn.multipleRows = function(data) {
 		options.render($('#' + id + 'Rows').find('.rowInput').last(), val);
 
 		$('.delButton').off('click');
-		$('.delButton').on('click', function() {
+		$('.delButton').on('click', function(e) {
+			e.preventDefault();
 			$(this).closest('.rowParent').remove();
 			if(options.showAdd) {
 				$('#' + id + 'NewRow').show();
@@ -5900,7 +5901,8 @@ $.fn.multipleRows = function(data) {
 		}
 	};
 
-	$('#' + id + 'AddRow').click(function() {
+	$('#' + id + 'AddRow').click(function(e) {
+		e.preventDefault();
 		addRow();
 	});
 
