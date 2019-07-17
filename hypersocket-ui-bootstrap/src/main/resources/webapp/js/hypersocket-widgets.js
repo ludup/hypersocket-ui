@@ -1274,17 +1274,19 @@ $.fn.autoComplete = function(data) {
 		var values = $('#input_' + id).data('values');
 		if(values) {
 			options.setOnLoad = false;
-			$.each($('#input_' + id).data('values'), function(idx, obj) {
-				if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
-
-					thisWidget.data('selectedObject', obj);
-					$('#' + id).val(obj[options.valueAttr]);
-					$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
-					if(event && options.changed) {
-						options.changed(callback);
+			if(val!=='') {
+				$.each($('#input_' + id).data('values'), function(idx, obj) {
+					if(obj[options.valueAttr]==val || obj[options.nameAttr]==val) {
+	
+						thisWidget.data('selectedObject', obj);
+						$('#' + id).val(obj[options.valueAttr]);
+						$('#input_' + id).val(options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]);
+						if(event && options.changed) {
+							options.changed(callback);
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 	};
 
