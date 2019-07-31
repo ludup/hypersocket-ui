@@ -46,13 +46,13 @@ public class MenuController extends AuthenticatedController {
 	static Logger log = LoggerFactory.getLogger(MenuController.class);
 	
 	@Autowired
-	MenuService menuService;
+	private MenuService menuService;
 
 	@Autowired
-	PermissionService permissionService;
+	private PermissionService permissionService;
 
 	@Autowired
-	RealmService realmService;
+	private RealmService realmService;
 
 	@AuthenticationRequired
 	@RequestMapping(value = "menus", method = RequestMethod.GET, produces = { "application/json" })

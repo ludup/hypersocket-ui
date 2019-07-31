@@ -69,6 +69,8 @@ public interface MenuService extends AuthenticatedService {
 
 	static final String MENU_REALMS = "realms";
 
+	static final String MENU_PARENT_REALM = "parentRealm";
+
 	static final String MENU_MY_DETAILS = "details";
 
 	static final String MENU_EXTENSIONS = "extensions";
