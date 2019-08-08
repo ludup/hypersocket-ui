@@ -32,4 +32,8 @@ public class MapTokenResolver implements ITokenResolver {
 		  return tokenMap;
 	  }
 
+	  public boolean hasToken(String key) {
+		  return tokenMap.containsKey(key);
+	  }
+
 }

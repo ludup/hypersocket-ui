@@ -25,15 +25,15 @@ import com.hypersocket.utils.TokenReplacementReader;
 @Component
 public class IndexPageFilter implements ContentFilter {
 
-	List<String> stylesheets = new ArrayList<String>();
-	List<String> scripts = new ArrayList<String>();
-	List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
-	List<FilterExtender> extenders = new ArrayList<FilterExtender>();
-	Set<String> filterPages = new HashSet<String>();
-	String redirectPage =  null;
+	private List<String> stylesheets = new ArrayList<String>();
+	private List<String> scripts = new ArrayList<String>();
+	private List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
+	private List<FilterExtender> extenders = new ArrayList<FilterExtender>();
+	private Set<String> filterPages = new HashSet<String>();
+	private String redirectPage =  null;
 	
 	@Autowired
-	HypersocketServer server;
+	private HypersocketServer server;
 	
 	@PostConstruct
 	private void postConstruct() {
@@ -58,16 +58,25 @@ public class IndexPageFilter implements ContentFilter {
 			}
 		}
 		
-		
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("stylesheets", generateStylesheets());
 		resolver.addToken("scripts", generateScripts());
+		
+		boolean hasMeta = false;
 
 		for(FilterExtender extender : extenders) {
 			MapTokenResolver res = extender.getAdditionalResolvers(request);
-			if(res != null)
+			if(res != null) {
 				resolver.addAll(res);
+				if(res.hasToken("meta")) {
+					hasMeta = true;
+				}
+			}
 		}
+		
+		if(!hasMeta)
+			resolver.addToken("meta", "");
+		
 		
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
