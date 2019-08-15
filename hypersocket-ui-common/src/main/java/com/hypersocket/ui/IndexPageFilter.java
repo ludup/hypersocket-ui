@@ -75,7 +75,7 @@ public class IndexPageFilter implements ContentFilter {
 		}
 		
 		if(!hasMeta)
-			resolver.addToken("meta", "");
+			resolver.addToken("meta", "<!-- No Meta -->");
 		
 		
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
