@@ -268,7 +268,9 @@ function home(data) {
 					
 					$('#menu')
 							.append(
-								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') + '><span>' + getResource(this.resourceKey + '.label') + '</span></div>');
+								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') 
+								       + '><div class="menuitem"><a data-toggle="collapse" aria-expanded="false" aria-controls="sub_' + this.id + '" href="#sub_' 
+								       + this.id + '"><i class="imenu fa fa-chevron-right"></i>&nbsp;<span>' + getResource(this.resourceKey + '.label') + '</span></a></div></div>');
 
 					var root = this;
 					var navigation = this.resourceKey === 'navigation';
@@ -276,8 +278,8 @@ function home(data) {
 					
 					if (this.menus.length > 0) {
 						var menu = '#sub_' + this.id;
-						$("#menu").append(
-							'<ul id="sub_' + this.id + '" class="nav nav-sidebar"/>');
+						$("#menu_" + this.id).append(
+							'<ul id="sub_' + this.id + '" class="collapse nav nav-sidebar"/>');
 						
 						$.each(this.menus, function() {
 							
@@ -324,6 +326,12 @@ function home(data) {
 						});
 					} 
 					
+			});
+			
+			$('.collapse').on('show.bs.collapse', function(){
+				$(this).parent().find(".fa-chevron-right").removeClass("fa-chevron-right").addClass("fa-chevron-down");
+			}).on('hide.bs.collapse', function(){
+				$(this).parent().find(".fa-chevron-down").removeClass("fa-chevron-down").addClass("fa-chevron-right");
 			});
 			
 			if(currentMenu==null) {
