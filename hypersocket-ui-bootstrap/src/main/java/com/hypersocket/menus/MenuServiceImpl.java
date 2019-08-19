@@ -162,10 +162,20 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		});
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessionMenu",
+				"fa-hourglass-start", null, 99999,
+				null, null, null, null,
+				null), MenuService.MENU_SYSTEM);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
-				"fa-hourglass-start", "sessions", 99999,
+				"fa-hourglass-start", "sessions", 0,
 				SessionPermission.READ, null, null, SessionPermission.DELETE,
-				null), MenuService.MENU_DASHBOARD);
+				null), "sessionMenu");
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessionSettings",
+				"fa-gear", "sessionSettings", 100,
+				SystemPermission.SYSTEM_ADMINISTRATION, null, null, null,
+				null), "sessionMenu");
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "jobs",
 				"fa-tasks", "jobs", 999988,
@@ -291,12 +301,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_CONFIGURATION, "fa-gears", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
-
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-						MenuService.MENU_REALM_CONFIGURATION, "fa-gear",
-						"realmSettings", 0, ConfigurationPermission.READ, null,
-						ConfigurationPermission.UPDATE, null),
-				MenuService.MENU_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 						"fileUploads", "fa-file",

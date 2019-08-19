@@ -316,6 +316,7 @@ function home(data) {
 							$('#' + this.id).click(function() {
 								$(".sideMenu").removeClass("active");
 								$(this).addClass("active");
+								$(this).parents(".collapse").addClass('in');
 							});
 
 							if(currentMenu==null && this.home) {
@@ -425,6 +426,7 @@ function home(data) {
 					$('#' + this.id).click(function(e) {
 						$(".active").removeClass("active");
 						$(this).find('i').addClass("active");
+
 					});
 				});
 			}
@@ -899,7 +901,7 @@ function loadMenu(menu) {
 			if(!this.hidden) {
 				$('#subMenuIconPanel').append(
 						'<div class="col-xs-2 hidden-xs hidden-sm subMenuLarge">'
-					+	'	<a class="large-button subMenu" href="#menu=' + this.resourceKey + '" data-value="' + this.resourceKey + '" id="buttonLarge_' + this.resourceKey + '">'
+					+	'	<a class="large-button subMenu" href="#menu=' + this.resourceKey + '" data-parent="' + (menu.resourceKey ? menu.resourceKey : '') + '" data-value="' + this.resourceKey + '" id="buttonLarge_' + this.resourceKey + '">'
 					+	'		<i class="fa ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
 					+	'	</a>'
 					+	'</div>'
@@ -910,7 +912,7 @@ function loadMenu(menu) {
 					+ 	'</div>');
 			}
 		});
-	
+		
 		for(var i=0;i<menu.menus.length;i++) {
 			$('#subMenuIconPanel').append('<div class="col-xs-2"></div>');
 			$(document).data(menu.menus[i].resourceKey, menu.menus[i]);
@@ -957,6 +959,11 @@ function loadSubPage(menu, element) {
 	if(element.data() && element.data().value) {
 		element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').addClass('large-button-active');
 		element.parent().parent().find('.small-button[id="buttonSmall_' + element.data().value + '"]').addClass('small-button-active');
+		debugger;
+		var parent = element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').data('parent');
+		if(parent !== '') {
+			$('#' + parent).parents('.collapse').addClass('in');
+		}
 	}
 	$('#subMenuPageContent').startSpin();
 	loadWait();
