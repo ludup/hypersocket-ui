@@ -3483,6 +3483,12 @@ $.fn.sliderInput = function(options) {
 		   }
 	});
 
+	slider.on('slide', function(ev){
+		   if(options.update) {
+			   options.update(callback)
+		   }
+	});
+
 	if(options.disabled || options.readOnly) {
 		callback.disable();
 	}
