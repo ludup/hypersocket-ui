@@ -162,15 +162,25 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		});
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessionMenu",
+				"fa-hourglass-start", null, 99999,
+				null, null, null, null,
+				null), MenuService.MENU_SYSTEM);
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessions",
-				"fa-hourglass-start", "sessions", 99999,
+				"fa-hourglass-start", "sessions", 0,
 				SessionPermission.READ, null, null, SessionPermission.DELETE,
-				null), MenuService.MENU_DASHBOARD);
+				null), "sessionMenu");
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessionSettings",
+				"fa-gear", "sessionSettings", 100,
+				SystemPermission.SYSTEM_ADMINISTRATION, null, null, null,
+				null), "sessionMenu");
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "jobs",
 				"fa-tasks", "jobs", 999988,
 				SystemPermission.SYSTEM, null, null, SystemPermission.SYSTEM,
-				null), MenuService.MENU_DASHBOARD);
+				null), MenuService.MENU_SYSTEM_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_MY_PROFILE, "fa-tags", null, 200, null, null,
@@ -293,12 +303,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null, null, null), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-						MenuService.MENU_REALM_CONFIGURATION, "fa-gears",
-						"realmSettings", 0, ConfigurationPermission.READ, null,
-						ConfigurationPermission.UPDATE, null),
-				MenuService.MENU_CONFIGURATION);
-
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 						"fileUploads", "fa-file",
 						"fileUploads", 9999, SystemPermission.SYSTEM_ADMINISTRATION,
 						SystemPermission.SYSTEM_ADMINISTRATION,
@@ -316,7 +320,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			public boolean canRead() {
 				return !certificateService.allResources().isEmpty();
 			}
-		}, MenuService.MENU_CONFIGURATION);
+		}, MenuService.MENU_SYSTEM);
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
 				new AbstractTableAction("downloadCSR", "fa-certificate",
@@ -358,7 +362,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						UserAttributePermission.CREATE,
 						UserAttributePermission.UPDATE,
 						UserAttributePermission.DELETE),
-				MenuService.MENU_CONFIGURATION);
+				MenuService.MENU_ACCESS_CONTROL);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_ACCESS_CONTROL,
 						"fa-users", null, 200, null, null, null, null),
@@ -476,7 +480,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null, 9999, null, null, null, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageMenu", "fa-envelope-o",
-				null, 9999, null, null, null,
+				null, 9999999, null, null, null,
 				null) {
 			@Override
 			public boolean canRead() {

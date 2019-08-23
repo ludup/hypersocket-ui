@@ -1,0 +1,16 @@
+<div id="configurationContent">
+
+</div>
+<script type="text/javascript">
+
+      $('#configurationContent').propertyPage({
+	   url : 'configuration/realm/sessions',
+	   title: getResource('sessionSettings.title'),
+	   icon: 'fa-cog',
+	   canUpdate: currentMenu.canUpdate,
+	   complete: function() {
+		   loadComplete();
+	   }});
+   
+      
+</script>
