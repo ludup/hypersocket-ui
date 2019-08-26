@@ -243,8 +243,10 @@ function home(data) {
 	$('#main-menu').remove();
 
 	$(contentDiv).empty();
-	$(contentDiv).append('<div id="main-menu" class="sidebar col-md-2 col-sm-1"><div id="menu" class="sidebar-collapse"></div></div>');
-
+	$('#container').append('<div id="main-menu" class="sidebar" style="display: none"><div id="menu" class="sidebar-collapse"></div></div>');
+	$('#container').append('<div id="main-menu-min" class="sidebar-min"><i class="fa fa-chevron-right"></i></div>');
+	$('#mainContainer').addClass('sidebar-active');
+	
 	removeMessage();
 	
 	currentRealm = data.session.currentRealm;
@@ -310,13 +312,15 @@ function home(data) {
 							$(menu).append('<li' + (this.hidden ? ' style="display:none"' : '') + '><a id="' 
 									+ this.id + '" href="#menu=' + (firstChild ? firstChild.resourceKey : this.resourceKey) 
 									+ '" class="sideMenu"><i class="fa ' 
-									+ this.icon + '"></i><span class="hidden-sm text">' 
+									+ this.icon + '"></i><span class="text">' 
 									+ getResource(this.resourceKey + '.label') + '</span></span></a></li>');
 							$('#' + this.id).data('menu', this);
 							$('#' + this.id).click(function() {
 								$(".sideMenu").removeClass("active");
 								$(this).addClass("active");
 								$(this).parents(".collapse").addClass('in');
+								$('#main-menu').hide();
+								$('#main-menu-min').show();
 							});
 
 							if(currentMenu==null && this.home) {
@@ -346,10 +350,6 @@ function home(data) {
 			}
 			
 			checkBadges(true);
-			
-			$('#navMenu')
-					.append(
-						'<li class="navicon"><a id="main-menu-toggle" class="hidden-sm hidden-md hidden-lg" href="#"><i class="fa fa-bars"></i></a></li>');
 
 			var session = $(document).data('session');
 			if(session.impersonating) {
@@ -376,38 +376,17 @@ function home(data) {
 					loadRoles(roles.resources);
 				});
 			}
-			
-			$(window).resize(function() {
-				if ($(this).width() < 959) {
-					if (!$('#main-menu').data('toggled')) {
-						$('#main-menu').addClass('hidden-xs');
-					}
-				} else {
-					$('#main-menu').data('toggled', false);
-					$('#main-menu').removeClass('hidden-xs');
-				}
-			})
 
-			$('#main-menu-toggle').click(function(e) {
-				e.preventDefault();
-				if ($(window).width() < 959) {
-					$('#main-menu').data('toggled', true);
-					if ($('#main-menu').hasClass('hidden-xs')) {
-						$('#main-menu').removeClass('hidden-xs');
-						$('#main-menu').show();
-					} else {
-						$('#main-menu').addClass('hidden-xs');
-					}
-				} else {
-					$('#main-menu').data('toggled', false);
-					if(!$('#main-menu').is(':visible')) {
-						$('#main-menu').show();
-					} else {
-						$('#main-menu').hide();
-					}
-
-				}
+			$('#main-menu').mouseleave(function(e) {
+				$('#main-menu').fadeOut(500);
+				$('#main-menu-min').show();
 			});
+	
+			$('#main-menu-min').mouseenter(function(e) {
+				$('#main-menu-min').hide();
+				$('#main-menu').fadeIn(500);
+			});
+		
 
 			if(allMenus['navigation']) {
 
@@ -426,7 +405,6 @@ function home(data) {
 					$('#' + this.id).click(function(e) {
 						$(".active").removeClass("active");
 						$(this).find('i').addClass("active");
-
 					});
 				});
 			}
@@ -502,7 +480,7 @@ function home(data) {
 
 			// Load current page
 			$(contentDiv).append(
-				'<div id="mainContainer" class="col-md-10 col-sm-11 main"><div id="informationBar" class="showOnComplete"/><div id="mainContent"/></div>');
+				'<div id="mainContainer" class="col-md-12 col-sm-12 main sidebar-active"><div id="informationBar" class="showOnComplete"/><div id="mainContent"/></div>');
 
 			
 			// Setup header actions
@@ -706,7 +684,7 @@ function loadRealms(realms, session) {
 	}
 
 	if(!$('#currentRealm').length) {
-		$('#main-menu-toggle').parent().after('<li id="currentRealm" class="navicon" data-toggle="tooltip" title="' 
+		$('#navMenu').prepend('<li id="currentRealm" class="navicon" data-toggle="tooltip" title="' 
 				+ getResource('text.userRealms') 
 				+ '" data-placement="bottom"class="dropdown"></li>');
 	}
@@ -767,7 +745,7 @@ function loadRoles(roles) {
 	};
 	
 	if(roles.length > 1) {
-		$('#main-menu-toggle').parent().after('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-user-md"></i></a></li>');
+		$('#navMenu').prepend('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-user-md"></i></a></li>');
 
 		$('#currentRole').append('<ul id="roles" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu2"></ul>');
 		$.each(roles, function() {

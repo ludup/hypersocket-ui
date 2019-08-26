@@ -45,12 +45,12 @@ input:disabled, input:readonly {
  * Main content
  */
 .main {
-	padding: 5px;
+	padding: 0px 5px 5px 30px;
 }
 
 @media ( min-width : 768px) {
 	.main {
-		padding: 0px 20px 20px 20px;
+		padding: 0px 20px 20px 30px;
 	}
 }
 
@@ -642,6 +642,10 @@ table {
 	vertical-align: middle;
 }
 
+#footer {
+	z-index: 9999;
+}
+
 #footerActions {
 	float: right;
 	height: 50px;
@@ -682,10 +686,28 @@ table {
 .sidebar {
 	background: #e7e7e7;
 	color: #333;
-	position: relative;
+	position: absolute;
 	height: 5000px;
+	width: 200px;
+	top: 51px;
+	left: 0px;
+	z-index: 8888;
 }
 
+.sidebar-min {
+	background: #e7e7e7;
+	color: #333;
+	position: absolute;
+	height: 5000px;
+	width: 20px;
+	top: 51px;
+	left: 0px;
+	z-index: 8888;
+}
+
+#main-menu-min i {
+	padding: 5px;
+}
 .sidebar .nav-sidebar.title {
 	text-align: left;
 	font-size: 12px;
@@ -704,7 +726,7 @@ table {
 }
 
 .sidebar ul.nav.nav-sidebar {
-	margin: 0 -15px;
+	margin: 0px;
 }
 
 .sidebar ul.nav.nav-sidebar li a {
@@ -715,7 +737,7 @@ table {
 	width: 30px;
 	text-align: center;
 	margin-right: 5px;
-	margin-left: 35px;
+	margin-left: 20px;
 	font-size: 18px;
 }
 
@@ -848,6 +870,10 @@ table {
 	-moz-border-radius: 50em;
 	border-radius: 50em;
 	text-align: center;
+}
+
+#header {
+	z-index: 9999;
 }
 
 .container-fluid {
@@ -1326,37 +1352,6 @@ span.input-group-addon {
 	margin-bottom: 20px;
 }
 
-@media ( min-width : 768px) and (max-width: 991px) {
-	.navbar-form input[type=text] {
-		width: 260px !important;
-	}
-	.sidebar {
-		background: #e7e7e7;
-		color: #677679;
-		position: relative;
-	}
-	.sidebar .nav-sidebar.title {
-		display: none;
-	}
-	.sidebar ul.nav.nav-sidebar {
-		margin: 0 -15px;
-	}
-	.sidebar ul.nav.nav-sidebar li {
-		line-height: 30px;
-		width: 100%;
-	}
-	.sidebar ul.nav.nav-sidebar li a {
-		color: #677679;
-	}
-	.sidebar ul.nav.nav-sidebar li a i {
-		width: 100%;
-		text-align: center;
-		margin: 0;
-	}
-	.sidebar ul.nav.nav-sidebar li ul {
-		padding: 5px 0;
-	}
-}
 
 .modal-dialog {
 	position: relative;
@@ -1372,13 +1367,6 @@ span.input-group-addon {
 @media ( max-width : 767px) {
 	.container-fluid.content {
 		overflow: hidden;
-	}
-	.sidebar:before {
-		height: auto;
-	}
-	.sidebar .nav-sidebar.title {
-		padding-top: 15px;
-		margin: 0px 0 15px 0;
 	}
 	#footer {
 		display: none
