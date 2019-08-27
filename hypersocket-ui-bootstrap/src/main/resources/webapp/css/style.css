@@ -50,7 +50,7 @@ input:disabled, input:readonly {
 
 @media ( min-width : 768px) {
 	.main {
-		padding: 0px 20px 20px 30px;
+		padding: 0px 20px 20px 20px;
 	}
 }
 
@@ -683,6 +683,19 @@ table {
 }
 /* Sidebar
 =================================================================== */
+
+#burger-toggle i {
+	font-size: 28px;
+	color: white;
+	float: left;
+	margin: 10px;
+}
+
+#menu {
+	margin-top: 10px;
+	margin-left: 5px;
+}
+
 .sidebar {
 	background: #e7e7e7;
 	color: #333;

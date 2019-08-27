@@ -123,6 +123,8 @@ function startLogon(opts) {
 		opts = $(document).data('logonOptions');
 	}
 	
+	$('#burger-toggle').hide();
+	
 	opts = $.extend({
 		logonStarted: function() {
 			$('div[role="dialog"]').remove();
@@ -244,7 +246,7 @@ function home(data) {
 
 	$(contentDiv).empty();
 	$('#container').append('<div id="main-menu" class="sidebar" style="display: none"><div id="menu" class="sidebar-collapse"></div></div>');
-	$('#container').append('<div id="main-menu-min" class="sidebar-min"><i class="fa fa-chevron-right"></i></div>');
+
 	$('#mainContainer').addClass('sidebar-active');
 	
 	removeMessage();
@@ -319,8 +321,7 @@ function home(data) {
 								$(".sideMenu").removeClass("active");
 								$(this).addClass("active");
 								$(this).parents(".collapse").addClass('in');
-								$('#main-menu').hide();
-								$('#main-menu-min').show();
+								$('#main-menu').fadeOut(500);
 							});
 
 							if(currentMenu==null && this.home) {
@@ -377,16 +378,17 @@ function home(data) {
 				});
 			}
 
-			$('#main-menu').mouseleave(function(e) {
-				$('#main-menu').fadeOut(500);
-				$('#main-menu-min').show();
+			$('#burger-toggle').show();
+			$('#burger-toggle').click(function(e) {
+				e.preventDefault();
+				debugger;
+				var on = $('#main-menu').is(':visible');
+				if(on) {
+					$('#main-menu').fadeOut(500);
+				} else {
+					$('#main-menu').fadeIn(500);
+				}
 			});
-	
-			$('#main-menu-min').mouseenter(function(e) {
-				$('#main-menu-min').hide();
-				$('#main-menu').fadeIn(500);
-			});
-		
 
 			if(allMenus['navigation']) {
 
@@ -898,10 +900,7 @@ function loadMenu(menu) {
 		
 
 		loadSubPage(allMenus[subPage], $('#buttonLarge_' + subPage));
-		
-		if ($(window).width() < 959) {
-			$('#main-menu').addClass('hidden-xs');
-		}
+	
 		
 	} else {
 	
@@ -947,9 +946,7 @@ function loadSubPage(menu, element) {
 	loadWait();
 	currentMenu = menu;
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
-		if ($(window).width() < 959) {
-			$('#main-menu').addClass('hidden-xs');
-		}
+
 	});
 }
 
