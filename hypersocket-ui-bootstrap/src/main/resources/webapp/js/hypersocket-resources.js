@@ -415,7 +415,6 @@ $.fn.resourceTable = function(params) {
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-								renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a></li>';
 			
 								$(document).off('click',
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
@@ -1471,7 +1470,6 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#mainContainer').addClass('col-md-12');
 		$('#mainContainer').removeClass('col-sm-11');
 		$('#mainContainer').addClass('col-sm-12');
-		$('#main-menu').hide();
 		$('#mainContent').hide();
 
 		view.show();
@@ -1681,7 +1679,6 @@ $.fn.samePageResourceView = function(params, params2) {
 		$('#mainContainer').removeClass('col-sm-12');
 		$('#mainContainer').addClass('col-sm-11');
 		$('.showOnComplete').show();
-		$('#main-menu').show();
 		$('#mainContent').show();
 		window.scrollTo(0,0);
 		return;

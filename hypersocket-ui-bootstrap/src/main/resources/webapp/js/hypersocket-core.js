@@ -76,7 +76,6 @@ window.onhashchange = function() {
 		$('#mainContainer').addClass('col-md-10');
 		$('#mainContainer').removeClass('col-sm-12');
 		$('#mainContainer').addClass('col-sm-11');
-		$('#main-menu').show();
 		$('#mainContent').show();
 	}
 	
@@ -917,13 +916,11 @@ function loadMenu(menu) {
 			$('#mainContainer').addClass('col-md-12');
 			$('#mainContainer').removeClass('col-sm-11');
 			$('#mainContainer').addClass('col-sm-12');
-			$('#main-menu').hide();
 			$('#mainContent').hide();
 
 			$('#pageContent').show(); 
 		} else {
 			$('#pageContent').remove();
-			$('#main-menu').show();
 			$('#mainContent').load(uiPath + '/content/' + menu.resourceName + '.html');
 			$('#mainContent').show();
 		}
