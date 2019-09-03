@@ -131,9 +131,9 @@ function processLogon(data, opts, message) {
 					return;
 				} else if(this.type =='img') {
 					if(this.url) {
-						$('#logonForm').append('<div class="center"><a href="' + this.url + '"><img id="' + this.resourceKey + '" src="' + replacePaths(this.defaultValue) + '"></img></a></div>');
+						$('#logonForm').append('<div class="center' + (this.styleClass ? ' ' + this.styleClass : '' ) + '"><a href="' + this.url + '"><img id="' + this.resourceKey + '" ' + (this.alt ? 'alt="' + this.alt + '" ' : '' ) + 'src="' + replacePaths(this.defaultValue) + '"' + (this.width ? 'width=' + this.width : '' ) + '></img></a></div>');
 					} else {
-						$('#logonForm').append('<div class="center"><img id="' + this.resourceKey + '" src="' + replacePaths(this.defaultValue) + '"></img></div>');
+						$('#logonForm').append('<div class="center' + (this.styleClass ? ' ' + this.styleClass : '' ) + '"><img id="' + this.resourceKey + '" ' + (this.alt ? 'alt="' + this.alt + '" ' : '' ) + 'src="' + replacePaths(this.defaultValue) + '"' + (this.width ? 'width=' + this.width : '' ) + '></img></div>');
 					}
 					return;
 				}
