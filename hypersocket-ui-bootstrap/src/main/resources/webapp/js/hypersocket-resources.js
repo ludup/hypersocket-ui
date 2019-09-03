@@ -415,7 +415,8 @@ $.fn.resourceTable = function(params) {
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-			
+								renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a></li>';
+					 			
 								$(document).off('click',
 									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
 								$(document).on(
