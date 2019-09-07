@@ -72,10 +72,6 @@ $.ajaxSetup({ error : function(xmlRequest) {
 window.onhashchange = function() {  
 	if($('#pageContent').length > 0) {
 		$('#pageContent').remove();
-		$('#mainContainer').removeClass('col-md-12');
-		$('#mainContainer').addClass('col-md-10');
-		$('#mainContainer').removeClass('col-sm-12');
-		$('#mainContainer').addClass('col-sm-11');
 		$('#mainContent').show();
 	}
 	
@@ -249,7 +245,7 @@ function checkBadges(schedule) {
 };
 
 function saveMenuState(id, prefs, state) {
-	debugger;
+
 	if(!prefs[id]) {
 		prefs[id] = {};
 	}
@@ -285,8 +281,7 @@ function home(data) {
 		getState('menuStates', 'true', function(prefs) {
 			
 			log("Received menus");
-			
-			debugger;
+
 			var menuStates = {};
 			if(prefs.resources.length > 0) {
 			   menuStates = JSON.parse(prefs.resources[0].preferences);
@@ -946,11 +941,6 @@ function loadMenu(menu) {
 				$('#mainContainer').append('<div id="pageContent"></div>');
 			}
 			$('#pageContent').load(uiPath + '/content/' + menu.resourceName + '.html');
-
-			$('#mainContainer').removeClass('col-md-10');
-			$('#mainContainer').addClass('col-md-12');
-			$('#mainContainer').removeClass('col-sm-11');
-			$('#mainContainer').addClass('col-sm-12');
 			$('#mainContent').hide();
 
 			$('#pageContent').show(); 
@@ -970,7 +960,7 @@ function loadSubPage(menu, element) {
 	if(element.data() && element.data().value) {
 		element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').addClass('large-button-active');
 		element.parent().parent().find('.small-button[id="buttonSmall_' + element.data().value + '"]').addClass('small-button-active');
-		debugger;
+
 		var parent = element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').data('parent');
 		if(parent !== '') {
 			$('#' + parent).parents('.collapse').addClass('in');
