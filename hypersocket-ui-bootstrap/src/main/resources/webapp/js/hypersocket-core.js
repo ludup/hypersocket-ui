@@ -115,6 +115,21 @@ function clearContent() {
 	$(contentDiv).empty();
 };
 
+function toggleMenu() {
+	var on = $('#main-menu').is(':visible');
+	if(on) {
+		$('#main-menu').fadeOut(500);
+	} else {
+		$('#main-menu').fadeIn(500);
+	}
+};
+
+function closeMenu() {
+	var on = $('#main-menu').is(':visible');
+	if(on) {
+		$('#main-menu').fadeOut(500);
+	}
+};
 
 function startLogon(opts) {
 	
@@ -233,6 +248,15 @@ function checkBadges(schedule) {
 	});
 };
 
+function saveMenuState(id, prefs, state) {
+	debugger;
+	if(!prefs[id]) {
+		prefs[id] = {};
+	}
+	prefs[id].expanded = state;
+	saveState('menuStates', prefs, true);
+};
+
 function home(data) {
 
 	log("Entering home");
@@ -258,7 +282,18 @@ function home(data) {
 	var showLocales = data.showLocales;
 	getJSON('menus', null, function(data) {
 
+		getState('menuStates', 'true', function(prefs) {
+			
 			log("Received menus");
+			
+			debugger;
+			var menuStates = {};
+			if(prefs.resources.length > 0) {
+			   menuStates = JSON.parse(prefs.resources[0].preferences);
+			}
+			
+			log("Received menu state");
+			
 			menuList = data;
 			
 			$('#menu').empty();
@@ -269,11 +304,13 @@ function home(data) {
 					
 					allMenus[this.resourceKey] = this;
 					
+					var expanded = menuStates[this.id] && menuStates[this.id].expanded;
+					
 					$('#menu')
 							.append(
-								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') 
+								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') + ' data-menu="' + this.id + '"'
 								       + '><div class="menuitem"><a data-toggle="collapse" aria-expanded="false" aria-controls="sub_' + this.id + '" href="#sub_' 
-								       + this.id + '"><i class="imenu fa fa-chevron-right"></i>&nbsp;<span>' + getResource(this.resourceKey + '.label') + '</span></a></div></div>');
+								       + this.id + '"><i class="imenu fa ' + (expanded ? 'fa-chevron-down' : 'fa-chevron-right' ) + '"></i>&nbsp;<span>' + getResource(this.resourceKey + '.label') + '</span></a></div></div>');
 
 					var root = this;
 					var navigation = this.resourceKey === 'navigation';
@@ -282,7 +319,7 @@ function home(data) {
 					if (this.menus.length > 0) {
 						var menu = '#sub_' + this.id;
 						$("#menu_" + this.id).append(
-							'<ul id="sub_' + this.id + '" class="collapse nav nav-sidebar"/>');
+							'<ul id="sub_' + this.id + '" class="collapse nav nav-sidebar' + (expanded ? ' in' : '') + '"/>');
 						
 						$.each(this.menus, function() {
 							
@@ -320,7 +357,7 @@ function home(data) {
 								$(".sideMenu").removeClass("active");
 								$(this).addClass("active");
 								$(this).parents(".collapse").addClass('in');
-								$('#main-menu').fadeOut(500);
+								closeMenu();
 							});
 
 							if(currentMenu==null && this.home) {
@@ -335,8 +372,10 @@ function home(data) {
 			
 			$('.collapse').on('show.bs.collapse', function(){
 				$(this).parent().find(".fa-chevron-right").removeClass("fa-chevron-right").addClass("fa-chevron-down");
+				saveMenuState($(this).parent().data('menu'), menuStates, true);
 			}).on('hide.bs.collapse', function(){
 				$(this).parent().find(".fa-chevron-down").removeClass("fa-chevron-down").addClass("fa-chevron-right");
+				saveMenuState($(this).parent().data('menu'), menuStates, false);
 			});
 			
 			if(currentMenu==null) {
@@ -380,13 +419,7 @@ function home(data) {
 			$('#burger-toggle').show();
 			$('#burger-toggle').click(function(e) {
 				e.preventDefault();
-				debugger;
-				var on = $('#main-menu').is(':visible');
-				if(on) {
-					$('#main-menu').fadeOut(500);
-				} else {
-					$('#main-menu').fadeIn(500);
-				}
+				toggleMenu();
 			});
 
 			if(allMenus['navigation']) {
@@ -529,6 +562,8 @@ function home(data) {
 					showError(message.substring(6));
 				} 
 			}
+			
+	       });
 			
 		});
 
@@ -924,6 +959,8 @@ function loadMenu(menu) {
 			$('#mainContent').load(uiPath + '/content/' + menu.resourceName + '.html');
 			$('#mainContent').show();
 		}
+		
+		closeMenu();
 	}
 }
 
@@ -943,7 +980,7 @@ function loadSubPage(menu, element) {
 	loadWait();
 	currentMenu = menu;
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
-
+		closeMenu();
 	});
 }
 
