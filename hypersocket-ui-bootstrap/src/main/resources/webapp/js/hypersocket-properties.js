@@ -448,7 +448,7 @@ function validateAll(widget,value,conditions){
 function getWidget(resourceKey) {
 	var widget = undefined;
 	$('.widget').each(function(idx, obj) {
-		if($(this).widget().options().resourceKey === resourceKey) {
+		if($(this).widget() && $(this).widget().options() && $(this).widget().options().resourceKey === resourceKey) {
 			widget = $(this).widget();
 		}
 	});
