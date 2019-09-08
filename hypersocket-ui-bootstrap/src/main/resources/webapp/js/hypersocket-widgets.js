@@ -1186,12 +1186,14 @@ $.fn.autoComplete = function(data) {
 				}
 			});
 		} else{
-			$.each($('#input_' + id).data('values'), function(idx, obj) {
-				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
-				if(prefiltered || name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
-					selected.push(obj);
-				}
-			});
+			if($('#input_' + id).data('values')) {
+				$.each($('#input_' + id).data('values'), function(idx, obj) {
+					var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+					if(prefiltered || name.toLowerCase().indexOf(text.toLowerCase()) > -1) {
+						selected.push(obj);
+					}
+				});
+			}
 		}
 		if(options.sortOptions) {
 			selected.sort(function(a, b) {

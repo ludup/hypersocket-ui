@@ -149,7 +149,7 @@
     	html += '<option disabled>' + getResource("text.sourceEvent") + '</option>';
     	tmp = [];
     	tmp2 = [];
-    	
+    	tmp3 = []
     	
     	
     	$.each(event.attributeNames, function(idx, obj) {
@@ -159,6 +159,7 @@
     		var resource = event.i18nNamespace != '' ? getResource(event.i18nNamespace + '.' + obj) : getResource(obj);
     		tmp[resource] = obj;
     		tmp2.push(resource);
+    		tmp3.push(obj);
     	});
 
     	$.each(tmp2.sort(), function(idx, obj) {
@@ -180,6 +181,7 @@
 		    		var resource = parentEvent.i18nNamespace != '' ? getResource(parentEvent.i18nNamespace + '.' + obj) : getResource(obj);
 		    		tmp[resource] = obj;
 		    		tmp2.push(resource);
+		    		tmp3.push(obj)
 		    	});
 		    	$.each(tmp2.sort(), function(idx, obj) {
 		    		html += '<option value="event' + (parentEvents.length - i - 1) + ":" + tmp[obj] + '">&nbsp;&nbsp;&nbsp;' + obj + '</option>';
@@ -200,9 +202,7 @@
  			
    		html += '</select>'
    			 + '    </div>'
-   			 + '    <div class="propertyValue col-xs-4" style="display: inline-block">'
-   			 + '        <input type="text" class="form-control conditionValue" size="30"'
-   			 + '            ' + conditionId.format('conditionValue') + ' name="conditionValue" value="" style="display: none">'
+   			 + '    <div class="propertyValue col-xs-4 conditionValue" style="display: inline-block">'
    			 + '    </div>'
    			 + '    <div class="propertyValue col-xs-1 dialogActions">'
    			 + '         <a href="#" class="removeCondition btn btn-danger"><i class="fa fa-trash-o"></i></a>'
@@ -210,6 +210,13 @@
    			 + '</div>';
    			 
     	$('#'+divId).append(html);
+    	
+    	debugger;
+    	$('.conditionValue').last().textInput({
+			isPropertyInput: false,
+			variables: tmp3,
+			value: condition ? condition.conditionValue : ''
+		});
     	
     	$('.conditionKey').change(function() {
     		if(!$(this).val().startsWith('condition.is')) {
@@ -508,12 +515,12 @@
 				resource.allConditions = new Array();
 				
 				$('.rowAll').each(function() {
-					
+					debugger;
 					var condition = new Object();
 					condition.id = $(this).find('.conditionId').first().val();
 					condition.attributeKey = $(this).find('.attributeKey').first().val();
 					condition.conditionKey = $(this).find('.conditionKey').first().val();
-					condition.conditionValue = $(this).find('.conditionValue').first().val();
+					condition.conditionValue = $(this).find('.conditionValue').first().widget().getValue();
 
 					log("Adding all condition " + condition.attributeKey + "/" + condition.conditionKey + "=" + condition.conditionValue);
 					resource.allConditions.push(condition);
@@ -526,7 +533,7 @@
 					condition.id = $(this).find('.conditionId').first().val();
 					condition.attributeKey = $(this).find('.attributeKey').first().val();
 					condition.conditionKey = $(this).find('.conditionKey').first().val();
-					condition.conditionValue = $(this).find('.conditionValue').first().val();
+					condition.conditionValue = $(this).find('.conditionValue').first().widget().getValue();
 					
 					log("Adding any condition " + condition.attributeKey + "/" + condition.conditionKey + "=" + condition.conditionValue);
 					resource.anyConditions.push(condition);
