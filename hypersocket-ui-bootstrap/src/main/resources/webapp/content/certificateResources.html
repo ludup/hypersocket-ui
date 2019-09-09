@@ -4,39 +4,29 @@
  -->
 
 <div id="contentCertificates">
-	<div class="modal" id="addCertificateForm" tabindex="-1" role="dialog" dialog-for="contentCertificates">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title"></h4>
-				</div>
-				<div class="modal-body">
-					<div class="propertyItem form-group">
-						<label class="col-xs-3 control-label" localize="certificate.name.label"></label>
-						<div class="propertyValue col-xs-9">
-							<input type="text" class="form-control"
-								 id="resourceName" maxlength="" name="resourceName" value="">
-							<div>
-								<span class="help-block" localize="certificate.name.info"></span>
-							</div>
-						</div>
-					</div>
-					
-					<div id="certificateProperties"></div>
-					<input type="hidden" id="resourceId" name="resourceId" value="" />
-				</div>
-				<div class="modal-footer"></div>
-			</div>
-		</div>
-	</div>
-	<div id="additionalActions"></div>
 </div>
 
 <script type="text/javascript">
 	$(document).ready(function() {
-				$('#contentCertificates').localize();
+				
+				
+				
+				if($('#addCertificateForm').length == 0) {
+					/* Form gets detached and stored so ensure its only added once */
+					$('#contentCertificates').append('<div id="addCertificateForm" tabindex="-1" role="dialog" dialog-for="contentCertificates">' +
+							'<div id="certificateProperties"></div>' +
+							'<div class="propertyItem form-group">' +
+							'<label class="col-md-12 control-label" localize="certificate.name"></label>' +
+							'<div class="propertyValue col-md-12">' +
+							'<input id="resourceName" type="text" class="propertyInput form-control" value="">' +
+							'<div class="clear"><span id="resourceNameHeelp" class="help-block" localize="certificate.name.info"></span></div>' +
+							'</div>' +
+						    '</div>' +
+							'</div></div>' +
+							'<input type="hidden" id="resourceId" name="resourceId" value="" />' +
+						'</div><div id="additionalActions"></div>');
+					contentCertificates
+				}
 				
 				
 				getJSON('menus/tableActions/certificateActions', null, function(data) {
@@ -62,13 +52,7 @@
 							});
 						});
 					 }
-					
-					$('#certificateProperties').propertyPage({
-						url : 'certificates/template',
-						showButtons : false,
-						useTemplates : true,
-						canUpdate : currentMenu.canUpdate
-					});
+				
 
 					var additionalButtons = new Array();
 					
@@ -129,6 +113,7 @@
 									}
 								}
 							}],
+							resourceView: 'samePage',
 							resourceKey : "certificate",
 							createButtonText: 'text.createCertificate',
 							createButtonIcon: 'fa-certificate',
@@ -141,6 +126,17 @@
 							checkbox : true,
 							confirmationButtonSuccess: 'text.confirmDNS',
 							confirmationButtonCancel: 'text.cancelDNS',
+							propertyOptions: { 
+								propertySelector : '#certificateProperties',
+								templateUrl : 'certificates/template/', 
+								propertiesUrl: 'certificates/properties/',
+								i18nNamespace: 'certs',
+								showButtons : false,
+								useTemplates : true,
+								useFilters: true,
+								canUpdate : currentMenu.canUpdate,
+								propertyTabsLast: true
+							},
 							validate : function() {
 
 								if ($('#resourceName').val() == '') {
@@ -164,26 +160,14 @@
 								
 								$('#resourceId').val('');
 								$('#resourceName').val('');
-								
-								$('#certificateProperties').clearProperties();
-								if(create) {
-									$('#certificateProperties').propertyPage({ 
-										url : 'certificates/template/', 
-										showButtons : false, 
-										canUpdate : currentMenu.canUpdate, 
-										useTemplates : true,
-										displayMode: 'create'
-									});
-								}
 
-								$('.tabPropertiesTab').first().trigger('click');
 							},
 							createResource : function() {
 								resource = new Object();
 								resource.id = $('#resourceId').val();
 								resource.name = $('#resourceName').val();
 								
-								$('#certificateProperties').saveProperties(true,
+								$('#c').saveProperties(true,
 										function(items) {
 											resource.properties = items;
 								});
@@ -195,14 +179,10 @@
 								$('#resourceId').val(resource.id);
 								$('#resourceName').val(resource.name);
 								$('#resourceName').attr('disabled', resource.system);
-								
-								$('#certificateProperties').propertyPage(
-										{ url : 'certificates/properties/' + resource.id, 
-											showButtons : false, 
-											canUpdate : currentMenu.canUpdate && !readOnly,
-											displayMode: 'update'
-								});
 							
+							},
+							onClose: function() {
+								$('#subMenuContent').show();
 							},
 							complete : function() {
 								loadComplete();
