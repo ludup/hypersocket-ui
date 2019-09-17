@@ -1,33 +1,18 @@
-<!-- 
-	Replace any Certificate or Certificates with Capitalized name of your resources e.g. Application or Applications
-	Replace any certificate or certificates with lower case name of your resources e.g. application or applications
- -->
-
 <div id="contentCertificates">
+	<input type="hidden" id="resourceId" name="resourceId" value="" />
+	<input type="hidden" id="resourceName" name="resourceName" value="" />
 </div>
+<div id="additionalActions"></div>
+
 
 <script type="text/javascript">
 	$(document).ready(function() {
-				
-				
-				
-				if($('#addCertificateForm').length == 0) {
-					/* Form gets detached and stored so ensure its only added once */
-					$('#contentCertificates').append('<div id="addCertificateForm" tabindex="-1" role="dialog" dialog-for="contentCertificates">' +
-							'<div id="certificateProperties"></div>' +
-							'<div class="propertyItem form-group">' +
-							'<label class="col-md-12 control-label" localize="certificate.name"></label>' +
-							'<div class="propertyValue col-md-12">' +
-							'<input id="resourceName" type="text" class="propertyInput form-control" value="">' +
-							'<div class="clear"><span id="resourceNameHeelp" class="help-block" localize="certificate.name.info"></span></div>' +
-							'</div>' +
-						    '</div>' +
-							'</div></div>' +
-							'<input type="hidden" id="resourceId" name="resourceId" value="" />' +
-						'</div><div id="additionalActions"></div>');
-					contentCertificates
+
+				if(!$('#addCertificateForm').length) {
+					$('#contentCertificates').append('<div  id="addCertificateForm" dialog-for="contentCertificates"><div id="certificateProperties"></div></div>');
 				}
 				
+				$('#contentCertificates').localize();
 				
 				getJSON('menus/tableActions/certificateActions', null, function(data) {
 					
@@ -52,7 +37,6 @@
 							});
 						});
 					 }
-				
 
 					var additionalButtons = new Array();
 					
@@ -113,10 +97,10 @@
 									}
 								}
 							}],
-							resourceView: 'samePage',
 							resourceKey : "certificate",
 							createButtonText: 'text.createCertificate',
 							createButtonIcon: 'fa-certificate',
+							resourceView: 'samePage',
 							additionalActions: actions,
 							additionalButtons: additionalButtons,
 							canCreate: currentMenu.canCreate,
@@ -126,24 +110,7 @@
 							checkbox : true,
 							confirmationButtonSuccess: 'text.confirmDNS',
 							confirmationButtonCancel: 'text.cancelDNS',
-							propertyOptions: { 
-								propertySelector : '#certificateProperties',
-								templateUrl : 'certificates/template/', 
-								propertiesUrl: 'certificates/properties/',
-								i18nNamespace: 'certs',
-								showButtons : false,
-								useTemplates : true,
-								useFilters: true,
-								canUpdate : currentMenu.canUpdate,
-								propertyTabsLast: true
-							},
 							validate : function() {
-
-								if ($('#resourceName').val() == '') {
-									showError("error.nameRequired");
-									return false;
-								}
-
 
 								if(!$('#certificateProperties').validateProperties()) {
 									showError("error.correctValidationErrors");
@@ -159,30 +126,33 @@
 							clearDialog : function(create) {
 								
 								$('#resourceId').val('');
-								$('#resourceName').val('');
 
 							},
 							createResource : function() {
 								resource = new Object();
 								resource.id = $('#resourceId').val();
-								resource.name = $('#resourceName').val();
 								
-								$('#c').saveProperties(true,
+								$('#certificateProperties').saveProperties(true,
 										function(items) {
 											resource.properties = items;
 								});
 								
 								return resource;
 							},
+							propertyOptions: {
+								propertySelector : '#certificateProperties',
+								templateUrl : 'certificates/template/', 
+								propertiesUrl: 'certificates/properties/',
+								showButtons : false, 
+								showAdditionalTabButtons: false,
+								maintainButtonState: false,
+								i18nNamespace: 'certs',
+								canUpdate : currentMenu.canUpdate
+							},
 							displayResource : function(resource, readOnly) {
 								
 								$('#resourceId').val(resource.id);
-								$('#resourceName').val(resource.name);
-								$('#resourceName').attr('disabled', resource.system);
 							
-							},
-							onClose: function() {
-								$('#subMenuContent').show();
 							},
 							complete : function() {
 								loadComplete();
