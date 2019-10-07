@@ -174,8 +174,15 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessionSettings",
 				"fa-gear", "sessionSettings", 100,
-				SystemPermission.SYSTEM_ADMINISTRATION, null, null, null,
-				null), "sessionMenu");
+				null, null, null, null,
+				null) {
+
+					@Override
+					public boolean canRead() {
+						return permissionService.hasAdministrativePermission(getCurrentPrincipal());
+					}
+			
+		}, "sessionMenu");
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "jobs",
 				"fa-tasks", "jobs", 999988,
