@@ -734,6 +734,21 @@ $.fn.resourceTable = function(params) {
 				$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
 					columns: columns
 				});
+			},
+			getSearch: function() {
+				var params = {};
+            	$('#' + divName + 'Placeholder').bootstrapTable('getOptions').queryParams(params);
+				return params.search;
+			},
+			getSearchColumn: function() {
+				var params = {};
+            	$('#' + divName + 'Placeholder').bootstrapTable('getOptions').queryParams(params);
+				return params.searchColumn;
+			},
+			getFilter: function() {
+				var params = {};
+            	$('#' + divName + 'Placeholder').bootstrapTable('getOptions').queryParams(params);
+				return params.filter;
 			}
 		};
 	

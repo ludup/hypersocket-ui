@@ -105,12 +105,13 @@
 							</div>
 						</div>
 					</div>
+					<input type="hidden" id="csrfToken" name="token"></input>
 					<input type="hidden" id="csvAttributesInput" name="attributes"></input>
 					<input type="hidden" id="sortColumn" name="sortColumn"></input>
 					<input type="hidden" id="sortOrder" name="sortOrder"></input>
 					<input type="hidden" id="searchColumnHidden" name="searchColumn"></input>
 					<input type="hidden" id="searchHidden" name="searchPattern"></input>
-					<input type="hidden" id="filter" name="filter"></input>
+					<input type="hidden" id="filterHidden" name="filter"></input>
 					<input type="hidden" id="outputHeaders" name="outputHeaders"></input>
 					<input type="hidden" id="terminateHidden" name="terminate"></input>
 					<div class="modal-footer">
@@ -132,6 +133,7 @@
 <script type="text/javascript">
 	$(document).ready(
 			function() {
+				$('#csrfToken').val(getCsrfToken());
 
 				var apiUrl = 'currentRealm';
 				var disableDecoration = false;
@@ -209,13 +211,18 @@
 
 	            $('#exportButton').click(function(){
 
-	            	$('#sortColumn').val($('#contentUsersPlaceholder').bootstrapTable('getOptions').sortName);
-	            	$('#sortOrder').val($('#contentUsersPlaceholder').bootstrapTable('getOptions').sortOrder);
-
-	            	$('#searchColumnHidden').val($('#searchColumn').widget().getValue());
-	            	$('#searchHidden').val($('.search input[placeholder="Search"]').val());
-	            	$('#filterHidden').val($('#filterColumn').widget().getValue());
-
+	            	var opts = $('#contentUsersPlaceholder').bootstrapTable('getOptions');
+	            	if(opts) {
+	            		$('#sortColumn').val(opts.sortName);
+	            		$('#sortOrder').val(opts.sortOrder);
+	            	}
+	            	var widget = $('#contentUsers').data('callback');
+	            	if(widget) {
+	            		$('#searchColumnHidden').val(widget.getSearchColumn());
+	            		$('#searchHidden').val(widget.getSearch());
+	            		$('#filterHidden').val(widget.getFilter());
+	            	}
+	            
 	            	$('#outputHeaders').val($('#csvOutputHeaders').widget().getValue());
 
 					if($('#csvDelimiter').val().length != 1) {
@@ -230,7 +237,6 @@
 					}
 					$('#terminateHidden').val($('#csvTerminate').widget().getValue());
 					$('#csvForm').find('button.close').click();
-					$('#csvForm').attr('action', csvFormUrl + '?token=' + getCsrfToken());
 	            	$('#csvForm').submit();
 			    });
 
