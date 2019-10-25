@@ -1482,12 +1482,8 @@ $.fn.samePageResourceView = function(params, params2) {
 	}
 	
 	var showView = function(view) {
-		$('#mainContainer').removeClass('col-md-10');
-		$('#mainContainer').addClass('col-md-12');
-		$('#mainContainer').removeClass('col-sm-11');
-		$('#mainContainer').addClass('col-sm-12');
-		$('#mainContent').hide();
 
+		$('#mainContent').hide();
 		view.show();
 	}
 	
@@ -1690,10 +1686,6 @@ $.fn.samePageResourceView = function(params, params2) {
 			dialogOptions.parent.show();
 		}
 		
-		$('#mainContainer').removeClass('col-md-12');
-		$('#mainContainer').addClass('col-md-10');
-		$('#mainContainer').removeClass('col-sm-12');
-		$('#mainContainer').addClass('col-sm-11');
 		$('.showOnComplete').show();
 		$('#mainContent').show();
 		window.scrollTo(0,0);
