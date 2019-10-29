@@ -3513,6 +3513,7 @@ $.fn.namePairInput = function(data) {
 				columnWeight: 'equal',
 				valueVariables: [],
 				nameVariables: [],
+				urlEncode: true,
 				variables: [],
 				onlyName: false,
 				isArrayValue: true,
@@ -3577,11 +3578,17 @@ $.fn.namePairInput = function(data) {
  					return values;
  				}
  				$('#' + id + 'NamePairs').find('.namePairInput').each(function(){
- 					name = encodeURIComponent($(this).find('.namePairName').widget().getValue());
+ 					if(options.urlEncode)
+ 						name = encodeURIComponent($(this).find('.namePairName').widget().getValue());
+ 					else
+ 						name = $(this).find('.namePairName').widget().getValue();
  					if(options.onlyName) {
  	 					values.push(name);
  					} else {
- 						value = encodeURIComponent($(this).find('.namePairValue').widget().getValue());
+ 	 					if(options.urlEncode)
+ 	 						value = encodeURIComponent($(this).find('.namePairValue').widget().getValue());
+ 	 					else
+ 	 						value = $(this).find('.namePairValue').widget().getValue();
  	 					values.push(name + '=' + value);
  					}
 
@@ -3591,10 +3598,13 @@ $.fn.namePairInput = function(data) {
  			setValue: function(val) {
  				callback.removeRows();
  				$.each(val, function(index, value){
- 					valuePair = value.split('=');
- 					for(valueIndex = 0; valueIndex < valuePair.length; valueIndex++){
- 						valuePair[valueIndex] = decodeURIComponent(valuePair[valueIndex]);
- 					}
+ 					var idx = value.indexOf('=');
+ 					valuePair = idx == -1 ? [value] : [value.substring(0, idx), value.substring(idx + 1)];
+					if(options.urlEncode) {
+     					for(valueIndex = 0; valueIndex < valuePair.length; valueIndex++){
+     							valuePair[valueIndex] = decodeURIComponent(valuePair[valueIndex]);
+     					}
+					}
  					callback.addRows(1, valuePair);
  				});
 
@@ -3675,7 +3685,10 @@ $.fn.namePairInput = function(data) {
 
  	 						if(values) {
 	 	 						var renderField = new Function('div', 'val', options.renderValueFunc);
-	 	 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), decodeURIComponent(values[1]));
+	 	 						if(options.urlEncode)
+	 	 							renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), decodeURIComponent(values[1]));
+	 	 						else
+	 	 							renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), values[1]);
  	 						} else {
  	 							var renderField = new Function('div', 'val', options.renderValueFunc);
 	 	 	 					renderField($('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue'), undefined);
