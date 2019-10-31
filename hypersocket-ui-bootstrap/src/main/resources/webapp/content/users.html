@@ -376,6 +376,8 @@
 					var searchFields = [{
 						name: 'name'
 					}, {
+						name: 'description'
+					}, {
 						name: 'primaryEmail'
 					}, {
 						name: 'organizationalUnit',
@@ -403,9 +405,9 @@
 							return '<span data-user-name="' + obj.principalName + '" class="user-detail">' + obj.principalName + '</span>';
 						}
 					}, {
-						name : "principalDesc",
+						name : "description",
 						formatter: function(value, obj, index) {
-							return obj.principalDescription;
+							return obj.description;
 						}
 					}, {
 						name : "primaryEmail"
