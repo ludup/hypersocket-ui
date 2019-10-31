@@ -29,7 +29,6 @@ import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certificates.CertificateResourceService;
-import com.hypersocket.config.ConfigurationPermission;
 import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.dashboard.OverviewWidgetService;
 import com.hypersocket.email.EmailNotificationService;
