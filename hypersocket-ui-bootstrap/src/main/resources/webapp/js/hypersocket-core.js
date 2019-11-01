@@ -135,6 +135,8 @@ function startLogon(opts) {
 	$(document).click(function (event) {
 	    //hide all our dropdowns
 	    $('.dropdown-menu[data-parent]').hide();
+	    $('.dropdown.open').removeClass('open');
+	    
 
 	});
 	
