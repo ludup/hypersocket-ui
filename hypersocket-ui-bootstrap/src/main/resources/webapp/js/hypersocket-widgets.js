@@ -1104,8 +1104,8 @@ $.fn.autoComplete = function(data) {
 			+ ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>';
     
-    html += '<span id="click_' + id + '" class="input-group-addon ' + (options.alwaysDropdown ? 'dropdown-toggle" data-toggle="dropdown"' : '"')
-	+ '><a href="#"><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>';
+    html += '<span id="click_' + id + '" class="input-group-addon">'
+		 +  '<a href="#" ' + (options.alwaysDropdown ? 'class="dropdown-toggle" data-toggle="dropdown"' : '') + '><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>';
     	
 	if(hasVariables || options.variablesUrl) {
 		html += '<div class="dropdown floatRight"><ul id="vars_' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><a href="#" class="dropdown-toggle unselectable" data-toggle="dropdown">${} Insert Variable</span></div>';
@@ -1131,7 +1131,7 @@ $.fn.autoComplete = function(data) {
 			thisWidget.data('selectedObject', obj);
 			$('#' + id).val($(this).text());
 			$('#input_' + id).val($(this).text());
-			$('[data-toggle="dropdown"]').parent().removeClass('open');
+			$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
 			
 			if(options.changed) {
 				options.changed(callback);
@@ -1234,7 +1234,7 @@ $.fn.autoComplete = function(data) {
 				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value.toString());
 				$('#input_' + id).val($(this).text());
-				$('[data-toggle="dropdown"]').parent().removeClass('open');
+				$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
 
 				if(options.changed) {
 					options.changed(callback);
@@ -1251,7 +1251,7 @@ $.fn.autoComplete = function(data) {
 
 		}
 		$('#input_' + id).dropdown();
-		$('[data-toggle="dropdown"]').parent().removeClass('open');
+		$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
 
 		if(show) {
 			$('#input_' + id).dropdown('toggle');
@@ -1390,7 +1390,7 @@ $.fn.autoComplete = function(data) {
 										thisWidget.data('selectedObject', obj);
 										$('#' + id).val(newValue.toString());
 										$('#input_' + id).val(obj[options.nameAttr]);
-										$('[data-toggle="dropdown"]').parent().removeClass('open');
+										$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
 	
 										if(options.changed) {
 											options.changed(callback);
