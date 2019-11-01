@@ -124,7 +124,7 @@
 </div>
 
 
-<div id="contentUsers" class="col-md-12" style="padding-left: 0px">
+<div id="contentUsers">
 	<div id="userDialog"></div>
 	<div id="additionalActions"></div>
 	<div id="realmsContent"></div>
@@ -408,11 +408,14 @@
 						name : "description",
 						formatter: function(value, obj, index) {
 							return obj.description;
-						}
+						},
+						class: 'hidden-xs hidden-sm'
 					}, {
-						name : "primaryEmail"
+						name : "primaryEmail",
+						class: 'hidden-xs'
 					},{
 						name : "principalStatus",
+						class: 'hidden-xs',
 						formatter: function(value, obj, index) {
 							if(obj.suspended) {
 								return getResource('suspended.label');
@@ -427,7 +430,8 @@
 								return new Date(value).format();
 							}
 							return null;
-						}
+						},
+						class: 'hidden-xs hidden-sm'
 					},{
 						name : "lastSignOn",
 						formatter: function(value, obj, index) {
@@ -435,7 +439,8 @@
 								return new Date(value).format();
 							}
 							return null;
-						}
+						},
+						class: 'hidden-xs hidden-sm'
 					}];
 
 					var searchFilters = [];
@@ -448,6 +453,7 @@
 					if(ownerRealm) {
 						fields.push({
 							name: 'parentPrincipal',
+							class: 'hidden-xs hidden-sm',
 							formatter: function(value, obj, index) {
 								if(!obj.parentPrincipal) {
 									return null;

@@ -410,24 +410,20 @@ $.fn.resourceTable = function(params) {
 
 			if(options.forceActionsDropdown || (!options.disableActionsDropdown && options.additionalActions.length > 1)) {
 				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
-				renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
+				renderedActions += '<ul id="' + id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-								renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a></li>';
-					 			
+								renderedActions += '<li data-idx="' + index + '"><a class="row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a></li>';
 								$(document).off('click',
-									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
+								                '#' + id + 'ActionDropdown .row-' + act.resourceKey);
 								$(document).on(
 									'click',
-									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
+									'#' + id + 'ActionDropdown .row-' + act.resourceKey,
 									function(e) {
 										e.preventDefault();
-										
-										var tr = $(this).closest("tr").get(0);
-										var curRow = $(tr).data('index'); 
-										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[parseInt($(this).parent().data('idx'))];
 										act.action(resource, function(resource) {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 											checkBadges(false);
@@ -604,7 +600,8 @@ $.fn.resourceTable = function(params) {
 	columns.push({ field : "actions",
 		align:'right',
 		formatter: renderActions,
-		width: 175
+		width: 175,
+		class: 'actionsColumn'
 	});
 
 	if (options.canCreate) {
@@ -729,7 +726,8 @@ $.fn.resourceTable = function(params) {
 				columns.push({ field : "actions",
 					align:'right',
 					formatter: renderActions,
-					width: 175
+					width: 175,
+					minWidth: 175
 				});
 				$('#' + divName + 'Placeholder').bootstrapTable('refreshOptions', {
 					columns: columns
@@ -1165,13 +1163,13 @@ $.fn.resourceTable = function(params) {
 
 								if(!options.disableActionsDropdown && options.additionalActions.length > 1) {
 									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
-									renderedActions += '<ul class="dropdown-menu dropdown-menu-right" role="menu">';
+									renderedActions += '<ul id="' + resource.id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 									$.each(options.additionalActions, function(x, act) {
 										if (act.enabled) {
 											renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><span>' + getResource(act.resourceKey + ".label") + '</span>&nbsp;&nbsp;<i class="fa ' + act.iconClass + '"></i></a></li>';
 						
-											$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
-											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function(e) {
+											$(document).off('click', '#' + resource.id + 'ActionDropdown .row-' + act.resourceKey);
+											$(document).on('click', '#' + resource.id + 'ActionDropdown .row-' + act.resourceKey, function(e) {
 												e.preventDefault();
 												act.action(resource, function(resource) {
 													$('#' + divName + 'Placeholder').bootstrapTable('refresh');
@@ -1315,6 +1313,50 @@ $.fn.resourceTable = function(params) {
 						$('#' + divName + 'Grid').append('<div class="template" style="float:left; width:100%; height:0px;"></div>');
 		    		}
 				}
+		    	
+
+				
+				/* Now in DOM can add hack to remove dropdown menu from the parent when it is opened to avoid scroll bounds problems */
+				
+				$(document).on('click', '#' + divName + 'Placeholder [data-toggle="dropdown"]', function () {
+				    // if the button is inside a modal
+
+				    if ($('body').hasClass('modal-open')) {
+				        throw new Error("This solution is not working inside a responsive table inside a modal, you need to find out a way to calculate the modal Z-index and add it to the element")
+				        return true;
+				    }
+				    $('.dropdown-menu[data-parent]').hide();
+
+				    $buttonGroup = $(this).parent();
+				    if (!$buttonGroup.attr('data-attachedUl')) {
+				        var ts = +new Date;
+				        $ul = $(this).siblings('ul');
+				        $ul.attr('data-parent', ts);
+				        $buttonGroup.attr('data-attachedUl', ts);
+				        $(window).resize(function () {
+				            $ul.css('display', 'none').data('top');
+				        });
+				    } else {
+				        $ul = $('[data-parent=' + $buttonGroup.attr('data-attachedUl') + ']');
+				    }
+				    if (!$buttonGroup.hasClass('open')) {
+				        $ul.css('display', 'none');
+				        return;
+				    }
+				    dropDownFixPosition($(this).parent(), $ul);
+				    function dropDownFixPosition(button, dropdown) {
+				        var dropDownTop = button.offset().top + button.outerHeight();
+				        dropdown.attr('id', $ul.attr('id'));
+				        dropdown.css('top', dropDownTop + "px");
+				        dropdown.css('left', button.offset().left - ( dropdown.width() / 2 ) + "px");
+				        dropdown.css('position', "absolute");
+				        dropdown.css('display', 'block');
+				        if($('#content').length)
+				        	dropdown.appendTo($('#content'));
+				        else
+				        	dropdown.appendTo('body');
+				    }
+				});
 		    	if(options.loaded)
 		    		options.loaded($('#' + divName + 'Placeholder').bootstrapTable('getData'));
 

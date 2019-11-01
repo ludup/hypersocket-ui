@@ -3,11 +3,14 @@
  */
 
 /* Move down content because we have a fixed navbar that is 50px tall */
+html {
+	height: 100%;
+}
 body {
-	padding-top: 50px;
 	background: #f8f8f8;
 	font: 12px "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans",
 		Verdana, Tahoma, sans-serif;
+	height: 100%;
 }
 
 *:focus {
@@ -63,6 +66,7 @@ pre {
 
 #content {
 	margin-right: 0px;
+	height: 100%;
 }
 
 .main .page-header {
@@ -352,7 +356,7 @@ pre {
 
 #mainContainer {
 	background: #f8f8f8;
-	min-height: 100vh;
+	height: 100%;
 }
 
 #subMenuContent, #subMenuPageContent {
@@ -464,7 +468,8 @@ table.table .btn i {
 }
 
 .fixed-table-body {
-	overflow: visible;
+	overflow-x: auto;
+	overflow-y: visible;
 }
 
 .pagination-info {
@@ -617,21 +622,41 @@ table {
 	clear: both;
 }
 
-#footer {
+footer {
 	padding: 5 5 5 5px;
-	position: fixed;
+	flex-shrink: 0;
 	width: 100%;
-	bottom: 0;
 	/* Set the fixed height of the footer here */
-	height: 50px;
 	background-color: #000;
 	color: #fff;
-	bottom: 0;
-	z-index: 1000;
+}
+
+header {
+    flex-shrink: 0;
+}
+
+header .navbar {
+	border-radius: 0px;
+	margin-bottom: 0;
+}
+
+.scroll-container {
+	width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.scroll-content, .scroll-container #container.scroll-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 2em;
+	width: 100%;
 }
 
 #copyright {
-	width: 500px;
 	float: left;
 }
 
@@ -700,22 +725,26 @@ table {
 	background: #e7e7e7;
 	color: #333;
 	position: absolute;
-	height: 5000px;
-	width: 200px;
+	width: 220px;
+	pading-right: 10px;
 	top: 51px;
+	bottom: 51px;
 	left: 0px;
 	z-index: 8888;
+	overflow-y: scroll;
 }
 
 .sidebar-min {
 	background: #e7e7e7;
 	color: #333;
 	position: absolute;
-	height: 5000px;
 	width: 20px;
 	top: 51px;
+	bottom: 51px;
+	left: 0px;
 	left: 0px;
 	z-index: 8888;
+	overflow-y: scroll;
 }
 
 #main-menu-min i {
@@ -1092,11 +1121,12 @@ table {
 
 .btn i {
 	margin-top: 2px;
-	margin-right: 5px;
+	margin-right: 5px; 
 }
 
 .panel-footer {
 	overflow: auto;
+	width: 100%;
 }
 
 .panel-footer button {
