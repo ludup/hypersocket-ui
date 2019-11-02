@@ -919,7 +919,7 @@ header .navbar {
 }
 
 .container-fluid {
-	padding-right: 0px;
+	/* padding-right: 0px; */
 }
 
 #bottomMenu {
