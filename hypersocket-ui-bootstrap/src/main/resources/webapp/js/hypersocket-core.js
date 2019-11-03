@@ -69,6 +69,20 @@ $.ajaxSetup({ error : function(xmlRequest) {
 	} 
 }, cache : false });
 
+$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
+	/* This prevents caching of the following resources when they are loaded as the
+	 * result of Ajax. Being as this also includes actual content, such as Javascript
+	 * or CSS that we sometimes dynamically load, we need to turn off the cache defeat
+	 * parameters that jquery adds, because we DONT want to defect the cache!
+	 */
+	  if ( options.dataType == 'script' || originalOptions.dataType == 'script' ||  
+		   options.dataType == 'link' || originalOptions.dataType == 'link' ||
+		   ( options.dataType == 'json' && options.url && options.url.indexOf('/api/enum')) ||
+		   ( options.dataType == 'json' && options.url && options.url.indexOf('/api/i18n')) ) {
+	      options.cache = true;
+	  }
+	});
+
 window.onhashchange = function() {  
 	if($('#pageContent').length > 0) {
 		$('#pageContent').remove();
@@ -246,7 +260,7 @@ function checkBadges(schedule) {
 			});
 		}
 		if(schedule) {
-			setTimeout(function() { checkBadges(true) }, 10000);
+			setTimeout(function() { checkBadges(true) }, 100000);
 		}
 	});
 };
