@@ -1251,6 +1251,18 @@ $.fn.autoComplete = function(data) {
 
 		}
 		$('#input_' + id).dropdown();
+		$('#input_' + id).on('keyup', function (e) {
+		    if (e.keyCode === 13) {
+				var value = $('#input_' + id).val();
+				var obj = $('#input_' + id).data('map')[value];
+				thisWidget.data('selectedObject', obj);
+				$('#' + id).val(value.toString());
+				$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
+				if(options.changed) {
+					options.changed(callback);
+				}
+		    }
+		});
 		$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
 
 		if(show) {
