@@ -211,7 +211,6 @@
    			 
     	$('#'+divId).append(html);
     	
-    	debugger;
     	$('.conditionValue').last().textInput({
 			isPropertyInput: false,
 			variables: tmp3,
@@ -408,7 +407,6 @@
 			},
 			loadParent: function(parentResource, parentEvents, triggerType) {
 
-				debugger;
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);
@@ -443,7 +441,6 @@
 				   the URL it needs. */
 
 				displaying = resource.id;
-				debugger;
 				if(parentResource) {
 					/* This is for an 'Automation'???? LDP why? triggers can have parents too!±! */
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
@@ -515,7 +512,6 @@
 				resource.allConditions = new Array();
 				
 				$('.rowAll').each(function() {
-					debugger;
 					var condition = new Object();
 					condition.id = $(this).find('.conditionId').first().val();
 					condition.attributeKey = $(this).find('.attributeKey').first().val();

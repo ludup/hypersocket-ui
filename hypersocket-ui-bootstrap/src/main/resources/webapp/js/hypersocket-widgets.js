@@ -53,7 +53,7 @@ $.fn.clipboardCopy = function(data) {
 	}, data);
 
 
-	var id = $(this).attr('id') + "ClipboardCopy";
+	var id = checkElementHasId($(this)).attr('id') + "ClipboardCopy";
 	var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : $(this).attr('id') ;
 
 	$(this).on('click', function() {
@@ -125,7 +125,7 @@ $.fn.textInput = function(data) {
 				}
 			}, data);
 
-	var id = 'input' + $(this).attr('id') + "TextInput";
+	var id = 'input' + checkElementHasId($(this)).attr('id') + "TextInput";
 	var hasVariables = (options.variables && options.variables.length > 0);
 	if(hasVariables && options.variables.constructor !== Array) {
 		options.variables = options.variables.split(',');
@@ -336,7 +336,7 @@ $.fn.htmlInput = function(data) {
 			  size: 'normal'},
 		data);
 
-	var id = $(this).attr('id') +  'HtmlInput';
+	var id = checkElementHasId($(this)).attr('id') +  'HtmlInput';
 
 	var heightCss = '';
 	if(options.size==='small') {
@@ -421,7 +421,7 @@ $.fn.codeInput = function(data) {
 			  size: 'normal'},
 		data);
 
-	var id = $(this).attr('id') +  'CodeInput';
+	var id = checkElementHasId($(this)).attr('id') +  'CodeInput';
 
 	var heightCss = '';
 	if(options.size==='small') {
@@ -513,7 +513,7 @@ $.fn.richInput = function(data) {
 		  toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor emoticons' },
 	data);
 
-	var id = $(this).attr('id');
+	var id = checkElementHasId($(this)).attr('id');
 	var tn = $(this).prop('tagName');
 	if(tn !== 'TEXTAREA' ) {
 		id = 'rich' + id;
@@ -671,7 +671,7 @@ $.fn.editor = function(data) {
 		  value: ''},
 	data);
 
-	var id =$(this).attr('id') + 'Editor';
+	var id = checkElementHasId($(this)).attr('id') + 'Editor';
 
 	$(this).append( '<div class="btn-toolbar" data-role="editor-toolbar" data-target="#' + id + '">'
   + '  <div class="btn-group">'
@@ -813,7 +813,7 @@ $.fn.selectButton = function(data) {
 			}
 		}, data);
 
-	var id = $(this).attr('id') + "SelectButton";
+	var id = checkElementHasId($(this)).attr('id') + "SelectButton";
 
 	var name = (obj && obj.resourceKey != null ) ? formatResourceKey(obj.resourceKey) : $(this).attr('id') ;
 
@@ -1094,7 +1094,7 @@ $.fn.autoComplete = function(data) {
 			maxResults: 100
 		}, data);
 	var callback;
-	var id = $(this).attr('id') + "AutoComplete";
+	var id = checkElementHasId($(this)).attr('id') + "AutoComplete";
 	var thisWidget = $(this);
 
 	var hasVariables = (options.variables && options.variables.length > 0);
@@ -1579,7 +1579,7 @@ $.fn.textDropdown = function(data) {
  * Shows 2 list boxes so that values can be moved between them.
  */
 $.fn.multipleSelect = function(data) {
-	var id = $(this).attr('id');
+	var id = checkElementHasId($(this)).attr('id');
 	var multipleSelectDisabled = false;
 	var addElement = function(element){
 		var newElement = element.clone();
@@ -2062,7 +2062,7 @@ $.fn.multipleSelectValues = function() {
 
 
 $.fn.multipleSearchInput = function(data) {
-	var id = $(this).attr('id');
+	var id = checkElementHasId($(this)).attr('id');
 	var removeElement = function(e){
 	    if(options.preRemoveCallback){
 	        if(!options.preRemoveCallback(e, callback)){
@@ -2382,7 +2382,7 @@ $.fn.multipleSearchInput = function(data) {
  */
 $.fn.multipleTextInput = function(data) {
 
-	var id = $(this).attr('id');
+	var id = checkElementHasId($(this)).attr('id');
 
 	var removeElement = function(e){
 		$(e.target).parent().remove();
@@ -2656,7 +2656,7 @@ $.fn.multipleTextInput = function(data) {
  */
 $.fn.multipleNamePairInput = function(data) {
 
-	var id = $(this).attr('id');
+	var id = checkElementHasId($(this)).attr('id');
 
 	var removeElement = function(e){
 		$(e.target).parent().remove();
@@ -2954,7 +2954,7 @@ $.fn.multipleNamePairInput = function(data) {
 
 $.fn.dateInput = function(options) {
 
-	var id = $(this).attr('id') + "DateInput";
+	var id = checkElementHasId($(this)).attr('id') + "DateInput";
 
     var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 
@@ -3030,7 +3030,7 @@ $.fn.dateInput = function(options) {
  */
 $.fn.timeInput = function(options) {
 
-	var id = $(this).attr('id') + "TimeInput";
+	var id = checkElementHasId($(this)).attr('id') + "TimeInput";
 
 	var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
 
@@ -3106,7 +3106,7 @@ $.fn.timeInput = function(options) {
 
 $.fn.buttonAction = function(options) {
 
-	var id = $(this).attr('id') + "ButtonAction";
+	var id = checkElementHasId($(this)).attr('id') + "ButtonAction";
 
 	var obj = $.extend(
 			{   readOnly: false,
@@ -3170,7 +3170,7 @@ $.fn.buttonAction = function(options) {
 
 $.fn.booleanInput = function(options) {
 
-	var id =  $(this).attr('id') + "BooleanInput";
+	var id =  checkElementHasId($(this)).attr('id') + "BooleanInput";
 
 	var obj = $.extend(
 			{   readOnly: false,
@@ -3218,7 +3218,7 @@ $.fn.booleanInput = function(options) {
 
 $.fn.switchInput = function(options) {
 
-	var id = $(this).attr('id') + "SwitchInput";
+	var id = checkElementHasId($(this)).attr('id') + "SwitchInput";
 
 	var obj = $.extend(
 			{   readOnly: false,
@@ -3293,7 +3293,7 @@ $.fn.switchInput = function(options) {
 
 $.fn.colorInput = function(options) {
 
-	var id = $(this).attr('id') + "ColorInput";
+	var id = checkElementHasId($(this)).attr('id') + "ColorInput";
 
 	var obj = $.extend(
 			{   format: 'hex',
@@ -3354,7 +3354,7 @@ $.fn.colorInput = function(options) {
 
 $.fn.imageInput = function(options) {
 
-	var id = $(this).attr('id') + "ImageInput";
+	var id = checkElementHasId($(this)).attr('id') + "ImageInput";
 
 	var obj = $.extend(
 			{   readOnly: false,
@@ -3445,7 +3445,7 @@ $.fn.imageInput = function(options) {
 
 $.fn.sliderInput = function(options) {
 
-	var id = $(this).attr('id') + "SliderInput";
+	var id = checkElementHasId($(this)).attr('id') + "SliderInput";
 	var obj = $.extend(options,
 			{   min: parseFloat(options.min),
 			    max: parseFloat(options.max),
@@ -3535,7 +3535,7 @@ $.fn.namePairInput = function(data) {
 				showValueVariables: false
 			}, data);
 
-	var id =  $(this).attr('id') + "NamePairInput";
+	var id =  checkElementHasId($(this)).attr('id') + "NamePairInput";
 
 	if(!rowNum){
 		var rowNum = 0;
@@ -3775,7 +3775,7 @@ $.fn.namePairInput = function(data) {
 $.fn.namePairsAutoComplete = function(data) {
 	var options = $.extend({}, data);
 	var div = $(this);
-	var id =  div.attr('id') + "NamePairsAutoComplete";
+	var id =  checkElementHasId(div).attr('id') + "NamePairsAutoComplete";
 
 	if(!$(this).data('created')) {
 		var html = 	'<div id="' + id + '" class="propertyItem form-group"></div>';
@@ -3890,7 +3890,7 @@ $.fn.fileUploadInput = function(data) {
 				}
 			}, data);
 
-	var id = $(this).attr('id') + "FileUpload";
+	var id = checkElementHasId($(this)).attr('id') + "FileUpload";
 	var html =	'<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
@@ -4238,7 +4238,7 @@ $.fn.logoInput = function(data) {
 
 	var imagePath = basePath + "/api/logo/default/default/" + options.previewSize + "_auto_auto_auto.png";
 
-	var id = $(this).attr('id') + "FileUpload";
+	var id = checkElementHasId($(this)).attr('id') + "FileUpload";
 
 	var generatorHtml =	'<div id="' + id + 'Generator" class="logo-generator">'
 		+	'<div class="logo-text-container logo-row">'
@@ -4824,7 +4824,7 @@ $.fn.multipleFileUpload = function(data) {
 				url: 'files/file'
 			}, data);
 
-	var id = $(this).attr('id') + "MultipleFileUpload";
+	var id = checkElementHasId($(this)).attr('id') + "MultipleFileUpload";
 
 	if(!rowNum){
 		var rowNum = 0;
@@ -5020,7 +5020,7 @@ $.fn.html5Upload = function(data) {
 			url: basePath + '/api/fs/upload'
 		}, data);
 	var fileIndex = 0;
-	var id = $(this).attr('id') + "FileDragAndDrop";
+	var id = checkElementHasId($(this)).attr('id') + "FileDragAndDrop";
 	var html = 	'<div id="' + id + 'Div" style="padding:20px;">'
 			+	'	<div id="' + id + 'Area" class="fileDragAndDrop">'
 			+	'		<span class="optionalField" id="' + id + 'ProgressText" hidden><i class="fa fa-spinner fa-spin" aria-hidden="true"></i>&nbsp;' + getResource('dragAndDrop.progresText') + '</span>'
@@ -5637,7 +5637,7 @@ $.fn.textAndSelect = function(data) {
 		disabled: false
 	};
 
-	var textId = $(this).attr('id') + 'Text';
+	var textId = checkElementHasId($(this)).attr('id') + 'Text';
 	var selectId = $(this).attr('id') + 'Select';
 
 	$(this).append('<div class="propertyItem form-group">' +
@@ -5699,7 +5699,7 @@ $.fn.feedbackPanel = function(data) {
 		$('#feedbackNext').remove();
 		$.each(feedback, function(idx, result) {
 			last = result;
-			var id = div.attr('id') + "f" + idx;
+			var id = checkElementHasId(div).attr('id') + "f" + idx;
 			if($('#' + id).length > 0) {
 				return;
 			}
@@ -5798,7 +5798,7 @@ $.fn.accordionPage = function(data) {
 				closeable: true
 			}, data);
 
-	var id = $(this).attr('id') + "AccordionPage";
+	var id = checkElementHasId($(this)).attr('id') + "AccordionPage";
 	$(this).append('<div id="' + id + '" class="panel-group" role="tablist" aria-multiselectable="false"></div>');
 
 	$.each(options.steps, function(index, obj) {
@@ -5879,7 +5879,7 @@ $.fn.multipleRows = function(data) {
 				}
 			}, data);
 
-	var id = $(this).attr('id') + "Multiple";
+	var id = checkElementHasId($(this)).attr('id') + "Multiple";
 
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 	+	'	<div class="col-xs-11" id="' + id + 'Header"></div>'
@@ -5994,7 +5994,7 @@ $.fn.multipleRows = function(data) {
 
 $.fn.roles = function(data) {
 	var options = $.extend({}, data);
-	var divId = $(this).attr('id');
+	var divId = checkElementHasId($(this)).attr('id');
 	var roleDivId = "roles" + divId;
 
 	var widgetConfig = {
@@ -6122,7 +6122,7 @@ $.fn.roles = function(data) {
 }
 
 $.fn.fileTree = function(data) {
-	var id = $(this).attr('id');
+	var id = checkElementHasId($(this)).attr('id');
 	var include = function(node){
 		if(node.id == '#' || node.text == '/'){
 			for(var index = 0; index < node.children.length; index++){
@@ -6423,7 +6423,7 @@ $.fn.namePair = function(data) {
 				showValueScript: false
 			}, data);
 
-	var id =  $(this).attr('id') + "NamePair";
+	var id =  checkElementHasId($(this)).attr('id') + "NamePair";
 
 	var nameWeight = 'col-xs-6';
 	var valueWeight = 'col-xs-6';
@@ -6600,7 +6600,7 @@ $.fn.autoCompleteNamePair = function(data) {
 		showValueScript: options.showValueScript,
 		disabled: options.disabled
 	}
-	var id =  $(this).attr('id') + "autoCompleteNamePair";
+	var id =  checkElementHasId($(this)).attr('id') + "autoCompleteNamePair";
 	var namePair = $(this).namePair(autoCompleteNamePairOptions);
 
 	var callback = {
@@ -6690,7 +6690,7 @@ $.fn.autoCompleteNamePairs = function(data) {
 			showValueScript: options.showValueScript,
 			disabled: options.disabled
 	};
-	var id =  $(this).attr('id') + "autoCompleteNamePairs";
+	var id =  checkElementHasId($(this)).attr('id') + "autoCompleteNamePairs";
 	$(this).append('<div id="' + id + '"></div>');
 
 	var multipleRows = $('#' + id).multipleRows(options);
@@ -6743,7 +6743,7 @@ $.fn.autoCompleteNamePairs = function(data) {
 $.fn.switchingHtmlContent = function(data) {
 	
 	
-	var id =  $(this).attr('id') + "switchingHtmlContent";
+	var id =  checkElementHasId($(this)).attr('id') + "switchingHtmlContent";
 	$(this).append('<div id="' + id + '"><div id="' + id + 'Panel"><a id="' + id + 'ClickRich" href="#"></a> | <a id="' + id + 'ClickHtml" href="#"></a></div><div id="' + id + 'richInput"></div><div id="' + id + 'htmlInput"></div></div>');
 
 	
