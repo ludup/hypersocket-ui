@@ -324,20 +324,18 @@ $.fn.getCursorPosition = function () {
 }
 
 $.fn.startSpin2 = function (message) {
-
-	if(!message) {
+	if(!message)
 		message = getResourceOrDefault('pleaseWait.text', "Please wait...");
-	}
 	var _self = $(this);
-	if(!$(this).find('.sk-fading-circle').length) {
-		$.each($(this).children(), function(idx, element) {
-			if($(element).is(":visible")) {
-				$(element).data('state', true);
-				$(element).hide();
-			}
-		});
-		
-		$(this).append('<div class="sk-fading-circle">'
+	var spins = _self.data('spins');
+	if(!spins)
+		spins = 0;
+	spins++;
+	console.log('Starting spinner attached to ' + _self[0].id + ' (' + spins + ')');
+	_self.data('spins', spins);
+	if(spins == 1) {
+		$(this).hide();
+		$('<div class="sk-fading-circle"><div class="sk-fading-circle-inner">'
 				+'<div class="sk-circle1 sk-circle"></div>'
 				+'<div class="sk-circle2 sk-circle"></div>'
 				+'<div class="sk-circle3 sk-circle"></div>'
@@ -351,8 +349,10 @@ $.fn.startSpin2 = function (message) {
 				+'<div class="sk-circle11 sk-circle"></div>'
 				+'<div class="sk-circle12 sk-circle"></div>'
 				+'<div class="sk-message"><p>' + message + '</p></div>'
-				+'</div>');
+				+'</div></div>').insertBefore(this);
 	}
+	else
+		console.warn('Already attached spinner attached to ' + _self[0].id);
 	
 	return {
 		stopSpin: function() {
@@ -367,16 +367,16 @@ $.fn.startSpin = function (message) {
 		message = getResource('pleaseWait.text');
 	}
 	var _self = $(this);
-	if(!$(this).find('.sk-fading-circle').length) {
+	var spins = _self.data('spins');
+	if(!spins)
+		spins = 0;
+	spins++;
+	console.log('Starting spinner attached to ' + _self[0].id + ' (' + spins + ')');
+	_self.data('spins', spins);
+	if(spins == 1) {
 		$('.showOnComplete').hide();
-		$.each($(this).children(), function(idx, element) {
-			if($(element).is(":visible")) {
-				$(element).data('state', true);
-				$(element).hide();
-			}
-		});
-		
-		$(this).append('<div class="sk-fading-circle">'
+		$(this).hide();
+		$('<div class="sk-fading-circle"><div class="sk-fading-circle-inner">'
 				+'<div class="sk-circle1 sk-circle"></div>'
 				+'<div class="sk-circle2 sk-circle"></div>'
 				+'<div class="sk-circle3 sk-circle"></div>'
@@ -390,8 +390,10 @@ $.fn.startSpin = function (message) {
 				+'<div class="sk-circle11 sk-circle"></div>'
 				+'<div class="sk-circle12 sk-circle"></div>'
 				+'<div class="sk-message"><p>' + getResourceOrText(message) + '</p></div>'
-				+'</div>');
+				+'</div></div>').insertBefore(this);
 	}
+	else
+		console.warn('Already attached spinner attached to ' + _self[0].id);
 	
 	return {
 		stopSpin: function() {
@@ -401,40 +403,50 @@ $.fn.startSpin = function (message) {
 }
 
 $.fn.stopSpin = function () {
-
-	var me = $(this).find('.sk-fading-circle').parent();
-	if(me.length) {
-		setTimeout(function() {
-			me.find('.sk-fading-circle').remove();
-			$('.showOnComplete').show();
-			$.each(me.children(), function(idx, element) {
-				if($(element).data('state')) {
-					$(element).show();
-					$(element).data('state', null);
-				}
-			});
-		    
-		}, 100);
+	var me = $(this).parent().find('.sk-fading-circle').parent();
+	var _self = $(this);
+	var spins = _self.data('spins');
+	if(!spins) {
+		console.warn(_self[0].id + ' was never started spinning, but we got a request to stop it.');
 	}
-
+	else if(spins == 0) {
+		console.warn(_self[0].id + ' startSpin does not match stopSpin');
+	}
+	else {
+		spins--;
+		_self.data('spins', spins);
+    	if(spins == 0) {
+    		//setTimeout(function() {
+    		console.log('Removing spinner attached to ' + _self[0].id);
+    		me.find('.sk-fading-circle').remove();
+    		$('.showOnComplete').show();
+    		_self.show();
+    		//}, 100);
+    	}
+	}
 }
 
 $.fn.stopSpin2 = function () {
-
-	var me = $(this).find('.sk-fading-circle').parent();
-	if(me.length) {
-		setTimeout(function() {
-			me.find('.sk-fading-circle').remove();
-			$.each(me.children(), function(idx, element) {
-				if($(element).data('state')) {
-					$(element).show();
-					$(element).data('state', null);
-				}
-			});
-		    
-		}, 100);
+	var me = $(this).parent().find('.sk-fading-circle').parent();
+	var _self = $(this);
+	var spins = _self.data('spins');
+	if(!spins) {
+		console.warn(_self[0].id + ' was never started spinning, but we got a request to stop it.');
 	}
-
+	else if(spins == 0) {
+		console.warn(_self[0].id + ' startSpin does not match stopSpin');
+	}
+	else {
+		spins--;
+		_self.data('spins', spins);
+    	if(spins == 0) {
+    		//setTimeout(function() {
+    			console.log('Removing spinner attached to ' + _self[0].id);
+    			me.find('.sk-fading-circle').remove();
+    			_self.show();
+    		//}, 100);
+    	}
+	}
 }
 
 function getParameterByName(name) {

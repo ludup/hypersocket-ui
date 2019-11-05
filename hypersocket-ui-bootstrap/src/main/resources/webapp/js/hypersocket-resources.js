@@ -1598,7 +1598,7 @@ $.fn.samePageResourceView = function(params, params2) {
 						  showView(dialog);
 						  if(dialogOptions.showViewButtons)
 							  addActions(true);
-						  $('.sk-fading-circle').remove();
+						  $('#mainContainer').stopSpin();
 						  if(dialogOptions.propertyOptions.complete) {
 							  dialogOptions.propertyOptions.complete(params2);
 						  }
@@ -1620,7 +1620,7 @@ $.fn.samePageResourceView = function(params, params2) {
 			showView(dialog);
 			if(dialogOptions.showViewButtons)
 				addActions(true);
-			$('.sk-fading-circle').remove();
+			$('#mainContainer').stopSpin();
 		}
 		
 		return;

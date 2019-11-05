@@ -2024,7 +2024,8 @@ select[multiple] {
 /**
 * From http://tobiasahlin.com/spinkit/
 */
-.sk-fading-circle {
+
+.sk-fading-circle-inner {
 	margin: auto;
 	position: absolute;
 	top: 0;
@@ -2033,6 +2034,14 @@ select[multiple] {
 	right: 0;
 	width: 40px;
 	height: 40px;
+}
+
+.sk-fading-circle {
+	width: 100%;
+	height: 100%;
+	min-height: 128px;
+	background-color: white;
+	position: relative;
 }
 
 .sk-message {
@@ -2049,7 +2058,6 @@ select[multiple] {
 	left: 0;
 	top: 0;
 }
-
 .sk-fading-circle .sk-circle:before {
 	content: '';
 	display: block;

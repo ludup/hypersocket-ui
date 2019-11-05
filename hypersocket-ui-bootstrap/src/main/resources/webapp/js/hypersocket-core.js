@@ -997,6 +997,7 @@ function loadSubPage(menu, element) {
 	currentMenu = menu;
 	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
 		closeMenu();
+		$('#subMenuPageContent').stopSpin();
 	});
 }
 
