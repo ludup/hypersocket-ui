@@ -1244,6 +1244,14 @@ header .navbar {
 
 span.input-group-addon {
 	cursor: pointer;
+	padding: 0;
+	margin: 0;
+}
+
+span.input-group-addon .dropdown-toggle {
+	width: 24px;
+	line-height: 28px;
+	display: inline-block;
 }
 
 .unselectable {
