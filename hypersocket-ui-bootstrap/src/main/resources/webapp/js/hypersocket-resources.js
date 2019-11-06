@@ -1795,8 +1795,12 @@ $.fn.samePageResourceView = function(params, params2) {
 			dialog.samePageResourceView('create', callback);
 		},
 		editResource: function(resource, options) {
-			$('#mainContainer').startSpin();
-			dialog.samePageResourceView('edit', resource, options);
+			if(dialog.data('options')) {
+    			$('#mainContainer').startSpin();
+    			dialog.samePageResourceView('edit', resource, options);
+			}
+			else
+				console.log('Attempt to edit resource when it is not ready.');
 		},
 		refreshView: function(resource) {
 			dialog.samePageResourceView('refreshView', resource);
