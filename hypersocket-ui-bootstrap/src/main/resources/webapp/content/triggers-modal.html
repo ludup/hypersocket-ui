@@ -393,13 +393,13 @@
 				var parentResource = $('#triggerModal').data('parentResource');
 				var triggerType = $('#triggerModal').data('triggerType');
 
-				if(triggerType == 1 && create) {
+				if(triggerType == 1 && create && parentResource) {
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						triggerEvent.setValue(data.resources[0].resourceKey);
 						triggerEvent.disable();
 					});
 				}
-				else if(triggerType == 0 && create) {
+				else if(triggerType == 0 && create && parentResource) {
 					triggerEvent.setValue(parentResource.event);
 				}
 				
@@ -449,7 +449,7 @@
 
 				displaying = resource.id;
 				
-				if(triggerType == 1) {
+				if(triggerType == 1 && parentResource) {
 					/* This is for an 'Automation' */
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						
