@@ -376,6 +376,7 @@
 		
 		$(document).data('triggerModalCallback', {
 			clearDialog: function(create) {
+
 				$('.requiresEvent').hide();
 				$('#rowAll').empty();
 				$('#rowAny').empty();
@@ -390,13 +391,18 @@
 				triggerAllRealms.reset();
 				
 				var parentResource = $('#triggerModal').data('parentResource');
+				var triggerType = $('#triggerModal').data('triggerType');
 
-				if(parentResource && create) {
+				if(triggerType == 1 && create) {
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						triggerEvent.setValue(data.resources[0].resourceKey);
 						triggerEvent.disable();
 					});
 				}
+				else if(triggerType == 0 && create) {
+					triggerEvent.setValue(parentResource.event);
+				}
+				
 				displaying = false;
 				triggerResult.selectFirst();
 				$('.tabPropertiesTab').first().trigger('click');
@@ -435,14 +441,16 @@
 				triggerTask.enable();
 
 				var parentResource = $('#triggerModal').data('parentResource');
+				var triggerType = $('#triggerModal').data('triggerType');
 				var sself = this;
 
 				/* Flag that we are displaying a trigger not creating. This gives loadTriggerProperties()
 				   the URL it needs. */
 
 				displaying = resource.id;
-				if(parentResource) {
-					/* This is for an 'Automation'???? LDP why? triggers can have parents too!±! */
+				
+				if(triggerType == 1) {
+					/* This is for an 'Automation' */
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						
 						triggerEvent.setValue(data.resources[0].resourceKey);
@@ -453,7 +461,7 @@
 						triggerTask.setValue(resource.resourceKey);
 					});
 				}
-				else {
+				else  {
 					/* This is a 'Trigger' */
 
 					triggerEvent.setValue(resource.event);
