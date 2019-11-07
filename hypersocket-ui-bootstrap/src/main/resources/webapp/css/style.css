@@ -1244,7 +1244,7 @@ header .navbar {
 
 span.input-group-addon {
 	cursor: pointer;
-	padding: 0;
+	padding: 0 4px;
 	margin: 0;
 }
 
