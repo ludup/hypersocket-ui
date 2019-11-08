@@ -401,9 +401,11 @@
 				}
 				else if(triggerType == 0 && create && parentResource) {
 					triggerEvent.setValue(parentResource.event);
+					triggerEvent.disable();
 				}
 				else if(triggerType == 3 && create && parentResource) {
 					triggerEvent.setValue(parentResource.resourceKey);
+					triggerEvent.disable();
 				}
 				
 				displaying = false;
