@@ -391,7 +391,7 @@
 				triggerAllRealms.reset();
 				
 				var parentResource = $('#triggerModal').data('parentResource');
-				var triggerType = $('#triggerModal').data('triggerType');
+				var triggerType = $('#triggerModal').data('tri woiggerType');
 
 				if(triggerType == 1 && create && parentResource) {
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
@@ -401,6 +401,9 @@
 				}
 				else if(triggerType == 0 && create && parentResource) {
 					triggerEvent.setValue(parentResource.event);
+				}
+				else if(triggerType == 3 && create && parentResource) {
+					triggerEvent.setValue(parentResource.resourceKey);
 				}
 				
 				displaying = false;
@@ -412,7 +415,6 @@
 				$('#tabProperties').empty();
 			},
 			loadParent: function(parentResource, parentEvents, triggerType) {
-
 				$('#triggerModal').data('parentEvents', parentEvents);
 				$('#triggerModal').data('parentResource', parentResource);
 				$('#triggerModal').data('triggerType', triggerType);
