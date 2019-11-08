@@ -391,7 +391,7 @@
 				triggerAllRealms.reset();
 				
 				var parentResource = $('#triggerModal').data('parentResource');
-				var triggerType = $('#triggerModal').data('tri woiggerType');
+				var triggerType = $('#triggerModal').data('triggerType');
 
 				if(triggerType == 1 && create && parentResource) {
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
