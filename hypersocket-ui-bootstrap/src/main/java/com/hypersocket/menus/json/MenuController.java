@@ -136,6 +136,9 @@ public class MenuController extends AuthenticatedController {
 			}
 
 			return list;
+		} catch(Throwable e) { 
+			log.error("Menu error", e);
+			throw e;
 		} finally {
 			clearAuthenticatedContext();
 		}
