@@ -731,7 +731,7 @@ header .navbar {
 	bottom: 51px;
 	left: 0px;
 	z-index: 8888;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 
 .sidebar-min {
