@@ -407,10 +407,10 @@ $.fn.stopSpin = function () {
 	var _self = $(this);
 	var spins = _self.data('spins');
 	if(!spins) {
-		console.warn(_self[0].id + ' was never started spinning, but we got a request to stop it.');
+		console.warn(_self.attr('id') + ' was never started spinning, but we got a request to stop it.');
 	}
 	else if(spins == 0) {
-		console.warn(_self[0].id + ' startSpin does not match stopSpin');
+		console.warn(_self.attr('id') + ' startSpin does not match stopSpin');
 	}
 	else {
 		spins--;
