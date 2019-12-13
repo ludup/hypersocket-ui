@@ -31,6 +31,7 @@ import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.dashboard.OverviewWidgetService;
+import com.hypersocket.dictionary.DictionaryResourcePermission;
 import com.hypersocket.email.EmailNotificationService;
 import com.hypersocket.html.HtmlTemplateResourcePermission;
 import com.hypersocket.i18n.I18NService;
@@ -327,6 +328,28 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				return !certificateService.allResources().isEmpty();
 			}
 		}, MenuService.MENU_SYSTEM);
+
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+					"dictionary", "fa-file-word-o", "", 900,
+					DictionaryResourcePermission.READ,
+					DictionaryResourcePermission.CREATE,
+					DictionaryResourcePermission.UPDATE,
+					DictionaryResourcePermission.DELETE), MenuService.MENU_BUSINESS_RULES);
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+					"words", "fa-file-word-o", "words", 100,
+					DictionaryResourcePermission.READ,
+					DictionaryResourcePermission.CREATE,
+					DictionaryResourcePermission.UPDATE,
+					DictionaryResourcePermission.DELETE), "dictionary");
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+					"dictionarySettings", "fa-cogs", "dictionarySettings", 200,
+					SystemPermission.SYSTEM_ADMINISTRATION,
+					SystemPermission.SYSTEM_ADMINISTRATION,
+					SystemPermission.SYSTEM_ADMINISTRATION,
+					SystemPermission.SYSTEM_ADMINISTRATION), "dictionary");
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
 				new AbstractTableAction("downloadCSR", "fa-certificate",

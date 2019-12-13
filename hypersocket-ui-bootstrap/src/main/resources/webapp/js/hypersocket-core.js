@@ -958,21 +958,31 @@ function loadMenu(menu) {
 	
 		
 	} else {
-	
 		loadWait();
-		
+		var pagePath = uiPath + '/content/' + menu.resourceName + '.html';
 		if(menu.parent && menu.parent.resourceKey === 'pages') {
 			
-			if(!$('#pageContent').length) {
+			if(!$('#pageContent').length) 
 				$('#mainContainer').append('<div id="pageContent"></div>');
-			}
-			$('#pageContent').load(uiPath + '/content/' + menu.resourceName + '.html');
+
+			$('#pageContent').load(pagePath, function(response, status, xhr) {
+				if(status == 'error') {
+					$('#mainContainer').stopSpin();
+					showError(response, false);
+				}
+			});
 			$('#mainContent').hide();
 
 			$('#pageContent').show(); 
 		} else {
 			$('#pageContent').remove();
-			$('#mainContent').load(uiPath + '/content/' + menu.resourceName + '.html');
+			$('#mainContent').load(pagePath, function(response, status, xhr) {
+				if(status == 'error') {
+					$('#mainContainer').stopSpin();
+					showError(response, false);
+				}
+				
+			});
 			$('#mainContent').show();
 		}
 		
@@ -986,18 +996,18 @@ function loadSubPage(menu, element) {
 	if(element.data() && element.data().value) {
 		element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').addClass('large-button-active');
 		element.parent().parent().find('.small-button[id="buttonSmall_' + element.data().value + '"]').addClass('small-button-active');
-
 		var parent = element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').data('parent');
-		if(parent !== '') {
+		if(parent !== '')
 			$('#' + parent).parents('.collapse').addClass('in');
-		}
 	}
 	$('#subMenuPageContent').startSpin();
 	loadWait();
 	currentMenu = menu;
-	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function() {
+	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function(response, status, xhr) {
 		closeMenu();
 		$('#subMenuPageContent').stopSpin();
+		if ( status == 'error' )
+			showError(response, false);
 	});
 }
 

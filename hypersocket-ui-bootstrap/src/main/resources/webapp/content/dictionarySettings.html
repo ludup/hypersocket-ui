@@ -1,0 +1,13 @@
+<div id="dialogSettingsContent">
+</div>
+
+<script type="text/javascript">
+      $('#dialogSettingsContent').propertyPage({
+	   url : 'configuration/system/dictionary',
+	   title: getResource('settings.title'),
+	   icon: 'fa-cog',
+	   canUpdate: currentMenu.canUpdate,
+	   complete: function() {
+		   loadComplete(); 
+	   }});
+</script>

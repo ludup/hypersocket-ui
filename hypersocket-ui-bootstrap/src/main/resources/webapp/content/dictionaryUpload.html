@@ -1,0 +1,118 @@
+<div class="modal" id="dictionaryUpload" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title" localize="dictionaryUpload.title"></h4>
+			</div>
+			<div class="modal-body">
+				<div id="importWarning" class="alert alert-warning">
+					<i class="fa fa-warning"></i>&nbsp;&nbsp;<span id="importText"></span>
+				</div>
+				<div class="propertyItem form-group">
+					<p id="dictionaryUploadInfo"></p>
+				</div>
+				<div id="dictionaryDiv" class="propertyItem form-group">
+					<label id="fileLabel" class="col-md-3 control-label"
+						localize="dictionaryUpload.file.label"></label>
+					<div class="propertyValue col-md-9">
+						<input type="file" class="form-control" id="dictionaryFile"
+							maxlength="" name="file" value="">
+						<div>
+							<span class="help-block" localize="dictionaryUpload.file.info"></span>
+						</div>
+					</div>
+					<label id="fileLabel" class="col-md-3 control-label"
+						localize="dictionaryUpload.locale.label"></label>
+					<div class="propertyValue col-md-9">
+						<div id="dictionaryLocale"></div>
+						<div>
+							<span class="help-block" localize="dictionaryUpload.locale.info"></span>
+						</div>
+					</div>
+				</div>
+				<input type="hidden" id="dictionaryResourceId" name="resourceId"
+					value="" />
+			</div>
+			<div class="modal-footer">
+				<button id="uploadDictionaryButton" type="button"
+					class="btn btn-primary">
+					<i id="uploadDictionaryIcon" class="fa fa-upload"></i><span
+						localize="uploadDictionary.label"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		$('#dictionaryUpload').localize();
+		$('#importText').append(getResource('dictionaryUpload.text'));
+		$('#dictionaryUpload').data('action', function(resource, callback) {
+
+			$('#dictionaryLocale').empty();
+			$('#dictionaryLocale').selectButton({
+				url : 'i18n/locales',
+				nameIsResourceKey : false,
+				emptySelectionAllowed : true,
+				getUrlData : function(data) {
+					return data.resources;
+				},
+				sortOptions : false,
+				changed : function(widget) {}
+			});
+
+			$('#dictionaryResourceId').val(resource == null ? '' : resource.id);
+			if (resource == null) {
+				$('#importWarning').show();
+			} else {
+				$('#importWarning').hide();
+			}
+			$('#dictionaryFile').val('');
+			$('#dictionaryUpload').data('callback', callback);
+			$('#dictionaryUpload').modal('show');
+		});
+
+		$('#uploadDictionaryButton').click(function(e) {
+			if (!$('#dictionaryFile')[0].files[0]) {
+				showError(getResource("dictionaryUpload.error.selectFile"));
+				return;
+			}
+
+			var formData = new FormData();
+			formData.append('file', $('#dictionaryFile')[0].files[0]);
+			formData.append('locale', $('#dictionaryLocale').val());
+
+			$('#uploadDictionaryIcon').removeClass('fa-upload');
+			$('#uploadDictionaryIcon').addClass('fa-spinner fa-spin');
+
+			doAjax({
+				type : 'POST',
+				url : basePath + '/api/dictionary/upload',
+				dataType : 'json',
+				cache : false,
+				contentType : false,
+				processData : false,
+				data : formData,
+				success : function(data) {
+					if (data.success) {
+						$('#dictionaryUpload').modal('hide');
+						$('#dictionaryUpload').data('callback')(data.resource);
+						showSuccess(data.message);
+					} else {
+						showError(data.message);
+					}
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					showError(errorThrown);
+				},
+				complete : function() {
+					$('#uploadDictionaryIcon').removeClass('fa-spinner fa-spin');
+					$('#uploadDictionaryIcon').addClass('fa-upload');
+				}
+			});
+		});
+
+	});
+</script>

@@ -1,0 +1,142 @@
+<div id="contentDictionary">
+	<div class="modal" id="addWordForm" tabindex="-1" role="dialog"
+		dialog-for="contentDictionary">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="propertyItem form-group">
+						<label class="col-xs-3 control-label"
+							localize="dictionary.text.label"></label>
+						<div class="propertyValue col-xs-9">
+							<input type="text" class="form-control" id="resourceName"
+								maxlength="" name="resourceName" value="">
+							<div>
+								<span class="help-block" localize="dictionary.text.info"></span>
+							</div>
+						</div>
+					</div>
+
+					<div id="dictionaryProperties"></div>
+					<input type="hidden" id="resourceId" name="resourceId" value="" />
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+	<div id="additionalActions"></div>
+
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#contentDictionary').localize();
+
+		$('#dictionaryProperties').propertyPage({
+			url : 'dictionary/template',
+			showButtons : false,
+			useTemplates : true,
+			canUpdate : currentMenu.canUpdate
+		});
+
+		var additionalButtons = new Array();
+		$('#additionalActions').append('<div id="dictionaryUploadDiv"></div>');
+		$('#dictionaryUploadDiv').load(uiPath + '/content/dictionaryUpload.html');
+		additionalButtons.push({
+			resourceKey : 'uploadDictionary',
+			icon : 'fa-upload',
+			buttonClass : 'btn-success',
+			action : function(callback) {
+				$('#dictionaryUpload').data('action')(null, function() {
+					callback();
+				});
+			}
+		});
+
+		$('#contentDictionary').ajaxResourcePage({
+			id : "Dictionary",
+			infoHtml: getResource('dictionary.infoHtml'),
+			sortName : "text",
+			tableUrl : "dictionary/table",
+			title : getResource("dictionary.label"),
+			icon : 'fa-file-word-o',
+			checkbox : true,
+			deleteResourcesUrl : 'dictionary/deleteAll',
+			resourceUrl : "dictionary/properties",
+			fields : [
+					{
+						name : "locale"
+					}, {
+						name : "text"
+					}
+			],
+			resourceKey : "dictionary",
+			additionalButtons : additionalButtons,
+			canCreate : currentMenu.canCreate,
+			canUpdate : currentMenu.canUpdate,
+			canDelete : currentMenu.canDelete,
+			validate : function() {
+
+				if ($('#resourceName').val() == '') {
+					showError("error.nameRequired");
+					return false;
+				}
+
+				if (!$('#dictionaryProperties').validateProperties()) {
+					showError("error.correctValidationErrors");
+					return false;
+				}
+
+				return true;
+			},
+			clearDialog : function(create) {
+
+				$('#resourceId').val('');
+				$('#resourceName').val('');
+
+				$('#dictionaryProperties').clearProperties();
+				if (create) {
+					$('#dictionaryProperties').propertyPage({
+						url : 'dictionary/template/',
+						showButtons : false,
+						canUpdate : currentMenu.canUpdate,
+						useTemplates : true
+					});
+				}
+
+				$('.tabPropertiesTab').first().trigger('click');
+			},
+			createResource : function() {
+				resource = new Object();
+				resource.id = $('#resourceId').val();
+				resource.name = $('#resourceName').val();
+
+				$('#dictionaryProperties').saveProperties(true, function(items) {
+					resource.properties = items;
+				});
+
+				return resource;
+			},
+			displayResource : function(resource, readOnly) {
+
+				$('#resourceId').val(resource.id);
+				$('#resourceName').val(resource.name);
+
+				$('#dictionaryProperties').propertyPage({
+					url : 'dictionary/properties/' + resource.id,
+					showButtons : false,
+					canUpdate : currentMenu.canUpdate && !readOnly
+				});
+
+			},
+			complete : function() {
+				loadComplete();
+			}
+		});
+
+	});
+</script>
