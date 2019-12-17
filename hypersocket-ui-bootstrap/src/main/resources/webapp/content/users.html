@@ -131,11 +131,11 @@
 </div>
 
 <script type="text/javascript">
+	var apiUrl = 'currentRealm';
 	$(document).ready(
 			function() {
 				$('#csrfToken').val(getCsrfToken());
 
-				var apiUrl = 'currentRealm';
 				var disableDecoration = false;
 				var buttons = [];
 
@@ -486,10 +486,7 @@
 								checkReadOnly: false,
 								additionalButtons: buttons,
 								toolbarButtonsUrl: 'menus/tableActions/usersToolbar',
-								canDelete : true,
-								checkDelete: function(row) {
-									return currentMenu.canDelete && !row.readOnly;
-								},
+								canDelete : false,
 								detailFormatter: ownerRealm ?
 										function(index, resource, $element) {
 												$element.extendedResourcePanel({resourceKey: "secondaryTabs",
