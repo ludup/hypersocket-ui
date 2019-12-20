@@ -10,7 +10,7 @@
 	   title: getResource('system.configuration.title'),
 	   icon: 'fa-cog',
 	   canUpdate: currentMenu.canUpdate,
-	   onPropertiesChange(updatedWidgets) {
+	   onPropertiesChange: function(updatedWidgets) {
 		 	$.each(updatedWidgets, function(idx, obj) {
 		 		if(obj.options().refreshUserInterface) {
 		 			
