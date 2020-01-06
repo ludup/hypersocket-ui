@@ -6,13 +6,24 @@
 				<h4 class="modal-title" localize="dictionaryUpload.title"></h4>
 			</div>
 			<div class="modal-body">
-				<div id="importWarning" class="alert alert-warning">
-					<i class="fa fa-warning"></i>&nbsp;&nbsp;<span id="importText"></span>
+				<div id="importWarning" class="alert alert-info">
+					<i class="fa fa-info"></i>&nbsp;&nbsp;<span id="importText"></span>
 				</div>
 				<div class="propertyItem form-group">
 					<p id="dictionaryUploadInfo"></p>
 				</div>
-				<div id="dictionaryDiv" class="propertyItem form-group">
+				<div class="propertyItem form-group">
+					<label id="fileLabel" class="col-md-3 control-label"
+						localize="dictionaryUpload.ignoreDuplicates.label"></label>
+					<div class="propertyValue col-md-9">
+						<div id="ignoreDuplicates">
+						</div>
+						<div>
+							<span class="help-block" localize="dictionaryUpload.ignoreDuplicates.info"></span>
+						</div>
+					</div>
+				</div>
+				<div class="propertyItem form-group">
 					<label id="fileLabel" class="col-md-3 control-label"
 						localize="dictionaryUpload.file.label"></label>
 					<div class="propertyValue col-md-9">
@@ -22,6 +33,8 @@
 							<span class="help-block" localize="dictionaryUpload.file.info"></span>
 						</div>
 					</div>
+				</div>
+				<div class="propertyItem form-group">
 					<label id="fileLabel" class="col-md-3 control-label"
 						localize="dictionaryUpload.locale.label"></label>
 					<div class="propertyValue col-md-9">
@@ -53,7 +66,7 @@
 
 			$('#dictionaryLocale').empty();
 			$('#dictionaryLocale').selectButton({
-				url : 'i18n/locales',
+				url : 'i18n/allLanguageTags',
 				nameIsResourceKey : false,
 				emptySelectionAllowed : true,
 				getUrlData : function(data) {
@@ -62,6 +75,9 @@
 				sortOptions : false,
 				changed : function(widget) {}
 			});
+
+			$('#ignoreDuplicates').empty();
+			$('#ignoreDuplicates').switchInput({});
 
 			$('#dictionaryResourceId').val(resource == null ? '' : resource.id);
 			if (resource == null) {
@@ -81,8 +97,10 @@
 			}
 
 			var formData = new FormData();
+			debugger;
 			formData.append('file', $('#dictionaryFile')[0].files[0]);
-			formData.append('locale', $('#dictionaryLocale').val());
+			formData.append('locale', $('#dictionaryLocale').data('widget').getValue());
+			formData.append('ignoreDuplicates', $('#ignoreDuplicates').data('widget').getValue());
 
 			$('#uploadDictionaryIcon').removeClass('fa-upload');
 			$('#uploadDictionaryIcon').addClass('fa-spinner fa-spin');
