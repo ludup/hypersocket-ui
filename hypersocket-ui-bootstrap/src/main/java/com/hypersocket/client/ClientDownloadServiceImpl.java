@@ -33,7 +33,6 @@ import com.hypersocket.realm.RealmAdapter;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.FileContentHandler;
-import com.hypersocket.upgrade.UpgradeService;
 import com.hypersocket.utils.HypersocketUtils;
 
 @Service
@@ -44,28 +43,25 @@ public class ClientDownloadServiceImpl extends AbstractAuthenticatedServiceImpl 
 	static Logger log = LoggerFactory
 			.getLogger(ClientDownloadServiceImpl.class);
 
-	File downloadsDir = new File(HypersocketUtils.getConfigDir(), "clients");
+	private File downloadsDir = new File(HypersocketUtils.getConfigDir(), "clients");
 
 	@Autowired
-	HypersocketServer server;
+	private HypersocketServer server;
 
 	@Autowired
-	MenuService menuService;
+	private MenuService menuService;
 
 	@Autowired
-	PermissionService permissionService;
+	private PermissionService permissionService;
 
 	@Autowired
-	I18NService i18nService;
-
-	@Autowired
-	UpgradeService upgradeService; 
+	private I18NService i18nService; 
 	
 	@Autowired
-	RealmService realmService;
+	private RealmService realmService;
 	
-	List<DownloadFile> userDownloads = new ArrayList<DownloadFile>();
-	List<DownloadFile> adminDownloads = new ArrayList<DownloadFile>();
+	private List<DownloadFile> userDownloads = new ArrayList<DownloadFile>();
+	private List<DownloadFile> adminDownloads = new ArrayList<DownloadFile>();
 	
 	@PostConstruct
 	private void postConstruct() {

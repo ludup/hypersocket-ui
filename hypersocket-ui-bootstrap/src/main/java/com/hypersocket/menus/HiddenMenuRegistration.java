@@ -14,7 +14,7 @@ public class HiddenMenuRegistration extends MenuRegistration {
 			PermissionType deletePermission) {
 		super(bundle, resourceKey, icon, url, weight, readPermision, createPermission, updatePermission,
 				deletePermission);
-		this.hidden = true;
+		this.setHidden(true);
 	}
 
 	public HiddenMenuRegistration(String bundle, String resourceKey, String icon, String url, Integer weight,
@@ -22,12 +22,12 @@ public class HiddenMenuRegistration extends MenuRegistration {
 			PermissionType deletePermission, Map<String, PermissionType> additionalPermissions) {
 		super(bundle, resourceKey, icon, url, weight, readPermision, createPermission, updatePermission,
 				deletePermission, additionalPermissions);
-		this.hidden = true;
+		this.setHidden(true);
 	}
 
 	public HiddenMenuRegistration(String bundle, String resourceKey, String icon, String url, Integer weight) {
 		super(bundle, resourceKey, icon, url, weight);
-		this.hidden = true;
+		this.setHidden(true);
 	}
 
 }

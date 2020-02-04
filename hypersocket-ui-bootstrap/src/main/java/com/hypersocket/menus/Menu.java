@@ -10,21 +10,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="menu")
 public class Menu {
 
-	String resourceKey;
-	String bundle;
-	Integer weight;
-	String resourceName;
-	String icon;
-	boolean canCreate;
-	boolean canUpdate;
-	boolean canDelete;
-	boolean hidden;
-	boolean isDefault;
-	String data;
-	List<Menu> menus = new ArrayList<Menu>();
+	private String resourceKey;
+	private String bundle;
+	private Integer weight;
+	private String resourceName;
+	private String icon;
+	private boolean canCreate;
+	private boolean canUpdate;
+	private boolean canDelete;
+	private boolean hidden;
+	private boolean isDefault;
+	private String data;
+	private List<Menu> menus = new ArrayList<Menu>();
 	
 	public Menu(MenuRegistration m, boolean canCreate, boolean canUpdate, boolean canDelete, String icon, String data, boolean hidden) {
-		this.bundle = m.bundle;
+		this.bundle = m.getBundle();
 		this.resourceKey = m.getResourceKey();
 		this.weight = m.getWeight();
 		this.resourceName = m.getResourceName();

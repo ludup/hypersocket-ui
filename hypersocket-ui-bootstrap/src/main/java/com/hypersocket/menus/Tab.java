@@ -2,10 +2,10 @@ package com.hypersocket.menus;
 
 public class Tab {
 
-    String resourceKey;
-    String url;
-    boolean readOnly;
-    int weight;
+    private String resourceKey;
+    private String url;
+    private boolean readOnly;
+    private int weight;
     
     public Tab() {
     }

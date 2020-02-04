@@ -30,7 +30,7 @@ public class RedirectHandler extends HttpRequestHandler {
 	static Logger log = LoggerFactory.getLogger(RedirectHandler.class);
 	
 	@Autowired
-	HypersocketServer server; 
+	private HypersocketServer server; 
 	
 	public RedirectHandler() {
 		super("redirect", Integer.MAX_VALUE);

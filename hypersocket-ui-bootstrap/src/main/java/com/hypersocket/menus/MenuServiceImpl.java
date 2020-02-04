@@ -59,16 +59,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	static Logger log = LoggerFactory.getLogger(MenuServiceImpl.class);
 
-	Map<String, MenuRegistration> rootMenus = new HashMap<String, MenuRegistration>();
-
-	Map<String, List<MenuRegistration>> pendingMenus = new HashMap<String, List<MenuRegistration>>();
-
-	Map<String, List<AbstractTableAction>> registeredActions = new HashMap<String, List<AbstractTableAction>>();
-
-	List<BadgeProvider> badgeProviders = new ArrayList<BadgeProvider>();
-
-	Map<String, List<TabRegistration>> extendedInformationTabs = new HashMap<>();
-
 	@Autowired
 	private I18NService i18nService;
 
@@ -98,9 +88,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	
 	@Autowired
 	private OverviewWidgetService widgetService; 
-	
-	List<MenuFilter> filters = new ArrayList<MenuFilter>();
-	Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
+
+	private Map<String, MenuRegistration> rootMenus = new HashMap<String, MenuRegistration>();
+	private Map<String, List<MenuRegistration>> pendingMenus = new HashMap<String, List<MenuRegistration>>();
+	private Map<String, List<AbstractTableAction>> registeredActions = new HashMap<String, List<AbstractTableAction>>();
+	private List<BadgeProvider> badgeProviders = new ArrayList<BadgeProvider>();
+	private Map<String, List<TabRegistration>> extendedInformationTabs = new HashMap<>();
+	private List<MenuFilter> filters = new ArrayList<MenuFilter>();
+	private Map<String,MenuRegistration> allMenus = new HashMap<String,MenuRegistration>();
 
 	@PostConstruct
 	private void postConstruct() {
@@ -246,10 +241,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 			@Override
 			public boolean isHidden() {
-				if (modules.size() == 0) {
+				if (getModules().size() == 0) {
 					return true;
 				}
-				for (MenuRegistration m : modules) {
+				for (MenuRegistration m : getModules()) {
 					if (!m.isHidden() && m.canRead()) {
 						return false;
 					}
@@ -909,8 +904,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		for (TabRegistration tabRegistration : toProcessTabRegistration) {
 			if(tabRegistration.canRead()) {
 				try {
-					assertPermission(tabRegistration.permission);
-					processedTabRegistration.add(new Tab(tabRegistration.resourceKey, tabRegistration.url, false, tabRegistration.getWeight()));
+					assertPermission(tabRegistration.getPermission());
+					processedTabRegistration.add(new Tab(tabRegistration.getResourceKey(), tabRegistration.getUrl(), false, tabRegistration.getWeight()));
 				}catch (AccessDeniedException e) {
 					log.debug("{}/{} does not have access to {} tab with permission {}",
 							getCurrentPrincipal().getRealm(),
@@ -918,7 +913,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 							tabRegistration.getResourceKey(),
 							tabRegistration.getPermission()
 					);
-					processedTabRegistration.add(new Tab(tabRegistration.resourceKey, tabRegistration.url, true, tabRegistration.getWeight()));
+					processedTabRegistration.add(new Tab(tabRegistration.getResourceKey(), tabRegistration.getUrl(), true, tabRegistration.getWeight()));
 				}
 			}
 		}

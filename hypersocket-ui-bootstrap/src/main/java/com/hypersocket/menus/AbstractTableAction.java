@@ -5,13 +5,13 @@ import com.hypersocket.permissions.PermissionType;
 
 public class AbstractTableAction {
 
-	String resourceKey;
-	String iconClass;
-	String url;
-	PermissionType[] permissions;
-	int weight;
-	String enableFunction;
-	String displayFunction;
+	private String resourceKey;
+	private String iconClass;
+	private String url;
+	private PermissionType[] permissions;
+	private int weight;
+	private String enableFunction;
+	private String displayFunction;
 	
 	public AbstractTableAction() {
 	}

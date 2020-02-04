@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
 public class PrincipalExtendedService {
 
     @Autowired
-    MenuService menuService;
+    private MenuService menuService;
 
     @PostConstruct
     private void postConstruct() {

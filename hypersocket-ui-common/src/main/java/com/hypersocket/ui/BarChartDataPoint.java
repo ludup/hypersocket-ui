@@ -2,8 +2,8 @@ package com.hypersocket.ui;
 
 public class BarChartDataPoint {
 
-	String x;
-	Long y;
+	private String x;
+	private Long y;
 	
 	public BarChartDataPoint(String x, Long y) {
 	

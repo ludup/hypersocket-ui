@@ -29,19 +29,19 @@ public class HtmlContentFilter implements ContentFilter {
 	static Logger log = LoggerFactory.getLogger(HtmlContentFilter.class);
 	
 	@Autowired
-	HypersocketServer server;
+	private HypersocketServer server;
 
-	List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
-	List<FilterExtender> extenders = new ArrayList<FilterExtender>();
+	private List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
+	private List<FilterExtender> extenders = new ArrayList<FilterExtender>();
 	
-	String brandCompany = "LogonBox Limited";
-	String companyUrl = "https://www.hypersocket.com/";
-	String brandIcon = "/images/favicon.ico";
-	String brandImage = "/images/hypersocket.png";
-	String supportContact = "support@hypersocket.com";
-	String supportName = "Hypersocket Software";
-	String supportUrl = "https://helpdesk.hypersocket.com";
-	String license = null;
+	private String brandCompany = "LogonBox Limited";
+	private String companyUrl = "https://www.hypersocket.com/";
+	private String brandIcon = "/images/favicon.ico";
+	private String brandImage = "/images/hypersocket.png";
+	private String supportContact = "support@hypersocket.com";
+	private String supportName = "Hypersocket Software";
+	private String supportUrl = "https://helpdesk.hypersocket.com";
+	private String license = null;
 
 	public HtmlContentFilter() throws IOException {
 	}

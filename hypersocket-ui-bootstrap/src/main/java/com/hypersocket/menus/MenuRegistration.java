@@ -25,19 +25,18 @@ import com.hypersocket.permissions.PermissionType;
 @XmlRootElement(name = "menu")
 public class MenuRegistration {
 
-	String resourceKey;
-	String bundle;
-	Integer weight;
-	PermissionType readPermission;
-	PermissionType createPermission;
-	PermissionType updatePermission;
-	PermissionType deletePermission;
-	String resourceName;
-	String icon;
-	boolean hidden;
-	Map<String,PermissionType> additionalPermissions;
-	
-	List<MenuRegistration> modules = new ArrayList<MenuRegistration>();
+	private String resourceKey;
+	private String bundle;
+	private Integer weight;
+	private PermissionType readPermission;
+	private PermissionType createPermission;
+	private PermissionType updatePermission;
+	private PermissionType deletePermission;
+	private String resourceName;
+	private String icon;
+	private boolean hidden;
+	private Map<String,PermissionType> additionalPermissions;
+	private List<MenuRegistration> modules = new ArrayList<MenuRegistration>();
 
 	public MenuRegistration() {
 	}
@@ -189,6 +188,26 @@ public class MenuRegistration {
 
 	public boolean isHome() {
 		return false;
+	}
+
+	public String getBundle() {
+		return bundle;
+	}
+
+	public void setBundle(String bundle) {
+		this.bundle = bundle;
+	}
+
+	public Map<String, PermissionType> getAdditionalPermissions() {
+		return additionalPermissions;
+	}
+
+	public void setAdditionalPermissions(Map<String, PermissionType> additionalPermissions) {
+		this.additionalPermissions = additionalPermissions;
+	}
+
+	public List<MenuRegistration> getModules() {
+		return modules;
 	}
 
 }

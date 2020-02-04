@@ -42,18 +42,18 @@ public class UserInterfaceContentHandler implements ContentHandler {
 	protected HypersocketServer server;
 	
 	@Autowired
-	HtmlContentFilter htmlContentFilter;
+	private HtmlContentFilter htmlContentFilter;
 	
 	@Autowired
-	IncludeContentFilter includeContentFilter;
+	private IncludeContentFilter includeContentFilter;
 	
 	@Autowired
-	IndexPageFilter indexHeaderFilter;
+	private IndexPageFilter indexHeaderFilter;
 	
 	@Autowired
-	I18NService i18nService; 
+	private I18NService i18nService; 
 	
-	ContentHandlerImpl actualHandler;
+	private ContentHandlerImpl actualHandler;
 
 	public UserInterfaceContentHandler() {
 	}

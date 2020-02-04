@@ -4,10 +4,10 @@ import java.net.URL;
 
 public class DownloadFile {
 
-	String subsystem;
-	String icon;
-	String description;
-	URL url;
+	private String subsystem;
+	private String icon;
+	private String description;
+	private URL url;
 	
 	public DownloadFile(URL url, String icon, String subsystem, String description) {
 		this.icon = icon;

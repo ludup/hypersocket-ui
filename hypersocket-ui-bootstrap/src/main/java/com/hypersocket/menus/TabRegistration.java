@@ -4,10 +4,10 @@ import com.hypersocket.permissions.PermissionType;
 
 public class TabRegistration {
 
-    String resourceKey;
-    String url;
-    PermissionType permission;
-    int weight;
+    private String resourceKey;
+    private String url;
+    private PermissionType permission;
+    private int weight;
 
     public TabRegistration() {
     }

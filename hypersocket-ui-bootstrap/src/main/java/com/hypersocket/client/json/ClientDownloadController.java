@@ -22,10 +22,9 @@ import com.hypersocket.session.json.SessionTimeoutException;
 
 @Controller
 public class ClientDownloadController extends AuthenticatedController {
-
 	
 	@Autowired
-	ClientDownloadService downloadService; 
+	private ClientDownloadService downloadService; 
 	
 	@AuthenticationRequired
 	@RequestMapping(value = "downloads", method = RequestMethod.GET, produces = { "application/json" })

@@ -18,10 +18,10 @@ import com.hypersocket.server.handlers.HttpResponseProcessor;
 public class RobotsTxtHandler extends HttpRequestHandler {
 
 	@Autowired
-	HypersocketServer server; 
+	private HypersocketServer server; 
 	
 	@Autowired
-	SystemConfigurationService configurationService;
+	private SystemConfigurationService configurationService;
 	
 	public RobotsTxtHandler() {
 		super("robots.txt", Integer.MAX_VALUE-1);

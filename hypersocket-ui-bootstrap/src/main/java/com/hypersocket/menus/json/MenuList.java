@@ -21,10 +21,10 @@ import com.hypersocket.realm.Realm;
 @XmlRootElement(name="menus")
 public class MenuList {
 
-	List<Menu> menus = new ArrayList<Menu>();
-	boolean isSystemAdmin = false;
-	boolean isRealmAdmin = false;
-	List<Realm> realms;
+	private List<Menu> menus = new ArrayList<Menu>();
+	private boolean isSystemAdmin = false;
+	private boolean isRealmAdmin = false;
+	private List<Realm> realms;
 	
 	public MenuList() {
 		

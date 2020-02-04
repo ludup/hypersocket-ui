@@ -11,10 +11,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.utils.ITokenResolver;
 import com.hypersocket.utils.TokenReplacementReader;
@@ -22,13 +20,9 @@ import com.hypersocket.utils.TokenReplacementReader;
 @Component
 public class IncludeContentFilter implements ContentFilter {
 
-	@Autowired
-	HypersocketServer server;
-
-	List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
-
-	String headerHtml;
-	String footerHtml;
+	private List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
+	private String headerHtml;
+	private String footerHtml;
 
 	public IncludeContentFilter() throws IOException {
 
