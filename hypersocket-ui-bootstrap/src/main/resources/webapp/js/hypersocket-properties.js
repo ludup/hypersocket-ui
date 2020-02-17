@@ -1329,8 +1329,13 @@ $.fn.propertyPage = function(opts) {
 							w.getInput().parents('.propertyItem').hide();
 							w.getInput().parents('.propertyItem').addClass('hiddenWidget');
 							var visibilityCallback = function() {
-								
-								var dependsValue = w.options().visibilityDependsValue.toString().split(',');
+
+								var opts = w.options();
+								var dv = ( 'visibilityDependsValue' in opts ) ? w.options().visibilityDependsValue : false;
+								if(!dv) {
+									throw 'visibilityDependsOn of ' + opts.visibilityDependsOn + ' in ' + opts.resourceKey + ' does not specifiy visibilityDependsValue';
+								}
+								var dependsValue = dv.toString().split(',');
 								var show = false;
 								for(i=0;i<w2.length;i++) {
 									if(i > 0 && !show) {
