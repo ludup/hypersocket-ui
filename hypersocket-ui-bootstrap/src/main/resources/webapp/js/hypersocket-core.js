@@ -77,10 +77,12 @@ $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
 	 */
 	  if ( options.dataType == 'script' || originalOptions.dataType == 'script' ||  
 		   options.dataType == 'link' || originalOptions.dataType == 'link' ||
-		   ( options.dataType == 'json' && options.url && options.url.indexOf('/api/enum')) ||
-		   ( options.dataType == 'json' && options.url && options.url.indexOf('/api/i18n')) ) {
+		   ( options.dataType == 'json' && options.url && options.url.indexOf('/api/enum') != -1) ||
+		   ( options.dataType == 'json' && options.url && options.url.indexOf('/api/i18n') != -1) ) {
 	      options.cache = true;
+	
 	  }
+	  
 	});
 
 window.onhashchange = function() {  
