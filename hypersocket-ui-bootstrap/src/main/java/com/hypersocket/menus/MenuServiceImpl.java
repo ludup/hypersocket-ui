@@ -474,7 +474,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				return !realmService.isReadOnly(getCurrentRealm());
 			}
 		});
-
+		
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"impersonateUser", "fa-male", "impersonateUser",
 				UserPermission.IMPERSONATE, 0, null, "canImpersonateUser"));
@@ -491,6 +491,16 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				new AbstractTableAction("defaultRealm", "fa-tag",
 						"defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION,
 						0, "isDefault", null));
+		
+		registerTableAction(MenuService.ACTIONS_USERS,
+				new AbstractTableAction("deleteAccount", "fa-trash",
+						"deleteAccount", UserPermission.DELETE, 900, "canDelete",
+						null));
+		
+		registerTableAction(MenuService.ACTIONS_USERS,
+				new AbstractTableAction("undeleteAccount", "fa-undo",
+						"undeleteAccount", UserPermission.DELETE, 950, "canUndelete",
+						null));
 
 //		registerTableAction(MenuService.ACTIONS_REALMS,
 //				new AbstractTableAction("exportForMigrationRealmDialog", "fa-download",
