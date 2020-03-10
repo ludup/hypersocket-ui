@@ -792,18 +792,19 @@ $.fn.propertyPage = function(opts) {
 										}
 									}
 								}
-								
+
+								var sesh = $(document).data('session');
 								if(this.systemOnly) {
-									if($(document).data('session') && $(document).data('session').currentRealm) {
-										if(!$(document).data('session').currentRealm.system) {
+									if(sesh && sesh.principalRealm) {
+										if(!sesh.currentRealm.system) {
 											return;
 										}
 									} else {
 										return;
 									}
 								} else if(this.nonSystem) {
-									if($(document).data('session') && $(document).data('session').currentRealm) {
-										if($(document).data('session').currentRealm.system) {
+									if(sesh && sesh.principalRealm) {
+										if(sesh.principalRealm.system) {
 											return;
 										}
 									} else {
@@ -827,17 +828,18 @@ $.fn.propertyPage = function(opts) {
 									if(this.hidden) {
 										return;
 									}
+									var sesh = $(document).data('session');
 									if(this.systemOnly) {
-										if($(document).data('session') && $(document).data('session').currentRealm) {
-											if(!$(document).data('session').currentRealm.system) {
+										if(sesh && sesh.principalRealm) {
+											if(!sesh.principalRealm.system) {
 												return;
 											}
 										} else {
 											return;
 										}
 									} else if(this.nonSystem) {
-										if($(document).data('session') && $(document).data('session').currentRealm) {
-											if($(document).data('session').currentRealm.system) {
+										if(sesh && sesh.principalRealm) {
+											if(sesh.principalRealm.system) {
 												return;
 											}
 										} else {
