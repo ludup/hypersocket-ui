@@ -47,6 +47,7 @@ import com.hypersocket.permissions.SystemPermission;
 import com.hypersocket.realm.GroupPermission;
 import com.hypersocket.realm.PasswordPermission;
 import com.hypersocket.realm.ProfilePermission;
+import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.realm.RolePermission;
 import com.hypersocket.realm.UserPermission;
@@ -496,11 +497,18 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				new AbstractTableAction("deleteAccount", "fa-trash",
 						"deleteAccount", UserPermission.DELETE, 900, "canDelete",
 						null));
-		
-		registerTableAction(MenuService.ACTIONS_USERS,
-				new AbstractTableAction("undeleteAccount", "fa-undo",
-						"undeleteAccount", UserPermission.DELETE, 950, "canUndelete",
-						null));
+
+		registerTableAction(MenuService.TOOLBAR_USERS,
+				new AbstractTableAction("deleteAccounts", "fa-trash",
+						"deleteAccounts", null, 0, null,
+						"") {
+							@Override
+				public boolean isEnabled() {
+					return permissionService.hasAdministrativePermission(getCurrentPrincipal())
+							|| permissionService.hasPermission(getCurrentPrincipal(), RealmPermission.DELETE);
+				}
+			
+		});
 
 //		registerTableAction(MenuService.ACTIONS_REALMS,
 //				new AbstractTableAction("exportForMigrationRealmDialog", "fa-download",
