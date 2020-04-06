@@ -58,7 +58,10 @@ $.fn.clipboardCopy = function(data) {
 
 	$(this).on('click', function() {
 		$(this).append('<input type="text" id="' + id + 'Text" name="' + id + 'Text"/>');
-		$('#' + id + 'Text').val(options.text);
+		if(options.text && {}.toString.call(options.text) === '[object Function]')
+			$('#' + id + 'Text').val(options.text());
+		else
+			$('#' + id + 'Text').val(options.text);
 		$('#' + id + 'Text').select();
 		try {
 			var successful = document.execCommand('copy');
