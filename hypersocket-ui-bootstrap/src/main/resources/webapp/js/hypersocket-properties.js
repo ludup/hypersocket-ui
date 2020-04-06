@@ -1068,7 +1068,7 @@ $.fn.propertyPage = function(opts) {
 											
 											widget = $('#' + tab + '_value' + inputId).textInput(obj);
 			
-										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java' || obj.inputType=='sql') {
+										} else if(obj.inputType == 'css' || obj.inputType == 'javascript' || obj.inputType=='java' || obj.inputType=='sql' || obj.inputType=='shell') {
 									    	
 											widget = $('#' + tab + '_value' + inputId).codeInput(obj);
 									    								    	
