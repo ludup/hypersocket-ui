@@ -1798,12 +1798,12 @@ span.input-group-addon .dropdown-toggle {
 	counter-reset: step-counter;
 }
 
-.custom-counter li {
+.custom-counter > li {
 	padding-bottom: 20px;
 	margin-bottom: 10px;
 }
 
-.custom-counter li::before {
+.custom-counter > li::before {
 	background-color: rgb(0, 200, 200);
 	border-radius: 16px;
 	color: white;
@@ -1817,7 +1817,7 @@ span.input-group-addon .dropdown-toggle {
 	top: 10px;
 }
 
-.custom-counter li p {
+.custom-counter > li p {
 	margin-left: 35px;
 }
 
