@@ -1,6 +1,20 @@
 <div id="contentSessions">
 </div>
 <script type="text/javascript">
+
+	function formatTime(ms) {
+		if(ms < 60000) 
+			return parseInt( ms / 1000 ) + 's';
+		else if(ms < 120000) 
+			return '1m ' + parseInt( ( ms - 60000 ) / 1000 ) + 's';
+		else if(ms < 3600000) 
+			return parseInt( ms / 60000 ) + 'm';
+		else if(ms < 7200000) 
+			return '1h ' + parseInt( ( ms - 3600000) / 60000 ) + 'm';
+		else 
+			return parseInt( ms / 3600000 ) + 'h';
+	}
+
 	$(document).ready(function() {
 		$('#contentSessions').ajaxResourcePage(
 				{
@@ -38,7 +52,7 @@
 						 {
 							 name: "connectedFor",
 							 formatter: function(value, row, index) {
-								 return parseFloat(row.totalSeconds / 60).toFixed(1);
+								 return formatTime(row.totalSeconds * 1000);
 							 }
 						 },
 						 {

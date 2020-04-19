@@ -1400,5 +1400,5 @@ function msToTime(duration, showMs) {
 	var hourss = (hours < 10) ? "0" + hours : hours;
 	var minutess = (minutes < 10) ? "0" + minutes : minutes;
 	var secondss = (seconds < 10) ? "0" + seconds : seconds;
-	return ( hours > 0 ? hourss + "h " : '') + ( minutes > 0 ? minutess + "m " : '') + ( secondss > 0 ? secondss + "s" : '') + ( showMs ? milliseconds + 'ms' : '');
+	return ( hours > 0 ? hourss + "h " : '') + ( minutes > 0 ? minutess + "m " : '') + ( secondss > 0 ? secondss + "s " : '') + ( showMs ? milliseconds + 'ms' : '');
 }
