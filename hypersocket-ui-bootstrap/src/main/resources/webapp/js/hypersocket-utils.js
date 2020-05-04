@@ -1402,3 +1402,25 @@ function msToTime(duration, showMs) {
 	var secondss = (seconds < 10) ? "0" + seconds : seconds;
 	return ( hours > 0 ? hourss + "h " : '') + ( minutes > 0 ? minutess + "m " : '') + ( secondss > 0 ? secondss + "s " : '') + ( showMs ? milliseconds + 'ms' : '');
 }
+
+
+var ByteArrayReader = function ByteArrayReader(data) {
+	this.pos = 0;
+	this.data = data;
+};
+
+ByteArrayReader.prototype.readLong = function() {
+	var val = this.data.getUint32(this.pos);
+	this.pos += 4;
+	return val;
+}
+
+ByteArrayReader.prototype.readString = function() {
+	
+	var len = this.data.getUint32(this.pos);
+	this.pos += 4;
+	
+	var buf = new Uint8Array(this.data.buffer, this.pos, len);
+	this.pos += len;
+	return new TextDecoder("utf8").decode(buf);
+};
