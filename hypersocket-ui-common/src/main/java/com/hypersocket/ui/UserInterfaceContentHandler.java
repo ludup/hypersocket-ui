@@ -68,6 +68,10 @@ public class UserInterfaceContentHandler implements ContentHandler {
 			}
 			
 			loadFileHandler();
+			
+			if(actualHandler == null) {
+				throw new RuntimeException("Could not find any webapps. Does your _run project have the same version as all of the modules?");
+			}
 		} else {
 
 			if (log.isInfoEnabled()) {
@@ -75,6 +79,9 @@ public class UserInterfaceContentHandler implements ContentHandler {
 			}
 
 			loadClasspathHandler();
+			if(actualHandler == null) {
+				throw new RuntimeException("Could not find any webapps.");
+			}
 		}
 
 		i18nService.registerBundle("ui");
