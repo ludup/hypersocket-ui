@@ -86,8 +86,6 @@ $.fn.passwordPolicy = function(data) {
 	
 	var validate = function() {
 		
-		$('#suggestions').empty();
-		
 		if(options.buttonElement) {
 			$(options.buttonElement).prop('disabled', true);
 		} else if(options.buttonCallback) {
@@ -106,6 +104,7 @@ $.fn.passwordPolicy = function(data) {
 			}
 			
 			postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
+				$('#suggestions').empty();
 				if(data.success) {
 //					if(options.passwordElement.val() == options.confirmElement.val()) {
 //						$('#suggestions').append('<span class="success">Password looks good</span>');
@@ -133,7 +132,7 @@ $.fn.passwordPolicy = function(data) {
 		}
 	}
 	
-	var executeWitDelay = function() {
+	var executeWithDelay = function() {
 		
 		if(options.timeout) {
 			clearTimeout(options.timeout);
@@ -143,8 +142,8 @@ $.fn.passwordPolicy = function(data) {
 	
 	if(options.passwordElement) {
 		thisDiv.append('<div id="suggestions" style="padding-bottom: 10px;"></div>');
-		options.passwordElement.keyup(executeWitDelay);	
-		options.confirmElement.keyup(executeWitDelay);
+		$(options.passwordElement).off('keyup').on('keyup', executeWithDelay);
+		$(options.confirmElement).off('keyup').on('keyup', executeWithDelay);
 	}
 
 	
