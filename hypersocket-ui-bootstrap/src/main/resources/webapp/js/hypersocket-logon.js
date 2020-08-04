@@ -87,8 +87,8 @@ function processLogon(data, opts, message) {
 		if(data.formTemplate) {
 
 			$('#logonForm').before('<h1 class="form-scheme-heading">' 
-					+ getResource(data.formTemplate.scheme 
-					+ '.logon.title') + '</h1>');
+					+ getResourceOrDefault(data.formTemplate.scheme 
+					+ '.logon.title', data.formTemplate.scheme ) + '</h1>');
 
 			$.each(data.formTemplate.inputFields, function() {
 				if (this.type == 'hidden') {
@@ -245,7 +245,8 @@ function processLogon(data, opts, message) {
 
 		if(data.formTemplate) {
 			if(!data.postAuthentication) {
-				$('#logonForm').append('<div class="form-signin-warning">' + getResource(data.formTemplate.scheme + '.warning.title') + '</div>');
+				debugger;
+				$('#logonForm').append('<div class="form-signin-warning">' + getResourceOrDefault(data.formTemplate.scheme + '.warning.title', '') + '</div>');
 			}
 			if(data.formTemplate.showLogonButton) {
 				$('#logonForm').append(
@@ -255,7 +256,7 @@ function processLogon(data, opts, message) {
 			}
 
 			if(!data.postAuthentication) {
-				$('#logonForm').after('<p class="form-signin-security form-signin-warning">' + getResource(data.formTemplate.scheme + '.security.title') + '</p>');
+				$('#logonForm').after('<p class="form-signin-security form-signin-warning">' + getResourceOrDefault(data.formTemplate.scheme + '.security.title', '') + '</p>');
 			}
 		}
 
