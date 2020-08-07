@@ -1,7 +1,11 @@
 package com.hypersocket.ui;
 
-public class BarChartDataPoint {
+import java.io.Serializable;
 
+public class BarChartDataPoint implements Serializable {
+
+	private static final long serialVersionUID = 7132700274312931530L;
+	
 	private String x;
 	private Long y;
 	
