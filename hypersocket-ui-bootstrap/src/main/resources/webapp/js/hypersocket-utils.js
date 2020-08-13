@@ -1279,11 +1279,7 @@ function showDashboardMessage(text, icon, alertClass, fade, fadeCallback) {
 	};
 	
 	$('#dynamicDashboardMessages').prepend('<div id="dashboardMessage' + messageNum + '" class="alert ' + alertClass + '"/>');
-	$(messageDiv).append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span><i id="messageDismiss' + messageNum + '" class="fa fa-times" style="float: right; cursor: pointer;"></i>');
-	
-	$('#messageDismiss' + messageNum).click(function() {
-		doFade();
-	});
+	$(messageDiv).append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span></i>');
 	
 	if(fade) {
 		setTimeout(doFade, 4000);
