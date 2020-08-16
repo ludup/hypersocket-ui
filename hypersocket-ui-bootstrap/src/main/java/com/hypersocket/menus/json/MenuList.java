@@ -8,6 +8,7 @@
 package com.hypersocket.menus.json;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -24,7 +25,7 @@ public class MenuList {
 	private List<Menu> menus = new ArrayList<Menu>();
 	private boolean isSystemAdmin = false;
 	private boolean isRealmAdmin = false;
-	private List<Realm> realms;
+	private Collection<Realm> realms;
 	
 	public MenuList() {
 		
@@ -66,11 +67,11 @@ public class MenuList {
 		this.isRealmAdmin = isRealmAdmin;
 	}
 	
-	public void setRealms(List<Realm> realms) {
+	public void setRealms(Collection<Realm> realms) {
 		this.realms = realms;
 	}
 	
-	public List<Realm> getRealms() {
+	public Collection<Realm> getRealms() {
 		return realms;
 	}
 }

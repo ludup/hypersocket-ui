@@ -131,7 +131,8 @@ public class MenuController extends AuthenticatedController {
 						PermissionStrategy.EXCLUDE_IMPLIED, 
 						RealmPermission.READ, 
 						SystemPermission.SWITCH_REALM);
-				list.setRealms(realmService.allRealms());
+				list.setRealms(realmService.getPublicRealmsByParent(getCurrentRealm()));
+				list.getRealms().add(getCurrentRealm());
 			} catch (AccessDeniedException e) {
 			}
 
