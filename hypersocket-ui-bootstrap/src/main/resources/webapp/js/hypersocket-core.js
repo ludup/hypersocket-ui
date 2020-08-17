@@ -759,9 +759,6 @@ function loadRealms(realms, session) {
 	}
 
 	if(realms) {
-		
-
-	
 
 		$('#realm').append(
 				'<li role="presentation"><a id="manageRealms" href="#menu=realms" role="menuitem" tabindex="-1">' + getResource('text.manageRealms') + '</a></li>');
