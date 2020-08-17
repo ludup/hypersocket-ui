@@ -69,7 +69,7 @@ $.ajaxSetup({ error : function(xmlRequest) {
 	} 
 }, cache : false });
 
-$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
+$.ajaxPrefilter(function( options, originalOptions, _jqXHR ) {
 	/* This prevents caching of the following resources when they are loaded as the
 	 * result of Ajax. Being as this also includes actual content, such as Javascript
 	 * or CSS that we sometimes dynamically load, we need to turn off the cache defeat
@@ -148,7 +148,7 @@ function startLogon(opts) {
 	if(!opts) {
 		opts = $(document).data('logonOptions');
 	}
-	$(document).click(function (event) {
+	$(document).click(function () {
 	    //hide all our dropdowns
 	    $('.dropdown-menu[data-parent]').hide();
 	    $('.dropdown.open').removeClass('open');
@@ -255,7 +255,7 @@ function checkBadges(schedule) {
 	backgroundJSON('menus/badges', null, function(data) {
 		$('.menuBadge').remove();
 		if(data.success) {
-			$.each(data.resources, function(idx, obj) {
+			$.each(data.resources, function(_idx, obj) {
 				if(obj.badge!=null) {
 					$('#' + obj.resourceKey).find('span').after('<span class="menuBadge badge' + (obj.cssClass ? ' ' + obj.cssClass : '') + '">' + obj.badge + '</span>');
 				}
@@ -331,7 +331,7 @@ function home(data) {
 								       + this.id + '"><i class="imenu fa ' + (expanded ? 'fa-chevron-down' : 'fa-chevron-right' ) + '"></i>&nbsp;<span>' + getResource(this.resourceKey + '.label') + '</span></a></div></div>');
 
 					var root = this;
-					var navigation = this.resourceKey === 'navigation';
+
 					var page = this.resourceKey === 'pages';
 					
 					if (this.menus.length > 0) {
@@ -388,10 +388,10 @@ function home(data) {
 					
 			});
 						
-			$('.collapse').on('show.bs.collapse', function(e){
+			$('.collapse').on('show.bs.collapse', function(){
 				$(this).parent().find(".fa-chevron-right").removeClass("fa-chevron-right").addClass("fa-chevron-down");
 				saveMenuState($(this).parent().data('menu'), menuStates, true);
-			}).on('hide.bs.collapse', function(e){
+			}).on('hide.bs.collapse', function(){
 				$(this).parent().find(".fa-chevron-down").removeClass("fa-chevron-down").addClass("fa-chevron-right");
 				saveMenuState($(this).parent().data('menu'), menuStates, false);
 			});
@@ -443,7 +443,7 @@ function home(data) {
 
 			if(allMenus['navigation']) {
 
-				$.each(allMenus['navigation'].menus, function(idx, obj) {
+				$.each(allMenus['navigation'].menus, function(_idx, obj) {
 					
 					if(obj.resourceKey === 'realms') {
 						loadRealms(data.realms, data.session ? data.session : $(document).data('session'));
@@ -468,7 +468,7 @@ function home(data) {
 			if(data.systemAdmin) {
 				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="fa fa-power-off"></i></a></li>');
 				
-				$('#powerMenu').click(function(e) {
+				$('#powerMenu').click(function() {
 					showShutdownDialog();
 				});
 			}
@@ -583,7 +583,7 @@ function home(data) {
 				} 
 			}
 			
-			$('#content').click(function(e) {
+			$('#content').click(function() {
 				closeMenu();
 			});
 			
@@ -673,17 +673,17 @@ function doShutdown(option, autoLogoff, url) {
 		var hasStopped = false;
 		var restarted = false;
 			
-		var timer = setTimeout(function() {
+		setTimeout(function() {
 			doAjax({
 				url: basePath + '/api/server/ping',
 				dataType: 'json',
-				success: function(data){
+				success: function(){
 					if(!serverRunning){
 						hasShutdown = false;
 						restarted = true;
 					}
 				},
-				error: function(data) {
+				error: function() {
 					serverRunning = false;
 					if(!hasStopped) {
 						hasStopped = true;
@@ -697,7 +697,7 @@ function doShutdown(option, autoLogoff, url) {
 				}
 			});
 			if(serverRunning || (!serverRunning && !restarted && option == 'restart')){
-				timer = setTimeout(arguments.callee, 1000);
+				setTimeout(arguments.callee, 1000);
 			}else{
 				$('#shutdownServer').find('p').text(getResource('power.finished.' + option));
 				$('#shutdownServer').find('i').removeClass('fa-spin fa-spinner').addClass('fa-check');
@@ -769,7 +769,7 @@ function loadRealms(realms, session) {
 			$('#realm').append(
 				'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
 		});
-		$('#manageRealms').click(function(e) {
+		$('#manageRealms').click(function() {
 			$('.active').removeClass('active');
 			$('#currentRealm i').addClass('active');
 		});
@@ -885,8 +885,6 @@ function loadMenu(menu) {
 		$('.active').removeClass('active');
 	}
 
-	var isPageMenu = menu.parent && menu.parent.resourceKey === 'pages';
-	
 	var subPage = null;
 	if(!menu.page) {
 		if(menu.section) {
@@ -974,7 +972,7 @@ function loadMenu(menu) {
 			if(!$('#pageContent').length) 
 				$('#mainContainer').append('<div id="pageContent"></div>');
 
-			$('#pageContent').load(pagePath, function(response, status, xhr) {
+			$('#pageContent').load(pagePath, function(response, status, _xhr) {
 				if(status == 'error') {
 					$('#mainContainer').stopSpin();
 					showError(response, false);
@@ -985,7 +983,7 @@ function loadMenu(menu) {
 			$('#pageContent').show(); 
 		} else {
 			$('#pageContent').remove();
-			$('#mainContent').load(pagePath, function(response, status, xhr) {
+			$('#mainContent').load(pagePath, function(response, status, _xhr) {
 				if(status == 'error') {
 					$('#mainContainer').stopSpin();
 					showError(response, false);
@@ -1012,7 +1010,7 @@ function loadSubPage(menu, element) {
 	$('#subMenuPageContent').startSpin();
 	loadWait();
 	currentMenu = menu;
-	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function(response, status, xhr) {
+	$('#menuContent').load(uiPath + '/content/' + menu.resourceName + '.html', function(response, status, _xhr) {
 		closeMenu();
 		$('#subMenuPageContent').stopSpin();
 		if ( status == 'error' )
