@@ -759,9 +759,19 @@ function loadRealms(realms, session) {
 	}
 
 	if(realms) {
+		
+
+	
+
 		$('#realm').append(
 				'<li role="presentation"><a id="manageRealms" href="#menu=realms" role="menuitem" tabindex="-1">' + getResource('text.manageRealms') + '</a></li>');
-	
+		
+		$('#realm').append('<li class="divider"></li>');
+		
+		$.each(realms, function() {
+			$('#realm').append(
+				'<li role="presentation"><a class="realmSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
+		});
 		$('#manageRealms').click(function(e) {
 			$('.active').removeClass('active');
 			$('#currentRealm i').addClass('active');
