@@ -792,7 +792,7 @@ $.fn.propertyPage = function(opts) {
 										}
 									}
 								}
-
+								debugger;
 								var sesh = $(document).data('session');
 								if(this.systemOnly) {
 									if(sesh && sesh.currentRealm) {
@@ -830,16 +830,16 @@ $.fn.propertyPage = function(opts) {
 									}
 									var sesh = $(document).data('session');
 									if(this.systemOnly) {
-										if(sesh && sesh.principalRealm) {
-											if(!sesh.principalRealm.system) {
+										if(sesh && sesh.currentRealm) {
+											if(!sesh.currentRealm.system) {
 												return;
 											}
 										} else {
 											return;
 										}
 									} else if(this.nonSystem) {
-										if(sesh && sesh.principalRealm) {
-											if(sesh.principalRealm.system) {
+										if(sesh && sesh.currentRealm) {
+											if(sesh.currentRealm.system) {
 												return;
 											}
 										} else {
