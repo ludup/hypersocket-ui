@@ -1270,6 +1270,7 @@ $.fn.autoComplete = function(data) {
 
 		if(show) {
 			$('#input_' + id).dropdown('toggle');
+			$('#input_' + id).parent().addClass('open');
 		}
 		$('#spin_' + id).removeClass('fa-spin');
 		$('#spin_' + id).removeClass('fa-spinner');
