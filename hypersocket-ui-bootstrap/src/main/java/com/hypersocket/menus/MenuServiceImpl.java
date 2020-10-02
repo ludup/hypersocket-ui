@@ -319,12 +319,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						CertificateResourcePermission.READ,
 						CertificateResourcePermission.CREATE,
 						CertificateResourcePermission.UPDATE,
-						CertificateResourcePermission.DELETE) {
-			public boolean canRead() {
-				return !certificateService.allResources().isEmpty();
-			}
-		}, MenuService.MENU_SYSTEM);
-
+						CertificateResourcePermission.DELETE), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 					"dictionary", "fa-file-word-o", "", 900,
