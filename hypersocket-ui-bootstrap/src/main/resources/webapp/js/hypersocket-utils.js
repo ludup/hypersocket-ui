@@ -739,7 +739,7 @@ function showMessage(text, icon, alertClass, fade, fadeCallback, element) {
 	removeMessage();
 	
 	var doFade = function() {
-		$('#systemMessage').fadeOut(5000, function() {
+		$('#systemMessage').fadeOut(250, function() {
 			$('#systemMessage').remove();
 			if(fadeCallback) {
 				fadeCallback();
@@ -758,7 +758,7 @@ function showMessage(text, icon, alertClass, fade, fadeCallback, element) {
 	});
 	
 	if(fade) {
-		setTimeout(doFade, 4000);
+		setTimeout(doFade, 10000);
 	}
 }
 
@@ -1270,7 +1270,7 @@ function showDashboardMessage(text, icon, alertClass, fade, fadeCallback) {
 	var messageDiv = '#dashboardMessage' + messageNum;
 	
 	var doFade = function() {
-		$(messageDiv).fadeOut(2000, function() {
+		$(messageDiv).fadeOut(250, function() {
 			$(messageDiv).remove();
 			if(fadeCallback) {
 				fadeCallback();
@@ -1282,7 +1282,7 @@ function showDashboardMessage(text, icon, alertClass, fade, fadeCallback) {
 	$(messageDiv).append('<i class="fa ' + icon + '"></i>&nbsp;&nbsp;<span>' + (getResourceNoDefault(text) == undefined ? text : getResource(text)) + '</span></i>');
 	
 	if(fade) {
-		setTimeout(doFade, 4000);
+		setTimeout(doFade, 10000);
 	}
 }
 
