@@ -148,12 +148,11 @@ function startLogon(opts) {
 	if(!opts) {
 		opts = $(document).data('logonOptions');
 	}
+	
 	$(document).click(function (event) {
 	    //hide all our dropdowns
 	    $('.dropdown-menu[data-parent]').hide();
 	    $('.dropdown.open').removeClass('open');
-	    
-
 	});
 	
 	$('#burger-toggle').hide();
