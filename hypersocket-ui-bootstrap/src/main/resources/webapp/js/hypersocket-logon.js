@@ -11,11 +11,23 @@ function logon(credentials, opts) {
 	log("Logging on");
 
 	submitLogon = function(params) {
-		logon(params, opts);
+	    logon(params, opts);
 	};
 
 	loadResources(function() {
-		showLogon(credentials, opts);
+		
+		if(opts.start) {
+	        var url = basePath + '/api/logon/reset';
+			if(opts.scheme) {
+				url += '/' + opts.scheme;
+			}
+	        getJSON(url, null, function(data) {
+	            opts.start = false;
+	            processLogon(data, opts);
+	        });
+	    } else {
+			showLogon(credentials, opts);
+		}
 	});
 }
 
