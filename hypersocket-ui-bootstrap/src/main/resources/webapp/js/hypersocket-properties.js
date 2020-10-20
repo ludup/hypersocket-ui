@@ -968,9 +968,8 @@ $.fn.propertyPage = function(opts) {
 											i18nNamespace: categoryNamespace,
 											resourceKeyTemplate: (categoryNamespace && categoryNamespace != '' ? (categoryNamespace + '.{0}') : '{0}')
 										}, obj);
-										
+
 										if(options.defaults[obj.resourceKey]) {
-											
 											obj.value = options.defaults[obj.resourceKey];
 										}
 										

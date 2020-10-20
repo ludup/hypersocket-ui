@@ -879,7 +879,7 @@ $.fn.resourceTable = function(params) {
 										$('#' + divName + 'searchColumn').parent().append('<div id="' + divName + 'searchValue" class="searchValue toolbarWidget"></div>');
 										selected.renderOptions($('#' + divName + 'searchValue'), function() {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-										});
+										}, options.searchValue);
 									} else {
 										$('#' + divName + ' .search input[placeholder="Search"]').show();
 									}
@@ -888,7 +888,9 @@ $.fn.resourceTable = function(params) {
 									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 							}
 						});
-						$('#' + divName + 'searchColumn').widget().setValue(columns[0].name);
+						if(options.searchColumn) {
+							$('#' + divName + 'searchColumn').widget().setValue(options.searchColumn);
+						}
 		    		}
 		    		
 		    		if(options.searchColumnsUrl) {
