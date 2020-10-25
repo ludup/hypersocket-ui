@@ -960,7 +960,7 @@ $.fn.propertyPage = function(opts) {
 //											},
 											displayMode: '',
 											getUrlData: function(data) {
-												return data.resources;
+												return data.resources ? data.resources : data;
 											},
 											disabled : !allowEdit  || obj.readOnly || obj.disabled,
 											variables: options.variables,
