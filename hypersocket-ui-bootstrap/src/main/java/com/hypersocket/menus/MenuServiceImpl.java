@@ -129,6 +129,15 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				return !permissionService.hasAdministrativePermission(getCurrentPrincipal());
 			}
 		}, MenuService.MENU_NAV);
+		
+
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_DASHBOARD_SETTINGS, "fa-gear",
+				"dashboardSettings", 200, null, null, null, null) {
+			@Override
+			public boolean canRead() {
+				return permissionService.hasAdministrativePermission(getCurrentPrincipal());
+			}
+		}, MenuService.MENU_DASHBOARD);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_DASHBOARD_HELPZONE,
 				"fa-question-circle", "helpzone", Integer.MIN_VALUE,
