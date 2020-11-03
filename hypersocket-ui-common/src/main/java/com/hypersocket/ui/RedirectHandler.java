@@ -59,7 +59,7 @@ public class RedirectHandler extends HttpRequestHandler {
 		if((idx = request.getRequestURI().indexOf("#")) > -1 ) {
 			hash = request.getRequestURI().substring(idx);
 		}
-		response.setHeader(HttpHeaders.LOCATION, server.getDefaultRedirectPath() + hash);
+		response.setHeader(HttpHeaders.LOCATION, server.getDefaultRedirectPath(request, response) + hash);
 		response.sendError(HttpStatus.SC_MOVED_TEMPORARILY);
 		responseProcessor.sendResponse(request, response, false);
 
