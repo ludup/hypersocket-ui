@@ -1364,6 +1364,12 @@ $.fn.autoComplete = function(data) {
 				return thisWidget.data('selectedObject');
 			},
 			_reload: function(newValue) {
+			 	$('#' + id).val('');
+				$('#input_' + id).val('');
+				thisWidget.data('selectedObject', null);
+				$('#auto_' + id).empty();
+				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+				
 				if(options.url && !options.remoteSearch) {
 					var url = options.url;
 					if(options.searchParams) {

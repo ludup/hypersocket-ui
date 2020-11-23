@@ -46,6 +46,8 @@
 				var typeButton = $('#typeButton').autoComplete({
 					url: 'automations/tasks',
 					nameIsResourceKey: true,
+					valueAttr: 'resourceKey',
+					nameAttr: 'resourceKey',
 					resourceKeyTemplate: '{0}.label',
 					getUrlData: function(data) {
 						return data.resources;
@@ -54,13 +56,14 @@
 						$('#automationProperties').empty();
 						if(widget.getObject() && widget.getObject().value != '') {
 							if(!displaying) {
-								
-								var o  =widget.getObject();
+								debugger;
+								var o = widget.getObject();
 								$('#automationProperties').propertyPage({ 
-									url : 'automations/template/' +  widget.getObject().name + '/', 
+									url : 'automations/template/' +  widget.getObject().resourceKey + '/', 
 									showButtons : false, 
 									i18nNamespace: 'automations',
 									useFilters: true,
+									displayMode: o.displayMode,
 									canUpdate : currentMenu.canUpdate, 
 									useTemplates : true,
 									propertyTabsLast: false,				
@@ -168,6 +171,7 @@
 								$('#resourceName').val(resource.name);
 								displaying = true;
 								typeButton.setValue(resource.resourceKey, false);
+								var task = typeButton.getObject();
 								
 								$('#automationProperties').empty();
 								$('#automationProperties').propertyPage(
@@ -175,6 +179,7 @@
 											showButtons : false, 
 											i18nNamespace: 'automations',
 											useFilters: true,
+											displayMode: task ? task.displayMode : '',
 											canUpdate : currentMenu.canUpdate && !readOnly,
 											propertyTabsLast: false,				
 											urlProcessor: function(url) {
