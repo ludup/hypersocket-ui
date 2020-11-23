@@ -320,19 +320,19 @@
 		});
 		//$('#triggerModal').data('selectedEvent', triggerEvent.getObject());
 
-		var loadTriggerProperties = function() {
+		var loadTriggerProperties = function(task) {
 			/* If 'displaying' is set to anything other than false, we assume we are editing
 			   the trigger and so load the properties not the empty templates. If we need to load
 			   the templates, we get task to use directly from the selection widget which should have
 			   been set by this point */
-
 			$('#tabProperties').propertyPage({
-				url : displaying ? 'triggers/properties/' + displaying : 'triggers/task/' + triggerTask.getValue(),
+				url : displaying ? 'triggers/properties/' + displaying : 'triggers/task/' + task.resourceKey,
 				showButtons : false,
 				i18nNamespace: 'triggers',
 				canUpdate : currentMenu.canUpdate,
 				useTemplates : true,
 				variables: getAttributeNames(),
+				displayMode: task ? task.displayMode : '',
 				propertyTabsLast: true,
 				additionalTabs : [ {
 					id : "tabConditions",
@@ -358,6 +358,8 @@
 			url: 'triggers/tasks',
 			nameIsResourceKey: true,
 			resourceKeyTemplate: '{0}.label',
+			valueAttr: 'resourceKey',
+			nameAttr: 'resourceKey',
 			getUrlData: function(data) {
 				return data.resources;
 			},
@@ -366,7 +368,7 @@
 				$('#tabProperties').empty();
 				if(widget.getObject() && widget.getObject().value != '') {
 					if(triggerTask.isEnabled()) {
-						loadTriggerProperties(widget.getObject().name);
+						loadTriggerProperties(widget.getObject());
 					}
 				} else {
 					$('.requiresEvent').hide();
@@ -376,15 +378,14 @@
 		
 		$(document).data('triggerModalCallback', {
 			clearDialog: function(create) {
-
 				$('.requiresEvent').hide();
 				$('#rowAll').empty();
 				$('#rowAny').empty();
 				$('#triggerName').val('');
 				$('#triggerResourceId').val('');
 				$('#allTabs').hide();
-				triggerEvent.clear();
-// 				triggerEvent.reset();
+				// LDP - back to using reset, but fix autoComplete to also clear on reset.
+				triggerEvent.reset();
 				triggerEvent.enable();
 				triggerTask.clear();
 				triggerTask.enable();
