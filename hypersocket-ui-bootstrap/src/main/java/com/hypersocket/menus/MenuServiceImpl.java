@@ -186,7 +186,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null), MenuService.MENU_SYSTEM_CONFIGURATION);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_MY_PROFILE, "fa-tags", null, 200, null, null,
+				MenuService.MENU_MY_PROFILE, "fa-tags", null, 0, null, null,
 				null, null), MenuService.MENU_PERSONAL);
 
 //		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "userhelpzone",
