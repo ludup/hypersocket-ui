@@ -385,7 +385,12 @@
 				$('#triggerResourceId').val('');
 				$('#allTabs').hide();
 				// LDP - back to using reset, but fix autoComplete to also clear on reset.
-				triggerEvent.reset();
+				//triggerEvent.reset();
+				
+				/* BPS - back to clear() again. Without this, it is impossible to save existing
+				         child tasks. See Slack conversation https://logonboxlimited.slack.com/archives/CKC87ULL8/p1606830613242900. */
+				triggerEvent.clear();
+				
 				triggerEvent.enable();
 				triggerTask.clear();
 				triggerTask.enable();
