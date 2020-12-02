@@ -384,13 +384,8 @@
 				$('#triggerName').val('');
 				$('#triggerResourceId').val('');
 				$('#allTabs').hide();
-				// LDP - back to using reset, but fix autoComplete to also clear on reset.
-				//triggerEvent.reset();
-				
-				/* BPS - back to clear() again. Without this, it is impossible to save existing
-				         child tasks. See Slack conversation https://logonboxlimited.slack.com/archives/CKC87ULL8/p1606830613242900. */
+				// LDP - Using clear, reset creates race condition between this and subsequent events.
 				triggerEvent.clear();
-				
 				triggerEvent.enable();
 				triggerTask.clear();
 				triggerTask.enable();
@@ -438,10 +433,11 @@
 				/* Clear the event and task so when we set them, events are fired. This
 				   is what triggers loading of the properties. Also make sure these
 				   are enabled so events are fired */
+
 				triggerEvent.setValue('');
 				triggerTask.setValue('');
 				triggerEvent.enable();
-				triggerTask.enable();
+				triggerTask.enable();	
 
 				var parentResource = $('#triggerModal').data('parentResource');
 				var triggerType = $('#triggerModal').data('triggerType');
@@ -479,16 +475,17 @@
 				
 			},
 			validate: function() {
+				debugger;
 				if ($('#triggerName').val().trim() == '') {
 					showError("error.nameRequired");
 					return false;
 				}
-				if (!triggerEvent.getValue()) {
+				if (!triggerEvent.getSelectedObject()) {
 					showError("error.eventRequired");
 					return false;
 				}
 				
-				if (!triggerTask.getValue()) {
+				if (!triggerTask.getSelectedObject()) {
 					showError("error.eventRequired");
 					return false;
 				}
