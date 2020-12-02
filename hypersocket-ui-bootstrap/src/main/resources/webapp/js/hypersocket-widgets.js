@@ -1287,6 +1287,7 @@ $.fn.autoComplete = function(data) {
 			return;
 		}
 		$('#' + id).val('');
+		$('#input_' + id).val('');
 		thisWidget.data('selectedObject', null);
 		options.setOnLoad = val;
 		var values = $('#input_' + id).data('values');
