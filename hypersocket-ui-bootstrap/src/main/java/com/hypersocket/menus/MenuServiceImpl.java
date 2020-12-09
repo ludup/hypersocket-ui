@@ -391,11 +391,15 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						UserAttributePermission.CREATE,
 						UserAttributePermission.UPDATE,
 						UserAttributePermission.DELETE),
-				MenuService.MENU_ACCESS_CONTROL);
+				MenuService.MENU_USERS_DIRECTORY);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_ACCESS_CONTROL,
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_USERS_DIRECTORY,
 						"fa-users", null, 200, null, null, null, null),
 				MenuService.MENU_SYSTEM);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_SECURITY_PERMISSIONS,
+				"fa-shield", null, 250, null, null, null, null),
+		MenuService.MENU_SYSTEM);
 
 		registerMenu(new RealmMenuRegistration(RESOURCE_BUNDLE, "users",
 				"fa-user", "users", 1000, UserPermission.READ,
@@ -416,7 +420,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			public boolean canUpdate() {
 				return true;
 			}
-		}, MenuService.MENU_ACCESS_CONTROL);
+		}, MenuService.MENU_USERS_DIRECTORY);
 
 		registerMenu(new RealmMenuRegistration(RESOURCE_BUNDLE, "groups",
 				"fa-users", "groups", 2000, GroupPermission.READ,
@@ -437,12 +441,12 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			public boolean canCreate() {
 				return !realmService.isReadOnly(getCurrentRealm());
 			}
-		}, MenuService.MENU_ACCESS_CONTROL);
+		}, MenuService.MENU_USERS_DIRECTORY);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "roles",
 				"fa-user-md", "roles", 3000, RolePermission.READ,
 				RolePermission.CREATE, RolePermission.UPDATE,
-				RolePermission.DELETE), MenuService.MENU_ACCESS_CONTROL);
+				RolePermission.DELETE), MenuService.MENU_SECURITY_PERMISSIONS);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "roleAttributes",
 						"fa-briefcase", "roleAttributeTabs", 5000,
@@ -461,7 +465,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				new MenuRegistration(RESOURCE_BUNDLE, "passwordPolicys", "fa-ellipsis-h", "passwordPolicys", 9999,
 						PasswordPolicyResourcePermission.READ, PasswordPolicyResourcePermission.CREATE,
 						PasswordPolicyResourcePermission.UPDATE, PasswordPolicyResourcePermission.DELETE),
-				MenuService.MENU_ACCESS_CONTROL);
+				MenuService.MENU_SECURITY_PERMISSIONS);
 		
 		registerExtendedInformationTab("principalTabs",
                 new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.UPDATE, 0));
