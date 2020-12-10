@@ -59,8 +59,6 @@ $.fn.passwordPolicy = function(data) {
 			}, data);
 	
 	var url;
-	options.showZxcvbn = false;
-	
 	if(options.policy === 'currentPrincipal') {
 		url = 'passwordPolicys/myPolicy';
 	} else if(options.policy === 'default') { 
@@ -106,21 +104,20 @@ $.fn.passwordPolicy = function(data) {
 			postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
 				$('#suggestions').empty();
 				if(data.success) {
-//					if(options.passwordElement.val() == options.confirmElement.val()) {
-//						$('#suggestions').append('<span class="success">Password looks good</span>');
-//					} else {
-//						$('#suggestions').append('<span class="warning">Password is good but needs confirming</span>');
-//					}
+					if(options.passwordElement.val() == options.confirmElement.val()) {
+						$('#suggestions').append('<span class="success">Password looks good</span>');
+					} else {
+						$('#suggestions').append('<span class="warning">Password is good but needs confirming</span>');
+					}
 					if(options.buttonElement) {
 						$(options.buttonElement).prop('disabled', false);
 					} else if(options.buttonCallback) {
 						options.buttonCallback(false);
 					}
 					return;
-				} 
-//				else {
-//					$('#suggestions').append('<span class="error">Password does not conform to password policy</span>');
-//				}
+				} else {
+					$('#suggestions').append('<span class="error">Password does not conform to password policy</span>');
+				}
 				if(options.buttonElement) {
 					$(options.buttonElement).prop('disabled', true);
 				} else if(options.buttonCallback) {
