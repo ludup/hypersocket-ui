@@ -3524,7 +3524,6 @@ $.fn.sliderInput = function(options) {
 };
 
 $.fn.namePairInput = function(data) {
-
 	var init = false;
 	var options = $.extend(
 			{
@@ -3693,7 +3692,7 @@ $.fn.namePairInput = function(data) {
  	 					}
  	 				} else {
 	 	 				$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairName').textInput({
-	 	 					variables: nameVariables,
+	 	 					variables:  options.showNameVariables ? nameVariables : null,
 	 	 					url: options.nameVariablesUrl,
  	 	 					getUrlData: function(data) {
  	 	 						return data.resources;
@@ -3722,7 +3721,7 @@ $.fn.namePairInput = function(data) {
  	 	 						inputType = 'password';
  	 	 					}
 	 	 					$('#' + id + 'NamePairs').find('.namePairInput').last().find('.namePairValue').textInput({
-	 	 	 					variables: valueVariables,
+	 	 	 					variables: options.showValueVariables ? valueVariables : null,
 	 	 	 					url: options.valueVariablesUrl,
 	 	 	 					inputType: inputType,
 	 	 	 					getUrlData: function(data) {

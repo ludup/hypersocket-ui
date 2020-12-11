@@ -1977,8 +1977,7 @@ select[multiple] {
 .formInput.form-control.includedSelect ul li, .formInput.form-control.excludedSelect ul li
 	{
 	margin: 2px;
-	display: inline-flex; //
-	display: flex;
+	display: inline-flex;
 	border: 2px solid #e1e6ef;
 	padding: 10px;
 	border-radius: 10px;
