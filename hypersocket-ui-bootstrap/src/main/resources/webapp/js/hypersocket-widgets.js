@@ -1107,8 +1107,8 @@ $.fn.autoComplete = function(data) {
 			+ ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>';
     
-    html += '<span id="click_' + id + '" class="input-group-addon">'
-		 +  '<a href="#" ' + (options.alwaysDropdown ? 'class="dropdown-toggle" data-toggle="dropdown"' : '') + '><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>';
+    html += '<span id="click_' + id + '" class="input-group-append">'
+		 +  '<a href="#" ' + (options.alwaysDropdown ? 'class="btn btn-secondary" data-toggle="dropdown"' : '') + '><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>';
     	
 	if(hasVariables || options.variablesUrl) {
 		html += '<div class="dropdown floatRight"><ul id="vars_' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><a href="#" class="dropdown-toggle unselectable" data-toggle="dropdown">${} Insert Variable</span></div>';
@@ -1117,12 +1117,12 @@ $.fn.autoComplete = function(data) {
 	$(this).append(html);
 	
 	if(options.remoteSearch) {
-		$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+		$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 	}
 	
  	if(hasVariables) {
  		$.each(options.variables, function(idx, obj) {
- 			$('#vars_' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
+ 			$('#vars_' + id + 'Dropdown').append('<li class="dropdown-item"><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
  		});
  		
  		$('.' + id + 'Class').click(function(e) {
@@ -1134,7 +1134,7 @@ $.fn.autoComplete = function(data) {
 			thisWidget.data('selectedObject', obj);
 			$('#' + id).val($(this).text());
 			$('#input_' + id).val($(this).text());
-			$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
+			$('[data-toggle="dropdown"]').parent().removeClass('show');
 			
 			if(options.changed) {
 				options.changed(callback);
@@ -1218,11 +1218,11 @@ $.fn.autoComplete = function(data) {
 			$.each(selected, function(idx, obj) {
 				if(options.valueAttr in obj) {
     				if(options.formatter) {
-        				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
+        				$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
         						+ options.formatter(obj, idx, thisWidget) + '</a></li>');
     				}
     				else {
-        				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
+        				$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
         						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr]) + '</a></li>');
     				}
 				}
@@ -1237,7 +1237,7 @@ $.fn.autoComplete = function(data) {
 				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value.toString());
 				$('#input_' + id).val($(this).text());
-				$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
+				$('[data-toggle="dropdown"]').parent().removeClass('show');
 
 				if(options.changed) {
 					options.changed(callback);
@@ -1247,9 +1247,9 @@ $.fn.autoComplete = function(data) {
 		} else {
 
 			if(text=='') {
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+				$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 			} else {
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+				$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
 			}
 
 		}
@@ -1260,7 +1260,7 @@ $.fn.autoComplete = function(data) {
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value.toString());
-				$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
+				$('[data-toggle="dropdown"]').parent().removeClass('show');
 				if(options.changed) {
 					options.changed(callback);
 				}
@@ -1274,7 +1274,7 @@ $.fn.autoComplete = function(data) {
 		}
 		$('#spin_' + id).removeClass('fa-spin');
 		$('#spin_' + id).removeClass('fa-spinner');
-		$('#spin_' + id).addClass('fa-search');
+		$('#spin_' + id).addClass(options.icon);
 	}
 
 	var updateValue = function(val, event) {
@@ -1311,7 +1311,7 @@ $.fn.autoComplete = function(data) {
 
 	var doDropdown = function(text) {
 
-		$('#spin_' + id).removeClass('fa-search');
+		$('#spin_' + id).removeClass(options.icon);
 		$('#spin_' + id).addClass('fa-spin');
 		$('#spin_' + id).addClass('fa-spinner');
 
@@ -1336,9 +1336,9 @@ $.fn.autoComplete = function(data) {
 						} else {
 							$('#auto_' + id).empty();
 							if(text=='') {
-								$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+								$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 							} else {
-								$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+								$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
 							}
 						}
 						createDropdown(text, true, true);
@@ -1369,7 +1369,7 @@ $.fn.autoComplete = function(data) {
 				$('#input_' + id).val('');
 				thisWidget.data('selectedObject', null);
 				$('#auto_' + id).empty();
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+				$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 				
 				if(options.url && !options.remoteSearch) {
 					var url = options.url;
@@ -1422,9 +1422,9 @@ $.fn.autoComplete = function(data) {
 								} else {
 									$('#auto_' + id).empty();
 									if(text=='') {
-										$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+										$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 									} else {
-										$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
+										$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("noResults.text") + '</a></li>');
 									}
 								}
 
@@ -1462,7 +1462,7 @@ $.fn.autoComplete = function(data) {
 				$('#input_' + id).val('');
 				thisWidget.data('selectedObject', null);
 				$('#auto_' + id).empty();
-				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+				$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
  			},
  			addItem: function(item, select){
  				exists = false;
@@ -1567,7 +1567,7 @@ $.fn.autoComplete = function(data) {
 							});
 				} else {
 					$('#auto_' + id).empty();
-					$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
+					$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
 				}
 			}
 		}
@@ -5530,7 +5530,7 @@ $.fn.wizardPage = function(data) {
 
 			if(page.onNext) {
 				var clicked = false;
-				startSpin($('#button' + idx).find('i'), page.buttonIcon);
+				startSpin($('#button' + idx).find('svg'), page.buttonIcon);
 
 				var onError = function(val) {
 					$('.wizardError').remove();
