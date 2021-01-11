@@ -720,9 +720,9 @@ $.fn.propertyPage = function(opts) {
 
 			$('#' + propertyDiv)
 						.append(
-							'<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
+							'<div class="row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
-							+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
+							+ options.icon + '"></i><span class="lb-panel-heading">' + options.title + '</span></h2><ul id="' 
 							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
 							+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 			
@@ -892,12 +892,10 @@ $.fn.propertyPage = function(opts) {
 											'<li class="tab' + idx + ' ' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
 											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + (this.name ? this.name : getResource(this.categoryKey + '.label')) + '</span></a></li>');
 								
-								
+								$('#' + propertyDiv + 'Content').append(
+										'<div id="' + tab + '" class="tab-pane' + (first ? (' active') : '')   + '"/>');
 								
 								first = false;
-	
-								$('#' + propertyDiv + 'Content').append(
-									'<div id="' + tab + '" class="tab-pane"/>');
 								
 								tabs.push(this);
 								
@@ -1020,7 +1018,7 @@ $.fn.propertyPage = function(opts) {
 												sizeClass = 'col-md-' + obj.numCols;
 											}
 
-											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div id="' + tab + '_item' + inputId + '"/></div>');
+											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div class="lb-row" id="' + tab + '_item' + inputId + '"/></div>');
 											if(!obj.noLabel)
     											$('#' + tab + '_item' + inputId).append('<label id="" class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
     													+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');
@@ -1294,10 +1292,10 @@ $.fn.propertyPage = function(opts) {
 												widgets.push(widget);
 												
 												$('#' + tab + '_value' + inputId).append(
-														'<div class="clear"><span id="' + tab + '_helpspan' + inputId + '" class="help-block">' 
+														'<small id="' + tab + '_helpspan' + inputId + '" class="lb-help-block form-text text-muted">' 
 														+  ( obj.description ? obj.description : getResourceWithNamespace(categoryNamespace, obj.resourceKey + '.info') ) 
 
-														+ '</span></div>');
+														+ '</small>');
 											}
 										}
 										

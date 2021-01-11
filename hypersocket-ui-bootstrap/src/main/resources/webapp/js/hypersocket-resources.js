@@ -37,7 +37,7 @@ $.fn.iconPage = function(params) {
 				$(divName).append('<div class="row"></div>');
 				row = 12;
 			}
-			$(divName).children('.row').last().append('<div class="col-xs-2" style="height: 100px; margin: 10px;"></div>');
+			$(divName).children('.row').last().append('<div class="col-2" style="height: 100px; margin: 10px;"></div>');
 			
 			if(!resource) {
 				return;
