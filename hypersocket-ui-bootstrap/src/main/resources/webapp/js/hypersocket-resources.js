@@ -58,7 +58,7 @@ $.fn.resourceDialog = function(params, params2) {
 };
 
 function saveResource(resource, buttonElement, options, mode, closeCallback, alwaysCallback) {
-	var icon = buttonElement.find('i');
+	var icon = buttonElement.find('svg');
 	startSpin(icon, 'fa-save');
 	
 	log("Creating resource");
@@ -234,14 +234,14 @@ $.fn.resourceTable = function(params) {
 
 	var html = '';
 	if(!options.disableDecoration) {
-		html += '<div class="panel panel-default showOnComplete" style="display: none"><div class="panel-heading"><h2><i class="fa '
+		html += '<div class="card showOnComplete" style="display: none"><div class="panel-heading"><h5 class="card-header"><i class="lb-card-title-header fa '
 			+ options.icon + '"></i><span class="break">' 
-			+ options.title + '</span></h2></div>';
+			+ options.title + '</span></h5></div>';
 	}
 
 	html += '<table id="' + divName + 'Placeholder"></table>';
 	
-	html += '<div id="' + divName + 'Actions" class="tabActions panel-footer"></div>';
+	html += '<div id="' + divName + 'Actions" class="tabActions card-footer"></div>';
 	
 	if(!options.disableDecoration) {
 		html += '</div>';
@@ -256,7 +256,7 @@ $.fn.resourceTable = function(params) {
 		}
 		getState(divName+'-infoPanel', true, function(data) {
 			if(data.resources.length == 0 || data.resources[0].show) {
-				theDiv.after('<div id="infoPanel" class="col-xs-12"><div class="alert alert-info"><i class="fa fa-2x fa-info"></i><i id="messageDismiss" '
+				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-info"><i class="fa fa-2x fa-info"></i><i id="messageDismiss" '
 						+ 'class="fa fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
 			
 				$('.dismiss-icon').click(function(e) {
@@ -606,7 +606,7 @@ $.fn.resourceTable = function(params) {
 
 	if (options.canCreate) {
 
-		$('#' + divName + 'Actions').append('<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa ' + options.createButtonIcon + '"></i>' + getResource(options.createButtonText) + '</button>');
+		$('#' + divName + 'Actions').append('<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa ' + options.createButtonIcon + '"></i><span class="btn-text">' + getResource(options.createButtonText) + '</span></button>');
 		$('#' + divName + 'Add').click(function() {
 			if (options.showCreate) {
 				options.showCreate();
@@ -865,7 +865,7 @@ $.fn.resourceTable = function(params) {
 		    		
 		    		var loadSearchColumns = function(columns) {
 		    			if(!$('#' + divName + 'searchHolder').length) {
-		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div id="' + divName + 'searchHolder" class="tableToolbar pull-right search"><label>Search:</label><div class="toolbarWidget" id="' + divName + 'searchColumn"></div></div>');
+		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div id="' + divName + 'searchHolder" class="tableToolbar float-right search mr-sm-2"><label>Search:</label><div class="toolbarWidget" id="' + divName + 'searchColumn"></div></div>');
 		    			}
 		    			$('#' + divName + 'searchColumn').empty();
 		    			$('#' + divName + 'searchColumn').textDropdown({
@@ -915,7 +915,7 @@ $.fn.resourceTable = function(params) {
 		    		
 		    		if(options.searchFiltersUrl) {
 		    			getJSON(options.searchFiltersUrl, null, function(data) {
-		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
+		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar float-right search mr-sm-2"><label>Filter:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
 		    				var filters = [];
 		    				if(options.searchFilters) {
 		    					filters = options.searchFilters;
@@ -965,7 +965,7 @@ $.fn.resourceTable = function(params) {
 			    			}
 		    			});
 		    		} else if(options.searchFilters) {
-		    			$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar pull-right search"><label>Filter By:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
+		    			$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar float-right search mr-sm-2"><label>Filter By:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
 		    			$('#' + divName + 'filterColumn').textDropdown({
 							values: options.searchFilters,
 							changed: function(widget) {
@@ -1435,9 +1435,9 @@ $.fn.resourceTable = function(params) {
 		}
 		
 		
-		$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.pull-right').append('<button id="' 
-				+ divName + 'ToggleGrid" class="btn btn-default" type="button" name="grid" title="' 
-				+ getResource('text.toggleViewMode') + '"><i class="glyphicon fa ' + currentView.icon + '"></button>');
+		$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.float-right').append('<button id="' 
+				+ divName + 'ToggleGrid" class="btn btn-secondary" type="button" name="grid" title="' 
+				+ getResource('text.toggleViewMode') + '"><i class="fa ' + currentView.icon + '"></button>');
 		
 		
     	$('#' + divName + 'ToggleGrid').click(function(){

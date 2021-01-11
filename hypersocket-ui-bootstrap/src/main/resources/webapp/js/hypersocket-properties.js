@@ -1536,7 +1536,7 @@ $.fn.propertyPage = function(opts) {
 							return;
 						}
 						
-						startSpin($(applyButton).find('i'));
+						startSpin($(applyButton).find('svg'));
 						
 						$('#' + propertyDiv).saveProperties(false, function(items) {
 							postJSON(options.url, items, function(data) {

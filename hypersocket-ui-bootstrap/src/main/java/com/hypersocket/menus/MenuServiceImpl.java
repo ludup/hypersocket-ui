@@ -114,7 +114,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new HiddenMenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_PAGES, "", null, 0, null, null, null, null));
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_DASHBOARD, "fa-pie-chart", null, 0, null,
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_DASHBOARD, "fa-chart-pie", null, 0, null,
 				null, null, null) {
 			@Override
 			public boolean canRead() {
@@ -122,7 +122,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		}, MenuService.MENU_NAV);
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_USERDASH, "fa-pie-chart", null, 0, null,
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_USERDASH, "fa-chart-pie", null, 0, null,
 				null, null, null) {
 			@Override
 			public boolean canRead() {
@@ -131,7 +131,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}, MenuService.MENU_NAV);
 		
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_DASHBOARD_SETTINGS, "fa-gear",
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_DASHBOARD_SETTINGS, "fa-cog",
 				"dashboardSettings", 200, null, null, null, null) {
 			@Override
 			public boolean canRead() {
@@ -284,14 +284,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_SYSTEM, "", null, 200, null, null, null, null));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_SYSTEM_CONFIGURATION, "fa-gears", null, 0,
+				MenuService.MENU_SYSTEM_CONFIGURATION, "fa-cogs", null, 0,
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION), MenuService.MENU_NAV);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "settings",
-				"fa-gears", "settings", 2,
+				"fa-cogs", "settings", 2,
 				SystemPermission.SYSTEM_ADMINISTRATION, 
 				SystemPermission.SYSTEM_ADMINISTRATION,
 				SystemPermission.SYSTEM_ADMINISTRATION, 
@@ -311,7 +311,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_CONFIGURATION, "fa-gears", null, 100, null,
+				MenuService.MENU_CONFIGURATION, "fa-cogs", null, 100, null,
 				null, null, null), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
@@ -576,7 +576,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		}, "messageMenu");
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageConfiguration", "fa-gears",
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageConfiguration", "fa-cogs",
 				"messageSettings", Integer.MAX_VALUE, MessageResourcePermission.READ, null, null,
 				null) {
 

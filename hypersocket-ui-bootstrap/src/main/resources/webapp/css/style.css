@@ -77,6 +77,11 @@ pre {
 	margin: auto;
 }
 
+/** 2.4 changes LB custom css start*/
+
+.card-header svg.lb-card-title-header {height: 20px;width: 40px;text-align: center;}
+/** 2.4 changes LB custom css end */
+
 /*
  * Placeholder dashboard ideas
  */
@@ -706,6 +711,7 @@ header .navbar {
 .switch-input:checked ~ .switch-label {
 	background: #000;
 }
+
 /* Sidebar
 =================================================================== */
 
@@ -716,10 +722,22 @@ header .navbar {
 	margin: 10px 20px 10px 10px;
 }
 
+#burger-toggle svg {
+	
+	font-size: 28px;
+	color: white;
+	float: left;
+	margin: 10px 20px 10px 10px;
+}
+
 #menu {
 	margin-top: 10px;
 	margin-left: 5px;
 }
+
+.sidebar-anchor { display: block;}
+
+.sidebar-text { font-size: 12px;} 
 
 .sidebar {
 	background: #e7e7e7;
@@ -776,6 +794,14 @@ header .navbar {
 }
 
 .sidebar ul.nav.nav-sidebar li a i {
+	width: 30px;
+	text-align: center;
+	margin-right: 5px;
+	margin-left: 20px;
+	font-size: 18px;
+}
+
+.sidebar ul.nav.nav-sidebar li a svg {
 	width: 30px;
 	text-align: center;
 	margin-right: 5px;
@@ -915,7 +941,8 @@ header .navbar {
 }
 
 #header {
-	z-index: 9999;
+	z-index: 1000;
+	padding: 0px;
 }
 
 .container-fluid {
@@ -970,6 +997,10 @@ header .navbar {
 	color: #fff;
 }
 
+.navicons a:focus{
+	color: #fff;
+}
+
 .navicon {
 	display: inline;
 	padding: 5px 20px 5px 0px;
@@ -980,6 +1011,23 @@ header .navbar {
 
 .navicon i.active {
 	color: white;
+}
+
+.dropdown-menu > li > a {
+    display: block;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  color: #262626;
+  text-decoration: none;
+  background-color: #f5f5f5;
 }
 
 .slider-handle {
@@ -1124,6 +1172,10 @@ header .navbar {
 	margin-right: 5px; 
 }
 
+.btn .btn-text {
+	margin-left: 5px; 
+}
+
 .panel-footer {
 	overflow: auto;
 	width: 100%;
@@ -1134,6 +1186,19 @@ header .navbar {
 	overflow: auto;
 	margin-left: 10px;
 }
+
+.card-footer {
+	overflow: auto;
+	width: 100%;
+}
+
+
+.card-footer button {
+	float: right;
+	overflow: auto;
+	margin-left: 10px;
+}
+
 
 .footer-info {
 	float: left;
@@ -1656,10 +1721,6 @@ span.input-group-addon .dropdown-toggle {
 
 .logo-icon {
 	display: inline-table;
-}
-
-.tableToolbar {
-	margin-right: 10px;
 }
 
 .toolbarWidget {
@@ -2296,6 +2357,7 @@ button#logonButton {
 .logonInput {
 	margin: 20px auto;
 	width: 400px;
+	margin-bottom: 0px;
 }
 
 #logonForm>p {
@@ -2370,6 +2432,7 @@ form#logonForm {
 	padding-top: 5px; 
 	text-align:center;
 	font-size:11px;
+	margin-top: 15px;
 }
 
 .form-signin-security {

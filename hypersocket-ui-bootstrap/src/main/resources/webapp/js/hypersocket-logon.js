@@ -84,7 +84,7 @@ function processLogon(data, opts, message) {
 		removeMessage();
 
 		opts.formContent.append(
-			'<div><form id="logonForm" autocomplete="off" class="panel panel-default ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
+			'<div class="col"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
 
 		if (data['errorMsg']) {
 			showError(data['errorMsg']);
@@ -308,7 +308,7 @@ function processLogon(data, opts, message) {
 				.click(
 					function(evt) {
 
-						startSpin($('#logonButton i'), 'fa-sign-in');
+						startSpin($('#logonButton svg'), 'fa-sign-in');
 						log("Submitting logon");
 
 						evt.preventDefault();
