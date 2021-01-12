@@ -15,7 +15,46 @@
 		<module>hypersocket-ui-common</module>
 		<module>hypersocket-ui-bootstrap</module>
 	</modules>
+	
+	<licenses>
+		<license>
+			<name>GNU General Public License v3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<distributionManagement>
+		<repository>
+			<id>opensource-releases</id>
+			<url>http://artifactory.javassh.com/opensource-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>opensource-snapshots</id>
+			<url>http://artifactory.javassh.com/opensource-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
+
+	<scm>
+		<url>http://github.com/ludup/hypersocket-ui</url>
+		<connection>scm:git:https://github.com/ludup/hypersocket-ui</connection>
+		<developerConnection>scm:git:https://github.com/ludup/hypersocket-ui</developerConnection>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>lee</id>
+			<name>Lee David Painter</name>
+			<email>lee@hypersocket.com</email>
+		</developer>
+		<developer>
+			<id>brett</id>
+			<name>Brett Smith</name>
+			<email>brett@logonbox.com</email>
+		</developer>
+	</developers>
+	
 	<dependencies>
 		<!-- SLF4J -->
 		<dependency>
@@ -83,10 +122,38 @@
 					</archive>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+				    <groupId>org.apache.maven.plugins</groupId>
+				    <artifactId>maven-javadoc-plugin</artifactId>
+				    <version>3.2.0</version>
+				    <configuration>
+				     	<!-- TODO: Why is this STILL broken! -->
+                    	<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                    	
+						<!-- <skip>true</skip> -->
+						<encoding>UTF-8</encoding>
+						<excludePackageNames>**.impl.*</excludePackageNames>
+	
+						<!-- https://bugs.openjdk.java.net/browse/JDK-8212233 -->
+						<source>8</source>
+						<additionalparam>-Xdoclint:none</additionalparam>
+                	</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -147,7 +214,7 @@
 											google-translate-v2-java-maven-plugin
 										</artifactId>
 										<versionRange>
-											[0.0.3,)
+											[0.0.5,)
 										</versionRange>
 										<goals>
 											<goal>translate</goal>
