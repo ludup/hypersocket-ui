@@ -155,7 +155,7 @@ $.fn.textInput = function(data) {
 				+ '></textarea>';
 
 		if(options.variables || options.url) {
-			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="input-group-addon dropdown-toggle unselectable" '
+			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="input-group-append input-group-text dropdown-toggle unselectable" '
 		    	+ 'data-toggle="dropdown">${}</span></div>';
 		}
 
@@ -177,7 +177,7 @@ $.fn.textInput = function(data) {
 
 
 		if(hasVariables || options.url) {
-			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="input-group-addon dropdown-toggle unselectable" '
+			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="input-group-append input-group-text dropdown-toggle unselectable" '
 		 	  + 'data-toggle="dropdown">${}</span></div>';
 		}
 
@@ -236,13 +236,13 @@ $.fn.textInput = function(data) {
 		if(options.value && options.value.startsWith('$(script')) {
 			morphToScriptEditor();
 		}
-		$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Script">' + getResource('textInput.insertScript') + '</a></li>');
+		$('#' + id + 'Dropdown').append('<li class="dropdown-item"><a href="#" class="' + id + 'Script">' + getResource('textInput.insertScript') + '</a></li>');
 		$('.' + id + 'Script').click(morphToScriptEditor);
 	}
 	
  	if(hasVariables) {
  		$.each(options.variables, function(idx, obj) {
- 			$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
+ 			$('#' + id + 'Dropdown').append('<li class="dropdown-item"><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
  		});
 
  		$('.' + id + 'Class').click(function(e) {
@@ -258,7 +258,7 @@ $.fn.textInput = function(data) {
  	if(options.url) {
  		getJSON(options.url, null, function(data) {
  			$.each(options.getUrlData(data), function(idx, obj) {
- 	 			$('#' + id + 'Dropdown').append('<li><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
+ 	 			$('#' + id + 'Dropdown').append('<li class="dropdown-item"><a href="#" class="' + id + 'Class">' + options.variableTemplate.format(obj) + '</a></li>');
  	 		});
 
  			$('.' + id + 'Class').click(function(e) {

@@ -1358,6 +1358,10 @@ span.input-group-addon .dropdown-toggle {
 	user-select: none;
 }
 
+.unselectable::after {
+    content: none !important;
+}
+
 .selectedTemplate {
 	background-color: #ddd;
 }
