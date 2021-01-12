@@ -828,7 +828,7 @@ $.fn.selectButton = function(data) {
 	var selected = null;
 
 	if(obj.emptySelectionAllowed) {
-		$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
+		$('#select_' + id).append('<li class="dropdown-item"><a id="data_no_set_' + id + '" class="selectButton_'
 				+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + getResource(obj.notSetResourceKey) + '">'
 				+ getResource(obj.notSetResourceKey) + '</a></li>');
 	}
@@ -867,7 +867,7 @@ $.fn.selectButton = function(data) {
 
 				$('#select_' + id).empty();
 				if(obj.emptySelectionAllowed) {
-					$('#select_' + id).append('<li><a id="data_no_set_' + id + '" class="selectButton_'
+					$('#select_' + id).append('<li class="dropdown-item"><a id="data_no_set_' + id + '" class="selectButton_'
 							+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + getResource(obj.notSetResourceKey) + '">'
 							+ getResource(obj.notSetResourceKey) + '</a></li>');
 				}
@@ -898,7 +898,7 @@ $.fn.selectButton = function(data) {
 						}
 						if(!ignore) {
 							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
-							$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="'
+							$('#select_' + id).append('<li class="dropdown-item"><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="'
 									+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">'
 									+ listItem + '</a></li>');
 							if (obj.value == obj.options[i][obj.valueAttr]) {
@@ -977,7 +977,7 @@ $.fn.selectButton = function(data) {
 
 							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj.nameAttr])) : option[obj.nameAttr];
 
-							$('#select_' + id).append('<li><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="'
+							$('#select_' + id).append('<li class="dropdown-item"><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="'
 									+ stripNull(option[obj.valueAttr]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">'
 									+ listItem + '</a></li>');
 							/**
@@ -1949,14 +1949,14 @@ $.fn.multipleSelect = function(data) {
 		//$(this).addClass('container-fluid');
 
 		$(this).append('<div id="' + id + '"></div>');
-		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><label>' + getResource(options.excludedLabelResourceKey) + '</label><div class="excludedList col-md-5 formInput form-control excludedSelect" id="' + id
+		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><label>' + getResource(options.excludedLabelResourceKey) + '</label><div class="excludedList formInput form-control excludedSelect" id="' + id
 				+ 'Excluded"></div></div>');
 
 		$('#' + id + 'Excluded').append(
 					'<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'id="' + id
 						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"/>');
 
-		$('#' + id).append('<div id="' + id + 'IncludedList" class="includedList1"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="includedList col-md-5 formInput form-control includedSelect" id="' + id
+		$('#' + id).append('<div id="' + id + 'IncludedList" class="includedList1"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="includedList formInput form-control includedSelect" id="' + id
 				+ 'Included"></div></div>');
 
 		$('#' + id + 'Included').append('<ul ' + (!options.disabled ? '' : 'disabled="disabled" ')
@@ -3286,7 +3286,7 @@ $.fn.switchInput = function(options) {
 	$('#' + id).bootstrapSwitch(obj);
 
 	$(this).find('.bootstrap-switch-primary').addClass('btn-primary');
-	$(this).find('.bootstrap-switch-default').addClass('btn-default');
+	$(this).find('.bootstrap-switch-default').addClass('btn-secondary');
 	$(this).find('.bootstrap-switch-primary').removeClass('bootstrap-switch-primary');
 	$(this).find('.bootstrap-switch-default').removeClass('bootstrap-switch-default');
 

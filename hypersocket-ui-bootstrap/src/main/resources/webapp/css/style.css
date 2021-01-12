@@ -206,14 +206,12 @@ pre {
 
 .excludedList {
 	width: 100%;
-	float: left;
 	padding-bottom: 20px;
 }
 
 .excludedList label {
 	display: block;
 	font-size: 75%;
-	float: none;
 }
 
 .wrap {
@@ -247,7 +245,6 @@ pre {
 }
 
 .includedList {
-	float: left;
 	width: 100%;
 }
 
@@ -260,7 +257,6 @@ pre {
 	display: block;
 	font-size: 75%;
 	margin-left: 5px;
-	float: none;
 }
 
 .includedList select {
@@ -311,6 +307,10 @@ pre {
 	color: #374767;
 	background: #eee;
 	border: 1px solid #eee;
+}
+
+.btn-secondary {
+	border: 1px solid #6c757d;
 }
 
 .btn-disabled-dark:hover {
