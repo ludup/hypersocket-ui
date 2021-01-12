@@ -1108,7 +1108,7 @@ $.fn.autoComplete = function(data) {
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>';
     
     html += '<span id="click_' + id + '" class="input-group-append">'
-		 +  '<a href="#" ' + (options.alwaysDropdown ? 'class="btn btn-secondary" data-toggle="dropdown"' : '') + '><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>';
+		 +  '<a class="input-group-text" href="#" ' + (options.alwaysDropdown ? 'class="btn btn-secondary" data-toggle="dropdown"' : '') + '><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>';
     	
 	if(hasVariables || options.variablesUrl) {
 		html += '<div class="dropdown floatRight"><ul id="vars_' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><a href="#" class="dropdown-toggle unselectable" data-toggle="dropdown">${} Insert Variable</span></div>';
@@ -1166,6 +1166,16 @@ $.fn.autoComplete = function(data) {
 	};
 
 	var createDropdown = function(text, show, prefiltered) {
+		
+		if(show) {
+			/**
+			 * With toggle you never know previous state, so better start with clean state by removing
+			 * 'show' class. List is ones shown is used again and there is toggle call in this logic.
+			 * If list is showing and we call again it disappears better clear start.
+			 */
+			$('#auto_' + id).removeClass("show");
+		}
+		
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
@@ -1266,11 +1276,11 @@ $.fn.autoComplete = function(data) {
 				}
 		    }
 		});
-		$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
+		
 
 		if(show) {
 			$('#input_' + id).dropdown('toggle');
-			$('#input_' + id).parent().addClass('open');
+			$('#input_' + id).parent().addClass('show');
 		}
 		$('#spin_' + id).removeClass('fa-spin');
 		$('#spin_' + id).removeClass('fa-spinner');
@@ -1413,7 +1423,7 @@ $.fn.autoComplete = function(data) {
 										thisWidget.data('selectedObject', obj);
 										$('#' + id).val(newValue.toString());
 										$('#input_' + id).val(obj[options.nameAttr]);
-										$('[data-toggle="dropdown"]').parent().parent().removeClass('open');
+										$('[data-toggle="dropdown"]').parent().parent().removeClass('show');
 	
 										if(options.changed) {
 											options.changed(callback);
