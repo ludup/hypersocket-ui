@@ -257,7 +257,6 @@ function processLogon(data, opts, message) {
 
 		if(data.formTemplate) {
 			if(!data.postAuthentication) {
-				debugger;
 				$('#logonForm').append('<div class="form-signin-warning">' + getResourceOrDefault(data.formTemplate.scheme + '.warning.title', '') + '</div>');
 			}
 			if(data.formTemplate.showLogonButton) {
