@@ -2085,6 +2085,12 @@ select[multiple] {
 	margin-top: 3px;
 }
 
+.formInput.form-control.includedSelect ul li svg, .formInput.form-control.excludedSelect ul li svg
+	{
+	cursor: pointer;
+	margin-top: 3px;
+}
+
 .includedList1 {
 	margin-top: 10px;
 }
