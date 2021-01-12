@@ -2411,7 +2411,7 @@ $.fn.multipleTextInput = function(data) {
 	var id = checkElementHasId($(this)).attr('id');
 
 	var removeElement = function(e){
-		$(e.target).parent().remove();
+		$(e.target).parents("li").remove();
 		toSelect.data('updated', true);
 		if (options.changed) {
 			options.changed(callback);
@@ -2463,11 +2463,11 @@ $.fn.multipleTextInput = function(data) {
 			if (options.changed) {
 				options.changed(callback);
 			}
-			$('[id="' + dragSrcEl.id + '"]').find('i').click(function(e){
+			$('[id="' + dragSrcEl.id + '"]').find('.fa-holder').click(function(e){
 				removeElement(e);
 			});
 
-			$('[id="' + this.id + '"]').find('i').click(function(e){
+			$('[id="' + this.id + '"]').find('.fa-holder').click(function(e){
 				removeElement(e);
 			});
 		}
@@ -2522,8 +2522,8 @@ $.fn.multipleTextInput = function(data) {
 
 		if (options.values) {
 			$.each(options.values, function(idx, obj) {
-				var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + he.encode(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
-				newElement.find('i.fa.fa-times').click(function(e){
+				var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + he.encode(obj) + '</span>&ensp;<span class="fa-holder"><i class="fa fa-times"></i></span></li>');
+				newElement.find('.fa-holder').click(function(e){
 					removeElement(e);
 				});
 				toSelect.append(newElement);
@@ -2565,8 +2565,8 @@ $.fn.multipleTextInput = function(data) {
             if (selectedText.trim() == '') {
                 return;
             }
-            var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(selectedText)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(selectedText)) + '"><span>' + he.encode(selectedText) + '</span>&ensp;<i class="fa fa-times"></i></li>');
-            newElement.find('i.fa.fa-times').click(function(e){
+            var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(selectedText)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(selectedText)) + '"><span>' + he.encode(selectedText) + '</span>&ensp;<span class="fa-holder"><i class="fa fa-times"></i></span></li>');
+            newElement.find('.fa-holder').click(function(e){
                 removeElement(e);
             });
             toSelect.append(newElement);
@@ -2577,7 +2577,7 @@ $.fn.multipleTextInput = function(data) {
     		}
 		}
 
-		$('#' + id + 'Excluded').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-addon"><i class="fa fa-plus"></i></span>');
+		$('#' + id + 'Excluded').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-append"><span class="fa-holder input-group-text"><i class="fa fa-plus"></i></span></span>');
 		$('#input' + id + 'ExcludedSelect').after('<ul id="auto_' + id + 'ExcludedAutoComplete" class="dropdown-menu scrollable-menu" role="menu"><li><a>' + getResource('pressEnter.text') + '</a></li></ul>');
 		$('#input' + id + 'ExcludedSelect').focus(function(){
 			$('#auto_' + id + 'ExcludedAutoComplete').show();
@@ -2628,8 +2628,8 @@ $.fn.multipleTextInput = function(data) {
 							removeListeners($(this));
 						});
 					}
-					$('#' + id + 'IncludedSelect li i').off();
-					$('#' + id + 'IncludedSelect li i').css('cursor', 'default');
+					$('#' + id + 'IncludedSelect li .fa-holder').off();
+					$('#' + id + 'IncludedSelect li .fa-holder').css('cursor', 'default');
 				},
 				enable: function() {
 					$('#' + id + 'Excluded').widget().enable();
@@ -2640,8 +2640,8 @@ $.fn.multipleTextInput = function(data) {
 							addListeners($(this));
 						});
 					}
-					$('#' + id + 'IncludedSelect li i').on('click', removeElement);
-					$('#' + id + 'IncludedSelect li i').css('cursor', 'pointer');
+					$('#' + id + 'IncludedSelect li .fa-holder').on('click', removeElement);
+					$('#' + id + 'IncludedSelect li .fa-holder').css('cursor', 'pointer');
 				},
 				options: function() {
 					return options;
@@ -2657,9 +2657,9 @@ $.fn.multipleTextInput = function(data) {
 
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
-			var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span class="wrap">' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
+			var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span class="wrap">' + obj + '</span>&ensp;<span class="fa-holder"><i class="fa fa-times"></i></span></li>');
 
-			newElement.find('i.fa.fa-times').click(function(e){
+			newElement.find('.fa-holder').click(function(e){
 				removeElement(e);
 			});
 			toSelect.append(newElement);
