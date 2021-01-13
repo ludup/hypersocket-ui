@@ -84,6 +84,9 @@ pre {
 .lb-help-block {margin-top: 5px;margin-bottom: 10px;}
 /*B4 row adds margin left and right with -15 px making it difficult to adjust with old code hence added custom*/
 .lb-row {display: -ms-flexbox; display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;}
+/*For slider tooltip*/
+.tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
+.tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;}
 /** 2.4 changes LB custom css end */
 
 /*
