@@ -3086,7 +3086,7 @@ $.fn.timeInput = function(options) {
 
 	$(this).append('<div class="input-group bootstrap-timepicker">'
 			+ '<input id="' + id + '" type="text" name="time_' + name + '" class="input-small form-control">'
-			+ '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span></div>');
+			+ '<span class="input-group-append input-group-text"><i class="fa fa-clock"></i></span></div>');
 
 	$('#'+ id).timepicker(options);
 
