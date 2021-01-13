@@ -3005,7 +3005,7 @@ $.fn.dateInput = function(options) {
 
 	$(this).append('<div id="' + id + '" class="input-group date">'
 			+ '<input id="' + id + 'Field" type="text" name="date_' + name + '" class="form-control" value="' + ( options.value ? options.value : '' ) + '">'
-			+ '<span class="input-group-addon"><i class="fa fa-calendar"></i></span></div>');
+			+ '<span class="input-group-append input-group-text"><i class="fa fa-calendar"></i></span></div>');
 
 	$('#' + id).datepicker(options).on('show', function() {
 		// Fix for being in a modal
