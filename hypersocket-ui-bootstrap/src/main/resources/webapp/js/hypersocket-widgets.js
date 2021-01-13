@@ -2106,7 +2106,7 @@ $.fn.multipleSearchInput = function(data) {
 	        }
 	    }
 
-		$(e.target).parent().remove();
+		$(e.target).parents("li").remove();
 		toSelect.data('updated', true);
 		if (options.changed) {
 			options.changed(callback);
@@ -2191,10 +2191,10 @@ $.fn.multipleSearchInput = function(data) {
 				options.changed(callback);
 			}
 
-			$('#' + dragSrcEl.id).find('i').click(function(e){
+			$('#' + dragSrcEl.id).find('.fa-holder').click(function(e){
 				removeElement(e);
 			});
-			$('#' + this.id).find('i').click(function(e){
+			$('#' + this.id).find('.fa-holder').click(function(e){
 				removeElement(e);
 			});
 		}
@@ -2232,7 +2232,7 @@ $.fn.multipleSearchInput = function(data) {
 		if (data && data.selected) {
 			$.each(data.selected, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + '</span>&ensp;<span class="fa-holder"><i class="fa fa-times"></i></span></li>');
-				var cross = newElement.find('i');
+				var cross = newElement.find('.fa-holder');
 				processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
@@ -2294,7 +2294,7 @@ $.fn.multipleSearchInput = function(data) {
                 }
 				var newElement = $('<li id="' + id + 'Li' + selectedObj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + selectedObj[options.valueAttr] + '"><span>'
 						+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : selectedObj[options.nameAttr]) + '</span>&ensp;<span class="fa-holder"><i class="fa fa-times"></i></span></li>');
-				var cross = newElement.find('i');
+				var cross = newElement.find('.fa-holder');
                 processCrossDeletable(cross, selectedObj);
 				toSelect.append(newElement);
 				addListeners(newElement);
@@ -2326,7 +2326,7 @@ $.fn.multipleSearchInput = function(data) {
 				toSelect.empty();
 				$.each(val, function(idx, obj) {
 					var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + '</span>&ensp;<span class="fa-holder"><i class="fa fa-times"></i></span></li>');
-					var cross = newElement.find('i');
+					var cross = newElement.find('.fa-holder');
 					processCrossDeletable(cross, obj);
 					toSelect.append(newElement);
 					addListeners(newElement);
@@ -2380,7 +2380,7 @@ $.fn.multipleSearchInput = function(data) {
 		if(options.isNamePairValue) {
 			$.each(options.values, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + he.decode(obj.value) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + he.decode(obj.value) + '"><span>' + he.decode(obj.name) + '</span>&ensp;<span class="fa-holder"><i class="fa fa-times"></i></span></li>');
-				var cross = newElement.find('i');
+				var cross = newElement.find('.fa-holder');
                 processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
@@ -2388,7 +2388,7 @@ $.fn.multipleSearchInput = function(data) {
 		} else {
 			$.each(options.values, function(idx, obj) {
 				var newElement = $('<li id="' + id + 'Li' + obj + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj + '"><span>' + obj + '</span>&ensp;<span class="fa-holder"><i class="fa fa-times"></i></span></li>');
-				var cross = newElement.find('i');
+				var cross = newElement.find('.fa-holder');
                 processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
 				addListeners(newElement);
@@ -2397,7 +2397,7 @@ $.fn.multipleSearchInput = function(data) {
 	} else if(options.selected) {
 		$.each(options.selected, function(idx, obj) {
 			var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + obj[options.nameAttr] + "</span>&ensp;<span class='fa-holder'><i class='fa fa-times'></i></span></li>");
-			var cross = newElement.find('i');
+			var cross = newElement.find('.fa-holder');
 			processCrossDeletable(cross, obj);
 			toSelect.append(newElement);
 			addListeners(newElement);
