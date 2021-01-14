@@ -1,0 +1,56 @@
+<div id="sendTestMessage">
+	<div id="sendTestMessageDialog" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- dialog body -->
+				<div class="modal-body">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<p localize="sendTestMessage.confirmText"></p>
+					<div class="propertyItem form-group">
+						<label class="col-xs-3 control-label"
+							localize="sendTestMessage.email"></label>
+						<div class="propertyValue col-xs-9">
+							<input type="text" class="form-control" placeholder=""
+								id="sendTestMessageEmail" maxlength=""
+								name="sendTestMessageEmail" value="">
+							<div>
+								<span class="help-block" localize="sendTestMessage.email.info"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- dialog buttons -->
+				<div class="modal-footer">
+					<button localize="sendTestMessage.send" type="button"
+						class="btn btn-primary">Send Test</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#sendTestMessageDialog").localize();
+		$('#sendTestMessage').data('action', function(resource) {
+			$("#sendTestMessageDialog").off("shown.bs.modal").on("shown.bs.modal", function() {
+				$("#sendTestMessageDialog .modal-footer button.btn").off("click").on("click", function(e) {
+					getJSON('messages/test/' + resource.id + '?email=' + encodeURIComponent($('#sendTestMessageEmail').val()), null, function(data) {
+						if (data.success) {
+							showSuccess(data.message);
+							if (typeof callback !== 'undefined')
+								callback(data.resource);
+						} else {
+							showError(data.message);
+						}
+					});
+					$("#sendTestMessage").modal('hide');
+				});
+			});
+			$("#sendTestMessageDialog").modal({
+				"backdrop" : "static",
+				"keyboard" : true,
+				"show" : true
+			});
+		});
+	});
+</script>

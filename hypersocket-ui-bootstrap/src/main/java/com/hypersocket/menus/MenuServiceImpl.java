@@ -591,6 +591,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 
 		}, "messageMenu");
+		
+		registerTableAction("messagesActions",
+				new AbstractTableAction("sendTestMessage", "fa-paper-plane", "sendTestMessage", 100, null,
+						null, MessageResourcePermission.CREATE, MessageResourcePermission.READ,
+						MessageResourcePermission.DELETE));
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_TOOLS, "",
 				null, 99999, null, null, null, null, null));
