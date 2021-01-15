@@ -1,4 +1,4 @@
-<div id="clientDownloadsContent" class="col-xs-12">
+<div id="clientDownloadsContent" class="col-12">
 	<div class="row">
 		<div class="panel panel-default">
 			<div class="panel-heading">
@@ -19,9 +19,9 @@
 		getJSON('downloads', null, function(data) {
 			$.each(data.resources, function(idx, obj) {
 				if(!$('#' + obj.subsystem).length) {
-					$('#downloads').append('<div id="' + obj.subsystem + '" class="col-xs-12"><h2 style="font-size: 18px; margin-bottom: 40px;" localize="text.' + obj.subsystem + '"></h2></div>');
+					$('#downloads').append('<div id="' + obj.subsystem + '" class="col-12"><h2 style="font-size: 18px; margin-bottom: 40px;" localize="text.' + obj.subsystem + '"></h2></div>');
 				}
-				$('#' + obj.subsystem).append('<div class="col-xs-3">' 
+				$('#' + obj.subsystem).append('<div class="col-3">' 
 						+ '<div style="margin-bottom: 20px; font-size: 12px; text-align: center; text-decoration: none; line-height: 1.5em; color: #555"><a target="_blank" href="'
 						+ obj.url + '">'
 						+ '<i class="fa fa-3x ' + obj.icon + '" style="margin-bottom: 10px;"></i><br>'

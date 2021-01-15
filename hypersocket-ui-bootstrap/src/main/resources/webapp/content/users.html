@@ -10,8 +10,8 @@
 					</div>
 					<div class="modal-body">
 						<div class="propertyItem form-group">
-							<label class="col-xs-3 control-label" localize="audit.filename.label"></label>
-							<div class="propertyValue col-xs-9">
+							<label class="col-3 control-label" localize="audit.filename.label"></label>
+							<div class="propertyValue col-9">
 								<input type="text" class="form-control"
 									 id="csvFilename" maxlength="" name="filename" value="export.csv">
 								<div>
@@ -21,7 +21,7 @@
 						</div>
 						<div id="auditFilterProperties">
 							<div class="row">
-								<div class="col-xs-12 propertyFilter" id="auditFilterPropertiesPropertyFilter"></div>
+								<div class="col-12 propertyFilter" id="auditFilterPropertiesPropertyFilter"></div>
 							</div>
 							<div id="auditFilterPropertiesPanel" class="panel panel-default">
 								<div class="panel-heading">
@@ -44,8 +44,8 @@
 										<div id="csvPreferencesContent" class="tab-pane active">
 											<div class="propertyItem form-group class_default">
 												<div class="propertyItem form-group">
-													<label class="col-xs-3 control-label" localize="audit.outputHeaders.label"></label>
-													<div class="propertyValue col-xs-9">
+													<label class="col-3 control-label" localize="audit.outputHeaders.label"></label>
+													<div class="propertyValue col-9">
 														<div id="csvOutputHeaders" name="csvOutputHeaders"></div>
 														<div>
 															<span class="lb-help-block form-text text-muted" localize="audit.outputHeaders.info"></span>
@@ -53,8 +53,8 @@
 													</div>
 												</div>
 												<div class="propertyItem form-group">
-													<label class="col-xs-3 control-label" localize="audit.delimiter.label"></label>
-													<div class="propertyValue col-xs-9">
+													<label class="col-3 control-label" localize="audit.delimiter.label"></label>
+													<div class="propertyValue col-9">
 														<input type="text" class="form-control"
 															 id="csvDelimiter" maxlength="" name="delimiter" value=",">
 														<div>
@@ -63,8 +63,8 @@
 													</div>
 												</div>
 												<div class="propertyItem form-group">
-													<label class="col-xs-3 control-label" localize="audit.terminate.label"></label>
-													<div class="propertyValue col-xs-9">
+													<label class="col-3 control-label" localize="audit.terminate.label"></label>
+													<div class="propertyValue col-9">
 														<div id="csvTerminate"></div>
 														<div>
 															<span class="lb-help-block form-text text-muted" localize="audit.terminate.info"></span>
@@ -72,8 +72,8 @@
 													</div>
 												</div>
 												<div class="propertyItem form-group">
-													<label class="col-xs-3 control-label" localize="audit.wrap.label"></label>
-													<div class="propertyValue col-xs-9">
+													<label class="col-3 control-label" localize="audit.wrap.label"></label>
+													<div class="propertyValue col-9">
 														<input type="text" class="form-control"
 															 id="csvWrap" maxlength="" name="wrap" value='"'>
 														<div>
@@ -82,8 +82,8 @@
 													</div>
 												</div>
 												<div class="propertyItem form-group">
-													<label class="col-xs-3 control-label" localize=audit.escape.label></label>
-													<div class="propertyValue col-xs-9">
+													<label class="col-3 control-label" localize=audit.escape.label></label>
+													<div class="propertyValue col-9">
 														<input type="text" class="form-control"
 															 id="csvEscape" maxlength="" name="escape" value="\">
 														<div>
@@ -94,8 +94,8 @@
 											</div>
 										</div>
 										<div id="csvAttributesContent" class="tab-pane">
-											<label class="col-xs-3 control-label" localize=audit.attributes.label></label>
-											<div class="propertyValue col-xs-9">
+											<label class="col-3 control-label" localize=audit.attributes.label></label>
+											<div class="propertyValue col-9">
 												<div id="csvAttributes"></div>
 												<span class="lb-help-block form-text text-muted" localize="audit.attributes.info"></span>
 											</div>
@@ -554,7 +554,7 @@
 										var tabs = [];
 										if(currentRealm.resourceCategory === resourceCategory) {
 
-											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-xs-12"></div></div>');
+											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-12"></div></div>');
 
 											$('#tabUserGroupsContent').multipleSearchInput({
 												nameAttr : 'principalName',
@@ -691,7 +691,7 @@
 
 										var tabs = [];
 										if(currentRealm.resourceCategory === resourceCategory) {
-											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-xs-12"></div></div>');
+											$('#userProperties').parent().append('<div id="tabUserGroups"><div id="tabUserGroupsContent" class="col-12"></div></div>');
 											$('#tabUserGroupsContent').multipleSearchInput({
 												nameAttr : 'principalName',
 												disabled: !currentMenu.canUpdate,

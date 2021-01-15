@@ -17,9 +17,9 @@
 				<div class="modal-body">
 					<div id="searchDialog" class="searchDialog">
 						<div id="searchHeader" class="row">
-							<div class="col-xs-6"></div>
-							<label class="col-xs-2" localize="text.search"></label>
-							<input class="col-xs-4" type="text" id="searchInput">
+							<div class="col-6"></div>
+							<label class="col-2" localize="text.search"></label>
+							<input class="col-4" type="text" id="searchInput">
 						</div>
 						<div id="searchResults" class="row">
 						
@@ -55,7 +55,7 @@
 			if(count > 0 && ((count % 5) == 0)) {
 				currentElement = $('#searchResults').append('<div class="row"></div>');
 			}
-			currentElement.append('<div id="template' + obj.id + '" class="col-xs-2 template"><a href="#"><div class="row"><img width="100px" src="'
+			currentElement.append('<div id="template' + obj.id + '" class="col-2 template"><a href="#"><div class="row"><img width="100px" src="'
 					+ basePath
 					+ '/api/triggers/image/' 
 					+ obj.templateLogo 
@@ -71,7 +71,7 @@
 				if(count > 0 && ((count % 5) == 0)) {
 					currentElement = $('#searchResults').append('<div class="row"></div>');
 				}
-				currentElement.append('<div class="col-xs-2 template"></div>');
+				currentElement.append('<div class="col-2 template"></div>');
 				count++;
 			}
 		}
@@ -159,8 +159,8 @@
 															var id = label.replace(/\s/g, "");
 															var variable = id.substring(0,1).toLowerCase() + id.substring(1);
 															$('#templateVariables').append('<div class="propertyItem form-group">'
-																	+ '<label class="col-xs-3 control-label">' + label + '</label>'
-																	+ '<div class="propertyValue col-xs-9"><div id="variable' + id + '" data-variable="' + variable + '" + class="variable"></div><div>'
+																	+ '<label class="col-3 control-label">' + label + '</label>'
+																	+ '<div class="propertyValue col-9"><div id="variable' + id + '" data-variable="' + variable + '" + class="variable"></div><div>'
 																	+ '<span class="lb-help-block form-text text-muted">' + info + '</span></div></div></div>');
 														
 															$('#variable' + id).textInput();

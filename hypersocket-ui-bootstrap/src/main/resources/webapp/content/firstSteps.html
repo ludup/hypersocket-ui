@@ -1,5 +1,5 @@
 <div id="firstSteps">
-	<div id="stepDiv" class="col-xs-12">
+	<div id="stepDiv" class="col-12">
 		<p localize="text.firstSteps"></p>
 		<br>
 	</div>
@@ -17,7 +17,7 @@
 				function(data) {
 					if(data.success && data.resources && data.resources.length > 0){
 						$.each(data.resources, function(index, link){
-							$('#stepDiv').append('<div class="col-xs-4 firstStep">' +
+							$('#stepDiv').append('<div class="col-4 firstStep">' +
 									'<img width="100%" src="' + link.url + '"> + 
 									'<h2><strong>' + link.name + '</strong></h2>' +
 									'<p>' + link.desc + '</p></div>');
