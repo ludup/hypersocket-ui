@@ -2215,7 +2215,7 @@ $.fn.extendedResourcePanel = function(params){
 
     var id = $(this).attr('id');
     if(id == null || typeof id == 'undefined' || id.trim().length == 0) {
-        id = options.resource.id.toString();
+        id = 'lb_tab_' + options.resource.id.toString();
     }
     var tabContentHolderId = id + 'Tabs';
     var tabsId = 'tabs' + id.charAt(0).toUpperCase() + id.substring(1);
@@ -2247,6 +2247,7 @@ $.fn.extendedResourcePanel = function(params){
                         $(element).attr('dialog-for', $(element).attr('dialog-for') + '_' + options.resource.id);
                     });
                     if($('#' + tabId).children('.extendedTabContent').length > 0) {
+                    	
                         $('#' + tabId).children('.extendedTabContent').data('initPage')(options.resource, options.data, value.readOnly);
                     }
                 });

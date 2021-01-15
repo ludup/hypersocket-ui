@@ -585,7 +585,7 @@ $.fn.tabPage = function(opts) {
 				lastTab = $('#' + this.id);
 			$(contentTabs)
 					.append(
-						'<li class="class_default" id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
+						'<li class="class_default nav-item" id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2 nav-link" name="link_' + this.name + '" role="tab" data-toggle="tab"><span>' + this.name + '</span></a></li>');
 			$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 			$('#' + this.id).addClass('tab-pane');
 		});
@@ -1292,10 +1292,10 @@ $.fn.propertyPage = function(opts) {
 												widgets.push(widget);
 												
 												$('#' + tab + '_value' + inputId).append(
-														'<small id="' + tab + '_helpspan' + inputId + '" class="lb-help-block form-text text-muted">' 
+														'<span id="' + tab + '_helpspan' + inputId + '" class="lb-help-block form-text text-muted">' 
 														+  ( obj.description ? obj.description : getResourceWithNamespace(categoryNamespace, obj.resourceKey + '.info') ) 
 
-														+ '</small>');
+														+ '</span>');
 											}
 										}
 										
