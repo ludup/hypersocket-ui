@@ -81,12 +81,13 @@ pre {
 
 .card-header svg.lb-card-title-header {height: 20px;width: 40px;text-align: center;}
 .lb-panel-heading {vertical-align: 0.2em;}
-.lb-help-block {margin-top: 5px;margin-bottom: 10px;}
+.lb-help-block {margin-top: 5px;margin-bottom: 10px;font-size: x-small;}
 /*B4 row adds margin left and right with -15 px making it difficult to adjust with old code hence added custom*/
 .lb-row {display: -ms-flexbox; display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;}
 /*For slider tooltip*/
 .tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
 .tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;}
+.lb-detail-icon {font-size: xx-small;}
 /** 2.4 changes LB custom css end */
 
 /*

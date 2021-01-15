@@ -149,10 +149,10 @@ $.fn.passwordPolicy = function(data) {
 		if(!data.success) {
 			var passwordRulesContent;
 			if(options.showRulesDefault){
-				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + options.title + '</h5>');
+				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fa fa-minus"></i></a>&nbsp;' + options.title + '</h5>');
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}else{
-				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h5>');
+				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fa fa-minus"></i></a>&nbsp;' + options.title + '</h5>');
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}
 			if(data.message == 'Unsupported') {
@@ -178,16 +178,16 @@ $.fn.passwordPolicy = function(data) {
 			var passwordRulesContent;
 			if(options.showRulesDefault){
 				if(options.showPolicyName) {
-					thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + policy.name + '</h5>');
+					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fa fa-minus"></i></a>&nbsp;' + policy.name + '</h5>');
 				} else {
-					thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + options.title + '</h5>');
+					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fa fa-minus"></i></a>&nbsp;' + options.title + '</h5>');
 				}
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}else{
 				if(options.showPolicyName) {
-					thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + policy.name + '</h5>');
+					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fa fa-plus"></i></a>&nbsp;' + policy.name + '</h5>');
 				} else {
-					thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + options.title + '</h5>');
+					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fa fa-plus"></i></a>&nbsp;' + options.title + '</h5>');
 				}
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}
@@ -320,17 +320,17 @@ $.fn.passwordPolicy = function(data) {
 		$('#passwordRulesContent').prev().find('a').click(function(){
 			$('#passwordRulesContent').toggle();
 			if($('#passwordRulesContent:visible').length != 0){
-				$(this).find('i').removeClass('glyphicon-plus');
-				$(this).find('i').removeClass('icon-plus');
+				$(this).find('i, svg').removeClass('fa');
+				$(this).find('i, svg').removeClass('fa-plus');
 				
-				$(this).find('i').addClass('glyphicon-minus');
-				$(this).find('i').addClass('icon-minus');
+				$(this).find('i, svg').addClass('fa');
+				$(this).find('i, svg').addClass('fa-minus');
 			}else{
-				$(this).find('i').removeClass('glyphicon-minus');
-				$(this).find('i').removeClass('icon-minus');
+				$(this).find('i, svg').removeClass('fa');
+				$(this).find('i, svg').removeClass('fa-minus');
 				
-				$(this).find('i').addClass('glyphicon-plus');
-				$(this).find('i').addClass('icon-plus');
+				$(this).find('i, svg').addClass('fa');
+				$(this).find('i, svg').addClass('fa-plus');
 			}
 		});
 		
@@ -349,27 +349,27 @@ $.fn.passwordPolicy = function(data) {
 
 			var passwordGeneratorContent;
 			if(options.showGeneratorDefault){
-				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-minus icon-minus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
+				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fa fa-minus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
 				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="padding-left: 30px;"></div>').find('#passwordGeneratorContent');
 			}else{
-				thisDiv.append('<h5><a class="detail-icon" href="javascript:"><i class="glyphicon glyphicon-plus icon-plus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
+				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fa fa-plus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
 				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="display: none; padding-left: 30px;"></div>').find('#passwordGeneratorContent');
 			}
 			
 			$('#passwordGeneratorContent').prev().find('a').click(function(){
 				$('#passwordGeneratorContent').toggle();
 				if($('#passwordGeneratorContent:visible').length != 0){
-					$(this).find('i').removeClass('glyphicon-plus');
-					$(this).find('i').removeClass('icon-plus');
+					$(this).find('i, svg').removeClass('fa');
+					$(this).find('i, svg').removeClass('fa-plus');
 					
-					$(this).find('i').addClass('glyphicon-minus');
-					$(this).find('i').addClass('icon-minus');
+					$(this).find('i, svg').addClass('fa');
+					$(this).find('i, svg').addClass('fa-minus');
 				}else{
-					$(this).find('i').removeClass('glyphicon-minus');
-					$(this).find('i').removeClass('icon-minus');
+					$(this).find('i, svg').removeClass('fa');
+					$(this).find('i, svg').removeClass('fa-minus');
 					
-					$(this).find('i').addClass('glyphicon-plus');
-					$(this).find('i').addClass('icon-plus');
+					$(this).find('i, svg').addClass('fa');
+					$(this).find('i, svg').addClass('fa-plus');
 				}
 			});
 			
