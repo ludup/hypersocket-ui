@@ -1864,7 +1864,7 @@ $.fn.bulkAssignmentDialog = function(options) {
 
         $(this).find('.modal-footer').empty();
         $(this).find('.modal-footer').append(
-                    '<button type="button" id="' + id + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.update") + '</button>');
+                    '<button type="button" id="' + id + 'Action" class="btn btn-primary"><i class="fa fa-save"></i><span class="btn-text">' + getResource("text.update") + '</span></button>');
         $('#' + id + "Action").off('click');
 
         $('#' + id + "Action").on('click', function() {
@@ -1985,7 +1985,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 
 		$(this).find('.modal-footer').empty();
 		$(this).find('.modal-footer').append(
-					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' + getResource("text.create") + '</button>');
+					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i><span class="btn-text">' + getResource("text.create") + '</span></button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
 
 		$('#' + $(this).attr('id') + "Action").on('click', function() {	
@@ -2079,8 +2079,8 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			
 			if(!dialogOptions.disableUpdateButton) {
 				$(this).find('.modal-footer').append(
-						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i>' 
-						+ getResource("text.update") + '</button>');
+						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i><span class="btn-text">' 
+						+ getResource("text.update") + '</span></button>');
 			}
 			
 			if(dialogOptions.buildUpdateButtons) {
@@ -2088,8 +2088,8 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 					dialog.find('.modal-footer').append(
 							'<button type="button" id="' + button.id + 'Action" class="updateButton btn ' 
 							+ button.cssClass + '"><i class="fa ' 
-							+ button.icon + '"></i>' 
-							+ getResource(button.resourceKey) + '</button>');
+							+ button.icon + '"></i><span class="btn-text">' 
+							+ getResource(button.resourceKey) + '</span></button>');
 					$('#' + button.id + 'Action').click(function() {
 						onclick(button, $('#' + button.id + 'Action'));
 					});
