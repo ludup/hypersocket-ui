@@ -730,9 +730,9 @@ $.fn.propertyPage = function(opts) {
 				$(panel)
 						.append(
 							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' 
-							+ propertyDiv + 'Revert"><i class="fa fa-ban"></i>' + getResource(options.revertText)
-							+ '</button><button class="btn btn-small btn-primary" id="' + propertyDiv 
-							+ 'Apply"><i class="fa fa-save"></i>' + getResource(options.applyText) + '</button></div>');
+							+ propertyDiv + 'Revert"><i class="fa fa-ban"></i><span class="btn-text">' + getResource(options.revertText)
+							+ '</span></button><button class="btn btn-small btn-primary" id="' + propertyDiv 
+							+ 'Apply"><i class="fa fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button></div>');
 			}
 
 			var first = true;
