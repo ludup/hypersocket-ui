@@ -5,59 +5,57 @@
     </div>
 </div>
 <script>
-$(document).ready(function() {
-    $('.extendedTabContent').data('initPage', function(resource, data, readOnly) {
-        var _$ = function(jq) { return $(jq + '_' + resource.id);}
-        var el = _$('#groupsTab');
+$('.extendedTabContent').data('initPage', function(resource, data, readOnly) {
+    var _$ = function(jq) { return $(jq + '_' + resource.id);}
+    var el = _$('#groupsTab');
 
-        _$('#principalGroupMapping').localize();
+    _$('#principalGroupMapping').localize();
 
-            getJSON($(document).data('apiUrl') + '/groups/user/' + resource.id, null, function(response){
-                if(response.resources) {
-                    var initObj = {
-                        disabled: readOnly,
-                        nameAttr : 'name',
-                        selectedIsObjectList: false,
-                        valueAttr: 'id',
-                        selected: response.resources,
-                        confirmRemove: true,
-                        addOnSelect: false,
-                        preAddCallback : function(data){
+        getJSON($(document).data('apiUrl') + '/groups/user/' + resource.id, null, function(response){
+            if(response.resources) {
+                var initObj = {
+                    disabled: readOnly,
+                    nameAttr : 'name',
+                    selectedIsObjectList: false,
+                    valueAttr: 'id',
+                    selected: response.resources,
+                    confirmRemove: true,
+                    addOnSelect: false,
+                    preAddCallback : function(data){
+                   
+                         var groupId = data.id;
+                         patchJSON($(document).data('apiUrl') + '/group/' + groupId + '/user/' + resource.id, null, function(data){
+                             if(data.success){
+                                 showSuccess(data.message);
+                             }else{
+                                 showError(data.message);
+                             }
+                         });
+                         return true;
+
+                    },
+                    preRemoveCallback : function(evt) {
+                        
+                            var callback = el.data('widget');
+                            var groupId = $(evt.target).data('value').id;
+                            deleteJSON($(document).data('apiUrl') + '/group/' + groupId + '/user/' + resource.id, null, function(response){
+                                if(response.success){
+                                    showSuccess(response.message);
+                                }else{
+                                    showError(response.message);
+                                    el.multipleSearchInput(initObj);
+                                }
+                            });
+                            return true;
                        
-                             var groupId = data.id;
-                             patchJSON($(document).data('apiUrl') + '/group/' + groupId + '/user/' + resource.id, null, function(data){
-                                 if(data.success){
-                                     showSuccess(data.message);
-                                 }else{
-                                     showError(data.message);
-                                 }
-                             });
-                             return true;
-   
-                        },
-                        preRemoveCallback : function(evt) {
-                            
-                                var callback = el.data('widget');
-                                var groupId = $(evt.target).data('value').id;
-                                deleteJSON($(document).data('apiUrl') + '/group/' + groupId + '/user/' + resource.id, null, function(response){
-                                    if(response.success){
-                                        showSuccess(response.message);
-                                    }else{
-                                        showError(response.message);
-                                        el.multipleSearchInput(initObj);
-                                    }
-                                });
-                                return true;
-                           
-                        },
-                        objectDeletable : function(obj){
-                            return !obj.allUsers;
-                        },
-                        url : $(document).data('apiUrl') + '/groups/filter/' + resource.id
-                    };
-                    el.multipleSearchInput(initObj);
-                }
-            });
-    });
+                    },
+                    objectDeletable : function(obj){
+                        return !obj.allUsers;
+                    },
+                    url : $(document).data('apiUrl') + '/groups/filter/' + resource.id
+                };
+                el.multipleSearchInput(initObj);
+            }
+        });
 });
 </script>
