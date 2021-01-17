@@ -619,14 +619,14 @@ function showShutdownDialog(option, logoff) {
 				'<h4 class="modal-title" id="myModalLabel">' + getResource('power.shutdownServer') + '</h4>' +
 			'</div>' +
 			'<div class="modal-body row">' +
-				'<div class="col-xs-6" style="text-align: center">' +
+				'<div class="col-6" style="text-align: center">' +
 					'<button class="btn btn-small btn-primary" id="buttonShutdown" style="margin-bottom: 15px">' +
 						'<i class="fa fa-power-off" style="font-size: 40px"></i>' +
 					'</button>' +
 					'</br>' +
 					'<span>' + getResource("shutdown.label") + '</span>' +
 				'</div>' +
-				'<div class="col-xs-6" style="text-align: center">' +
+				'<div class="col-6" style="text-align: center">' +
 					'<button class="btn btn-small btn-primary" id="buttonRestart" style="margin-bottom: 15px">' +
 						'<i class="fa fa-repeat" style="font-size: 40px"></i>' +
 					'</button>' +
@@ -961,7 +961,7 @@ function loadMenu(menu) {
 		});
 		
 		for(var i=0;i<menu.menus.length;i++) {
-			//$('#subMenuIconPanel').append('<div class="col-xs-2"></div>');
+			//$('#subMenuIconPanel').append('<div class="col-2"></div>');
 			$(document).data(menu.menus[i].resourceKey, menu.menus[i]);
 		}
 

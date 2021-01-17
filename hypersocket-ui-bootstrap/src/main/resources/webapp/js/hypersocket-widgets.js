@@ -3580,17 +3580,17 @@ $.fn.namePairInput = function(data) {
 		options.text = getResourceNoDefault(options.text);
 	}
 
-	var nameWeight = 'col-xs-5';
-	var valueWeight = 'col-xs-5';
+	var nameWeight = 'col-5';
+	var valueWeight = 'col-5';
 	if(options.columnWeight=='nameHeavy') {
-		nameWeight = 'col-xs-7';
-		valueWeight = 'col-xs-3';
+		nameWeight = 'col-7';
+		valueWeight = 'col-3';
 	}else if(options.columnWeight=='valueHeavy'){
-		nameWeight = 'col-xs-3';
-		valueWeight = 'col-xs-7';
+		nameWeight = 'col-3';
+		valueWeight = 'col-7';
 	}else if(options.columnWeight=='separateLines'){
-		nameWeight = 'col-xs-10';
-		valueWeight = 'col-xs-10';
+		nameWeight = 'col-10';
+		valueWeight = 'col-10';
 	}
 
 	var nameVariables = options.nameVariables.concat(options.variables);
@@ -3601,10 +3601,10 @@ $.fn.namePairInput = function(data) {
 		var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 		+	'	<div id="' + id + 'NamePairs" ></div>'
 		+	'	<div id="' + id + 'NewRow" class="row">'
-		+	'		<div class="propertyValue col-xs-10">'
+		+	'		<div class="propertyValue col-10">'
 		+	'			<span class="help-block">&nbsp;</span>'
 		+	'		</div>'
-		+	'		<div class="propertyValue col-xs-1 dialogActions">'
+		+	'		<div class="propertyValue col-1 dialogActions">'
 		+	'			<a id="' + id + 'AddPair" href="#" class="btn btn-info addButton">'
 		+	'				<i class="fa fa-plus"></i>'
 		+	'			</a>'
@@ -3694,12 +3694,12 @@ $.fn.namePairInput = function(data) {
  					html = '';
  	 				html =	'<div class="row namePairInput">';
  	 				if(options.onlyName){
- 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue col-xs-10 namePairName"></div>'
+ 	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue col-10 namePairName"></div>'
  	 				}else{
  	 					html += '	<div id="' + id + 'NamePairName' + rowNum + '" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
  	 						 +	'	<div id="' + id + 'NamePairValue' + rowNum + '" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>';
  	 				}
- 	 				html += '	<div class="propertyValue col-xs-1 dialogActions">';
+ 	 				html += '	<div class="propertyValue col-1 dialogActions">';
  	 				if(!options.readOnly && !options.disabled) {
  	 					html +=  '<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>';
  	 				}
@@ -3926,13 +3926,13 @@ $.fn.fileUploadInput = function(data) {
 			}, data);
 
 	var id = checkElementHasId($(this)).attr('id') + "FileUpload";
-	var html =	'<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
+	var html =	'<div id="' + id + '" class="col-8" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
-			+	'<div class="propertyValue col-xs-4 dialogActions" id="' + id + 'Buttons">'
+			+	'<div class="propertyValue col-4 dialogActions" id="' + id + 'Buttons">'
 			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
 			+	'</div>'
-			+	'<div class="col-xs-8 uploadProgress">'
+			+	'<div class="col-8 uploadProgress">'
 			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
 			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
 			+	'	</div>'
@@ -3945,7 +3945,7 @@ $.fn.fileUploadInput = function(data) {
 
 	if(!options.showUploadButton){
 		$('#' + id + 'UploadButton').hide();
-		//$('#' + id + 'File').parent().removeClass('col-xs-11').addClass('col-xs-12');
+		//$('#' + id + 'File').parent().removeClass('col-11').addClass('col-12');
 	}
 
 	var uploadProgress = function(evt){
@@ -4313,13 +4313,13 @@ $.fn.logoInput = function(data) {
     	+	'</div>';
 
 
-	var uploadHtml =  '<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
+	var uploadHtml =  '<div id="' + id + '" class="col-8" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
-			+	'<div class="propertyValue col-xs-4 dialogActions">'
+			+	'<div class="propertyValue col-4 dialogActions">'
 			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
 			+	'</div>'
-			+	'<div class="col-xs-8">'
+			+	'<div class="col-8">'
 			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
 			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
 			+	'	</div>'
@@ -4343,7 +4343,7 @@ $.fn.logoInput = function(data) {
 
 	if(!options.showUploadButton){
 		$('#' + id + 'UploadButton').parent().hide();
-		$('#' + id + 'File').parent().removeClass('col-xs-11').addClass('col-xs-12');
+		$('#' + id + 'File').parent().removeClass('col-11').addClass('col-12');
 	}
 
 	var uploadProgress = function(evt){
@@ -4872,11 +4872,11 @@ $.fn.multipleFileUpload = function(data) {
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
 			+	'	<div id="' + id + 'FileUploads"></div>'
 			+	'	<div id="' + id + 'NewRow">'
-			+	'		<div class="col-xs-12" style="padding-left: 0px; padding-right: 0px;">'
-			+	'			<div class="propertyValue col-xs-8" style="padding-left: 0px;">'
+			+	'		<div class="col-12" style="padding-left: 0px; padding-right: 0px;">'
+			+	'			<div class="propertyValue col-8" style="padding-left: 0px;">'
 			+	'				<span class="help-block">' + options.text + '</span>'
 			+	'			</div>'
-			+	'			<div class="propertyValue col-xs-4 dialogActions">';
+			+	'			<div class="propertyValue col-4 dialogActions">';
 	if(!options.disabled) {
 			html +=	'				<a id="' + id + 'AddRow" href="#" class="btn btn-primary addButton">'
 				+	'					<i class="fa fa-plus"></i>'
@@ -4937,7 +4937,7 @@ $.fn.multipleFileUpload = function(data) {
  					rowNum++;
  					html = '';
  	 				html =	'<div class="row fileUpload">'
- 	 					+	'	<div id="' + id + 'FileUpload' + rowNum + '" class="form-group propertyValue col-xs-12 fileUploadInput"></div>'
+ 	 					+	'	<div id="' + id + 'FileUpload' + rowNum + '" class="form-group propertyValue col-12 fileUploadInput"></div>'
  	 					+	'</div>';
  	 				$('#' + id + 'FileUploads').append(html);
  	 				$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').fileUploadInput({
@@ -5676,7 +5676,7 @@ $.fn.textAndSelect = function(data) {
 	var selectId = $(this).attr('id') + 'Select';
 
 	$(this).append('<div class="propertyItem form-group">' +
-			'<div class="row"><div class="col-xs-6" id="' + textId + '"></div><div class="col-xs-6" id="' +  selectId + '"></div></div>');
+			'<div class="row"><div class="col-6" id="' + textId + '"></div><div class="col-6" id="' +  selectId + '"></div></div>');
 
 	var textInput = $('#' + textId).textInput(textOptions);
 
@@ -5763,16 +5763,16 @@ $.fn.feedbackPanel = function(data) {
 			}
 			else if(result.status === 'SUCCESS') {
 				div.append('<div id="' + id + '" class="row feedback-row">'
-				 + '<div class="col-xs-12 feedback-success"><i class="fa fa-check-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
+				 + '<div class="col-12 feedback-success"><i class="fa fa-check-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
 			} else if(result.status === 'INFO') {
 				div.append('<div id="' + id + '" class="row feedback-row">'
-						 + '<div class="col-xs-12 feedback-info"><i class="fa fa-info-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
+						 + '<div class="col-12 feedback-info"><i class="fa fa-info-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
 			} else if(result.status === 'WARNING') {
 				div.append('<div id="' + id + '" class="row feedback-row">'
-						 + '<div class="col-xs-12 feedback-warning"><i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
+						 + '<div class="col-12 feedback-warning"><i class="fa fa-warning"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
 			} else {
 				div.append('<div id="' + id + '" class="row feedback-row">'
-						 + '<div class="col-xs-12 feedback-error"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span>'
+						 + '<div class="col-12 feedback-error"><i class="fa fa-times-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span>'
 						 + '</div></div>');
 			}
 		});
@@ -5787,7 +5787,7 @@ $.fn.feedbackPanel = function(data) {
 			}
 		} else {
 			div.append('<div id="feedbackNext" class="row feedback-row">'
-					 + '<div class="col-xs-12"><i class="fa fa-spinner fa-spin"></i></div></div>');
+					 + '<div class="col-12"><i class="fa fa-spinner fa-spin"></i></div></div>');
 		}
 		return ret;
 	}
@@ -5917,15 +5917,15 @@ $.fn.multipleRows = function(data) {
 	var id = checkElementHasId($(this)).attr('id') + "Multiple";
 
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
-	+	'	<div class="col-xs-11" id="' + id + 'Header"></div>'
-	+	'	<div class="col-xs-1"></div>'
+	+	'	<div class="col-11" id="' + id + 'Header"></div>'
+	+	'	<div class="col-1"></div>'
 	+   '   </div>'
 	+	'	<div id="' + id + 'Rows" ></div>'
 	+	'	<div id="' + id + 'NewRow">'
-	+	'		<div class="propertyValue col-xs-11">'
+	+	'		<div class="propertyValue col-11">'
 	+	'			<span class="help-block">&nbsp;</span>'
 	+	'		</div>'
-	+	'		<div class="propertyValue col-xs-1">'
+	+	'		<div class="propertyValue col-1">'
 	+	'			<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
 	+	'				<i class="fa fa-plus"></i>'
 	+	'			</a>'
@@ -5947,9 +5947,9 @@ $.fn.multipleRows = function(data) {
 		var elementId = id + options.count++;
 		$('#' + id + 'Rows').append(
 				 '    <div class="rowParent">'
-				+ '       <div id="' + elementId  + '" class="rowInput col-xs-11">'
+				+ '       <div id="' + elementId  + '" class="rowInput col-11">'
 				+ '       </div>'
-				+ '       <div class="col-xs-1">'
+				+ '       <div class="col-1">'
 				+	'		<a href="#" class="btn btn-danger delButton">'
 				+	'			<i class="fa fa-minus"></i>'
 				+	'		</a>'
@@ -6460,17 +6460,17 @@ $.fn.namePair = function(data) {
 
 	var id =  checkElementHasId($(this)).attr('id') + "NamePair";
 
-	var nameWeight = 'col-xs-6';
-	var valueWeight = 'col-xs-6';
+	var nameWeight = 'col-6';
+	var valueWeight = 'col-6';
 	if(options.columnWeight=='nameHeavy') {
-		nameWeight = 'col-xs-8';
-		valueWeight = 'col-xs-4';
+		nameWeight = 'col-8';
+		valueWeight = 'col-4';
 	}else if(options.columnWeight=='valueHeavy'){
-		nameWeight = 'col-xs-4';
-		valueWeight = 'col-xs-8';
+		nameWeight = 'col-4';
+		valueWeight = 'col-8';
 	}else if(options.columnWeight=='separateLines'){
-		nameWeight = 'col-xs-12';
-		valueWeight = 'col-xs-12';
+		nameWeight = 'col-12';
+		valueWeight = 'col-12';
 	}
 
 	var nameVariables = options.nameVariables.concat(options.variables);
@@ -6479,7 +6479,7 @@ $.fn.namePair = function(data) {
 	if(!$(this).data('created')){
 		html =	'<div id="' + id + 'Input" class="row namePair">';
 		if(options.onlyName){
-			html += '	<div id="' + id + 'InputName" class="form-group propertyValue col-xs-10 namePairName"></div>'
+			html += '	<div id="' + id + 'InputName" class="form-group propertyValue col-10 namePairName"></div>'
 		}else{
 			html += '	<div id="' + id + 'InputName" class="form-group propertyValue ' + nameWeight + ' namePairName"></div>'
 				 +	'	<div id="' + id + 'InputValue" class="form-group propertyValue ' + valueWeight + ' namePairValue"></div>';
