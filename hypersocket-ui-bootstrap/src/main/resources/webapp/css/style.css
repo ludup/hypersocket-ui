@@ -88,6 +88,29 @@ pre {
 .tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
 .tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;}
 .lb-detail-icon {font-size: xx-small;}
+@media ( max-width: 575.98px) {
+	.tableActions {
+		text-align: start;	
+	}
+	.actionsColumn {
+		width: auto;
+		text-align: start;
+		
+	}
+}
+@media (min-width: 576px) { 
+
+	.tableActions {
+		text-align: right;
+	}
+	.actionsColumn {
+		width: 175px;
+		text-align: right;
+	}	
+}
+.fixed-table-container {padding-top: 5px;}
+button.row-additional {margin-right: 5px;}
+button.row-additional::after {display: none;}
 /** 2.4 changes LB custom css end */
 
 /*
@@ -482,11 +505,7 @@ table.table .btn i {
 .fixed-table-container {
 	border: 0px;
 	margin: 10px;
-}
-
-.fixed-table-body {
-	overflow-x: auto;
-	overflow-y: visible;
+	padding-top: 5px;
 }
 
 .pagination-info {
@@ -499,9 +518,6 @@ div.numRecords label {
 	text-align: left;
 }
 
-.tableActions {
-	text-align: right;
-}
 
 div.numRecords select {
 	width: 75px;

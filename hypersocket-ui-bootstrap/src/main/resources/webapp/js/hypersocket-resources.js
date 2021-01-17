@@ -44,7 +44,7 @@ $.fn.iconPage = function(params) {
 			}
 
 			var uri = getLogoPath(options.logoResourceTypeCallback ? options.logoResourceTypeCallback(resource) : 'default', resource.logo, resource.name);
-			$(divName).children('.row').children('.col-xs-2').last().append('<img width="100" height="100" src="' + uri + '"/>');
+			$(divName).children('.row').children('.col-2').last().append('<img width="100" height="100" src="' + uri + '"/>');
 		});
 		
 		if(options.complete) {
@@ -409,13 +409,13 @@ $.fn.resourceTable = function(params) {
 		if (options.additionalActions) {
 
 			if(options.forceActionsDropdown || (!options.disableActionsDropdown && options.additionalActions.length > 1)) {
-				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
-				renderedActions += '<ul id="' + id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
+				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><button type="button" class="btn btn-success row-additional dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cogs"></i></button>';
+				renderedActions += '<div id="' + id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-								renderedActions += '<li data-idx="' + index + '"><a class="row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a></li>';
+								renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a>';
 								$(document).off('click',
 								                '#' + id + 'ActionDropdown .row-' + act.resourceKey);
 								$(document).on(
@@ -423,7 +423,7 @@ $.fn.resourceTable = function(params) {
 									'#' + id + 'ActionDropdown .row-' + act.resourceKey,
 									function(e) {
 										e.preventDefault();
-										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[parseInt($(this).parent().data('idx'))];
+										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[parseInt($(this).data('idx'))];
 										act.action(resource, function(resource) {
 											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 											checkBadges(false);
@@ -431,9 +431,21 @@ $.fn.resourceTable = function(params) {
 									});
 							}
 				});
-				renderedActions += '</ul></div>';
+				renderedActions += '</div></div>';
+				
+				$(document).on('hide.bs.dropdown', '#' + divName + 'Actions' + id, function () {
+					let fixedTableBody = $(".bootstrap-table .fixed-table-container .fixed-table-body");
+					fixedTableBody.css("overflow-x", "auto");
+					fixedTableBody.css("overflow-y", "auto");
+				});
 				
 				$(document).on('show.bs.dropdown', '#' + divName + 'Actions' + id, function () {
+					
+					let fixedTableBody = $(".bootstrap-table .fixed-table-container .fixed-table-body");
+					
+					fixedTableBody.css("overflow-x", "initial");
+					fixedTableBody.css("overflow-y", "initial");
+					
 					var dropdown = $(this);
 					
 					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
@@ -594,14 +606,13 @@ $.fn.resourceTable = function(params) {
 			
 		}
 
-		return '<div id="' + divName + 'Actions' + id + '" class="tableActions">' + renderedActions + '</div>';
+		return '<div id="' + divName + 'Actions' + id + '" class="tableActions"> ' + renderedActions + '</div>';
 	};
 	
 	columns.push({ field : "actions",
-		align:'right',
 		formatter: renderActions,
-		width: 175,
-		class: 'actionsColumn'
+		class: 'actionsColumn',
+		title: ''
 	});
 
 	if (options.canCreate) {
@@ -788,6 +799,7 @@ $.fn.resourceTable = function(params) {
 		    sortable: true,
 		    cache: false,
 		    uniqueId: 'id',
+		    mobileResponsive: true,
 		    ajaxOptions: {
 		    	beforeSend: function(request) {
 		    		request.setRequestHeader("X-Csrf-Token", getCsrfToken());
@@ -1851,9 +1863,9 @@ $.fn.bulkAssignmentDialog = function(options) {
                         '<div class="modal-body">' +
                             '<div id="' + id + 'TabContent">' +
                                 '<div id="' + id + 'Tabs"></div>' +
-                                '<div id="' + id + 'TabResources"><div class="col-xs-12" id="' + id + 'ResourceComponent"></div></div>' +
-                                '<div id="' + id + 'TabRoles"><div class="col-xs-12" id="' + id + 'RoleComponent"></div></div>' +
-                                '<div id="' + id + 'TabMode" class="col-xs-12"></div>' +
+                                '<div id="' + id + 'TabResources"><div class="col-12" id="' + id + 'ResourceComponent"></div></div>' +
+                                '<div id="' + id + 'TabRoles"><div class="col-12" id="' + id + 'RoleComponent"></div></div>' +
+                                '<div id="' + id + 'TabMode" class="col-12"></div>' +
                             '</div>' +
                         '</div>' +
                         '<div class="modal-footer"></div>' +
