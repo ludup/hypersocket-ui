@@ -889,13 +889,13 @@ $.fn.propertyPage = function(opts) {
 								
 								$(contentTabs)
 										.append(
-											'<li class="tab' + idx + ' ' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + (first ? 'class="active ' +  propertyDiv + 'Tab"' : 'class="' +  propertyDiv + 'Tab"')
+											'<li class="tab' + idx + ' ' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + 'class="' +  propertyDiv + 'Tab"'
 											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + (this.name ? this.name : getResource(this.categoryKey + '.label')) + '</span></a></li>');
 								
-								$('#' + propertyDiv + 'Content').append(
-										'<div id="' + tab + '" class="tab-pane' + (first ? (' active') : '')   + '"/>');
-								
 								first = false;
+								
+								$('#' + propertyDiv + 'Content').append(
+										'<div id="' + tab + '" class="tab-pane"/>');
 								
 								tabs.push(this);
 								
