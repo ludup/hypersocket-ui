@@ -562,7 +562,7 @@ $.fn.resourceTable = function(params) {
 			}
 			
 			if(canDelete) {
-				renderedActions += '<a class="btn btn-danger row-delete btn-action" href="#"><i class="fa fa-trash-o"></i></a>';
+				renderedActions += '<a class="btn btn-danger row-delete btn-action" href="#"><i class="fa fa-trash"></i></a>';
 	
 				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
 	
@@ -601,7 +601,7 @@ $.fn.resourceTable = function(params) {
 					});
 				});
 			} else {
-				renderedActions += '<a class="btn btn-disabled btn-action" href="#"><i class="fa fa-trash-o"></i></a>';
+				renderedActions += '<a class="btn btn-disabled btn-action" href="#"><i class="fa fa-trash"></i></a>';
 			}
 			
 		}
@@ -1296,7 +1296,7 @@ $.fn.resourceTable = function(params) {
 								}
 								
 								if(canDelete) {
-									renderedActions += '<a class="btn btn-danger row-delete btn-action" href="#"><i class="fa fa-trash-o"></i></a>';
+									renderedActions += '<a class="btn btn-danger row-delete btn-action" href="#"><i class="fa fa-trash"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-delete');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-delete', function() {
 										log("Entering resource delete for id " + resource.id);
@@ -1319,7 +1319,7 @@ $.fn.resourceTable = function(params) {
 										});
 									});
 								} else {
-									renderedActions += '<a class="btn btn-disabled btn-action" href="#"><i class="fa fa-trash-o"></i></a>';
+									renderedActions += '<a class="btn btn-disabled btn-action" href="#"><i class="fa fa-trash"></i></a>';
 								}
 							}
 							$('#' + resource.id + 'GridOptions').append(renderedActions);

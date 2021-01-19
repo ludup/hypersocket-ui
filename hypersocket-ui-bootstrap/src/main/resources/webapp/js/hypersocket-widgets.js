@@ -3701,7 +3701,7 @@ $.fn.namePairInput = function(data) {
  	 				}
  	 				html += '	<div class="propertyValue col-1 dialogActions">';
  	 				if(!options.readOnly && !options.disabled) {
- 	 					html +=  '<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash-o"></i></a>';
+ 	 					html +=  '<a href="#" class="removePair btn btn-danger"><i class="fa fa-trash"></i></a>';
  	 				}
 
 	 				html +=  '</div></div>';
@@ -5146,7 +5146,7 @@ $.fn.html5Upload = function(data) {
 		}
 		if(options.showRemove){
 			fileRow = fileRow +
-					'			<a class="btn btn-danger dragAndDrop-remove" href="#" id="' + id + 'Remove_' + fileIndex + '" disabled="disabled"><i class="fa fa-trash-o"></i></a>';
+					'			<a class="btn btn-danger dragAndDrop-remove" href="#" id="' + id + 'Remove_' + fileIndex + '" disabled="disabled"><i class="fa fa-trash"></i></a>';
 		}
 		fileRow = fileRow
 				+	'		</div>'
