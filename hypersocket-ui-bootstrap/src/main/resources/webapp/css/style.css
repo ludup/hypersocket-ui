@@ -80,7 +80,6 @@ pre {
 /** 2.4 changes LB custom css start*/
 
 .card-header svg.lb-card-title-header {height: 20px;width: 40px;text-align: center;}
-.lb-panel-heading {vertical-align: 0.2em;}
 .lb-help-block{margin-top: 5px;margin-bottom: 10px;font-size: x-small;}
 /*B4 row adds margin left and right with -15 px making it difficult to adjust with old code hence added custom*/
 .lb-row {display: -ms-flexbox; display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;}
