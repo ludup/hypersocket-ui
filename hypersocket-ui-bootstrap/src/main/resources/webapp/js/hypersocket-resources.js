@@ -234,7 +234,7 @@ $.fn.resourceTable = function(params) {
 
 	var html = '';
 	if(!options.disableDecoration) {
-		html += '<div class="card showOnComplete" style="display: none"><div class="panel-heading"><h5 class="card-header"><i class="lb-card-title-header fa '
+		html += '<div class="card showOnComplete" style="display: none"><div class="card-header panel-heading"><h5 class="float-left"><i class="lb-card-title-header fa '
 			+ options.icon + '"></i><span class="break">' 
 			+ options.title + '</span></h5></div>';
 	}

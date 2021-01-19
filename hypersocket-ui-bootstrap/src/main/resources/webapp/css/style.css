@@ -1129,7 +1129,7 @@ header .navbar {
 	width: 40px;
 	display: inline-block;
 	text-align: center;
-	margin: -10px 0px -10px -20px;
+	margin: 0px 0px -10px -20px;
 	font-size: 14px;
 }
 
@@ -1194,12 +1194,14 @@ header .navbar {
 }
 
 .panel-heading {
-	overlow: auto;
-	padding: 10px 15px;
-	border-bottom: 1px solid transparent;
-    border-bottom-color: transparent;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	
+	border-bottom: 1px solid #e1e6ef;
+    
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
+	background-color: #fcfcfd;
 }
 
 .slider.slider-horizontal {
@@ -1784,6 +1786,7 @@ span.input-group-addon .dropdown-toggle {
 	width: 150px;
 }
 
+.tableToolbar {margin-top: 0.8rem;}
 .tableToolbar label {
 	float: left;
 	width: auto;

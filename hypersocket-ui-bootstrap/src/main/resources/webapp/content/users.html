@@ -753,7 +753,7 @@
 								complete : function() {
 
 									if(currentRealm.resourceCategory !== 'local') {
-// 										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar pull-right search"><label>Filter:</label><div class="principalType" id="principalType"></div></div>');
+// 										$('#contentUsers').find('.fixed-table-toolbar').last().append('<div class="tableToolbar float-right search"><label>Filter:</label><div class="principalType" id="principalType"></div></div>');
 
 // 										var filters = new Array();
 
@@ -780,7 +780,7 @@
 
 									if(!ownerRealm && menuList.realmAdmin) {
 										$('#contentUsers').find('.panel-heading').last().append(
-												'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">'
+												'<div class="tableToolbar float-right search"><div><a id="configureUsers" href="#">'
 												+ getResource('configure.remote.text') + '</a></div></div>');
 										$('#configureUsers').click(function(e) {
 											e.preventDefault();
@@ -788,7 +788,7 @@
 										});
 
 										/** $('#contentUsers').find('.fixed-table-toolbar').last().append(
-												'<div class="tableToolbar pull-right search"><div><a id="resetRealm" href="#">'
+												'<div class="tableToolbar float-right search"><div><a id="resetRealm" href="#">'
 												+ getResource('reset.remote.text') + '</a></div></div>');
 										$('#resetRealm').click(function(e) {
 											e.preventDefault();
