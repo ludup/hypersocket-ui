@@ -1123,7 +1123,7 @@ header .navbar {
 	font-size: 14px;
 }
 
-.panel .panel-heading h2 svg {
+.card .panel-heading h5 i {
 	padding: 12px 0px;
 	height: 40px;
 	width: 40px;
@@ -1131,6 +1131,10 @@ header .navbar {
 	text-align: center;
 	margin: -10px 0px -10px -20px;
 	font-size: 14px;
+}
+
+.card .panel-heading h5  {
+	font-size: 1rem;
 }
 
 .panel-heading .nav-tabs {
