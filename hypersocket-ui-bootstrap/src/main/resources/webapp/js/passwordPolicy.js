@@ -320,17 +320,17 @@ $.fn.passwordPolicy = function(data) {
 		$('#passwordRulesContent').prev().find('a').click(function(){
 			$('#passwordRulesContent').toggle();
 			if($('#passwordRulesContent:visible').length != 0){
-				$(this).find('i, svg').removeClass('fa');
-				$(this).find('i, svg').removeClass('fa-plus');
+				$(this).find('i').removeClass('fa');
+				$(this).find('i').removeClass('fa-plus');
 				
-				$(this).find('i, svg').addClass('fa');
-				$(this).find('i, svg').addClass('fa-minus');
+				$(this).find('i').addClass('fa');
+				$(this).find('i').addClass('fa-minus');
 			}else{
-				$(this).find('i, svg').removeClass('fa');
-				$(this).find('i, svg').removeClass('fa-minus');
+				$(this).find('i').removeClass('fa');
+				$(this).find('i').removeClass('fa-minus');
 				
-				$(this).find('i, svg').addClass('fa');
-				$(this).find('i, svg').addClass('fa-plus');
+				$(this).find('i').addClass('fa');
+				$(this).find('i').addClass('fa-plus');
 			}
 		});
 		
@@ -359,17 +359,17 @@ $.fn.passwordPolicy = function(data) {
 			$('#passwordGeneratorContent').prev().find('a').click(function(){
 				$('#passwordGeneratorContent').toggle();
 				if($('#passwordGeneratorContent:visible').length != 0){
-					$(this).find('i, svg').removeClass('fa');
-					$(this).find('i, svg').removeClass('fa-plus');
+					$(this).find('i').removeClass('fa');
+					$(this).find('i').removeClass('fa-plus');
 					
-					$(this).find('i, svg').addClass('fa');
-					$(this).find('i, svg').addClass('fa-minus');
+					$(this).find('i').addClass('fa');
+					$(this).find('i').addClass('fa-minus');
 				}else{
-					$(this).find('i, svg').removeClass('fa');
-					$(this).find('i, svg').removeClass('fa-minus');
+					$(this).find('i').removeClass('fa');
+					$(this).find('i').removeClass('fa-minus');
 					
-					$(this).find('i, svg').addClass('fa');
-					$(this).find('i, svg').addClass('fa-plus');
+					$(this).find('i').addClass('fa');
+					$(this).find('i').addClass('fa-plus');
 				}
 			});
 			

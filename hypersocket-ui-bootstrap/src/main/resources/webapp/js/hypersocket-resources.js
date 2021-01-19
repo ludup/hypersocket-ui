@@ -58,7 +58,7 @@ $.fn.resourceDialog = function(params, params2) {
 };
 
 function saveResource(resource, buttonElement, options, mode, closeCallback, alwaysCallback) {
-	var icon = buttonElement.find('svg');
+	var icon = buttonElement.find('i');
 	startSpin(icon, 'fa-save');
 	
 	log("Creating resource");

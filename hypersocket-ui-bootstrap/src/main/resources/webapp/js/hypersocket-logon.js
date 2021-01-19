@@ -307,7 +307,7 @@ function processLogon(data, opts, message) {
 				.click(
 					function(evt) {
 
-						startSpin($('#logonButton svg'), 'fa-sign-in');
+						startSpin($('#logonButton i'), 'fa-sign-in');
 						log("Submitting logon");
 
 						evt.preventDefault();

@@ -1608,7 +1608,7 @@ $.fn.multipleSelect = function(data) {
 		newElement.removeClass(id + 'excludedDraggable').addClass(id + 'includedDraggable');
 		
 		var spanFAHolder = newElement.find('span.fa-holder');
-		spanFAHolder.find("svg, i").remove();
+		spanFAHolder.find("i").remove();
 		spanFAHolder.append('<i class="fa fa-arrow-up"></i>');
 		
 		spanFAHolder.click(function(e){
@@ -1629,7 +1629,7 @@ $.fn.multipleSelect = function(data) {
 		newElement.removeClass(id + 'excludedDraggable').addClass(id + 'includedDraggable');
 
 		var spanFAHolder = newElement.find('span.fa-holder');
-		spanFAHolder.find("svg, i").remove();
+		spanFAHolder.find("i").remove();
 		spanFAHolder.append('<i class="fa fa-arrow-up"></i>');
 		
 		spanFAHolder.click(function(e){
@@ -1650,7 +1650,7 @@ $.fn.multipleSelect = function(data) {
 		newElement.removeClass(id + 'includedDraggable').addClass(id + 'excludedDraggable');
 		
 		var spanFAHolder = newElement.find('span.fa-holder');
-		spanFAHolder.find("svg, i").remove();
+		spanFAHolder.find("i").remove();
 		spanFAHolder.append('<i class="fa fa-arrow-down"></i>');
 		
 		spanFAHolder.click(function(e){
@@ -1759,10 +1759,10 @@ $.fn.multipleSelect = function(data) {
 				if (options.changed) {
 					options.changed(callback);
 				}
-				$('#' + dragSrcEl.id).find('svg').click(function(e){
+				$('#' + dragSrcEl.id).find('i').click(function(e){
 					removeElement($(e.target).parent());
 				});
-				$('#' + this.id).find('svg').click(function(e){
+				$('#' + this.id).find('i').click(function(e){
 					removeElement($(e.target).parent());
 				});
 			}
@@ -5555,7 +5555,7 @@ $.fn.wizardPage = function(data) {
 
 			if(page.onNext) {
 				var clicked = false;
-				startSpin($('#button' + idx).find('svg'), page.buttonIcon);
+				startSpin($('#button' + idx).find('i'), page.buttonIcon);
 
 				var onError = function(val) {
 					$('.wizardError').remove();
