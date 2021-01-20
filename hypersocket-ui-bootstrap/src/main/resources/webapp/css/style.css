@@ -1026,6 +1026,16 @@ header .navbar {
 	color: #fff;
 }
 
+.dropdown-item a:hover {
+	color: #212529;	
+}
+
+dropdown-item.active, .dropdown-item:active {
+    text-decoration: none;
+    background-color: lavender;
+    color: #212529;
+}
+
 .navicon {
 	display: inline;
 	padding: 5px 20px 5px 0px;
@@ -1050,9 +1060,7 @@ header .navbar {
 
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
-  color: #262626;
   text-decoration: none;
-  background-color: #f5f5f5;
 }
 
 .slider-handle {
