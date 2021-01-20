@@ -85,6 +85,7 @@ pre {
 .tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
 .tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;}
 .lb-detail-icon {font-size: xx-small;}
+.lb-modal-header-text-reverse {flex-direction: row-reverse;}
 @media ( max-width: 575.98px) {
 	.tableActions {
 		text-align: start;	
