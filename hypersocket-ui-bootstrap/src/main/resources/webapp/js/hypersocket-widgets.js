@@ -5468,7 +5468,7 @@ $.fn.wizardPage = function(data) {
 				+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
 				+ '	    </h5>'
 				+ '</div>'
-				+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
+				+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' show' : '') + '"'
 				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 				+ '	<div class="panel-body"><div id="page' + index + '"></div>';
 
@@ -5481,7 +5481,7 @@ $.fn.wizardPage = function(data) {
 					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
 					+ '	    </h4>'
 					+ '</div>'
-					+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
+					+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' show' : '') + '"'
 					+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 					+ '	<div class="panel-body"><div id="page' + index + '"></div>';
 			}
@@ -5855,7 +5855,7 @@ $.fn.accordionPage = function(data) {
 			+	'		    <span>' + getResourceOrText(page.titleText) + '</span>'
 			+ 	'	    </h4>'
 			+ 	'	</div>'
-			+ 	'	<div id="' + id + 'Collapse' + index + '" class="panel-collapse collapse' + ((options.open && index == 0) ? ' in' : '') + '"'
+			+ 	'	<div id="' + id + 'Collapse' + index + '" class="panel-collapse collapse' + ((options.open && index == 0) ? ' show' : '') + '"'
 			+ 	'		role="tabpanel">'
 			+ 	'		<div class="panel-body">'
 			+	'			<div id="' + id + 'Page' + index + '"></div>'
