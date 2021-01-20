@@ -158,7 +158,7 @@
 															info = replaceAll(info, '>', '&gt;');
 															var id = label.replace(/\s/g, "");
 															var variable = id.substring(0,1).toLowerCase() + id.substring(1);
-															$('#templateVariables').append('<div class="propertyItem form-group">'
+															$('#templateVariables').append('<div class="propertyItem form-group lb-row">'
 																	+ '<label class="col-3 control-label">' + label + '</label>'
 																	+ '<div class="propertyValue col-9"><div id="variable' + id + '" data-variable="' + variable + '" + class="variable"></div><div>'
 																	+ '<span class="lb-help-block form-text text-muted">' + info + '</span></div></div></div>');

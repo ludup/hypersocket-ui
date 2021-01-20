@@ -590,8 +590,8 @@ div.tablePages ul.pagination {
 }
 
 .propertyItem {
-	display: table;
-	width: 100%;
+	/*display: table;
+	width: 100%;*/
 }
 
 .propertyItem p {
