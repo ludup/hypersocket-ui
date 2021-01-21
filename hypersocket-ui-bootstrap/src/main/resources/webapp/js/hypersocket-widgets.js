@@ -4937,7 +4937,7 @@ $.fn.multipleFileUpload = function(data) {
  					rowNum++;
  					html = '';
  	 				html =	'<div class="row fileUpload">'
- 	 					+	'	<div id="' + id + 'FileUpload' + rowNum + '" class="form-group propertyValue col-12 fileUploadInput"></div>'
+ 	 					+	'	<div id="' + id + 'FileUpload' + rowNum + '" class="form-group propertyValue col-12 fileUploadInput lb-row"></div>'
  	 					+	'</div>';
  	 				$('#' + id + 'FileUploads').append(html);
  	 				$('#' + id + 'FileUploads').find('.fileUpload').last().find('.fileUploadInput').fileUploadInput({
