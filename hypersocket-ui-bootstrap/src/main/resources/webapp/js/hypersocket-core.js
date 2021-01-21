@@ -614,7 +614,7 @@ function showShutdownDialog(option, logoff) {
 	var shutdownModal = '<div class="modal" id="shutdownServer" tabindex="-1" role="dialog">' +
 	'<div class="modal-dialog modal-sm">' +
 		'<div class="modal-content">' +
-			'<div class="modal-header">' +
+			'<div class="modal-header lb-modal-header-text-reverse">' +
 				'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
 				'<h4 class="modal-title" id="myModalLabel">' + getResource('power.shutdownServer') + '</h4>' +
 			'</div>' +
