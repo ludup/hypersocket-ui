@@ -1346,6 +1346,11 @@ dropdown-item.active, .dropdown-item:active {
 	overflow-x: auto;
 }
 
+.rowInput {padding-left: 0px;}
+.rowInput .dow {padding-left: 0px;}
+.rowInput .timeFrom {padding-left: 0px;}
+.rowInput .timeTo {padding-left: 0px;}
+
 .dialogActions {
 	padding-right: 0px;
 	padding-left: 0px;

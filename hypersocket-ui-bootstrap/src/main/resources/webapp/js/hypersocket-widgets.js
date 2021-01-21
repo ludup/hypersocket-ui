@@ -5921,11 +5921,11 @@ $.fn.multipleRows = function(data) {
 	+	'	<div class="col-1"></div>'
 	+   '   </div>'
 	+	'	<div id="' + id + 'Rows" ></div>'
-	+	'	<div id="' + id + 'NewRow">'
+	+	'	<div id="' + id + 'NewRow" class="lb-row">'
 	+	'		<div class="propertyValue col-11">'
 	+	'			<span class="help-block">&nbsp;</span>'
 	+	'		</div>'
-	+	'		<div class="propertyValue col-1">'
+	+	'		<div class="propertyValue col-1 dialogActions">'
 	+	'			<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
 	+	'				<i class="fa fa-plus"></i>'
 	+	'			</a>'
@@ -5946,10 +5946,10 @@ $.fn.multipleRows = function(data) {
 
 		var elementId = id + options.count++;
 		$('#' + id + 'Rows').append(
-				 '    <div class="rowParent">'
-				+ '       <div id="' + elementId  + '" class="rowInput col-11">'
+				 '    <div class="rowParent lb-row">'
+				+ '       <div id="' + elementId  + '" class="rowInput col-11 lb-row">'
 				+ '       </div>'
-				+ '       <div class="col-1">'
+				+ '       <div class="col-1 dialogActions">'
 				+	'		<a href="#" class="btn btn-danger delButton">'
 				+	'			<i class="fa fa-minus"></i>'
 				+	'		</a>'
