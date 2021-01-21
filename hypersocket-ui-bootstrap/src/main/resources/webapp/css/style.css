@@ -1348,6 +1348,7 @@ dropdown-item.active, .dropdown-item:active {
 
 .dialogActions {
 	padding-right: 0px;
+	padding-left: 0px;
 }
 
 .dialogActions a {
