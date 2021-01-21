@@ -321,11 +321,11 @@ $.fn.textInput = function(data) {
 
 function getCodeMirrorWidth() {
 	if($(window).width() > 990) {
-		return 600;
+		return 540;
 	} else if($(window).width() > 770) {
-		return 500;
+		return 440;
 	} else {
-		return ($(window).width() - 100);
+		return ($(window).width() - 160);
 	}
 }
 
