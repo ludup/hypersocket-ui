@@ -2587,7 +2587,7 @@ $.fn.multipleTextInput = function(data) {
     		}
 		}
 
-		$('#' + id + 'Excluded').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-append"><span class="fa-holder input-group-text"><i class="fa fa-plus"></i></span></span>');
+		$('#' + id + 'Excluded .input-group').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-append"><span class="fa-holder input-group-text"><i class="fa fa-plus"></i></span></span>');
 		$('#input' + id + 'ExcludedSelect').after('<ul id="auto_' + id + 'ExcludedAutoComplete" class="dropdown-menu scrollable-menu" role="menu"><li><a>' + getResource('pressEnter.text') + '</a></li></ul>');
 		$('#input' + id + 'ExcludedSelect').focus(function(){
 			$('#auto_' + id + 'ExcludedAutoComplete').show();
