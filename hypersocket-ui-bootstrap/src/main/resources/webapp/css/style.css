@@ -109,6 +109,21 @@ pre {
 .fixed-table-container {padding-top: 5px;}
 button.row-additional {margin-right: 5px;}
 button.row-additional::after {display: none;}
+.label-info {color: #fff;background-color: #17a2b8;}
+.label-success {color: #fff;background-color: #28a745;}
+.label-danger {color: #fff;background-color: #dc3545;}
+.label-warning {color: #212529;background-color: #ffc107;}
+.label {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
 /** 2.4 changes LB custom css end */
 
 /*
