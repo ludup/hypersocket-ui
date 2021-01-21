@@ -5449,7 +5449,7 @@ $.fn.wizardPage = function(data) {
 
 			var page = $.extend({
 				titleText: getResource('text.step') + '. ' + (index+1),
-				titleIcon: 'fa-flash',
+				titleIcon: 'fa-shoe-prints',
 				buttonText: 'text.next',
 				buttonIcon: 'fa-forward'
 			}, obj);
@@ -5840,7 +5840,7 @@ $.fn.accordionPage = function(data) {
 
 		var page = $.extend({
 			titleText: getResource('text.step') + '. ' + (index+1),
-			titleIcon: 'fa-flash'
+			titleIcon: 'fa-shoe-prints'
 		}, obj);
 
 		var parent = '#' + id + 'Panel' + index;

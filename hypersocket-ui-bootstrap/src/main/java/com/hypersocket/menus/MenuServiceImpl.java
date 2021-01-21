@@ -529,7 +529,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MENU_REPORTING, "",
 				null, 9999, null, null, null, null, null));
 
-		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageMenu", "fa-envelope-o",
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "messageMenu", "fa-envelope",
 				null, 9999999, null, null, null,
 				null) {
 			@Override
@@ -539,7 +539,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}, MENU_BUSINESS_RULES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				"messages", "fa-envelope-o", "messages", 0,
+				"messages", "fa-envelope", "messages", 0,
 				MessageResourcePermission.READ,
 				MessageResourcePermission.CREATE,
 				MessageResourcePermission.UPDATE,
