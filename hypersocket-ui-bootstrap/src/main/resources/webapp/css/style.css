@@ -1347,14 +1347,15 @@ dropdown-item.active, .dropdown-item:active {
 }
 
 .dialogActions {
-	valign: middle;
-	text-align: right;
 	padding-right: 0px;
 }
 
 .dialogActions a {
 	margin-right: 0px;
-	margin-left: 15px;
+}
+
+.dialogActions a:focus {
+	color: #fff;
 }
 
 .dialogActions .btn i {
