@@ -1359,6 +1359,10 @@ dropdown-item.active, .dropdown-item:active {
 	color: #fff;
 }
 
+.input-group-append a:hover {
+	text-decoration: none;
+}
+
 .dialogActions .btn i {
 	margin: 0;
 }
