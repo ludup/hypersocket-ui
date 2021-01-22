@@ -572,7 +572,7 @@ $.fn.tabPage = function(opts) {
 	
 	$('#' + propertyDiv)
 	.append(
-		'<div class="row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
+		'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
 		+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
 		+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
@@ -720,7 +720,7 @@ $.fn.propertyPage = function(opts) {
 
 			$('#' + propertyDiv)
 						.append(
-							'<div class="row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
+							'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
 							+ options.icon + '"></i><span>' + options.title + '</span></h2><ul id="' 
 							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
