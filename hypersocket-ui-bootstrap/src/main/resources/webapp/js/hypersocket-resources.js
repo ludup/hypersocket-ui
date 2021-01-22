@@ -1176,7 +1176,7 @@ $.fn.resourceTable = function(params) {
 							if (options.additionalActions) {
 
 								if(!options.disableActionsDropdown && options.additionalActions.length > 1) {
-									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-gears"></i></a>';
+									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-cogs"></i></a>';
 									renderedActions += '<ul id="' + resource.id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 									$.each(options.additionalActions, function(x, act) {
 										if (act.enabled) {
