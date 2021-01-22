@@ -1991,7 +1991,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 		$('#' + $(this).attr('id') + "Action").on('click', function() {	
 			var buttonElement = $(this);
 			var func = function() {
-				saveResource(dialogOptions.createResource(), buttonElement, dialogOptions, 'create', function() {
+				saveResource(dialogOptions.createResource(), buttonElement, dialogOptions, 'create', function(savedResource) {
 					
 					var func = function() {
 						dialog.bootstrapResourceDialog('close');
@@ -1999,7 +1999,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
 						}
 						if(dialogOptions.resourceSaved) {
-							dialogOptions.resourceSaved(resource);
+							dialogOptions.resourceSaved(savedResource);
 						}
 					};
 					
