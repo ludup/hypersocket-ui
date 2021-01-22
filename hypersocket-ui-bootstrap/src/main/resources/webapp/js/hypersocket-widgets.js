@@ -4313,16 +4313,20 @@ $.fn.logoInput = function(data) {
     	+	'</div>';
 
 
-	var uploadHtml =  '<div id="' + id + '" class="col-8" style="padding-left: 0px;">'
-			+	'	<input type="file" id="' + id + 'File"/>'
-			+	'</div>'
-			+	'<div class="propertyValue col-4 dialogActions">'
-			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
-			+	'</div>'
-			+	'<div class="col-8">'
-			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
-			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
+	var uploadHtml =  '<div class="row">'
+			+ 	'	<div id="' + id + '" class="col-8" style="padding-left: 0px;">'
+			+	'		<input type="file" id="' + id + 'File"/>'
 			+	'	</div>'
+			+	'	<div class="propertyValue col-4 dialogActions">'
+			+	'		<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
+			+	'	</div>'
+			+	'</div>'
+			+   '<div class="row">'
+			+	'	<div class="col-8">'
+			+	'		<div id="' + id + 'UpdateProgressHolder" class="progress">'
+			+	'			<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
+			+	'		</div>'
+			+   '	</div>'
 			+	'</div>';
 
 	var html = '<div id="' + id + 'Container" class="logo-container">'
