@@ -178,7 +178,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null), "sessionMenu");
 		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "sessionSettings",
-				"fa-gear", "sessionSettings", 100,
+				"fa-cog", "sessionSettings", 100,
 				null, null, null, null,
 				null) {
 
