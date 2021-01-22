@@ -331,14 +331,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						CertificateResourcePermission.DELETE), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-					"dictionary", "fa-file-word-o", "", 900,
+					"dictionary", "fa-file-word", "", 900,
 					DictionaryResourcePermission.READ,
 					DictionaryResourcePermission.CREATE,
 					DictionaryResourcePermission.UPDATE,
 					DictionaryResourcePermission.DELETE), MenuService.MENU_BUSINESS_RULES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-					"words", "fa-file-word-o", "words", 100,
+					"words", "fa-file-word", "words", 100,
 					DictionaryResourcePermission.READ,
 					DictionaryResourcePermission.CREATE,
 					DictionaryResourcePermission.UPDATE,
@@ -386,7 +386,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		registerMenu(
 				new MenuRegistration(RESOURCE_BUNDLE, "profileAttributes",
-						"fa-sticky-note-o", "userAttributeTabs", 4000,
+						"fa-sticky-note", "userAttributeTabs", 4000,
 						UserAttributePermission.READ,
 						UserAttributePermission.CREATE,
 						UserAttributePermission.UPDATE,
