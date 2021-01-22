@@ -1601,11 +1601,15 @@ span.input-group-addon .dropdown-toggle {
 }
 
 .file-upload-info {
+	margin-left: 15px;
 	font-size: 10px;
 	padding-left: 0px;
 	padding-right: 10px;
 	float: left;
 }
+
+.file-upload-delete-btn {color: #fff !important;}
+.file-upload-btn {margin-left: 15px;}
 
 .trigger-failure {
 	color: #a94442;
@@ -1784,7 +1788,7 @@ span.input-group-addon .dropdown-toggle {
 
 .logo-row {
 	width: 100%;
-	margin: 0px 34px 0 72px;
+	margin: 0px 34px 0 0;
 }
 
 .logo-generator {

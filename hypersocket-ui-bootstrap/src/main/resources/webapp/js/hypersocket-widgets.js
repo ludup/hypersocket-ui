@@ -3338,7 +3338,7 @@ $.fn.colorInput = function(options) {
 
 
 	$(this).append('<div id="' + id  + '" class="input-group colorpicker-component"><input type="text" value="'
-			+ obj.value + '" class="form-control"/><span class="input-group-addon"><i></i></span></div>');
+			+ obj.value + '" class="form-control"/><span class="input-group-addon input-group-append input-group-text"><i></i></span></div>');
 
 	$('#' + id).colorpicker(obj);
 
@@ -4276,45 +4276,47 @@ $.fn.logoInput = function(data) {
 	var id = checkElementHasId($(this)).attr('id') + "FileUpload";
 
 	var generatorHtml =	'<div id="' + id + 'Generator" class="logo-generator">'
-		+	'<div class="logo-text-container logo-row">'
-        +	'<span class="help-block">' + getResource('logo.text.label') + ':</span>'
-        +   '<select id="' + id + 'TextSource" class="logo-shape form-control">'
-        +   '<option value="auto">' + getResource('logo.text.auto') + '</option>'
-        +   '<option value="autoname">' + getResource('logo.text.autoname') + '</option>'
-        +   '<option value="autoicon">' + getResource('logo.text.autoicon') + '</option>'
-        +   '<option value="icon">' + getResource('logo.text.icon') + '</option>'
-        +   '<option value="text">' + getResource('logo.text.text') + '</option>'
-        +   '</select>'
-        +   '<input class="form-control logo-text" maxlength="3" type="text" id="' + id + 'Text"/>'
-        +   '<div id="' + id + 'Icon" class="logo-icon"/>'
-        +	'</div>'
-		+	'<div class="logo-shape-container logo-row">'
-        +	'<span class="help-block">' + getResource('logo.shape.label') + ':</span>'
-        +   '<select id="' + id + 'Shape" class="logo-shape form-control">'
-        +   '<option value="autoname">' + getResource('logo.shape.autoname') + '</option>'
-        +   '<option value="autotype">' + getResource('logo.shape.autotype') + '</option>'
-        +   '<option value="round">' + getResource('logo.shape.circle') + '</option>'
-        +   '<option value="rectangle">' + getResource('logo.shape.square') + '</option>'
-        +   '<option value="rounded">' + getResource('logo.shape.rounded') + '</option>'
-        +   '</select>'
-        +	'</div>'
-		+	'<div class="logo-colour-container logo-row">'
-        +   '<span class="logo-colour-label help-block">' + getResource('logo.colour.label') + ':</span>'
-        +	'<select id="' + id + 'ColourSource" class="logo-shape form-control">'
-        +   '<option value="autoname">' + getResource('logo.colour.autoname') + '</option>'
-        +   '<option value="autotype">' + getResource('logo.colour.autotype') + '</option>'
-        +   '<option value="fixed">' + getResource('logo.colour.fixed') + '</option>'
-        +   '</select>'
-	    +   '<div class="logo-colour-outer"><div id="' + id + 'FixedColour" class="input-group logo-colour">'
-	    +	'	<input id="' + id + 'FixedColourInput" class="form-control" type="text"/>'
-	    +	'	<span class="input-group-addon"><i></i></span>'
-	    +	'</div></div>'
-        +	'</div>'
+		+	'	<div class="logo-text-container logo-row">'
+        +	'		<span class="help-block">' + getResource('logo.text.label') + ':</span>'
+        +   '		<select id="' + id + 'TextSource" class="logo-shape form-control">'
+        +   '			<option value="auto">' + getResource('logo.text.auto') + '</option>'
+        +   '			<option value="autoname">' + getResource('logo.text.autoname') + '</option>'
+        +   '			<option value="autoicon">' + getResource('logo.text.autoicon') + '</option>'
+        +   '			<option value="icon">' + getResource('logo.text.icon') + '</option>'
+        +   '			<option value="text">' + getResource('logo.text.text') + '</option>'
+        +   '		</select>'
+        +   '		<input class="form-control logo-text" maxlength="3" type="text" id="' + id + 'Text"/>'
+        +   '		<div id="' + id + 'Icon" class="logo-icon"></div>'
+        +	'	</div>'
+		+	'	<div class="logo-shape-container logo-row">'
+        +	'		<span class="help-block">' + getResource('logo.shape.label') + ':</span>'
+        +   '		<select id="' + id + 'Shape" class="logo-shape form-control">'
+        +   '			<option value="autoname">' + getResource('logo.shape.autoname') + '</option>'
+        +   '			<option value="autotype">' + getResource('logo.shape.autotype') + '</option>'
+        +   '			<option value="round">' + getResource('logo.shape.circle') + '</option>'
+        +   '			<option value="rectangle">' + getResource('logo.shape.square') + '</option>'
+        +   '			<option value="rounded">' + getResource('logo.shape.rounded') + '</option>'
+        +   '		</select>'
+        +	'	</div>'
+		+	'	<div class="logo-colour-container logo-row">'
+        +   '		<span class="logo-colour-label help-block" style="margin-left: 72px;">' + getResource('logo.colour.label') + ':</span>'
+        +	'		<select id="' + id + 'ColourSource" class="logo-shape form-control">'
+        +   '			<option value="autoname">' + getResource('logo.colour.autoname') + '</option>'
+        +   '			<option value="autotype">' + getResource('logo.colour.autotype') + '</option>'
+        +   '			<option value="fixed">' + getResource('logo.colour.fixed') + '</option>'
+        +   '		</select>'
+	    +   '		<div class="logo-colour-outer">'
+	    +   '			<div id="' + id + 'FixedColour" class="input-group logo-colour">'
+	    +	'				<input id="' + id + 'FixedColourInput" class="form-control" type="text"/>'
+	    +	'				<span class="input-group-addon input-group-append input-group-text"><i></i></span>'
+	    +	'			</div>'
+	    +	'		</div>'
+        +	'	</div>'
     	+	'</div>';
 
 
 	var uploadHtml =  '<div class="row">'
-			+ 	'	<div id="' + id + '" class="col-8" style="padding-left: 0px;">'
+			+ 	'	<div id="' + id + '" class="col-8 logo-uploader" style="padding-left: 0px;">'
 			+	'		<input type="file" id="' + id + 'File"/>'
 			+	'	</div>'
 			+	'	<div class="propertyValue col-4 dialogActions">'
@@ -4403,9 +4405,9 @@ $.fn.logoInput = function(data) {
 				'<div id="' + id + 'Info">' + showInfoFormat(data) + '</div>');
 		$('#' + id + 'File').remove();
 		$('#' + id + 'RemoveButton').remove();
-		$('#' + id + 'UploadButton').parent().append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
+		$('#' + id + 'UploadButton').parent().append('<a class="btn file-upload-delete-btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
 		if(options.showDownloadButton){
-			$('#' + id + 'UploadButton').parent().append('<a class="btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
+			$('#' + id + 'UploadButton').parent().append('<a class="btn file-upload-btn btn-primary" id="' + id + 'DownloadButton"><i class="fa fa-download"></i></a>');
 		}
 		$('#' + id + 'UploadButton').remove();
 		$('#' + id + 'Info').data('uuid', data.name);
@@ -4625,7 +4627,7 @@ $.fn.logoInput = function(data) {
 	 						$('#' + id + 'File').parent().append(
 	 								'<div id="' + id + 'Info"></div>');
 	 						$('#' + id + 'Info').data('uuid',uuid);
-	 						$('#' + id + 'UploadButton').parent().append('<a class="btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
+	 						$('#' + id + 'UploadButton').parent().append('<a class="btn file-upload-delete-btn btn-danger" id="' + id + 'RemoveButton"><i class="fa fa-trash"></i></a>');
 	 						$('#' + id + 'RemoveButton').unbind('click');
 	 						$('#' + id + 'RemoveButton').click(function(){
 	 							callback.remove();
