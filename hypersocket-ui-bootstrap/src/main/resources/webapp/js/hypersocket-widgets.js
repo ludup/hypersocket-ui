@@ -1108,13 +1108,17 @@ $.fn.autoComplete = function(data) {
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>';
     
     html += '<span id="click_' + id + '" class="input-group-append">'
-		 +  '<a class="input-group-text" href="#" ' + (options.alwaysDropdown ? 'class="btn btn-secondary" data-toggle="dropdown"' : '') + '><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>';
+		 +  '<a class="input-group-text" href="#" ' + (options.alwaysDropdown ? 'class="btn btn-secondary" data-toggle' : '') + '><i id="spin_' + id + '" class="fa ' + options.icon + '"></i></a></span></div>';
     	
 	if(hasVariables || options.variablesUrl) {
 		html += '<div class="dropdown floatRight"><ul id="vars_' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><a href="#" class="dropdown-toggle unselectable" data-toggle="dropdown">${} Insert Variable</span></div>';
 	} 
 	
 	$(this).append(html);
+	
+	if (options.alwaysDropdown) {
+		$('#click_' + id).dropdown({reference: $('#click_' + id).parent().parent()})
+	}
 	
 	if(options.remoteSearch) {
 		$('#auto_' + id).append('<li class="dropdown-item"><a tabindex="-1" class="optionSelect" href="#">' + getResource("search.text") + '</a></li>');
