@@ -1025,7 +1025,7 @@ $.fn.resourceTable = function(params) {
 							
 							$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
 								if(action.action) {
-									action.action($('#' + divName + 'Placeholder').bootstrapTable('getAllSelections'), function() {
+									action.action($('#' + divName + 'Placeholder').bootstrapTable('getSelections'), function() {
 										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 										checkBadges(false);
 									});
