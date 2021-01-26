@@ -70,18 +70,17 @@ public class UserInterfaceContentHandler implements ContentHandler {
 			loadFileHandler();
 			
 			if(actualHandler == null) {
-				throw new RuntimeException("Could not find any webapps. Does your _run project have the same version as all of the modules?");
+				log.warn("Running as developer mode, but didn't find any webapp sources from the discovered CLASSPATH. Attempting to fall-back to loading webapp from a Jar");
 			}
-		} else {
+		} 
 
-			if (log.isInfoEnabled()) {
-				log.info("Installing UI handler [runtime mode]");
-			}
+		if (log.isInfoEnabled()) {
+			log.info("Installing UI handler [runtime mode]");
+		}
 
-			loadClasspathHandler();
-			if(actualHandler == null) {
-				throw new RuntimeException("Could not find any webapps.");
-			}
+		loadClasspathHandler();
+		if(actualHandler == null) {
+			throw new RuntimeException("Could not find any webapps.");
 		}
 
 		i18nService.registerBundle("ui");
