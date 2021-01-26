@@ -4883,6 +4883,7 @@ $.fn.multipleFileUpload = function(data) {
 			+	'	<div id="' + id + 'FileUploads"></div>'
 			+	'	<div id="' + id + 'NewRow">'
 			+	'		<div class="col-12" style="padding-left: 0px; padding-right: 0px;">'
+			+	'         <div class="lb-row">'	
 			+	'			<div class="propertyValue col-8" style="padding-left: 0px;">'
 			+	'				<span class="help-block">' + options.text + '</span>'
 			+	'			</div>'
@@ -4894,6 +4895,7 @@ $.fn.multipleFileUpload = function(data) {
 	}
 
 	html +=	'			</div>'
+		+ 			'</div>'
 	+	'		</div>'
 	+	'	</div>'
 	+	'</div>';
