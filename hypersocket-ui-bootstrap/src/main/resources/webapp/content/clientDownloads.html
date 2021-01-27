@@ -1,6 +1,5 @@
 <div id="clientDownloadsContent" class="col-12">
-	<div class="row">
-		<div class="panel panel-default">
+	<div class="panel panel-default">
 			<div class="panel-heading">
 				<h2>
 					<i class="fa fa-download"></i> <span class="break"
@@ -10,7 +9,6 @@
 			<div id="downloads" class="panel-body tab-content">
 			</div>
 		</div>
-	</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -19,12 +17,12 @@
 		getJSON('downloads', null, function(data) {
 			$.each(data.resources, function(idx, obj) {
 				if(!$('#' + obj.subsystem).length) {
-					$('#downloads').append('<div id="' + obj.subsystem + '" class="col-12"><h2 style="font-size: 18px; margin-bottom: 40px;" localize="text.' + obj.subsystem + '"></h2></div>');
+					$('#downloads').append('<div id="' + obj.subsystem + '" class="row"><div class="col-12"><h2 style="font-size: 18px; margin-bottom: 40px;" localize="text.' + obj.subsystem + '"></h2></div></div>');
 				}
 				$('#' + obj.subsystem).append('<div class="col-3">' 
 						+ '<div style="margin-bottom: 20px; font-size: 12px; text-align: center; text-decoration: none; line-height: 1.5em; color: #555"><a target="_blank" href="'
 						+ obj.url + '">'
-						+ '<i class="fa fa-3x ' + obj.icon + '" style="margin-bottom: 10px;"></i><br>'
+						+ '<i class="fa fab fa-3x ' + obj.icon + '" style="margin-bottom: 10px;"></i><br>'
 						+ obj.description 
 						+ '</a></div></div>');
 			});
