@@ -6,7 +6,7 @@
 </div>
 <script>
 
-$(document).ready(function() {
+legacyjQueryReadyFix(function() {
     $('.extendedTabContent').data('initPage', function(resource, data, readonly) {
         var _$ = function(jq) { return $(jq + '_' + resource.id);}
         var el = _$('#rolesTab');

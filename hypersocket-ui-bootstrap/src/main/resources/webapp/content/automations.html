@@ -37,7 +37,7 @@
 </div>
 <div id="contentTriggers"></div>
 <script type="text/javascript">
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		
 		$('#contentTriggers').load(uiPath + '/content/triggers-modal.html', function() {
 				$('#contentAutomations').localize();

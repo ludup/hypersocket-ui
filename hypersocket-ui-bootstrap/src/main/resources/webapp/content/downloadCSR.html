@@ -1,7 +1,7 @@
 <div id="downloadCSR"></div>
 <script type="text/javascript">
 
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		
 		$('#downloadCSR').data('action', function(resource) {
 			window.location = basePath + '/api/certificates/downloadCSR/' + resource.id

@@ -1,7 +1,7 @@
 <div id="downloadCertificate"></div>
 <script type="text/javascript">
 
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		
 		$('#downloadCertificate').data('action', function(resource) {
 			window.location = basePath + '/api/certificates/downloadCertificate/' + resource.id + '?token=' + getCsrfToken();

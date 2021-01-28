@@ -2,7 +2,7 @@
     <p id="serialNumber2"></p>
  </div>
 <script type="text/javascript">
-    $(document).ready(function() {
+    legacyjQueryReadyFix(function() {
     	getJSON('server/version', null, function(data) {
             var inf = data.message.split(';');
             $('#serialNumber2').append(inf[1]);

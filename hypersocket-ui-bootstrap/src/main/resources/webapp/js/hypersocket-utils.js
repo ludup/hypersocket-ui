@@ -683,6 +683,10 @@ $.fn.localize = function() {
 	});
 };
 
+function legacyjQueryReadyFix(_function) {
+	_function();
+}
+
 function clearError() {
 	$('#highlight').remove();
 }

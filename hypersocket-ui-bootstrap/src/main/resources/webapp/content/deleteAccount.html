@@ -34,7 +34,7 @@
 		return currentMenu.canDelete && !canDelete.readOnly && !principal.locallyDeleted;
 	}
 	
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		$("#deleteDialog").localize();
 		$('#deleteAccount').data('action', function(resource) {
 			$('#deleteAccountInfo').html(getResource(resource.realmModule === 'local' ? 'deleteLocalAccount.info' : 'deleteAccount.info').format(resource.principalName));

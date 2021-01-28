@@ -48,7 +48,7 @@
 		return !resource.suspended;
 	}
 
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		$('#suspendUser').localize();
 		var date = new Date();
 		

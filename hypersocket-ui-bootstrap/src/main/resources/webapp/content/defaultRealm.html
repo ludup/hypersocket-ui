@@ -9,7 +9,7 @@
 			return resource.id != currentDefault.id;
 		}
 	}
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		
 		$('#defaultRealm').data('action', function(resource, callback) {
 				bootbox.confirm(getResource("confirm.defaultRealm").format(resource.name),

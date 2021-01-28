@@ -18,7 +18,7 @@
 
 <script type="text/javascript">
 
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		getJSON('overview/videos', null, function(data) {
 			if(data.resources.length > 3){
 				for(x=0; x< Math.ceil(data.resources.length/3); x++){

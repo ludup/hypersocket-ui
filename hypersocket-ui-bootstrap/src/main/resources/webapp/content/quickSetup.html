@@ -3,7 +3,7 @@
 </div>
 <script type="text/javascript">
 
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 	   getJSON('overview/documentation', null, function(data) {
 	      $.each(data.resources, function(idx, obj) {
 	           $('#quickSetupContent').append('<p><a href="' + obj.url + '" target="_blank"><i class="fa ' + obj.icon + '"></i> ' + obj.name + '</a></p>');

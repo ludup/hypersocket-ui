@@ -40,7 +40,7 @@
 </div>
 <script type="text/javascript">
 
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		$('#pemExport').localize();
 		$('#pemExport').data('action', function(resource) {
 			$('#download_passphrase').val('');

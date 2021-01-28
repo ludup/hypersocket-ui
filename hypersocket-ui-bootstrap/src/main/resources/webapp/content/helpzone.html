@@ -14,7 +14,7 @@
 </div>
 <div id="invisibleWidgets" style="display: none"></div>
 <script type="text/javascript">
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		$('#overviewContent').localize();
 		getState('showHelpZone', false, function(state){
 			var showHelpZone = 'true';

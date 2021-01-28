@@ -261,7 +261,7 @@
     	return $('#triggerEvent').widget().getObject().attributeNames.concat(variables);
     }
     
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		
 		$('#triggerModal').localize();
 		$('#allTabs').hide();
