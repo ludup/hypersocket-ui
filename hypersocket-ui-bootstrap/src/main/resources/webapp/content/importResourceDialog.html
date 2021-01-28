@@ -7,7 +7,9 @@
 			</div>
 			<div class="modal-body">
 
-				<div id="importResourcesProperties"></div>
+				<div id="importResourcesProperties">
+				</div>
+				
 					<div class="propertyItem form-group lb-row">
 						<label for="file" class="col-md-3 control-label"
 							localize="import.file.label"></label>
@@ -17,17 +19,20 @@
 								<span class="lb-help-block form-text text-muted" localize="import.file.info"></span>
 							</div>
 						</div>
+					</div>
+					
 					<div class="propertyItem form-group lb-row">
-						<label for="file" class="col-md-3 control-label"
-							localize="import.dropExisting.label"></label>
-						<div class="propertyValue col-md-9">
-							<div id="dropSwitch"></div>
-							<div>
-								<span class="lb-help-block form-text text-muted" localize="import.dropExisting.info"></span>
+							<label for="file" class="col-md-3 control-label"
+								localize="import.dropExisting.label"></label>
+							<div class="propertyValue col-md-9">
+								<div id="dropSwitch"></div>
+								<div>
+									<span class="lb-help-block form-text text-muted" localize="import.dropExisting.info"></span>
+								</div>
 							</div>
 						</div>
-				</div>
-			</div>
+					</div>
+			
 			<div class="modal-footer">
 				<button id="importResourceButton" type="button" class="btn btn-primary">
 					<i id="uploadIcon" class="fa fa-upload"></i><span
@@ -38,7 +43,7 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$(document).ready(function() {
+	legacyjQueryReadyFix(function() {
 		$('#importResources').localize();
 
 		$('#importResources').data('action', function(callback) {
