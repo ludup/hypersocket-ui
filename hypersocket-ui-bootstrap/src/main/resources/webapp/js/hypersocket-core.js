@@ -468,6 +468,9 @@ function home(data) {
 			systemAdmin = data.systemAdmin;
 			
 			if(data.systemAdmin) {
+				
+				$('#bottomMenu').empty();
+				
 				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="fa fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function() {
