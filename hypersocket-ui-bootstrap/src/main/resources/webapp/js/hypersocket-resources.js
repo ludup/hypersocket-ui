@@ -273,6 +273,28 @@ $.fn.resourceTable = function(params) {
 
 
 	var psl;
+	
+	function setUpPsl(jqElem) {
+		
+		let lastPsl = jqElem.data("psl");
+		
+		if (lastPsl) {
+			removeEventListener('popstate', lastPsl, false);
+		}
+		
+		jqElem.data("psl", null);
+		
+		psl = function() {
+			options.view.closeResource();
+	        removeEventListener('popstate', psl, false);
+	        
+        };
+        
+        jqElem.data("psl", psl);
+        
+        addEventListener('popstate', psl, false);
+	}
+	
 	options = $.extend({
 		onDialogClose: function() {
 			if(psl) {
@@ -530,11 +552,9 @@ $.fn.resourceTable = function(params) {
 					var curRow = $(tr).data('index'); 
 					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
 					if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
-						psl = function() {
-							options.view.closeResource();
-					        removeEventListener('popstate', psl, false);
-				        };
-				        addEventListener('popstate', psl, false);
+						
+						setUpPsl($('#' + divName + 'Actions' + id + ' .row-edit'));
+						
 						options.view.editResource(resource);
 					} else {
 						options.view.viewResource(resource);
@@ -622,6 +642,9 @@ $.fn.resourceTable = function(params) {
 			if (options.showCreate) {
 				options.showCreate();
 			}
+			
+			setUpPsl($('#' + divName + 'Add'));
+	        
 			options.view.createResource($('#'+divName).data('createCallback'));
 		});
 	}
