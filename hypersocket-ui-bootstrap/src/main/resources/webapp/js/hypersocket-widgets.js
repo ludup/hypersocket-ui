@@ -3930,11 +3930,13 @@ $.fn.fileUploadInput = function(data) {
 			}, data);
 
 	var id = checkElementHasId($(this)).attr('id') + "FileUpload";
-	var html =	'<div id="' + id + '" class="col-8" style="padding-left: 0px;">'
-			+	'	<input type="file" id="' + id + 'File"/>'
-			+	'</div>'
-			+	'<div class="propertyValue col-4 dialogActions" id="' + id + 'Buttons">'
-			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
+	var html =	'<div class="row">'
+			+   '	<div id="' + id + '" class="col-8" style="padding-left: 0px;">'
+			+	'		<input type="file" id="' + id + 'File"/>'
+			+	'	</div>'
+			+	'	<div class="propertyValue col-4 dialogActions" id="' + id + 'Buttons">'
+			+	'		<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
+			+	'	</div>'
 			+	'</div>'
 			+	'<div class="col-8 uploadProgress">'
 			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
