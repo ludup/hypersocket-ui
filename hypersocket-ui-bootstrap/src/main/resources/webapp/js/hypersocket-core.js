@@ -436,6 +436,7 @@ function home(data) {
 			}
 
 			$('#burger-toggle').show();
+			$('#burger-toggle').off('click');
 			$('#burger-toggle').click(function(e) {
 				e.preventDefault();
 				e.stopPropagation();
