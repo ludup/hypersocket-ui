@@ -43,7 +43,6 @@
 	    }
 	
 	    init() {
-	        am4core.useTheme(am4themes_animated);
 	
 	        this.chart = am4core.create("chartdiv", am4maps.MapChart);
 	        this.chart.projection = new am4maps.projections.Miller();
@@ -357,27 +356,23 @@
 						return $(document).data('session').id != session.id;
 					},
 					complete : function() {
-						loadScript("${uiPath}/js/amcharts/core.js", (data) => {
-							loadScript("${uiPath}/js/amcharts/maps/maps.js", (data) => {
-								loadScript("${uiPath}/js/amcharts/animated.js", (data) => {
-									loadScript("${uiPath}/js/amcharts/dark.js", (data) => {
-										loadScript("${uiPath}/js/amcharts/maps/worldLow.js", (data) => {
-											loadScript("${uiPath}/js/amcharts/maps/data/countries2.js", (data) => {
-												 am4core.ready(function() {
-													 getJSON("session/geoInfoByCountry", null, (response) =>  {
-														 if (response.success) {
-															 	let mapData = [];
-																let resource = response.resource;
-																for (k in resource) {
-																	mapData.push({ "id": k, "name": am4geodata_data_countries2[k].country, "value": resource[k]});
-																}
-																let hm = new HeatMap({"world" : mapData});
-														        loadComplete();
-													 	}	
-												        
-												    });
-												});
-											});
+						loadScript("${uiPath}/js/amcharts/maps/maps.js", (data) => {
+							loadScript("${uiPath}/js/amcharts/dark.js", (data) => {
+								loadScript("${uiPath}/js/amcharts/maps/worldLow.js", (data) => {
+									loadScript("${uiPath}/js/amcharts/maps/data/countries2.js", (data) => {
+										 am4core.ready(function() {
+											 getJSON("session/geoInfoByCountry", null, (response) =>  {
+												 if (response.success) {
+													 	let mapData = [];
+														let resource = response.resource;
+														for (k in resource) {
+															mapData.push({ "id": k, "name": am4geodata_data_countries2[k].country, "value": resource[k]});
+														}
+														let hm = new HeatMap({"world" : mapData});
+												        loadComplete();
+											 	}	
+										        
+										    });
 										});
 									});
 								});
