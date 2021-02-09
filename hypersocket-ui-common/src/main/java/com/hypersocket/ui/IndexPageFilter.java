@@ -61,22 +61,14 @@ public class IndexPageFilter implements ContentFilter {
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("stylesheets", generateStylesheets());
 		resolver.addToken("scripts", generateScripts());
-		
-		boolean hasMeta = false;
+		resolver.addToken("meta", "<!-- No Meta -->");
 
 		for(FilterExtender extender : extenders) {
 			MapTokenResolver res = extender.getAdditionalResolvers(request);
 			if(res != null) {
 				resolver.addAll(res);
-				if(res.hasToken("meta")) {
-					hasMeta = true;
-				}
 			}
 		}
-		
-		if(!hasMeta)
-			resolver.addToken("meta", "<!-- No Meta -->");
-		
 		
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);

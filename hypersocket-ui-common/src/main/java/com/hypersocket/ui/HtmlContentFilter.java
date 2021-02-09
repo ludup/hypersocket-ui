@@ -35,12 +35,12 @@ public class HtmlContentFilter implements ContentFilter {
 	private List<FilterExtender> extenders = new ArrayList<FilterExtender>();
 	
 	private String brandCompany = "LogonBox Limited";
-	private String companyUrl = "https://www.hypersocket.com/";
+	private String companyUrl = "https://www.logonbox.com/";
 	private String brandIcon = "/images/favicon.ico";
-	private String brandImage = "/images/hypersocket.png";
-	private String supportContact = "support@hypersocket.com";
-	private String supportName = "Hypersocket Software";
-	private String supportUrl = "https://helpdesk.hypersocket.com";
+	private String brandImage = "/images/logonbox.png";
+	private String supportContact = "support@logonbox.com";
+	private String supportName = "LogonBox Limited";
+	private String supportUrl = "https://www.logonbox.com";
 	private String license = null;
 
 	public HtmlContentFilter() throws IOException {
@@ -88,10 +88,11 @@ public class HtmlContentFilter implements ContentFilter {
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
 
-		
-		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)),
-				resolvers);
-		return new ReaderInputStream(r, Charset.forName("UTF-8"));
+		TokenReplacementReader r = new TokenReplacementReader(
+				new BufferedReader(new InputStreamReader(resourceStream)),
+					resolvers);
+		return new ReaderInputStream(new TokenReplacementReader(r,
+				resolvers), Charset.forName("UTF-8"));
 	}
 
 	@Override
