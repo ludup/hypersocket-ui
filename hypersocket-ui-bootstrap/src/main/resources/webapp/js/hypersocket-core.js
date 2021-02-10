@@ -143,7 +143,7 @@ function closeMenu() {
 	}
 };
 
-function startLogon(opts) {
+function startLogon(opts, credentials) {
 	
 	if(!opts) {
 		opts = $(document).data('logonOptions');
@@ -227,7 +227,7 @@ function startLogon(opts) {
 	}, opts);
 	
 	$(document).data('logonOptions', opts);
-	logon(null, opts);
+	logon(credentials, opts);
 }
 
 function logoff() {
