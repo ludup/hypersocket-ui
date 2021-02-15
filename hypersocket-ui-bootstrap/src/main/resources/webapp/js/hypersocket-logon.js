@@ -237,7 +237,7 @@ function processLogon(data, opts, message) {
 										(' placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '"'))
 								+ ' id="' + this.resourceKey + '" value="' + stripNull(this.defaultValue)
 								+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
-								+ '">' 
+								+ '"' + (this.readOnly ? 'readonly="readonly"' : '' ) + '>' 
 								+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
