@@ -88,10 +88,13 @@ public class HtmlContentFilter implements ContentFilter {
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
 
-		
-		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)),
-				resolvers);
-		return new ReaderInputStream(r, Charset.forName("UTF-8"));
+		resolvers.add(new RequestAttributesResolver(request));
+		TokenReplacementReader r = new TokenReplacementReader(
+				new BufferedReader(new InputStreamReader(resourceStream)),
+					resolvers);
+		return new ReaderInputStream(new TokenReplacementReader(r,
+				resolvers), Charset.forName("UTF-8"));
+
 	}
 
 	@Override
