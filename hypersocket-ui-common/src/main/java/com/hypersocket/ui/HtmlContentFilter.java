@@ -87,7 +87,7 @@ public class HtmlContentFilter implements ContentFilter {
 
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
-
+		resolvers.add(new RequestAttributesResolver(request));
 		TokenReplacementReader r = new TokenReplacementReader(
 				new BufferedReader(new InputStreamReader(resourceStream)),
 					resolvers);
