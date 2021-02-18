@@ -1150,7 +1150,7 @@ $.fn.propertyPage = function(opts) {
 
 										} else if (obj.inputType == 'logoInput') { 
 											var widgetOptions = $.extend(obj, {
-												url : basePath + '/api/files/file',
+												url : basePath + '/api/files/image',
 												typeCallback: function() {
 													return options.typeCallback ? options.typeCallback() : 'default';
 												},

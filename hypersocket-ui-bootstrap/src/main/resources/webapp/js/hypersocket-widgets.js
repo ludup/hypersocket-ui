@@ -4240,7 +4240,7 @@ $.fn.logoInput = function(data) {
 				previewSize: 96,
 				defaultTextCallback: false,
 				typeCallback: false,
-				url: 'files/file',
+				url: 'files/image',
 				getUrlData: function(data) {
 					return data;
 				}
