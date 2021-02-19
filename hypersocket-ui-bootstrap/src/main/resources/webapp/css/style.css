@@ -17,6 +17,16 @@ body {
 	outline: none;
 }
 
+a:focus, a:hover {
+    color: #1e0c51;
+    text-decoration: underline;
+}
+
+a {
+    color: #1e0c51;
+    text-decoration: none;
+}
+
 h2 {
 	font-size: 14px;
 	line-height: 14px;
@@ -64,6 +74,10 @@ pre {
 	padding: 0;
 }
 
+#header img {
+    height: 35px;
+}
+
 #content {
 	margin-right: 0px;
 	height: 100%;
@@ -75,7 +89,8 @@ pre {
 
 .navbar-brand {
 	margin: auto;
-}
+    padding: 7px 10px; 
+} 
 
 /*
  * Placeholder dashboard ideas
@@ -272,12 +287,12 @@ pre {
 
 .btn-primary {
 	color: white;
-	background: #000;
-	border: 1px solid #000;
+	background: #1e0c51;
+	border: 1px solid #1e0c51;
 }
 
 .btn-primary:hover {
-	background: #555;
+	background: #8f6ed5;
 }
 
 .btn-primary:disabled {
@@ -313,11 +328,11 @@ pre {
 }
 
 .btn-info {
-	background-color: #000;
+	background-color: #1e0c51;
 }
 
 .btn-info:hover {
-	background-color: #555;
+	background-color: #8f6ed5;
 }
 
 .btn-action {
@@ -402,7 +417,7 @@ pre {
 }
 
 .large-button:hover {
-	color: #555;
+	color: #8f6ed5;
 	text-decoration: none;
 	/* 	background: #e1e6ef; */
 }
@@ -531,7 +546,7 @@ div.tablePages ul.pagination {
 .carousel-control, .carousel-control:visited, .carousel-control:active {
     width: 20px;
     font-size: 20px;
-    color: #000;
+    color: #1e0c51;
     text-shadow: none;
 }
 
@@ -545,8 +560,8 @@ div.tablePages ul.pagination {
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover,
 	.pagination>.active>span:hover, .pagination>.active>a:focus,
 	.pagination>.active>span:focus {
-	background-color: #000;
-	border-color: #000;
+	background-color: #1e0c51;
+	border-color: #1e0c51;
 }
 
 .tabContent {
@@ -627,7 +642,7 @@ footer {
 	flex-shrink: 0;
 	width: 100%;
 	/* Set the fixed height of the footer here */
-	background-color: #000;
+	background-color: #1e0c51;
 	color: #fff;
 }
 
@@ -704,7 +719,7 @@ header .navbar {
 }
 
 .switch-input:checked ~ .switch-label {
-	background: #000;
+	background: #1e0c51;
 }
 /* Sidebar
 =================================================================== */
@@ -936,8 +951,8 @@ header .navbar {
 }
 
 .navbar-inverse {
-	background-color: #000;
-	border-color: #000;
+	background-color: #1e0c51;
+	border-color: #1e0c51;
 }
 
 .navbar-header {
@@ -983,8 +998,8 @@ header .navbar {
 }
 
 .slider-handle {
-	background-color: #000;
-	background-image: linear-gradient(to bottom, #000, #333);
+	background-color: #1e0c51;
+	background-image: linear-gradient(to bottom, #1e0c51, #333);
 }
 
 .panel.panel-default {
@@ -1435,7 +1450,7 @@ span.input-group-addon .dropdown-toggle {
 }
 
 .small-button:hover {
-	color: #555;
+	color: #8f6ed5;
 }
 
 .small-button-active.small-button-active:hover {
@@ -1931,7 +1946,7 @@ select[multiple] {
 	height: 120px;
 	width: 120px;
 	margin: 10px;
-	background-color: #000
+	background-color: #1e0c51
 }
 
 .setupExtension span {

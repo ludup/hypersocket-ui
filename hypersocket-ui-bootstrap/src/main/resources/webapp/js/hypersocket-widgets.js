@@ -3935,18 +3935,8 @@ $.fn.fileUploadInput = function(data) {
 		if(data.fileSize > 1024 * 1024){
 			fileSize = (Math.round((data.fileSize / (1024 * 1024)) * 100)/100).toFixed(2) + ' MB';
 		}
-		formattedHtml = '<div class="file-upload-info">'
-					+	'	<span>' + getResource('fileUpload.fileName.info') + '</span></br>';
-		if(options.detailedView) {
-			formattedHtml +=	'	<span>' + getResource('fileUpload.fileSize.info') + '</span></br>'
-			+	'	<span>' + getResource('fileUpload.md5Sum.info') + '</span>';
-			if(options.showDownloadLink) {
-				formattedHtml +=   '  <br><span>' + getResource('text.url') + '</span>';
-			}
-		}
 
-		formattedHtml +=	'</div>'
-					+	'<div class="file-upload-info">'
+		formattedHtml = '<div class="file-upload-info">'
 					+	'	<span>' + data.fileName + '</span><br>';
 
 		if(options.detailedView) {
@@ -4105,7 +4095,8 @@ $.fn.fileUploadInput = function(data) {
  		        		if(xhr.status==200) {
  		        			data = jQuery.parseJSON(xhr.response);
 	 		        		if(data.success) {
-		 		        		showInfo(data.resource);
+	 		        		    showInfo(data.resource);
+		 		        		showSuccess(data.message);
 		 						if(options.disabled) {
 		 							callback.disable();
 		 						}
@@ -4113,10 +4104,14 @@ $.fn.fileUploadInput = function(data) {
 		 						if(options.changed) {
 		 							options.changed(callback);
 		 						}
+		 						if(options.uploaded) {
+	 		        		    	options.uploaded(data.resource);
+	 		        		    }
 		 						if(notify) {
 		 							notify(true);
 		 						}
 	 		        		} else {
+	 		        			showError(data.message);
 	 		        			if(notify) {
 	 		        				notify(false);
 	 		        			}
@@ -4146,7 +4141,8 @@ $.fn.fileUploadInput = function(data) {
 		        		if(xhr.status==200) {
 		        			data = jQuery.parseJSON(xhr.response);
 	 		        		if(data.success) {
-		 		        		showInfo(data.resource);
+	 		        		    showInfo(data.resource);
+		 		        		showSuccess(data.message);
 		 						if(options.disabled) {
 		 							callback.disable();
 		 						}
@@ -4154,10 +4150,14 @@ $.fn.fileUploadInput = function(data) {
 		 						if(options.changed) {
 		 							options.changed(callback);
 		 						}
+		 						if(options.uploaded) {
+	 		        		    	options.uploaded(data.resource);
+	 		        		    }
 		 						if(notify) {
 		 							notify(true);
 		 						}
 	 		        		} else {
+	 		        		    showError(data.message);
 	 		        			if(notify) {
 	 		        				notify(false);
 	 		        			}
@@ -4186,6 +4186,9 @@ $.fn.fileUploadInput = function(data) {
 						e.preventDefault();
 						callback.upload();
 					});
+					if(options.removed) {
+						options.removed();
+					}	
 					if(options.disabled) {
 						callback.disable();
 					}
@@ -4229,6 +4232,62 @@ $.fn.fileUploadInput = function(data) {
 	return callback;
 }
 
+$.fn.profileImage = function(data) {
+		
+	var options = $.extend(
+		{
+			disabled : false,
+			previewSize: 96,
+			getUrlData: function(data) {
+				return data;
+			}
+		}, data);
+
+    var id = checkElementHasId($(this)).attr('id') + "ProfileImage";
+	var html = '<div id="' + id + 'Preview" class="col-md-4 text-center">';
+	html += '<img src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview" width="128"/>';
+	html += '</div>';
+	html += '<div id="' + id + 'Upload" class="col-md-8">';
+	html += '</div>';
+	
+	$(this).append(html);
+	
+	var val = '';
+	if(options.value) {
+		if(!options.value.startsWith('logo://')) {
+			val = options.value;
+		}
+	}
+	return $('#' + id + "Upload").fileUploadInput({
+	    inputType: options.inputType,
+	    resourceKey: options.resourceKey,
+		url: basePath + '/api/files/image',
+		disabled: options.disabled,
+		showDownloadButton: true,
+		showUploadButton: true,
+		showDeleteButton: true,
+		automaticUpload: true,
+		showDownloadLink: false,
+		publicFile: true,
+		useUUID: true,
+		value: val,
+		uploaded: function(resource) {
+			$('#' + id + 'Preview img').remove();
+			$('#' + id + 'Preview').append('<img width="128" height="128" src="' + basePath + '/api/files/public/' + resource.name + '" id="' + id + 'Preview"/>');
+		},
+		removed: function() {
+			$('#' + id + 'Preview img').remove();
+			$('#' + id + 'Preview').append('<img src="' + basePath + '/api/userLogo/fetch/__DEFAULT__" id="' + id + 'Preview" width="128"/>');
+		},
+		changed: function(callback) {
+			if(options.changed) {
+				options.changed(callback);
+			}
+			$('#' + id + 'Preview img').remove();
+			$('#' + id + 'Preview').append('<img src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview" width="128"/>');
+		}
+	});
+}
 
 $.fn.logoInput = function(data) {
 	var generated = true;
@@ -4240,7 +4299,7 @@ $.fn.logoInput = function(data) {
 				previewSize: 96,
 				defaultTextCallback: false,
 				typeCallback: false,
-				url: 'files/file',
+				url: 'files/image',
 				getUrlData: function(data) {
 					return data;
 				}
@@ -4248,7 +4307,7 @@ $.fn.logoInput = function(data) {
 
 	var imagePath = basePath + "/api/logo/default/default/" + options.previewSize + "_auto_auto_auto.png";
 
-	var id = checkElementHasId($(this)).attr('id') + "FileUpload";
+	var id = checkElementHasId($(this)).attr('id') + "LogoInput";
 
 	var generatorHtml =	'<div id="' + id + 'Generator" class="logo-generator">'
 		+	'<div class="logo-text-container logo-row">'
@@ -4260,7 +4319,7 @@ $.fn.logoInput = function(data) {
         +   '<option value="icon">' + getResource('logo.text.icon') + '</option>'
         +   '<option value="text">' + getResource('logo.text.text') + '</option>'
         +   '</select>'
-        +   '<input class="form-control logo-text" maxlength="3" type="text" id="' + id + 'Text"/>'
+        +   '<input class="form-control logo-shape logo-text" maxlength="3" type="text" id="' + id + 'Text"/>'
         +   '<div id="' + id + 'Icon" class="logo-icon"/>'
         +	'</div>'
 		+	'<div class="logo-shape-container logo-row">'
@@ -4281,7 +4340,7 @@ $.fn.logoInput = function(data) {
         +   '<option value="fixed">' + getResource('logo.colour.fixed') + '</option>'
         +   '</select>'
 	    +   '<div class="logo-colour-outer"><div id="' + id + 'FixedColour" class="input-group logo-colour">'
-	    +	'	<input id="' + id + 'FixedColourInput" class="form-control" type="text"/>'
+	    +	'	<input id="' + id + 'FixedColourInput" class="logo-shape form-control" type="text"/>'
 	    +	'	<span class="input-group-addon"><i></i></span>'
 	    +	'</div></div>'
         +	'</div>'
@@ -4676,7 +4735,8 @@ $.fn.logoInput = function(data) {
  		        		if(xhr.status==200) {
  		        			data = jQuery.parseJSON(xhr.response);
 	 		        		if(data.success) {
-		 		        		showInfo(data.resource);
+	 		        		    showInfo(data.resource);
+		 		        		showSuccess(data.message);
 		 						if(options.disabled) {
 		 							callback.disable();
 		 						}
@@ -4688,6 +4748,7 @@ $.fn.logoInput = function(data) {
 		 							notify(true);
 		 						}
 	 		        		} else {
+	 		        		    showError(data.message);
 	 		        			if(notify) {
 	 		        				notify(false);
 	 		        			}
@@ -4695,7 +4756,7 @@ $.fn.logoInput = function(data) {
  		        		}
  		        	}
  		        }
- 		        xhr.open("POST", options.url + (options.publicFile ? '/true' : '/false'));
+ 		        xhr.open("POST", options.url);
  		        xhr.setRequestHeader("X-Csrf-Token", getCsrfToken());
  		        xhr.send(formData);
 
