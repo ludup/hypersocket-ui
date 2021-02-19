@@ -274,6 +274,7 @@ function validateInputType(type){
 		case 'autoCompleteNamePairs' :
 		case 'date' :
 		case 'time' : 
+		case 'profileImage':
 		case 'checkbox' : return true;	
 		default : 
 			return $('body')[type] != undefined;
@@ -931,6 +932,7 @@ $.fn.propertyPage = function(opts) {
 										}
 										obj = $.extend({
 											changed : function(widget) {
+											debugger;
 												if(options.onPropertyChange) {
 													options.onPropertyChange(widget.options().resourceKey, widget);
 												}
@@ -1014,14 +1016,20 @@ $.fn.propertyPage = function(opts) {
 										
 										if(obj.inputType!='hidden') {
 											var sizeClass = 'col-md-9';
+											
+							
 											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
 												sizeClass = 'col-md-' + obj.numCols;
 											}
 
 											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div class="lb-row" id="' + tab + '_item' + inputId + '"/></div>');
-											if(!obj.noLabel)
+											if(!obj.noLabel) {
     											$('#' + tab + '_item' + inputId).append('<label id="" class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
     													+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');
+											} else if(obj.fullwidth) {
+												sizeClass = 'col-md-12';
+											}
+											
 											$('#' + tab + '_item' + inputId).append('<div class="propertyValue ' + sizeClass + '" id="' + tab + '_value' + inputId + '"></div>');
 
 											if(obj.numCols && obj.numCols > 0 && obj.numCols <= 9) {
@@ -1148,7 +1156,7 @@ $.fn.propertyPage = function(opts) {
 
 										} else if (obj.inputType == 'logoInput') { 
 											var widgetOptions = $.extend(obj, {
-												url : basePath + '/api/files/file',
+												url : basePath + '/api/files/image',
 												typeCallback: function() {
 													return options.typeCallback ? options.typeCallback() : 'default';
 												},
