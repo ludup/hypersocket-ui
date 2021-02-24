@@ -51,7 +51,7 @@ public class HtmlContentFilter implements ContentFilter {
 	}
 	
 	@Override
-	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) {
+	public List<ITokenResolver> getResolvers(HttpServletRequest request) {
 
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("baseUrl", Request.generateBaseUrl(request));
@@ -78,7 +78,7 @@ public class HtmlContentFilter implements ContentFilter {
 		if (license != null) {
 			resolver.addToken("license", license);
 		}
-		
+		x
 		for(FilterExtender extender : extenders) {
 			MapTokenResolver rez = extender.getAdditionalResolvers(request);
 			if(rez != null)
@@ -88,6 +88,14 @@ public class HtmlContentFilter implements ContentFilter {
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
 		resolvers.add(new RequestAttributesResolver(request));
+		
+		
+	}
+	
+	@Override
+	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) {
+		
+		List<ITokenResolver> resolvers = getResolvers(request);
 		TokenReplacementReader r = new TokenReplacementReader(
 				new BufferedReader(new InputStreamReader(resourceStream)),
 					resolvers);
