@@ -79,4 +79,10 @@ public class IncludeContentFilter implements ContentFilter {
 		return -10000;
 	}
 
+
+	@Override
+	public List<ITokenResolver> getResolvers(HttpServletRequest request) {
+		return additionalResolvers;
+	}
+
 }

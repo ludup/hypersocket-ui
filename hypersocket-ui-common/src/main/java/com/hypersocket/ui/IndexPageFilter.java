@@ -148,4 +148,9 @@ public class IndexPageFilter implements ContentFilter {
 	public void removePage(String page) {
 		filterPages.remove(page);
 	}
+
+	@Override
+	public List<ITokenResolver> getResolvers(HttpServletRequest request) {
+		return additionalResolvers;
+	}
 }
