@@ -78,7 +78,7 @@ public class HtmlContentFilter implements ContentFilter {
 		if (license != null) {
 			resolver.addToken("license", license);
 		}
-		x
+		
 		for(FilterExtender extender : extenders) {
 			MapTokenResolver rez = extender.getAdditionalResolvers(request);
 			if(rez != null)
@@ -89,7 +89,7 @@ public class HtmlContentFilter implements ContentFilter {
 		resolvers.add(resolver);
 		resolvers.add(new RequestAttributesResolver(request));
 		
-		
+		return resolvers;
 	}
 	
 	@Override
