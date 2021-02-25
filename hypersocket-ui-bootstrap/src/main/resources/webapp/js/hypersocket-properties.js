@@ -573,8 +573,7 @@ $.fn.tabPage = function(opts) {
 	
 	$('#' + propertyDiv)
 	.append(
-		'<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
-		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
+		'<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
 		+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
 		+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
@@ -721,8 +720,7 @@ $.fn.propertyPage = function(opts) {
 
 			$('#' + propertyDiv)
 						.append(
-							'<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
-							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
+							'<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
 							+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
 							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
 							+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
@@ -1468,6 +1466,7 @@ $.fn.propertyPage = function(opts) {
 				}
 				
 				if(filters.length > 0 && options.useFilters) {
+				    $('#' + propertyDiv).prepend('<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>');
 					$('#' + propertyDiv + 'PropertyFilter').append('<a href="#" class="click_default">' + getResource('default.label') + '</a>');
 					filters.push('default');
 					$.each(filters, function(idx, filter) {
