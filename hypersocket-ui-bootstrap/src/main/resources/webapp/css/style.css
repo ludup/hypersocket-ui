@@ -736,11 +736,13 @@ header .navbar {
 	margin-left: 5px;
 }
 
+.sidebar-static-width {
+	width: 220px !important;
+}
 .sidebar {
 	background: #e7e7e7;
 	color: #333;
 	position: absolute;
-	width: 220px;
 	pading-right: 10px;
 	top: 51px;
 	bottom: 51px;
