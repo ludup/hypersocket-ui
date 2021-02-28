@@ -327,7 +327,7 @@ function home(data) {
 							.append(
 								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') + ' data-menu="' + this.id + '"'
 								       + '><div class="menuitem"><a data-toggle="collapse" aria-expanded="false" aria-controls="cont_sub_' + this.id + '" href="#cont_sub_' 
-								       + this.id + '"><i class="imenu fa ' + (expanded ? 'fa-chevron-down' : 'fa-chevron-right' ) + '"></i>&nbsp;<span>' + getResource(this.resourceKey + '.label') + '</span></a></div></div>');
+								       + this.id + '"><i class="imenu fad ' + (expanded ? 'fa-chevron-down' : 'fa-chevron-right' ) + '"></i>&nbsp;<span>' + getResource(this.resourceKey + '.label') + '</span></a></div></div>');
 
 					var root = this;
 
@@ -366,7 +366,7 @@ function home(data) {
 							
 							$(menu).append('<li' + (this.hidden ? ' style="display:none"' : '') + ' class="nav-item"><a id="' 
 									+ this.id + '" href="#menu=' + (firstChild ? firstChild.resourceKey : this.resourceKey) 
-									+ '" class="sideMenu sidebar-anchor"><i class="fa ' 
+									+ '" class="sideMenu sidebar-anchor"><i class="fad ' 
 									+ this.icon + '"></i><span class="text sidebar-text">' 
 									+ getResource(this.resourceKey + '.label') + '</span></span></a></li>');
 							$('#' + this.id).data('menu', this);
@@ -412,7 +412,7 @@ function home(data) {
 			var session = $(document).data('session');
 			if(session.impersonating) {
 				$('#navMenu').append(
-					'<li class="navicon"><a id="impersonateMenu" data-toggle="tooltip" title="' + getResource('text.revertImpersonation') + '" data-placement="bottom" href="#"><i class="fa fa-male"></i></a></li>');
+					'<li class="navicon"><a id="impersonateMenu" data-toggle="tooltip" title="' + getResource('text.revertImpersonation') + '" data-placement="bottom" href="#"><i class="fad fa-male"></i></a></li>');
 				$('#impersonateMenu').click(function(e) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
@@ -454,7 +454,7 @@ function home(data) {
 					
 					$('#navMenu').append('<li class="navicon" id="' + this.id 
 							+ '"><a '
-							+ ' href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><span data-toggle="tooltip" data-placement="bottom" title="' +  getResource(this.resourceKey + '.label') + '"><i class="fa ' + this.icon + '"></i></span></a></li>');
+							+ ' href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><span data-toggle="tooltip" data-placement="bottom" title="' +  getResource(this.resourceKey + '.label') + '"><i class="fad ' + this.icon + '"></i></span></a></li>');
 					
 					$('#' + this.id).data('menu', this);
 					$('#' + this.id).click(function(e) {
@@ -471,7 +471,7 @@ function home(data) {
 				
 				$('#bottomMenu').empty();
 				
-				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="fa fa-power-off"></i></a></li>');
+				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="fad fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function() {
 					showShutdownDialog();
@@ -481,7 +481,7 @@ function home(data) {
 			if (showLocales) {
 				$('#navMenu')
 						.append(
-						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span data-toggle="tooltip" data-placement="bottom" title="' +  getResource('text.selectLanguages') + '"><i class="fa fa-globe"></i></span></a></li>')
+						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span data-toggle="tooltip" data-placement="bottom" title="' +  getResource('text.selectLanguages') + '"><i class="fad fa-globe"></i></span></a></li>')
 				$('#langMenu')
 						.append(
 							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
@@ -545,7 +545,7 @@ function home(data) {
 			// Setup header actions
 			$('#navMenu')
 					.append(
-						'<li class="navicon"><a id="actionLogoff" data-toggle="tooltip" title="' + getResource('text.signOut') + '" data-placement="bottom" href="#"><i class="fa fa-sign-out"></i></a></li>');
+						'<li class="navicon"><a id="actionLogoff" data-toggle="tooltip" title="' + getResource('text.signOut') + '" data-placement="bottom" href="#"><i class="fad fa-sign-out"></i></a></li>');
 
 			$('#actionLogoff').click(function(e) {
 				e.preventDefault();
@@ -625,14 +625,14 @@ function showShutdownDialog(option, logoff) {
 			'<div class="modal-body row">' +
 				'<div class="col-6" style="text-align: center">' +
 					'<button class="btn btn-small btn-primary" id="buttonShutdown" style="margin-bottom: 15px">' +
-						'<i class="fa fa-power-off" style="font-size: 40px"></i>' +
+						'<i class="fad fa-power-off" style="font-size: 40px"></i>' +
 					'</button>' +
 					'</br>' +
 					'<span>' + getResource("shutdown.label") + '</span>' +
 				'</div>' +
 				'<div class="col-6" style="text-align: center">' +
 					'<button class="btn btn-small btn-primary" id="buttonRestart" style="margin-bottom: 15px">' +
-						'<i class="fa fa-repeat" style="font-size: 40px"></i>' +
+						'<i class="fad fa-repeat" style="font-size: 40px"></i>' +
 					'</button>' +
 					'</br>' +
 					'<span>' + getResource("restart.label") + '</span>' +
@@ -671,7 +671,7 @@ function doShutdown(option, autoLogoff, url) {
 		$('#shutdownServer').find('.modal-body').empty();
 		$('#shutdownServer').find('.modal-body').append(
 				'<p style="width: 100%; text-align: center;">' + getResource("power.wait.shutdown") + '</p>' +
-				'<i class="fa fa-spinner fa-spin" style="font-size: 40px; width: 100%; text-align: center"></i>');
+				'<i class="fad fa-spinner fa-spin" style="font-size: 40px; width: 100%; text-align: center"></i>');
 		
 		hasShutdown = true;
 		var serverRunning = true;
@@ -754,7 +754,7 @@ function loadRealms(realms, session) {
 	}
 	
 	$('#currentRealm').empty();
-	$('#currentRealm').append('<a class="dropdown" data-toggle="dropdown" href="#"><span data-toggle="tooltip" title="' + getResource('text.userRealms')  + '" data-placement="bottom"><i class="fa fa-database"></i></span></a>');
+	$('#currentRealm').append('<a class="dropdown" data-toggle="dropdown" href="#"><span data-toggle="tooltip" title="' + getResource('text.userRealms')  + '" data-placement="bottom"><i class="fad fa-database"></i></span></a>');
 	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 	
 	if ($("#currentRealm > a").length === 1) {
@@ -820,7 +820,7 @@ function loadRoles(roles) {
 	};
 	
 	if(roles.length > 1) {
-		$('#navMenu').prepend('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fa fa-user-md"></i></a></li>');
+		$('#navMenu').prepend('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="fad fa-user-md"></i></a></li>');
 
 		$('#currentRole').append('<ul id="roles" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu2"></ul>');
 		$.each(roles, function() {
@@ -953,12 +953,12 @@ function loadMenu(menu) {
 				$('#subMenuIconPanel').append(
 						'<div class="col-2 d-none d-lg-table-cell subMenuLarge">'
 					+	'	<a class="large-button subMenu" href="#menu=' + this.resourceKey + '" data-parent="' + (menu.resourceKey ? menu.resourceKey : '') + '" data-value="' + this.resourceKey + '" id="buttonLarge_' + this.resourceKey + '">'
-					+	'		<i class="fa fa-2x ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
+					+	'		<i class="fad fa-2x ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
 					+	'	</a>'
 					+	'</div>'
 					+	'<div class="col-2 d-md-table-cell d-lg-none d-xl-none" style="padding-bottom: 10px">'
 					+	'	<a class="small-button subMenuSmall" href="#menu=' + this.resourceKey + '" data-value="' + this.resourceKey + '" id="buttonSmall_' + this.resourceKey + '">'
-					+	'		<i class="fa fa-2x ' + this.icon + '"></i>'
+					+	'		<i class="fad fa-2x ' + this.icon + '"></i>'
 					+	'	</a>'
 					+ 	'</div>');
 			}

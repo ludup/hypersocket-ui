@@ -574,7 +574,7 @@ $.fn.tabPage = function(opts) {
 	$('#' + propertyDiv)
 	.append(
 		'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
-		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
+		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fad ' 
 		+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
 		+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
@@ -722,7 +722,7 @@ $.fn.propertyPage = function(opts) {
 			$('#' + propertyDiv)
 						.append(
 							'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
-							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
+							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fad ' 
 							+ options.icon + '"></i><span>' + options.title + '</span></h2><ul id="' 
 							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
 							+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
@@ -731,9 +731,9 @@ $.fn.propertyPage = function(opts) {
 				$(panel)
 						.append(
 							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' 
-							+ propertyDiv + 'Revert"><i class="fa fa-ban"></i><span class="btn-text">' + getResource(options.revertText)
+							+ propertyDiv + 'Revert"><i class="fad fa-ban"></i><span class="btn-text">' + getResource(options.revertText)
 							+ '</span></button><button class="btn btn-small btn-primary" id="' + propertyDiv 
-							+ 'Apply"><i class="fa fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button></div>');
+							+ 'Apply"><i class="fad fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button></div>');
 			}
 
 			var first = true;

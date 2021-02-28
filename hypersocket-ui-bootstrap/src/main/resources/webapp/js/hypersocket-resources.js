@@ -234,7 +234,7 @@ $.fn.resourceTable = function(params) {
 
 	var html = '';
 	if(!options.disableDecoration) {
-		html += '<div class="panel panel-default showOnComplete" style="display: none"><div class="panel-heading"><h2><i class="fa '
+		html += '<div class="panel panel-default showOnComplete" style="display: none"><div class="panel-heading"><h2><i class="fad '
 			+ options.icon + '"></i><span class="break">' 
 			+ options.title + '</span></h2></div>';
 	}
@@ -256,8 +256,8 @@ $.fn.resourceTable = function(params) {
 		}
 		getState(divName+'-infoPanel', true, function(data) {
 			if(data.resources.length == 0 || data.resources[0].show) {
-				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-info"><i class="fa fa-2x fa-info"></i><i id="messageDismiss" '
-						+ 'class="fa fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
+				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-info"><i class="fad fa-2x fa-info"></i><i id="messageDismiss" '
+						+ 'class="fad fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
 			
 				$('.dismiss-icon').click(function(e) {
 					var prefs = new Object();
@@ -431,13 +431,13 @@ $.fn.resourceTable = function(params) {
 		if (options.additionalActions) {
 
 			if(options.forceActionsDropdown || (!options.disableActionsDropdown && options.additionalActions.length > 1)) {
-				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><button type="button" class="btn btn-success row-additional dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cogs"></i></button>';
+				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><a class="row-additional dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fad fa-cogs"></i></a>';
 				renderedActions += '<div id="' + id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-								renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="fa ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a>';
+								renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="fad ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a>';
 								$(document).off('click',
 								                '#' + id + 'ActionDropdown .row-' + act.resourceKey);
 								$(document).on(
@@ -514,9 +514,9 @@ $.fn.resourceTable = function(params) {
 						function(x, act) {
 							if (act.enabled) {
 
-								renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' 
-												+ act.resourceKey + ' btn-action" href="#" data-toggle="tooltip" data-placement="top" title="' 
-												+ getResource(act.resourceKey + ".label") + '"><i class="fa ' + act.iconClass + '"></i></a>';
+								renderedActions += '<a class="row-' 
+												+ act.resourceKey + '" href="#" data-toggle="tooltip" data-placement="top" title="' 
+												+ getResource(act.resourceKey + ".label") + '"><i class="fad ' + act.iconClass + '"></i></a>';
 
 								$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
 								$(document).on('click',
@@ -540,7 +540,7 @@ $.fn.resourceTable = function(params) {
 		}
 
 		if(!options.disableEditView) {
-			renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
+			renderedActions += '<a class="row-edit" href="#"><i class="ml-1 fad ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 			$(document).on(
 				'click',
@@ -561,7 +561,7 @@ $.fn.resourceTable = function(params) {
 					}
 			});
 			if(options.canCopy) {
-				renderedActions += '<a class="btn btn-primary row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
+				renderedActions += '<a class="row-copy" href="#"><i class="ml-1 fad fa-copy"></i></a>';
 				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-copy');
 				$(document).on(
 					'click',
@@ -582,7 +582,7 @@ $.fn.resourceTable = function(params) {
 			}
 			
 			if(canDelete) {
-				renderedActions += '<a class="btn btn-danger row-delete btn-action" href="#"><i class="fa fa-trash"></i></a>';
+				renderedActions += '<a class="row-delete" href="#"><i class="ml-1 fad fa-trash"></i></a>';
 	
 				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
 	
@@ -621,7 +621,7 @@ $.fn.resourceTable = function(params) {
 					});
 				});
 			} else {
-				renderedActions += '<a class="btn btn-disabled btn-action" href="#"><i class="fa fa-trash"></i></a>';
+				renderedActions += '<a href="#"><i class="ml-1 fad fa-trash"></i></a>';
 			}
 			
 		}
@@ -637,7 +637,7 @@ $.fn.resourceTable = function(params) {
 
 	if (options.canCreate) {
 
-		$('#' + divName + 'Actions').append('<button id="' + divName + 'Add" class="btn btn-primary"><i class="fa ' + options.createButtonIcon + '"></i><span class="btn-text">' + getResource(options.createButtonText) + '</span></button>');
+		$('#' + divName + 'Actions').append('<button id="' + divName + 'Add" class="btn btn-primary"><i class="fad ' + options.createButtonIcon + '"></i><span class="btn-text">' + getResource(options.createButtonText) + '</span></button>');
 		$('#' + divName + 'Add').click(function() {
 			if (options.showCreate) {
 				options.showCreate();
@@ -1028,7 +1028,7 @@ $.fn.resourceTable = function(params) {
 
                         $('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="'
                                 + divName + 'BulkTableAction" class="btn btn-default" title="'
-                                + getResource('bulk.assignment.tab.title') + '"><i class="fa fa-exchange"></i></button>');
+                                + getResource('bulk.assignment.tab.title') + '"><i class="fad fa-exchange"></i></button>');
 
                         $('#' + divName + 'BulkTableAction').click(function(){
                             var bulkAction = $('#' + bulkAssignableTarget).bulkAssignmentDialog({
@@ -1043,7 +1043,7 @@ $.fn.resourceTable = function(params) {
 						$.each(options.toolbarButtons, function(idx, action) {
 							$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
 									+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
-									+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
+									+ getResource(action.resourceKey + '.label') + '"><i class="fad ' 
 									+ action.icon + '"></i></button>');
 							
 							$('#' + divName + action.resourceKey + 'TableAction').on('click', function(e) {
@@ -1062,7 +1062,7 @@ $.fn.resourceTable = function(params) {
 							$.each(data.resources, function(idx, action) {
 								$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
 										+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
-										+ getResource(action.resourceKey + '.label') + '"><i class="fa ' 
+										+ getResource(action.resourceKey + '.label') + '"><i class="fad ' 
 										+ action.icon + '"></i></button>');
 								
 								var div = action.resourceKey + 'Div';
@@ -1085,7 +1085,7 @@ $.fn.resourceTable = function(params) {
 
 					if (options.checkbox && options.canDelete) {
                         if($('#multipleDelete' + divName).length == 0) {
-                            $('#' + divName +  ' .fixed-table-toolbar').find('.btn-group').first().prepend('<button id="multipleDelete' + divName +'" class="btn btn-default" type="button" name="multipleDelete' + divName +'" title="Delete"><i class="fa fa-trash"></i></button>');
+                            $('#' + divName +  ' .fixed-table-toolbar').find('.btn-group').first().prepend('<button id="multipleDelete' + divName +'" class="btn btn-default" type="button" name="multipleDelete' + divName +'" title="Delete"><i class="fad fa-trash"></i></button>');
                             $('#multipleDelete' + divName).click(function(e) {
                                 var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
                                 if(arr.length > 0) {
@@ -1199,11 +1199,11 @@ $.fn.resourceTable = function(params) {
 							if (options.additionalActions) {
 
 								if(!options.disableActionsDropdown && options.additionalActions.length > 1) {
-									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fa fa-cogs"></i></a>';
+									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="fad fa-cogs"></i></a>';
 									renderedActions += '<ul id="' + resource.id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 									$.each(options.additionalActions, function(x, act) {
 										if (act.enabled) {
-											renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><span>' + getResource(act.resourceKey + ".label") + '</span>&nbsp;&nbsp;<i class="fa ' + act.iconClass + '"></i></a></li>';
+											renderedActions += '<li><a class="row-' + act.resourceKey + '" href="#"><span>' + getResource(act.resourceKey + ".label") + '</span>&nbsp;&nbsp;<i class="fad ' + act.iconClass + '"></i></a></li>';
 						
 											$(document).off('click', '#' + resource.id + 'ActionDropdown .row-' + act.resourceKey);
 											$(document).on('click', '#' + resource.id + 'ActionDropdown .row-' + act.resourceKey, function(e) {
@@ -1245,7 +1245,7 @@ $.fn.resourceTable = function(params) {
 										if (act.enabled) {
 											renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' 
 													+ act.resourceKey + ' btn-action" href="#" data-toggle="tooltip" data-placement="top" title="' 
-													+ getResource(act.resourceKey + ".label") + '"><i class="fa ' + act.iconClass + '"></i></a>';
+													+ getResource(act.resourceKey + ".label") + '"><i class="fad ' + act.iconClass + '"></i></a>';
 											$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
 											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
 												act.action(resource, function(resource) {
@@ -1263,7 +1263,7 @@ $.fn.resourceTable = function(params) {
 							}
 
 							if(!options.disableEditView) {
-								renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (options.canUpdate && canUpdate && !resource.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
+								renderedActions += '<a class="row-edit" href="#"><i class="ml-1 fad ' + (options.canUpdate && canUpdate && !resource.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
 								$(document).off('click', '#' + resource.id + 'GridOptions .row-edit');
 								$(document).on('click', '#' + resource.id + 'GridOptions .row-edit', function() {
 									if(options.showEdit) {
@@ -1288,7 +1288,7 @@ $.fn.resourceTable = function(params) {
 								});
 								
 								if(options.canCopy) {
-									renderedActions += '<a class="btn btn-info row-copy btn-action" href="#"><i class="fa fa-copy"></i></a>';
+									renderedActions += '<a class="row-copy" href="#"><i class="ml-1 fad fa-copy"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-copy');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function() {
 										if(options.showCopy) {
@@ -1319,7 +1319,7 @@ $.fn.resourceTable = function(params) {
 								}
 								
 								if(canDelete) {
-									renderedActions += '<a class="btn btn-danger row-delete btn-action" href="#"><i class="fa fa-trash"></i></a>';
+									renderedActions += '<a class="row-delete" href="#"><i class="ml-1 fad fa-trash"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-delete');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-delete', function() {
 										log("Entering resource delete for id " + resource.id);
@@ -1342,7 +1342,7 @@ $.fn.resourceTable = function(params) {
 										});
 									});
 								} else {
-									renderedActions += '<a class="btn btn-disabled btn-action" href="#"><i class="fa fa-trash"></i></a>';
+									renderedActions += '<a class="btn-disabled" href="#"><i class="ml-1 fad fa-trash"></i></a>';
 								}
 							}
 							$('#' + resource.id + 'GridOptions').append(renderedActions);
@@ -1410,7 +1410,7 @@ $.fn.resourceTable = function(params) {
 					return;
 				}
 				$('#' + divName + 'Actions').append(
-					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fa ' + this.icon + '"></i>&nbsp;' + getResource(this.resourceKey + '.label') + '</button>');
+					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="fad ' + this.icon + '"></i>&nbsp;' + getResource(this.resourceKey + '.label') + '</button>');
 				var button = this;
 				$('#' + this.resourceKey).click(function() {
 					if(button.action) {
@@ -1472,7 +1472,7 @@ $.fn.resourceTable = function(params) {
 		
 		$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.float-right').append('<button id="' 
 				+ divName + 'ToggleGrid" class="btn btn-secondary" type="button" name="grid" title="' 
-				+ getResource('text.toggleViewMode') + '"><i class="fa ' + currentView.icon + '"></button>');
+				+ getResource('text.toggleViewMode') + '"><i class="fad ' + currentView.icon + '"></button>');
 		
 		
     	$('#' + divName + 'ToggleGrid').click(function(){
@@ -1515,9 +1515,9 @@ $.fn.samePageResourceView = function(params, params2) {
 	
 	var addActions = function(save, copy) {
 		var html = '<div class="panel-footer">';
-		html+= '<button id="' + dialog.attr('id') + 'Cancel" + class="btn btn-danger"><i class="fa fa-ban"></i>' + getResource('text.cancel') + '</button>';
+		html+= '<button id="' + dialog.attr('id') + 'Cancel" + class="btn btn-danger"><i class="fad fa-ban"></i>' + getResource('text.cancel') + '</button>';
 		if(save) {
-			html += '<button id="' + dialog.attr('id') + 'Save" + class="btn btn-primary"><i class="fa fa-save"></i>' + getResource('text.save') + '</button>';
+			html += '<button id="' + dialog.attr('id') + 'Save" + class="btn btn-primary"><i class="fad fa-save"></i>' + getResource('text.save') + '</button>';
 		}
 		html += '</div>';
 		dialog.find('.panel-body').first().after(html);
@@ -1899,7 +1899,7 @@ $.fn.bulkAssignmentDialog = function(options) {
 
         $(this).find('.modal-footer').empty();
         $(this).find('.modal-footer').append(
-                    '<button type="button" id="' + id + 'Action" class="btn btn-primary"><i class="fa fa-save"></i><span class="btn-text">' + getResource("text.update") + '</span></button>');
+                    '<button type="button" id="' + id + 'Action" class="btn btn-primary"><i class="fad fa-save"></i><span class="btn-text">' + getResource("text.update") + '</span></button>');
         $('#' + id + "Action").off('click');
 
         $('#' + id + "Action").on('click', function() {
@@ -2020,7 +2020,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 
 		$(this).find('.modal-footer').empty();
 		$(this).find('.modal-footer').append(
-					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i><span class="btn-text">' + getResource("text.create") + '</span></button>');
+					'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fad fa-save"></i><span class="btn-text">' + getResource("text.create") + '</span></button>');
 		$('#' + $(this).attr('id') + "Action").off('click');
 
 		$('#' + $(this).attr('id') + "Action").on('click', function() {	
@@ -2114,7 +2114,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 			
 			if(!dialogOptions.disableUpdateButton) {
 				$(this).find('.modal-footer').append(
-						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fa fa-save"></i><span class="btn-text">' 
+						'<button type="button" id="' + $(this).attr('id') + 'Action" class="btn btn-primary"><i class="fad fa-save"></i><span class="btn-text">' 
 						+ getResource("text.update") + '</span></button>');
 			}
 			
@@ -2122,7 +2122,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 				dialogOptions.buildUpdateButtons(params2, function(button, onclick) {
 					dialog.find('.modal-footer').append(
 							'<button type="button" id="' + button.id + 'Action" class="updateButton btn ' 
-							+ button.cssClass + '"><i class="fa ' 
+							+ button.cssClass + '"><i class="fad ' 
 							+ button.icon + '"></i><span class="btn-text">' 
 							+ getResource(button.resourceKey) + '</span></button>');
 					$('#' + button.id + 'Action').click(function() {
