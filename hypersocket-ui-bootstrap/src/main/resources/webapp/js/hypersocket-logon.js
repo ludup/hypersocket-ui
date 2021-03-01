@@ -111,9 +111,9 @@ function processLogon(data, opts, message) {
 					return;
 				} else if (this.type == 'p') {
 					if(this.valueResourceKey) {
-						$('#logonForm').append('<p class="center">' + getResource(this.defaultValue) + '</p>');
+						$('#logonForm').append('<p class="center' + (this.alert ? ' alert alert-' + this.alertType : '') + '">' + getResource(this.defaultValue) + '</p>');
 					} else {
-						$('#logonForm').append('<p class="center">' + this.defaultValue + '</p>');
+						$('#logonForm').append('<p class="center' + (this.alert ? ' alert alert-' + this.alertType : '') + '">' + this.defaultValue + '</p>');
 					}
 
 					return;
