@@ -146,103 +146,143 @@ function closeMenu() {
 	}
 };
 
-function setUpMenuPin() {
+function setUpMenuMakePinned() {
+	let pinContainer = $("#menuPin");
+	let menu = $("#main-menu");
+	let container = $("#mainContainer");
+	let content = $("#content");
+	let icon = $("#pin-menu-icon");
+	let burger = $("#burger-toggle");
+	let pinIconContainer = $("#menuPin span");
+	
+	pinContainer.addClass("pin-active");
+	
+	burger.css("display", "none");
+	
+	pinIconContainer.attr("title", "Click to unpin menu.");
+	
+	pinIconContainer.css("color", "rgba(0,0,0,1)");
+	
+	icon.addClass("fa-rotate-90");
+
+	menu.removeClass("sidebar-static-width");
+	
+	menu.removeClass("col-sm-4");
+	menu.removeClass("col-md-3");
+	menu.removeClass("col-lg-2");
+
+	menu.addClass("col-sm-4");
+	menu.addClass("col-md-3");
+	menu.addClass("col-lg-2");
+	
+	menu.css("display", "block");
+	
+	container.removeClass("col-md-12");
+	container.removeClass("col-sm-12");
+
+	container.removeClass("col-sm-8");
+	container.removeClass("col-md-9");
+	container.removeClass("col-lg-10");
+
+	container.addClass("col-sm-8");
+	container.addClass("col-md-9");
+	container.addClass("col-lg-10");
+
+	menu.css("position", "static");
+	menu.css("height", "100%");
+
+	menu.css("padding-right", "0px");
+	menu.css("padding-left", "0px");
+	menu.css("margin-left", "-15px");
+
+	content.css("margin-left", "0px");
+	
+	saveMenuPinState(true);
+	
+}
+
+function setUpMenuRemovePinned() {
+	let pinContainer = $("#menuPin");
+	let menu = $("#main-menu");
+	let container = $("#mainContainer");
+	let content = $("#content");
+	let icon = $("#pin-menu-icon");
+	let burger = $("#burger-toggle");
+	let pinIconContainer = $("#menuPin span");
+	
+	pinContainer.removeClass("pin-active");
+	
+	burger.css("display", "inline");
+	
+	pinIconContainer.attr("title", "Click to pin menu.")
+	pinIconContainer.css("color", "rgba(0,0,0,0.5)");
+	
+	icon.removeClass("fa-rotate-90");
+
+	menu.removeClass("col-sm-4");
+	menu.removeClass("col-md-3");
+	menu.removeClass("col-lg-2");
+
+	container.removeClass("col-sm-8");
+	container.removeClass("col-md-9");
+	container.removeClass("col-lg-10");
+
+	container.addClass("col-md-12");
+	container.addClass("col-sm-12");
+
+	menu.css("position", "absolute");
+	menu.css("height", "inherit");
+
+	content.css("margin-left", "-15px");
+
+	menu.css("padding-right", "0px");
+	menu.css("padding-left", "0px");
+
+	menu.css("margin-left", "0px");
+
+	menu.addClass("sidebar-static-width");	
+	
+	saveMenuPinState(false);
+	
+}
+
+function saveMenuPinState(state) {
+	getState('menuStates', 'true', function(prefs) {
+		var menuStates = {};
+		if(prefs.resources.length > 0) {
+		   menuStates = JSON.parse(prefs.resources[0].preferences);
+		}
+		
+		menuStates.pin = state;
+		
+		saveMenuState($(this).parent().data('menu'), menuStates, true);
+	});
+}
+
+function setUpMenuPin(menuStates) {
 	// next cycle
 	setTimeout(() => {
+		
+		if (menuStates.pin) {
+			setUpMenuMakePinned();
+		}
+		
 		if (!$("#menuPin").hasClass("pin-toggle-installed")) {
+			
+			$(this).addClass("pin-toggle-installed");
+			
 			$("#menuPin").click(function(e) {
 				e.preventDefault();
 				e.stopPropagation();
 
-				$(this).addClass("pin-toggle-installed");
-
-				let menu = $("#main-menu");
-				let container = $("#mainContainer");
-				let content = $("#content");
-				let icon = $("#pin-menu-icon");
-				let burger = $("#burger-toggle");
-				let pinIconContainer = $("#menuPin span");
-
 				if ($(this).hasClass("pin-active")) {
-					
-					$(this).removeClass("pin-active");
-					
-					burger.css("display", "inline");
-					
-					pinIconContainer.attr("title", "Click to pin menu.")
-					pinIconContainer.css("color", "rgba(0,0,0,0.5)");
-					
-					icon.removeClass("fa-rotate-90");
-
-					menu.removeClass("col-sm-4");
-					menu.removeClass("col-md-3");
-					menu.removeClass("col-lg-2");
-
-					container.removeClass("col-sm-8");
-					container.removeClass("col-md-9");
-					container.removeClass("col-lg-10");
-
-					container.addClass("col-md-12");
-					container.addClass("col-sm-12");
-
-					menu.css("position", "absolute");
-					menu.css("height", "inherit");
-
-					content.css("margin-left", "-15px");
-
-					menu.css("padding-right", "0px");
-					menu.css("padding-left", "0px");
-
-					menu.css("margin-left", "0px");
-
-					menu.addClass("sidebar-static-width");	
-
+					setUpMenuRemovePinned();	
 				} else {
-					
-					$(this).addClass("pin-active");
-					
-					burger.css("display", "none");
-					
-					pinIconContainer.attr("title", "Click to unpin menu.");
-					
-					pinIconContainer.css("color", "rgba(0,0,0,1)");
-					
-					icon.addClass("fa-rotate-90");
-
-					menu.removeClass("sidebar-static-width");
-					
-					menu.removeClass("col-sm-4");
-					menu.removeClass("col-md-3");
-					menu.removeClass("col-lg-2");
-
-					menu.addClass("col-sm-4");
-					menu.addClass("col-md-3");
-					menu.addClass("col-lg-2");
-					
-					container.removeClass("col-md-12");
-					container.removeClass("col-sm-12");
-
-					container.removeClass("col-sm-8");
-					container.removeClass("col-md-9");
-					container.removeClass("col-lg-10");
-
-					container.addClass("col-sm-8");
-					container.addClass("col-md-9");
-					container.addClass("col-lg-10");
-
-					menu.css("position", "static");
-					menu.css("height", "100%");
-
-					menu.css("padding-right", "0px");
-					menu.css("padding-left", "0px");
-					menu.css("margin-left", "-15px");
-
-					content.css("margin-left", "0px");
-
+					setUpMenuMakePinned();
 				}
 			});
 		}
-	}, 1);
+	}, 0);
 }
 
 function startLogon(opts, credentials) {
@@ -388,7 +428,7 @@ function home(data) {
 
 	$(contentDiv).empty();
 	$('#container').prepend('<div id="main-menu" class="sidebar sidebar-static-width" style="display: none"><div id="menuPin" class="hidden-xs hidden-sm"><span title="Click to pin menu" style="float: right;margin-right: 15px;margin-top: 18px;cursor: pointer;color: rgba(0,0,0,0.5);"><i id="pin-menu-icon" class="fa fa-map-pin fa-lg"></i></span></div><div id="menu" class="sidebar-collapse"></div></div>');
-	setUpMenuPin();
+	
 	
 	$('#mainContainer').addClass('sidebar-active');
 	
@@ -412,6 +452,8 @@ function home(data) {
 			}
 			
 			log("Received menu state");
+			
+			setUpMenuPin(menuStates);
 			
 			menuList = data;
 			
