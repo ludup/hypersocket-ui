@@ -276,7 +276,7 @@ function processLogon(data, opts, message) {
 				$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 				$('#resetLogon').click(function(e) {
 					e.preventDefault();
-					getJSON('logon/switchRealm/' + opts.scheme + '/' + encodeURIComponent(data.realm.name) + '/', null, function(data) {
+					getJSON('logon/reset/' + opts.scheme, null, function(data) {
 						showLogon(null, opts);
 					});
 				});
