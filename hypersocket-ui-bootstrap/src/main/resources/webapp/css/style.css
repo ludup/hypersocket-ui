@@ -2502,8 +2502,9 @@ button#logonButton {
 @media ( max-width : 767px) {
 	
 form#logonForm {
-	margin-top: 50px;
+	margin-top: 25px;
 	padding: 15px;
+	width: 400px;
 }
 
 .form-signin {
@@ -2538,7 +2539,6 @@ form#logonForm {
 }
 
 .form-scheme-heading {
-	padding-top: 20px;
 	text-align: center;
 	font-size: 18px;
 }
