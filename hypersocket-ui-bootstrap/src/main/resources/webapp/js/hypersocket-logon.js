@@ -197,7 +197,7 @@ function processLogon(data, opts, message) {
 				} else if(this.type == 'checkbox') {
 				    $('#logonForm')
                             .append(
-                                '<div class="logonInput checkbox"><label id="'+ this.resourceKey + 'Label">'
+                                '<div class="logonInput checkbox center"><label id="'+ this.resourceKey + 'Label">'
                                 + '<input  type="' + this.type + '" name="'
                                 + this.resourceKey
                                 + '" id="' + this.resourceKey + '" value="' + this.defaultValue
@@ -245,6 +245,9 @@ function processLogon(data, opts, message) {
 					}
 				}
 
+                if(this.classes) {
+                	$('#' + this.resourceKey).addClass(this.classes);
+                }
 			});
 		}
 
