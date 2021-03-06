@@ -340,6 +340,19 @@ Date.prototype.format = function (mask, utc) {
 	}
 };
 
+function formatTime(ms) {
+	if (ms < 60000)
+		return parseInt(ms / 1000) + 's';
+	else if (ms < 120000)
+		return '1m ' + parseInt((ms - 60000) / 1000) + 's';
+	else if (ms < 3600000)
+		return parseInt(ms / 60000) + 'm';
+	else if (ms < 7200000)
+		return '1h ' + parseInt((ms - 3600000) / 60000) + 'm';
+	else
+		return parseInt(ms / 3600000) + 'h';
+}
+
 function makeVariableSafe(v) {
 	if(typeof v == 'string') {
 		if(v === 'true') {
