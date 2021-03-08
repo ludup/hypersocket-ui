@@ -173,10 +173,10 @@ button.row-additional::after {display: none;}
 	margin: 0 auto;
 }
 
-.form-signin a {
-	margin-top: 10px;
-	text-align: center;
-}
+/* .form-signin a { */
+/* 	margin-top: 10px; */
+/* 	text-align: center; */
+/* } */
 
 .form-signin .form-signin-heading, .form-signin .checkbox {
 	margin-bottom: 10px;
@@ -255,10 +255,9 @@ button.row-additional::after {display: none;}
 	margin: 25px auto;
 }
 
-.logonInput {
-	position: relative;
-	overflow: auto;
-}
+/* .logonInput { */
+	
+/* } */
 
 .excludedList {
 	width: 100%;
@@ -2462,7 +2461,6 @@ form#logonForm {
 }
 
 .form-signin {
-	padding-top: 30px;
 	margin: 0 auto;
 }
 
