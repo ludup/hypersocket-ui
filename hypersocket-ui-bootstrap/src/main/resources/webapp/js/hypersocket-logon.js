@@ -85,9 +85,18 @@ function processLogon(data, opts, message) {
 
 		opts.formContent.append(
 			'<div><form id="logonForm" autocomplete="off" class="panel panel-default ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
-
+	debugger;
 		if (data['errorMsg']) {
-			showError(data['errorMsg']);
+			if("success" === data['errorStyle']) {
+				showSuccess(data['errorMsg']);
+			} else if("info" ===  data['errorStyle']) {
+				showInformation(data['errorMsg']); 
+			} else if("warning" ===  data['errorStyle']) {
+				showWarning(data['errorMsg']); 
+			} else {
+				showError(data['errorMsg']);
+			}
+			
 		}
 
 
@@ -152,48 +161,52 @@ function processLogon(data, opts, message) {
 
 				if (this.type == 'select') {
 
-					$('#logonForm').append('<div class="logonInput"><select class="logonSelect" name="'
-							+ this.resourceKey + '" id="' + this.resourceKey
-							+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
-							+ '"/></div>');
-					currentKey = this.resourceKey;
-					var changeFunc = this.onChange;
-					$.each(
-						this.options,
-						function() {
-							option = '<option';
-							if (this.selected) {
-								option += ' selected';
-							}
-							if (this.value) {
-								option += ' value="' + this.value + '"';
-							}
-							option += '>' + (this.isNameResourceKey ? getResource(this.name) : this.name) + '</option>';
-							$('#' + currentKey).append(option);
-					});
-					var changeFunc = this.onChange;
-					$('#' + currentKey).change(function() {
-
-						if(window[changeFunc]) {
-							window[changeFunc]($(this), opts);
-						}
-					});
-
-//					$('#logonForm').append('<div id="' + this.resourceKey + 'Select"></div>');
-//					this.isWidget = true;
-//					currentKey = this.resourceKey + 'Select';
+//					$('#logonForm').append('<div class="logonInput"><select class="logonSelect" name="'
+//							+ this.resourceKey + '" id="' + this.resourceKey
+//							+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
+//							+ '"/></div>');
+//					currentKey = this.resourceKey;
 //					var changeFunc = this.onChange;
-//					var options = this.options;
-//
-//					$('#' + currentKey).textDropdown({
-//						values: options,
-//						selectedIsObjectList: true,
-//						changed: function(widget) {
-//							if(window[changeFunc]) {
-//								window[changeFunc](widget, opts);
+//					$.each(
+//						this.options,
+//						function() {
+//							option = '<option';
+//							if (this.selected) {
+//								option += ' selected';
 //							}
+//							if (this.value) {
+//								option += ' value="' + this.value + '"';
+//							}
+//							option += '>' + (this.isNameResourceKey ? getResource(this.name) : this.name) + '</option>';
+//							$('#' + currentKey).append(option);
+//					});
+//					var changeFunc = this.onChange;
+//					$('#' + currentKey).change(function() {
+//
+//						if(window[changeFunc]) {
+//							window[changeFunc]($(this), opts);
 //						}
 //					});
+					debugger;
+					$('#logonForm').append('<div class="logonInput"><div id="' + this.resourceKey + 'Select"></div></div>');
+					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
+					this.isWidget = true;
+					currentKey = this.resourceKey + 'Select';
+					var changeFunc = this.onChange;
+					var options = this.options;
+					var resourceKey = this.resourceKey;
+					$('#' + currentKey).textDropdown({
+						values: options,
+						value: this.defaultValue,
+						selectedIsObjectList: true,
+						changed: function(widget) {
+						    debugger;
+						    $('#' + resourceKey).val(widget.getValue());
+							if(window[changeFunc]) {
+								window[changeFunc](widget, opts);
+							}
+						}
+					});
 				} else if(this.type == 'checkbox') {
 				    $('#logonForm')
                             .append(
