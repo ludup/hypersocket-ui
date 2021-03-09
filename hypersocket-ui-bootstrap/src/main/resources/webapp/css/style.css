@@ -167,7 +167,6 @@ pre {
 
 .form-signin button {
 	margin-top: 20px;
-	margin-top: 20px;
 }
 
 .form-horizontal .form-group {
@@ -1238,6 +1237,22 @@ header .navbar {
 	valign: middle;
 	text-align: right;
 	padding-right: 0px;
+}
+
+.fileInputActions {
+	valign: middle;
+	text-align: left;
+	padding-left: 0px;
+	margin-top: 10px;
+}
+
+.fileInputActions a {
+	margin-right: 15px;
+	margin-left: 0px;
+}
+
+.fileInputActions .btn i {
+	margin: 0;
 }
 
 .dialogActions a {

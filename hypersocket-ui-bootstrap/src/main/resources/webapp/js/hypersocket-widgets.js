@@ -3901,13 +3901,13 @@ $.fn.fileUploadInput = function(data) {
 			}, data);
 
 	var id = checkElementHasId($(this)).attr('id') + "FileUpload";
-	var html =	'<div id="' + id + '" class="col-xs-8" style="padding-left: 0px;">'
+	var html =	'<div id="' + id + '" class="col-xs-12" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
-			+	'<div class="propertyValue col-xs-4 dialogActions" id="' + id + 'Buttons">'
+			+	'<div class="propertyValue col-xs-12 fileInputActions" id="' + id + 'Buttons">'
 			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
 			+	'</div>'
-			+	'<div class="col-xs-8 uploadProgress">'
+			+	'<div class="col-xs-12 uploadProgress">'
 			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
 			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
 			+	'	</div>'
@@ -3937,7 +3937,7 @@ $.fn.fileUploadInput = function(data) {
 		}
 
 		formattedHtml = '<div class="file-upload-info">'
-					+	'	<span>' + data.fileName + '</span><br>';
+					+	'	<span>' + data.fileName.slice(-20) + '</span><br>';
 
 		if(options.detailedView) {
 			formattedHtml +=	'	<span>' + fileSize + '</span><br>'
@@ -4245,7 +4245,7 @@ $.fn.profileImage = function(data) {
 
     var id = checkElementHasId($(this)).attr('id') + "ProfileImage";
 	var html = '<div id="' + id + 'Preview" class="col-md-4 text-center">';
-	html += '<img src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview" width="128"/>';
+	html += '<img src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview" width="96"/>';
 	html += '</div>';
 	html += '<div id="' + id + 'Upload" class="col-md-8">';
 	html += '</div>';
@@ -4264,7 +4264,7 @@ $.fn.profileImage = function(data) {
 		url: basePath + '/api/files/image',
 		disabled: options.disabled,
 		showDownloadButton: true,
-		showUploadButton: true,
+		showUploadButton: false,
 		showDeleteButton: true,
 		automaticUpload: true,
 		showDownloadLink: false,
@@ -4273,18 +4273,18 @@ $.fn.profileImage = function(data) {
 		value: val,
 		uploaded: function(resource) {
 			$('#' + id + 'Preview img').remove();
-			$('#' + id + 'Preview').append('<img width="128" height="128" src="' + basePath + '/api/files/public/' + resource.name + '" id="' + id + 'Preview"/>');
+			$('#' + id + 'Preview').append('<img width="96" src="' + basePath + '/api/files/public/' + resource.name + '" id="' + id + 'Preview"/>');
 		},
 		removed: function() {
 			$('#' + id + 'Preview img').remove();
-			$('#' + id + 'Preview').append('<img src="' + basePath + '/api/userLogo/fetch/__DEFAULT__" id="' + id + 'Preview" width="128"/>');
+			$('#' + id + 'Preview').append('<img src="' + basePath + '/api/userLogo/fetch/__DEFAULT__" id="' + id + 'Preview" width="96"/>');
 		},
 		changed: function(callback) {
 			if(options.changed) {
 				options.changed(callback);
 			}
 			$('#' + id + 'Preview img').remove();
-			$('#' + id + 'Preview').append('<img src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview" width="128"/>');
+			$('#' + id + 'Preview').append('<img src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview" width="96"/>');
 		}
 	});
 }

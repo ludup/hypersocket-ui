@@ -23,7 +23,11 @@ public class IncludeContentFilter implements ContentFilter {
 	private List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
 	private String headerHtml;
 	private String footerHtml;
-
+	private String brandlessHeader;
+	private String brandlessFooter;
+	private String navHeader;
+	private String navFooter;
+	
 	public IncludeContentFilter() throws IOException {
 
 		InputStream in = getClass().getResourceAsStream("/webapp/header.html");
@@ -39,6 +43,26 @@ public class IncludeContentFilter implements ContentFilter {
 		} finally {
 			IOUtils.closeQuietly(in);
 		}
+		
+		in = getClass().getResourceAsStream("/webapp/navHeader.html");
+		try {
+			navHeader = IOUtils.toString(in, "UTF-8");
+		} finally {
+			IOUtils.closeQuietly(in);
+		}
+		
+		in = getClass().getResourceAsStream("/webapp/navFooter.html");
+		try {
+			navFooter = IOUtils.toString(in, "UTF-8");
+		} finally {
+			IOUtils.closeQuietly(in);
+		}
+		
+		brandlessHeader = headerHtml;
+		brandlessFooter = footerHtml;
+		headerHtml += navHeader;
+		footerHtml = navFooter + footerHtml;
+		
 	}
 	
 
@@ -48,7 +72,9 @@ public class IncludeContentFilter implements ContentFilter {
 		MapTokenResolver resolver = new MapTokenResolver();
 		resolver.addToken("header", headerHtml);
 		resolver.addToken("footer", footerHtml);
-
+		resolver.addToken("brandlessHeader", brandlessHeader);
+		resolver.addToken("brandlessFooter", brandlessFooter);
+		
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
 
@@ -73,6 +99,17 @@ public class IncludeContentFilter implements ContentFilter {
 	public void setFooter(String footerHtml) {
 		this.footerHtml = footerHtml;
 	}
+	
+
+	public void setBrandlessHeader(String brandlessHeader) {
+		this.brandlessHeader = brandlessHeader;
+	}
+
+
+	public void setBrandlessFooter(String brandlessFooter) {
+		this.brandlessFooter = brandlessFooter;
+	}
+
 
 	@Override
 	public Integer getWeight() {
