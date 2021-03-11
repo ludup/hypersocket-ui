@@ -8,8 +8,7 @@ html {
 }
 body {
 	background: #f8f8f8;
-	font: 12px "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans",
-		Verdana, Tahoma, sans-serif;
+	font-size: 12px;
 	height: 100%;
 }
 
