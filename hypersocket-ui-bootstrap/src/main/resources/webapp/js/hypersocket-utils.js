@@ -550,22 +550,34 @@ function getAnchorByName(name) {
     return results == null ? "" : decodeFormParameter(results[1]);
 }
 
-function assertResources(callback) {
+function loadResources(callback) {
 	if(!$(document).data('i18n')) {
-		loadResources(callback);
-	} else {
+		var existingCallback = $(document).data('i18n_cb');
+		/* The resources might still be loading from a previous call, so we
+		   need to add this new callback to run after the previous callback */
+		if(callback) {
+			if(existingCallback)
+				/* Existing callback, so already loading */
+				$(document).data('i18n_cb', function() {
+					existingCallback();
+					callback();
+				});
+			else {
+				$(document).data('i18n_cb', callback);
+				doLoadResources();
+			}
+		}
+		else if(!existingCallback)
+			doLoadResources();
+	} else if(callback) {
 		callback();
 	}
 }
 
-function loadResources(callback) {
-	loadResourcesUrl('i18n', callback);
-}
-
-function loadResourcesUrl(url, callback) {
-
-	getJSON(url, null, function(data) {
+function doLoadResources() {
+	getJSON('i18n', null, function(data) {
 		$(document).data('i18n', data);
+		var callback = $(document).data('i18n_cb');
 		if(callback) {
 			callback();
 		}
