@@ -149,7 +149,8 @@ function closeMenu() {
 function setUpMenuMakePinned() {
 	let pinContainer = $("#menuPin");
 	let menu = $("#main-menu");
-	let container = $("#mainContainer");
+	let container = $("#container");
+	let viewContainer = $("#mainContainer");
 	let content = $("#content");
 	let icon = $("#pin-menu-icon");
 	let burger = $("#burger-toggle");
@@ -177,25 +178,32 @@ function setUpMenuMakePinned() {
 	
 	menu.css("display", "block");
 	
-	container.removeClass("col-md-12");
-	container.removeClass("col-sm-12");
+	viewContainer.removeClass("col-md-12");
+	viewContainer.removeClass("col-sm-12");
 
-	container.removeClass("col-sm-8");
-	container.removeClass("col-md-9");
-	container.removeClass("col-lg-10");
-
-	container.addClass("col-sm-8");
-	container.addClass("col-md-9");
-	container.addClass("col-lg-10");
+	viewContainer.removeClass("col-sm-8");
+	viewContainer.removeClass("col-md-9");
+	viewContainer.removeClass("col-lg-10");
 
 	menu.css("position", "static");
 	menu.css("height", "100%");
 
 	menu.css("padding-right", "0px");
 	menu.css("padding-left", "0px");
-	menu.css("margin-left", "-15px");
 
 	content.css("margin-left", "0px");
+	content.removeClass("row");
+	
+	content.removeClass("col-sm-8");
+	content.removeClass("col-md-9");
+	content.removeClass("col-lg-10");
+	
+	content.addClass("col-sm-8");
+	content.addClass("col-md-9");
+	content.addClass("col-lg-10");
+	
+	container.removeClass("row");
+	container.addClass("row");
 	
 	saveMenuPinState(true);
 	
@@ -204,7 +212,8 @@ function setUpMenuMakePinned() {
 function setUpMenuRemovePinned() {
 	let pinContainer = $("#menuPin");
 	let menu = $("#main-menu");
-	let container = $("#mainContainer");
+	let container = $("#container");
+	let viewContainer = $("#mainContainer");
 	let content = $("#content");
 	let icon = $("#pin-menu-icon");
 	let burger = $("#burger-toggle");
@@ -223,17 +232,24 @@ function setUpMenuRemovePinned() {
 	menu.removeClass("col-md-3");
 	menu.removeClass("col-lg-2");
 
-	container.removeClass("col-sm-8");
-	container.removeClass("col-md-9");
-	container.removeClass("col-lg-10");
+	viewContainer.removeClass("col-sm-8");
+	viewContainer.removeClass("col-md-9");
+	viewContainer.removeClass("col-lg-10");
 
-	container.addClass("col-md-12");
-	container.addClass("col-sm-12");
+	viewContainer.addClass("col-md-12");
+	viewContainer.addClass("col-sm-12");
 
 	menu.css("position", "absolute");
 	menu.css("height", "inherit");
 
 	content.css("margin-left", "-15px");
+	content.addClass("row");
+	
+	content.removeClass("col-sm-8");
+	content.removeClass("col-md-9");
+	content.removeClass("col-lg-10");
+	
+	container.removeClass("row");
 
 	menu.css("padding-right", "0px");
 	menu.css("padding-left", "0px");
