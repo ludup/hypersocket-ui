@@ -185,7 +185,9 @@ function setUpMenuMakePinned() {
 	viewContainer.removeClass("col-md-9");
 	viewContainer.removeClass("col-lg-10");
 
-	menu.css("position", "static");
+	menu.css("position", "sticky");
+	menu.css("top", "0px");
+	menu.css("bottom", "0px");
 	menu.css("height", "100%");
 
 	menu.css("padding-right", "0px");
@@ -212,6 +214,7 @@ function setUpMenuMakePinned() {
 function setUpMenuRemovePinned() {
 	let pinContainer = $("#menuPin");
 	let menu = $("#main-menu");
+	let menuJS = document.getElementById("main-menu");
 	let container = $("#container");
 	let viewContainer = $("#mainContainer");
 	let content = $("#content");
@@ -257,6 +260,9 @@ function setUpMenuRemovePinned() {
 	menu.css("margin-left", "0px");
 
 	menu.addClass("sidebar-static-width");	
+	
+	menuJS.style.removeProperty("top");
+	menuJS.style.removeProperty("bottom");
 	
 	saveMenuPinState(false);
 	
