@@ -1369,7 +1369,11 @@ function getState(name, specific, callback){
 	}
 	getJSON('interfaceState/state/' + specific + '/' + name, null, function(data) {
 		if(callback){
-			callback(data);
+		    var prefs = {};
+		    if(data && data.resources && data.resources[0]) {
+		    	prefs = JSON.parse(data.resources[0].preferences); 
+		    }	
+			callback(data, prefs);
 		}
 	});
 }
