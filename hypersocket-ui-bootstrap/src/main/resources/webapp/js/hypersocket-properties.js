@@ -575,7 +575,7 @@ $.fn.tabPage = function(opts) {
 		'<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
 		+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
-		+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
+		+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body property-body"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 
 	var lastTab = null;
@@ -723,7 +723,7 @@ $.fn.propertyPage = function(opts) {
 							'<div class="row"><div class="col-xs-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fa ' 
 							+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
-							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body"><div id="' 
+							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body property-body"><div id="' 
 							+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 			
 			if (options.showButtons) {
