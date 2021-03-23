@@ -1485,7 +1485,11 @@ $.fn.samePageResourceView = function(params, params2) {
 			html += '<button id="' + dialog.attr('id') + 'Save" + class="btn btn-primary"><i class="fa fa-save"></i>' + getResource('text.save') + '</button>';
 		}
 		html += '</div>';
-		dialog.find('.panel-body').first().after(html);
+		if(dialog.find('.property-body').length > 0) {
+			dialog.find('.property-body').first().after(html);
+		} else {
+			dialog.find('.panel-body').first().after(html);
+		}
 		
 		if(save) {
 			$('#' + dialog.attr('id') + 'Save').click(function() {
