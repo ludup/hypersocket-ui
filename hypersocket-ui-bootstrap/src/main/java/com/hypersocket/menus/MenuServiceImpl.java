@@ -485,14 +485,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		});
 		
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
-				"setPassword", "fa-key", "password", 0,
-				null, null, UserPermission.UPDATE, PasswordPermission.RESET) {
-			public boolean isEnabled() {
-				return !realmService.isReadOnly(getCurrentRealm());
-			}
-		});
-		
-		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"resetProfile", "fa-ban", "resetProfile",
 				0, null, null, UserPermission.UPDATE, UserPermission.DELETE));
 
