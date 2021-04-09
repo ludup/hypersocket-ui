@@ -475,14 +475,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
 				null));
-
-		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
-				"setPassword", "fa-key", "password", 0,
-				null, null, UserPermission.UPDATE, PasswordPermission.RESET) {
-			public boolean isEnabled() {
-				return !realmService.isReadOnly(getCurrentRealm());
-			}
-		});
 		
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"setPassword", "fa-key", "password", 0,
