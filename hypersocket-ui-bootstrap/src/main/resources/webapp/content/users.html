@@ -528,6 +528,7 @@
 									return true;
 								},
 								clearDialog : function(create) {
+
 									$('#userName').val('');
 									$('#userName').attr('disabled', !create),
 									$('#userId').val('');
@@ -668,6 +669,8 @@
 									$('#userId').val(resource.id);
 
 									$('#tabPassword').hide();
+									$('#userProperties').parent().append($('#tabPassword').detach());
+									
 									$('#tabUserGroups').remove();
 									$('#userProperties').empty();
 
@@ -715,7 +718,7 @@
 												});
 										}
 
-										$('#userProperties').parent().append($('#tabPassword').detach());
+										
 
 
 										$('#userProperties').propertyPage({
