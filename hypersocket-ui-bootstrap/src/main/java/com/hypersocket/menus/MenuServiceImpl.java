@@ -485,6 +485,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		});
 		
 		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
+				"impersonateUser", "fa-male", "impersonateUser",
+				UserPermission.IMPERSONATE, 0, null, "canImpersonateUser"));
+		
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"resetProfile", "fa-ban", "resetProfile",
 				0, null, null, UserPermission.UPDATE, UserPermission.DELETE));
 
