@@ -1974,7 +1974,7 @@ select[multiple] {
 
 #feedbackPanel {
 	height: 400px;
-	overflow: scroll;
+	overflow: auto;
 }
 
 .contentSupportTunnel {
