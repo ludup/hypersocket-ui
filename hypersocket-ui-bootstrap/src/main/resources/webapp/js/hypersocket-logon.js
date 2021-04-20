@@ -85,7 +85,7 @@ function processLogon(data, opts, message) {
 
 		opts.formContent.append(
 			'<div><form id="logonForm" autocomplete="off" class="panel panel-default ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
-	debugger;
+
 		if (data['errorMsg']) {
 			if("success" === data['errorStyle']) {
 				showSuccess(data['errorMsg']);
@@ -187,7 +187,7 @@ function processLogon(data, opts, message) {
 //							window[changeFunc]($(this), opts);
 //						}
 //					});
-					debugger;
+
 					$('#logonForm').append('<div class="logonInput"><div id="' + this.resourceKey + 'Select"></div></div>');
 					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
 					this.isWidget = true;
@@ -200,7 +200,7 @@ function processLogon(data, opts, message) {
 						value: this.defaultValue,
 						selectedIsObjectList: true,
 						changed: function(widget) {
-						    debugger;
+
 						    $('#' + resourceKey).val(widget.getValue());
 							if(window[changeFunc]) {
 								window[changeFunc](widget, opts);

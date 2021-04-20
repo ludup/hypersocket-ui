@@ -932,7 +932,7 @@ $.fn.propertyPage = function(opts) {
 										}
 										obj = $.extend({
 											changed : function(widget) {
-											debugger;
+
 												if(options.onPropertyChange) {
 													options.onPropertyChange(widget.options().resourceKey, widget);
 												}
