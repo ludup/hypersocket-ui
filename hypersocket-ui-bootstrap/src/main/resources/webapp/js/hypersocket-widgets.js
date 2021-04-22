@@ -2439,12 +2439,12 @@ $.fn.multipleTextInput = function(data) {
 		if(this != dragSrcEl && $(this).hasClass(id + 'Draggable')){
 			dragSrcEl.innerHTML = this.innerHTML;
 			var dragId = dragSrcEl.getAttribute('id');
-			var dragValue = dragSrcEl.getAttribute('value');
+			var dragValue = $(dragSrcEl).data('value');
 			dragSrcEl.setAttribute('id', this.getAttribute('id'));
-			dragSrcEl.setAttribute('value', this.getAttribute('value'));
+			$(dragSrcEl).data('value', dragValue);
 			this.innerHTML = e.dataTransfer.getData('text/html');
 			this.setAttribute('id', dragId);
-			this.setAttribute('value', dragValue);
+			$(this).data('value', dragValue);
 			if (options.changed) {
 				options.changed(callback);
 			}
@@ -2507,11 +2507,12 @@ $.fn.multipleTextInput = function(data) {
 
 		if (options.values) {
 			$.each(options.values, function(idx, obj) {
-				var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span>' + he.encode(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+				var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + '"><span>' + he.encode(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				newElement.find('i.fa.fa-times').click(function(e){
 					removeElement(e);
 				});
 				toSelect.append(newElement);
+				newElement.data("value", encodeURIComponent(he.encode(obj)));
 				addListeners(newElement);
 			});
 		}
@@ -2550,11 +2551,13 @@ $.fn.multipleTextInput = function(data) {
             if (selectedText.trim() == '') {
                 return;
             }
-            var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(selectedText)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(selectedText)) + '"><span>' + he.encode(selectedText) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+		    var newElementId =  id + 'Li' + encodeURIComponent(he.encode(selectedText));
+            var newElement = $('<li id="' + newElementId + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + '"><span>' + he.encode(selectedText) + '</span>&ensp;<i class="fa fa-times"></i></li>');
             newElement.find('i.fa.fa-times').click(function(e){
                 removeElement(e);
             });
             toSelect.append(newElement);
+            $("#" + newElementId).data("value", encodeURIComponent(he.encode(selectedText)));
             addListeners(newElement);
             textInput.clear();
     		if (options.changed) {
@@ -2597,7 +2600,7 @@ $.fn.multipleTextInput = function(data) {
 					result = new Array();
 
 					$('#' + id + 'IncludedSelect li').each(function() {
-						result.push(decodeURIComponent(he.decode($(this).attr('value'))));
+						result.push(decodeURIComponent(he.decode($(this).data('value'))));
 					});
 					return result;
 				},
@@ -2642,12 +2645,14 @@ $.fn.multipleTextInput = function(data) {
 
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
-			var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + encodeURIComponent(he.encode(obj)) + '"><span class="wrap">' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
+			var newElementId = id + 'Li' + encodeURIComponent(he.encode(obj));
+			var newElement = $('<li id="' + newElementId + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + '"><span class="wrap">' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
 
 			newElement.find('i.fa.fa-times').click(function(e){
 				removeElement(e);
 			});
 			toSelect.append(newElement);
+			$("#" + newElementId).data("value", encodeURIComponent(he.encode(obj)));
 			addListeners(newElement);
 		});
 	}
