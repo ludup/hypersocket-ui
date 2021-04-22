@@ -261,7 +261,7 @@ function saveMenuPinState(state) {
 
 function setUpMenuPin(menuStates) {
 	// next cycle
-	setTimeout(() => {
+	setTimeout(function() {
 		
 		if (menuStates.pin) {
 			setUpMenuMakePinned();
