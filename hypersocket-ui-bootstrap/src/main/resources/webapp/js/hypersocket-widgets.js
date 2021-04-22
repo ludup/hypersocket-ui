@@ -2507,12 +2507,13 @@ $.fn.multipleTextInput = function(data) {
 
 		if (options.values) {
 			$.each(options.values, function(idx, obj) {
-				var newElement = $('<li id="' + id + 'Li' + encodeURIComponent(he.encode(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + '><span>' + he.encode(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+				var newElementId = (id + 'Li' + encodeURIComponent(he.encode(obj)));
+				var newElement = $('<li id="' + newElementId + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + '><span>' + he.encode(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				newElement.find('i.fa.fa-times').click(function(e){
 					removeElement(e);
 				});
 				toSelect.append(newElement);
-				newElement.data("value", encodeURIComponent(he.encode(obj)));
+				$(newElement).data("value", encodeURIComponent(he.encode(obj)));
 				addListeners(newElement);
 			});
 		}
@@ -2551,13 +2552,13 @@ $.fn.multipleTextInput = function(data) {
             if (selectedText.trim() == '') {
                 return;
             }
-		    var newElementId =  id + 'Li' + encodeURIComponent(he.encode(selectedText));
+		    var newElementId =  (id + 'Li' + encodeURIComponent(he.encode(selectedText)));
 		    var newElement = $('<li id="' + newElementId + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + '><span>' + he.encode(selectedText) + '</span>&ensp;<i class="fa fa-times"></i></li>');
             newElement.find('i.fa.fa-times').click(function(e){
                 removeElement(e);
             });
             toSelect.append(newElement);
-            $(document.getElementById((newElementId))).data("value", encodeURIComponent(he.encode(selectedText)));
+            $(newElement).data("value", encodeURIComponent(he.encode(selectedText)));
             addListeners(newElement);
             textInput.clear();
     		if (options.changed) {
@@ -2645,14 +2646,14 @@ $.fn.multipleTextInput = function(data) {
 
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
-			var newElementId =  id + 'Li' + encodeURIComponent(he.encode(obj));
+			var newElementId =  (id + 'Li' + encodeURIComponent(he.encode(obj)));
 			var newElement = $('<li id="' + newElementId + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + '><span class="wrap">' + obj + '</span>&ensp;<i class="fa fa-times"></i></li>');
 
 			newElement.find('i.fa.fa-times').click(function(e){
 				removeElement(e);
 			});
 			toSelect.append(newElement);
-			$(document.getElementById((newElementId))).data("value", encodeURIComponent(he.encode(obj)));
+			$(newElement).data("value", encodeURIComponent(he.encode(obj)));
 			addListeners(newElement);
 		});
 	}
