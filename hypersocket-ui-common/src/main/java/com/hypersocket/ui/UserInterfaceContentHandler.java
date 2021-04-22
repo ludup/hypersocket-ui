@@ -123,12 +123,12 @@ public class UserInterfaceContentHandler implements ContentHandler {
 				File webappFolder = new File(path, "src" + File.separator
 						+ "main" + File.separator + "resources"
 						+ File.separator + "webapp");
-				if(log.isInfoEnabled()) {
-					log.info("Checking workspace folder " + webappFolder.getPath());
+				if(log.isDebugEnabled()) {
+					log.debug("Checking workspace folder " + webappFolder.getPath());
 				}
 				if (webappFolder.exists()) {
-					if(log.isInfoEnabled()) {
-						log.info("Adding JQuery UI content folder " + webappFolder.getPath());
+					if(log.isDebugEnabled()) {
+						log.debug("Adding JQuery UI content folder " + webappFolder.getPath());
 					}
 					if(handler==null) {
 						handler = new FileContentHandler("webapp", 1000,
