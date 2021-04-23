@@ -4282,10 +4282,12 @@ $.fn.profileImage = function(data) {
 		}, data);
 
     var id = checkElementHasId($(this)).attr('id') + "ProfileImage";
-	var html = '<div id="' + id + 'Preview" class="col-md-4 text-center">';
+    var html = '<div class="lb-row">';
+	html += '<div id="' + id + 'Preview" class="col-md-4 text-center">';
 	html += '<img src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview" width="96"/>';
 	html += '</div>';
 	html += '<div id="' + id + 'Upload" class="col-md-8">';
+	html += '</div>';
 	html += '</div>';
 	
 	$(this).append(html);
