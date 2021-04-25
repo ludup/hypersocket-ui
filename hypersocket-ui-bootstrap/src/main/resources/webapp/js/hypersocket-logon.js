@@ -110,14 +110,14 @@ function processLogon(data, opts, message) {
 			$('#logonForm').before('<h1 class="form-scheme-heading">' 
 					+ getResourceOrDefault(data.formTemplate.scheme 
 					+ '.logon.title', data.formTemplate.scheme ) + '</h1>');
-
+			debugger;
 			$.each(data.formTemplate.inputFields, function() {
 				if (this.type == 'hidden') {
 					$('#logonForm').append('<input type="' + this.type + '" name="'
 								+ this.resourceKey + '" autocomplete="off" id="'
 								+ this.resourceKey + '" value="'
 								+ stripNull(this.defaultValue) + '"/>');
-					return;
+
 				} else if (this.type == 'p') {
 					if(this.valueResourceKey) {
 						$('#logonForm').append('<p class="center' + (this.alert ? ' alert alert-' + this.alertType : '') + '">' + getResource(this.defaultValue) + '</p>');
@@ -125,7 +125,7 @@ function processLogon(data, opts, message) {
 						$('#logonForm').append('<p class="center' + (this.alert ? ' alert alert-' + this.alertType : '') + '">' + this.defaultValue + '</p>');
 					}
 
-					return;
+
 				} else if (this.type == 'pre') {
 					if(this.valueResourceKey) {
 						$('#logonForm').append('<pre>' + getResource(this.defaultValue) + '</pre>');
@@ -133,19 +133,19 @@ function processLogon(data, opts, message) {
 						$('#logonForm').append('<pre>' + stripNull(this.defaultValue) + '</pre>');
 					}
 
-					return;
+
 				} else if(this.type == 'a') {
 					links.push(this);
-					return;
+
 				} else if(this.type == 'script') {
 					scripts.push(this);
-					return;
+
 				} else if(this.type == 'div') {
 					$('#logonForm').append('<div id="' + this.resourceKey + '"></div>');
 					$('#' + this.resourceKey).load(replacePaths(this.defaultValue), function() {
 
 					});
-					return;
+
 				} else if(this.type == 'html') {
 					$('#logonForm').append('<div id="' + this.resourceKey + '" class="' + this.classes + '"></div>');
 					$('#' + this.resourceKey).html(replacePaths(this.defaultValue));
@@ -156,39 +156,49 @@ function processLogon(data, opts, message) {
 					} else {
 						$('#logonForm').append('<div class="center' + (this.styleClass ? ' ' + this.styleClass : '' ) + '"><img id="' + this.resourceKey + '" ' + (this.alt ? 'alt="' + this.alt + '" ' : '' ) + 'src="' + replacePaths(this.defaultValue) + '"' + (this.width ? 'width=' + this.width : '' ) + '></img></div>');
 					}
-					return;
-				}
+				} else if(this.type == 'countries') {
+					$('#logonForm').append(
+								'<div class="logonInput">' 
+									+ (isIE() ?
+									 ('<div class="clear"><span class="help-block">' 
+									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
+									+ '</span></div>') : '')
+								+ '<div id="' + this.resourceKey + 'Select"></div>' 
+								+ (this.help ? '<div class="clear"><span class="help-block">' + this.help + '</span></div>' : '')
+								+ '</div>');
+					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
 
-				if (this.type == 'select') {
+					this.isWidget = true;
+					currentKey = this.resourceKey + 'Select';
+					var changeFunc = this.onChange;
+					var options = countries;
+					var resourceKey = this.resourceKey;
+					$('#' + currentKey).textDropdown({
+						values: options,
+						value: this.defaultValue,
+						placeholder: this.label,
+						valueAttr: 'code',
+						selectedIsObjectList: true,
+						changed: function(widget) {
+						    $('#' + resourceKey).val(widget.getValue());
+							if(window[changeFunc]) {
+								window[changeFunc](widget, opts);
+							}
+						}
+					});
 
-//					$('#logonForm').append('<div class="logonInput"><select class="logonSelect" name="'
-//							+ this.resourceKey + '" id="' + this.resourceKey
-//							+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
-//							+ '"/></div>');
-//					currentKey = this.resourceKey;
-//					var changeFunc = this.onChange;
-//					$.each(
-//						this.options,
-//						function() {
-//							option = '<option';
-//							if (this.selected) {
-//								option += ' selected';
-//							}
-//							if (this.value) {
-//								option += ' value="' + this.value + '"';
-//							}
-//							option += '>' + (this.isNameResourceKey ? getResource(this.name) : this.name) + '</option>';
-//							$('#' + currentKey).append(option);
-//					});
-//					var changeFunc = this.onChange;
-//					$('#' + currentKey).change(function() {
-//
-//						if(window[changeFunc]) {
-//							window[changeFunc]($(this), opts);
-//						}
-//					});
+				} else if (this.type == 'select') {
 
-					$('#logonForm').append('<div class="logonInput"><div id="' + this.resourceKey + 'Select"></div></div>');
+					$('#logonForm').append(
+								'<div class="logonInput">' 
+									+ (isIE() ?
+									 ('<div class="clear"><span class="help-block">' 
+									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
+									+ '</span></div>') : '')
+								+ '<div id="' + this.resourceKey + 'Select"></div>' 
+								+ (this.help ? '<div class="clear"><span class="help-block">' + this.help + '</span></div>' : '')
+								+ '</div>');
+								
 					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
 					this.isWidget = true;
 					currentKey = this.resourceKey + 'Select';
@@ -197,6 +207,7 @@ function processLogon(data, opts, message) {
 					var resourceKey = this.resourceKey;
 					$('#' + currentKey).textDropdown({
 						values: options,
+						placeholder: this.label,
 						value: this.defaultValue,
 						selectedIsObjectList: true,
 						changed: function(widget) {
@@ -207,6 +218,26 @@ function processLogon(data, opts, message) {
 							}
 						}
 					});
+				} else if(this.type == 'radio') {
+					
+					var _this = this;
+					var html = '<div class="logonInput radio "><fieldset id="' + this.resourceKey + '">'
+					$.each(this.options, function(idx, obj) {
+						html += '<p><strong>'
+                                + '<input  type="radio" name="'
+                                + _this.resourceKey
+                                + '" value="' + obj.value
+                                 + '"/>'
+                                + obj.name
+                                + '</strong></p>';	
+						if(obj.description) {
+							html += '<p>' + getResourceOrText(obj.description) + '</p>';
+						}
+					});
+				    
+					html += "</div></div>";
+					$('#logonForm').append(html);
+					
 				} else if(this.type == 'checkbox') {
 				    $('#logonForm')
                             .append(
@@ -232,12 +263,13 @@ function processLogon(data, opts, message) {
 							    (' placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '"'))
 						+ ' id="' + this.resourceKey + '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 						+ '">' + stripNull(this.defaultValue) + '</textarea>' 
+						+ (this.help ? '<div class="clear"><span class="help-block">' + this.help + '</span></div>' : '')
 						+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
 						setFocus = true;
 					}
-				}else {
+				} else {
 					$('#logonForm')
 							.append(
 								'<div class="logonInput">' 
@@ -251,6 +283,7 @@ function processLogon(data, opts, message) {
 								+ ' id="' + this.resourceKey + '" value="' + stripNull(this.defaultValue)
 								+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 								+ '"' + (this.readOnly ? 'readonly="readonly"' : '' ) + '>' 
+								+ (this.help ? '<div class="clear"><span class="help-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
@@ -332,7 +365,8 @@ function processLogon(data, opts, message) {
 							data['formTemplate']['inputFields'],
 							function() {
 
-							    var elem = $('#' + this.resourceKey);
+								
+							    var elem = this.type === 'radio' ? $('input[name="' + this.resourceKey + '"]:checked') : $('#' + this.resourceKey);
 								var name = encodeURIComponent(this.resourceKey);
 								var value = encodeURIComponent(elem.val());
 

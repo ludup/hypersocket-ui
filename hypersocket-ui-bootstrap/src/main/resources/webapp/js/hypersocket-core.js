@@ -4,6 +4,7 @@ var currentMenu = null;
 var currentRealm = null;
 var currentRole = null;
 var countries = null;
+var dialingCodes = null;
 var restartAutoLogoff = false;
 var menuList = null;
 var allMenus = new Array();
@@ -14,6 +15,17 @@ doAjax({
     dataType: "text",
     success: function(data) {
     	countries = $.parseJSON(data);
+    }
+});
+
+doAjax({
+    url: uiPath + 'json/international-codes.json',
+    dataType: "text",
+    success: function(data) {
+    	dialingCodes = $.parseJSON(data);
+    	$.each(dialingCodes, function(idx, obj) {
+    		obj.displayName = obj.name + ' ' + obj.dial_code;
+    	});
     }
 });
 
