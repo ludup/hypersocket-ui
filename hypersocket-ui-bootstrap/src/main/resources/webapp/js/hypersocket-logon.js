@@ -84,11 +84,7 @@ function processLogon(data, opts, message) {
 		removeMessage();
 
 		opts.formContent.append(
-<<<<<<< HEAD
 			'<div class="col"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
-=======
-			'<div><form id="logonForm" autocomplete="off" class="panel panel-default ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
->>>>>>> e5a1cc7a... Completed initial offering of 2FA.
 
 		if (data['errorMsg']) {
 			if("success" === data['errorStyle']) {
