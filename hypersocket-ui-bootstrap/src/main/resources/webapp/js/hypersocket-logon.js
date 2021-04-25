@@ -84,7 +84,11 @@ function processLogon(data, opts, message) {
 		removeMessage();
 
 		opts.formContent.append(
+<<<<<<< HEAD
 			'<div class="col"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
+=======
+			'<div><form id="logonForm" autocomplete="off" class="panel panel-default ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
+>>>>>>> e5a1cc7a... Completed initial offering of 2FA.
 
 		if (data['errorMsg']) {
 			if("success" === data['errorStyle']) {
@@ -165,8 +169,10 @@ function processLogon(data, opts, message) {
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 								+ '<div id="' + this.resourceKey + 'Select"></div>' 
+								+ (this.help ? '<div class="clear"><span class="help-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
+
 					this.isWidget = true;
 					currentKey = this.resourceKey + 'Select';
 					var changeFunc = this.onChange;
@@ -175,6 +181,7 @@ function processLogon(data, opts, message) {
 					$('#' + currentKey).textDropdown({
 						values: options,
 						value: this.defaultValue,
+						placeholder: this.label,
 						valueAttr: 'code',
 						selectedIsObjectList: true,
 						changed: function(widget) {
@@ -194,6 +201,7 @@ function processLogon(data, opts, message) {
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 								+ '<div id="' + this.resourceKey + 'Select"></div>' 
+								+ (this.help ? '<div class="clear"><span class="help-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 								
 					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
@@ -204,6 +212,7 @@ function processLogon(data, opts, message) {
 					var resourceKey = this.resourceKey;
 					$('#' + currentKey).textDropdown({
 						values: options,
+						placeholder: this.label,
 						value: this.defaultValue,
 						selectedIsObjectList: true,
 						changed: function(widget) {
@@ -226,7 +235,7 @@ function processLogon(data, opts, message) {
                                  + '"/>'
                                 + obj.name
                                 + '</strong></p>';	
-						if(obj.description !== '') {
+						if(obj.description) {
 							html += '<p>' + getResourceOrText(obj.description) + '</p>';
 						}
 					});
@@ -259,6 +268,7 @@ function processLogon(data, opts, message) {
 							    (' placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '"'))
 						+ ' id="' + this.resourceKey + '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 						+ '">' + stripNull(this.defaultValue) + '</textarea>' 
+						+ (this.help ? '<div class="clear"><span class="help-block">' + this.help + '</span></div>' : '')
 						+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
@@ -278,6 +288,7 @@ function processLogon(data, opts, message) {
 								+ ' id="' + this.resourceKey + '" value="' + stripNull(this.defaultValue)
 								+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 								+ '"' + (this.readOnly ? 'readonly="readonly"' : '' ) + '>' 
+								+ (this.help ? '<div class="clear"><span class="help-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();

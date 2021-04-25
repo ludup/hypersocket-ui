@@ -1104,6 +1104,7 @@ $.fn.autoComplete = function(data) {
 	
     var html = '<div class="input-group dropdown"><input type="hidden" id="' + id
 			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" autocomplete="off" data-toggle="dropdown"' : 'class="form-control"')
+			+ (options.placeholder ? ' placeholder="' + options.placeholder + '"' : '')
 			+ ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
 			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>';
     
