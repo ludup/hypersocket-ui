@@ -564,6 +564,10 @@ function getAnchorByName(name) {
 }
 
 function loadResources(callback) {
+	loadResourcesWithGroup('_default_i18n_group', callback);
+}
+
+function loadResourcesWithGroup(group, callback) {
 	if(!$(document).data('i18n')) {
 		var existingCallback = $(document).data('i18n_cb');
 		/* The resources might still be loading from a previous call, so we
@@ -577,18 +581,23 @@ function loadResources(callback) {
 				});
 			else {
 				$(document).data('i18n_cb', callback);
-				doLoadResources();
+				doLoadResourcesWithGroup(group);
 			}
 		}
 		else if(!existingCallback)
-			doLoadResources();
+			doLoadResourcesWithGroup(group);
 	} else if(callback) {
 		callback();
 	}
 }
 
 function doLoadResources() {
-	getJSON('i18n', null, function(data) {
+	doLoadResourcesWithGroup('_default_i18n_group');
+
+};
+
+function doLoadResourcesWithGroup(group) {
+	getJSON('i18n/group/' + group, null, function(data) {
 		$(document).data('i18n', data);
 		var callback = $(document).data('i18n_cb');
 		if(callback) {
