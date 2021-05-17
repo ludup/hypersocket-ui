@@ -79,7 +79,7 @@
 											google-translate-v2-java-maven-plugin
 										</artifactId>
 										<versionRange>
-											[0.0.5-SNAPSHOT,)
+											[0.9.0-SNAPSHOT,)
 										</versionRange>
 										<goals>
 											<goal>translate</goal>
