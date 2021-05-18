@@ -780,7 +780,7 @@ $.fn.propertyPage = function(opts) {
 								}
 								
 								if(this.displayMode && this.displayMode != '') {
-									if(!options.displayMode.contains(this.displayMode)) {
+									if(options.displayMode && !options.displayMode.contains(this.displayMode)) {
 										return;
 									}
 								}
@@ -927,7 +927,7 @@ $.fn.propertyPage = function(opts) {
 										var allowEdit = options.canUpdate;
 										
 										if(allowEdit && obj.editMode && obj.editMode != '') {
-											if(!options.displayMode.contains(obj.editMode)) {
+											if(options.displayMode && !options.displayMode.contains(obj.editMode)) {
 												allowEdit = false;
 											}
 										}
@@ -982,7 +982,7 @@ $.fn.propertyPage = function(opts) {
 										}
 										
 										if(obj.displayMode && obj.displayMode != '') {
-											if(!options.displayMode.contains(obj.displayMode)) {
+											if(options.displayMode && !options.displayMode.contains(obj.displayMode)) {
 												if(!obj.disableMode) {
 													return;
 												}
