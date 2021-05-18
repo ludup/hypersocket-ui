@@ -926,7 +926,7 @@ $.fn.propertyPage = function(opts) {
 										var allowEdit = options.canUpdate;
 										
 										if(allowEdit && obj.editMode && obj.editMode != '') {
-											if(!options.displayMode.contains(obj.editMode)) {
+											if(options.displayMode && !options.displayMode.contains(obj.editMode)) {
 												allowEdit = false;
 											}
 										}
