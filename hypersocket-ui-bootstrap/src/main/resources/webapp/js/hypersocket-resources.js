@@ -256,7 +256,7 @@ $.fn.resourceTable = function(params) {
 		}
 		getState(divName+'-infoPanel', true, function(data) {
 			if(data.resources.length == 0 || data.resources[0].show) {
-				theDiv.after('<div id="infoPanel" class="col-xs-12"><div class="alert alert-info"><i class="fa fa-2x fa-info"></i><i id="messageDismiss" '
+				theDiv.after('<div id="infoPanel" class="col-xs-12"><div class="alert alert-info"><i class="fa fa-info"></i><i id="messageDismiss" '
 						+ 'class="fa fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
 			
 				$('.dismiss-icon').click(function(e) {
