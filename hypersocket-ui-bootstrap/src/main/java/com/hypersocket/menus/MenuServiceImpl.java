@@ -813,7 +813,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			return null;
 		} else if (!canReadMenu(m)) {
 			if (log.isDebugEnabled()) {
-				log.debug(getCurrentPrincipal().getRealm() + "/"
+				log.debug(getCurrentPrincipal().getRealm().getName()+ "/"
 						+ getCurrentPrincipal().getName()
 						+ " does not have access to "
 						+ m.getResourceKey()
@@ -828,7 +828,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						m.getReadPermission());
 			} catch (AccessDeniedException e) {
 				if (log.isDebugEnabled()) {
-					log.debug(getCurrentPrincipal().getRealm() + "/"
+					log.debug(getCurrentPrincipal().getRealm().getName() + "/"
 							+ getCurrentPrincipal().getName()
 							+ " does not have access to "
 							+ m.getResourceKey()
@@ -943,7 +943,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 					processedTabRegistration.add(new Tab(tabRegistration.getResourceKey(), tabRegistration.getUrl(), false, tabRegistration.getWeight()));
 				}catch (AccessDeniedException e) {
 					log.debug("{}/{} does not have access to {} tab with permission {}",
-							getCurrentPrincipal().getRealm(),
+							getCurrentPrincipal().getRealm().getName(),
 							getCurrentPrincipal().getName(),
 							tabRegistration.getResourceKey(),
 							tabRegistration.getPermission()
