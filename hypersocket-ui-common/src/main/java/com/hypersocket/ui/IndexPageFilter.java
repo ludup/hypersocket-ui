@@ -63,7 +63,8 @@ public class IndexPageFilter implements ContentFilter {
 		resolver.addToken("scripts", generateScripts());
 		resolver.addToken("meta", "<!-- No Meta -->");
 
-		for(FilterExtender extender : extenders) {
+		// Use new list so we don't get concurrent modification in branding when theme is switched off
+		for(FilterExtender extender : new ArrayList<>(extenders)) {
 			MapTokenResolver res = extender.getAdditionalResolvers(request);
 			if(res != null) {
 				resolver.addAll(res);
