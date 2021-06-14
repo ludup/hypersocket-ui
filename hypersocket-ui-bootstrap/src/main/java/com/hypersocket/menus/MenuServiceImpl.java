@@ -31,6 +31,7 @@ import com.hypersocket.certificates.CertificateResourcePermission;
 import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.dashboard.OverviewWidgetService;
+import com.hypersocket.delegation.UserDelegationResourcePermission;
 import com.hypersocket.dictionary.DictionaryResourcePermission;
 import com.hypersocket.email.EmailNotificationService;
 import com.hypersocket.html.HtmlTemplateResourcePermission;
@@ -448,6 +449,13 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RolePermission.CREATE, RolePermission.UPDATE,
 				RolePermission.DELETE), MenuService.MENU_SECURITY_PERMISSIONS);
 
+		registerMenu(
+				new MenuRegistration(RESOURCE_BUNDLE, "userDelegations", "fa-user-circle-o", "userDelegations", 100,
+						UserDelegationResourcePermission.READ, UserDelegationResourcePermission.CREATE,
+						UserDelegationResourcePermission.UPDATE, UserDelegationResourcePermission.DELETE),
+				MenuService.MENU_SECURITY_PERMISSIONS);
+
+		
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "roleAttributes",
 						"fa-briefcase", "roleAttributeTabs", 5000,
 						RoleAttributePermission.READ,
