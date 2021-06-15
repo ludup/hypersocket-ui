@@ -450,7 +450,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RolePermission.DELETE), MenuService.MENU_SECURITY_PERMISSIONS);
 
 		registerMenu(
-				new MenuRegistration(RESOURCE_BUNDLE, "userDelegations", "fa-user-circle-o", "userDelegations", 100,
+				new MenuRegistration(RESOURCE_BUNDLE, "userDelegations", "fa-user-circle-o", "userDelegations", 3001,
 						UserDelegationResourcePermission.READ, UserDelegationResourcePermission.CREATE,
 						UserDelegationResourcePermission.UPDATE, UserDelegationResourcePermission.DELETE),
 				MenuService.MENU_SECURITY_PERMISSIONS);
