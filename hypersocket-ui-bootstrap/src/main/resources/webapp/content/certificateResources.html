@@ -112,23 +112,9 @@
 							fields : [ {
 								name : "name"
 							}, {
-								name: "issueDate",
-								formatter: function(value, row, index) {
-									if(value > 0) {
-										return new Date(value).format('dd mmm, yyyy');
-									} else {
-										return null;
-									}
-								}
+								name: "issueDate"
 							}, {
-								name: "expiryDate",
-								formatter: function(value, row, index) {
-									if(value > 0) {
-										return new Date(value).format('dd mmm, yyyy');
-									} else {
-										return null;
-									}
-								}
+								name: "expiryDate"
 							}],
 							resourceKey : "certificate",
 							createButtonText: 'text.createCertificate',
