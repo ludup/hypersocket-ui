@@ -2982,7 +2982,8 @@ $.fn.dateInput = function(options) {
 			    orientation: "top auto",
 			    multidate: false,
 			    forceParse: false,
-			    autoclose: true
+			    autoclose: true,
+			    clearBtn: true,
 			},  options);
 
 	$(this).append('<div id="' + id + '" class="input-group date">'
@@ -3000,6 +3001,10 @@ $.fn.dateInput = function(options) {
 		var zIndexModal = $(modal).css('z-index');
 			$(datePicker).css('z-index', zIndexModal + 1);
 	});
+	
+	$('#' + id).datepicker().on('clearDate', function(e) {
+        $(this).data('updated', true);
+    });
 
 	var callback = {
 			setValue: function(val) {
