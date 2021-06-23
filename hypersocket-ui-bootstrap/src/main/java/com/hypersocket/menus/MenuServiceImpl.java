@@ -78,9 +78,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	@Autowired
 	private MessageResourceService messageService;
-	
-	@Autowired
-	private CertificateResourceService certificateService; 
+
 
 	@Autowired
 	private ConfigurationService configurationService; 
@@ -199,6 +197,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_MY_PROFILE, "fa-tags", null, 0, null, null,
 				null, null), MenuService.MENU_PERSONAL);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+				MenuService.MENU_MY_CREDENTIALS, "fa-id-card-o", null, 50, null, null,
+				null, null), MenuService.MENU_PERSONAL);
+		
+		
 //		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "userhelpzone",
 //				"fa-question-circle", "userhelpzone", 100, ProfilePermission.READ, null,
 //				ProfilePermission.UPDATE, null) {
