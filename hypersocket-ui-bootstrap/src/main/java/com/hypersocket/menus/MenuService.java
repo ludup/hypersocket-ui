@@ -31,7 +31,10 @@ public interface MenuService extends AuthenticatedService {
 	static final String MENU_PERSONAL = "personal";
 
 	static final String MENU_MY_RESOURCES = "myResources";
+	
 	static final String MENU_MY_PROFILE = "profile";
+	
+	static final String MENU_MY_CREDENTIALS = "myCredentials";
 	
 	static final String MENU_USERS_DIRECTORY = "accessControl";
 	
