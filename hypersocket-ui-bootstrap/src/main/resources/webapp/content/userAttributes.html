@@ -1,43 +1,43 @@
 <div id="attributeContent">
 	<div class="modal" id="addResourceForm" tabindex="-1" role="dialog"
 		dialog-for="attributeContent">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog">
 			<div class="modal-content">
-				<div class="modal-header lb-modal-header-text-reverse">
+				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">&times;</button>
 					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
 					<form class="form" autocomplete="off">
-						<div class="propertyItem form-group lb-row">
+						<div class="propertyItem form-group">
 							<label class="col-md-3 control-label" localize="attribute.name.label"></label>
 							<div class="propertyValue col-md-9">
 								<input type="text" id="attributeName" autocomplete="off" class="form-control" />
 								<div>
-									<span class="lb-help-block form-text text-muted" localize="attribute.name.info"></span>
+									<span class="help-block" localize="attribute.name.info"></span>
 								</div>
 							</div>
 						</div>
-						<div class="propertyItem form-group lb-row">
+						<div class="propertyItem form-group">
 							<label class="col-md-3 control-label" localize="attribute.category.label"></label>
 							<div class="propertyValue col-md-9">
 								<div id="attributeCategoryAutocomplete"></div>
 								<div>
-									<span class="lb-help-block form-text text-muted" localize="attribute.category.info">&nbsp;</span>
+									<span class="help-block" localize="attribute.category.info">&nbsp;</span>
 								</div>
 								
 							</div>
 						</div>
-						<div class="propertyItem form-group lb-row">
+						<div class="propertyItem form-group">
 							<label class="col-md-3 control-label">&nbsp;</label>
 							<div class="propertyValue col-md-9">
 								<button id="createCategory" class="btn btn-primary">
-									<i class="fad fa-plus-circle"></i>
+									<i class="fa fa-plus-circle"></i>
 									<span localize="attribute.createCategory">&nbsp;</span>
 								</button>
 								<div>
-									<span class="lb-help-block form-text text-muted" localize="attribute.createCategory.info">&nbsp;</span>
+									<span class="help-block" localize="attribute.createCategory.info">&nbsp;</span>
 								</div>
 							</div>
 						</div>
@@ -46,7 +46,7 @@
 						<div id="attributePropertiesPanel" class="panel panel-default">
 							<div class="panel-heading">
 								<h2>
-									<i class="fad fa-th"></i><span class="break"></span>
+									<i class="fa fa-th"></i><span class="break"></span>
 								</h2>
 								<ul id="attributePropertiesTabs" class="nav nav-tabs" role="tablist">
 									<li id="tabAttributeInfoLi" role="presentation" class="active">
@@ -69,42 +69,42 @@
 							<div class="panel-body">
 								<div class="tab-content">
 									<div id="tabAttributeInfo" role="tabpanel" class="tab-pane active">
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.type.label"></label>
 											<div class="propertyValue col-md-9">
 												<div id="attributeType" class="propertyValue"></div>
 												<div>
-													<span class="lb-help-block form-text text-muted" localize="attribute.type.info"></span>
+													<span class="help-block" localize="attribute.type.info"></span>
 												</div>
 											</div>
 										</div>
 										
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.variableName.label"></label>
 											<div class="propertyValue col-md-9">
 												<input type="text" id="attributeVariableName" autocomplete="off" class="form-control" />
 												<div>
-													<span class="lb-help-block form-text text-muted" localize="attribute.variableName.info"></span>
+													<span class="help-block" localize="attribute.variableName.info"></span>
 												</div>
 											</div>
 										</div>
 										
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.defaultValue.label"></label>
 											<div class="propertyValue col-md-9">
 												<input type="text" id="attributeDefaultValue" autocomplete="off" class="form-control" />
 												<div>
-													<span class="lb-help-block form-text text-muted" localize="attribute.defaultValue.info"></span>
+													<span class="help-block" localize="attribute.defaultValue.info"></span>
 												</div>
 											</div>
 										</div>
 										
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.description.label"></label>
 											<div class="propertyValue col-md-9">
 												<textarea maxlength="1024" rows="4" cols="50" id="attributeDescription" class="form-control" />
 												<div>
-													<span class="lb-help-block form-text text-muted" localize="attribute.description.info"></span>
+													<span class="help-block" localize="attribute.description.info"></span>
 												</div>
 											</div>
 										</div>
@@ -112,45 +112,54 @@
 										<input type="hidden" name="attributeId" id="attributeId">
 									</div>
 									<div id="tabOther" role="tabpanel" class="tab-pane">
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.displayMode.label"></label>
 											<div class="propertyValue col-md-9">
 												<div id="attributeDisplayMode"></div>
 												<div>
-													<span class="lb-help-block form-text text-muted" localize="attribute.displayMode.info"></span>
+													<span class="help-block" localize="attribute.displayMode.info"></span>
 												</div>
 											</div>
 										</div>
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.readOnly.label"></label>
 											<div class="propertyValue col-md-9">
 												<div id="attributeReadOnly" class="propertyValue"></div>
 												<div>
-													<span class="lb-help-block form-text text-muted" localize="attribute.readOnly.info"></span>
+													<span class="help-block" localize="attribute.readOnly.info"></span>
 												</div>
 											</div>
 										</div>
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group">
+											<label class="col-md-3 control-label" localize="attribute.required.label"></label>
+											<div class="propertyValue col-md-9">
+												<div id="attributeRequired" class="propertyValue"></div>
+												<div>
+													<span class="help-block" localize="attribute.required.info"></span>
+												</div>
+											</div>
+										</div>
+										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.encrypted.label"></label>
 											<div class="propertyValue col-md-9">
 												<div id="attributeEncrypted" class="propertyValue"></div>
 												<div>
-													<span class="lb-help-block form-text text-muted" localize="attribute.encrypted.info"></span>
+													<span class="help-block" localize="attribute.encrypted.info"></span>
 												</div>
 											</div>
 										</div>
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.weight.label"></label>
 											<div class="propertyValue col-md-9">
 												<input type="number" id="attributeWeight" autocomplete="off" class="form-control" />
 												<div>
-													<span class="lb-help-block form-text text-muted" localize="attribute.weight.info"></span>
+													<span class="help-block" localize="attribute.weight.info"></span>
 												</div>
 											</div>
 										</div>
 									</div>
 									<div id="tabRoles" role="tabpanel" class="tab-pane">
-										<div id="attributeRoles" class="col-12"></div>
+										<div id="attributeRoles" class="col-xs-12"></div>
 									</div>
 								</div>
 							</div>
@@ -164,7 +173,7 @@
 	<div id="additionalActions"></div>
 </div>
 <script type="text/javascript">
-legacyjQueryReadyFix(function() {
+$(document).ready(function() {
 	
 	
 
@@ -202,6 +211,12 @@ legacyjQueryReadyFix(function() {
 
 	
 	$('#attributeReadOnly').switchInput({
+		value: false,
+		onResourceKey: 'text.yes',
+	    offResourceKey: 'text.no'
+	});
+	
+	$('#attributeRequired').switchInput({
 		value: false,
 		onResourceKey: 'text.yes',
 	    offResourceKey: 'text.no'
@@ -288,6 +303,7 @@ legacyjQueryReadyFix(function() {
 					$('#attributeType').data('widget').reset();
 					$('#attributeDisplayMode').data('widget').reset();
 					$('#attributeReadOnly').data('widget').setValue(false);
+					$('#attributeRequired').data('widget').setValue(false);
 					$('#attributeEncrypted').data('widget').setValue(false);
 					$('#attributeVariableName').val('');
 					
@@ -310,7 +326,8 @@ legacyjQueryReadyFix(function() {
 					resource.weight = $('#attributeWeight').val();
 					resource.type = $('#attributeType').data('widget').getValue();
 					resource.displayMode = $('#attributeDisplayMode').data('widget').getValue();
-					resource.readOnly = $('#attributeReadOnly').data('widget').getValue()
+					resource.readOnly = $('#attributeReadOnly').data('widget').getValue();
+					resource.required = $('#attributeRequired').data('widget').getValue()
 					resource.encrypted = $('#attributeEncrypted').data('widget').getValue();
 					resource.variableName = $('#attributeVariableName').val();
 					resource.roles = $('#attributeRoles').widget().getValue();
@@ -327,6 +344,7 @@ legacyjQueryReadyFix(function() {
 					$('#attributeType').data('widget').setValue(resource.type);
 					$('#attributeDisplayMode').data('widget').setValue(resource.displayMode);
 					$('#attributeReadOnly').data('widget').setValue(resource.readOnly);
+					$('#attributeRequired').data('widget').setValue(resource.required);
 					$('#attributeEncrypted').data('widget').setValue(resource.encrypted);
 					$('#attributeVariableName').val(resource.variableName);
 					
