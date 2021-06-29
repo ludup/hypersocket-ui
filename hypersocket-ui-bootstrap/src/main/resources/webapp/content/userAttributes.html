@@ -131,6 +131,15 @@
 											</div>
 										</div>
 										<div class="propertyItem form-group">
+											<label class="col-md-3 control-label" localize="attribute.required.label"></label>
+											<div class="propertyValue col-md-9">
+												<div id="attributeRequired" class="propertyValue"></div>
+												<div>
+													<span class="help-block" localize="attribute.required.info"></span>
+												</div>
+											</div>
+										</div>
+										<div class="propertyItem form-group">
 											<label class="col-md-3 control-label" localize="attribute.encrypted.label"></label>
 											<div class="propertyValue col-md-9">
 												<div id="attributeEncrypted" class="propertyValue"></div>
@@ -202,6 +211,12 @@ $(document).ready(function() {
 
 	
 	$('#attributeReadOnly').switchInput({
+		value: false,
+		onResourceKey: 'text.yes',
+	    offResourceKey: 'text.no'
+	});
+	
+	$('#attributeRequired').switchInput({
 		value: false,
 		onResourceKey: 'text.yes',
 	    offResourceKey: 'text.no'
@@ -288,6 +303,7 @@ $(document).ready(function() {
 					$('#attributeType').data('widget').reset();
 					$('#attributeDisplayMode').data('widget').reset();
 					$('#attributeReadOnly').data('widget').setValue(false);
+					$('#attributeRequired').data('widget').setValue(false);
 					$('#attributeEncrypted').data('widget').setValue(false);
 					$('#attributeVariableName').val('');
 					
@@ -310,7 +326,8 @@ $(document).ready(function() {
 					resource.weight = $('#attributeWeight').val();
 					resource.type = $('#attributeType').data('widget').getValue();
 					resource.displayMode = $('#attributeDisplayMode').data('widget').getValue();
-					resource.readOnly = $('#attributeReadOnly').data('widget').getValue()
+					resource.readOnly = $('#attributeReadOnly').data('widget').getValue();
+					resource.required = $('#attributeRequired').data('widget').getValue()
 					resource.encrypted = $('#attributeEncrypted').data('widget').getValue();
 					resource.variableName = $('#attributeVariableName').val();
 					resource.roles = $('#attributeRoles').widget().getValue();
@@ -327,6 +344,7 @@ $(document).ready(function() {
 					$('#attributeType').data('widget').setValue(resource.type);
 					$('#attributeDisplayMode').data('widget').setValue(resource.displayMode);
 					$('#attributeReadOnly').data('widget').setValue(resource.readOnly);
+					$('#attributeRequired').data('widget').setValue(resource.required);
 					$('#attributeEncrypted').data('widget').setValue(resource.encrypted);
 					$('#attributeVariableName').val(resource.variableName);
 					
