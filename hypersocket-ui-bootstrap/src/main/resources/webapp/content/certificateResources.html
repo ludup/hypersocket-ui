@@ -192,6 +192,12 @@
 							
 							},
 							complete : function() {
+								
+								$('#contentCertificates').find('.panel-heading').last().append(
+										'<div class="tableToolbar pull-right search"><div><a id="configureSSLCertificate" href="/app/wizard/certificate">'
+										+ getResource('certificate.wizard.link') + '</a></div></div>');
+								
+								
 								loadComplete();
 							}
 						});
