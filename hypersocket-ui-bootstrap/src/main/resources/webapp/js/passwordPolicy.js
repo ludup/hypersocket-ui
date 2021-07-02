@@ -116,7 +116,12 @@ $.fn.passwordPolicy = function(data) {
 					}
 					return;
 				} else {
-					$('#suggestions').append('<span class="error">Password does not conform to password policy</span>');
+					if (data.message) {
+						$('#suggestions').append('<span id="passwordPolicysMessage" class="error"></span>');
+						$('#passwordPolicysMessage').text(data.message);
+					} else {
+						$('#suggestions').append('<span class="error">Password does not conform to password policy</span>');
+					}
 				}
 				if(options.buttonElement) {
 					$(options.buttonElement).prop('disabled', true);
