@@ -30,7 +30,9 @@
 			</div>
 		</div>
 	</div>
+	<div id="additionalActions"></div>
 </div>
+
 <script type="text/javascript">
 
 	$(document).ready(function() {
@@ -62,88 +64,170 @@
 		}
 		
 		$('#contentGroups').localize();
-
-		$('#tabGroupUsers').multipleSearchInput({
-			nameAttr : 'principalName',
-			selectedIsObjectList: false,
-			valueAttr: 'id',
-			url: apiUrl + '/users/table'
-		});
 		
-		$('#tabGroupGroups').multipleSearchInput({
-			nameAttr : 'principalName',
-			selectedIsObjectList: false,
-			valueAttr: 'id',
-			url: apiUrl + '/groups/table'
-		});
-	
-		var searchFields = [{
-			name: 'name'
-		}, {
-			name: 'organizationalUnit',
-			renderOptions: function(element, refresh) {
-				element.autoComplete({
-					remoteSearch: false,
-					url: apiUrl + '/organizationalUnits',
-					nameAttr: 'dn',
-					valueAttr: 'dn',
-					changed: refresh
+		getJSON('menus/tableActions/groupActions', null, function(data) {
+
+			var actions = new Array();
+
+			if(data.resources.length > 0) {
+				$.each(data.resources, function(idx, action) {
+					var div = action.resourceKey + 'Div';
+					$('#additionalActions').append('<div id="' + div + '"></div>');
+					$('#' + div).load(uiPath + '/content/' + action.url + '.html');
+					actions.push({
+						resourceKey : action.resourceKey,
+						iconClass : action.iconClass,
+						action : function(resource, callback) {
+							if($('#' + action.resourceKey).data('action')) {
+								$('#' + action.resourceKey).data('action')(resource, callback);
+							}
+						},
+						enabled : true,
+						enableFunction: action.enableFunction,
+						displayFunction: action.displayFunction
+					});
 				});
-			}
-		}];
+			 }
 
-		var fields = [ {
-			name : "name"
-		}, {
-			name : "organizationalUnit"
-		}];
+			$('#tabGroupUsers').multipleSearchInput({
+				nameAttr : 'principalName',
+				selectedIsObjectList: false,
+				valueAttr: 'id',
+				url: apiUrl + '/users/table'
+			});
+			
+			$('#tabGroupGroups').multipleSearchInput({
+				nameAttr : 'principalName',
+				selectedIsObjectList: false,
+				valueAttr: 'id',
+				url: apiUrl + '/groups/table'
+			});
 		
-		$('#contentGroups').ajaxResourcePage(
-				{
-				id: 'Group',
-				tableUrl : apiUrl + "/groups/table",
-				title: title,
-				icon: 'fa-users',
-				additionalActionsId: 'groupAdditionalActions',
-				resourceUrl : apiUrl + "/group",
-				deleteResourcesUrl : apiUrl + "/bulk/groups",
-				fields : fields,
-				searchFields: searchFields,
-				resourceKey : 'group',
-				disableDecoration: disableDecoration,
-				canCreate: currentMenu.canCreate,
-				canUpdate: currentMenu.canUpdate,
-				canDelete: false,
-				additionalButtons: buttons,
-				checkbox : true,
-				validate : function() {
-					if ($('#groupName').val() == '') {
-						showError("error.nameRequired");
-						return false;
-					}
-					if(!$('#groupProperties').validateProperties()) {
-						showError("error.correctValidationErrors");
-						return false;
-					}
-					return true;
-				},
-				clearDialog : function(create) {
-					$('#groupName').val('');
-					$('#groupId').val('');
-					$('#tabGroupUsers').multipleSearchInput();
-					$('#groupProperties').parent().append($('#tabGroupUsers').detach());
-					$('#groupProperties').parent().append($('#tabGroupGroups').detach());
-					$('#groupProperties').empty();
-					
-					if(create) {
+			var searchFields = [{
+				name: 'name'
+			}, {
+				name: 'organizationalUnit',
+				renderOptions: function(element, refresh) {
+					element.autoComplete({
+						remoteSearch: false,
+						url: apiUrl + '/organizationalUnits',
+						nameAttr: 'dn',
+						valueAttr: 'dn',
+						changed: refresh
+					});
+				}
+			}];
+	
+			var fields = [ {
+				name : "name"
+			}, {
+				name : "organizationalUnit"
+			}];
+			
+			$('#contentGroups').ajaxResourcePage(
+					{
+					id: 'Group',
+					tableUrl : apiUrl + "/groups/table",
+					title: title,
+					icon: 'fa-users',
+					additionalActionsId: 'groupAdditionalActions',
+					resourceUrl : apiUrl + "/group",
+					deleteResourcesUrl : apiUrl + "/bulk/groups",
+					fields : fields,
+					searchFields: searchFields,
+					resourceKey : 'group',
+					disableDecoration: disableDecoration,
+					canCreate: currentMenu.canCreate,
+					canUpdate: currentMenu.canUpdate,
+					canDelete: false,
+					additionalButtons: buttons,
+					additionalActions : actions,
+					toolbarButtonsUrl: 'menus/tableActions/groupsToolbar',
+					checkbox : true,
+					validate : function() {
+						if ($('#groupName').val() == '') {
+							showError("error.nameRequired");
+							return false;
+						}
+						if(!$('#groupProperties').validateProperties()) {
+							showError("error.correctValidationErrors");
+							return false;
+						}
+						return true;
+					},
+					clearDialog : function(create) {
+						$('#groupName').val('');
+						$('#groupId').val('');
+						$('#tabGroupUsers').multipleSearchInput();
+						$('#groupProperties').parent().append($('#tabGroupUsers').detach());
+						$('#groupProperties').parent().append($('#tabGroupGroups').detach());
+						$('#groupProperties').empty();
+						
+						if(create) {
+							$('#groupProperties').propertyPage({
+								url : apiUrl + '/group/template/' + realmCategory,
+								showButtons : false,
+								useTemplates : true,
+								canUpdate : currentMenu.canUpdate,
+								urlProcessor: function(url) {
+									return url.replace('$' + '{realmApi}', apiUrl);
+								},
+								additionalTabs : [ {
+									id : "tabGroupUsers",
+									name : getResource("label.users")
+								},
+								{
+									id : "tabGroupGroups",
+									name : getResource("label.groups")
+								}]
+							});
+						}
+						
+					},
+					createResource : function() {
+						group = new Object();
+						group.id = $('#groupId').val();
+						group.name = $('#groupName').val();
+						group.users = $('#tabGroupUsers').widget().getValue();
+						group.groups = $('#tabGroupGroups').widget().getValue();
+						
+						$('#groupProperties').saveProperties(true,
+							function(items) {
+								group.properties = items;
+						});
+						return group;
+					},
+					resourceCreated : function(resource) {
+					},
+					deleted : function(resource) {
+					},
+					displayResource : function(resource, readOnly) {
+						$('#groupId').val(resource.id);
+						$('#groupName').val(resource.name);
+						$('#groupName').attr('disabled', readOnly);
+						getJSON(apiUrl + "/users/group/" + resource.id, null, function(data) {
+							$('#tabGroupUsers').multipleSearchInput({
+		 						selected : data.resources,
+		 						disabled : readOnly
+		 					});
+						});
+						getJSON(apiUrl + "/groups/group/" + resource.id, null, function(data) {
+							$('#tabGroupGroups').multipleSearchInput({
+		 						selected : data.resources,
+		 						disabled : readOnly
+		 					});
+						});
+						$('#groupProperties').parent().append($('#tabGroupUsers').detach());
+						$('#groupProperties').parent().append($('#tabGroupGroups').detach());
+						$('#groupProperties').empty();
 						$('#groupProperties').propertyPage({
-							url : apiUrl + '/group/template/' + realmCategory,
+							url : apiUrl + '/group/properties/' + resource.id,
 							showButtons : false,
 							useTemplates : true,
-							canUpdate : currentMenu.canUpdate,
 							urlProcessor: function(url) {
 								return url.replace('$' + '{realmApi}', apiUrl);
 							},
+							canUpdate : currentMenu.canUpdate,
 							additionalTabs : [ {
 								id : "tabGroupUsers",
 								name : getResource("label.users")
@@ -153,67 +237,12 @@
 								name : getResource("label.groups")
 							}]
 						});
+	 	 			  	
+					},
+					complete: function() {
+						loadComplete();
 					}
-					
-				},
-				createResource : function() {
-					group = new Object();
-					group.id = $('#groupId').val();
-					group.name = $('#groupName').val();
-					group.users = $('#tabGroupUsers').widget().getValue();
-					group.groups = $('#tabGroupGroups').widget().getValue();
-					
-					$('#groupProperties').saveProperties(true,
-						function(items) {
-							group.properties = items;
-					});
-					return group;
-				},
-				resourceCreated : function(resource) {
-				},
-				deleted : function(resource) {
-				},
-				displayResource : function(resource, readOnly) {
-					$('#groupId').val(resource.id);
-					$('#groupName').val(resource.name);
-					$('#groupName').attr('disabled', readOnly);
-					getJSON(apiUrl + "/users/group/" + resource.id, null, function(data) {
-						$('#tabGroupUsers').multipleSearchInput({
-	 						selected : data.resources,
-	 						disabled : readOnly
-	 					});
-					});
-					getJSON(apiUrl + "/groups/group/" + resource.id, null, function(data) {
-						$('#tabGroupGroups').multipleSearchInput({
-	 						selected : data.resources,
-	 						disabled : readOnly
-	 					});
-					});
-					$('#groupProperties').parent().append($('#tabGroupUsers').detach());
-					$('#groupProperties').parent().append($('#tabGroupGroups').detach());
-					$('#groupProperties').empty();
-					$('#groupProperties').propertyPage({
-						url : apiUrl + '/group/properties/' + resource.id,
-						showButtons : false,
-						useTemplates : true,
-						urlProcessor: function(url) {
-							return url.replace('$' + '{realmApi}', apiUrl);
-						},
-						canUpdate : currentMenu.canUpdate,
-						additionalTabs : [ {
-							id : "tabGroupUsers",
-							name : getResource("label.users")
-						},
-						{
-							id : "tabGroupGroups",
-							name : getResource("label.groups")
-						}]
-					});
- 	 			  	
-				},
-				complete: function() {
-					loadComplete();
-				}
+				});
 			});
 	});
 	

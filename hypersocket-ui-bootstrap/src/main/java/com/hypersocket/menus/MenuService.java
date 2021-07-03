@@ -57,10 +57,14 @@ public interface MenuService extends AuthenticatedService {
 	static final String ACTIONS_CERTIFICATES = "certificateActions";
 	
 	static final String ACTIONS_USERS = "userActions";
+	
+	static final String ACTIONS_GROUPS = "groupActions";
 
 	static final String ACTIONS_REALMS = "realmActions";
 	
 	static final String TOOLBAR_USERS = "usersToolbar";
+	
+	static final String TOOLBAR_GROUPS = "groupsToolbar";
 
 	static final String MENU_TOOLS = "tools";
 	
