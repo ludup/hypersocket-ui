@@ -1,0 +1,86 @@
+<div id="deleteGroup">
+	<div id="deleteDialog" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<!-- dialog body -->
+				<div class="modal-body">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<div id="deleteGroupInfo" class="alert alert-warning" localize="deleteGroup.info"></div>
+					<div id="removeRemoteContainer" class="propertyItem form-group">
+						<label class="col-md-6 control-label"
+							localize="deleteGroup.removeRemote"></label>
+						<div class="propertyValue col-md-6">
+							<div id="removeRemote" class="propertyValue"></div>
+							<div>
+								<span class="help-block"
+									localize="deleteGroup.removeRemote.info"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- dialog buttons -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary">Delete
+						Group</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+	function canDelete(principal) {
+		return currentMenu.canDelete && !canDelete.readOnly && !principal.locallyDeleted;
+	}
+	
+	$(document).ready(function() {
+		$("#deleteDialog").localize();
+		$('#deleteGroup').data('action', function(resource) {
+			$('#deleteGroupInfo').html(getResource(resource.realmModule === 'local' ? 'deleteLocalGroup.info' : 'deleteGroup.info').format(resource.principalName));
+			$("#deleteDialog").off("shown.bs.modal").on("shown.bs.modal", function() {
+				$("#deleteDialog .modal-footer button.btn").off("click").on("click", function(e) {
+					var cb = function(data) {
+						if (data.success) {
+							showSuccess(data.message);
+						} else {
+							showError(data.message);
+						}
+					};					
+					$("#deleteDialog").modal('hide');
+					$('#mainContainer').startSpin(getResource("text.deleting").format(resource.name));
+					
+					
+					deleteJSON(apiUrl + "/" + ($('#removeRemote').data('widget').getValue() ? 'remoteGroup' : 'group') + "/" + resource.id, null, function(data) {
+						if (data.success) {
+							$('#contentGroupsPlaceholder').bootstrapTable('remove', {
+			                    field: 'id',
+			                    values: [resource.id]
+			                });
+							$('#contentGroupsPlaceholder').bootstrapTable('refresh');
+							checkBadges(false);
+							showSuccess(data.message);
+						} else {
+							showError(data.message);
+						}
+						$('#mainContainer').stopSpin();
+					}, function(xmlRequest) {
+						showError(xmlRequest.statusText + '(' + xmlRequest.status + ')');
+						$('#mainContainer').stopSpin();
+					});
+				});
+			});
+			$('#removeRemote').empty();
+			$('#removeRemote').switchInput({});
+			if(resource.realmModule === 'local')
+				$('#removeRemoteContainer').hide();
+			else
+				$('#removeRemoteContainer').show();
+			$("#deleteDialog").modal({
+				"backdrop" : "static",
+				"keyboard" : true,
+				"show" : true
+			});
+		});
+	});
+</script>

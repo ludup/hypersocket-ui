@@ -28,7 +28,6 @@ import com.hypersocket.attributes.user.UserAttributePermission;
 import com.hypersocket.auth.AbstractAuthenticatedServiceImpl;
 import com.hypersocket.browser.BrowserLaunchableService;
 import com.hypersocket.certificates.CertificateResourcePermission;
-import com.hypersocket.certificates.CertificateResourceService;
 import com.hypersocket.config.ConfigurationService;
 import com.hypersocket.dashboard.OverviewWidgetService;
 import com.hypersocket.delegation.UserDelegationResourcePermission;
@@ -520,6 +519,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				new AbstractTableAction("deleteAccount", "fa-trash",
 						"deleteAccount", UserPermission.DELETE, 900, "canDelete",
 						null));
+		
+		registerTableAction(MenuService.ACTIONS_GROUPS,
+				new AbstractTableAction("deleteGroup", "fa-trash",
+						"deleteGroup", GroupPermission.DELETE, 900, "canDelete",
+						null));
 
 		registerTableAction(MenuService.TOOLBAR_USERS,
 				new AbstractTableAction("deleteAccounts", "fa-trash",
@@ -528,7 +532,21 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 							@Override
 				public boolean isEnabled() {
 					return permissionService.hasAdministrativePermission(getCurrentPrincipal())
-							|| permissionService.hasPermission(getCurrentPrincipal(), RealmPermission.DELETE);
+							|| permissionService.hasPermission(getCurrentPrincipal(), RealmPermission.DELETE)
+							|| permissionService.hasPermission(getCurrentPrincipal(), UserPermission.DELETE);
+				}
+			
+		});
+
+		registerTableAction(MenuService.TOOLBAR_GROUPS,
+				new AbstractTableAction("deleteGroups", "fa-trash",
+						"deleteGroups", null, 0, null,
+						"") {
+							@Override
+				public boolean isEnabled() {
+					return permissionService.hasAdministrativePermission(getCurrentPrincipal())
+							|| permissionService.hasPermission(getCurrentPrincipal(), RealmPermission.DELETE)
+							|| permissionService.hasPermission(getCurrentPrincipal(), UserPermission.DELETE);
 				}
 			
 		});
