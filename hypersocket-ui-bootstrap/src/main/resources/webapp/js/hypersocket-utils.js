@@ -27,6 +27,16 @@ function doAjax(options) {
 	return $.ajax(options);
 };
 
+function parseQuery(queryString) {
+    var query = {};
+    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+    }
+    return query;
+}
+
 //This is the function.
 String.prototype.formatAll = function (args) {
 	var str = this.toString();
