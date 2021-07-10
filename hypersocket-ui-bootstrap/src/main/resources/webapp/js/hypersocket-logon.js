@@ -21,6 +21,9 @@ function logon(credentials, opts) {
 			if(opts.scheme) {
 				url += '/' + opts.scheme;
 			}
+			if(opts.requestParameters) {
+				url += '?' + $.param(opts.requestParameters);
+			}
 	        getJSON(url, null, function(data) {
 	            opts.start = false;
 	            processLogon(data, opts);
@@ -110,7 +113,6 @@ function processLogon(data, opts, message) {
 			$('#logonForm').before('<h1 class="form-scheme-heading">' 
 					+ getResourceOrDefault(data.formTemplate.scheme 
 					+ '.logon.title', data.formTemplate.scheme ) + '</h1>');
-			debugger;
 			$.each(data.formTemplate.inputFields, function() {
 				if (this.type == 'hidden') {
 					$('#logonForm').append('<input type="' + this.type + '" name="'
@@ -392,6 +394,8 @@ function processLogon(data, opts, message) {
 		if(data.formTemplate && data.formTemplate.startAuthentication) {
 			$('#logonButton').click();
 		}
+		
+		$(document).data('logonData', data);
 
 	} else {
 		log("User is logged in");
