@@ -87,7 +87,7 @@ function processLogon(data, opts, message) {
 		removeMessage();
 
 		opts.formContent.append(
-			'<div class="col"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
+			'<div class="col"><div class="logonFormContainer"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div></div>');
 
 		if (data['errorMsg']) {
 			if("success" === data['errorStyle']) {
