@@ -324,6 +324,8 @@ function startLogon(opts, credentials) {
 	if(!opts) {
 		opts = $(document).data('logonOptions');
 	}
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
 
 	$(document).click(function () {
 	    $('.dropdown-menu[data-parent]').hide();
@@ -783,7 +785,7 @@ function home(data) {
 			log("Checking session timeout");
 			
 			getJSON('session/peek', null, function(data) {
-				if(data.success) {
+				if(data && data.success) {
 					setTimeout(checkTimeout, 30000);
 				}
 			}, function() {
