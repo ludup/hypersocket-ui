@@ -88,6 +88,9 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 			checkBadges(false);
 			showSuccess(data.message);
 			$('.showOnComplete').show();
+        } else if(data.redirect) {
+            log('Redirect to '  + data.message);
+            window.location = data.message;            
 		} else if(data.confirmation) {
 			
 			bootbox.confirm({
