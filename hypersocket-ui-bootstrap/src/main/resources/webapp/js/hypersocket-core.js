@@ -302,6 +302,16 @@ function startLogon(opts, credentials) {
 	if(!opts) {
 		opts = $(document).data('logonOptions');
 	}
+	
+	if(opts.scheme) {
+		$(document).data('lastScheme', opts.scheme);
+	}
+	else {
+		var lastScheme = $(document).data('lastScheme');
+		if(lastScheme) {
+			opts.scheme = lastScheme;
+		}
+	}
 
 	$(document).click(function () {
 	    $('.dropdown-menu[data-parent]').hide();
