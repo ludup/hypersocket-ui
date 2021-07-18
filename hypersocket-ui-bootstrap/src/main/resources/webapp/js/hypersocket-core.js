@@ -9,6 +9,7 @@ var restartAutoLogoff = false;
 var menuList = null;
 var allMenus = new Array();
 var systemAdmin;
+var checkTimeoutHandle;
 
 doAjax({
     url: uiPath + 'json/countries.json',
@@ -324,6 +325,17 @@ function startLogon(opts, credentials) {
 	if(!opts) {
 		opts = $(document).data('logonOptions');
 	}
+    
+    if(opts.scheme) {
+        $(document).data('lastScheme', opts.scheme);
+    }
+    else {
+        var lastScheme = $(document).data('lastScheme');
+        if(lastScheme) {
+            opts.scheme = lastScheme;
+        }
+    }
+    
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
 
@@ -780,20 +792,32 @@ function home(data) {
 			
 		});
 
+        if(checkTimeoutHandle)
+            clearTimeout(checkTimeoutHandle);
 		var checkTimeout = function() {
 			
 			log("Checking session timeout");
 			
 			getJSON('session/peek', null, function(data) {
-				if(data && data.success) {
-					setTimeout(checkTimeout, 30000);
-				}
-			}, function() {
-				return false;
+				if(data && data.closed) {
+                    startLogon();
+                    showError(getResource("error.sessionTimeout"), false);
+                }
+                else
+                    checkTimeoutHandle = setTimeout(checkTimeout, 30000);
+			}, function(xhr) {
+                if(xhr.status==401) {
+                    /* Session invalidated */
+                    startLogon();
+                    showError(getResource("error.sessionTimeout"), false);
+                return false;
+                }
+
+                /* Server down, other errors so start the 'server is back' poll */
+                return true;
 			});
-		};
-		
-		setTimeout(checkTimeout, 30000);
+		};		
+		checkTimeoutHandle = setTimeout(checkTimeout, 30000);
 
 }
 
