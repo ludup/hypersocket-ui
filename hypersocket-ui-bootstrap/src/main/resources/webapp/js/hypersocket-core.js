@@ -559,7 +559,7 @@ function home(data) {
 							
 							$(menu).append('<li' + (this.hidden ? ' style="display:none"' : '') + ' class="nav-item"><a id="' 
 									+ this.id + '" href="#menu=' + (firstChild ? firstChild.resourceKey : this.resourceKey) 
-									+ '" class="sideMenu sidebar-anchor"><i class="fad ' 
+									+ '" class="sideMenu sidebar-anchor"><i class="' + (this.icon.indexOf('fab') == -1 ? 'fad' : '') + ' ' 
 									+ this.icon + '"></i><span class="text sidebar-text">' 
 									+ getResource(this.resourceKey + '.label') + '</span></span></a></li>');
 							$('#' + this.id).data('menu', this);

@@ -334,14 +334,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						CertificateResourcePermission.DELETE), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-					"dictionary", "fa-file-word", "", 900,
+					"dictionary", "fa-spell-check", "", 900,
 					DictionaryResourcePermission.READ,
 					DictionaryResourcePermission.CREATE,
 					DictionaryResourcePermission.UPDATE,
 					DictionaryResourcePermission.DELETE), MenuService.MENU_BUSINESS_RULES);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-					"words", "fa-file-word", "words", 100,
+					"words", "fa-spell-check", "words", 100,
 					DictionaryResourcePermission.READ,
 					DictionaryResourcePermission.CREATE,
 					DictionaryResourcePermission.UPDATE,

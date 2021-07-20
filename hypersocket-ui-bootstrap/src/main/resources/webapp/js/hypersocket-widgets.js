@@ -6471,7 +6471,7 @@ $.fn.fileTree = function(data) {
 		  			"icon" : "fad fa-2x fa-file-sound-o"
 		  		},
 		  		"doc" : {
-		  			"icon" : "fad fa-2x fa-file-word-o"
+		  			"icon" : "fad fa-2x fa-spell-check"
 		  		},
 		  		"zip" : {
 		  			"icon" : "fad fa-2x fa-file-archive-o"
