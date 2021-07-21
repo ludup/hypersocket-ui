@@ -1169,8 +1169,14 @@ $.fn.autoComplete = function(data) {
 	var createDropdown = function(text, show, prefiltered) {
 		var selected = new Array();
 		if(options.alwaysDropdown || (text == '*') || (text == ' ')){
+			if(options.allowEmpty) {
+				var obj = {};
+				obj[options.nameAttr] = "&nbsp;";
+				obj[options.valueAttr] = "";
+				selected.push(obj);
+			}
 			$.each($('#input_' + id).data('values'), function(idx, obj) {
-				var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
+				//var name = options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : obj[options.nameAttr];
 				selected.push(obj);
 			});
 		} else if(text.startsWith('*')){
@@ -1583,7 +1589,7 @@ $.fn.autoComplete = function(data) {
 $.fn.textDropdown = function(data) {
 	return $(this).autoComplete($.extend(data, {
 		alwaysDropdown: true,
-		icon: 'fa-caret-down'
+		icon: 'fa-caret-down',
 	}));
 }
 
