@@ -94,7 +94,7 @@
 						icon: 'fa-upload',
 						buttonClass: 'btn-success',
 						action: function(callback) {
-							$('#pfxUpload').data('action')(function() {
+							$('#pfxUpload').data('action')(null, function() {
 								callback();
 							});
 						}
