@@ -1484,6 +1484,7 @@ $.fn.propertyPage = function(opts) {
 							$('.' + filterPrefix + filter).show();
 							$('.visibility').hide();
 							$('li.' + filterPrefix + filter + ':first a').tab('show');
+							funcVisibility();
 						});
 					});
 				}
