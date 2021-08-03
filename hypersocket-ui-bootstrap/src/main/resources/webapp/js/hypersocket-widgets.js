@@ -123,6 +123,7 @@ $.fn.textInput = function(data) {
 				valueIsResourceKey: false,
 				showVariables: false,
 				showScript: false,
+				toggleToText: false,
 				getUrlData: function(data) {
 					return data;
 				}
@@ -167,7 +168,7 @@ $.fn.textInput = function(data) {
 	} else {
 		html = '';
 
-		if(hasVariables || options.url) {
+		if(hasVariables || options.url || (options.inputType === "password" && options.toggleToText)) {
 			html += '<div class="input-group">';
 		}
 
@@ -175,6 +176,28 @@ $.fn.textInput = function(data) {
 		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" autocomplete="off" value=""'
 					+ (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
 
+		if (options.inputType === "password" && options.toggleToText) {
+			html += '<span id="passwordToggle' + id +
+			 '" class="input-group-addon eye-password-toggle" title="' + getResourceOrText("password.eye.show") + '" ><i class="fa fa-eye"></i</span></div>';
+		
+			const eyeIcon = '#' + "passwordToggle" + id;
+			const inputField = '#' + id;
+			
+			$('body').on('click', eyeIcon, function(e){
+				
+				const type = $(inputField).attr('type');
+				
+				if (type === "text") {
+					$(inputField).attr('type', 'password');
+					$(eyeIcon + " i").removeClass("fa-eye-slash").addClass("fa-eye");
+					$(eyeIcon).attr("title", getResourceOrText("password.eye.show"));
+				} else {
+					$(inputField).attr('type', 'text');
+					$(eyeIcon + " i").removeClass("fa-eye").addClass("fa-eye-slash");
+					$(eyeIcon).attr("title", getResourceOrText("password.eye.hide"));
+				}
+			});
+		}
 
 		if(hasVariables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="input-group-append input-group-text dropdown-toggle unselectable" '
@@ -184,6 +207,8 @@ $.fn.textInput = function(data) {
 	}
 
 	$(this).append(html);
+	
+	
 
 	$('#' + id).val(stripNull(options.valueIsResourceKey ? getResource(options.value) : options.value));
 	if(options.placeholder) {
