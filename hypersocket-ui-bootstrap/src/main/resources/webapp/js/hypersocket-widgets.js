@@ -5703,11 +5703,12 @@ $.fn.wizardPage = function(data) {
 
 		$('.nextButton').attr('disabled', false);
 
-		$('.panel:gt(0)').hide();
-		$('.collapse:gt(0)').collapse('hide');
+		$('#wizardPages .panel').hide();
+		$('#wizardPages .collapse').collapse('hide');
 
-		$('.panel').first().show();
-		$('.collapse').first().collapse('show');
+		$('#wizardPages .panel').first().show();
+		$('#wizardPages .collapse').first().removeAttr('style');
+		$('#wizardPages .collapse').first().collapse('show');
 
 
 	});
@@ -5718,7 +5719,20 @@ $.fn.wizardPage = function(data) {
 	
 	return {
 		reset: function() {
-			$('#resetForm').click();
+				$.each(options.steps, function(idx, obj) {
+				$('.pageState' + idx).attr('disabled', false);
+				if(obj.onReset) {
+					obj.onReset();
+				}
+			});
+
+			$('.nextButton').attr('disabled', false);
+	
+			$('.panel:gt(0)').hide();
+			$('.collapse:gt(0)').collapse('hide');
+	
+			$('.panel').first().show();
+			$('.collapse').first().collapse('show');
 		},
 		showError: function(str) {
 
