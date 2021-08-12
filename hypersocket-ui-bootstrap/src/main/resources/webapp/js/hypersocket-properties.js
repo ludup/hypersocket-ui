@@ -898,7 +898,9 @@ $.fn.propertyPage = function(opts) {
 								$('#' + propertyDiv + 'Content').append(
 										'<div id="' + tab + '" class="tab-pane"/>');
 								
-								tabs.push(this);
+								var tabobj = this;
+								tabobj.tabid = idx;
+								tabs.push(tabobj);
 								
 								$.each(toSort, function() {
 
@@ -1387,7 +1389,7 @@ $.fn.propertyPage = function(opts) {
 						}
 						
 					});
-					
+					debugger;
 					$.each(tabs, function(idx, t) {
 						if(t.visibilityDependsOn) {
 							
@@ -1402,8 +1404,8 @@ $.fn.propertyPage = function(opts) {
 							}
 							
 							// Hide tab
-							$('.tab' + idx).addClass('visibility');
-							$('.tab' + idx).hide();
+							$('.tab' + t.tabid).addClass('visibility');
+							$('.tab' + t.tabid).hide();
 							var visibilityCallback = function() {
 								
 								var dependsValue = t.visibilityDependsValue.toString().split(',');
@@ -1423,12 +1425,12 @@ $.fn.propertyPage = function(opts) {
 								
 								if(show) {
 									// Show tab
-									$('.tab' + idx).show();
-									$('.tab' + idx).removeClass('visibility');
+									$('.tab' + t.tabid).show();
+									$('.tab' + t.tabid).removeClass('visibility');
 								} else {
 									// Hide tab
-									$('.tab' + idx).hide();
-									$('.tab' + idx).addClass('visibility');
+									$('.tab' + t.tabid).hide();
+									$('.tab' + t.tabid).addClass('visibility');
 								}
 							}
 							visibilityCallback();
