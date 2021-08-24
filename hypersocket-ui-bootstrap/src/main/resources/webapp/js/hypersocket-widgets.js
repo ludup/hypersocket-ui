@@ -5879,7 +5879,7 @@ $.fn.feedbackPanel = function(data) {
 				options.finished(last.status === 'SUCCESS');
 			}
 		} else {
-			div.append('<div id="feedbackNext" class="lb-row feedback-row">'
+			div.append('<div id="feedbackNext" class="row feedback-row">'
 					 + '<div class="col-xs-12"><i class="fa fa-spinner fa-spin"></i></div></div>');
 		}
 		return ret;
