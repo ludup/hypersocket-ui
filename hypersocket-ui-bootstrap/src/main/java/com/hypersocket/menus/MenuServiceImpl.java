@@ -775,7 +775,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		Collections.sort(results, new Comparator<AbstractTableAction>() {
 			@Override
 			public int compare(AbstractTableAction o1, AbstractTableAction o2) {
-				return new Integer(o1.getWeight()).compareTo(o2.getWeight());
+				return Integer.valueOf(o1.getWeight()).compareTo(o2.getWeight());
 			}
 		});
 
