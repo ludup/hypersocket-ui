@@ -196,6 +196,7 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 			}
 		} 
 	}
+
 	if(obj.maxLength){
 	   if(value) {
 		   if(parseInt(obj.maxLength) < value.length){
@@ -204,6 +205,16 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 		   }
 	   } 
     }
+
+	if(obj.minLength){
+	   if(value) {
+		   if(parseInt(obj.minLength) > value.length){
+			 log("Validation failed for " + obj.resourceKey + " and value " + value);  
+			 return false;
+		   }
+	   } 
+    }
+
 	if(obj.allowedCharacters && !validateAllowedCharacters(obj,value)){
 		log("Validation failed for " + obj.resourceKey + " and value " + value);  
 		return false ;
