@@ -2513,6 +2513,10 @@ button#logonButton {
 
 @media ( max-width : 767px) {
 	
+div.scroll-content.container-fluid.content.lb-y-scroll{
+	overflow-y: auto !important;
+}
+	
 form#logonForm {
 	margin-top: 25px;
 	padding: 15px;
