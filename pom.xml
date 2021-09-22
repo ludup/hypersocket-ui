@@ -276,6 +276,22 @@
 	</profiles>
 
 	<repositories>
+        <repository>
+            <id>opensource-releases</id>
+            <url>https://artifactory.jadaptive.com/opensource-releases</url>
+            <releases />
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>opensource-snapshts</id>
+            <url>https://artifactory.jadaptive.com/opensource-releases</url>
+            <snapshots />
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
 		<repository>
 			<id>sonatype-oss-snapshots</id>
 			<releases>
@@ -283,14 +299,6 @@
 			</releases>
 			<snapshots />
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-		</repository>
-		<repository>
-			<id>opensource-releases</id>
-			<url>https://artifactory.jadaptive.com/opensource-releases</url>
-			<releases />
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
 		</repository>
 	</repositories>
 
