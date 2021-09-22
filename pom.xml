@@ -285,7 +285,7 @@
             </snapshots>
         </repository>
         <repository>
-            <id>opensource-snapshts</id>
+            <id>opensource-snapshots</id>
             <url>https://artifactory.jadaptive.com/opensource-releases</url>
             <snapshots />
             <releases>
