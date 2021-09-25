@@ -133,7 +133,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				"dashboardSettings", 200, null, null, null, null) {
 			@Override
 			public boolean canRead() {
-				return permissionService.hasAdministrativePermission(getCurrentPrincipal());
+				if(!permissionService.hasAdministrativePermission(getCurrentPrincipal()))
+					return false;
+				
+				try {
+					return !configurationService.getPropertyCategories("dashboard").isEmpty();
+				} catch (AccessDeniedException e) {
+					return false;
+				}
 			}
 		}, MenuService.MENU_DASHBOARD);
 
