@@ -730,17 +730,18 @@ $.fn.propertyPage = function(opts) {
 			applyButton = '#' + propertyDiv + 'Apply';
 			panel = '#' + propertyDiv + 'Panel';
 
-			$('#' + propertyDiv)
-						.append(
-							'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
-							+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fad ' 
-							+ options.icon + '"></i><span>' + options.title + '</span></h2><ul id="' 
-							+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body property-body"><div id="' 
-							+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
+            var tabHtml = '';
+            if(options.useFilters) {
+    			tabHtml = '<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>';
+            }
+            tabHtml += '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fad ' 
+                            + options.icon + '"></i><span>' + options.title + '</span></h2><ul id="' 
+                            + propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body property-body"><div id="' 
+                            + propertyDiv + 'Content" class="tab-content"></div></div></div>';
+            $('#' + propertyDiv).append(tabHtml);
 			
 			if (options.showButtons) {
-				$(panel)
-						.append(
+				$(panel).append(
 							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' 
 							+ propertyDiv + 'Revert"><i class="fad fa-ban"></i><span class="btn-text">' + getResource(options.revertText)
 							+ '</span></button><button class="btn btn-small btn-primary" id="' + propertyDiv 
