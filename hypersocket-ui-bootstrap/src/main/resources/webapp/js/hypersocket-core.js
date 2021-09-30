@@ -1002,7 +1002,7 @@ function loadRoles(roles) {
 }
 
 function reloadRealms() {
-	getJSON(basePath + "/api/realms/list", null, function(data) {
+	getJSON(basePath + "/api/realms/list?offset=0&limit=10", null, function(data) {
 		loadRealms(data.resources, $(document).data('session'));
 		// This should not be needed but some areas reload the page and so the state does not get updated
 		// http://stackoverflow.com/questions/11519660/twitter-bootstrap-modal-backdrop-doesnt-disappear
