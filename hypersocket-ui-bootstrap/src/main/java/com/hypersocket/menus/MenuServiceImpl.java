@@ -130,7 +130,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_DASHBOARD_SETTINGS, "fa-gear",
-				"dashboardSettings", 200, null, null, null, null) {
+				"dashboardSettings", 600, null, null, null, null) {
 			@Override
 			public boolean canRead() {
 				if(!permissionService.hasAdministrativePermission(getCurrentPrincipal()))
