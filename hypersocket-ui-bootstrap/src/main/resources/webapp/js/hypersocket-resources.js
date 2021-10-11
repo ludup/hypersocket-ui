@@ -1479,6 +1479,10 @@ $.fn.samePageResourceView = function(params, params2) {
 	var dialogOptions = $(this).data('options');
 	
 	var addActions = function(save, copy) {
+	
+		if(dialog.find('.panel-footer').length > 0) {
+			dialog.find('.panel-footer').remove();
+		}
 		var html = '<div class="panel-footer">';
 		html+= '<button id="' + dialog.attr('id') + 'Cancel" + class="btn btn-danger"><i class="fa fa-ban"></i>' + getResource('text.cancel') + '</button>';
 		if(save) {
