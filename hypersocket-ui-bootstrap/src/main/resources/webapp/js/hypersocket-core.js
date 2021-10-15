@@ -648,46 +648,13 @@ function home(data) {
 				$('#langMenu')
 						.append(
 							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="en" href="#">' + getResource("en") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="da" href="#">' + getResource("da") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="nl" href="#">' + getResource("nl") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="fi" href="#">' + getResource("fi") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="fr" href="#">' + getResource("fr") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="de" href="#">' + getResource("de") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="it" href="#">' + getResource("it") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="no" href="#">' + getResource("no") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="pl" href="#">' + getResource("pl") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="ru" href="#">' + getResource("ru") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="sv" href="#">' + getResource("sv") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="es" href="#">' + getResource("es") + '</li>');
-				$('#lang')
-						.append(
-							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="ja" href="#">' + getResource("ja") + '</li>');
-			
+				
+				getJSON('i18n/locales', null, function(data) {
+					for(var i=0;i<data.resources.length;i++) {
+						$('#lang').append(
+							'<li role="presentation"><a class="langSelect" role="menuitem" tabindex="-1" data-value="' + data.resources[i].value + '" href="#">' + getResource(data.resources[i].value) + '</li>');
+					}
+				});			
 				$('.langSelect').click(function(e) {
 
 					e.preventDefault();
