@@ -1,0 +1,19 @@
+<div id="forceProfileSync">
+
+</div>
+<script type="text/javascript">
+
+$(document).ready(function() {
+	$('#forceProfileSync').data('action', function(resource) {
+		
+		getJSON('currentRealm/forceProfileSync/' + resource.id, null, function(data) {
+			
+			if (data.success) {
+				showSuccess(getResource('forceProfileSync.text'));
+			} else {
+				showError(data.message);
+			}
+		});
+	});
+});
+</script>
