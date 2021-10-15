@@ -686,18 +686,18 @@ function home(data) {
 					for(var i=0;i<data.resources.length;i++) {
 						$('#lang').append(
 							'<li role="presentation" class="dropdown-item"><a class="langSelect" role="menuitem" tabindex="-1" data-value="' + data.resources[i].value + '" href="#">' + getResource(data.resources[i].value) + '</li>');
-					}
-				});			
-				$('.langSelect').click(function(e) {
+					}		
+					$('.langSelect').click(function(e) {
 
-					e.preventDefault();
-					
-					log("Switching language to " + $(this).attr('data-value'));
+						e.preventDefault();
+						
+						log("Switching language to " + $(this).attr('data-value'));
 
-					getJSON('session/switchLanguage/' + $(this).attr('data-value'), null, function() {
-						document.location.reload();
-					});
-				});
+						getJSON('session/switchLanguage/' + $(this).attr('data-value'), null, function() {
+							document.location.reload();
+						});
+					});	
+				});	
 			}
 
 			// Load current page
