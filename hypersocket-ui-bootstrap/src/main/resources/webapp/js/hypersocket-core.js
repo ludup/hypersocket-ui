@@ -75,6 +75,7 @@ $.ajaxSetup({ error : function(xmlRequest) {
 	if (xmlRequest.status == 401) {
 		var session = $(document).data('session');
 		if(session && !polling) {
+			clearPinnedMenu();
 			startLogon();
 			showError(getResource("error.sessionTimeout"), false);
 		}
@@ -157,6 +158,14 @@ function closeMenu() {
 		$('#main-menu').fadeOut(500);
 	}
 };
+
+function clearPinnedMenu() {
+	let pinContainer = $("#menuPin");
+	if (pinContainer && pinContainer.hasClass("pin-active")) {
+		setUpMenuRemovePinned();
+		closeMenu();
+	}
+}
 
 function setUpMenuMakePinned() {
 	let pinContainer = $("#menuPin");
@@ -635,6 +644,8 @@ function home(data) {
 			systemAdmin = data.systemAdmin;
 			
 			if(data.systemAdmin) {
+				$('#bottomMenu').empty();
+				
 				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="fa fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function() {
