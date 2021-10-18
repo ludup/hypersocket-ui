@@ -196,6 +196,8 @@ function setUpMenuMakePinned() {
 	menu.addClass("col-md-3");
 	menu.addClass("col-lg-2");
 	
+	menu.addClass("sidebar-static-width");
+	
 	menu.css("display", "block");
 	
 	container.removeClass("col-md-12");
@@ -243,6 +245,8 @@ function setUpMenuRemovePinned() {
 	menu.removeClass("col-sm-4");
 	menu.removeClass("col-md-3");
 	menu.removeClass("col-lg-2");
+	
+	menu.removeClass("sidebar-static-width");
 
 	container.removeClass("col-sm-8");
 	container.removeClass("col-md-9");
