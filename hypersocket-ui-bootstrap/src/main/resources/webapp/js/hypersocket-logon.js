@@ -406,6 +406,9 @@ function processLogon(data, opts, message) {
 			opts.logonCompleted(data);
 		}
 
+		setUpPinnedMenuPostLogon();
+		setUpPersonalMenuPostLogon();
+		
 		stopSpin($('#logonButton i'), 'fa-sign-in');
 
 	}
@@ -418,4 +421,23 @@ function changeLogonRealm(selectButton, opts) {
 	getJSON('logon/switchRealm/' + opts.scheme + '/' + encodeURIComponent(selectButton.val()) + '/', null, function(data) {
 		showLogon(null, opts);
 	})
+}
+
+function setUpPinnedMenuPostLogon() {
+	clearPinnedMenu();
+	setUpMenuMakePinned();
+}
+
+function setUpPersonalMenuPostLogon() {
+		
+		getState('menuStates', 'true', function(prefs) {
+			var menuStates = {};
+			if(prefs.resources.length > 0) {
+			   menuStates = JSON.parse(prefs.resources[0].preferences);
+			}
+			
+			if (!menuStates.personal) {
+				 $('#menu_personal .collapse').collapse("show");
+			}
+		});
 }
