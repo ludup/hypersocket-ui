@@ -76,6 +76,7 @@ $.ajaxSetup({ error : function(xmlRequest) {
 	if (xmlRequest.status == 401) {
 		var session = $(document).data('session');
 		if(session && !polling) {
+			clearPinnedMenu();
 			startLogon();
 			showError(getResource("error.sessionTimeout"), false);
 		}
@@ -158,6 +159,15 @@ function closeMenu() {
 		$('#main-menu').fadeOut(500);
 	}
 };
+
+function clearPinnedMenu() {
+	let pinContainer = $("#menuPin");
+	if (pinContainer && pinContainer.hasClass("pin-active")) {
+		setUpMenuRemovePinned();
+		closeMenu();
+	}
+}
+
 
 function setUpMenuMakePinned() {
 	let pinContainer = $("#menuPin");
