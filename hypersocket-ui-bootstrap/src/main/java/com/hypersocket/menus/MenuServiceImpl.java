@@ -485,7 +485,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_SECURITY_PERMISSIONS);
 		
 		registerExtendedInformationTab("principalTabs",
-                new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.UPDATE, 0));
+                new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.READ, 100));
+		
+		registerExtendedInformationTab("principalTabs",
+                new TabRegistration("principalProfile", "principalProfile", UserPermission.READ, 0));
+		
 		registerExtendedInformationTab("secondaryTabs",
                 new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.UPDATE, 0));
 		
