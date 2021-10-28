@@ -144,12 +144,10 @@
 				var realmId = getAnchorByName('realmId');
 				var realmCategory = getAnchorByName('realmCategory');
 			    var csvFormUrl = $('#csvForm').attr('action');
-
-				if(realmId) {
-					ownerRealm = true;
-				}
+debugger;
 				var title = getResource('users.title');
 				if(realmId) {
+					ownerRealm = true;
 					apiUrl = 'ownerRealm/' + realmId;
 					disableDecoration = true;
 					buttons.push({
@@ -163,8 +161,12 @@
 					title = getResource('ownerRealm.users.title').format(realmName);
 				} else {
 					realmId = currentRealm.id;
+					if(!currentRealm.primaryRealm) {
+						ownerRealm = true;
+						history.pushState(null, "", '#menu=' + getAnchorByName('menu') + '&realmId=' + realmId + '&realmCategory=' + realmCategory);
+					}
 					realmCategory = currentRealm.resourceCategory;
-					history.pushState(null, "", '#menu=' + getAnchorByName('menu') + '&realmId=' + realmId + '&realmCategory=' + realmCategory);
+					
 				}
 
 				buttons.push({
@@ -493,8 +495,8 @@
 												$element.extendedResourcePanel({resourceKey: "secondaryTabs",
 													resource: resource,
 													data: {parentContainer : '#contentUsers'}
-							  			});
-								}
+							  					});
+										}
 								: function(index, resource, $element) {
 												$element.extendedResourcePanel({resourceKey: "principalTabs",
 													resource: resource,
