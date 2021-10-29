@@ -206,17 +206,21 @@ function setUpMenuMakePinned() {
 	container.removeClass("col-sm-8");
 	container.removeClass("col-md-9");
 	container.removeClass("col-lg-10");
+	
+	container.removeClass("sidebar-static-main-container");
 
 	container.addClass("col-sm-8");
 	container.addClass("col-md-9");
 	container.addClass("col-lg-10");
+	
+	container.addClass("sidebar-static-main-container");
 
-	menu.css("position", "static");
-	menu.css("height", "100%");
+	menu.css("position", "fixed");
+	menu.css("height", "inherit");
 
 	menu.css("padding-right", "0px");
 	menu.css("padding-left", "0px");
-	menu.css("margin-left", "-15px");
+	menu.css("margin-left", "0px");
 
 	content.css("margin-left", "0px");
 	
@@ -251,6 +255,8 @@ function setUpMenuRemovePinned() {
 	container.removeClass("col-sm-8");
 	container.removeClass("col-md-9");
 	container.removeClass("col-lg-10");
+	
+	container.removeClass("sidebar-static-main-container");
 
 	container.addClass("col-md-12");
 	container.addClass("col-sm-12");

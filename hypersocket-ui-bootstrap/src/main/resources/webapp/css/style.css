@@ -733,8 +733,11 @@ header .navbar {
 	margin-left: 5px;
 }
 
+.sidebar-static-main-container {
+	margin-left: 235px !important;
+}
 .sidebar-static-width {
-	width: 220px !important;
+	width: 235px !important;
 }
 .sidebar {
 	background: #e7e7e7;
