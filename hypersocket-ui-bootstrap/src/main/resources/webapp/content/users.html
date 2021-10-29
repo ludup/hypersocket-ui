@@ -143,9 +143,13 @@
 				var realmName = getAnchorByName('realmName');
 				var realmId = getAnchorByName('realmId');
 				var realmCategory = getAnchorByName('realmCategory');
+				if(!realmCategory) {
+					realmCategory = currentRealm.resourceCategory;
+				}
+				
 			    var csvFormUrl = $('#csvForm').attr('action');
-debugger;
 				var title = getResource('users.title');
+
 				if(realmId) {
 					ownerRealm = true;
 					apiUrl = 'ownerRealm/' + realmId;
@@ -160,13 +164,7 @@ debugger;
 					});
 					title = getResource('ownerRealm.users.title').format(realmName);
 				} else {
-					realmId = currentRealm.id;
-					if(!currentRealm.primaryRealm) {
-						ownerRealm = true;
-						history.pushState(null, "", '#menu=' + getAnchorByName('menu') + '&realmId=' + realmId + '&realmCategory=' + realmCategory);
-					}
-					realmCategory = currentRealm.resourceCategory;
-					
+					realmId = currentRealm.id;	
 				}
 
 				buttons.push({
