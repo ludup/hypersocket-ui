@@ -814,7 +814,7 @@ $.fn.resourceTable = function(params) {
 	    		delete params.searchColumn;
 	    		delete params.search;
 	    		delete params.filter;
-		    	
+
 		    	if($('#' + divName + 'filterColumn').length > 0) {
 		    		var val = $('#' + divName + 'filterColumn').widget().getValue();
 		    		if(val && val.length >0)
@@ -951,12 +951,15 @@ $.fn.resourceTable = function(params) {
 									$('#' + divName + 'searchValue').remove();
 									$('#' + divName + ' .search input[placeholder="Search"]').hide();
 									$('#' + divName + ' .search input[placeholder="Search"]').val('');
-									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+									
 									var arr = [];
 									if(widget.getSelectedObject().useDefaultColumns) {
 										arr = searchColumns.slice();
 									}
 									loadSearchColumns(arr.concat(widget.getSelectedObject().searchColumns));
+									
+									// refresh will trigger page change to 1, 1.11 does not supports direct page jump option
+									$('#' + divName + 'Placeholder').bootstrapTable('refresh', {'url': basePath + '/api/' + options.tableUrl});
 								},
 								sortOptions: false
 							});
@@ -972,12 +975,15 @@ $.fn.resourceTable = function(params) {
 								$('#' + divName + 'searchValue').remove();
 								$('#' + divName + ' .search input[placeholder="Search"]').hide();
 								$('#' + divName + ' .search input[placeholder="Search"]').val('');
-								$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+								
 								var arr = [];
 								if(widget.getSelectedObject().useDefaultColumns) {
 									arr = searchColumns.slice();
 								}
 								loadSearchColumns(arr.concat(widget.getSelectedObject().searchColumns));
+								
+								// refresh will trigger page change to 1, 1.11 does not supports direct page jump option
+								$('#' + divName + 'Placeholder').bootstrapTable('refresh', {'url': basePath + '/api/' + options.tableUrl});
 							}
 						});
 		    			if(options.defaultFilter) {
