@@ -805,7 +805,7 @@ $.fn.propertyPage = function(opts) {
 
 								var sesh = $(document).data('session');
 								if(this.systemOnly) {
-									if(sesh && sesh.currentRealm) {
+									if(sesh && sesh.principalRealm) {
 										if(!sesh.currentRealm.system) {
 											return;
 										}
@@ -813,8 +813,8 @@ $.fn.propertyPage = function(opts) {
 										return;
 									}
 								} else if(this.nonSystem) {
-									if(sesh && sesh.currentRealm) {
-										if(sesh.currentRealm.system) {
+									if(sesh && sesh.principalRealm) {
+										if(sesh.principalRealm.system) {
 											return;
 										}
 									} else {
