@@ -128,6 +128,13 @@ function processLogon(data, opts, message) {
 					}
 
 
+				} else if (this.type == 'header') {
+					if(this.valueResourceKey) {
+						$('#logonForm').append('<' + this.tag + ' class="center">' + getResource(this.defaultValue) + '</' + this.tag + '>');
+					} else {
+						$('#logonForm').append('<' + this.tag + ' class="center">' + this.defaultValue + '</' + this.tag + '>');
+					}
+
 				} else if (this.type == 'pre') {
 					if(this.valueResourceKey) {
 						$('#logonForm').append('<pre>' + getResource(this.defaultValue) + '</pre>');
