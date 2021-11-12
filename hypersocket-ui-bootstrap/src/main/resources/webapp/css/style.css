@@ -733,6 +733,12 @@ header .navbar {
 	margin-left: 5px;
 }
 
+@media (max-width: 456px) {
+  .sidebar-stattic-top-adjust-xs {
+    margin-top: 50px !important;
+  }
+}
+
 .sidebar-static-main-container {
 	margin-left: 235px !important;
 }

@@ -468,7 +468,7 @@ function home(data) {
 	$('#main-menu').remove();
 
 	$(contentDiv).empty();
-	$('#container').prepend('<div id="main-menu" class="sidebar sidebar-static-width" style="display: none"><div id="menuPin" class="hidden-xs hidden-sm"><span title="Click to pin menu" style="float: right;margin-right: 15px;margin-top: 18px;cursor: pointer;color: rgba(0,0,0,0.5);"><i id="pin-menu-icon" class="fa fa-map-pin fa-lg"></i></span></div><div id="menu" class="sidebar-collapse"></div></div>');
+	$('#container').prepend('<div id="main-menu" class="sidebar sidebar-static-width sidebar-stattic-top-adjust-xs" style="display: none"><div id="menuPin" class=""><span title="Click to pin menu" style="float: right;margin-right: 15px;margin-top: 18px;cursor: pointer;color: rgba(0,0,0,0.5);"><i id="pin-menu-icon" class="fa fa-map-pin fa-lg"></i></span></div><div id="menu" class="sidebar-collapse"></div></div>');
 	
 	
 	$('#mainContainer').addClass('sidebar-active');
