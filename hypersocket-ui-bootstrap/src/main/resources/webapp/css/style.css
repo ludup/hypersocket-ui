@@ -733,9 +733,13 @@ header .navbar {
 	margin-left: 5px;
 }
 
-@media (max-width: 456px) {
+@media (max-width: 490px) {
   .sidebar-stattic-top-adjust-xs {
     margin-top: 50px !important;
+  }
+  
+  .navbar-header {
+  	height: 100px !important;
   }
 }
 
