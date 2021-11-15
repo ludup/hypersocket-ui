@@ -159,15 +159,15 @@ function closeMenu() {
 	}
 };
 
-function clearPinnedMenu() {
+function clearPinnedMenu(ignoreState) {
 	let pinContainer = $("#menuPin");
 	if (pinContainer && pinContainer.hasClass("pin-active")) {
-		setUpMenuRemovePinned();
+		setUpMenuRemovePinned(ignoreState);
 		closeMenu();
 	}
 }
 
-function setUpMenuMakePinned() {
+function setUpMenuMakePinned(ignoreState) {
 	let pinContainer = $("#menuPin");
 	let menu = $("#main-menu");
 	let container = $("#mainContainer");
@@ -224,11 +224,15 @@ function setUpMenuMakePinned() {
 
 	content.css("margin-left", "0px");
 	
+	if (ignoreState) {
+		return;	
+	}
+	
 	saveMenuPinState(true);
 	
 }
 
-function setUpMenuRemovePinned() {
+function setUpMenuRemovePinned(ignoreState) {
 	let pinContainer = $("#menuPin");
 	let menu = $("#main-menu");
 	let container = $("#mainContainer");
@@ -273,8 +277,11 @@ function setUpMenuRemovePinned() {
 
 	menu.addClass("sidebar-static-width");	
 	
-	saveMenuPinState(false);
-	
+	if (ignoreState) {
+		return;
+	}
+
+	saveMenuPinState(false);	
 }
 
 function saveMenuPinState(state) {
@@ -293,10 +300,6 @@ function saveMenuPinState(state) {
 function setUpMenuPin(menuStates) {
 	// next cycle
 	setTimeout(function() {
-		
-		if (menuStates.pin) {
-			setUpMenuMakePinned();
-		}
 		
 		if (!$("#menuPin").hasClass("pin-toggle-installed")) {
 			
@@ -468,7 +471,7 @@ function home(data) {
 	$('#main-menu').remove();
 
 	$(contentDiv).empty();
-	$('#container').prepend('<div id="main-menu" class="sidebar sidebar-static-width sidebar-stattic-top-adjust-xs" style="display: none"><div id="menuPin" class=""><span title="Click to pin menu" style="float: right;margin-right: 15px;margin-top: 18px;cursor: pointer;color: rgba(0,0,0,0.5);"><i id="pin-menu-icon" class="fa fa-map-pin fa-lg"></i></span></div><div id="menu" class="sidebar-collapse"></div></div>');
+	$('#container').prepend('<div id="main-menu" class="sidebar sidebar-static-width" style="display: none"><div id="menuPin" class=""><span title="Click to pin menu" style="float: right;margin-right: 15px;margin-top: 18px;cursor: pointer;color: rgba(0,0,0,0.5);"><i id="pin-menu-icon" class="fa fa-map-pin fa-lg"></i></span></div><div id="menu" class="sidebar-collapse"></div></div>');
 	
 	
 	$('#mainContainer').addClass('sidebar-active');
