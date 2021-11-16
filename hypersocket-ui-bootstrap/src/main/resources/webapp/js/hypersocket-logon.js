@@ -412,9 +412,6 @@ function processLogon(data, opts, message) {
 			opts.logonCompleted(data);
 		}
 
-		setUpPinnedMenuScreenWidthListener();
-		setUpPersonalMenuPostLogon();
-		
 		stopSpin($('#logonButton i'), 'fa-sign-in');
 
 	}
@@ -427,55 +424,4 @@ function changeLogonRealm(selectButton, opts) {
 	getJSON('logon/switchRealm/' + opts.scheme + '/' + encodeURIComponent(selectButton.val()) + '/', null, function(data) {
 		showLogon(null, opts);
 	})
-}
-
-function pinnedMenuScreenWidthListener(e) {
-  if (e.matches) {
-    /* the viewport is 760 pixels wide or less */
-	log("This is a narrow screen — less than 760px wide.");
-    clearPinnedMenu(true);
-	setUpMenuRemovePinned(true);
-  } else {
-    /* the viewport is more than than 760 pixels wide */
-	log("This is a wide screen — more than 760px wide.");
-	getState('menuStates', 'true', function(prefs) {
-		var menuStates = undefined;
-		if(prefs.resources.length > 0) {
-		   menuStates = JSON.parse(prefs.resources[0].preferences);
-		}
-		log("menuStates", menuStates);
-		
-		clearPinnedMenu(true);
-		if (menuStates) {
-			if (menuStates.pin) {
-				setUpMenuMakePinned(true);
-			} else {
-				setUpMenuRemovePinned(true);
-			}
-		} else {
-			setUpMenuMakePinned(true);
-		}
-	});
-    
-  }
-}
-
-function setUpPinnedMenuScreenWidthListener() {
-	var mediaQueryList = window.matchMedia('(max-width: 760px)');
-	pinnedMenuScreenWidthListener(mediaQueryList);
-	mediaQueryList.addListener(pinnedMenuScreenWidthListener);
-}
-
-function setUpPersonalMenuPostLogon() {
-		
-		getState('menuStates', 'true', function(prefs) {
-			var menuStates = {};
-			if(prefs.resources.length > 0) {
-			   menuStates = JSON.parse(prefs.resources[0].preferences);
-			}
-			
-			if (!menuStates.personal) {
-				 $('#menu_personal .collapse').collapse("show");
-			}
-		});
 }

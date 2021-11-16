@@ -743,6 +743,8 @@ function home(data) {
 				} 
 			}
 			
+			setUpPinnedMenuScreenWidthListener();
+			
 			$('#content').click(function() {
 				closeMenu();
 			});
@@ -1178,3 +1180,38 @@ function loadSubPage(menu, element) {
 	});
 }
 
+function pinnedMenuScreenWidthListener(e) {
+  if (e.matches) {
+    /* the viewport is 760 pixels wide or less */
+	log("This is a narrow screen — less than 760px wide.");
+	setUpMenuRemovePinned(true);
+	closeMenu();
+  } else {
+    /* the viewport is more than than 760 pixels wide */
+	log("This is a wide screen — more than 760px wide.");
+	getState('menuStates', 'true', function(prefs) {
+		var menuStates = undefined;
+		if(prefs.resources.length > 0) {
+		   menuStates = JSON.parse(prefs.resources[0].preferences);
+		}
+		
+		if (menuStates) {
+			if (menuStates.pin) {
+				setUpMenuMakePinned(true);
+			} else {
+				setUpMenuRemovePinned(true);
+				closeMenu();
+			}
+		} else {
+			setUpMenuMakePinned(true);
+		}
+	});
+    
+  }
+}
+
+function setUpPinnedMenuScreenWidthListener() {
+	var mediaQueryList = window.matchMedia('(max-width: 760px)');
+	pinnedMenuScreenWidthListener(mediaQueryList);
+	mediaQueryList.addListener(pinnedMenuScreenWidthListener);
+}
