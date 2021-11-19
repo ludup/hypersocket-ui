@@ -5720,6 +5720,9 @@ $.fn.wizardPage = function(data) {
 							$('#button' + idx).find('span').text(getResource(options.doneText));
 						} else {
 							$('#button' + idx).attr('disabled', true);
+							if(options.finished) {
+								options.finished();
+							}
 						}
 
 						$('.backButton').attr('disabled', true);
