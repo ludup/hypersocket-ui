@@ -48,7 +48,7 @@ public class RobotsTxtHandler extends HttpRequestHandler {
 		response.setContentLength(b.length);
 		response.getOutputStream().write(b);
 		
-		responseProcessor.sendResponse(request, response);
+		responseProcessor.sendResponse(request, response, false);
 	}
 
 	@Override
