@@ -61,7 +61,7 @@ public class RedirectHandler extends HttpRequestHandler {
 		}
 		response.setHeader(HttpHeaders.LOCATION, server.getDefaultRedirectPath(request, response) + hash);
 		response.sendError(HttpStatus.SC_MOVED_TEMPORARILY);
-		responseProcessor.sendResponse(request, response, false);
+		responseProcessor.sendResponse(request, response);
 
 	}
 	
