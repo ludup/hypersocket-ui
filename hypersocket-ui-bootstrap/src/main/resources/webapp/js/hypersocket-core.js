@@ -158,7 +158,7 @@ function closeMenu() {
 	if(on) {
 		$('#main-menu').fadeOut(500);
 	}
-};
+}
 
 function clearPinnedMenu() {
 	let pinContainer = $("#menuPin");
