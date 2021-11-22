@@ -1240,19 +1240,41 @@ function pinnedMenuScreenWidthListener(e) {
 		   menuStates = JSON.parse(prefs.resources[0].preferences);
 		}
 		
-		if (menuStates) {
-			if (menuStates.pin) {
-				setUpMenuMakePinned(true);
-			} else {
-				setUpMenuRemovePinned(true);
-				closeMenu();
-			}
-		} else {
-			setUpMenuMakePinned(true);
-		}
+		getJSON('configuration/values/session.menu.state/', null,
+			function(data) {
+				let defaulMenuStatePinned = null;
+				if (data.success && data.resource) {
+					defaulMenuStatePinned = data.resource['session.menu.state'] === "true" ? true : false;
+					
+					if (menuStates) {
+						let isUserPinnedStateDefined = typeof(menuStates.pin) !== "undefined";
+						
+						if (isUserPinnedStateDefined) {
+							handleTogglePinnedMenu(menuStates.pin);
+						} else {
+							handleTogglePinnedMenu(defaulMenuStatePinned);
+						}
+						
+					} else {
+						handleTogglePinnedMenu(defaulMenuStatePinned);
+					}
+				} else {
+					setUpMenuMakePinned(true);
+				}
+				
+		});
 	});
     
   }
+}
+
+function handleTogglePinnedMenu(state) {
+	if (state) {
+		setUpMenuMakePinned(true);
+	} else {
+		setUpMenuRemovePinned(true);
+		closeMenu();
+	}
 }
 
 function setUpPinnedMenuScreenWidthListener() {
