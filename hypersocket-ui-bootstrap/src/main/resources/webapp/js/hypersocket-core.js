@@ -169,7 +169,7 @@ function clearPinnedMenu() {
 }
 
 
-function setUpMenuMakePinned() {
+function setUpMenuMakePinned(ignoreState) {
 	let pinContainer = $("#menuPin");
 	let menu = $("#main-menu");
 	let container = $("#container");
@@ -232,11 +232,15 @@ function setUpMenuMakePinned() {
 	container.removeClass("row");
 	container.addClass("row");
 	
+	if (ignoreState) {
+		return;	
+	}
+	
 	saveMenuPinState(true);
 	
 }
 
-function setUpMenuRemovePinned() {
+function setUpMenuRemovePinned(ignoreState) {
 	let pinContainer = $("#menuPin");
 	let menu = $("#main-menu");
 	let menuJS = document.getElementById("main-menu");
@@ -290,6 +294,10 @@ function setUpMenuRemovePinned() {
 	
 	menuJS.style.removeProperty("top");
 	menuJS.style.removeProperty("bottom");
+	
+	if (ignoreState) {
+		return;	
+	}
 	
 	saveMenuPinState(false);
 	
@@ -765,6 +773,8 @@ function home(data) {
 				} 
 			}
 			
+			setUpPinnedMenuScreenWidthListener();
+			
 			$('#content').click(function() {
 				closeMenu();
 			});
@@ -1215,3 +1225,38 @@ function loadSubPage(menu, element) {
 	});
 }
 
+function pinnedMenuScreenWidthListener(e) {
+  if (e.matches) {
+    /* the viewport is 760 pixels wide or less */
+	log("This is a narrow screen — less than 760px wide.");
+	setUpMenuRemovePinned(true);
+	closeMenu();
+  } else {
+    /* the viewport is more than than 760 pixels wide */
+	log("This is a wide screen — more than 760px wide.");
+	getState('menuStates', 'true', function(prefs) {
+		var menuStates = undefined;
+		if(prefs.resources.length > 0) {
+		   menuStates = JSON.parse(prefs.resources[0].preferences);
+		}
+		
+		if (menuStates) {
+			if (menuStates.pin) {
+				setUpMenuMakePinned(true);
+			} else {
+				setUpMenuRemovePinned(true);
+				closeMenu();
+			}
+		} else {
+			setUpMenuMakePinned(true);
+		}
+	});
+    
+  }
+}
+
+function setUpPinnedMenuScreenWidthListener() {
+	var mediaQueryList = window.matchMedia('(max-width: 760px)');
+	pinnedMenuScreenWidthListener(mediaQueryList);
+	mediaQueryList.addListener(pinnedMenuScreenWidthListener);
+}

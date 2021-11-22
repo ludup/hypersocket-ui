@@ -406,7 +406,7 @@ function processLogon(data, opts, message) {
 			opts.logonCompleted(data);
 		}
 
-		setUpPinnedMenuPostLogon();
+		
 		setUpPersonalMenuPostLogon();
 		
 		stopSpin($('#logonButton i'), 'fa-sign-in');
@@ -423,10 +423,6 @@ function changeLogonRealm(selectButton, opts) {
 	})
 }
 
-function setUpPinnedMenuPostLogon() {
-	clearPinnedMenu();
-	setUpMenuMakePinned();
-}
 
 function setUpPersonalMenuPostLogon() {
 		
