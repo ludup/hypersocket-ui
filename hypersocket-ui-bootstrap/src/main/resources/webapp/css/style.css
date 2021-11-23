@@ -747,7 +747,7 @@ header .navbar {
 	top: 51px;
 	bottom: 51px;
 	left: 0px;
-	z-index: 8888;
+	z-index: 1030;
 	overflow-y: auto;
 }
 
