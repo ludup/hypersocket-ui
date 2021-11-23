@@ -205,13 +205,13 @@ function setUpMenuMakePinned(ignoreState) {
 
 	container.removeClass("col-sm-8");
 	container.removeClass("col-md-9");
-	container.removeClass("col-lg-10");
+	container.removeClass("col-lg-12");
 	
 	container.removeClass("sidebar-static-main-container");
 
 	container.addClass("col-sm-8");
 	container.addClass("col-md-9");
-	container.addClass("col-lg-10");
+	container.addClass("col-lg-12");
 	
 	container.addClass("sidebar-static-main-container");
 
@@ -258,7 +258,7 @@ function setUpMenuRemovePinned(ignoreState) {
 
 	container.removeClass("col-sm-8");
 	container.removeClass("col-md-9");
-	container.removeClass("col-lg-10");
+	container.removeClass("col-lg-12");
 	
 	container.removeClass("sidebar-static-main-container");
 
@@ -490,8 +490,6 @@ function home(data) {
 			
 			log("Received menus");
 			
-			debugger;
-
 			var menuStates = {};
 			if(prefs.resources.length > 0) {
 			   menuStates = JSON.parse(prefs.resources[0].preferences);

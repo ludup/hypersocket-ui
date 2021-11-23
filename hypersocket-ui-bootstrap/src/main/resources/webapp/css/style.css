@@ -2513,3 +2513,21 @@ form#logonForm {
 .m-r-xl { margin-right: 3em; }
 .m-b-xl { margin-bottom: 3em; }
 .m-l-xl { margin-left: 3em; }
+
+@media (min-width: 1200px) {
+  #mainContainer.col-lg-12 {
+    padding-right: 255px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px){
+  #mainContainer.col-lg-12 {
+    padding-right: 5px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px){
+  #mainContainer.col-lg-12 {
+    padding-right: 5px;
+  }
+}
