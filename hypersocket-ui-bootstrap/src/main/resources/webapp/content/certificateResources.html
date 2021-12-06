@@ -112,9 +112,23 @@
 							fields : [ {
 								name : "name"
 							}, {
-								name: "issueDate"
+								name: "issueDate",
+								formatter: function(value, row, index) {
+									if(!value) {
+										return '-';
+									}
+									var fileDate = new Date(value);
+									return fileDate.format('yyyy-mm-dd');
+								}
 							}, {
-								name: "expiryDate"
+								name: "expiryDate",
+								formatter: function(value, row, index) {
+									if(!value) {
+										return '-';
+									}
+									var fileDate = new Date(value);
+									return fileDate.format('yyyy-mm-dd');
+								}
 							}],
 							resourceKey : "certificate",
 							createButtonText: 'text.createCertificate',
