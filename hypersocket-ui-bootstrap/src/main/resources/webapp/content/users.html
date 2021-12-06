@@ -781,14 +781,20 @@
 // 										});
 									}
 
-									if(!ownerRealm && menuList.realmAdmin) {
-										$('#contentUsers').find('.panel-heading').last().append(
-												'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">'
-												+ getResource('configure.remote.text') + '</a></div></div>');
-										$('#configureUsers').click(function(e) {
-											e.preventDefault();
-											$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
+									if(!ownerRealm) {
+										
+										getJSON('permissions/verify/realm.update', null, function(data) {
+											if(data.success) {
+												$('#contentUsers').find('.panel-heading').last().append(
+														'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">'
+														+ getResource('configure.remote.text') + '</a></div></div>');
+												$('#configureUsers').click(function(e) {
+													e.preventDefault();
+													$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
+												});												
+											}
 										});
+
 
 										/** $('#contentUsers').find('.fixed-table-toolbar').last().append(
 												'<div class="tableToolbar pull-right search"><div><a id="resetRealm" href="#">'
