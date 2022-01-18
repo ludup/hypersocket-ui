@@ -1399,7 +1399,6 @@ $.fn.propertyPage = function(opts) {
 						}
 						
 					});
-					debugger;
 					$.each(tabs, function(idx, t) {
 						if(t.visibilityDependsOn) {
 							

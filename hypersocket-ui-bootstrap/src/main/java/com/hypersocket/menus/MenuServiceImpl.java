@@ -130,7 +130,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, MenuService.MENU_DASHBOARD_SETTINGS, "fa-cog",
-				"dashboardSettings", 200, null, null, null, null) {
+				"dashboardSettings", 1200, null, null, null, null) {
 			@Override
 			public boolean canRead() {
 				if(!permissionService.hasAdministrativePermission(getCurrentPrincipal()))
@@ -204,7 +204,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				null, null), MenuService.MENU_PERSONAL);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
-				MenuService.MENU_MY_CREDENTIALS, "fa-id-card-o", null, 50, null, null,
+				MenuService.MENU_MY_CREDENTIALS, "fa-id-card", null, 50, null, null,
 				null, null), MenuService.MENU_PERSONAL);
 		
 		
@@ -459,7 +459,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				RolePermission.DELETE), MenuService.MENU_SECURITY_PERMISSIONS);
 
 		registerMenu(
-				new MenuRegistration(RESOURCE_BUNDLE, "userDelegations", "fa-user-circle-o", "userDelegations", 3001,
+				new MenuRegistration(RESOURCE_BUNDLE, "userDelegations", "fa-user-circle", "userDelegations", 3001,
 						UserDelegationResourcePermission.READ, UserDelegationResourcePermission.CREATE,
 						UserDelegationResourcePermission.UPDATE, UserDelegationResourcePermission.DELETE),
 				MenuService.MENU_SECURITY_PERMISSIONS);

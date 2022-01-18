@@ -21,6 +21,10 @@ a:focus, a:hover {
     text-decoration: underline;
 }
 
+i.fad {
+    --fa-secondary-opacity: 0.60;
+}
+
 a {
     color: #1e0c51;
     text-decoration: none;
@@ -56,14 +60,8 @@ input:disabled, input:readonly {
 /*
  * Main content
  */
-.main {
-	padding: 0px 5px 5px 30px;
-}
-
-@media ( min-width : 768px) {
-	.main {
-		padding: 0px 20px 20px 20px;
-	}
+form#logonForm {
+    width: 600px;
 }
 
 pre {
@@ -77,19 +75,18 @@ pre {
     height: 35px;
 }
 
-#content {
-	margin-right: 0px;
-	height: 100%;
-}
-
 .main .page-header {
 	margin-top: 0;
 }
 
-.navbar-brand {
-	margin: auto;
-    padding: 7px 10px; 
-} 
+.dashboard-content > .dropzoneColumn {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.dashboard-content > .dropzoneColumn:not(:first-child) {
+	padding-left: 1em;
+}
 
 /** 2.4 changes LB custom css start*/
 .lb-help-block{margin-top: 5px;margin-bottom: 10px;font-size: x-small;}
@@ -100,26 +97,6 @@ pre {
 .tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;}
 .lb-detail-icon {font-size: xx-small;}
 .lb-modal-header-text-reverse {flex-direction: row-reverse;}
-@media ( max-width: 575.98px) {
-	.tableActions {
-		text-align: start;	
-	}
-	.actionsColumn {
-		width: auto;
-		text-align: start;
-		
-	}
-}
-@media (min-width: 576px) { 
-
-	.tableActions {
-		text-align: right;
-	}
-	.actionsColumn {
-		width: 175px;
-		text-align: right;
-	}	
-}
 .fixed-table-container {padding-top: 5px;}
 button.row-additional {margin-right: 5px;}
 button.row-additional::after {display: none;}
@@ -167,9 +144,8 @@ button.row-additional::after {display: none;}
 }
 
 .form-signin {
-	width: 330px;
 	padding-top: 50px;
-	margin: 0 auto;
+    margin: 0 auto;
 }
 
 /* .form-signin a { */
@@ -197,6 +173,8 @@ button.row-additional::after {display: none;}
 	box-sizing: border-box;
 	padding: 10px;
 	font-size: 12px;
+    border-color: #999;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
 }
 
 .form-signin .form-control:focus {
@@ -252,10 +230,6 @@ button.row-additional::after {display: none;}
 	text-align: center;
 	margin: 25px auto;
 }
-
-/* .logonInput { */
-	
-/* } */
 
 .excludedList {
 	width: 100%;
@@ -422,7 +396,6 @@ button.row-additional::after {display: none;}
 
 #mainContainer {
 	background: #f8f8f8;
-	height: 100%;
 }
 
 #subMenuContent, #subMenuPageContent {
@@ -713,6 +686,8 @@ header .navbar {
     overflow-x: hidden;
     min-height: 2em;
 	width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 #copyright {
@@ -1593,25 +1568,9 @@ span.input-group-addon .dropdown-toggle {
 	border-radius: 3px;
 }
 
-
 .modal-dialog {
+    margin: 60px auto;
 	position: relative;
-	margin: 60px 10px;
-}
-
-@media ( min-width : 767px) {
-	.modal-dialog {
-		margin: 60px auto;
-	}
-}
-
-@media ( max-width : 767px) {
-	.container-fluid.content {
-		overflow: hidden;
-	}
-	#footer {
-		display: none
-	}
 }
 
 .small-button {
@@ -2468,33 +2427,18 @@ select[multiple] {
 .chart-color-11 {
 	color: #3F51B5; /* TEAK */
 }
-@media ( min-width : 767px) {
-	
-form#logonForm {
-	color: #34495e;
-	margin-top: 50px;
-	padding: 15px;
-	width: 600px;
-}
-
-.form-signin {
-	margin: 0 auto;
-}
 
 button#logonButton {
-	width: 350px;
-	margin: 30px auto 20px;
+	max-width: 400px;
 }
 
 .logonInput {
-	margin: 20px auto;
 	width: 400px;
-	margin-bottom: 0px;
 }
 
-#logonForm>p {
+/* #logonForm>p {
 	font-size: 11pt;
-}
+} */
 
 #applicationMenu #buttons {
 	line-height: 1.7;
@@ -2502,181 +2446,106 @@ button#logonButton {
 
 #applicationMenu #buttons .bubble_text {
 	font-style: italic;
-}
-
-.form-signin .form-control {
-	border-color: #999;
-	box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
 }
 
 .form-signin-heading {
 	padding-bottom: 20px;
 }
+    
+.tableActions {
+    text-align: right;
 }
 
-@media ( max-width : 767px) {
-	
-div.scroll-content.container-fluid.content.lb-y-scroll{
-	overflow-y: auto !important;
-}
-	
-form#logonForm {
-	margin-top: 25px;
-	padding: 15px;
-	width: 400px;
+.tableActions .dropdown-menu > .dropdown-item > i {
+	width: 32px;
 }
 
-.form-signin {
-	padding: 15px;
-	margin: 0 auto;
+.actionsColumn {
+    width: 175px;
+    text-align: right;
 }
 
-.logonInput {
-	margin: 5px auto;
-}
-
-#logonForm>p {
-	font-size: 11pt;
-}
-
-#applicationMenu #buttons {
-	line-height: 1.7;
-}
-
-#applicationMenu #buttons .bubble_text {
-	font-style: italic;
-}
-
-.form-signin .form-control {
-	border-color: #999;
-	box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
-}
-
-.form-signin-heading {
-	padding-bottom: 5px;
-}
-}
-
-.form-scheme-heading {
-	text-align: center;
+.actionsColumn a i.fad {
 	font-size: 18px;
-}
+} 
 
-.form-signin-warning {
-	color: grey; 
-	font-style:italic; 
-	padding-top: 5px; 
-	text-align:center;
-	font-size:11px;
-	margin-top: 15px;
-}
+/*-----------------------------------------------------------------------
+For < 767px
+-----------------------------------------------------------------------*/
 
-.form-signin-security {
-	padding-top: 20px;
-}
+@media ( max-width : 766px) {
+	
+	form#logonForm {
+        width: 400px;
+	}
+    
+	.modal-dialog {
+	    margin: 60px 10px;
+	}
+	
+	.container-fluid.content {
+	    overflow: hidden;
+	}
+	#footer {
+	    display: none
+	}
+	    
+	div.scroll-content.container-fluid.content.lb-y-scroll{
+		overflow-y: auto !important;
+	}
+	
+	.form-signin {
+		padding: 15px;
+	}
+	
+	.logonInput {
+		margin: 5px auto;
+		width: 100%;
+	}
+	
+	.form-signin .form-control {
+		border-color: #999;
+		box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+	}
+	
+	.form-signin-heading {
+		padding-bottom: 5px;
+	}
+	
+	.underline {
+		text-decoration: underline;
+	}
+	
+	.overview-step {
+		display: inline-block;
+		width: 22em;
+		vertical-align: top;
+		margin-right: 2em;
+	}
+	
+	.overview-step img {
+		max-width: 20em;
+	}
+}  
 
-.underline {
-	text-decoration: underline;
-}
-
-.overview-step {
-	display: inline-block;
-	width: 22em;
-	vertical-align: top;
-	margin-right: 2em;
-}
-
-.overview-step img {
-	max-width: 20em;
-}
-
-/* Some Bootstrap 4-like space logical styles */
-/*Margin and Padding helpers*/
-/*xs*/
-.p-xs { padding: .25em; }
-.p-x-xs { padding: 0 .25em; }
-.p-y-xs { padding: .25em 0 ; }
-.p-t-xs { padding-top: .25em; }
-.p-r-xs { padding-right: .25em; }
-.p-b-xs { padding-bottom: .25em; }
-.p-l-xs { padding-left: .25em; }
-.m-xs { margin: .25em; }
-.m-x-xs { margin: 0 .25em; }
-.m-y-xs { margin: .25em 0 ; }
-.m-r-xs { margin-right: .25em; }
-.m-l-xs { margin-left: .25em; }
-.m-t-xs { margin-top: .25em; }
-.m-b-xs { margin-bottom: .25em; }
-/*sm*/
-@media (min-width:768px){
-/*sm*/
-.p-sm { padding: .5em; }
-.p-x-sm { padding: 0 .5em; }
-.p-y-sm { padding: .5em 0 ; }
-.p-t-sm { padding-top: .5em; }
-.p-r-sm { padding-right: .5em; }
-.p-b-sm { padding-bottom: .5em; }
-.p-l-sm { padding-left: .5em; }
-.m-sm { margin: .5em; }
-.m-x-sm { margin: 0 .5em; }
-.m-y-sm { margin: .5em 0 ; }
-.m-t-sm { margin-top: .5em; }
-.m-r-sm { margin-right: .5em; }
-.m-b-sm { margin-bottom: .5em; }
-.m-l-sm { margin-left: .5em; }
-}
-
-/*md*/
-@media (min-width: 992px){
-.p-md { padding: 1em; }
-.p-x-md { padding: 0 1em; }
-.p-y-md { padding: 1em 0; }
-.p-t-md { padding-top: 1em; }
-.p-r-md { padding-right: 1em; }
-.p-b-md { padding-bottom: 1em; }
-.p-l-md { padding-left: 1em; }
-.m-md { margin: 1em; } 
-.m-x-md { margin: 0 1em; }
-.m-y-md { margin: 1em 0 ; }
-.m-t-md { margin-top: 1em; }
-.m-r-md { margin-right: 1em; }
-.m-b-md { margin-bottom: 1em; }
-.m-l-md { margin-left: 1em; }
-}
-
-/*lg*/
-@media (min-width: 1200px){
-.p-lg { padding: 1.5em; }
-.p-x-lg { padding: 0 1.5em; }
-.p-y-lg { padding: 1.5em 0; }
-.p-t-lg { padding-top: 1.5em; }
-.p-r-lg { padding-right: 1.5em; }
-.p-b-lg { padding-bottom: 1.5em; }
-.p-l-lg { padding-left: 1.5em; }
-.m-lg { margin: 1.5em; }
-.m-x-lg { margin: 0 1.5em; }
-.m-y-lg { margin: 1.5em 0; }
-.m-t-lg { margin-top: 1.5em; }
-.m-r-lg { margin-right: 1.5em; }
-.m-b-lg { margin-bottom: 1.5em; }
-.m-l-lg { margin-left: 1.5em; }
-}
-/*xl*/
-.p-xl { padding: 3em; }
-.p-x-xl { padding: 0 3em; }
-.p-y-xl { padding: 3em 0 ; }
-.p-t-xl { padding-top: 3em; }
-.p-r-xl { padding-right: 3em; }
-.p-b-xl { padding-bottom: 3em; }
-.p-l-xl { padding-left: 3em; }
-.m-xl { margin: 3em; }
-.m-x-xl { margin: 0 3em; }
-.m-y-xl { margin: 3em 0; }
-.m-t-xl { margin-top: 3em; }
-.m-r-xl { margin-right: 3em; }
-.m-b-xl { margin-bottom: 3em; }
-.m-l-xl { margin-left: 3em; }
-
-.logonFormContainer {
-    margin-top: 5em;
+/*-----------------------------------------------------------------------
+For < 576px
+-----------------------------------------------------------------------*/
+@media ( max-width: 575px) {
+    .tableActions {
+        text-align: start;  
+    }
+    
+    .actionsColumn {
+        width: auto;
+        text-align: start;
+    }
+    
+    form#logonForm {
+        width: 100%;
+    }
+    
+	button#logonButton {
+	    width: 100%;
+	}
 }

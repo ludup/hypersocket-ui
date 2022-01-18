@@ -105,9 +105,9 @@ $.fn.passwordPolicy = function(data) {
 				$('#suggestions').empty();
 				if(data.success) {
 					if(options.passwordElement.val() == options.confirmElement.val()) {
-						$('#suggestions').append('<span class="success">Password looks good</span>');
+						$('#suggestions').append('<span class="text-success">Password looks good</span>');
 					} else {
-						$('#suggestions').append('<span class="warning">Password is good but needs confirming</span>');
+						$('#suggestions').append('<span class="text-warning">Password is good but needs confirming</span>');
 					}
 					if(options.buttonElement) {
 						$(options.buttonElement).prop('disabled', false);
@@ -382,10 +382,10 @@ $.fn.passwordPolicy = function(data) {
 					+ getResource("suggestedPassword.text")
 					+ '</strong></span></div>');
 			
-			passwordGeneratorContent.append('<div id="generatedPassword"><div id="passwordHolder"><span id="suggestedPassword" class="success"></span></div><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
+			passwordGeneratorContent.append('<div id="generatedPassword" class="mt-3"><div id="passwordHolder" class="mb-2"><h5 id="suggestedPassword" class="text-success"></h5></div><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
 					 + getResource("regeneratePassword.text") + '"><i class="fad fa-2x fa-refresh"></i></a></div>');
 			
-			passwordGeneratorContent.append('<div id="passwordStrength"></div>');
+			passwordGeneratorContent.append('<div id="passwordStrength" class="mt-3"></div>');
 			
 			$('#passwordStrength').sliderInput({
 				min: policy.minimumLength,
