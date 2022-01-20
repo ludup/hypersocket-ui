@@ -1562,6 +1562,12 @@ $.fn.autoComplete = function(data) {
 		}
 	});
 
+    $('#input_' + id).keydown(function(e) {
+        if(e.which == 40) {
+            /*  TODO Handle keyboard selection with cursor / arrow keys */
+        }
+    });
+
 	if(options.disabled) {
 		callback.disable();
 	}

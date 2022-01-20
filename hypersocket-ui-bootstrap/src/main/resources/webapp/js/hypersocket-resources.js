@@ -203,6 +203,7 @@ $.fn.resourceTable = function(params) {
 		rowStyle: false,
 		loaded: false,
 		onReady: false,
+        infoLevel: 'info', 
 		}, params);
 	
 	
@@ -259,7 +260,7 @@ $.fn.resourceTable = function(params) {
 		}
 		getState(divName+'-infoPanel', true, function(data) {
 			if(data.resources.length == 0 || data.resources[0].show) {
-				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-info"><i class="fad fa-2x fa-info"></i><i id="messageDismiss" '
+				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="fad fa-2x fa-info"></i><i id="messageDismiss" '
 						+ 'class="fad fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
 			
 				$('.dismiss-icon').click(function(e) {
@@ -890,7 +891,7 @@ $.fn.resourceTable = function(params) {
 		    	var size = $('#' + divName + 'Placeholder').bootstrapTable('getOptions').pageSize;
 		    	saveState(divName + 'Placeholder', {'pageSize': size, 'sortOrder': order, 'sortName': name}, true);
 		    },
-		    classes: 'table table-hover ' + divName,
+		    classes: 'table table-striped table-hover ' + divName,
 		    onPostBody: function() {
 		    	checkReady.tableReady = true;
 		    	checkReady.check();

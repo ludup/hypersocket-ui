@@ -587,7 +587,7 @@ $.fn.tabPage = function(opts) {
 		'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fad ' 
 		+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
-		+ propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body property-body"><div id="' 
+		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 
 	var lastTab = null;
@@ -651,6 +651,8 @@ $.fn.propertyPage = function(opts) {
 				  parameters: false,
 				  typeCallback: false, 
 				  showButtons : true, 
+                  infoHtml : false,
+                  infoLevel: 'info', 
 				  showAdditionalTabButtons: false,
 				  maintainButtonState: true,
 				  displayMode: '', 
@@ -681,6 +683,7 @@ $.fn.propertyPage = function(opts) {
 	$(this).empty();
 	var self = $(this);
 	var url = options.url;
+    
 	
 	/* Allow parameters to be either dynamically generation from
 	 * a function or a fixed string. Either of which may be either
@@ -736,7 +739,7 @@ $.fn.propertyPage = function(opts) {
             }
             tabHtml += '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fad ' 
                             + options.icon + '"></i><span>' + options.title + '</span></h2><ul id="' 
-                            + propertyDiv + 'Tabs" class="nav nav-tabs"/></div><div class="panel-body property-body"><div id="' 
+                            + propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body"><div id="' 
                             + propertyDiv + 'Content" class="tab-content"></div></div></div>';
             $('#' + propertyDiv).append(tabHtml);
 			
@@ -747,6 +750,28 @@ $.fn.propertyPage = function(opts) {
 							+ '</span></button><button class="btn btn-small btn-primary" id="' + propertyDiv 
 							+ 'Apply"><i class="fad fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button></div>');
 			}
+    
+            if(options.infoHtml) {
+                var theDiv = $(panel).find('.panel-heading');
+                if(!theDiv.length) {
+                    theDiv = $(panel).find('.modal');
+                }
+                getState(propertyDiv+'-infoPanel', true, function(data) {
+                    if(data.resources.length == 0 || data.resources[0].show) {
+                        theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="fad fa-2x fa-info"></i><i id="messageDismiss" '
+                                + 'class="fad fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
+                    
+                        $('.dismiss-icon').click(function(e) {
+                            var prefs = new Object();
+                            prefs.show = false;
+                            saveState(divName+'-infoPanel', prefs, true, function() {
+                                $('#infoPanel').fadeOut(1000);
+                            });
+                        });
+                    }
+                    
+                });
+            }
 
 			var first = true;
 			var filterPrefix = "_" + Date.now() + "_";

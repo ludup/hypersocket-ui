@@ -1135,7 +1135,7 @@ function loadMenu(menu) {
 		$('#mainContent').append('<div class="col-12" id="subMenuContent">'
 				
 					
-						+ '<div id="subMenuIconPanel" style="margin-bottom: 20px;display: flex;justify-content: space-around;background-color:white;border: 1px solid #e1e6ef;padding: 15px 0px 0px 0px;"></div>'
+						+ '<div id="subMenuIconPanel" style="margin-bottom: 20px;display: flex;background-color:white;border: 1px solid #e1e6ef;padding: 15px 0px 0px 0px;"></div>'
 					
 				
 			+ '</div>'
