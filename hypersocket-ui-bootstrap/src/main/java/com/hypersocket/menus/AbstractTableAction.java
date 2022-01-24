@@ -1,6 +1,7 @@
 package com.hypersocket.menus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionType;
 
 public class AbstractTableAction {
@@ -44,7 +45,7 @@ public class AbstractTableAction {
 		return enableFunction;
 	}
 	
-	public boolean canRead() {
+	public boolean canRead() throws AccessDeniedException {
 		return true;
 	}
 	

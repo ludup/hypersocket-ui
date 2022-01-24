@@ -20,6 +20,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionType;
 
 @XmlRootElement(name = "menu")
@@ -141,7 +142,7 @@ public class MenuRegistration {
 	}
 	
 	@JsonIgnore
-	public boolean canRead() {
+	public boolean canRead() throws AccessDeniedException {
 		return true;
 	}
 
