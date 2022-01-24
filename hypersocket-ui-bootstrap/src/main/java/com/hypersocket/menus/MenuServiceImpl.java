@@ -265,7 +265,11 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 					return true;
 				}
 				for (MenuRegistration m : getModules()) {
-					if (!m.isHidden() && m.canRead()) {
+					try {
+						if (!m.isHidden() && m.canRead()) {
+							return false;
+						}
+					} catch(AccessDeniedException e) {
 						return false;
 					}
 				}
@@ -471,7 +475,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						RoleAttributePermission.CREATE,
 						RoleAttributePermission.UPDATE,
 						RoleAttributePermission.DELETE) {
-			public boolean canRead() {
+			public boolean canRead() throws AccessDeniedException {
 				return super.canRead() && configurationService.getBooleanValue(getCurrentRealm(), "feature.roleSelection");
 			}
 		},
@@ -777,22 +781,26 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		for (AbstractTableAction action : registeredActions.get(table)) {
 
-			boolean hasPermission = action.canRead();
-			if (action.getPermissions() != null) {
-				hasPermission = false;
-				for(PermissionType t : action.getPermissions()) {
-					hasPermission = hasPermission(t);
-					if(hasPermission) {
-						break;
+			try {
+				boolean hasPermission = action.canRead();
+				if (action.getPermissions() != null) {
+					hasPermission = false;
+					for(PermissionType t : action.getPermissions()) {
+						hasPermission = hasPermission(t);
+						if(hasPermission) {
+							break;
+						}
 					}
 				}
-			}
-
-			if(hasPermission) {
-				if (!action.isEnabled()) {
-					continue;
+	
+				if(hasPermission) {
+					if (!action.isEnabled()) {
+						continue;
+					}
+					results.add(action);
 				}
-				results.add(action);
+			} catch(AccessDeniedException e) {
+				log.warn(action.getResourceKey() + " generated AccessDeniedException");
 			}
 
 		}
@@ -859,66 +867,70 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	
 	protected Menu populateMenuList(MenuRegistration m, List<Menu> menuList) {
 
-
-		if (shouldFilter(m)) {
-			if (log.isDebugEnabled()) {
-				log.debug(m.getResourceKey() + " has been filtered out");
-			}
-			return null;
-		} else if (!canReadMenu(m)) {
-			if (log.isDebugEnabled()) {
-				log.debug(getCurrentPrincipal().getRealm().getName()+ "/"
-						+ getCurrentPrincipal().getName()
-						+ " does not have access to "
-						+ m.getResourceKey()
-						+ " menu due to canRead returning false");
-			}
-			return null;
-
-		} else if (m.getReadPermission() != null) {
-
-			try {
-				assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
-						m.getReadPermission());
-			} catch (AccessDeniedException e) {
+		try {
+			if (shouldFilter(m)) {
 				if (log.isDebugEnabled()) {
-					log.debug(getCurrentPrincipal().getRealm().getName() + "/"
+					log.debug(m.getResourceKey() + " has been filtered out");
+				}
+				return null;
+			} else if (!canReadMenu(m)) {
+				if (log.isDebugEnabled()) {
+					log.debug(getCurrentPrincipal().getRealm().getName()+ "/"
 							+ getCurrentPrincipal().getName()
 							+ " does not have access to "
 							+ m.getResourceKey()
-							+ " menu due to permission " + m.getReadPermission().getResourceKey());
+							+ " menu due to canRead returning false");
 				}
 				return null;
+	
+			} else if (m.getReadPermission() != null) {
+	
+				try {
+					assertAnyPermission(PermissionStrategy.EXCLUDE_IMPLIED,
+							m.getReadPermission());
+				} catch (AccessDeniedException e) {
+					if (log.isDebugEnabled()) {
+						log.debug(getCurrentPrincipal().getRealm().getName() + "/"
+								+ getCurrentPrincipal().getName()
+								+ " does not have access to "
+								+ m.getResourceKey()
+								+ " menu due to permission " + m.getReadPermission().getResourceKey());
+					}
+					return null;
+				}
 			}
-		}
+			
+			Menu thisMenu = new Menu(
+					m,
+					hasPermission(m.getCreatePermission()) && m.canCreate(),
+					hasPermission(m.getUpdatePermission()) && m.canUpdate(),
+					hasPermission(m.getDeletePermission()) && m.canDelete(),
+					m.getIcon(), m.getData(), m.isHidden());
+	
+			for (MenuRegistration child : allMenus.get(m.getResourceKey()).getMenus()) {
+				populateMenuList(child, thisMenu.getMenus());
+			}
+	
+			if (thisMenu.getResourceName() == null) {
+				if (thisMenu.getMenus().size() == 0) {
+					if (log.isDebugEnabled()) {
+						log.debug("Menu "
+								+ thisMenu.getResourceKey()
+								+ " will not be displayed because there are no children and no url has been set");
+					}
+					return null;
+				}
+			}
+			menuList.add(thisMenu);
+			return thisMenu;
 		
-		Menu thisMenu = new Menu(
-				m,
-				hasPermission(m.getCreatePermission()) && m.canCreate(),
-				hasPermission(m.getUpdatePermission()) && m.canUpdate(),
-				hasPermission(m.getDeletePermission()) && m.canDelete(),
-				m.getIcon(), m.getData(), m.isHidden());
-
-		for (MenuRegistration child : allMenus.get(m.getResourceKey()).getMenus()) {
-			populateMenuList(child, thisMenu.getMenus());
+		} catch(AccessDeniedException e) {
+			return null;
 		}
-
-		if (thisMenu.getResourceName() == null) {
-			if (thisMenu.getMenus().size() == 0) {
-				if (log.isDebugEnabled()) {
-					log.debug("Menu "
-							+ thisMenu.getResourceKey()
-							+ " will not be displayed because there are no children and no url has been set");
-				}
-				return null;
-			}
-		}
-		menuList.add(thisMenu);
-		return thisMenu;
 		
 	}
 
-	private boolean canReadMenu(MenuRegistration m) {
+	private boolean canReadMenu(MenuRegistration m) throws AccessDeniedException {
 		return m.canRead();
 	}
 	
