@@ -3649,7 +3649,7 @@ $.fn.namePairInput = function(data) {
 		+	'	<div id="' + id + 'NamePairs" ></div>'
 		+	'	<div id="' + id + 'NewRow" class="row">'
 		+	'		<div class="propertyValue col-10">'
-		+	'			<span class="help-block">&nbsp;</span>'
+		+	'			<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">&nbsp;</span>'
 		+	'		</div>'
 		+	'		<div class="propertyValue col-1 dialogActions">'
 		+	'			<a id="' + id + 'AddPair" href="#" class="btn btn-info addButton">'
@@ -4327,7 +4327,7 @@ $.fn.profileImage = function(data) {
     var id = checkElementHasId($(this)).attr('id') + "ProfileImage";
     var html = '<div class="lb-row">';
 	html += '<div id="' + id + 'Preview" class="col-md-4 text-center">';
-	html += '<img src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview" width="96"/>';
+	html += '<img class="img-fluid" src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview"/>';
 	html += '</div>';
 	html += '<div id="' + id + 'Upload" class="col-md-8">';
 	html += '</div>';
@@ -4394,7 +4394,7 @@ $.fn.logoInput = function(data) {
 
 	var generatorHtml =	'<div id="' + id + 'Generator" class="logo-generator">'
 		+	'	<div class="logo-text-container logo-row">'
-        +	'		<span class="help-block">' + getResource('logo.text.label') + ':</span>'
+        +	'		<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('logo.text.label') + ':</span>'
         +   '		<select id="' + id + 'TextSource" class="logo-shape form-control">'
         +   '			<option value="auto">' + getResource('logo.text.auto') + '</option>'
         +   '			<option value="autoname">' + getResource('logo.text.autoname') + '</option>'
@@ -4406,7 +4406,7 @@ $.fn.logoInput = function(data) {
         +   '		<div id="' + id + 'Icon" class="logo-icon"></div>'
         +	'	</div>'
 		+	'	<div class="logo-shape-container logo-row">'
-        +	'		<span class="help-block">' + getResource('logo.shape.label') + ':</span>'
+        +	'		<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('logo.shape.label') + ':</span>'
         +   '		<select id="' + id + 'Shape" class="logo-shape form-control">'
         +   '			<option value="autoname">' + getResource('logo.shape.autoname') + '</option>'
         +   '			<option value="autotype">' + getResource('logo.shape.autotype') + '</option>'
@@ -5000,7 +5000,7 @@ $.fn.multipleFileUpload = function(data) {
 			+	'		<div class="col-12" style="padding-left: 0px; padding-right: 0px;">'
 			+	'         <div class="lb-row">'	
 			+	'			<div class="propertyValue col-8" style="padding-left: 0px;">'
-			+	'				<span class="help-block">' + options.text + '</span>'
+			+	'				<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + options.text + '</span>'
 			+	'			</div>'
 			+	'			<div class="propertyValue col-4 dialogActions">';
 	if(!options.disabled) {
@@ -5183,14 +5183,14 @@ $.fn.html5Upload = function(data) {
 		}, data);
 	var fileIndex = 0;
 	var id = checkElementHasId($(this)).attr('id') + "FileDragAndDrop";
-	var html = 	'<div id="' + id + 'Div" style="padding:20px;">'
-			+	'	<div id="' + id + 'Area" class="fileDragAndDrop">'
+	var html = 	'<div id="' + id + 'Div" class="pt-3">'
+			+	'	<div id="' + id + 'Area" class="fileDragAndDrop pt-5 pb-5 m-2 bg-light text-center border">'
 			+	'		<span class="optionalField" id="' + id + 'ProgressText" hidden><i class="fad fa-spinner fa-spin" aria-hidden="true"></i>&nbsp;' + getResource('dragAndDrop.progresText') + '</span>'
 			+	'		<span class="optionalField" id="' + id + 'StandByText">' + options.text + '</span>'
 			+	'	</div>'
 			+	'	<table id="' + id + 'List" class="dragAndDrop-table"></table>';
 	if(options.showFileInputLink){
-		html = html + '		<input type="file" id="' + id + 'FileInput" style="display: none;" multiple>'
+		html = html + '		<input type="file" id="' + id + 'FileInput" class="d-none" multiple>'
 	}
 	html = html + '</div>';
 	$(this).append(html);
@@ -6067,7 +6067,7 @@ $.fn.multipleRows = function(data) {
 	+	'	<div id="' + id + 'Rows" ></div>'
 	+	'	<div id="' + id + 'NewRow" class="lb-row">'
 	+	'		<div class="propertyValue col-11">'
-	+	'			<span class="help-block">&nbsp;</span>'
+	+	'			<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">&nbsp;</span>'
 	+	'		</div>'
 	+	'		<div class="propertyValue col-1 dialogActions">'
 	+	'			<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
@@ -6189,21 +6189,21 @@ $.fn.roles = function(data) {
 				'<label class="col-md-3 control-label optionalField">' + getResource('roles.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + '" class="roles"></div>' +
-				'<span class="help-block">' + getResource('roles.info') + '</span>' +
+				'<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('roles.info') + '</span>' +
 				'</div>' +
 		'</div>' +
 		'<div class="propertyItem form-group lb-row">' +
 				'<label class="col-md-3 control-label optionalField">' + getResource('users.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Users" class="users"></div>' +
-				'<span class="help-block">' + getResource('users.info') + '</span>' +
+				'<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('users.info') + '</span>' +
 				'</div>' +
 		'</div>' +
 		'<div class="propertyItem form-group lb-row">' +
 				'<label class="col-md-3 control-label optionalField">' + getResource('groups.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Groups" class="groups"></div>' +
-				'<span class="help-block">' + getResource('groups.info') + '</span>' +
+				'<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('groups.info') + '</span>' +
 				'</div>' +
 		'</div>';
 		$(this).append(div);

@@ -154,10 +154,10 @@ $.fn.passwordPolicy = function(data) {
 		if(!data.success) {
 			var passwordRulesContent;
 			if(options.showRulesDefault){
-				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + options.title + '</h5>');
+				thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + options.title + '');
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}else{
-				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + options.title + '</h5>');
+				thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + options.title + '');
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}
 			if(data.message == 'Unsupported') {
@@ -183,9 +183,9 @@ $.fn.passwordPolicy = function(data) {
 			var passwordRulesContent;
 			if(options.showRulesDefault){
 				if(options.showPolicyName) {
-					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + policy.name + '</h5>');
+					thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + policy.name + '');
 				} else {
-					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + options.title + '</h5>');
+					thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + options.title + '');
 				}
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}else{

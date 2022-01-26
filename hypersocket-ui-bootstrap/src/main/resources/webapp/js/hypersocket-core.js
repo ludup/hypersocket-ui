@@ -12,7 +12,7 @@ var systemAdmin;
 var checkTimeoutHandle;
 
 doAjax({
-    url: uiPath + 'json/countries.json',
+    url: uiPath + '/json/countries.json',
     dataType: "text",
     success: function(data) {
     	countries = $.parseJSON(data);
@@ -20,7 +20,7 @@ doAjax({
 });
 
 doAjax({
-    url: uiPath + 'json/international-codes.json',
+    url: uiPath + '/json/international-codes.json',
     dataType: "text",
     success: function(data) {
     	dialingCodes = $.parseJSON(data);
@@ -533,6 +533,11 @@ function home(data) {
 			$.each(
 				data.menus,
 				function() {
+                    if(this.id.startsWith('ux')) {
+                        /* TODO: Ew. Bit crap, but it will do for now. Stops the UX menus
+                        from displaying in the legacy UI */
+                        return;
+                    }
 					
 					allMenus[this.resourceKey] = this;
 					

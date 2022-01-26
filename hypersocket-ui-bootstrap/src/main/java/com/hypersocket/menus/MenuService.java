@@ -24,6 +24,8 @@ public interface MenuService extends AuthenticatedService {
 	
 	static final String MENU_USERDASH = "userdash";
 	
+	static final String MENU_APPEARANCE = "appearance";
+	
 	static final String MENU_DASHBOARD_SETTINGS = "dashboardSettings";
 	
 	static final String MENU_OVERVIEW = "overview";
@@ -118,5 +120,26 @@ public interface MenuService extends AuthenticatedService {
 	void registerExtendedInformationTab(String tab, TabRegistration tabRegistration);
 
 	List<Tab> getExtendedInformationTab(String tab);
+
+	default Menu getMenuForPath(String path) {
+		return getMenuForPath(getMenus(), path);
+	}
+	
+	default Menu getMenuForPath(String parentResourceKey, String path) {
+		return getMenuForPath(getMenus(parentResourceKey), path);
+	}
+	
+	static Menu getMenuForPath(Collection<Menu> menus, String path) {
+		for(Menu menu : menus) {
+			if(path.equals(menu.getResourceName() + ".html"))
+				return menu;
+			else {
+				Menu m = getMenuForPath(menu.getMenus(), path);
+				if(m != null)
+					return m;
+			}
+		}
+		return null;
+	}
 
 }

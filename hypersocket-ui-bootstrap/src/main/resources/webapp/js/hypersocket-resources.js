@@ -174,6 +174,8 @@ $.fn.resourceTable = function(params) {
 		pageSize: 25,
 		pageList : [ 5, 10, 25, 50, 100, 250, 500],
 		search: true,
+        showButtons : true,
+        buttonClass: 'tabActions card-footer',
 		showColumns : true,
 		showRefresh : true,
 	    showToggle : false,
@@ -192,6 +194,7 @@ $.fn.resourceTable = function(params) {
 		confirmationButtonSuccess: 'text.yes',
 		confirmationButtonCancel: 'text.no',
 		logo: false,
+        loadingFontSize: '16px',
 		defaultView: 'table',
 		logoResourceTypeCallback: false,
 		hasResourceTable: true,
@@ -239,13 +242,14 @@ $.fn.resourceTable = function(params) {
 	var html = '';
 	if(!options.disableDecoration) {
 		html += '<div class="panel panel-default showOnComplete" style="display: none"><div class="panel-heading"><h2><i class="fad '
-			+ options.icon + '"></i><span class="break">' 
+			+ options.icon + '"></i><span class="ml-2 break">' 
 			+ options.title + '</span></h2></div>';
 	}
 
 	html += '<table id="' + divName + 'Placeholder"></table>';
 	
-	html += '<div id="' + divName + 'Actions" class="tabActions card-footer"></div>';
+    if(options.showButtons)
+	   html += '<div id="' + divName + 'Actions" class="' + options.buttonClass + '"></div>';
 	
 	if(!options.disableDecoration) {
 		html += '</div>';
@@ -260,8 +264,8 @@ $.fn.resourceTable = function(params) {
 		}
 		getState(divName+'-infoPanel', true, function(data) {
 			if(data.resources.length == 0 || data.resources[0].show) {
-				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="fad fa-2x fa-info"></i><i id="messageDismiss" '
-						+ 'class="fad fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
+				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="fad fa-2x fa-info align-middle"></i><i id="messageDismiss" '
+						+ 'class="fad fa-times dismiss-icon float-right mt-2"></i>&nbsp;&nbsp;<span class="align-middle">' + options.infoHtml + '</span></div></div>');
 			
 				$('.dismiss-icon').click(function(e) {
 					var prefs = new Object();
@@ -809,6 +813,7 @@ $.fn.resourceTable = function(params) {
 		    radio: options.radio,
 		    showHeader: true,
 		    page : options.page,
+            loadingFontSize: options.loadingFontSize,
 		    pageSize: options.pageSize,
 		    pageList: options.pageList,
 		    search: options.search,
@@ -1528,10 +1533,10 @@ $.fn.samePageResourceView = function(params, params2) {
 		if(dialog.find('.panel-footer').length > 0) {
 			dialog.find('.panel-footer').remove();
 		}
-		var html = '<div class="panel-footer">';
+		var html = '<div class="panel-footer p-2">';
 		html+= '<button id="' + dialog.attr('id') + 'Cancel" + class="btn btn-danger"><i class="fad fa-ban"></i>' + getResource('text.cancel') + '</button>';
 		if(save) {
-			html += '<button id="' + dialog.attr('id') + 'Save" + class="btn btn-primary"><i class="fad fa-save"></i>' + getResource('text.save') + '</button>';
+			html += '<button id="' + dialog.attr('id') + 'Save" + class="btn btn-primary ml-2"><i class="fad fa-save"></i>' + getResource('text.save') + '</button>';
 		}
 		html += '</div>';
 		if(dialog.find('.property-body').length > 0) {
@@ -1964,7 +1969,7 @@ $.fn.bulkAssignmentDialog = function(options) {
                             '<label id="' + id  + 'ModeComponentInputLabel" for="' + id + 'ModeComponentInput" class="col-md-3 control-label optionalField">' + getResource(dataOptions.modeInputLabel) + '</label>' +
                             '<div class="propertyValue col-md-9">' +
                             '<div id="' + id +'ModeComponentInput"></div><div class="clear">'+
-                            '<span class="help-block">' + getResource(dataOptions.modeInputInfo) + '</span></div></div></div>';
+                            '<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource(dataOptions.modeInputInfo) + '</span></div></div></div>';
         $('#' + id + 'TabMode').empty().append(modeComponent);
 
     }

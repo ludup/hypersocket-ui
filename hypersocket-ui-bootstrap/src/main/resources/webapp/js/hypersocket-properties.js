@@ -586,8 +586,8 @@ $.fn.tabPage = function(opts) {
 	.append(
 		'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fad ' 
-		+ options.icon + '"></i><span class="break"></span>' + options.title + '</h2><ul id="' 
-		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body"><div id="' 
+		+ options.icon + '"></i><span class="ml-2 break"></span>' + options.title + '</h2><ul id="' 
+		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body mt-3"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 
 	var lastTab = null;
@@ -650,13 +650,15 @@ $.fn.propertyPage = function(opts) {
 				  resourceNameCallback: false,
 				  parameters: false,
 				  typeCallback: false, 
-				  showButtons : true, 
+				  showButtons : true,
                   infoHtml : false,
                   infoLevel: 'info', 
 				  showAdditionalTabButtons: false,
 				  maintainButtonState: true,
 				  displayMode: '', 
 				  editMode: '',
+                  tabStyle: 'hypersocket',
+                  footerStyle: 'p-2 bg-light border-top',
 				  canUpdate : false, 
 				  title : '', 
 				  icon : 'fa-th', 
@@ -739,16 +741,16 @@ $.fn.propertyPage = function(opts) {
             }
             tabHtml += '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="fad ' 
                             + options.icon + '"></i><span>' + options.title + '</span></h2><ul id="' 
-                            + propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body"><div id="' 
+                            + propertyDiv + 'Tabs" class="nav nav-tabs ' + ( options.tabStyle === 'hypersocket' ? 'float ' : '') + '"/></div><div class="panel-body property-body mt-3"><div id="' 
                             + propertyDiv + 'Content" class="tab-content"></div></div></div>';
             $('#' + propertyDiv).append(tabHtml);
 			
 			if (options.showButtons) {
 				$(panel).append(
-							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions"><button class="btn btn-small btn-danger" id="' 
+							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions ' + options.footerStyle + '"><button class="btn btn-small btn-primary" id="' + propertyDiv 
+                            + 'Apply"><i class="fad fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button><button class="btn btn-small btn-danger ml-2" id="' 
 							+ propertyDiv + 'Revert"><i class="fad fa-ban"></i><span class="btn-text">' + getResource(options.revertText)
-							+ '</span></button><button class="btn btn-small btn-primary" id="' + propertyDiv 
-							+ 'Apply"><i class="fad fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button></div>');
+							+ '</span></button></div>');
 			}
     
             if(options.infoHtml) {
@@ -758,8 +760,8 @@ $.fn.propertyPage = function(opts) {
                 }
                 getState(propertyDiv+'-infoPanel', true, function(data) {
                     if(data.resources.length == 0 || data.resources[0].show) {
-                        theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="fad fa-2x fa-info"></i><i id="messageDismiss" '
-                                + 'class="fad fa-times dismiss-icon"></i>&nbsp;&nbsp;<span>' + options.infoHtml + '</span></div></div>');
+                        theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="fad fa-2x fa-info align-middle"></i><i id="messageDismiss" '
+                                + 'class="fad fa-times dismiss-icon float-right mt-2"></i>&nbsp;&nbsp;<span class="align-middle">' + options.infoHtml + '</span></div></div>');
                     
                         $('.dismiss-icon').click(function(e) {
                             var prefs = new Object();
@@ -783,9 +785,18 @@ $.fn.propertyPage = function(opts) {
 					if(o.checkDisplay && !o.checkDisplay()) {
 						hide = true;
 					}
-					$(contentTabs)
-							.append(
-								'<li class="' + filterPrefix + 'default" id="' + this.id + 'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + '><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + this.name + '</span></a></li>');
+                    if(options.tabStyle === 'hypersocket')
+    					$(contentTabs).append('<li class="' + filterPrefix + 'default" id="' + this.id +
+                             'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + 
+                             '><a href="#' + this.id + '" class="' +  
+                             propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + 
+                             this.name + '</span></a></li>');
+                    else
+                        $(contentTabs).append('<li class="nav-item ' + filterPrefix + 'default" id="' + this.id +
+                             'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + 
+                             '><a href="#' + this.id + '" class="nav-link ' +  
+                             propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + 
+                             this.name + '</span></a></li>');
 					$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 					$('#' + this.id).addClass('tab-pane');
 				});
@@ -923,10 +934,19 @@ $.fn.propertyPage = function(opts) {
 									}
 								}
 								
-								$(contentTabs)
-										.append(
-											'<li class="tab' + idx + ' ' + tabfilterClass + '" name="tab_'+ this.categoryKey +'"><a ' + 'class="' +  propertyDiv + 'Tab"'
-											+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + (this.name ? this.name : getResource(this.categoryKey + '.label')) + '</span></a></li>');
+                                if(options.tableStyle == 'hypersocket')
+    								$(contentTabs).append('<li class="tab' + idx + ' ' + tabfilterClass + 
+                                        '" name="tab_'+ this.categoryKey +'"><a ' + 'class="' +  propertyDiv + 'Tab"'
+    									+ ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + 
+                                        (this.name ? this.name : getResource(this.categoryKey + '.label')) + 
+                                        '</span></a></li>');
+                                else {
+                                    $(contentTabs).append('<li class="nav-item tab' + idx + ' ' + tabfilterClass + 
+                                        '" name="tab_'+ this.categoryKey +'"><a ' + 'class="nav-link ' +  propertyDiv + 'Tab"'
+                                        + ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + 
+                                        (this.name ? this.name : getResource(this.categoryKey + '.label')) + 
+                                        '</span></a></li>');
+                                }
 								
 								first = false;
 								
@@ -1336,7 +1356,7 @@ $.fn.propertyPage = function(opts) {
 												widgets.push(widget);
 												
 												$('#' + tab + '_value' + inputId).append(
-														'<span id="' + tab + '_helpspan' + inputId + '" class="lb-help-block form-text text-muted">' 
+														'<span id="' + tab + '_helpspan' + inputId + '" class="lb-help-block form-text text-muted mt-2 mb-2 pl-1">' 
 														+  ( obj.description ? obj.description : getResourceWithNamespace(categoryNamespace, obj.resourceKey + '.info') ) 
 
 														+ '</span>');

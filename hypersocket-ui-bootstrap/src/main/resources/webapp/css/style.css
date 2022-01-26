@@ -89,7 +89,6 @@ pre {
 }
 
 /** 2.4 changes LB custom css start*/
-.lb-help-block{margin-top: 5px;margin-bottom: 10px;font-size: x-small;}
 /*B4 row adds margin left and right with -15 px making it difficult to adjust with old code hence added custom*/
 .lb-row {display: -ms-flexbox; display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;}
 /*For slider tooltip*/
@@ -288,22 +287,6 @@ button.row-additional::after {display: none;}
 
 .includedList select {
 	margin-left: 5px;
-}
-
-.help-block {
-	color: #b0bcd4;
-	display: inline-block;
-	padding-left: 5px;
-	margin-top: 5px;
-	margin-bottom: 10px;
-}
-
-.help-block-alt {
-	color: #888;
-	display: inline-block;
-	padding-left: 5px;
-	margin-top: 5px;
-	margin-bottom: 10px;
 }
 
 .btn-primary {
@@ -1080,10 +1063,6 @@ dropdown-item.active, .dropdown-item:active {
 	border: 1px solid #e1e6ef;
 }
 
-.panel-body {
-	padding: 15px 0px 0px 0px;
-}
-
 .panel-group .panel {
 	overflow: visible;
 }
@@ -1241,25 +1220,13 @@ dropdown-item.active, .dropdown-item:active {
 
 .panel-footer {
 	overflow: auto;
-	width: 100%;
-	padding: 10px 15px;
-	background-color: #f5f5f5;
-	border-top: 1px solid #ddd;
-	border-bottom-right-radius: 3px;
-	border-bottom-left-radius: 3px;
-}
-
-.panel-footer button {
-	float: right;
-	overflow: auto;
-	margin-left: 10px;
+    text-align: right;
 }
 
 .card-footer {
 	overflow: auto;
 	width: 100%;
 }
-
 
 .card-footer button {
 	float: right;
@@ -1790,10 +1757,6 @@ span.input-group-addon .dropdown-toggle {
 	line-height: 32px;
 }
 
-.logo-colour-label {
-	
-}
-
 .logo-colour input[type=text], .logo-icon input[type=text] {
 	float: none;
 	display: inline;
@@ -1983,11 +1946,6 @@ span.input-group-addon .dropdown-toggle {
 .fileDragAndDrop {
 	border-width: 5px;
 	border-style: dashed;
-	border-color: grey;
-	text-align: center;
-	padding-top: 50px;
-	padding-bottom: 50px;
-	margin: 10px;
 }
 
 .fileDragAndDrop i {
@@ -2470,10 +2428,6 @@ button#logonButton {
 .actionsColumn a i.fad {
 	font-size: 18px;
 }
-
-.loading-text {
-	font-size: 12px !important; 
-} 
 
 /*-----------------------------------------------------------------------
 For < 767px

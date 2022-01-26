@@ -343,6 +343,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						CertificateResourcePermission.CREATE,
 						CertificateResourcePermission.UPDATE,
 						CertificateResourcePermission.DELETE), MenuService.MENU_SYSTEM);
+		
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
+			 MenuService.MENU_APPEARANCE, "fa-camera-retro", MenuService.MENU_APPEARANCE, 900,
+			 SystemPermission.SYSTEM_ADMINISTRATION, null, SystemPermission.SYSTEM_ADMINISTRATION, null), MenuService.MENU_SYSTEM);
 
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 					"dictionary", "fa-spell-check", "", 900,

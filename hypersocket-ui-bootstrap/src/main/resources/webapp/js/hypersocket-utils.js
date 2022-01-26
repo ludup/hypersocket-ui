@@ -800,7 +800,7 @@ function showMessage(text, icon, alertClass, fade, fadeCallback, element) {
 		element = $('body');
 	}
 	element.prepend('<div id="systemMessage" class="alert ' + alertClass + '" style="position: fixed; top: 0; left: 0; bottom: 0; right: 0; z-index: 99999; height: 50px; width: 100%;"/>');
-	$('#systemMessage').append('<i class="fad ' + icon + '"></i>&nbsp;&nbsp;<span>' + text.encodeHTML() + '</span><i id="messageDismiss" class="fad fa-times" style="float: right; cursor: pointer;"></i>');
+	$('#systemMessage').append('<i class="fad ' + icon + '"></i>&nbsp;&nbsp;<span>' + text.encodeHTML() + '</span><i id="messageDismiss" class="fad fa-times float-right" style="cursor: pointer;"></i>');
 	
 	$('#messageDismiss').click(function() {
 		doFade();
