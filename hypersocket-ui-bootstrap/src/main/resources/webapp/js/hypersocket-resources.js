@@ -200,6 +200,7 @@ $.fn.resourceTable = function(params) {
 		rowStyle: false,
 		loaded: false,
 		onReady: false,
+		escapeHTMLInTable: true
 		}, params);
 	
 	
@@ -787,6 +788,7 @@ $.fn.resourceTable = function(params) {
 		    rowStyle: options.rowStyle,
 		    sortable: true,
 		    cache: false,
+			escape: options.escapeHTMLInTable,
 		    uniqueId: 'id',
 		    ajaxOptions: {
 		    	beforeSend: function(request) {
