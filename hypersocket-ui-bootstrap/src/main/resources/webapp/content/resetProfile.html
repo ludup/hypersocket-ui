@@ -5,7 +5,7 @@
 $(document).ready(function() {
 	
 	$('#resetProfile').data('action', function(resource, callback) {
-		bootbox.confirm(getResource('resetProfile.text').format(resource.principalName), function(result) {
+		bootbox.confirm(getResource('resetProfile.text').format(he.escape(resource.principalName)), function(result) {
 			if(result) {
 				getJSON('currentRealm/resetProfile/' + resource.id, null, function(data) {
 					if(data.success) {

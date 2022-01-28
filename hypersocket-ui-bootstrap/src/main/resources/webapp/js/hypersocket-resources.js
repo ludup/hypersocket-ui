@@ -117,7 +117,7 @@ function saveResource(resource, buttonElement, options, mode, closeCallback, alw
 		} else if(data.information) {
 			
 			bootbox.confirm({
-			    message: data.message.format(data.args),
+			    message: he.escape(data.message.format(data.args)),
 			    buttons: {
 			        confirm: {
 			            label: getResource('text.ok'),
@@ -566,9 +566,9 @@ $.fn.resourceTable = function(params) {
 						var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[row];
 	
 						bootbox.confirm(getResource(options.resourceKey + ".delete.desc")
-								.format(resource.name), function(confirmed) {
+								.format(he.escape(resource.name)), function(confirmed) {
 							if (confirmed) {
-								$('#mainContainer').startSpin(getResource("text.deleting").format(resource.name));
+								$('#mainContainer').startSpin(getResource("text.deleting").format(he.escape(resource.name)));
 								deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
 									if (data.success) {
 										if (options.resourceDeleted) {
@@ -677,7 +677,7 @@ $.fn.resourceTable = function(params) {
 					
 					if(canDelete) {
 						log("Entering resource delete for id " + resource.id);
-						bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(resource.name), function(confirmed) {
+						bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(he.escape(resource.name)), function(confirmed) {
 							if (confirmed) {
 								deleteJSON(options.resourceUrl + "/" + resource.id, null, function(data) {
 									if (data.success) {
@@ -1068,7 +1068,7 @@ $.fn.resourceTable = function(params) {
                                     	ids.push(val.id);
                                     	names.push(val.name);
                                     });
-                                    bootbox.confirm(getResource("bulk.delete.confirm").format(names.join(", ")), function(confirmed) {
+                                    bootbox.confirm(getResource("bulk.delete.confirm").format(he.escape(names.join(", "))), function(confirmed) {
                                         if (confirmed && options.deleteResourcesUrl) {
                                             deleteJSON(options.deleteResourcesUrl, ids, function(data) {
                                             	if(data.success) {
@@ -1296,7 +1296,7 @@ $.fn.resourceTable = function(params) {
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-delete');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-delete', function() {
 										log("Entering resource delete for id " + resource.id);
-										bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(resource.name), function(confirmed) {
+										bootbox.confirm(getResource(options.resourceKey + ".delete.desc").format(he.escape(resource.name)), function(confirmed) {
 											if (confirmed) {
 												deleteJSON(options.resourceUrl + "/" + resource.id, null, function(data) {
 													if (data.success) {
