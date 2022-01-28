@@ -236,7 +236,9 @@ function processLogon(data, opts, message) {
                                 + '<input  type="radio" name="'
                                 + _this.resourceKey
                                 + '" value="' + obj.value
-                                 + '"/>'
+                                 + '"'
+                                 + (obj.selected ? ' checked' : '')
+                                 + '/>'
                                 + obj.name
                                 + '</strong></p>';	
 						if(obj.description) {
