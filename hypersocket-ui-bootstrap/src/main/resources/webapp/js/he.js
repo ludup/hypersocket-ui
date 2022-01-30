@@ -313,10 +313,13 @@
 	};
 
 	var escape = function(string) {
-		return string.replace(regexEscape, function($0) {
-			// Note: there is no need to check `has(escapeMap, $0)` here.
-			return escapeMap[$0];
-		});
+		if(string) {
+			return string.replace(regexEscape, function($0) {
+				// Note: there is no need to check `has(escapeMap, $0)` here.
+				return escapeMap[$0];
+			});
+		}
+		return string;
 	};
 
 	/*--------------------------------------------------------------------------*/
