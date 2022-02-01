@@ -2394,7 +2394,7 @@ $.fn.multipleSearchInput = function(data) {
 			});
 		} else {
 			$.each(options.values, function(idx, obj) {
-				var newElement = $('<li id="' + id + 'Li' + he.escape(obj) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj + '"><span>' + he.escaoe(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+				var newElement = $('<li id="' + id + 'Li' + he.escape(obj) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj + '"><span>' + he.escape(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				var cross = newElement.find('i');
                 processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
