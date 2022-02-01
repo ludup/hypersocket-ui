@@ -53,7 +53,7 @@ $(document).ready(function() {
 			    	var reset =  _$('#reset');
 			    	reset.click(function(e) {
 			    		e.preventDefault();
-			    		bootbox.confirm(getResource('resetProfile.text').format(he.escape(resource.principalName)), function(result) {
+			    		bootbox.confirm(getResource('resetProfile.text').format(he.escape(stripNull(resource.principalName))), function(result) {
 			    			if(result) {
 			    				getJSON('currentRealm/resetProfile/' + resource.id, null, function(data) {
 			    					if(data.success) {
