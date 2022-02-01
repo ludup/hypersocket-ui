@@ -5138,7 +5138,7 @@ $.fn.html5Upload = function(data) {
 	var html = 	'<div id="' + id + 'Div" style="padding:20px;">'
 			+	'	<div id="' + id + 'Area" class="fileDragAndDrop">'
 			+	'		<span class="optionalField" id="' + id + 'ProgressText" hidden><i class="fa fa-spinner fa-spin" aria-hidden="true"></i>&nbsp;' + getResource('dragAndDrop.progresText') + '</span>'
-			+	'		<span class="optionalField" id="' + id + 'StandByText">' + he.escape(options.text) + '</span>'
+			+	'		<span class="optionalField" id="' + id + 'StandByText">' + options.text + '</span>' // DO NOT ESCAPE WE NEED THE LINK. THIS IS NOT USER INPUT.
 			+	'	</div>'
 			+	'	<table id="' + id + 'List" class="dragAndDrop-table"></table>';
 	if(options.showFileInputLink){
