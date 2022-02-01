@@ -1028,6 +1028,24 @@ function patchJSON(url, params, callback, errorCallback, alwaysCallback) {
 
 };
 
+function loadContent(selector, url, successCb, failCb) {
+	doAjax({
+		type: "GET",
+	  	url: url       
+	})
+	.done(function(data) {
+		$(selector).html(data);
+		if (successCb) {
+			successCb(data);
+		}
+	})
+	.fail(function(err) {
+		if (failCb) {
+			failCb(err);
+		}
+	});
+}
+
 function pollForServerContact() {
 	
 	polling = true;
