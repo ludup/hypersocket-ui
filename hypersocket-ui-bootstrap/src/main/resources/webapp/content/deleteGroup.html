@@ -37,7 +37,7 @@
 	$(document).ready(function() {
 		$("#deleteDialog").localize();
 		$('#deleteGroup').data('action', function(resource) {
-			$('#deleteGroupInfo').html(getResource(resource.realmModule === 'local' ? 'deleteLocalGroup.info' : 'deleteGroup.info').format(resource.principalName));
+			$('#deleteGroupInfo').html(getResource(resource.realmModule === 'local' ? 'deleteLocalGroup.info' : 'deleteGroup.info').format(he.escape(stripNull(resource.principalName))));
 			$("#deleteDialog").off("shown.bs.modal").on("shown.bs.modal", function() {
 				$("#deleteDialog .modal-footer button.btn").off("click").on("click", function(e) {
 					var cb = function(data) {

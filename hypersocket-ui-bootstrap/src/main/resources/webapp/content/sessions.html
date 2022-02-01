@@ -299,7 +299,7 @@ var HeatMap = class HeatMap {
 						name : "principalName",
 						formatter: function(value, obj, index) {
 							if(obj.session.currentPrincipal) {
-				        	   return obj.session.currentPrincipal.name;
+				        	   return he.escape(stripNull(obj.session.currentPrincipal.name));
 							} else {
 								return "";
 							}
@@ -336,9 +336,9 @@ var HeatMap = class HeatMap {
 							 name: "stateMap",
 							 formatter: function(value, obj, index) {
 								 if (value["location_country_code"] && value["location_region_code"]) {
-									 return value["location_country_code"] + "-" + value["location_region_code"]
+									 return he.escape(stripNull(value["location_country_code"] + "-" + value["location_region_code"]))
 								 } else if (value["location_country_code"]) {
-									 return value["location_country_code"]
+									 return he.escape(stripNull(value["location_country_code"]))
 								 }
 								 
 								 return undefined;

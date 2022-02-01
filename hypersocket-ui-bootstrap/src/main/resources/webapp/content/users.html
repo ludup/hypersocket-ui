@@ -403,12 +403,12 @@
 					},{
 						name : "name",
 						formatter: function(value, obj, index) {
-							return '<span data-user-name="' + obj.principalName + '" class="user-detail">' + obj.principalName + '</span>';
+							return '<span data-user-name="' + he.escape(stripNull(obj.principalName)) + '" class="user-detail">' + he.escape(stripNull(obj.principalName)) + '</span>';
 						}
 					}, {
 						name : "description",
 						formatter: function(value, obj, index) {
-							return obj.description;
+							return he.escape(stripNull(obj.description));
 						},
 						class: 'hidden-xs hidden-sm'
 					}, {
@@ -460,9 +460,9 @@
 									return null;
 								}
 								if(obj.parentPrincipal.principalDesc) {
-									return obj.parentPrincipal.principalDesc;
+									return he.escape(stripNull(obj.parentPrincipal.principalDesc));
 								}
-								return obj.parentPrincipal.principalName;
+								return he.escape(stripNull(obj.parentPrincipal.principalName));
 							}
 						});
 					}
