@@ -48,7 +48,7 @@
 						}
 					};					
 					$("#deleteDialog").modal('hide');
-					$('#mainContainer').startSpin(getResource("text.deleting").format(resource.name));
+					$('#mainContainer').startSpin(getResource("text.deleting").format(he.escape(stripNull(resource.name))));
 					
 					
 					deleteJSON(apiUrl + "/" + ($('#removeRemote').data('widget').getValue() ? 'remoteUser' : 'user') + "/" + resource.id, null, function(data) {
