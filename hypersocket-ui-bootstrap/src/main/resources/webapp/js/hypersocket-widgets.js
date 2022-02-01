@@ -2238,7 +2238,7 @@ $.fn.multipleSearchInput = function(data) {
 		var toSelect = $('#' + id + 'IncludedSelect');
 		if (data && data.selected) {
 			$.each(data.selected, function(idx, obj) {
-				var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + he.escape(stripNull(obj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+				var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + he.escape(obj[options.nameAttr]) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				var cross = newElement.find('i');
 				processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
@@ -2300,7 +2300,7 @@ $.fn.multipleSearchInput = function(data) {
 				    }
                 }
 				var newElement = $('<li id="' + id + 'Li' + selectedObj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + selectedObj[options.valueAttr] + '"><span>'
-						+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : he.escape(stripNull(selectedObj[options.nameAttr]))) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+						+ (options.nameIsResourceKey ? getResource(selectedObj[options.nameAttr]) : he.escape(selectedObj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				var cross = newElement.find('i');
                 processCrossDeletable(cross, selectedObj);
 				toSelect.append(newElement);
@@ -2332,7 +2332,7 @@ $.fn.multipleSearchInput = function(data) {
 			setValue: function(val) {
 				toSelect.empty();
 				$.each(val, function(idx, obj) {
-					var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + he.escape(stripNull(obj[options.valueAttr])) + '"><span>' + he.escape(stripNull(obj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+					var newElement = $('<li id="' + id + 'Li' + obj[options.valueAttr] + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + he.escape(obj[options.valueAttr]) + '"><span>' + he.escape(obj[options.nameAttr]) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 					var cross = newElement.find('i');
 					processCrossDeletable(cross, obj);
 					toSelect.append(newElement);
@@ -2394,7 +2394,7 @@ $.fn.multipleSearchInput = function(data) {
 			});
 		} else {
 			$.each(options.values, function(idx, obj) {
-				var newElement = $('<li id="' + id + 'Li' + he.escape(stripNull(obj)) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj + '"><span>' + he.escape(stripNull(obj)) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+				var newElement = $('<li id="' + id + 'Li' + he.escape(obj) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj + '"><span>' + he.escaoe(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 				var cross = newElement.find('i');
                 processCrossDeletable(cross, obj);
 				toSelect.append(newElement);
@@ -2403,7 +2403,7 @@ $.fn.multipleSearchInput = function(data) {
 		}
 	} else if(options.selected) {
 		$.each(options.selected, function(idx, obj) {
-			var newElement = $('<li id="' + id + 'Li' + he.escape(stripNull(obj[options.valueAttr])) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + he.escape(stripNull(obj[options.nameAttr])) + "</span>&ensp;<i class='fa fa-times'></i></li>");
+			var newElement = $('<li id="' + id + 'Li' + he.escape(obj[options.valueAttr]) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + obj[options.valueAttr] + '"><span>' + he.escape(obj[options.nameAttr]) + "</span>&ensp;<i class='fa fa-times'></i></li>");
 			var cross = newElement.find('i');
 			processCrossDeletable(cross, obj);
 			toSelect.append(newElement);
@@ -2679,7 +2679,7 @@ $.fn.multipleTextInput = function(data) {
 	if (options.values) {
 		$.each(options.values, function(idx, obj) {
 			var newElementId =  (id + 'Li' + encodeURIComponent(he.encode(obj)));
-			var newElement = $('<li id="' + newElementId + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + '><span class="wrap">' + he.escape(stripNull(obj)) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+			var newElement = $('<li id="' + newElementId + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + '><span class="wrap">' + he.escape(obj) + '</span>&ensp;<i class="fa fa-times"></i></li>');
 
 			newElement.find('i.fa.fa-times').click(function(e){
 				removeElement(e);
@@ -2881,7 +2881,7 @@ $.fn.multipleNamePairInput = function(data) {
                 return;
             }
             var val = selectedText + '=' + valueInput.getValue();
-            var newElement = $('<li id="' + id + 'Li' + he.encode(val) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + he.encode(val) + '"><span>' + he.escape(stripNull(selectedText)) + '</span>&ensp;<i class="fa fa-times"></i></li>');
+            var newElement = $('<li id="' + id + 'Li' + he.encode(val) + '" ' + (options.allowOrdering ? 'draggable="true" class="draggable ' + id + 'Draggable" ' : '' ) + 'value="' + he.encode(val) + '"><span>' + he.escape(selectedText) + '</span>&ensp;<i class="fa fa-times"></i></li>');
             newElement.data('value', valueInput.getValue());
 			newElement.data('name', selectedText);
             newElement.find('i.fa.fa-times').click(function(e){
@@ -4953,7 +4953,7 @@ $.fn.multipleFileUpload = function(data) {
 			+	'	<div id="' + id + 'NewRow">'
 			+	'		<div class="col-xs-12" style="padding-left: 0px; padding-right: 0px;">'
 			+	'			<div class="propertyValue col-xs-8" style="padding-left: 0px;">'
-			+	'				<span class="help-block">' + he.escape(stripNull(options.text)) + '</span>'
+			+	'				<span class="help-block">' + he.escape(options.text) + '</span>'
 			+	'			</div>'
 			+	'			<div class="propertyValue col-xs-4 dialogActions">';
 	if(!options.disabled) {
@@ -5138,7 +5138,7 @@ $.fn.html5Upload = function(data) {
 	var html = 	'<div id="' + id + 'Div" style="padding:20px;">'
 			+	'	<div id="' + id + 'Area" class="fileDragAndDrop">'
 			+	'		<span class="optionalField" id="' + id + 'ProgressText" hidden><i class="fa fa-spinner fa-spin" aria-hidden="true"></i>&nbsp;' + getResource('dragAndDrop.progresText') + '</span>'
-			+	'		<span class="optionalField" id="' + id + 'StandByText">' + he.escape(stripNull(options.text)) + '</span>'
+			+	'		<span class="optionalField" id="' + id + 'StandByText">' + he.escape(options.text) + '</span>'
 			+	'	</div>'
 			+	'	<table id="' + id + 'List" class="dragAndDrop-table"></table>';
 	if(options.showFileInputLink){
@@ -5573,7 +5573,7 @@ $.fn.wizardPage = function(data) {
 					+ '			</button>&nbsp';
 				}
 				html += '			<button id="button' + index + '" class="nextButton pageState' + index + ' btn btn-primary">'
-					+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + he.escape(stripNull(page.buttonText)) + '"></span>'
+					+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + he.escape(page.buttonText) + '"></span>'
 					+ '			</button>'
 					+ '		</div>';
 			}
@@ -6379,7 +6379,7 @@ $.fn.fileTree = function(data) {
 
 		if(options.values && options.values.length){
 			$.each(options.values, function(index, value){
-				$('#' + id + 'Included').append('<option value="' + he.escape(stripNull(value)) + '">' + he.escape(stripNull(value)) + '</option>');
+				$('#' + id + 'Included').append('<option value="' + he.escape(value) + '">' + he.escape(value) + '</option>');
 			});
 
 			if(options.changed) {

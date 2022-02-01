@@ -422,7 +422,7 @@
 					var trigger = triggerShape.data('trigger');
 
 					if(!trigger.isRoot) {
-						bootbox.confirm(getResource("confirm.deleteTriggerItem").format(he.escape(stripNull(trigger.name))), function(result) {
+						bootbox.confirm(getResource("confirm.deleteTriggerItem").format(he.escape(trigger.name)), function(result) {
 							  if(result) {
 								  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
 										if(data.success) {
@@ -436,7 +436,7 @@
 							  }
 						}); 
 					} else {
-						bootbox.confirm(getResource("confirm.deleteTrigger").format(he.escape(stripNull(trigger.name))), function(result) {
+						bootbox.confirm(getResource("confirm.deleteTrigger").format(he.escape(trigger.name)), function(result) {
 							  if(result) {
 								  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
 										if(data.success) {
