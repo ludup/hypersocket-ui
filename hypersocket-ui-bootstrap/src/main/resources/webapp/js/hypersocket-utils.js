@@ -1575,6 +1575,14 @@ function showAuditInfo(text) {
 	});
 }
 
+function cleanValue(obj) {
+	if (typeof obj === "string") {
+		return he.escape(obj);
+	}
+	
+	return obj;
+}
+
 $(document).ready(function() {
 	$.notify.addStyle("hypersocket", {
 		html: "<div>\n<span data-notify-html></span>\n</div>",

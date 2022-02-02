@@ -1152,14 +1152,14 @@ $.fn.resourceTable = function(params) {
 								if(!txt || txt == '')
 									txt = 'Default';
 								var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
-								$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + uri + '"/></div><span>' + resource.name + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
+								$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + uri + '"/></div><span>' + cleanValue(resource.name) + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
 							}
 							else {
 								var idx = value.indexOf('/');
 								if(idx == -1) {
-									$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + (basePath + '/api/files/download/' + value)+ '"/></div><span>' + resource.name + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
+									$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + (basePath + '/api/files/download/' + value)+ '"/></div><span>' + cleanValue(resource.name) + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
 								} else {
-									$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + (basePath + '/api/' + value)+ '"/></div><span>' + resource.name + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
+									$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + (basePath + '/api/' + value)+ '"/></div><span>' + cleanValue(resource.name) + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
 								}
 							}
 							$('#' + resource.id + 'GridOptions').hide();

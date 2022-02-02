@@ -300,7 +300,7 @@
 						name : "principalName",
 						formatter: function(value, obj, index) {
 							if(obj.session.currentPrincipal) {
-				        	   return he.escape(obj.session.currentPrincipal.name);
+				        	   return cleanValue(obj.session.currentPrincipal.name);
 							} else {
 								return "";
 							}
@@ -337,9 +337,9 @@
 							 name: "stateMap",
 							 formatter: function(value, obj, index) {
 								 if (value["location_country_code"] && value["location_region_code"]) {
-									 return he.escape(value["location_country_code"] + "-" + value["location_region_code"]);
+									 return value["location_country_code"] + "-" + value["location_region_code"];
 								 } else if (value["location_country_code"]) {
-									 return he.escape(value["location_country_code"]);
+									 return cleanValue(value["location_country_code"]);
 								 }
 								 
 								 return undefined;
