@@ -71,6 +71,15 @@ function checkRedirect(data) {
 function processLogon(data, opts, message) {
 	log("Received logon data");
 
+	var nonce = $(document).data("pageNonce");
+	
+	log("Request Nonce: " + nonce);
+	log("Response Nonce " + data.nonce);
+	if(nonce && data.nonce && data.nonce != nonce) {
+		log("Detected stale response from older page.");
+		return;
+	}
+	
 	if(opts.processResponse) {
 		opts.processResponse(data);
 	}
@@ -388,6 +397,9 @@ function processLogon(data, opts, message) {
 								}
 							});
 
+						var nonce = Math.floor(Math.random() * 1000000000);
+						$(document).data("pageNonce", nonce);
+						credentials = credentials + '&nonce=' + nonce;
 						logon(credentials, opts);
 					});
 
