@@ -396,7 +396,7 @@ function processLogon(data, opts, message) {
 			if (data['bannerMsg']) {
 				opts.formContent
 						.append(
-							'<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + data['bannerMsg'] + '</p></div><div class="col-md-3"></div>');
+							'<div class="col-md-3"></div><div id="logonBanner" class="col-md-6"><p>' + cleanValue(data['bannerMsg']) + '</p></div><div class="col-md-3"></div>');
 			}
 		}
 		
