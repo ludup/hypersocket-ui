@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,10 @@ public class IndexPageFilter implements ContentFilter {
 	
 	@Override
 	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) throws RedirectException {
+		return getFilterStream(resourceStream, request, new ITokenResolver[0]);
+	}
+	@Override
+	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request, ITokenResolver... additionalResolvers2) throws RedirectException {
 		
 		String uri = request.getRequestURI();
 
@@ -73,6 +78,7 @@ public class IndexPageFilter implements ContentFilter {
 		
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
+		resolvers.addAll(Arrays.asList(additionalResolvers2));
 		
 		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)), resolvers);
 		return new ReaderInputStream(r, Charset.forName("UTF-8"));

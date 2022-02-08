@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,6 +78,24 @@ public class IncludeContentFilter implements ContentFilter {
 		
 		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
 		resolvers.add(resolver);
+
+		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)),
+				resolvers);
+		return new ReaderInputStream(r, Charset.forName("UTF-8"));
+	}
+	
+	@Override
+	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request, ITokenResolver... additionalResolvers2) {
+
+		MapTokenResolver resolver = new MapTokenResolver();
+		resolver.addToken("header", headerHtml);
+		resolver.addToken("footer", footerHtml);
+		resolver.addToken("brandlessHeader", brandlessHeader);
+		resolver.addToken("brandlessFooter", brandlessFooter);
+		
+		List<ITokenResolver> resolvers = new ArrayList<ITokenResolver>(additionalResolvers);
+		resolvers.add(resolver);
+		resolvers.addAll(Arrays.asList(additionalResolvers2));
 
 		TokenReplacementReader r = new TokenReplacementReader(new BufferedReader(new InputStreamReader(resourceStream)),
 				resolvers);

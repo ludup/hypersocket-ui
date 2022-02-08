@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -96,6 +97,18 @@ public class HtmlContentFilter implements ContentFilter {
 	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request) {
 		
 		List<ITokenResolver> resolvers = getResolvers(request);
+		TokenReplacementReader r = new TokenReplacementReader(
+				new BufferedReader(new InputStreamReader(resourceStream)),
+					resolvers);
+		return new ReaderInputStream(new TokenReplacementReader(r,
+				resolvers), Charset.forName("UTF-8"));
+	}
+
+	@Override
+	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request, ITokenResolver... additionalResolvers) {
+		
+		List<ITokenResolver> resolvers = getResolvers(request);
+		resolvers.addAll(Arrays.asList(additionalResolvers));
 		TokenReplacementReader r = new TokenReplacementReader(
 				new BufferedReader(new InputStreamReader(resourceStream)),
 					resolvers);
