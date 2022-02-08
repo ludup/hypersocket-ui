@@ -118,6 +118,18 @@ public class HtmlContentFilter implements ContentFilter {
 	}
 
 	@Override
+	public InputStream getFilterStream(InputStream resourceStream, HttpServletRequest request, ITokenResolver... additionalResolvers) {
+		
+		List<ITokenResolver> resolvers = getResolvers(request);
+		resolvers.addAll(Arrays.asList(additionalResolvers));
+		TokenReplacementReader r = new TokenReplacementReader(
+				new BufferedReader(new InputStreamReader(resourceStream)),
+					resolvers);
+		return new ReaderInputStream(new TokenReplacementReader(r,
+				resolvers), Charset.forName("UTF-8"));
+	}
+
+	@Override
 	public boolean filtersPath(String path) {
 		return path.endsWith(".html") 
 				|| path.endsWith(".htm") 
