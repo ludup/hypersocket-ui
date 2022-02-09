@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.hypersocket.HypersocketVersion;
+import com.hypersocket.json.version.HypersocketVersion;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.servlet.request.Request;
