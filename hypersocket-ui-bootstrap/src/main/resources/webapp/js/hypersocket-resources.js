@@ -523,7 +523,7 @@ $.fn.resourceTable = function(params) {
 						function(x, act) {
 							if (act.enabled) {
 
-								renderedActions += '<a class="row-' 
+								renderedActions += '<a class="btn-link row-' 
 												+ act.resourceKey + '" href="#" data-toggle="tooltip" data-placement="top" title="' 
 												+ getResource(act.resourceKey + ".label") + '"><i class="fad ' + act.iconClass + '"></i></a>';
 
@@ -549,7 +549,7 @@ $.fn.resourceTable = function(params) {
 		}
 
 		if(!options.disableEditView) {
-			renderedActions += '<a class="row-edit" href="#"><i class="ml-1 fad ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
+			renderedActions += '<a class="btn-link row-edit" href="#"><i class="ml-1 fad ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 			$(document).on(
 				'click',
@@ -570,7 +570,7 @@ $.fn.resourceTable = function(params) {
 					}
 			});
 			if(options.canCopy) {
-				renderedActions += '<a class="row-copy" href="#"><i class="ml-1 fad fa-copy"></i></a>';
+				renderedActions += '<a class="btn-link row-copy" href="#"><i class="ml-1 fad fa-copy"></i></a>';
 				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-copy');
 				$(document).on(
 					'click',
@@ -584,14 +584,13 @@ $.fn.resourceTable = function(params) {
 		}
 
 		if (options.canDelete) {
-			
 			var canDelete = !row.system;
 			if(options.checkDelete) {
 				canDelete = !row.system && options.checkDelete(row);
 			}
 			
 			if(canDelete) {
-				renderedActions += '<a class="row-delete" href="#"><i class="ml-1 fad fa-trash"></i></a>';
+				renderedActions += '<a class="btn-link row-delete" href="#"><i class="ml-1 fad fa-trash"></i></a>';
 	
 				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
 	
@@ -630,7 +629,7 @@ $.fn.resourceTable = function(params) {
 					});
 				});
 			} else {
-				renderedActions += '<a href="#"><i class="ml-1 fad fa-trash"></i></a>';
+				renderedActions += '<a href="#" class="btn-link disabled" aria-disabled="true"><i class="ml-1 fad fa-trash"></i></a>';
 			}
 			
 		}
