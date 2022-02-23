@@ -858,7 +858,7 @@ function getJSON(url, params, callback, errorCallback) {
 		if (xmlRequest.status != 401) {
 			if(!hasShutdown) {
 				if(xmlRequest.status == 0) {
-					showError(getResource("error.cannotContactServer"));
+					showError(getResourceOrDefault("error.cannotContactServer", "Cannot contact server"));
 					pollForServerContact();
 				} else {
 					showError(url + " JSON request failed. [" + xmlRequest.status + "]");

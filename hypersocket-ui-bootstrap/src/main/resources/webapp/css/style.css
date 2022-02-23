@@ -138,24 +138,6 @@ button.row-additional::after {display: none;}
 	border-radius: 50%;
 }
 
-.form-group {
-	margin-bottom: 5px;
-}
-
-.form-signin {
-	padding-top: 50px;
-    margin: 0 auto;
-}
-
-/* .form-signin a { */
-/* 	margin-top: 10px; */
-/* 	text-align: center; */
-/* } */
-
-.form-signin .form-signin-heading, .form-signin .checkbox {
-	margin-bottom: 10px;
-}
-
 .form-signin .checkbox {
 	font-weight: normal;
 }
@@ -191,10 +173,6 @@ button.row-additional::after {display: none;}
 	border-top-right-radius: 0;
 }
 
-.form-signin button {
-	margin-top: 20px;
-}
-
 .form-horizontal .form-group {
 	margin-right: 0px;
 	margin-left: 0px;
@@ -209,7 +187,7 @@ button.row-additional::after {display: none;}
 	-moz-box-shadow: none;
 	box-shadow: none;
 	color: #374767;
-}
+} 
 
 .error {
 	color: #900000 !important;
@@ -2408,10 +2386,6 @@ button#logonButton {
 	font-style: italic;
 }
 
-.form-signin-heading {
-	padding-bottom: 20px;
-}
-    
 .tableActions {
     text-align: right;
 }
@@ -2454,10 +2428,6 @@ For < 767px
 		overflow-y: auto !important;
 	}
 	
-	.form-signin {
-		padding: 15px;
-	}
-	
 	.logonInput {
 		margin: 5px auto;
 		width: 100%;
@@ -2466,10 +2436,6 @@ For < 767px
 	.form-signin .form-control {
 		border-color: #999;
 		box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
-	}
-	
-	.form-signin-heading {
-		padding-bottom: 5px;
 	}
 	
 	.underline {

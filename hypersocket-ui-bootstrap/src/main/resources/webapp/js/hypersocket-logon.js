@@ -96,7 +96,7 @@ function processLogon(data, opts, message) {
 		removeMessage();
 
 		opts.formContent.append(
-			'<div class="col"><div class="logonFormContainer mt-4"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + ' mt-4 p-4" role="form"/></div></div>');
+			'<div class="col"><div class="logonFormContainer mt-4"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin ml-auto mr-auto") + ' mt-4 p-4" role="form"/></div></div>');
 
 		if (data['errorMsg']) {
 			if("success" === data['errorStyle']) {

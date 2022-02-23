@@ -397,13 +397,13 @@
 						name : "icon",
 						width: 40,
 						formatter: function(value, obj, index) {
-							return '<div class="center"><i class="fad fa-2x '
-							+ getResourceOrDefault(obj.realmModule + '.icon', 'fa-user') + '"></i></div>';
+							return '<div class="center"><i class="fa-2x '
+							+ getResourceOrDefault(obj.realmModule + '.icon', 'fad fa-user') + '"></i></div>';
 						}
 					},{
 						name : "name",
 						formatter: function(value, obj, index) {
-							return '<span data-user-name="' + cleanValue(obj.principalName) + '" class="user-detail">' + cleanValue(obj.principalName) + '</span>';
+							return '<span data-user-id="' + cleanValue(obj.id) + '" class="user-detail">' + cleanValue(obj.principalName) + '</span>';
 						}
 					}, {
 						name : "description",
