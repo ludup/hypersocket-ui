@@ -10,6 +10,7 @@ body {
 	background: #f8f8f8;
 	font-size: 12px;
 	height: 100%;
+	font-family: -apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 
 *:focus {
