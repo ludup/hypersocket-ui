@@ -33,8 +33,8 @@
 	function canDelete(principal) {
 		return currentMenu.canDelete && !canDelete.readOnly && !principal.locallyDeleted;
 	}
-	
-	$(document).ready(function() {
+
+    legacyjQueryReadyFix(function() {
 		$("#deleteDialog").localize();
 		$('#deleteGroup').data('action', function(resource) {
 			$('#deleteGroupInfo').html(getResource(resource.realmModule === 'local' ? 'deleteLocalGroup.info' : 'deleteGroup.info').format(he.escape(stripNull(resource.principalName))));

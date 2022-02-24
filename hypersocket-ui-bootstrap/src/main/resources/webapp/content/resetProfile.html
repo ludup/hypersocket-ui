@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 
-$(document).ready(function() {
+legacyjQueryReadyFix(function() {
 	
 	$('#resetProfile').data('action', function(resource, callback) {
 		bootbox.confirm(getResource('resetProfile.text').format(cleanValue(resource.principalName)), function(result) {

@@ -29,8 +29,8 @@
 
 
 <script type="text/javascript">
-	
-	$(document).ready(function() {
+
+    legacyjQueryReadyFix(function() {
 		$("#deleteGroups").localize();
 		$('#deleteGroups').data('action', function(resource) {
 			$('#deleteGroupsInfo').html(getResource(resource.length > 0 && resource[0].realmModule === 'local' ? 'deleteLocalGroups.info' : 'deleteGroups.info').format(resource.length));

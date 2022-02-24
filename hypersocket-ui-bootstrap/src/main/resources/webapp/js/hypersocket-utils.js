@@ -1597,7 +1597,7 @@ function cleanValue(obj) {
 	return obj;
 }
 
-$(document).ready(function() {
+legacyjQueryReadyFix(function() {
 	$.notify.addStyle("hypersocket", {
 		html: "<div>\n<span data-notify-html></span>\n</div>",
 		classes: {

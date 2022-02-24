@@ -2306,7 +2306,6 @@ $.fn.extendedResourcePanel = function(params){
                         $(element).attr('dialog-for', $(element).attr('dialog-for') + '_' + options.resource.id);
                     });
                     if($('#' + tabId).children('.extendedTabContent').length > 0) {
-                    	
                         $('#' + tabId).children('.extendedTabContent').data('initPage')(options.resource, options.data, value.readOnly);
                     }
                 });
