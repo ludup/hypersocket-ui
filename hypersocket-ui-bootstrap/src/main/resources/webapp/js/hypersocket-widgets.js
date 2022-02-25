@@ -5906,16 +5906,16 @@ $.fn.feedbackPanel = function(data) {
 				});
 			}
 			else if(result.status === 'SUCCESS') {
-				div.append('<div id="' + id + '" class="row feedback-row">'
+				div.append('<div id="' + id + '" class="row feedback-row mb-1">'
 				 + '<div class="col-12 feedback-success"><i class="fad fa-check-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
 			} else if(result.status === 'INFO') {
-				div.append('<div id="' + id + '" class="row feedback-row">'
+				div.append('<div id="' + id + '" class="row feedback-row mb-1">'
 						 + '<div class="col-12 feedback-info"><i class="fad fa-info-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
 			} else if(result.status === 'WARNING') {
-				div.append('<div id="' + id + '" class="row feedback-row">'
+				div.append('<div id="' + id + '" class="row feedback-row mb-1">'
 						 + '<div class="col-12 feedback-warning"><i class="fad fa-warning"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span></div></div>');
 			} else {
-				div.append('<div id="' + id + '" class="row feedback-row">'
+				div.append('<div id="' + id + '" class="row feedback-row mb-1">'
 						 + '<div class="col-12 feedback-error"><i class="fad fa-times-circle"></i>&nbsp;&nbsp;<span>' + getResource(result.resourceKey).format(result.args) + '</span>'
 						 + '</div></div>');
 			}

@@ -1787,16 +1787,6 @@ span.input-group-addon .dropdown-toggle {
 	color: orange;
 }
 
-.feedback-row {
-	margin-bottom: 5px;
-}
-
-.feedback-row div {
-	valign: middle;
-	padding-right: 0px;
-	padding-left: 25px;
-}
-
 .feedback-success {
 	color: green;
 }
@@ -2045,7 +2035,8 @@ select[multiple] {
 
 #feedbackPanel {
 	height: 400px;
-	overflow: scroll;
+	overflow-y: auto;
+    overflow-x: clip;
 }
 
 .contentSupportTunnel {
