@@ -357,7 +357,7 @@ function startLogon(opts, credentials) {
 			$('#userInf').empty();
 			$('#userInf').append(getResource("text.notLoggedIn"));
 			
-			$('#version').text(getResource("label.version") + " " + data.version);
+			$('#version').text(data.version);
 			
 			clearContent();
 			$('#currentRealm').remove();
