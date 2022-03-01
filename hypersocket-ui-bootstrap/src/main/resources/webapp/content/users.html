@@ -789,6 +789,7 @@
 									}
 
 									if(!ownerRealm) {
+
 										var addRealmConfig = function() {
 											$('#contentUsers').find('.panel-heading').last().append(
 													'<div class="tableToolbar float-right search"><div><a id="configureUsers" href="#">'
@@ -798,6 +799,7 @@
 												$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
 											});					
 										};
+										
 										if(menuList.realmAdmin)
 											addRealmConfig();
 										else {
@@ -808,20 +810,28 @@
 											});
 										}
 
-
-										/** $('#contentUsers').find('.fixed-table-toolbar').last().append(
-												'<div class="tableToolbar float-right search"><div><a id="resetRealm" href="#">'
-												+ getResource('reset.remote.text') + '</a></div></div>');
-										$('#resetRealm').click(function(e) {
-											e.preventDefault();
-											getJSON('realms/reset/' + currentRealm.id, null, function(data) {
-												if(data.success) {
-													showSuccess(data.message);
-												} else {
-													showError(data.message);
-												}
-											});
-										}); **/
+										if('${installed:product}' !== 'LogonBox Directory') {
+											var addRealmConfig = function() {
+												$('#contentUsers').find('.panel-heading').last().append(
+														'<div class="tableToolbar pull-right search"><div><a id="configureUsers" href="#">'
+														+ getResource('configure.remote.text') + '</a></div></div>');
+												$('#configureUsers').click(function(e) {
+													e.preventDefault();
+													$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
+											
+												});					
+											};
+											
+											if(menuList.realmAdmin)
+												addRealmConfig();
+											else {
+												getJSON('permissions/verify/realm.update', null, function(data) {
+													if(data.success) {
+														addRealmConfig();								
+													}
+												});
+											}
+										}
 									}
 
 									loadComplete();
