@@ -6,7 +6,7 @@
 	legacyjQueryReadyFix(function() {
 	   getJSON('overview/articles', null, function(data) {
 	      $.each(data.resources, function(idx, obj) {
-	           $('#usefulLinksContent').append('<p><a href="' + obj.url + '" target="_blank"><i class="fad ' + obj.icon + '"></i> ' + obj.name + '</a></p>');
+	           $('#usefulLinksContent').append('<p><a href="' + obj.url + '" target="_blank"><i class="far ' + obj.icon + '"></i> ' + obj.name + '</a></p>');
 	      });
 	   });
 	});

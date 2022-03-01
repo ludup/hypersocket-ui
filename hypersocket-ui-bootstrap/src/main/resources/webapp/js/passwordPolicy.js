@@ -154,10 +154,10 @@ $.fn.passwordPolicy = function(data) {
 		if(!data.success) {
 			var passwordRulesContent;
 			if(options.showRulesDefault){
-				thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + options.title + '');
+				thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + options.title + '');
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}else{
-				thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + options.title + '');
+				thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + options.title + '');
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}
 			if(data.message == 'Unsupported') {
@@ -183,16 +183,16 @@ $.fn.passwordPolicy = function(data) {
 			var passwordRulesContent;
 			if(options.showRulesDefault){
 				if(options.showPolicyName) {
-					thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + policy.name + '');
+					thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + policy.name + '');
 				} else {
-					thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + options.title + '');
+					thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + options.title + '');
 				}
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}else{
 				if(options.showPolicyName) {
-					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fad fa-plus"></i></a>&nbsp;' + policy.name + '</h5>');
+					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="far fa-plus"></i></a>&nbsp;' + policy.name + '</h5>');
 				} else {
-					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fad fa-plus"></i></a>&nbsp;' + options.title + '</h5>');
+					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="far fa-plus"></i></a>&nbsp;' + options.title + '</h5>');
 				}
 				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
 			}
@@ -354,10 +354,10 @@ $.fn.passwordPolicy = function(data) {
 
 			var passwordGeneratorContent;
 			if(options.showGeneratorDefault){
-				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fad fa-minus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
+				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
 				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="padding-left: 30px;"></div>').find('#passwordGeneratorContent');
 			}else{
-				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="fad fa-plus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
+				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="far fa-plus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
 				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="display: none; padding-left: 30px;"></div>').find('#passwordGeneratorContent');
 			}
 			
@@ -383,7 +383,7 @@ $.fn.passwordPolicy = function(data) {
 					+ '</strong></span></div>');
 			
 			passwordGeneratorContent.append('<div id="generatedPassword" class="mt-3"><div id="passwordHolder" class="mb-2"><h5 id="suggestedPassword" class="text-success"></h5></div><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
-					 + getResource("regeneratePassword.text") + '"><i class="fad fa-2x fa-refresh"></i></a></div>');
+					 + getResource("regeneratePassword.text") + '"><i class="far fa-2x fa-refresh"></i></a></div>');
 			
 			passwordGeneratorContent.append('<div id="passwordStrength" class="mt-3"></div>');
 			
@@ -412,7 +412,7 @@ $.fn.passwordPolicy = function(data) {
 			
 			if(options.passwordElement && options.confirmElement) {
 				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a href="#" id="insertPassword" data-toggle="tooltip" data-placement="top" title="'
-						 + getResource("injectCredentials.text") + '"><i class="fad fa-2x fa-magic"></i></a>');
+						 + getResource("injectCredentials.text") + '"><i class="far fa-2x fa-magic"></i></a>');
 				$('#insertPassword').click(function(e) {
 					e.preventDefault();
 					options.passwordElement.val($('#suggestedPassword').text());
@@ -421,7 +421,7 @@ $.fn.passwordPolicy = function(data) {
 				});
 				
 				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a href="#" class="copyPassword" data-toggle="tooltip" data-placement="top" title="'
-						 + getResource("copyCredentials.text") + '"><i class="fad fa-2x fa-copy"></i></a>');
+						 + getResource("copyCredentials.text") + '"><i class="far fa-2x fa-copy"></i></a>');
 			
 				var opts = {
 					    text: function(e) {

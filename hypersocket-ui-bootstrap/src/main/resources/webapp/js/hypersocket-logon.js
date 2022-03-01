@@ -332,7 +332,7 @@ function processLogon(data, opts, message) {
 				$('#logonForm').append(
 						'<button id="logonButton" class="btn btn-lg btn-primary btn-block mt-3 mb-3 ml-auto mr-auto" type="submit">'
 							+ (data.formTemplate.logonButtonResourceKey ? getResourceOrText(data.formTemplate.logonButtonResourceKey) : getResource("text.next"))
-							+ '&nbsp;<i class="fad ' + (data.formTemplate.logonButtonIcon ? data.formTemplate.logonButtonIcon : 'fa-sign-in') + '"></i></button>');
+							+ '&nbsp;<i class="far ' + (data.formTemplate.logonButtonIcon ? data.formTemplate.logonButtonIcon : 'fa-sign-in') + '"></i></button>');
 			}
 
 			if(!data.postAuthentication) {
