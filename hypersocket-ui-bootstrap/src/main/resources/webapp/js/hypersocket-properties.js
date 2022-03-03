@@ -821,6 +821,12 @@ $.fn.propertyPage = function(opts) {
 									}
 								}
 								
+								if(options.categoryCallback) {
+									if(!options.categoryCallback(this)) {
+										return;
+									}
+								}
+								
 								var tab = propertyDiv + "Tab" + Math.abs(this.id);
 
 								// Overwrite template values with any items
@@ -854,6 +860,13 @@ $.fn.propertyPage = function(opts) {
 											return;
 										}
 									}
+									
+									if(options.propertyCallback) {
+										if(!options.propertyCallback(this)) {
+											return;
+										}
+									}
+								
 									if(values[this.resourceKey]) {
 										this.value = values[this.resourceKey];
 									}
