@@ -22,6 +22,7 @@ function doAjax(options) {
 			   xhrFields: { withCredentials: true },
 			   beforeSend: function(request) {
 				  request.setRequestHeader("X-Csrf-Token", getCsrfToken());
+                  request.setRequestHeader("X-Browser-URL", window.location);
 			   }
 			}, options);
 	return $.ajax(options);
