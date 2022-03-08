@@ -2629,7 +2629,7 @@ $.fn.multipleTextInput = function(data) {
     		}
 		}
 
-		$('#' + id + 'Excluded .input-group').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-append"><span class="fa-holder input-group-text"><i class="far fa-plus"></i></span></span>');
+		$('#' + id + 'Excluded.input-group').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-append"><span class="fa-holder input-group-text"><i class="far fa-plus"></i></span></span>');
 		$('#input' + id + 'ExcludedSelect').after('<ul id="auto_' + id + 'ExcludedAutoComplete" class="dropdown-menu scrollable-menu" role="menu"><li><a>' + getResource('pressEnter.text') + '</a></li></ul>');
 		$('#input' + id + 'ExcludedSelect').focus(function(){
 			$('#auto_' + id + 'ExcludedAutoComplete').show();
@@ -3545,7 +3545,7 @@ $.fn.sliderInput = function(options) {
 
 	$(this).append('<input class="form-control" id="' + id + '" data-slider-id="slider_' + id + '" name="slider_' + name + '" value="' + obj.value + '" type="text">');
 
-	var slider = $('#' + id).slider(obj);
+	var slider = $('#' + id).bootstrapSlider(obj);
 
 	var callback = {
 			setValue: function(val) {

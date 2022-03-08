@@ -53,9 +53,12 @@ $.fn.passwordPolicy = function(data) {
 				showPolicyName: true,
 				title: getResource('passwordRules.text'),
 				showRulesDefault: true,
+				suggestionsElement: false,
 				showZxcvbn: false,
 				showGeneratorDefault: true,
-				additionalAnalysis: false
+				additionalAnalysis: false,
+				alternativeUi: false,
+				columnStyle: 'col-md-6'
 			}, data);
 	
 	var url;
@@ -69,10 +72,6 @@ $.fn.passwordPolicy = function(data) {
 		}
 	} else {
 		url = 'passwordPolicys/policy/' + options.principalId
-	}
-	
-	if(options.buttonElement) {
-		$(options.buttonElement).prop('disabled', true);
 	}
 	
 	var thisDiv = $(this);
@@ -90,24 +89,27 @@ $.fn.passwordPolicy = function(data) {
 			options.buttonCallback(true);
 		}
 		
-		if(options.passwordElement && options.passwordElement.val()!=='') {
+		var password = options.passwordElement ? options.passwordElement.val() : false;
+        var confirm = options.confirmElement ? options.confirmElement.val() : false;
+		
+		if(password) {
 
 			var params = new Object();
-			params.password = encodeURIComponent(options.passwordElement.val());
+			params.password = encodeURIComponent(password);
 			if(options.principalId) {
 				params.id = options.principalId;
 			}
 			if(options.usernameField) {
-				options.username = options.passwordElement.val();
+				options.username = password;
 			}
 			
 			postFORM(basePath + '/api/passwordPolicys/analyse', $.param(params), function(data) {
-				$('#suggestions').empty();
+				options.suggestionsElement.empty();
 				if(data.success) {
-					if(options.passwordElement.val() == options.confirmElement.val()) {
-						$('#suggestions').append('<span class="text-success">Password looks good</span>');
+					if(password === confirm) {
+						options.suggestionsElement.append('<strong class="text-success"><i class="far fa-circle-check mr-3"></i>' + getResource('message.goodPassword') + '</strong>');
 					} else {
-						$('#suggestions').append('<span class="text-warning">Password is good but needs confirming</span>');
+						options.suggestionsElement.append('<strong class="text-warning"><i class="far fa-triangle-exclamation mr-3"></i>' + getResource('message.needsConfirm') + '</strong>');
 					}
 					if(options.buttonElement) {
 						$(options.buttonElement).prop('disabled', false);
@@ -117,10 +119,9 @@ $.fn.passwordPolicy = function(data) {
 					return;
 				} else {
 					if (data.message) {
-						$('#suggestions').append('<span id="passwordPolicysMessage" class="error"></span>');
-						$('#passwordPolicysMessage').text(data.message);
+						options.suggestionsElement.append('<strong id="passwordPolicysMessage" class="error"><i class="far fa-circle-exclamation mr-3"></i>' + data.message + '</strong>');
 					} else {
-						$('#suggestions').append('<span class="error">Password does not conform to password policy</span>');
+						options.suggestionsElement.append('<strong class="error"><i class="far fa-circle-exclamation mr-3"></i>' + getResource('message.doesNotConform') + '</strong>');
 					}
 				}
 				if(options.buttonElement) {
@@ -134,8 +135,34 @@ $.fn.passwordPolicy = function(data) {
 		}
 	}
 	
+	var makeExpandable = function(el, content) {
+        el.off('click').on('click', function(e) {
+            e.preventDefault();
+            content.toggle();
+            if($('#' + content.attr('id') + ':visible').length != 0){
+                $(this).find('i').removeClass('fa');
+                $(this).find('i').removeClass('fa-plus');
+                
+                $(this).find('i').addClass('fa');
+                $(this).find('i').addClass('fa-minus');
+            }else{
+                $(this).find('i').removeClass('fa');
+                $(this).find('i').removeClass('fa-minus');
+                
+                $(this).find('i').addClass('fa');
+                $(this).find('i').addClass('fa-plus');
+            }
+        });  
+    };
+	
 	var executeWithDelay = function() {
-		
+        if(options.alternativeUi) {
+            if(options.confirmElement.attr('type') === 'text') {
+                options.confirmElement.attr('type', 'password');
+                options.confirmElement.val('');
+            }
+            options.passwordElement.attr('type', 'password');
+        } 		
 		if(options.timeout) {
 			clearTimeout(options.timeout);
 		}
@@ -143,9 +170,52 @@ $.fn.passwordPolicy = function(data) {
 	}
 	
 	if(options.passwordElement) {
-		thisDiv.append('<div id="suggestions" style="padding-bottom: 10px;"></div>');
+        if(!options.suggestionsElement) {
+           options.suggestionsElement = $('<div id="suggestions" class="mb-3"></div>');
+		   thisDiv.prepend(options.suggestionsElement);
+		}
 		$(options.passwordElement).off('keyup').on('keyup', executeWithDelay);
 		$(options.confirmElement).off('keyup').on('keyup', executeWithDelay);
+		
+		if(options.alternativeUi) {
+            $(options.confirmElement).off('focus').on('focus', function() {
+                if($(this).attr('type') === 'text')
+                    $(this).select();
+            });
+            $(options.passwordElement).off('focus').on('focus', function() {
+                if($(this).attr('type') === 'text')
+                    $(this).select();
+            });
+            var parent = $(options.passwordElement).parent();
+            if(parent.hasClass('input-group'))
+                /* Cleanup previous instance */
+                parent.find('.input-group-text').remove();
+            else
+                parent.addClass('input-group');
+            var ig = $('<span class="input-group-text"><a id="regeneratePassword" href="#" class="mr-3"><i class="far fa-refresh"></i></a><a id="copyPassword" class="copyPassword" href="#"><i class="far fa-copy"></i></a></span>'); 
+            ig.insertAfter($(options.passwordElement));
+            
+            /* Special case, if the next sibling contains a help block, 
+            then shift this into it's own row. */
+            var next = ig.next(); 
+            if(next.find('.lb-help-block').length > 0) {
+                var newRow = parent.clone();
+                newRow.empty();
+                newRow.insertAfter(parent);
+                next.appendTo(newRow);
+                
+                /* Also copy the label column (if one exists) and 
+                   empty it of content to align the help block */
+                var prev = parent.prev();
+                if(prev.hasClass('control-label')) {
+                    var newLabel = prev.clone();
+                    newLabel.empty();
+                    newLabel.removeClass('requiredField');
+                    newLabel.attr('localize', '');
+                    newLabel.insertAfter(parent);
+                }
+            }
+        }
 	}
 
 	
@@ -153,13 +223,19 @@ $.fn.passwordPolicy = function(data) {
 
 		if(!data.success) {
 			var passwordRulesContent;
+			var passwordRulesExpander;
 			if(options.showRulesDefault){
-				thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + options.title + '');
-				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
+				passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + options.title + '</a>');
+				passwordRulesContent = $('<div id="passwordRulesContent" class="ml-3 mt-3"></div>');
 			}else{
-				thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + options.title + '');
-				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
+				passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + options.title + '</a>');
+				passwordRulesContent = $('<div id="passwordRulesContent" class="ml-3 mt-3"></div>');
 			}
+			var passwordRulesCol = $('<div class="' + options.columnStyle + '">');
+			passwordRulesCol.append(passwordRulesExpander);
+            passwordRulesCol.append(passwordRulesContent);
+            thisDiv.append(passwordRulesCol);
+            makeExpandable(passwordRulesExpander, passwordRulesContent);
 			if(data.message == 'Unsupported') {
 				passwordRulesContent.append('<span><em>' 
 						+ getResource("unsupported.text")
@@ -181,21 +257,26 @@ $.fn.passwordPolicy = function(data) {
 			var policy = data.resource;
 			
 			var passwordRulesContent;
+            var passwordRulesExpander;
 			if(options.showRulesDefault){
-				if(options.showPolicyName) {
-					thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + policy.name + '');
-				} else {
-					thisDiv.append('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + options.title + '');
-				}
-				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="padding-left: 30px;"></div>').find('#passwordRulesContent');
+				if(options.showPolicyName)
+                    passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + policy.name + '</a>');
+				else
+                    passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + options.title + '</a>');
+				passwordRulesContent = $('<div id="passwordRulesContent" class="ml-3 mt-3 "></div>');
 			}else{
-				if(options.showPolicyName) {
-					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="far fa-plus"></i></a>&nbsp;' + policy.name + '</h5>');
-				} else {
-					thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="far fa-plus"></i></a>&nbsp;' + options.title + '</h5>');
-				}
-				passwordRulesContent = thisDiv.append('<div id="passwordRulesContent" style="display: none; padding-left: 30px;"></div>').find('#passwordRulesContent');
+				if(options.showPolicyName)
+					passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-plus mr-3"></i>' + policy.name + '</a>');
+				else
+					passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-plus mr-3"></i>' + options.title + '</a>');
+				passwordRulesContent = $('<div id="passwordRulesContent" class="ml-3 mt-3" style="display: none;"></div>');
 			}
+			
+            var passwordRulesCol = $('<div class="' + options.columnStyle + '">');
+            passwordRulesCol.append(passwordRulesExpander);
+            passwordRulesCol.append(passwordRulesContent);
+            thisDiv.append(passwordRulesCol);
+            makeExpandable(passwordRulesExpander, passwordRulesContent);
 
 			passwordRulesContent.append('<span>' 
 					+ getResource("minLength.text").format(policy.minimumLength)
@@ -321,27 +402,8 @@ $.fn.passwordPolicy = function(data) {
 				}
 			}
 		}
-		
-		$('#passwordRulesContent').prev().find('a').click(function(){
-			$('#passwordRulesContent').toggle();
-			if($('#passwordRulesContent:visible').length != 0){
-				$(this).find('i').removeClass('fa');
-				$(this).find('i').removeClass('fa-plus');
-				
-				$(this).find('i').addClass('fa');
-				$(this).find('i').addClass('fa-minus');
-			}else{
-				$(this).find('i').removeClass('fa');
-				$(this).find('i').removeClass('fa-minus');
-				
-				$(this).find('i').addClass('fa');
-				$(this).find('i').addClass('fa-plus');
-			}
-		});
-		
+        
 		if(options.showGenerator && policy) {
-			thisDiv.append('<span></span><br>');
-
 			function customPassword(policy) {
 			  var password = "";
 			  
@@ -353,88 +415,103 @@ $.fn.passwordPolicy = function(data) {
 			}
 
 			var passwordGeneratorContent;
+			var passwordGeneratorExpander;
+			var gentxt = getResource(options.alternativeUi ?  'passwordGenerator.options' : 'passwordGenerator.text'); 
 			if(options.showGeneratorDefault){
-				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="far fa-minus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
-				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="padding-left: 30px;"></div>').find('#passwordGeneratorContent');
-			}else{
-				thisDiv.append('<h5><a class="lb-detail-icon" href="javascript:"><i class="far fa-plus"></i></a>&nbsp;' + getResource('passwordGenerator.text') + '</h5>');
-				passwordGeneratorContent = thisDiv.append('<div id="passwordGeneratorContent" style="display: none; padding-left: 30px;"></div>').find('#passwordGeneratorContent');
+				passwordGeneratorExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + gentxt + '</a>');
+				passwordGeneratorContent = $('<div id="passwordGeneratorContent" class="ml-3"></div>');
+			} else {
+				passwordGeneratorExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-plus mr-3"></i>' + gentxt + '</a>');
+				passwordGeneratorContent = $('<div id="passwordGeneratorContent" class="ml-3" style="display: none;"></div>');
 			}
 			
-			$('#passwordGeneratorContent').prev().find('a').click(function(){
-				$('#passwordGeneratorContent').toggle();
-				if($('#passwordGeneratorContent:visible').length != 0){
-					$(this).find('i').removeClass('fa');
-					$(this).find('i').removeClass('fa-plus');
-					
-					$(this).find('i').addClass('fa');
-					$(this).find('i').addClass('fa-minus');
-				}else{
-					$(this).find('i').removeClass('fa');
-					$(this).find('i').removeClass('fa-minus');
-					
-					$(this).find('i').addClass('fa');
-					$(this).find('i').addClass('fa-plus');
-				}
-			});
+            var passwordGeneratorCol = $('<div class="' + options.columnStyle + '">');
+            passwordGeneratorCol.append(passwordGeneratorExpander);
+            passwordGeneratorCol.append(passwordGeneratorContent);
+            thisDiv.append(passwordGeneratorCol);
+            makeExpandable(passwordGeneratorExpander, passwordGeneratorContent);
 			
-			passwordGeneratorContent.append('<div><span><strong>' 
-					+ getResource("suggestedPassword.text")
-					+ '</strong></span></div>');
-			
-			passwordGeneratorContent.append('<div id="generatedPassword" class="mt-3"><div id="passwordHolder" class="mb-2"><h5 id="suggestedPassword" class="text-success"></h5></div><a href="#" id="regeneratePassword" data-toggle="tooltip" data-placement="top" title="'
-					 + getResource("regeneratePassword.text") + '"><i class="far fa-2x fa-refresh"></i></a></div>');
-			
-			passwordGeneratorContent.append('<div id="passwordStrength" class="mt-3"></div>');
-			
-			$('#passwordStrength').sliderInput({
-				min: policy.minimumLength,
-				max: policy.maximumLength,
-				value: policy.minimumLength,
-				labelResourceKey: 'passwordStrength.label',
-				changed: function(widget) {
-					$('#regeneratePassword').click();
-				}
-			});
-			
-			$('#regeneratePassword').click(function(e) {
-				e.preventDefault();
-				getJSON('passwordPolicys/generate/' + policy.id + '/' + $('#passwordStrength').widget().getValue(), null, function(data) {
-					if(!data.success) {
-						showError(data.message);
-					} else {
-						$('#suggestedPassword').text(data.resource);
-					}
-				});		
-			});
-			
-			$('#regeneratePassword').click();
+            if(!options.alternativeUi) {			
+    			passwordGeneratorContent.append('<div><span><strong>' 
+    					+ getResource("suggestedPassword.text")
+    					+ '</strong></span></div>');
+    
+                passwordGeneratorContent.append('<div id="generatedPassword" class="mt-4"><div id="passwordHolder" class="mb-4"><h5 id="suggestedPassword" class="text-success"></h5></div><a href="javascript:" class="mr-3" id="regeneratePassword"><i class="far fa-2x fa-refresh"></i></a></div>');
+    		}
+    		$('#regeneratePassword').attr('data-toggle', 'tooltip');
+            $('#regeneratePassword').attr('data-placement', 'top');
+            $('#regeneratePassword').attr('title', getResource("regeneratePassword.text"));
+    		
+    		$('#regeneratePassword').off('click').on('click', function(e) {
+                e.preventDefault();
+                getJSON('passwordPolicys/generate/' + policy.id + '/' + $('#passwordStrength').widget().getValue(), null, function(data) {
+                    if(!data.success) {
+                        showError(data.message);
+                    } else {
+                        if(options.alternativeUi) {
+                            options.passwordElement.val(data.resource);
+                            options.confirmElement.val(data.resource);
+                            options.passwordElement.attr('type', 'text');
+                            options.confirmElement.attr('type', 'text');
+                            validate(); 
+                        }
+                        else {
+                            options.passwordElement.attr('type', 'password');
+                            options.confirmElement.attr('type', 'password');
+                            $('#suggestedPassword').text(data.resource);
+                        }
+                    }
+                });     
+            });            
+            passwordGeneratorContent.append('<div id="passwordStrength" class="mt-4"></div>');
+            
+            $('#passwordStrength').sliderInput({
+                min: policy.minimumLength,
+                max: policy.maximumLength,
+                value: policy.minimumLength,
+                labelResourceKey: 'passwordStrength.label',
+                changed: function(widget) {
+                    $('#regeneratePassword').click();
+                }
+            });         
+            $('#regeneratePassword').click();
 			
 			if(options.passwordElement && options.confirmElement) {
-				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a href="#" id="insertPassword" data-toggle="tooltip" data-placement="top" title="'
-						 + getResource("injectCredentials.text") + '"><i class="far fa-2x fa-magic"></i></a>');
-				$('#insertPassword').click(function(e) {
-					e.preventDefault();
-					options.passwordElement.val($('#suggestedPassword').text());
-					options.confirmElement.val($('#suggestedPassword').text());
-					validate();
-				});
-				
-				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a href="#" class="copyPassword" data-toggle="tooltip" data-placement="top" title="'
-						 + getResource("copyCredentials.text") + '"><i class="far fa-2x fa-copy"></i></a>');
+                
+            
+                if(!options.alternativeUi) {
+    				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a class="mr-3" href="javascript:" id="insertPassword" data-toggle="tooltip" data-offset="30" data-placement="top" title="'
+    						 + getResource("injectCredentials.text") + '"><i class="far fa-2x fa-magic"></i></a>');
+    				$('#insertPassword').off('click').on('click', function(e) {
+    					e.preventDefault();
+    					options.passwordElement.val($('#suggestedPassword').text());
+    					options.confirmElement.val($('#suggestedPassword').text());
+    					validate();
+    				});
+    				
+    				
+    				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a id="copyPassword" href="javascript:" class="mr-3 copyPassword" "><i class="far fa-2x fa-copy"></i></a>');
+                }
+                $('#copyPassword').attr('data-toggle', 'tooltip');
+                $('#copyPassword').attr('data-placement', 'top');
+                $('#copyPassword').attr('title', getResource("copyCredentials.text"));
 			
 				var opts = {
-					    text: function(e) {
-					    	var pwd = $('#suggestedPassword').text();
-					        return pwd;
-					    }
+				    text: function(e) {
+                        return options.passwordElement ? options.passwordElement.val() : false;
+				    }
 				};
 				
 				if(options.bootstrapContainer) {
-					opts.container = document.getElementById(options.bootstrapContainer);
+					opts.container = typeof options.bootstrapContainer === 'string' || options.bootstrapContainer instanceof String ? document.getElementById(options.bootstrapContainer) : options.bootstrapContainer;
 				}
 				
-				var clipboard = new Clipboard('.copyPassword', opts);
+				// TODO not great, only allows for single instance, but we should never have more than one
+				var oclipboard = $(document).data('copyPassword');
+				if(oclipboard)
+				    oclipboard.destroy();
+				var clipboard = new ClipboardJS('#copyPassword', opts);
+				$(document).data('copyPassword', clipboard);
 				
 				clipboard.on('success', function(e) {
 					showSuccess("Copied password to clipboard");

@@ -1062,6 +1062,9 @@ function loadComplete(pageChange) {
 	$('#mainContent').data('pageChange', pageChange);
 	$('#mainContainer').stopSpin();
     $('[data-toggle="tooltip"]').tooltip(); 
+    $('[data-toggle="offset-tooltip"]').tooltip({
+        offset: 20
+    }); 
 }
 
 function loadWait() {

@@ -584,7 +584,11 @@
 											showGenerator: true,
 											passwordElement: $('#userPassword'),
 											confirmElement: $('#userConfirmPassword'),
-											usernameElement: $('#userName')
+											usernameElement: $('#userName'),
+											bootstrapContainer: $('#addUserModal')[0],
+											alternativeUi: true,
+						                    showGeneratorDefault: false,
+						                    showRulesDefault: false
 										});
 
 										if($('#contentUsers').parents('#subMenuPageContent').length > 0) {
@@ -687,7 +691,10 @@
 										showGenerator: true,
 										passwordElement: $('#userPassword'),
 										confirmElement: $('#userConfirmPassword'),
-										usernameElement: $('#userName')
+										usernameElement: $('#userName'),
+										alternativeUi: true,
+					                    showGeneratorDefault: false,
+					                    showRulesDefault: false,
 									});
 
 									getJSON(apiUrl + '/groups/user/' + resource.id, null, function(data) {
