@@ -71,7 +71,22 @@ $(document).ready(function() {
 			    } else {
 			    	
 			    	el.append('<div class="row"><span class="col-xs-12 h4"><i class="fa fa-star text-danger"></i> <span localize="noProfile.text"></span></span></div>');
-			    }
+			    	el.append('<div class="row"><div class="col-xs-12"><a  id="generate_' + resource.id + '" href="#"><span localize="generate.text"></span></a></div></div>');
+			    	
+			    	var force =  _$('#generate');
+			    	force.click(function(e) {
+			    		e.preventDefault();
+			    		getJSON('currentRealm/forceProfileSync/' + resource.id, null, function(data) {
+			    			debugger;
+			    			if(data.success) {
+			    				showSuccess(getResource("profile.synchronized"));
+			    				loadProfile(resource);
+			    			} else {
+			    				showError(data.message);
+			    			}
+			    		});
+			    	});
+				}
 			    
 			    _$('#principalProfile').localize();
         });
