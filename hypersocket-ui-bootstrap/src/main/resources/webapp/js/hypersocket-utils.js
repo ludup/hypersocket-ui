@@ -1566,8 +1566,9 @@ function showAuditWarning(text) {
 function showAuditSuccess(text) {
 	loadResources(function() {
 		
-		text = (getResourceNoDefault(text) == undefined ? text.encodeHTML() : getResource(text).encodeHTML());
-		
+		if(text) {
+			text = (getResourceNoDefault(text) == undefined ? text.encodeHTML() : getResource(text).encodeHTML());
+		}
 		notificationInitHelper.setUp(function(_text, _position) {
 			$.notify(_text, { arrowShow: false, className: 'success', 
 			position: _position, autoHideDelay: 7500, style: 'hypersocket'});
@@ -1580,8 +1581,9 @@ function showAuditSuccess(text) {
 
 function showAuditInfo(text) {
 	loadResources(function() {
-		text = (getResourceNoDefault(text) == undefined ? text.encodeHTML() : getResource(text).encodeHTML());
-		
+		if(text) {
+			text = (getResourceNoDefault(text) == undefined ? text.encodeHTML() : getResource(text).encodeHTML());
+		}
 		notificationInitHelper.setUp(function(_text, _position) {
 			$.notify(_text, { arrowShow: false, className: 'info', 
 			position: _position, autoHideDelay: 7500, style: 'hypersocket'});
