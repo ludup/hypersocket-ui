@@ -37,7 +37,7 @@ public class HtmlContentFilter implements ContentFilter {
 	
 	private String brandCompany = "LogonBox Limited";
 	private String companyUrl = "https://www.logonbox.com/";
-	private String brandIcon = "/images/favicon.ico";
+	private String brandIcon = "/images/logonbox-favicon.png";
 	private String brandImage = "/images/logonbox.png";
 	private String supportContact = "support@logonbox.com";
 	private String supportName = "LogonBox Limited";
