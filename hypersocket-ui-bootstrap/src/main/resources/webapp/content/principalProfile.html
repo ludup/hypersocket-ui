@@ -40,7 +40,6 @@ $(document).ready(function() {
 			    	force.click(function(e) {
 			    		e.preventDefault();
 			    		getJSON('currentRealm/forceProfileSync/' + resource.id, null, function(data) {
-			    			debugger;
 			    			if(data.success) {
 			    				showSuccess(getResource("profile.synchronized"));
 			    				loadProfile(resource);
@@ -77,7 +76,6 @@ $(document).ready(function() {
 			    	force.click(function(e) {
 			    		e.preventDefault();
 			    		getJSON('currentRealm/forceProfileSync/' + resource.id, null, function(data) {
-			    			debugger;
 			    			if(data.success) {
 			    				showSuccess(getResource("profile.synchronized"));
 			    				loadProfile(resource);

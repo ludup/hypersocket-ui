@@ -5660,6 +5660,7 @@ $.fn.wizardPage = function(data) {
 							$('#panel' + nextPage).show();
 							$('#collapse' + idx).collapse('hide');
 							$('#collapse' + nextPage).collapse('show');
+							return $('#panel' + nextPage);
 						};
 						if(nextPageW.onShow) {
 							if(nextPageW.onShow(doShow)) {
