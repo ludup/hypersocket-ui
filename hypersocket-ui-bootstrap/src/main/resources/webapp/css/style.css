@@ -17,12 +17,12 @@ body {
 }
 
 a:focus, a:hover {
-    color: #1e0c51;
+    color: #000033;
     text-decoration: underline;
 }
 
 a {
-    color: #1e0c51;
+    color: #000033;
     text-decoration: none;
 }
 
@@ -284,8 +284,8 @@ pre {
 
 .btn-primary {
 	color: white;
-	background: #1e0c51;
-	border: 1px solid #1e0c51;
+	background: #000033;
+	border: 1px solid #000033;
 }
 
 .btn-primary:hover {
@@ -325,7 +325,7 @@ pre {
 }
 
 .btn-info {
-	background-color: #1e0c51;
+	background-color: #000033;
 }
 
 .btn-info:hover {
@@ -543,7 +543,7 @@ div.tablePages ul.pagination {
 .carousel-control, .carousel-control:visited, .carousel-control:active {
     width: 20px;
     font-size: 20px;
-    color: #1e0c51;
+    color: #000033;
     text-shadow: none;
 }
 
@@ -557,8 +557,8 @@ div.tablePages ul.pagination {
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover,
 	.pagination>.active>span:hover, .pagination>.active>a:focus,
 	.pagination>.active>span:focus {
-	background-color: #1e0c51;
-	border-color: #1e0c51;
+	background-color: #000033;
+	border-color: #000033;
 }
 
 .tabContent {
@@ -639,7 +639,7 @@ footer {
 	flex-shrink: 0;
 	width: 100%;
 	/* Set the fixed height of the footer here */
-	background-color: #1e0c51;
+	background-color: #000033;
 	color: #fff;
 }
 
@@ -716,7 +716,7 @@ header .navbar {
 }
 
 .switch-input:checked ~ .switch-label {
-	background: #1e0c51;
+	background: #000033;
 }
 /* Sidebar
 =================================================================== */
@@ -953,8 +953,8 @@ header .navbar {
 }
 
 .navbar-inverse {
-	background-color: #1e0c51;
-	border-color: #1e0c51;
+	background-color: #000033;
+	border-color: #000033;
 }
 
 .navbar-header {
@@ -1000,8 +1000,8 @@ header .navbar {
 }
 
 .slider-handle {
-	background-color: #1e0c51;
-	background-image: linear-gradient(to bottom, #1e0c51, #333);
+	background-color: #000033;
+	background-image: linear-gradient(to bottom, #000033, #333);
 }
 
 .panel.panel-default {
@@ -1964,7 +1964,7 @@ select[multiple] {
 	height: 120px;
 	width: 120px;
 	margin: 10px;
-	background-color: #1e0c51
+	background-color: #000033
 }
 
 .setupExtension span {
