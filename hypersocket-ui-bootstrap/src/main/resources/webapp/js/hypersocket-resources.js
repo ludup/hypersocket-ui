@@ -1490,6 +1490,8 @@ $.fn.resourceTable = function(params) {
 				+ divName + 'ToggleGrid" class="btn btn-secondary" type="button" name="grid" title="' 
 				+ getResource('text.toggleViewMode') + '"><i class="far ' + currentView.icon + '"></button>');
 		
+		if(views.length < 2)
+		  $('#' + divName + 'ToggleGrid').hide();
 		
     	$('#' + divName + 'ToggleGrid').click(function(){
     		var prev = views[0];
