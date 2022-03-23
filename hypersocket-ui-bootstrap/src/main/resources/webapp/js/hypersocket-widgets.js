@@ -5559,15 +5559,21 @@ $.fn.wizardPage = function(data) {
 
 	var options = $.extend(
 			{
+                allowCancel: false,
 				allowReset: true,
 				allowBack: false
 			}, data);
 
 
-	if(options.allowReset) {
-		$(this).append('<div class="propertyItem form-group buttonBar">' +
-						'<a id="resetForm" href="#" localize="text.reset"></a>' +
-					'</div>');
+	if(options.allowReset || options.allowCancel) {
+        var bar = $('<div id="actionsBars" class="propertyItem form-group buttonBar"></div>');
+        if(options.allowReset)
+            bar.append($('<a id="resetForm" href="#" localize="text.reset"></a>'));
+        if(options.allowReset && options.allowCancel)
+            bar.append($('<span>&nbsp;|&nbsp;</span>'));
+        if(options.allowCancel)
+            bar.append($('<a id="cancelForm" href="#" localize="text.cancel"></a>'));
+        $(this).append(bar);
 	}
 
 	$(this).append('<div id="wizardPages" class="panel-group" id="accordion" role="tablist" aria-multiselectable="false"></div>');
@@ -5734,7 +5740,7 @@ $.fn.wizardPage = function(data) {
 
 						$('.backButton').attr('disabled', true);
 						if(options.hideResetOnComplete) {
-							$('#resetForm').hide();
+							$('#actionsBars').hide();
 						}
 					}
 				}, function() {
@@ -5746,24 +5752,36 @@ $.fn.wizardPage = function(data) {
 
 		$('#resetForm').click(function() {
 
-		$.each(options.steps, function(idx, obj) {
-			$('.pageState' + idx).attr('disabled', false);
-			if(obj.onReset) {
-				obj.onReset();
-			}
-		});
-
-		$('.nextButton').attr('disabled', false);
-
-		$('#wizardPages .panel').hide();
-		$('#wizardPages .collapse').collapse('hide');
-
-		$('#wizardPages .panel').first().show();
-		$('#wizardPages .collapse').first().removeAttr('style');
-		$('#wizardPages .collapse').first().collapse('show');
-
-
-	});
+    		$.each(options.steps, function(idx, obj) {
+    			$('.pageState' + idx).attr('disabled', false);
+    			if(obj.onReset) {
+    				obj.onReset();
+    			}
+    		});
+    
+    		$('.nextButton').attr('disabled', false);
+    
+    		$('#wizardPages .panel').hide();
+    
+    		$('#wizardPages .panel').first().show();
+    		$('#wizardPages .collapse').first().removeAttr('style');
+    		$('#wizardPages .collapse').first().collapse('show');
+    
+    
+    	});
+    	
+    	$('#cancelForm').click(function() {
+            $.each(options.steps, function(idx, obj) {
+                $('.pageState' + idx).attr('disabled', false);
+                if(obj.onCancel) {
+                    obj.onCancel();
+                }
+            });
+            options.pageDone = true;
+            if(options.done) {
+                options.done();
+            }
+        });
 
 	if(options.complete) {
 		options.complete();
