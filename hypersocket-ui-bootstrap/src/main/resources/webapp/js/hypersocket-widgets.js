@@ -156,7 +156,7 @@ $.fn.textInput = function(data) {
 				+ '></textarea>';
 
 		if(options.variables || options.url) {
-			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="input-group-append input-group-text dropdown-toggle unselectable" '
+			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="d-block text-center input-group-append input-group-text dropdown-toggle unselectable" '
 		    	+ 'data-toggle="dropdown">${}</span></div>';
 		}
 
