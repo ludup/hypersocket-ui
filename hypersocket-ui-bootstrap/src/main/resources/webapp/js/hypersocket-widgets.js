@@ -5578,6 +5578,64 @@ $.fn.wizardPage = function(data) {
 
 	$(this).append('<div id="wizardPages" class="panel-group" id="accordion" role="tablist" aria-multiselectable="false"></div>');
 
+	var callback = {
+		skip: function(pages) {
+			/* Find where we currently are in the wizard flow */
+			var active = $('#wizardPages').find('.collapse.in');
+			var page = active.parent().data('page');
+			var idx = active.parent().data('index');
+			
+			var newIdx = idx + pages;
+			var newPageW = $('#panel' + newIdx).data('page');
+
+			var doShow = function() {
+				var dir = newIdx >= idx ? 1 : -1;
+				for(var i = idx ; i != newIdx + dir; i = i + dir) {
+					$('#panel' + i).show();
+					$('#collapse' + i).collapse('hide');
+					$('.pageState' + i).attr('disabled', true);
+					$('#button' + i).attr('disabled', true);
+					
+					var ipagew = $('#panel' + i).data('page');
+					stopSpin($('#button' + i).find('i'), ipagew.buttonIcon);
+				}
+				
+				$('.pageState' + newIdx).attr('disabled', false);
+				$('#button' + newIdx).attr('disabled', false);
+				$('#panel' + newIdx).show();
+				$('#collapse' + newIdx).collapse('show');
+					
+				return $('#panel' + newIdx);
+			};
+			if(newPageW.onShow) {
+				if(newPageW.onShow(doShow)) {
+					doShow();
+				};
+			} else {
+				doShow();
+			}
+		},
+		reset: function() {
+				$.each(options.steps, function(idx, obj) {
+				$('.pageState' + idx).attr('disabled', false);
+				if(obj.onReset) {
+					obj.onReset();
+				}
+			});
+
+			$('.nextButton').attr('disabled', false);
+	
+			$('.panel:gt(0)').hide();
+			$('.collapse:gt(0)').collapse('hide');
+	
+			$('.panel').first().show();
+			$('.collapse').first().collapse('show');
+		},
+		showError: function(str) {
+
+		}
+	};
+	
 	$.each(options.steps, function(index, obj) {
 
 			var page = $.extend({
@@ -5667,6 +5725,7 @@ $.fn.wizardPage = function(data) {
 				$('#panel' + idx).hide();
 				$('#collapse' + idx).collapse('hide');
 				$('#collapse' + previousPage).collapse('show');
+				return $('#panel' + previousPage);
 			};
 			if(previousPageW.onShow) {
 				if(previousPageW.onShow(doShow)) {
@@ -5694,8 +5753,8 @@ $.fn.wizardPage = function(data) {
 					$('.wizardError').remove();
 					$('#page' + idx).prepend('<div class="wizardError alert alert-danger"><i class="far fa-warning"></i> <span>' + val + '</span></p>')
 				};
-
-				page.onNext(function() {
+				
+				var nextCallback = function() {
 
 					if(clicked) {
 						return;
@@ -5743,9 +5802,13 @@ $.fn.wizardPage = function(data) {
 							$('#actionsBars').hide();
 						}
 					}
-				}, function() {
+				};
+				
+				var samePageCallback = function() {
 					stopSpin($('#button' + idx).find('i'), page.buttonIcon);
-				}, onError);
+				};
+
+				page.onNext(nextCallback, samePageCallback, onError, callback);
 			}
 
 		});
@@ -5787,27 +5850,7 @@ $.fn.wizardPage = function(data) {
 		options.complete();
 	}
 	
-	return {
-		reset: function() {
-				$.each(options.steps, function(idx, obj) {
-				$('.pageState' + idx).attr('disabled', false);
-				if(obj.onReset) {
-					obj.onReset();
-				}
-			});
-
-			$('.nextButton').attr('disabled', false);
-	
-			$('.panel:gt(0)').hide();
-			$('.collapse:gt(0)').collapse('hide');
-	
-			$('.panel').first().show();
-			$('.collapse').first().collapse('show');
-		},
-		showError: function(str) {
-
-		}
-	}
+	return callback;
 }
 
 $.fn.textAndSelect = function(data) {
