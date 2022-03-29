@@ -1,81 +1,88 @@
 <div data-id="principalProfile" class="extendedTabContent">
-    <div data-id="profileTab" class="col-md-6">   	
-    </div>
-     <div data-id="credentialsTab" class="col-md-6">   	
-    </div>
+	<div data-id="principalProfileContainer" class="container-fluid">
+		<div class="row">
+			<div class="col-md-6">
+				<div data-id="profileTab"></div>
+			</div>
+			<div class="col-md-6">
+				<div data-id="credentialsTab"></div>
+			</div>
+		</div>
+	</div>
 </div>
 <script type="text/javascript">
-legacyjQueryReadyFix(function() {
+	legacyjQueryReadyFix(function() {
 
-	var loadProfile = function(resource) {
-        var _$ = function(jq) { return $(jq + '_' + resource.id);}
-        
-        _$('#principalProfile').find('.row').remove();
-        var el = _$('#profileTab');
-        el.empty();
-        var el2 = _$('#credentialsTab');
-        el2.empty();
-        getJSON('currentRealm/userProfile/' + resource.id, null, function(data) {
-			    if(data.resource) {
-			    	if(data.resource.state === 'COMPLETE') {
-			    		el.append('<div class="row"><span class="col-xs-12 h4"><i class="fa fa-star text-success"></i> <span localize="completedProfile.text"></span></span></div>');
-			    		el.append('<div class="row"><span localize="profile.completed"></span> <span>' + new Date(data.resource.completed).format('ddd, dd mmm yyyy HH:MM') + '</span></div>');
-			    	} else if(data.resource.state === 'NOT_REQUIRED') {
-			    		el.append('<div class="row"><span class="col-xs-12 h4"><i class="fa fa-star"></i> <span localize="notRequiredProfile.text"></span></span></div>');
-			    	} else if(data.resource.state === 'PARTIALLY_COMPLETE') {
-			    		el.append('<div class="row"><span class="col-xs-12 h4"><i class="fa fa-star-half-o text-warning"></i> <span localize="partialProfile.text"></span></span></div>');
-			    	} else {
-			    		el.append('<div class="row"><span class="col-xs-12 h4"><i class="fa fa-star-o text-danger"></i> <span localize="incompleteProfile.text"></span></span></div>');
-			    	}
+		var loadProfile = function(resource) {
+			var _$ = function(jq) {
+				return $(jq + '_' + resource.id);
+			}
 
-			    	el2.append('<h4 localize="credentials.text"></h4>');
-			    	
-			    	$.each(data.resource.credentials, function(idx, creds) {
-	    				el2.append('<div class="row"><label localize="' + creds.resourceKey + '" class="col-xs-6"></label><span class="col-xs-6">' + creds.state + '</span></div>');
-	    			});
-			    	
-			    	 _$('#principalProfile').append('<div class="row"><div class="col-xs-12"><a  id="force_' + resource.id + '" href="#"><span localize="forceSync.text"></span></a> | <a id="reset_' + resource.id + '" href="#"><span localize="resetProfile.label"></span></a></div></div>');
-			    	
-			    	var force =  _$('#force');
-			    	force.click(function(e) {
-			    		e.preventDefault();
-			    		getJSON('currentRealm/forceProfileSync/' + resource.id, null, function(data) {
-			    			if(data.success) {
-			    				showSuccess(getResource("profile.synchronized"));
-			    				loadProfile(resource);
-			    			} else {
-			    				showError(data.message);
-			    			}
-			    		});
-			    	});
-			    	
-			    	var reset =  _$('#reset');
-			    	reset.click(function(e) {
-			    		e.preventDefault();
-			    		bootbox.confirm(getResource('resetProfile.text').format(cleanValue(resource.principalName)), function(result) {
-			    			if(result) {
-			    				getJSON('currentRealm/resetProfile/' + resource.id, null, function(data) {
-			    					if(data.success) {
-			    						showSuccess(getResource("profile.reset"));
-			    						loadProfile(resource);
-			    					} else {
-			    						showError(data.message);
-			    					}
-			    				});
-			    			}
-			    		});
-			    	});
-			    	
-			    	
-			    } else {
-			    	
-			    	el.append('<div class="row"><span class="col-xs-12 h4"><i class="fa fa-star text-danger"></i> <span localize="noProfile.text"></span></span></div>');
-			    }
-			    
-			    _$('#principalProfile').localize();
-        });
-    };
-    $('.extendedTabContent').data('initPage', loadProfile);
-	
-});
+			_$('#principalProfile .col-md-6').find('.row').remove();
+			var el = _$('#profileTab');
+			el.empty();
+			var el2 = _$('#credentialsTab');
+			el2.empty();
+			getJSON('currentRealm/userProfile/' + resource.id, null, function(data) {
+				if (data.resource) {
+					if (data.resource.state === 'COMPLETE') {
+						el.append('<div class="row"><span class="col-sm-12 h4"><i class="fa fa-star text-success"></i> <span localize="completedProfile.text"></span></span></div>');
+						el.append('<div class="row"><span localize="profile.completed"></span> <span>' + new Date(data.resource.completed).format('ddd, dd mmm yyyy HH:MM') + '</span></div>');
+					} else if (data.resource.state === 'NOT_REQUIRED') {
+						el.append('<div class="row"><span class="col-sm-12 h4"><i class="fa fa-star"></i> <span localize="notRequiredProfile.text"></span></span></div>');
+					} else if (data.resource.state === 'PARTIALLY_COMPLETE') {
+						el.append('<div class="row"><span class="col-sm-12 h4"><i class="fa fa-star-half-stroke text-warning"></i> <span localize="partialProfile.text"></span></span></div>');
+					} else {
+						el.append('<div class="row"><span class="col-sm-12 h4"><i class="fa fa-star-exclamation text-danger"></i> <span localize="incompleteProfile.text"></span></span></div>');
+					}
+
+					el2.append('<h4 localize="credentials.text"></h4>');
+
+					$.each(data.resource.credentials, function(idx, creds) {
+						el2.append('<div class="row"><label localize="' + creds.resourceKey + '" class="col-sm-6"></label><span class="col-sm-6">' + creds.state + '</span></div>');
+					});
+
+					_$('#principalProfileContainer').append('<div class="row"><div class="col-sm-12"><a  id="force_' + resource.id + '" href="#"><span localize="forceSync.text"></span></a> | <a id="reset_' + resource.id + '" href="#"><span localize="resetProfile.label"></span></a></div></div>');
+
+					var force = _$('#force');
+					force.click(function(e) {
+						e.preventDefault();
+						getJSON('currentRealm/forceProfileSync/' + resource.id, null, function(data) {
+							if (data.success) {
+								showSuccess(getResource("profile.synchronized"));
+								loadProfile(resource);
+							} else {
+								showError(data.message);
+							}
+						});
+					});
+
+					var reset = _$('#reset');
+					reset.click(function(e) {
+						e.preventDefault();
+						bootbox.confirm(getResource('resetProfile.text').format(cleanValue(resource.principalName)), function(result) {
+							if (result) {
+								getJSON('currentRealm/resetProfile/' + resource.id, null, function(data) {
+									if (data.success) {
+										showSuccess(getResource("profile.reset"));
+										loadProfile(resource);
+									} else {
+										showError(data.message);
+									}
+								});
+							}
+						});
+					});
+
+				} else {
+
+					el.append('<div class="row"><span class="col-sm-12 h4"><i class="fa fa-star text-danger"></i> <span localize="noProfile.text"></span></span></div>');
+				}
+
+				_$('#principalProfile').localize();
+			});
+		};
+		$('.extendedTabContent').data('initPage', loadProfile);
+
+	});
 </script>
