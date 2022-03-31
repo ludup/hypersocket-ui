@@ -93,8 +93,15 @@ pre {
 /*B4 row adds margin left and right with -15 px making it difficult to adjust with old code hence added custom*/
 .lb-row {display: -ms-flexbox; display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;}
 /*For slider tooltip*/
-.tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
-.tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;}
+.tooltip {
+	margin-left: 20px;
+}
+
+.tooltip div.arrow {
+    margin-left: 20px;
+}
+/* .tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
+.tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;} */
 .lb-modal-header-text-reverse {flex-direction: row-reverse;}
 .fixed-table-container {padding-top: 5px;}
 button.row-additional {margin-right: 5px;}
@@ -139,15 +146,20 @@ button.row-additional::after {display: none;}
 }
 
 .form-signin .checkbox {
-	font-weight: normal;
+	/* font-weight: normal; */
 }
 
 .form-control {
 	font-size: 12px;
 }
 
+.form-control:focus {
+    border-color: #aaa; 
+    box-shadow: inset 0 2px 2px rgba(0.6, 0.6, 0.6, 0.075), 0 0 8px rgba(0.8, 0.8, 0.8, 0.2);
+}
+
 .form-signin .form-control {
-	position: relative;
+	/* position: relative;
 	height: auto;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -155,38 +167,38 @@ button.row-additional::after {display: none;}
 	padding: 10px;
 	font-size: 12px;
     border-color: #999;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15); */
 }
 
 .form-signin .form-control:focus {
-	z-index: 2;
+	/* z-index: 2; */
 }
 
 .form-signin input[type="email"] {
-	margin-bottom: -1px;
+	/* margin-bottom: -1px;
 	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
+	border-bottom-left-radius: 0; */
 }
 
 .form-signin input[type="password"] {
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
+	/* border-top-left-radius: 0;
+	border-top-right-radius: 0; */
 }
 
 .form-horizontal .form-group {
-	margin-right: 0px;
-	margin-left: 0px;
+	/* margin-right: 0px;
+	margin-left: 0px; */
 }
 
 .form-control {
-	border: 1px solid #e1e6ef;
+	/* border: 1px solid #e1e6ef;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	border-radius: 2px;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
-	color: #374767;
+	color: #374767; */
 } 
 
 .error {

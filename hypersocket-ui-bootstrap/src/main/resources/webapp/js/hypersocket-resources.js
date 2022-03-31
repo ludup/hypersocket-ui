@@ -265,7 +265,7 @@ $.fn.resourceTable = function(params) {
 		}
 		getState(divName+'-infoPanel', true, function(data) {
 			if(data.resources.length == 0 || data.resources[0].show) {
-				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="far fa-2x fa-info align-middle"></i><i id="messageDismiss" '
+				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="far fa-xl fa-info align-middle"></i><i id="messageDismiss" '
 						+ 'class="far fa-times dismiss-icon float-right mt-2"></i>&nbsp;&nbsp;<span class="align-middle">' + options.infoHtml + '</span></div></div>');
 			
 				$('.dismiss-icon').click(function(e) {
@@ -440,7 +440,7 @@ $.fn.resourceTable = function(params) {
 		if (options.additionalActions) {
 
 			if(options.forceActionsDropdown || (!options.disableActionsDropdown && options.additionalActions.length > 1)) {
-				renderedActions += '<div id="dropdown_' + id + '" class="btn-group"><a class="row-additional dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-cogs"></i></a>';
+				renderedActions += '<div id="dropdown_' + id + '" class="btn-group" data-toggle="tooltip" title="' + getResource('text.otherActions') + '" ><a class="row-additional dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-xl fa-cogs"></i></a>';
 				renderedActions += '<div id="' + id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 				$.each(
 						options.additionalActions,
@@ -525,7 +525,7 @@ $.fn.resourceTable = function(params) {
 
 								renderedActions += '<a class="btn-link row-' 
 												+ act.resourceKey + '" href="#" data-toggle="tooltip" data-placement="top" title="' 
-												+ getResource(act.resourceKey + ".label") + '"><i class="far ' + act.iconClass + '"></i></a>';
+												+ getResource(act.resourceKey + ".label") + '"><i class="far fa-xl ' + act.iconClass + '"></i></a>';
 
 								$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
 								$(document).on('click',
@@ -549,13 +549,14 @@ $.fn.resourceTable = function(params) {
 		}
 
 		if(!options.disableEditView) {
-			renderedActions += '<a class="btn-link row-edit" href="#"><i class="ml-1 far ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
+			renderedActions += '<a data-placement="top" data-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ml-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 			$(document).on(
 				'click',
 				'#' + divName + 'Actions' + id + ' .row-edit',
 				function(e) {
 					e.preventDefault();
+                    $('[data-toggle="tooltip"], .tooltip').tooltip("hide");
 					history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
 					var tr = $(this).closest("tr").get(0);
 					var curRow = $(tr).data('index'); 
@@ -570,7 +571,7 @@ $.fn.resourceTable = function(params) {
 					}
 			});
 			if(options.canCopy) {
-				renderedActions += '<a class="btn-link row-copy" href="#"><i class="ml-1 far fa-copy"></i></a>';
+				renderedActions += '<a data-toggle="tooltip" title="' + getResource('text.copy') + '" class="btn-link row-copy" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
 				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-copy');
 				$(document).on(
 					'click',
@@ -590,7 +591,7 @@ $.fn.resourceTable = function(params) {
 			}
 			
 			if(canDelete) {
-				renderedActions += '<a class="btn-link row-delete" href="#"><i class="ml-1 far fa-trash"></i></a>';
+				renderedActions += '<a data-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link row-delete" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
 	
 				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
 	
@@ -629,7 +630,7 @@ $.fn.resourceTable = function(params) {
 					});
 				});
 			} else {
-				renderedActions += '<a href="#" class="btn-link disabled" aria-disabled="true"><i class="ml-1 far fa-trash"></i></a>';
+				renderedActions += '<a href="#" data-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link disabled" aria-disabled="true"><i class="ml-1 far fa-xl fa-trash"></i></a>';
 			}
 			
 		}
@@ -1215,7 +1216,7 @@ $.fn.resourceTable = function(params) {
 							if (options.additionalActions) {
 
 								if(!options.disableActionsDropdown && options.additionalActions.length > 1) {
-									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="far fa-cogs"></i></a>';
+									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="far fa-xl fa-cogs"></i></a>';
 									renderedActions += '<ul id="' + resource.id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 									$.each(options.additionalActions, function(x, act) {
 										if (act.enabled) {
@@ -1304,7 +1305,7 @@ $.fn.resourceTable = function(params) {
 								});
 								
 								if(options.canCopy) {
-									renderedActions += '<a class="row-copy" href="#"><i class="ml-1 far fa-copy"></i></a>';
+									renderedActions += '<a class="row-copy" data-toggle="tooltip" title="' + getResource('text.copy') + '" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-copy');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function() {
 										if(options.showCopy) {
@@ -1335,7 +1336,7 @@ $.fn.resourceTable = function(params) {
 								}
 								
 								if(canDelete) {
-									renderedActions += '<a class="row-delete" href="#"><i class="ml-1 far fa-trash"></i></a>';
+									renderedActions += '<a class="row-delete" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-delete');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-delete', function() {
 										log("Entering resource delete for id " + resource.id);
@@ -1358,7 +1359,7 @@ $.fn.resourceTable = function(params) {
 										});
 									});
 								} else {
-									renderedActions += '<a class="btn-disabled" href="#"><i class="ml-1 far fa-trash"></i></a>';
+									renderedActions += '<a class="btn-disabled" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
 								}
 							}
 							$('#' + resource.id + 'GridOptions').append(renderedActions);

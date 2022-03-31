@@ -99,7 +99,8 @@ $.ajaxPrefilter(function( options, originalOptions, _jqXHR ) {
 	  
 	});
 
-window.onhashchange = function() {  
+window.onhashchange = function() { 
+    $('[data-toggle="tooltip"], .tooltip').tooltip("hide"); 
 	if($('#pageContent').length > 0) {
 		$('#pageContent').remove();
 		$('#mainContent').show();
