@@ -26,14 +26,14 @@
 			getJSON('currentRealm/userProfile/' + resource.id, null, function(data) {
 				if (data.resource) {
 					if (data.resource.state === 'COMPLETE') {
-						el.append('<div class="row"><span class="col-sm-12 h4"><i class="fa fa-star text-success"></i> <span localize="completedProfile.text"></span></span></div>');
+						el.append('<div class="row"><span class="col-sm-12 h4 pl-0"><i class="fa fa-star text-success"></i> <span localize="completedProfile.text"></span></span></div>');
 						el.append('<div class="row"><span localize="profile.completed"></span> <span>' + new Date(data.resource.completed).format('ddd, dd mmm yyyy HH:MM') + '</span></div>');
 					} else if (data.resource.state === 'NOT_REQUIRED') {
-						el.append('<div class="row"><span class="col-sm-12 h4"><i class="fa fa-star"></i> <span localize="notRequiredProfile.text"></span></span></div>');
+						el.append('<div class="row"><span class="col-sm-12 h4 pl-0"><i class="fa fa-star"></i> <span localize="notRequiredProfile.text"></span></span></div>');
 					} else if (data.resource.state === 'PARTIALLY_COMPLETE') {
-						el.append('<div class="row"><span class="col-sm-12 h4"><i class="fa fa-star-half-stroke text-warning"></i> <span localize="partialProfile.text"></span></span></div>');
+						el.append('<div class="row"><span class="col-sm-12 h4 pl-0"><i class="fa fa-star-half-stroke text-warning"></i> <span localize="partialProfile.text"></span></span></div>');
 					} else {
-						el.append('<div class="row"><span class="col-sm-12 h4"><i class="fa fa-star-exclamation text-danger"></i> <span localize="incompleteProfile.text"></span></span></div>');
+						el.append('<div class="row"><span class="col-sm-12 h4 pl-0"><i class="fa fa-star-exclamation text-danger"></i> <span localize="incompleteProfile.text"></span></span></div>');
 					}
 
 					el2.append('<h4 localize="credentials.text"></h4>');
