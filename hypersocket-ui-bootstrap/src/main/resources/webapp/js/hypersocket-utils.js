@@ -977,7 +977,7 @@ function deleteJSON(url, params, callback, errorCallback) {
 			}
 		}
 		if (xmlRequest.status != 401) {
-			if(hasShutdown) {
+			if(!hasShutdown) {
 				if(xmlRequest.status == 0) {
 					showError(getResource("error.cannotContactServer"));
 					pollForServerContact();
