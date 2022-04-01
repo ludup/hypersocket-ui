@@ -173,8 +173,7 @@ function clearPinnedMenu() {
 function setUpMenuMakePinned(ignoreState) {
 	let pinContainer = $("#menuPin");
 	let menu = $("#main-menu");
-	let container = $("#container");
-	let viewContainer = $("#mainContainer");
+	let container = $("#container"); // contains => main-menu + content (for large screens expand-rest)
 	let content = $("#content");
 	let icon = $("#pin-menu-icon");
 	let burger = $("#burger-toggle");
@@ -192,25 +191,10 @@ function setUpMenuMakePinned(ignoreState) {
 
 	menu.removeClass("sidebar-static-width");
 	
-	menu.removeClass("col-sm-4");
-	menu.removeClass("col-md-3");
-	menu.removeClass("col-lg-2");
-
-	menu.addClass("col-sm-4");
-	menu.addClass("col-md-3");
-	menu.addClass("col-lg-2");
-	
 	menu.addClass("sidebar-static-width");
 	
 	menu.css("display", "block");
 	
-	viewContainer.removeClass("col-md-12");
-	viewContainer.removeClass("col-sm-12");
-
-	viewContainer.removeClass("col-sm-8");
-	viewContainer.removeClass("col-md-9");
-	viewContainer.removeClass("col-lg-10");
-
 	menu.css("position", "sticky");
 	menu.css("top", "0px");
 	menu.css("bottom", "0px");
@@ -222,13 +206,15 @@ function setUpMenuMakePinned(ignoreState) {
 	content.css("margin-left", "0px");
 	content.removeClass("row");
 	
-	content.removeClass("col-sm-8");
-	content.removeClass("col-md-9");
-	content.removeClass("col-lg-10");
+	//content.removeClass("col-sm-8");
+	//content.removeClass("col-md-9");
+	//content.removeClass("col-lg-10");
+	content.removeClass("expand-rest");
 	
-	content.addClass("col-sm-8");
-	content.addClass("col-md-9");
-	content.addClass("col-lg-10");
+	//content.addClass("col-sm-8");
+	//content.addClass("col-md-9");
+	//content.addClass("col-lg-10");
+	content.addClass("expand-rest");
 	
 	container.removeClass("row");
 	container.addClass("row");
@@ -246,7 +232,6 @@ function setUpMenuRemovePinned(ignoreState) {
 	let menu = $("#main-menu");
 	let menuJS = document.getElementById("main-menu");
 	let container = $("#container");
-	let viewContainer = $("#mainContainer");
 	let content = $("#content");
 	let icon = $("#pin-menu-icon");
 	let burger = $("#burger-toggle");
@@ -267,22 +252,13 @@ function setUpMenuRemovePinned(ignoreState) {
 	
 	menu.removeClass("sidebar-static-width");
 
-	viewContainer.removeClass("col-sm-8");
-	viewContainer.removeClass("col-md-9");
-	viewContainer.removeClass("col-lg-10");
-
-	viewContainer.addClass("col-md-12");
-	viewContainer.addClass("col-sm-12");
-
 	menu.css("position", "absolute");
 	menu.css("height", "inherit");
 
 	content.css("margin-left", "-15px");
 	content.addClass("row");
 	
-	content.removeClass("col-sm-8");
-	content.removeClass("col-md-9");
-	content.removeClass("col-lg-10");
+	content.removeClass("expand-rest");
 	
 	container.removeClass("row");
 

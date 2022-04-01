@@ -746,12 +746,14 @@ header .navbar {
 
 .sidebar-text { font-size: 12px;} 
 
+.expand-rest {
+	flex: 1 0 0%;
+}
 .sidebar {
 	background: #e7e7e7;
 	color: #333;
 	position: absolute;
-	width: 220px;
-	pading-right: 10px;
+	width: 235px;
 	top: 51px;
 	bottom: 51px;
 	left: 0px;
