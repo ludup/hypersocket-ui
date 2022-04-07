@@ -440,15 +440,6 @@ $.fn.passwordPolicy = function(data) {
     		}
     		$('#regeneratePassword').attr('data-toggle', 'tooltip');
             $('#regeneratePassword').attr('data-placement', 'top');
-            if(options.alternativeUi) {
-                options.passwordElement.attr('tabindex', '1');
-                if(options.confirmElement) {
-                    options.confirmElement.attr('tabindex', '2');
-                    $('#regeneratePassword').attr('tabindex', '3');
-                } else {
-                    $('#regeneratePassword').attr('tabindex', '2');
-                }
-            }
             $('#regeneratePassword').attr('title', getResource("regeneratePassword.text"));
     		
     		$('#regeneratePassword').off('click').on('click', function(e) {
@@ -504,12 +495,6 @@ $.fn.passwordPolicy = function(data) {
                 $('#copyPassword').attr('data-toggle', 'tooltip');
                 $('#copyPassword').attr('data-placement', 'top');
                 $('#copyPassword').attr('title', getResource("copyCredentials.text"));
-                if(options.alternativeUi) {
-                    options.passwordElement.attr('tabindex', '1');
-                    options.confirmElement.attr('tabindex', '2');
-                    $('#regeneratePassword').attr('tabindex', '3');
-                    $('#copyPassword').attr('tabindex', '4');
-                }
 			
 				var opts = {
 				    text: function(e) {

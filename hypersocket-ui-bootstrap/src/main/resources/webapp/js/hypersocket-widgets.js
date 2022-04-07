@@ -5581,10 +5581,10 @@ $.fn.wizardPage = function(data) {
 	var callback = {
 		skip: function(pages) {
 			/* Find where we currently are in the wizard flow */
-			var active = $('#wizardPages').find('.collapse.in');
+			var active = $('#wizardPages').find('.collapse.show');
 			var page = active.parent().data('page');
 			var idx = active.parent().data('index');
-			
+			console.log('Skip ' + pages + ' from ' + idx);
 			var newIdx = idx + pages;
 			var newPageW = $('#panel' + newIdx).data('page');
 
@@ -5607,7 +5607,11 @@ $.fn.wizardPage = function(data) {
 					
 				return $('#panel' + newIdx);
 			};
-			if(newPageW.onShow) {
+			if(!newPageW) {
+                console.log('No div #panel'  + newIdx + ' page data');
+                doShow();
+            }
+			else if(newPageW.onShow) {
 				if(newPageW.onShow(doShow)) {
 					doShow();
 				};
