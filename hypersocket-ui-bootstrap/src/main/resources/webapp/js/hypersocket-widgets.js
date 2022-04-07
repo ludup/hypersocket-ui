@@ -173,7 +173,7 @@ $.fn.textInput = function(data) {
 		}
 
 		var type = options.inputType != 'text' && options.inputType != 'password' ? 'text' : options.inputType;
-		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" autocomplete="off" value=""'
+		html += '<input type="' + type + '" name="' + name + '" id="' + id + '" class="form-control" autocomplete="new-password" value=""'
 					+ (!options.readOnly && !options.disabled ? '' : 'disabled="disabled" ') + '>';
 
 		if (options.inputType === "password" && options.toggleToText) {

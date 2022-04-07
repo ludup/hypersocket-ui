@@ -14,7 +14,7 @@
 						<label class="col-md-3 control-label requiredField" localize="user.name"></label>
 						<div class="propertyValue col-md-9">
 							<input type="text" class="form-control"
-								 id="userName" maxlength="" name="name" value="">
+								 autocomplete="new-password" id="userName" maxlength="" name="name" value="">
 							<div>
 								<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="user.name.info"></span>
 							</div>
@@ -26,7 +26,7 @@
 						<div class="propertyItem form-group lb-row">
 						<label class="col-md-3 control-label requiredField" localize="label.password"></label>
 						<div class="propertyValue col-md-9">
-							<input type="password" name="password" autocomplete="off" id="userPassword"
+							<input type="password" name="password" autocomplete="new-password" id="userPassword"
 								class="form-control" />
 							<div>
 								<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="password.info"></span>
@@ -36,8 +36,8 @@
 						<div class="propertyItem form-group lb-row">
 							<label class="col-md-3 control-label requiredField" localize="label.confirmPassword"></label>
 							<div class="propertyValue col-md-9">
-								<input type="password" name="confirmPassword" id="userConfirmPassword"
-									class="form-control" autocomplete="off" />
+								<input type="password" autocomplete="new-password" name="confirmPassword" id="userConfirmPassword"
+									class="form-control" />
 								<div>
 									<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="confirmPassword.info"></span>
 								</div>
