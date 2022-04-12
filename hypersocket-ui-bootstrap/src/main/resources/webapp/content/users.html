@@ -790,25 +790,7 @@
 
 									if(!ownerRealm) {
 
-										var addRealmConfig = function() {
-											$('#contentUsers').find('.panel-heading').last().append(
-													'<div class="tableToolbar float-right search"><div><a id="configureUsers" href="#">'
-													+ getResource('configure.remote.text') + '</a></div></div>');
-											$('#configureUsers').click(function(e) {
-												e.preventDefault();
-												$('div[dialog-for="realmsContent"]').resourceDialog('edit', currentRealm);
-											});					
-										};
-										
-										if(menuList.realmAdmin)
-											addRealmConfig();
-										else {
-											getJSON('permissions/verify/realm.update', null, function(data) {
-												if(data.success) {
-													addRealmConfig();								
-												}
-											});
-										}
+
 
 										if('${installed:product}' !== 'LogonBox Directory') {
 											var addRealmConfig = function() {
