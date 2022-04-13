@@ -1538,9 +1538,9 @@ $.fn.samePageResourceView = function(params, params2) {
 			dialog.find('.panel-footer').remove();
 		}
 		var html = '<div class="panel-footer p-2">';
-		html+= '<button id="' + dialog.attr('id') + 'Cancel" + class="btn btn-danger"><i class="far fa-ban"></i>' + getResource('text.cancel') + '</button>';
+        html += '<button id="' + dialog.attr('id') + 'Save" class="btn btn-primary"><i class="far fa-save"></i>' + getResource('text.save') + '</button>';
 		if(save) {
-			html += '<button id="' + dialog.attr('id') + 'Save" + class="btn btn-primary ml-2"><i class="far fa-save"></i>' + getResource('text.save') + '</button>';
+            html+= '<button id="' + dialog.attr('id') + 'Cancel" class="btn btn-danger ml-2"><i class="far fa-ban"></i>' + getResource('text.cancel') + '</button>';
 		}
 		html += '</div>';
 		if(dialog.find('.property-body').length > 0) {
