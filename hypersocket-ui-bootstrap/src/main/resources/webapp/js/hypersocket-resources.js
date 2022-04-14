@@ -514,7 +514,7 @@ $.fn.resourceTable = function(params) {
 			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
 			$(document).on(
 				'click',
-				'#' + divName + 'Actions' + id + ' .row-edit',
+				'tr[data-uniqueid=' + id + '] .row-edit',
 				function(e) {
 					e.preventDefault();
 					history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
