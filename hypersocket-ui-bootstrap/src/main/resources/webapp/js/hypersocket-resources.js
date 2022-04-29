@@ -511,7 +511,7 @@ $.fn.resourceTable = function(params) {
 
 		if(!options.disableEditView) {
 			renderedActions += '<a class="btn btn-info row-edit btn-action" href="#"><i class="fa ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
-			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
+			$(document).off('click', 'tr[data-uniqueid=' + id + '] .row-edit');
 			$(document).on(
 				'click',
 				'tr[data-uniqueid=' + id + '] .row-edit',
