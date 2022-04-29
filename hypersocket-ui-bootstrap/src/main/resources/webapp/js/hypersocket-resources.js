@@ -550,7 +550,7 @@ $.fn.resourceTable = function(params) {
 
 		if(!options.disableEditView) {
 			renderedActions += '<a data-placement="top" data-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ml-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
-			$(document).off('click', '#' + divName + 'Actions' + id + ' .row-edit');
+			$(document).off('click', 'tr[data-uniqueid=' + id + '] .row-edit');
 			$(document).on(
 				'click',
 				'tr[data-uniqueid=' + id + '] .row-edit',
