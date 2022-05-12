@@ -2427,12 +2427,15 @@ form#logonForm {
 	max-width: 20em;
 }
 
-#portalPageMessage {
+.portalPageMessage {
 	font-size: 12px;
 	font-weight: bold;
 	line-height: 14px;
 	text-align: center;
 }
+
+#portalPageMessageContainerTop { padding-bottom: 3em; }
+#portalPageMessageContainerBottom { padding-top: 3em; }
 /* Some Bootstrap 4-like space logical styles */
 /*Margin and Padding helpers*/
 /*xs*/
