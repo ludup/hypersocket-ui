@@ -2048,6 +2048,16 @@ select[multiple] {
     overflow-x: clip;
 }
 
+.portalPageMessage {
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 14px;
+	text-align: center;
+}
+
+#portalPageMessageContainerTop { padding-bottom: 3em; }
+#portalPageMessageContainerBottom { padding-top: 3em; }
+
 .contentSupportTunnel {
 	padding: 10px 25px;
 	overflow: auto;
