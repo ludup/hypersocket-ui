@@ -924,7 +924,7 @@ $.fn.selectButton = function(data) {
 						if(!ignore) {
 							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : he.encode(obj.options[i][obj.nameAttr]);
 							$('#select_' + id).append('<li><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="'
-									+ he.encode(stripNull(obj.options[i][obj.valueAttr])) + '" data-label="' + listItem + '" name="link_' + listItem + '">'
+									+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">'
 									+ listItem + '</a></li>');
 							if (obj.value == obj.options[i][obj.valueAttr]) {
 								selected = obj.options[i];
@@ -1250,11 +1250,11 @@ $.fn.autoComplete = function(data) {
 			$.each(selected, function(idx, obj) {
 				if(options.valueAttr in obj) {
     				if(options.formatter) {
-        				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + he.encode(obj[options.valueAttr]) + '" href="#">'
+        				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
         						+ options.formatter(obj, idx, thisWidget) + '</a></li>');
     				}
     				else {
-        				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' +he.encode(obj[options.valueAttr]) + '" href="#">'
+        				$('#auto_' + id).append('<li><a tabindex="-1" class="optionSelect" data-value="' + obj[options.valueAttr] + '" href="#">'
         						+ (options.nameIsResourceKey ? getResource(obj[options.nameAttr]) : he.encode(obj[options.nameAttr])) + '</a></li>');
     				}
 				}
@@ -1263,6 +1263,7 @@ $.fn.autoComplete = function(data) {
 			});
 			$('#auto_' + id + ' .optionSelect').off('click');
 			$('#auto_' + id + ' .optionSelect').on('click', function(e) {
+				debugger;
 				e.preventDefault();
 				var value = $(this).data('value');
 				var obj = $('#input_' + id).data('map')[value];
