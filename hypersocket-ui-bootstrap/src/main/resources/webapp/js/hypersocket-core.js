@@ -75,6 +75,7 @@ $.ajaxSetup({ error : function(xmlRequest) {
 	if (xmlRequest.status == 401) {
 		var session = $(document).data('session');
 		if(session && !polling) {
+			$("#surveyPopupContainer").remove();
 			clearPinnedMenu();
 			startLogon();
 			showError(getResource("error.sessionTimeout"), false);
@@ -1012,6 +1013,21 @@ function loadComplete(pageChange) {
 	$('#mainContent').data('pageChange', pageChange);
 	$('#mainContainer').stopSpin();
     $('[data-toggle="tooltip"]').tooltip(); 
+    
+	if(!$("#surveyPopupContainer").length) {
+		var popup = $('<div id="surveyPopupContainer" style="position: absolute; bottom: -200px; right: 2em; z-index: 9999; width: 30em;"></div>');
+		$('body').append(popup);
+	    getJSON(basePath + "/api/survey/ready", null, function(data) {
+			if(data.resource) {
+				window.setTimeout(function() {	
+					$(popup).load(basePath + '/ui/content/' + data.resource.resourceKey + '.html');
+      				$(popup).animate({bottom:'60px'},1000, 'easeOutBounce');
+				}, data.resource.popupDelay);
+			}
+		}, function(x) {
+			return false; /* Stop error message */
+		});
+	}
 }
 
 function loadWait() {

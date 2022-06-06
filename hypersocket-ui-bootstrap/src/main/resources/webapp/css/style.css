@@ -955,6 +955,15 @@ header .navbar {
 .navbar-inverse {
 	background-color: #000033;
 	border-color: #000033;
+	color: #fff;
+}
+
+.navbar-inverse a, .navbar-inverse a:visited, .navbar-inverse a:hover, .navbar-inverse a:active {
+	color: #fff;
+}
+
+.navbar-inverse input[type=email], .navbar-inverse input[type=text], .navbar-inverse textarea {
+	color: #333;	
 }
 
 .navbar-header {

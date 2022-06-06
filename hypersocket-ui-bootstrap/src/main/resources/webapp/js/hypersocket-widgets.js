@@ -5513,17 +5513,33 @@ $.fn.wizardPage = function(data) {
 	var options = $.extend(
 			{
 				allowReset: true,
-				allowBack: false
+				allowBack: true,
+				panelClass: 'panel',
+				wizardTitle: true,
+				wizardTitleClass: 'wizardTitle',
+				buttonBarClass: 'buttonBar'
 			}, data);
 
 
+	var resetEl = false;
 	if(options.allowReset) {
-		$(this).append('<div class="propertyItem form-group buttonBar">' +
-						'<a id="resetForm" href="#" localize="text.reset"></a>' +
-					'</div>');
+		resetEl = $('<div class="propertyItem form-group ' + options.buttonBarClass + '"></div>');
+		resetEl.append($('<a id="resetForm" href="#" localize="text.reset"></a>')); 
+		$(this).append(resetEl);
 	}
 
-	$(this).append('<div id="wizardPages" class="panel-group" id="accordion" role="tablist" aria-multiselectable="false"></div>');
+	$(this).append('<div id="wizardPages" class="' + options.panelClass + '-group" id="accordion" role="tablist" aria-multiselectable="false"></div>');
+	
+	var pageChanged = function(page) {
+		if(resetEl && page) {
+			if(page.allowReset) {
+				resetEl.show();
+			}
+			else {
+				resetEl.hide();
+			}
+		}		
+	};
 
 	var callback = {
 		skip: function(pages) {
@@ -5536,6 +5552,7 @@ $.fn.wizardPage = function(data) {
 			var newPageW = $('#panel' + newIdx).data('page');
 
 			var doShow = function() {
+			
 				var dir = newIdx >= idx ? 1 : -1;
 				for(var i = idx ; i != newIdx + dir; i = i + dir) {
 					$('#panel' + i).show();
@@ -5557,9 +5574,11 @@ $.fn.wizardPage = function(data) {
 			if(newPageW.onShow) {
 				if(newPageW.onShow(doShow)) {
 					doShow();
+					pageChanged(newPageW);
 				};
 			} else {
 				doShow();
+				pageChanged(newPageW);
 			}
 		},
 		reset: function() {
@@ -5572,10 +5591,10 @@ $.fn.wizardPage = function(data) {
 
 			$('.nextButton').attr('disabled', false);
 	
-			$('.panel:gt(0)').hide();
+			$('.' + options.panelClass + ':gt(0)').hide();
 			$('.collapse:gt(0)').collapse('hide');
 	
-			$('.panel').first().show();
+			$('.' + options.panelClass + '').first().show();
 			$('.collapse').first().collapse('show');
 		},
 		showError: function(str) {
@@ -5587,9 +5606,12 @@ $.fn.wizardPage = function(data) {
 
 			var page = $.extend({
 				titleText: getResource('text.step') + '. ' + (index+1),
+				allowBack: true,
+				allowReset: true,
 				titleIcon: 'fa-flash',
 				buttonText: 'text.next',
-				buttonIcon: 'fa-forward'
+				buttonIcon: 'fa-forward',
+				buttonClass: 'btn btn-primary'
 			}, obj);
 
 
@@ -5597,41 +5619,45 @@ $.fn.wizardPage = function(data) {
 
 			if(options.useNumberIcons) {
 
-				html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
-				+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
-				+ ' 	<h5 class="panel-title wizardTitle"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i>'
-				+ '<i class="fa fa-stack-1x" style="color: white"><strong>' + (index+1) + '</strong></i></span>'
-				+ '		    <a data-toggle="collapse" data-parent="#accordion"'
-				+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
-				+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
-				+ '	    </h5>'
-				+ '</div>'
-				+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
-				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
-				+ '	<div class="panel-body"><div id="page' + index + '"></div>';
-
-			} else {
-				html = '<div id="panel' + index + '" class="panel panel-default wizardPage" style="display: none">'
-					+ '<div class="panel-heading" role="tab" id="heading' + index + '">'
-					+ ' 	<h4 class="panel-title wizardTitle"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
+				html = '<div id="panel' + index + '" class="' + options.panelClass + ' ' + options.panelClass + '-default wizardPage" style="display: none">'
+				+ '<div class="' + options.panelClass + '-heading" role="tab" id="heading' + index + '">';
+				if(options.wizardTitle) {
+					html = html + ' 	<h5 class="' + options.panelClass + '-title ' + options.wizardTitleClass + '"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i>'
+					+ '<i class="fa fa-stack-1x" style="color: white"><strong>' + (index+1) + '</strong></i></span>'
 					+ '		    <a data-toggle="collapse" data-parent="#accordion"'
 					+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
 					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
-					+ '	    </h4>'
-					+ '</div>'
-					+ '<div id="collapse' + index + '" class="panel-collapse collapse' + (index == 0 ? ' in' : '') + '"'
+					+ '	    </h5>';
+				}
+				html = html + '</div>'
+				+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse collapse' + (index == 0 ? ' in' : '') + '"'
+				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
+				+ '	<div class="' + options.panelClass + '-body"><div id="page' + index + '"></div>';
+
+			} else {
+				html = '<div id="panel' + index + '" class="' + options.panelClass + ' ' + options.panelClass + '-default wizardPage" style="display: none">'
+					+ '<div class="' + options.panelClass + '-heading" role="tab" id="heading' + index + '">';
+				if(options.wizardTitle) {
+					html = html + ' 	<h4 class="' + options.panelClass + '-title ' + options.wizardTitleClass + '"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
+					+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+					+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
+					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
+					+ '	    </h4>';
+				}
+				html = html	+ '</div>'
+					+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse collapse' + (index == 0 ? ' in' : '') + '"'
 					+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
-					+ '	<div class="panel-body"><div id="page' + index + '"></div>';
+					+ '	<div class="' + options.panelClass + '-body"><div id="page' + index + '"></div>';
 			}
 
 			if(page.onNext) {
-				html += '		<div class="propertyItem form-group buttonBar">';
-				if(index > 0) {
+				html += '		<div class="wizardButtons propertyItem form-group ' + options.buttonBarClass + '">';
+				if(index > 0 && options.allowBack && page.allowBack) {
 					html += '			<button id="backButton' + index + '" class="backButton pageState' + index + ' btn btn-danger">'
 					+ '				<i class="fa fa-step-backward"></i><span localize="text.back"></span>'
 					+ '			</button>&nbsp';
 				}
-				html += '			<button id="button' + index + '" class="nextButton pageState' + index + ' btn btn-primary">'
+				html += '			<button id="button' + index + '" class="nextButton pageState' + index + ' ' + page.buttonClass + '">'
 					+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
 					+ '			</button>'
 					+ '		</div>';
@@ -5649,15 +5675,28 @@ $.fn.wizardPage = function(data) {
 
 		});
 
-		$('.wizardPage').first().show();
+		var doShow = function() {
+			$('.wizardPage').first().show();
+		};
+		if(options.steps.length > 0 && options.steps[0].onShow) {
+			if(options.steps[0].onShow(doShow)) {
+				doShow();
+				pageChanged(options.steps[0]);
+			}
+		}
+		else {
+			if(options.steps.length > 0)
+				pageChanged(options.steps[0]);
+			doShow();
+		}
 
 		$(this).localize();
 
 		$('.backButton').click(function() {
 
 			$('.wizardError').remove();
-			var page = $(this).closest('.panel').data('page');
-			var idx = $(this).closest('.panel').data('index');
+			var page = $(this).closest('.' + options.panelClass + '').data('page');
+			var idx = $(this).closest('.' + options.panelClass + '').data('index');
 
 			var previousPage = idx - 1;
 			$('.pageState' + idx).attr('disabled', true);
@@ -5677,9 +5716,11 @@ $.fn.wizardPage = function(data) {
 			if(previousPageW.onShow) {
 				if(previousPageW.onShow(doShow)) {
 					doShow();
+					pageChanged(previousPageW);
 				};
 			} else {
 				doShow();
+				pageChanged(previousPageW);
 			}
 		});
 
@@ -5689,8 +5730,8 @@ $.fn.wizardPage = function(data) {
 				options.done();
 				return;
 			}
-			var page = $(this).closest('.panel').data('page');
-			var idx = $(this).closest('.panel').data('index');
+			var page = $(this).closest('.' + options.panelClass + '').data('page');
+			var idx = $(this).closest('.' + options.panelClass + '').data('index');
 
 			if(page.onNext) {
 				var clicked = false;
@@ -5725,9 +5766,11 @@ $.fn.wizardPage = function(data) {
 						if(nextPageW.onShow) {
 							if(nextPageW.onShow(doShow)) {
 								doShow();
+								pageChanged(nextPageW);
 							};
 						} else {
 							doShow();
+							pageChanged(nextPageW);
 						}
 
 
@@ -5771,10 +5814,10 @@ $.fn.wizardPage = function(data) {
 
 		$('.nextButton').attr('disabled', false);
 
-		$('#wizardPages .panel').hide();
+		$('#wizardPages .' + options.panelClass + '').hide();
 		$('#wizardPages .collapse').collapse('hide');
 
-		$('#wizardPages .panel').first().show();
+		$('#wizardPages .' + options.panelClass + '').first().show();
 		$('#wizardPages .collapse').first().removeAttr('style');
 		$('#wizardPages .collapse').first().collapse('show');
 
