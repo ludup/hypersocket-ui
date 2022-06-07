@@ -728,8 +728,13 @@ $.fn.localize = function() {
 	});
 };
 
-function legacyjQueryReadyFix(_function) {
-	_function();
+function legacyjQueryReadyFix(callback) {
+    if (document.readyState === 'complete' || 
+            (document.readyState !== "loading" && !document.documentElement.doScroll)) {
+        callback();
+    } else {
+        document.addEventListener('DOMContentLoaded', callback);
+    }
 }
 
 function clearError() {
