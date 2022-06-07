@@ -5568,11 +5568,11 @@ $.fn.wizardPage = function(data) {
 				buttonBarClass: 'buttonBar'
 			}, data);
 
-
+    var resetEl = false;
 	if(options.allowReset || options.allowCancel) {
         var bar = $('<div id="actionsBars" class="propertyItem form-group ' + options.buttonBarClass + '"></div>');
         if(options.allowReset)
-            bar.append($('<a id="resetForm" href="#" localize="text.reset"></a>'));
+            bar.append(resetEl = $('<a id="resetForm" href="#" localize="text.reset"></a>'));
         if(options.allowReset && options.allowCancel)
             bar.append($('<span>&nbsp;|&nbsp;</span>'));
         if(options.allowCancel)
