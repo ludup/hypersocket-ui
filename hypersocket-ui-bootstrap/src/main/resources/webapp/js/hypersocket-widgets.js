@@ -381,7 +381,8 @@ $.fn.htmlInput = function(data) {
 		  relative_urls: false,
 		  convert_urls: false,
 		  remove_script_host : false,
-		  readOnly: options.disabled
+		  readOnly: options.disabled,
+		  autoRefresh: true
 	});
 
 	var callback = {
