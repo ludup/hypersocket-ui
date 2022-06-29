@@ -733,7 +733,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			pendingMenus.remove(module.getResourceKey());
 		}
 
-		allMenus.put(module.getResourceKey(), module);
+		
+		MenuRegistration was = allMenus.put(module.getResourceKey(), module);
+		if(was != null) {
+			/* Replacing existing registration. Move the children to it
+			 */
+			module.getModules().addAll(was.getModules());
+		}
+		
 
 		if (parentModule != null) {
 			if (allMenus.containsKey(parentModule)) {
