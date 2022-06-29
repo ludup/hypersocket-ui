@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.hypersocket.config.SystemConfigurationService;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.HttpRequestHandler;
-import com.hypersocket.server.handlers.HttpResponseProcessor;
 
 @Component
 public class RobotsTxtHandler extends HttpRequestHandler {
@@ -39,16 +38,13 @@ public class RobotsTxtHandler extends HttpRequestHandler {
 
 	@Override
 	public void handleHttpRequest(HttpServletRequest request,
-			HttpServletResponse response,
-			HttpResponseProcessor responseProcessor) throws IOException {
+			HttpServletResponse response) throws IOException {
 		
 		response.setContentType("text/plain; charset=UTF-8");
 		
 		byte[] b = configurationService.getValue("server.robotsTxt").getBytes("UTF-8");
 		response.setContentLength(b.length);
 		response.getOutputStream().write(b);
-		
-		responseProcessor.sendResponse(request, response, false);
 	}
 
 	@Override
