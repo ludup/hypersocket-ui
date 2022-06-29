@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.hypersocket.netty.HttpRequestDispatcherHandler;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.server.handlers.impl.RedirectException;
@@ -50,7 +49,7 @@ public class IndexPageFilter implements ContentFilter {
 		
 		String uri = request.getRequestURI();
 
-		if(request.getAttribute(HttpRequestDispatcherHandler.BROWSER_URI) == null && redirectPage!=null && !server.isAliasFor(redirectPage, uri)) {
+		if(request.getAttribute(HypersocketServer.BROWSER_URI) == null && redirectPage!=null && !server.isAliasFor(redirectPage, uri)) {
 			String redirectUri = redirectPage.replace("${apiPath}", server.getApiPath());
 			redirectUri = redirectPage.replace("${uiPath}", server.getUiPath());
 			redirectUri = redirectPage.replace("${basePath}", server.getBasePath());

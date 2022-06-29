@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.HttpRequestHandler;
-import com.hypersocket.server.handlers.HttpResponseProcessor;
 
 @Component
 public class RedirectHandler extends HttpRequestHandler {
@@ -51,8 +50,7 @@ public class RedirectHandler extends HttpRequestHandler {
 
 	@Override
 	public void handleHttpRequest(HttpServletRequest request,
-			HttpServletResponse response,
-			HttpResponseProcessor responseProcessor) throws IOException {
+			HttpServletResponse response) throws IOException {
 
 		String hash = "";
 		int idx;
@@ -61,7 +59,6 @@ public class RedirectHandler extends HttpRequestHandler {
 		}
 		response.setHeader(HttpHeaders.LOCATION, server.getDefaultRedirectPath(request, response) + hash);
 		response.sendError(HttpStatus.SC_MOVED_TEMPORARILY);
-		responseProcessor.sendResponse(request, response, false);
 
 	}
 	
