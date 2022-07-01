@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import com.hypersocket.i18n.I18NService;
 import com.hypersocket.server.HypersocketServer;
-import com.hypersocket.server.handlers.HttpResponseProcessor;
 import com.hypersocket.server.handlers.impl.ClasspathContentHandler;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.server.handlers.impl.ContentHandler;
@@ -191,9 +190,8 @@ public class UserInterfaceContentHandler implements ContentHandler {
 
 	@Override
 	public void handleHttpRequest(HttpServletRequest request,
-			HttpServletResponse response,
-			HttpResponseProcessor responseProcessor) throws IOException {
-		actualHandler.handleHttpRequest(request, response, responseProcessor);
+			HttpServletResponse response) throws IOException {
+		actualHandler.handleHttpRequest(request, response);
 	}
 
 	@Override
