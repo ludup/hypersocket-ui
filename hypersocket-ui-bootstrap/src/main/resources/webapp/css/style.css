@@ -978,7 +978,7 @@ header .navbar {
 }
 
 .navbar-inverse a, .navbar-inverse a:visited, .navbar-inverse a:hover, .navbar-inverse a:active {
-	color: #fff;
+	/* color: #fff; */
 }
 
 .navbar-inverse input[type=email], .navbar-inverse input[type=text], .navbar-inverse textarea {
@@ -1532,10 +1532,6 @@ span.input-group-addon .dropdown-toggle {
 .activityInfo {
 	background-color: #fcfcfc;
 	overflow: auto;
-}
-
-.draggableWidget {
-    margin-bottom: 20px;	
 }
 
 .small-overview-widget {
@@ -2332,10 +2328,6 @@ select[multiple] {
 @keyframes sk-circleFadeDelay {
   0%, 39%, 100% { opacity: 0; }
   40% { opacity: 1; } 
-}
-
-.dropzoneColumn {
-	padding-top: 25px;
 }
 
 .dragablePlaceholder {

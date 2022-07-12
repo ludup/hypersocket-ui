@@ -48,7 +48,7 @@
 									}
 								});
 					}else{
-						$('#feedSmall').prepend('<div id="' + value.contentPath + '" class="small-overview-widget"></div>');
+						$('#feedSmall').prepend('<div id="' + value.contentPath + '" class="small-overview-widget mb-3"></div>');
 						$('#' + value.contentPath).load(uiPath + '/content/' + value.contentPath + '.html',
 								function(){
 									$(this).prepend('<h4><span>' + getResource(value.resourceKey) + '</span></h4>');						
