@@ -217,7 +217,7 @@
 					$('#tabUsersContent').multipleSearchInput();
 					$('#tabGroupsContent').multipleSearchInput();
 					$('#tabRealmsContent').multipleSelect();
-					$('#tabPermissionsContent').multipleSelect({
+					$('#tabPermissionsContent').twoColumnMultipleSelect({
 						nameIsResourceKey : true,
 						nameAttr : 'resourceKey',
 						selectedIsObjectList: true,
@@ -340,7 +340,7 @@
 					});
 					
 					getJSON('roles/permissions/' + resource.id, null, function(data) {
-						$('#tabPermissionsContent').multipleSelect({
+						$('#tabPermissionsContent').twoColumnMultipleSelect({
 	 						selected : data.resources,
 	 						disabled: resource.allPermissions || readOnly,
 	 						selectAllIfEmpty: resource.allPermissions

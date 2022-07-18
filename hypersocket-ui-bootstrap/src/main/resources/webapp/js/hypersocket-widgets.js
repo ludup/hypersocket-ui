@@ -1639,6 +1639,496 @@ $.fn.textDropdown = function(data) {
 	}));
 }
 
+
+/**
+ * Shows 2 columns of multi select list boxes so that values can be moved between them.
+ */
+$.fn.twoColumnMultipleSelect = function(data) {
+	
+	var id = checkElementHasId($(this)).attr('id');
+	var multipleSelectDisabled = false;
+	var backingList = null;
+	var $that = $(this);
+
+	var getKeyFromMapLikeObject = function (object) {
+		let key = null;
+		for (let k in object) { key = k; break;}
+		return key;
+	}
+	
+	// add: from => ExcludedSelect to => IncludedSelect
+	// remove: from => IncludedSelect to => ExcludedSelect
+	var moveElements = function(id, select, toSelect, all) {
+		
+		from = '#' + select.attr('id');
+		to = '#' + toSelect.attr('id');
+		
+		let options = $that.widget().options();
+		
+		if(!$that.data('widget').isEnabled()){
+			return;
+		}
+	
+		let selectedItems = [];
+		let elementsToSelect = all ? 'option' : 'option:selected';
+		$(from + ' ' + elementsToSelect)
+			.each((i, el) =>  selectedItems.push({key: el.value, value: el.textContent}));
+		
+		selectedItems.forEach((v, i) => { 
+			select.find('option[value="' + v.key + '"]').remove();
+			if (backingList) {
+				if (from.endsWith("ExcludedSelect")) {
+					delete backingList[v.key];
+				} else {
+					backingList[v.key] = v.value;
+				}
+			}
+		});
+		
+		let existingItems = [];
+		$(to + ' option')
+			.each((i, el) =>  existingItems.push({key: el.value, value: el.textContent}));
+			
+		existingItems = existingItems.concat(selectedItems);
+		
+		if (options.allowOrdering) {
+			existingItems.sort((a, b) => a.value.toString().localeCompare(b.value));
+		}
+		
+		toSelect.find('option').remove();
+		existingItems.forEach((v, i) => {
+			toSelect.append('<option id="' + id + 'Element' + he.encode(v.key) + '" value="' + he.encode(v.key) + '"><span>' + he.encode(v.value) + '</span></option>');	
+		});
+		
+		if ($that.data('widget').options().changed) {
+			$that.data('widget').options().changed(callback);
+		}
+	};
+	
+	var actOnElementInList = function(element, list){
+		
+		let options = $that.widget().options();
+		
+		var newElement = element.clone();
+		
+		if (options.allowOrdering) {
+			var placeFound = false;
+			$('#' + id + list).find('option').each(function(index, toActElement){
+				if($(newElement).find('span').text() < $(toActElement).find('span').text()){
+					$(toActElement).before($(newElement));
+					placeFound = true;
+					return false;
+				}
+			});
+			if(!placeFound){
+				$('#' + id + list).append(newElement);
+			}
+		} else {
+			$('#' + id + list).append(newElement);
+		}
+		
+		element.remove();
+	}
+	
+	var addElement = function(element){
+		actOnElementInList(element, 'IncludedSelect');
+	}
+
+	var removeElement = function(element){
+		actOnElementInList(element, 'ExcludedSelect');
+	}
+
+	if ($(this).data('created')) {
+		
+		options = $(this).widget().options();
+		
+		var options = $.extend(options, data);
+		if ((options.selected && options.selected.length == 0) && options.selectAllIfEmpty) {
+			var allExcludedOptions = $('#' + id + 'ExcludedSelect option');
+			if (allExcludedOptions.length > 0) {
+				allExcludedOptions.each(function(index, element){
+					addElement($(element));
+				});
+			}
+		} else {
+			var allIncludedOptions = $('#' + id + 'IncludedSelect option');
+			if (allIncludedOptions.length > 0) {
+				allIncludedOptions.each(function(index, element){
+					removeElement($(element));
+				});
+			}
+		}
+		var select = $('#' + id + 'ExcludedSelect');
+		var toSelect = $('#' + id + 'IncludedSelect');
+
+		if (options.selected) {
+			$.each(options.selected,function(idx, id) {
+				var selectedOpt;
+				if (options.selectedIsObjectList) {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
+				} else {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
+				}
+				if (selectedOpt.length) {
+					addElement(selectedOpt);
+				}
+			});
+		}
+
+		if (data && data.insert) {
+			$.each(data.insert,function(idx, obj) {
+				newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '" class="' + id + 'includedDraggable"><span>'
+						+ (options.nameIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined
+								? he.encode(obj[options.nameAttr]) : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + '</span></option>');
+				removeElement(newElement);
+			});
+		}
+
+		if (data && data.remove) {
+			$.each(data.remove,function(idx, obj) {
+				if (options.selectedIsObjectList) {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(obj[options.valueAttr]) + '"]');
+					if (!selectedOpt) {
+						selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + he.encode(obj[options.valueAttr]) + '"]');
+					}
+				} else {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(obj) + '"]');
+					if (!selectedOpt) {
+						selectedOpt = $('#' + toSelect.attr('id') + ' option[value="' + he.encode(obj) + '"]');
+					}
+				}
+				if (selectedOpt && selectedOpt.length) {
+					$(selectedOpt).remove();
+				}
+			});
+		}
+
+		if (data && data.selected) {
+			$.each(data.selected,function(idx, id) {
+				var selectedOpt;
+				if (options.selectedIsObjectList) {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
+				} else {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
+				}
+				if (selectedOpt && selectedOpt.length) {
+					addElement(selectedOpt);
+				}
+			});
+		}
+
+		if(data && data.disabled || options.disabled) {
+			$(this).widget().disable();
+		} else {
+			$(this).widget().enable();
+		}
+		return;
+
+	} else {
+		var options = $
+				.extend(
+					{ valueAttr : 'id',
+						nameAttr : 'name',
+						nameIsResourceKey : false,
+						selectAllIfEmpty : false,
+						selectedIsObjectList : false,
+						disabled : false,
+						valuesIsObjectList: true,
+						resourceKeyTemplate: '{0}',
+						excludedLabelResourceKey: 'text.excluded',
+						includedLabelResourceKey: 'text.included',
+						addAllResourceKey: 'text.add.all',
+						removeAllResourceKey: 'text.remove.all',
+						addAllInfoResourceKey: 'text.add.all.info',
+						removeAllInfoResourceKey: 'text.remove.all.info',
+						addSingleInfoResourceKey: 'text.add.single.info',
+						removeSingleInfoResourceKey: 'text.remove.single.info',
+						isArrayValue: true,
+						allowOrdering: true,
+						getUrlData: function(data) {
+							return data;
+						}
+				}, data);
+				
+		multipleSelectDisabled = options.disabled;		
+
+
+		var callback = {
+				setValue: function(val) {
+					if (val) {
+						var select = $('#' + id + 'ExcludedSelect');
+						var toSelect = $('#' + id + 'IncludedSelect');
+						$.each(
+							splitFix(val),
+							function(idx, id) {
+								var selectedOpt;
+								if (options.selectedIsObjectList) {
+									selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
+								} else {
+									selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
+								}
+								if (selectedOpt) {
+									toSelect.append($(selectedOpt).clone());
+									$(selectedOpt).remove();
+								}
+							});
+					}
+				},
+				getValue: function() {
+					result = new Array();
+
+					$('#' + id + 'IncludedSelect option').each(function() {
+						result.push(he.decode($(this).attr('value')));
+					});
+					return result;
+				},
+				reset: function() {
+					$('#' + id).multipleSelect();
+				},
+				disable: function() {
+					multipleSelectDisabled = true;
+					$(".multiSelect").each((i, el) => {
+						$(el).attr("disabled", "disabled");
+					});
+				},
+				enable: function() {
+					multipleSelectDisabled = false;
+					$(".multiSelect").each((i, el) => {
+						$(el).removeAttr("disabled");
+					});
+				},
+				isEnabled: function() {
+					//return !$('#' + id + 'IncludedSelect').attr('disabled');
+					return !multipleSelectDisabled;
+				},
+				options: function() {
+					return options;
+				},
+				getInput: function() {
+					return $('#' + id);
+				},
+	 			clear: function() {
+	 				$('#' + id).multipleSelect();
+	 			}
+		};
+
+		$('#' + id + 'Excluded').remove();
+		$('#' + id + 'Included').remove();
+
+		var name = (options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id ;
+
+		//$(this).addClass('container-fluid');
+		
+		// in some templates div with same id is provided explicitly hence a check e.g. roles.html
+		if ($('#' + id).length == 0) {
+			$(this).append('<div class="lb-row" id="' + id + '"></div>');
+		} else {
+			if (!$('#' + id).hasClass('lb-row')) {
+				$('#' + id).addClass('lb-row')
+			}	
+		}
+		
+		var searchBox = '<div id="search_box_container_'+ id +'" class="lb-row col-12 mb-3 pl-0 pr-0"><div class="input-group input-group-sm multiSelectSearchWidth">'
+			+ '<input type="text" class="form-control multiSelect" ' + (options.disabled ? ' disabled="disabled"' : '') + ' autocomplete="off" placeholder="Search" id="search_input_' + id + '" value="" >';
+    
+    	searchBox += '<span id="click_' + id + '" class="input-group-append">'
+		 +  '<a class="input-group-text" href="#"><i id="spin_' + id + '" class="far fa-search"></i></a></span></div></div>';
+		
+		$('#' + id).append(searchBox);
+		
+		let searchBoxInput = $('#search_input_' + id);
+		
+		$('#search_box_container_' + id).on('keyup', searchBoxInput, function(e) {
+			let select = $('#' + id + 'ExcludedSelect');
+	 		let value = searchBoxInput.val();
+	 		
+	 		let fillValues = function (backingList, value) {
+				let filtered = [];
+				for (let v in backingList) {
+					if (value === "__No__Filter__" || backingList[v].startsWith(value)) {
+						let o = {};
+						o[v] =  backingList[v];
+						filtered.push(o);
+					}
+				}
+				
+				filtered.sort((a, b) => {
+					let aKey = getKeyFromMapLikeObject(a);
+					let bKey = getKeyFromMapLikeObject(b);
+					return a[aKey].toString().localeCompare(b[bKey]);
+				});
+				
+				filtered.forEach((value, i) => {
+					let key = getKeyFromMapLikeObject(value);
+					select.append('<option id="' + id + 'Element' + he.encode(key) + '" value="' + he.encode(key) + '"><span>' + he.encode(value[key]) + '</span></option>');
+				});
+			}
+			
+			if (!backingList) {
+				backingList = {};
+				$('#' + id + 'ExcludedSelect option').each((i, el) =>  { 
+					backingList[el.value] = el.textContent;
+		 		});
+			}
+			
+			select.find('option').remove();
+			
+	 		if (value && value.trim().length > 0) {
+				fillValues(backingList, value);
+			} else {
+				fillValues(backingList, "__No__Filter__");
+			}
+			
+ 		});
+ 	
+		$('#' + id).append('<div id="' + id + 'SelectContainer" class="lb-row multiSelectContainerRow"></div>');
+		let slectContainer = $('#' + id + 'SelectContainer');
+		
+		slectContainer.append('<div id="' + id + 'ExcludedList" style="overflow: auto" class="multiSelectExcludeList pl-0"><label>' + getResource(options.excludedLabelResourceKey) + '</label><div class="" id="' + id
+				+ 'Excluded"></div></div>');
+
+		$('#' + id + 'Excluded').append(
+					'<select multiple class="multiSelectList multiSelect"' + (!options.disabled ? '' : ' disabled="disabled" ') + 'id="' + id
+						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"/>');
+		
+		$('#' + id + 'Excluded').append('<div class="pt-1"><button id="' + id + 'AddAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.addAllInfoResourceKey) + '" class="btn btn-sm multiselectAddAllButton multiSelect ml-1 mb-1">' + getResource(options.addAllResourceKey) + '</button></div>');				
+
+		slectContainer.append('<div class="multiSelectButtonList" id="' + id + 'MultiSelectButtons">  <div class="d-flex justify-content-center pt-lg-4" style="height: 100%;"><div class="align-self-center mt-3 mb-3 mt-lg-0 mb-lg-0"><span class="pt-0 pb-0 pt-lg-2 pb-lg-2 pl-2 pr-2 pl-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectAdd" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.addSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-plus" style="margin-top:0px;margin-right:0px;font-weight: bolder;"></i></button></span><span class="pt-0 pb-0 pt-lg-2 pb-lg-2 pl-2 pr-2 pl-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectRemove" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.removeSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-minus" style="margin-top:0px;margin-right:0px;font-weight: bolder;"></i></button></span></div></div></div>');
+
+		slectContainer.append('<div id="' + id + 'IncludedList" class="multiSelectIncludeList"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="" id="' + id
+				+ 'Included"></div></div>');
+
+		$('#' + id + 'Included').append('<select multiple class="multiSelectList multiSelect"' + (!options.disabled ? '' : ' disabled="disabled" ')
+				+ 'id="' + id + 'IncludedSelect" name="IncludedSelect_' + name + '"/>');
+				
+		$('#' + id + 'Included').append('<div class="pt-1"><button id="' + id + 'RemoveAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.removeAllInfoResourceKey) + '" class="btn btn-sm multiselectRemoveAllButton multiSelect ml-1 mb-1">' + getResource(options.removeAllResourceKey) + '</button></div>');			
+
+		var select = $('#' + id + 'ExcludedSelect');
+		var toSelect = $('#' + id + 'IncludedSelect');
+		
+		let addButton = $('#' + id + 'MultiSelectAdd');
+		let removeButton = $('#' + id + 'MultiSelectRemove');
+		let addAllButton = $('#' + id + 'AddAll');
+		let removeAllButton = $('#' + id + 'RemoveAll');
+		
+		addButton.click(function(e) {
+			e.preventDefault();
+			moveElements(id, select, toSelect, false);
+		});
+		
+		removeButton.click(function (e) {
+			e.preventDefault();
+			moveElements(id, toSelect, select, false);
+		});
+		
+		addAllButton.click(function (e) {
+			e.preventDefault();
+			moveElements(id, select, toSelect, true);
+		});
+		
+		removeAllButton.click(function(e) {
+			e.preventDefault();
+			moveElements(id, toSelect, select, true);
+		});
+	}
+
+	if(options.useVariablesAsValues) {
+		options.options = options.variables;
+		options.valuesIsObjectList = false;
+	}
+
+	if (options.options || options.values) {
+		if(options.values) {
+			options.options = options.values;
+		}
+		$.each(options.options,
+			function(idx, obj) {
+				var newElement;
+				if(options.valuesIsObjectList) {
+					newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
+							? (getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+								: getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
+
+				} else {
+					newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + obj + '"><span>' + (options.nameIsResourceKey
+							? (getResourceNoDefault(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+								: getResourceNoDefault(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
+				}
+				if(options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0)){
+					addElement(newElement);
+				}else{
+					removeElement(newElement);
+				}
+		});
+
+		if (options.selected) {
+			$.each(options.selected, function(idx, id) {
+				var selectedOpt;
+				if (options.selectedIsObjectList) {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
+				} else {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
+				}
+				if (selectedOpt && selectedOpt.length) {
+					addElement(selectedOpt);
+				}
+			});
+		}
+		
+	} else if (options.url) {
+		getJSON(
+			options.url,
+			null,
+			function(data) {
+				$.each(options.getUrlData(data),
+					function(idx, obj) {
+					var newElement;
+					if(options.valuesIsObjectList) {
+						newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '"  value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
+								? (getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+										: getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
+					} else {
+						newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '"  value="' + he.encode(obj) + '"><span>' + (options.nameIsResourceKey
+								? (getResourceNoDefault(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+									: getResourceNoDefault(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
+					}
+					
+					if((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty){
+						addElement(newElement);
+					}else{
+						removeElement(newElement);
+					}
+				});
+				
+
+				if (options.selected) {
+					$.each(options.selected, function(idx, id) {
+						var selectedOpt;
+						if (options.selectedIsObjectList) {
+							selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
+						} else {
+							selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
+						}
+						if (selectedOpt && selectedOpt.length) {
+							addElement(selectedOpt);
+						}
+					});
+				}
+			});
+	}
+
+	if(options.disabled) {
+		callback.disable();
+	}
+	
+
+	$(this).data('created', true);
+	$(this).data('widget', callback);
+	$(this).addClass('widget');
+	return callback;
+
+};
+
 /**
  * Shows 2 list boxes so that values can be moved between them.
  */

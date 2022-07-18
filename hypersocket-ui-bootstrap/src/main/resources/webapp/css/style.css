@@ -220,6 +220,8 @@ button.row-additional::after {display: none;}
 	margin: 25px auto;
 }
 
+.multiSelectList {width: 100%}
+
 .excludedList {
 	width: 100%;
 	padding-bottom: 20px;
@@ -2498,5 +2500,52 @@ For < 576px
     
 	button#logonButton {
 	    width: 100%;
+	}
+}
+
+.multiselectAddAllButton, .multiselectRemoveAllButton{
+	font-size: .78rem
+}
+@media (min-width: 992px) {
+	.multiSelectContainerRow {
+		width: 100%;	
+	}
+	.multiSelectSearchWidth {
+		flex: 0 0 45%;
+		max-width: 45%;
+	}
+	.multiSelectExcludeList {
+		flex: 0 0 45%;
+		max-width: 45%;
+	}
+	.multiSelectButtonList {
+		flex: 0 0 10%;
+		max-width: 10%;
+	}
+	.multiSelectIncludeList {
+		flex: 0 0 45%;
+		max-width: 45%;
+	}
+}
+
+@media (max-width: 991px) {
+	.multiSelectContainerRow {
+		width: 100%;	
+	}
+	.multiSelectSearchWidth {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+	.multiSelectExcludeList {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+	.multiSelectButtonList {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+	.multiSelectIncludeList {
+		flex: 0 0 100%;
+		max-width: 100%;
 	}
 }
