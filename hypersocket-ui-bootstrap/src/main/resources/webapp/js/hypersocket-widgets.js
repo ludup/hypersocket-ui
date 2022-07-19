@@ -1647,8 +1647,51 @@ $.fn.twoColumnMultipleSelect = function(data) {
 	
 	var id = checkElementHasId($(this)).attr('id');
 	var multipleSelectDisabled = false;
-	var backingList = null;
 	var $that = $(this);
+	
+	var doSearch = function(searchBoxInput) {
+		
+		let select = $('#' + id + 'ExcludedSelect');
+ 		let value = searchBoxInput.val();
+ 		
+ 		let fillValues = function (backingList, value) {
+			let filtered = [];
+			for (let v in backingList) {
+				if (value === "__No__Filter__" || backingList[v].startsWith(value)) {
+					let o = {};
+					o[v] =  backingList[v];
+					filtered.push(o);
+				}
+			}
+			
+			filtered.sort((a, b) => {
+				let aKey = getKeyFromMapLikeObject(a);
+				let bKey = getKeyFromMapLikeObject(b);
+				return a[aKey].toString().localeCompare(b[bKey]);
+			});
+			
+			filtered.forEach((value, i) => {
+				let key = getKeyFromMapLikeObject(value);
+				select.append('<option id="' + id + 'Element' + he.encode(key) + '" value="' + he.encode(key) + '"><span>' + he.encode(value[key]) + '</span></option>');
+			});
+		}
+		
+		if (!$that.data('backingList')) {
+			$that.data('backingList', {});
+			let backingList = $that.data('backingList');
+			$('#' + id + 'ExcludedSelect option').each((i, el) =>  { 
+				backingList[el.value] = el.textContent;
+	 		});
+		}
+		
+		select.find('option').remove();
+		
+ 		if (value && value.trim().length > 0) {
+			fillValues($that.data('backingList'), value);
+		} else {
+			fillValues($that.data('backingList'), "__No__Filter__");
+		}
+	}
 
 	var getKeyFromMapLikeObject = function (object) {
 		let key = null;
@@ -1664,6 +1707,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		to = '#' + toSelect.attr('id');
 		
 		let options = $that.widget().options();
+		let backingList = $that.data('backingList');
 		
 		if(!$that.data('widget').isEnabled()){
 			return;
@@ -1740,7 +1784,18 @@ $.fn.twoColumnMultipleSelect = function(data) {
 
 	if ($(this).data('created')) {
 		
+		debugger;
+		
 		options = $(this).widget().options();
+		
+		let searchBoxInput = $('#search_input_' + id);
+		
+		searchBoxInput.val('');
+		
+		if ($(this).data('backingList')) {
+			doSearch(searchBoxInput);
+			$(this).data('backingList', null);
+		}
 		
 		var options = $.extend(options, data);
 		if ((options.selected && options.selected.length == 0) && options.selectAllIfEmpty) {
@@ -1839,10 +1894,12 @@ $.fn.twoColumnMultipleSelect = function(data) {
 						includedLabelResourceKey: 'text.included',
 						addAllResourceKey: 'text.add.all',
 						removeAllResourceKey: 'text.remove.all',
+						resetResourceKey: 'text.reset.tcms',
 						addAllInfoResourceKey: 'text.add.all.info',
 						removeAllInfoResourceKey: 'text.remove.all.info',
 						addSingleInfoResourceKey: 'text.add.single.info',
 						removeSingleInfoResourceKey: 'text.remove.single.info',
+						resetInfoResourceKey: 'text.reset.tcms.info',
 						isArrayValue: true,
 						allowOrdering: true,
 						getUrlData: function(data) {
@@ -1908,7 +1965,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 					return $('#' + id);
 				},
 	 			clear: function() {
-	 				$('#' + id).multipleSelect();
+	 				$('#' + id).twoColumnMultipleSelect();
 	 			}
 		};
 
@@ -1939,46 +1996,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		let searchBoxInput = $('#search_input_' + id);
 		
 		$('#search_box_container_' + id).on('keyup', searchBoxInput, function(e) {
-			let select = $('#' + id + 'ExcludedSelect');
-	 		let value = searchBoxInput.val();
-	 		
-	 		let fillValues = function (backingList, value) {
-				let filtered = [];
-				for (let v in backingList) {
-					if (value === "__No__Filter__" || backingList[v].startsWith(value)) {
-						let o = {};
-						o[v] =  backingList[v];
-						filtered.push(o);
-					}
-				}
-				
-				filtered.sort((a, b) => {
-					let aKey = getKeyFromMapLikeObject(a);
-					let bKey = getKeyFromMapLikeObject(b);
-					return a[aKey].toString().localeCompare(b[bKey]);
-				});
-				
-				filtered.forEach((value, i) => {
-					let key = getKeyFromMapLikeObject(value);
-					select.append('<option id="' + id + 'Element' + he.encode(key) + '" value="' + he.encode(key) + '"><span>' + he.encode(value[key]) + '</span></option>');
-				});
-			}
-			
-			if (!backingList) {
-				backingList = {};
-				$('#' + id + 'ExcludedSelect option').each((i, el) =>  { 
-					backingList[el.value] = el.textContent;
-		 		});
-			}
-			
-			select.find('option').remove();
-			
-	 		if (value && value.trim().length > 0) {
-				fillValues(backingList, value);
-			} else {
-				fillValues(backingList, "__No__Filter__");
-			}
-			
+			doSearch(searchBoxInput);			
  		});
  	
 		$('#' + id).append('<div id="' + id + 'SelectContainer" class="lb-row multiSelectContainerRow"></div>');
@@ -1993,7 +2011,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		
 		$('#' + id + 'Excluded').append('<div class="pt-1"><button id="' + id + 'AddAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.addAllInfoResourceKey) + '" class="btn btn-sm multiselectAddAllButton multiSelect ml-1 mb-1">' + getResource(options.addAllResourceKey) + '</button></div>');				
 
-		slectContainer.append('<div class="multiSelectButtonList" id="' + id + 'MultiSelectButtons">  <div class="d-flex justify-content-center pt-lg-4" style="height: 100%;"><div class="align-self-center mt-3 mb-3 mt-lg-0 mb-lg-0"><span class="pt-0 pb-0 pt-lg-2 pb-lg-2 pl-2 pr-2 pl-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectAdd" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.addSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-plus" style="margin-top:0px;margin-right:0px;font-weight: bolder;"></i></button></span><span class="pt-0 pb-0 pt-lg-2 pb-lg-2 pl-2 pr-2 pl-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectRemove" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.removeSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-minus" style="margin-top:0px;margin-right:0px;font-weight: bolder;"></i></button></span></div></div></div>');
+		slectContainer.append('<div class="multiSelectButtonList" id="' + id + 'MultiSelectButtons">  <div class="d-flex justify-content-center" style="height: 100%;"><div class="align-self-center mt-3 mb-3 mt-lg-0 mb-lg-0"><span class="pt-0 pb-0 pt-lg-2 pb-lg-2 pl-2 pr-2 pl-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectAdd" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.addSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-plus" style="margin-top:0px;margin-right:0px;font-weight: bolder;"></i></button></span><span class="pt-0 pb-0 pt-lg-2 pb-lg-2 pl-2 pr-2 pl-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectRemove" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.removeSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-minus" style="margin-top:0px;margin-right:0px;font-weight: bolder;"></i></button></span></div></div></div>');
 
 		slectContainer.append('<div id="' + id + 'IncludedList" class="multiSelectIncludeList"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="" id="' + id
 				+ 'Included"></div></div>');
@@ -2003,6 +2021,10 @@ $.fn.twoColumnMultipleSelect = function(data) {
 				
 		$('#' + id + 'Included').append('<div class="pt-1"><button id="' + id + 'RemoveAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.removeAllInfoResourceKey) + '" class="btn btn-sm multiselectRemoveAllButton multiSelect ml-1 mb-1">' + getResource(options.removeAllResourceKey) + '</button></div>');			
 
+		$('#' + id).append('<div id="' + id + 'ResetContainer" class="lb-row multiSelectContainerRow"></div>');
+		let resetContainer = $('#' + id + 'ResetContainer');
+		resetContainer.append('<div class="pt-1"><button id="' + id + 'Reset" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.resetInfoResourceKey) + '" class="btn btn-sm multiselectResetButton multiSelect ml-1 mb-1">' + getResource(options.resetResourceKey) + '</button></div>');
+
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
 		
@@ -2010,6 +2032,8 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		let removeButton = $('#' + id + 'MultiSelectRemove');
 		let addAllButton = $('#' + id + 'AddAll');
 		let removeAllButton = $('#' + id + 'RemoveAll');
+		let resetButton = $('#' + id + 'Reset');
+		let $that = $(this);
 		
 		addButton.click(function(e) {
 			e.preventDefault();
@@ -2029,6 +2053,11 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		removeAllButton.click(function(e) {
 			e.preventDefault();
 			moveElements(id, toSelect, select, true);
+		});
+		
+		resetButton.click(function(e) {
+			e.preventDefault();
+			$that.widget().clear();
 		});
 	}
 
@@ -2122,6 +2151,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 	}
 	
 
+	$(this).data('backingList', null);
 	$(this).data('created', true);
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
