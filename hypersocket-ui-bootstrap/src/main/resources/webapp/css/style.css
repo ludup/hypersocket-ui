@@ -2506,6 +2506,8 @@ For < 576px
 .multiselectAddAllButton, .multiselectRemoveAllButton, multiselectResetButton {
 	font-size: .78rem
 }
+.multiSelectButtonsContainer {height: 100% !important;}
+.multiSelectButtonIcon {margin-top:0px !important;margin-right:0px !important;font-weight: bolder;}
 @media (min-width: 992px) {
 	.multiSelectContainerRow {
 		width: 100%;	
