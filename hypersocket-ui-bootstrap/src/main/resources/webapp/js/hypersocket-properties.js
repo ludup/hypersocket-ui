@@ -266,6 +266,7 @@ function validateInputType(type){
 		case 'dropdown':
 		case 'password' :
 		case 'multipleSelect' :
+		case 'twoColumnMultipleSelect' :
 		case 'multipleTextInput' :
 		case 'multipleSearchInput' :
 		case 'multipleNamePairInput' :
@@ -1283,6 +1284,22 @@ $.fn.propertyPage = function(opts) {
 											});
 											
 											widget = $('#' + tab + '_value' + inputId).multipleSelect(widgetOptions);
+												
+										}else if (obj.inputType == 'twoColumnMultipleSelect') {
+											var url;
+											if(obj.url && options.resource) {
+												url = obj.url.replace('{id}', options.resource);
+											} else { 
+												url = obj.url;
+											}
+											
+											var widgetOptions = $.extend(obj, {
+												selected : splitFix(obj.value), 
+												isArrayValue: true,
+												url: url
+											});
+											
+											widget = $('#' + tab + '_value' + inputId).twoColumnMultipleSelect(widgetOptions);
 												
 										} else if (obj.inputType == 'multipleTextInput') {
 											
