@@ -2,9 +2,12 @@
 	<div id="deleteAccountsDialog" class="modal fade">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-				<!-- dialog body -->
+                <div class="modal-header lb-modal-header-text-reverse">
+                    <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" localize="deleteAccounts.title"></h4>
+                </div>
 				<div class="modal-body">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<div id="deleteAccountsInfo" localize="deleteAccounts.info"></div>
 					<div id="removeRemotesContainer" class="propertyItem form-group lb-row">
 						<label class="col-md-6 control-label"
