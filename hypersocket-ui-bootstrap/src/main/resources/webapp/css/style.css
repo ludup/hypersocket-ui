@@ -1098,7 +1098,7 @@ dropdown-item.active, .dropdown-item:active {
 }
 
 .panel .panel-heading {
-	line-height: 40px;
+	line-height: 39px;
 	padding: 0 15px;
 	min-height: 40px;
 	-webkit-border-radius: 0px;
