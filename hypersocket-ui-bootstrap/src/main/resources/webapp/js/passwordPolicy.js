@@ -436,7 +436,7 @@ $.fn.passwordPolicy = function(data) {
     					+ getResource("suggestedPassword.text")
     					+ '</strong></span></div>');
     
-                passwordGeneratorContent.append('<div id="generatedPassword" class="mt-4"><div id="passwordHolder" class="mb-4"><h5 id="suggestedPassword" class="text-success"></h5></div><a href="javascript:" class="mr-3" id="regeneratePassword"><i class="far fa-2x fa-refresh"></i></a></div>');
+                passwordGeneratorContent.append('<div id="generatedPassword" class="mt-3"><div id="passwordHolder" class="mb-4"><h5 id="suggestedPassword" class="text-success"></h5></div><a href="javascript:" class="mr-3" id="regeneratePassword"><i class="far fa-2x fa-refresh"></i></a></div>');
     		}
     		$('#regeneratePassword').attr('data-toggle', 'tooltip');
             $('#regeneratePassword').attr('data-placement', 'top');
@@ -463,13 +463,12 @@ $.fn.passwordPolicy = function(data) {
                     }
                 });     
             });            
-            passwordGeneratorContent.append('<div id="passwordStrength" class="mt-4"></div>');
+            passwordGeneratorContent.append('<div class="mt-2"><label>' + getResource('password.generate.length') + ':</label><span id="passwordStrength"></span></div>');
             
-            $('#passwordStrength').sliderInput({
+            $('#passwordStrength').spinnerInput({
                 min: policy.minimumLength,
                 max: policy.maximumLength,
                 value: policy.minimumLength,
-                labelResourceKey: 'passwordStrength.label',
                 changed: function(widget) {
                     $('#regeneratePassword').click();
                 }

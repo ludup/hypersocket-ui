@@ -281,6 +281,7 @@ function validateInputType(type){
 		case 'xml' :
 		case 'sql' :
 		case 'slider' :
+        case 'spinner' :
 		case 'namePairs' :
 		case 'namePairsAutoComplete' :
 		case 'autoCompleteNamePairs' :
@@ -1356,7 +1357,11 @@ $.fn.propertyPage = function(opts) {
 
 											widget = $('#' + tab + '_value' + inputId).sliderInput(obj);
 
-										} else {
+										} else if (obj.inputType == 'spinner') {
+
+                                            widget = $('#' + tab + '_value' + inputId).spinnerInput(obj);
+
+                                        } else {
 											var func = $('#' + tab + '_value' + inputId)[obj.inputType];
 											if(func) {
 												if(obj.isArrayValue) {

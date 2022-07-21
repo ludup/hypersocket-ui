@@ -4044,7 +4044,6 @@ $.fn.imageInput = function(options) {
 	return callback;
 };
 
-
 $.fn.sliderInput = function(options) {
 
 	var id = checkElementHasId($(this)).attr('id') + "SliderInput";
@@ -4112,6 +4111,61 @@ $.fn.sliderInput = function(options) {
 	$(this).data('widget', callback);
 	$(this).addClass('widget');
 	return callback;
+};
+
+$.fn.spinnerInput = function(options) {
+
+    var id = checkElementHasId($(this)).attr('id') + "SpinnerInput";
+    var obj = $.extend(options,
+            {   min: parseFloat(options.min),
+                max: parseFloat(options.max),
+                step: options.step ? parseFloat(options.step) : 1,
+                value: parseFloat(options.value)
+            });
+
+    var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
+    var spinner = $('<input class="form-control" min="' + obj.min + '" max="' + obj.max + '" id="' + id + '" data-spinner-id="slider_' + id + '" name="spinner_' + name + '" value="' + obj.value + '" type="number">');
+    $(this).append(spinner);
+    var callback = {
+            setValue: function(val) {
+                $('#' + id).val(val);
+            },
+            getValue: function() {
+                return $('#' + id).val();
+            },
+            reset: function() {
+                $('#' + id).val(parseFloat(obj.value));
+            },
+            disable: function() {
+                $('#' + id).attr('disabled', true);
+            },
+            enable: function() {
+                $('#' + id).attr('disabled', false);
+            },
+            options: function() {
+                return obj;
+            },
+            getInput: function() {
+                return $('#' + id);
+            },
+            clear: function() {
+                $('#' + id).val(parseFloat(obj.value));
+            }
+    };
+
+    spinner.on('change', function(ev){
+           if(options.changed) {
+               options.changed(callback)
+           }
+    });
+
+    if(options.disabled || options.readOnly) {
+        callback.disable();
+    }
+
+    $(this).data('widget', callback);
+    $(this).addClass('widget');
+    return callback;
 };
 
 $.fn.namePairInput = function(data) {
