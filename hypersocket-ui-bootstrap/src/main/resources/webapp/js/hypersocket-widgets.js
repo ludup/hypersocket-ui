@@ -5006,7 +5006,7 @@ $.fn.logoInput = function(data) {
 
 
 	var uploadHtml =  '<div class="row">'
-			+ 	'	<div id="' + id + '" class="col-8 logo-uploader" style="padding-left: 0px;">'
+			+ 	'	<div id="' + id + '" class="col-8 logo-uploader">'
 			+	'		<input type="file" id="' + id + 'File"/>'
 			+	'	</div>'
 			+	'	<div class="propertyValue col-4 dialogActions">'
@@ -5026,7 +5026,7 @@ $.fn.logoInput = function(data) {
 			+	'	<img src="' + imagePath + '" id="' + id + 'Preview"/>'
 			+	'</div>'
 			+ 	generatorHtml
-			+	'<div class="logo-separator help-block">'
+			+	'<div class="logo-separator help-block mt-3 mb-3">'
 			+	'	<span id="' + id + 'Separator">' + getResource('logo.separator')  + '</span>'
 			+	'</div>'
 			+	uploadHtml
