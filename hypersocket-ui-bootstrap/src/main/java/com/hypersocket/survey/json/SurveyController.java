@@ -52,8 +52,6 @@ public class SurveyController extends AuthenticatedController {
 			} catch (Exception e) {
 				log.error("Failed to submit survey. ", e);
 				return new ResourceStatus<>(false, e.getMessage());
-			} finally {
-				clearAuthenticatedContext();
 			}
 		});
 	}
@@ -71,8 +69,6 @@ public class SurveyController extends AuthenticatedController {
 				return new ResourceStatus<>(r);
 			} catch (Exception e) {
 				return new ResourceStatus<>(false, e.getMessage());
-			} finally {
-				clearAuthenticatedContext();
 			}
 		});
 
@@ -93,8 +89,6 @@ public class SurveyController extends AuthenticatedController {
 				return new ResourceStatus<>(r);
 			} catch (Exception e) {
 				return new ResourceStatus<>(false, e.getMessage());
-			} finally {
-				clearAuthenticatedContext();
 			}
 		});
 	}

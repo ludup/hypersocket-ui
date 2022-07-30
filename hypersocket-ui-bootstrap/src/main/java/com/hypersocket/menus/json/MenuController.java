@@ -25,6 +25,7 @@ import com.hypersocket.auth.json.AuthenticatedController;
 import com.hypersocket.auth.json.AuthenticationRequired;
 import com.hypersocket.auth.json.AuthenticationRequiredButDontTouchSession;
 import com.hypersocket.auth.json.UnauthorizedException;
+import com.hypersocket.context.AuthenticatedContext;
 import com.hypersocket.json.ResourceList;
 import com.hypersocket.json.ResourceStatus;
 import com.hypersocket.menus.AbstractTableAction;
@@ -58,59 +59,42 @@ public class MenuController extends AuthenticatedController {
 	@RequestMapping(value = "menus", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
 	public MenuList getModules(HttpServletRequest request,
 			HttpServletResponse response) throws AccessDeniedException,
 			UnauthorizedException, SessionTimeoutException {
 
-		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request));
-		try {
-			return getModuleList(request, null);
-		} finally {
-			clearAuthenticatedContext();
-		}
+		return getModuleList(request, null);
 	}
 
 	@AuthenticationRequired
 	@RequestMapping(value = "menu/{resourceKey}", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
 	public MenuList getScopedModules(HttpServletRequest request,
 			HttpServletResponse response, @PathVariable String resourceKey) throws AccessDeniedException,
 			UnauthorizedException, SessionTimeoutException {
 
-		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request));
-		try {
-			return getModuleList(request, resourceKey);
-		} finally {
-			clearAuthenticatedContext();
-		}
+		return getModuleList(request, resourceKey);
 	}
 	
 	@AuthenticationRequired
 	@RequestMapping(value = "menus/{resourceKey}", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
 	public ResourceStatus<Menu> getModules(HttpServletRequest request,
 			HttpServletResponse response, @PathVariable String resourceKey) throws AccessDeniedException,
 			UnauthorizedException, SessionTimeoutException {
 
-		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request));
-		try {
-			return new ResourceStatus<Menu>(menuService.getMenu(resourceKey));
-		} finally {
-			clearAuthenticatedContext();
-		}
+		return new ResourceStatus<Menu>(menuService.getMenu(resourceKey));
 	}
 
 	private MenuList getModuleList(HttpServletRequest request, String resourceKey)
 			throws UnauthorizedException, AccessDeniedException,
 			SessionTimeoutException {
 
-		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request));
 		try {
 
 			MenuList list = new MenuList(menuService.getMenus(resourceKey));
@@ -140,8 +124,6 @@ public class MenuController extends AuthenticatedController {
 		} catch(Throwable e) { 
 			log.error("Menu error", e);
 			throw e;
-		} finally {
-			clearAuthenticatedContext();
 		}
 	}
 
@@ -149,39 +131,27 @@ public class MenuController extends AuthenticatedController {
 	@RequestMapping(value = "menus/tableActions/{table}", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
 	public ResourceList<AbstractTableAction> getTableActions(
 			HttpServletRequest request, HttpServletResponse respone,
 			@PathVariable String table) throws UnauthorizedException,
 			SessionTimeoutException {
 
-		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request));
-
-		try {
-			return new ResourceList<AbstractTableAction>(
-					menuService.getTableActions(table));
-		} finally {
-			clearAuthenticatedContext();
-		}
+		return new ResourceList<AbstractTableAction>(
+				menuService.getTableActions(table));
 	}
 	
 	@AuthenticationRequiredButDontTouchSession
 	@RequestMapping(value = "menus/badges", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
 	public ResourceList<Badge> getBadges(
 			HttpServletRequest request, HttpServletResponse respone) throws UnauthorizedException,
 			SessionTimeoutException {
 
-		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request));
-
-		try {
-			return new ResourceList<Badge>(
-					menuService.getCurrentBadges());
-		} finally {
-			clearAuthenticatedContext();
-		}
+		return new ResourceList<Badge>(
+				menuService.getCurrentBadges());
 	}
 
 	@AuthenticationRequired
@@ -189,19 +159,13 @@ public class MenuController extends AuthenticatedController {
 			produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
 	public ResourceList<Tab> getTabRegistration(
 			HttpServletRequest request, HttpServletResponse respone,
 			@PathVariable String tab) throws UnauthorizedException,
 			SessionTimeoutException {
 
-		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request));
-
-		try {
-			return new ResourceList<Tab>(
-					menuService.getExtendedInformationTab(tab));
-		} finally {
-			clearAuthenticatedContext();
-		}
+		return new ResourceList<Tab>(
+				menuService.getExtendedInformationTab(tab));
 	}
 }

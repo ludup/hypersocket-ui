@@ -16,6 +16,7 @@ import com.hypersocket.auth.json.AuthenticationRequired;
 import com.hypersocket.auth.json.UnauthorizedException;
 import com.hypersocket.client.ClientDownloadService;
 import com.hypersocket.client.DownloadFile;
+import com.hypersocket.context.AuthenticatedContext;
 import com.hypersocket.json.ResourceList;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.session.json.SessionTimeoutException;
@@ -30,17 +31,11 @@ public class ClientDownloadController extends AuthenticatedController {
 	@RequestMapping(value = "downloads", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
 	public ResourceList<DownloadFile> getModules(HttpServletRequest request,
 			HttpServletResponse response) throws AccessDeniedException,
 			UnauthorizedException, SessionTimeoutException {
-
-		setupAuthenticatedContext(sessionUtils.getSession(request),
-				sessionUtils.getLocale(request));
-		try {
-			return new ResourceList<DownloadFile>(downloadService.getDownloads());
-		} finally {
-			clearAuthenticatedContext();
-		}
+		return new ResourceList<DownloadFile>(downloadService.getDownloads());
 	}
 }
 
