@@ -1,0 +1,59 @@
+<div id="stopPlugin"></div>
+<div id="stopPluginDialog" class="modal" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header lb-modal-header-text-reverse">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 localize="stopPlugin.label"></h4>
+			</div>
+			<div class="modal-body">
+				<div class="propertyItem form-group lb-row">
+					<label for="file" class="col-md-12 control-label"
+						   localize="stopPlugin.info"></label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="far fa-ban"></i><span localize="text.cancel"></span></button>
+				<button id="stopPluginInstance" type="button" class="btn btn-primary"><i class="far fa-power-off"></i><span localize="stopPlugin.stop"></span></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+function canStop(plugin) {
+	return plugin.state === 'STARTED';
+}
+
+legacyjQueryReadyFix(function() {
+	
+	$('#stopPluginDialog').localize();
+	$('#stopPluginInstance').click(function(e) {
+		startSpin($('#stopPluginInstance i'));
+		e.preventDefault();
+		removeMessage();
+		var plugin = $('#stopPluginDialog').data('plugin');
+		var callback = $('#stopPluginDialog').data('callback');
+		getJSON('plugins/stop/' + plugin.id, null, function(data) {
+			if(data.success) {
+				showInformation(data.message);
+				callback(plugin);
+				$('#stopPluginDialog').modal('hide');
+			} else {
+				showError(data.message);
+			}
+			stopSpin($('#stopPluginInstance i'));
+		});
+	});
+	
+	$('#stopPlugin').data('action', function(resource, callback) {
+		$('#stopPluginDialog').data('plugin', resource);
+		$('#stopPluginDialog').data('callback', callback);
+		$('#stopPluginDialog').find('h4').text(getResource('stopPlugin.title').format(resource.id));
+		$('#stopPluginDialog').modal('show');
+	});
+});
+
+
+</script>

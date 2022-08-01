@@ -105,6 +105,8 @@ public interface MenuService extends AuthenticatedService {
 
 	boolean registerMenu(MenuRegistration module, String parentModule);
 
+	void deregisterMenu(String resourceKey);
+
 	void registerTableAction(String table, AbstractTableAction action);
 
 	List<AbstractTableAction> getTableActions(String table);

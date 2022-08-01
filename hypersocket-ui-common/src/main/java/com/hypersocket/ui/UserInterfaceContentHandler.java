@@ -23,11 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hypersocket.i18n.I18NService;
+import com.hypersocket.plugins.ExtensionsPluginManager;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.ClasspathContentHandler;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.server.handlers.impl.ContentHandler;
-import com.hypersocket.server.handlers.impl.ContentHandlerImpl;
 import com.hypersocket.server.handlers.impl.FileContentHandler;
 import com.hypersocket.server.handlers.impl.RedirectException;
 import com.hypersocket.utils.FileUtils;
@@ -51,8 +51,11 @@ public class UserInterfaceContentHandler implements ContentHandler {
 	
 	@Autowired
 	private I18NService i18nService; 
+
+	@Autowired
+	private ExtensionsPluginManager pluginManager;
 	
-	private ContentHandlerImpl actualHandler;
+	private ClasspathContentHandler actualHandler;
 
 	public UserInterfaceContentHandler() {
 	}
@@ -60,18 +63,18 @@ public class UserInterfaceContentHandler implements ContentHandler {
 	@PostConstruct
 	public void postConstruct() {
 
-		if (Boolean.getBoolean("hypersocket.development")) {
-
-			if (log.isInfoEnabled()) {
-				log.info("Installing UI handler [development mode]");
-			}
-			
-			loadFileHandler();
-			
-			if(actualHandler == null) {
-				log.warn("Running as developer mode, but didn't find any webapp sources from the discovered CLASSPATH. Attempting to fall-back to loading webapp from a Jar");
-			}
-		} 
+//		if (Boolean.getBoolean("hypersocket.development")) {
+//
+//			if (log.isInfoEnabled()) {
+//				log.info("Installing UI handler [development mode]");
+//			}
+//			
+//			loadFileHandler();
+//			
+//			if(actualHandler == null) {
+//				log.warn("Running as developer mode, but didn't find any webapp sources from the discovered CLASSPATH. Attempting to fall-back to loading webapp from a Jar");
+//			}
+//		} 
 
 		if (log.isInfoEnabled()) {
 			log.info("Installing UI handler [runtime mode]");
@@ -96,6 +99,22 @@ public class UserInterfaceContentHandler implements ContentHandler {
 		
 		server.addCompressablePath(server.getUiPath());
 		server.registerHttpHandler(actualHandler);
+		
+		for(var v : pluginManager.getPlugins()) {
+			actualHandler.addClassLoader(v.getPluginClassLoader());
+		}
+		pluginManager.addPluginStateListener(evt -> {
+			switch(evt.getPluginState()) {
+			case STARTED:
+				actualHandler.addClassLoader(evt.getPlugin().getPluginClassLoader());
+				break;
+			case STOPPED:
+				actualHandler.removeClassLoader(evt.getPlugin().getPluginClassLoader());
+				break;
+			default:
+				break;
+			}
+		});
 	}
 	
 
@@ -107,49 +126,49 @@ public class UserInterfaceContentHandler implements ContentHandler {
 		};
 	}
 
-	private void loadFileHandler() {
-		
-		StringTokenizer t = new StringTokenizer(System.getProperty("java.class.path"), File.pathSeparator);
-		
-		FileContentHandler handler = null;
-		
-		while(t.hasMoreTokens()) {
-			String path = FileUtils.checkEndsWithNoSlash(t.nextToken());
-			if(path.endsWith(File.separator + "target" + File.separator + "classes")) {
-				
-				path = path.substring(0, path.length()- 15);
-				
-				File webappFolder = new File(path, "src" + File.separator
-						+ "main" + File.separator + "resources"
-						+ File.separator + "webapp");
-				if(log.isDebugEnabled()) {
-					log.debug("Checking workspace folder " + webappFolder.getPath());
-				}
-				if (webappFolder.exists()) {
-					if(log.isDebugEnabled()) {
-						log.debug("Adding JQuery UI content folder " + webappFolder.getPath());
-					}
-					if(handler==null) {
-						handler = new FileContentHandler("webapp", 1000,
-								webappFolder) {
-							public String getBasePath() {
-								return FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath());
-							}
-							@Override
-							public boolean getDisableCache() {
-								return false;
-							}
-						};
-					} else {
-						handler.addBaseDir(webappFolder);
-					}
-				}
-			}
-		}
-
-		actualHandler = handler;
-		
-	}
+//	private void loadFileHandler() {
+//		
+//		StringTokenizer t = new StringTokenizer(System.getProperty("java.class.path"), File.pathSeparator);
+//		
+//		FileContentHandler handler = null;
+//		
+//		while(t.hasMoreTokens()) {
+//			String path = FileUtils.checkEndsWithNoSlash(t.nextToken());
+//			if(path.endsWith(File.separator + "target" + File.separator + "classes")) {
+//				
+//				path = path.substring(0, path.length()- 15);
+//				
+//				File webappFolder = new File(path, "src" + File.separator
+//						+ "main" + File.separator + "resources"
+//						+ File.separator + "webapp");
+//				if(log.isDebugEnabled()) {
+//					log.debug("Checking workspace folder " + webappFolder.getPath());
+//				}
+//				if (webappFolder.exists()) {
+//					if(log.isDebugEnabled()) {
+//						log.debug("Adding JQuery UI content folder " + webappFolder.getPath());
+//					}
+//					if(handler==null) {
+//						handler = new FileContentHandler("webapp", 1000,
+//								webappFolder) {
+//							public String getBasePath() {
+//								return FileUtils.checkStartsWithNoSlash(server.getUserInterfacePath());
+//							}
+//							@Override
+//							public boolean getDisableCache() {
+//								return false;
+//							}
+//						};
+//					} else {
+//						handler.addBaseDir(webappFolder);
+//					}
+//				}
+//			}
+//		}
+//
+//		actualHandler = handler;
+//		
+//	}
 
 	@Override
 	public String getResourceName() {

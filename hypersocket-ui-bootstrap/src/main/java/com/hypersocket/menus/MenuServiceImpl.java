@@ -716,6 +716,18 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	}
 
 	@Override
+	public synchronized void deregisterMenu(String resourceKey) {
+		pendingMenus.remove(resourceKey);
+		var was = allMenus.remove(resourceKey);
+		if(was != null) {
+			for(var mr : allMenus.entrySet()) {
+				mr.getValue().getMenus().remove(was);
+			}
+		}
+		rootMenus.remove(resourceKey);
+	}
+
+	@Override
 	public synchronized boolean registerMenu(MenuRegistration module, String parentModule) {
 
 		/**

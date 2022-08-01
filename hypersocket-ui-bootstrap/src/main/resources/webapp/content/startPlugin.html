@@ -1,0 +1,26 @@
+<div id="startPlugin"></div>
+<script type="text/javascript">
+
+function canStart(plugin) {
+	return plugin.state !== 'STARTED';
+}
+
+legacyjQueryReadyFix(function() {
+	
+	
+	$('#startPlugin').data('action', function(plugin, callback) {
+		getJSON('plugins/start/' + plugin.id, null, function(data) {
+			if(data.success) {
+				showInformation(data.message);
+				callback(plugin);
+				$('#startPluginDialog').modal('hide');
+			} else {
+				showError(data.message);
+			}
+			stopSpin($('#startPluginInstance i'));
+		});
+	});
+});
+
+
+</script>

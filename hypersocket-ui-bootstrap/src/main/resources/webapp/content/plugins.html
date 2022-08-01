@@ -1,0 +1,160 @@
+<div id="contentPlugins">
+	<div class="modal" id="addPluginForm" tabindex="-1" role="dialog"
+		dialog-for="contentPlugins">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header lb-modal-header-text-reverse">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="propertyItem form-group">
+						<label class="col-xs-3 control-label" localize="plugin.id.label"></label>
+						<div class="propertyValue col-xs-9">
+							<input type="text" class="form-control" id="resourceName"
+								maxlength="" name="resourceName" value="">
+							<div>
+								<span class="help-block" localize="plugin.id.info"></span>
+							</div>
+						</div>
+					</div>
+
+					<div id="pluginProperties"></div>
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+	<div id="additionalActions"></div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#contentPlugins').localize();
+
+		$('#pluginProperties').propertyPage({
+			url : 'plugins/template',
+			showButtons : false,
+			useTemplates : true,
+			canUpdate : currentMenu.canUpdate
+		});
+		getJSON('menus/tableActions/pluginActions', null, function(data) {
+
+			var actions = new Array();
+
+			if (data.resources.length > 0) {
+				$.each(data.resources, function(idx, action) {
+					var div = action.resourceKey + 'Div';
+					$('#additionalActions').append('<div id="' + div + '"></div>');
+					loadContent('#' + div, uiPath + '/content/' + action.url + '.html');
+					actions.push({
+						resourceKey : action.resourceKey,
+						iconClass : action.iconClass,
+						action : function(resource, callback) {
+							if ($('#' + action.resourceKey).data('action')) {
+								$('#' + action.resourceKey).data('action')(resource, callback);
+							}
+						},
+						enabled : true,
+						enableFunction : action.enableFunction,
+						displayFunction : action.displayFunction
+					});
+				});
+			}
+
+			$('#contentPlugins').ajaxResourcePage({
+				id : "Plugin",
+				tableUrl : "plugins/table",
+				title : getResource("plugins.label"),
+				icon : 'fa-plug',
+				resourceUrl : "plugins/plugin",
+				fields : [
+						{
+							name : "id",
+							sortable : true
+						}, {
+							name : "description",
+							sortable : true
+						}, {
+							name : "version",
+							sortable : true
+						}, {
+							name : "provider",
+							sortable : true,
+						}, {
+							name : 'license',
+							sortable : true,
+						}, {
+							name : 'state',
+							sortable : true,
+						}
+				],
+				resourceKey : "plugin",
+				additionalActions: actions,
+				canCopy : false,
+				canCreate : currentMenu.canCreate,
+				canDelete : currentMenu.canDelete,
+				canView : currentMenu.canUpdate,
+				canUpdate : false,
+				validate : function() {
+
+					if ($('#resourceName').val() == '') {
+						showError("error.nameRequired");
+						return false;
+					}
+
+					if (!$('#pluginProperties').validateProperties()) {
+						showError("error.correctValidationErrors");
+						return false;
+					}
+
+					return true;
+				},
+				clearDialog : function(create) {
+
+					$('#resourceId').val('');
+					$('#resourceName').val('');
+
+					$('#pluginProperties').clearProperties();
+					if (create) {
+						$('#pluginProperties').propertyPage({
+							url : 'plugins/template/',
+							showButtons : false,
+							canUpdate : currentMenu.canUpdate,
+							useTemplates : true
+						});
+					}
+
+					$('.tabPropertiesTab').first().trigger('click');
+				},
+				createResource : function() {
+					resource = new Object();
+					resource.id = $('#resourceId').val();
+					resource.name = $('#resourceName').val();
+
+					$('#pluginProperties').saveProperties(true, function(items) {
+						resource.properties = items;
+					});
+
+					return resource;
+				},
+				displayResource : function(resource, readOnly) {
+
+					$('#resourceId').val(resource.id);
+					$('#resourceName').val(resource.name);
+
+					$('#pluginProperties').propertyPage({
+						url : 'plugins/properties/' + resource.id,
+						showButtons : false,
+						canUpdate : currentMenu.canUpdate && !readOnly
+					});
+
+				},
+				complete : function() {
+					loadComplete();
+				}
+			});
+		});
+
+	});
+</script>
