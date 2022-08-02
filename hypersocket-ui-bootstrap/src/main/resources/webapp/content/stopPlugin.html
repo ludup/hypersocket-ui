@@ -39,11 +39,12 @@ legacyjQueryReadyFix(function() {
 			if(data.success) {
 				showInformation(data.message);
 				callback(plugin);
-				$('#stopPluginDialog').modal('hide');
+				window.location.reload();
 			} else {
 				showError(data.message);
 			}
 			stopSpin($('#stopPluginInstance i'));
+			$('#stopPluginDialog').modal('hide');
 		});
 	});
 	

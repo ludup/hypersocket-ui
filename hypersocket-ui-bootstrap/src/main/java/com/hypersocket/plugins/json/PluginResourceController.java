@@ -1,19 +1,27 @@
 package com.hypersocket.plugins.json;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hypersocket.auth.json.AuthenticationRequired;
 import com.hypersocket.auth.json.ResourceController;
@@ -26,13 +34,16 @@ import com.hypersocket.menus.AbstractTableAction;
 import com.hypersocket.menus.MenuRegistration;
 import com.hypersocket.menus.MenuService;
 import com.hypersocket.permissions.AccessDeniedException;
+import com.hypersocket.plugins.ExtensionsPluginManager;
 import com.hypersocket.plugins.PluginResource;
 import com.hypersocket.plugins.PluginResourceColumns;
 import com.hypersocket.plugins.PluginResourcePermission;
 import com.hypersocket.plugins.PluginResourceService;
 import com.hypersocket.plugins.PluginResourceServiceImpl;
 import com.hypersocket.properties.PropertyCategory;
+import com.hypersocket.realm.Realm;
 import com.hypersocket.realm.UserPermission;
+import com.hypersocket.resource.ResourceException;
 import com.hypersocket.session.json.SessionTimeoutException;
 import com.hypersocket.tables.BootstrapTableResult;
 import com.hypersocket.tables.Column;
@@ -42,6 +53,7 @@ import com.hypersocket.tables.json.BootstrapTablePageProcessor;
 
 @Controller
 public class PluginResourceController extends ResourceController {
+	private final static Logger LOG = LoggerFactory.getLogger(PluginResourceController.class);
 
 	private static final String ACTIONS_PLUGINS = "pluginActions";
 	@Autowired
@@ -56,7 +68,7 @@ public class PluginResourceController extends ResourceController {
 				PluginResourcePermission.READ,
 				PluginResourcePermission.CREATE,
 				PluginResourcePermission.UPDATE,
-				PluginResourcePermission.DELETE), MenuService.MENU_RESOURCES);
+				PluginResourcePermission.DELETE), "extensions");
 		
 		menuService.registerTableAction(ACTIONS_PLUGINS,
 				new AbstractTableAction("stopPlugin", "fa-power-off",
@@ -67,6 +79,21 @@ public class PluginResourceController extends ResourceController {
 				new AbstractTableAction("startPlugin", "fa-check",
 						"startPlugin", UserPermission.UPDATE, 0, "canStart",
 						"canStart"));
+		
+		menuService.registerTableAction(ACTIONS_PLUGINS,
+				new AbstractTableAction("disablePlugin", "fa-stop",
+						"disablePlugin", UserPermission.UPDATE, 0, "canStop",
+						"canDisable"));
+		
+		menuService.registerTableAction(ACTIONS_PLUGINS,
+				new AbstractTableAction("enablePlugin", "fa-play",
+						"enablePlugin", UserPermission.UPDATE, 0, "canEnable",
+						"canEnable"));
+		
+		menuService.registerTableAction(ACTIONS_PLUGINS,
+				new AbstractTableAction("uninstallPlugin", "fa-trash",
+						"uninstallPlugin", UserPermission.DELETE, 0, "canUninstall",
+						"canUninstall"));
 	}
 
 	@AuthenticationRequired
@@ -143,6 +170,28 @@ public class PluginResourceController extends ResourceController {
 	}
 	
 	@AuthenticationRequired
+	@RequestMapping(value = "plugins/enable/{id}", method = RequestMethod.GET, produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
+	public ResourceStatus<PluginResource> enable(
+			HttpServletRequest request, @PathVariable String id)
+			throws Exception {
+		return new ResourceStatus<>(resourceService.enable(resourceService.getResourceById(id)));
+	}
+	
+	@AuthenticationRequired
+	@RequestMapping(value = "plugins/disable/{id}", method = RequestMethod.GET, produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
+	public ResourceStatus<PluginResource> disable(
+			HttpServletRequest request, @PathVariable String id)
+			throws Exception {
+		return new ResourceStatus<>(resourceService.disable(resourceService.getResourceById(id)));
+	}
+	
+	@AuthenticationRequired
 	@RequestMapping(value = "plugins/stop/{id}", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
@@ -173,6 +222,38 @@ public class PluginResourceController extends ResourceController {
 			HttpServletResponse response, @PathVariable("id") String id)
 			throws Exception {
 		return resourceService.getResourceById(id);
+	}
+
+	@AuthenticationRequired
+	@RequestMapping(value = "plugins/upload", method = RequestMethod.POST, produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
+	public ResourceStatus<PluginResource> upload(
+			HttpServletRequest request, HttpServletResponse response,
+			@RequestPart(value = "file") MultipartFile file)
+			throws AccessDeniedException, UnauthorizedException,
+			SessionTimeoutException, ResourceException {
+
+		try {
+
+			PluginResource newResource;
+			Realm realm = sessionUtils.getCurrentRealm(request);
+			newResource = resourceService.upload(realm, file.getInputStream(), file.getName());
+
+			return new ResourceStatus<PluginResource>(newResource,
+					I18N.getResource(sessionUtils.getLocale(request),
+							PluginResourceService.RESOURCE_BUNDLE,
+							"plugin.uploaded.info", newResource
+									.getName()));
+
+		} catch (Throwable e) {
+			LOG.error("Unexpected error", e);
+			return new ResourceStatus<PluginResource>(false, I18N.getResource(
+					sessionUtils.getLocale(request),
+					PluginResourceService.RESOURCE_BUNDLE,
+					"error.unexpectedError", e.getMessage()));
+		}
 	}
 
 //	@AuthenticationRequired
@@ -217,32 +298,29 @@ public class PluginResourceController extends ResourceController {
 //		}
 //	}
 
-	@SuppressWarnings("unchecked")
 	@AuthenticationRequired
-	@RequestMapping(value = "plugins/plugin/{id}", method = RequestMethod.DELETE, produces = { "application/json" })
+	@RequestMapping(value = "plugins/uninstall/{id}", method = RequestMethod.DELETE, produces = { "application/json" })
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
 	@AuthenticatedContext
-	public ResourceStatus<PluginResource> deleteResource(
-			HttpServletRequest request, HttpServletResponse response,
-			@PathVariable("id") String id) throws Exception {
+	public ResourceStatus<PluginResource> uninstall(
+			HttpServletRequest request, @PathVariable String id)
+			throws Exception {
+		var r = resourceService.getResourceById(id);
+		resourceService.uninstall(r, true);
+		return new ResourceStatus<>(r);
+	}
 
-		var resource = resourceService.getResourceById(id);
-
-		if (resource == null) {
-			return new ResourceStatus<PluginResource>(false,
-					I18N.getResource(sessionUtils.getLocale(request),
-							PluginResourceServiceImpl.RESOURCE_BUNDLE,
-							"error.invalidResourceId", id));
-		}
-
-		var preDeletedName = resource.getId();
-		resourceService.deleteResource(resource);
-
-		return new ResourceStatus<>(true, I18N.getResource(
-				sessionUtils.getLocale(request),
-				PluginResourceServiceImpl.RESOURCE_BUNDLE,
-				"resource.deleted.info", preDeletedName));
-
+	@AuthenticationRequired
+	@RequestMapping(value = "plugins/softUninstall/{id}", method = RequestMethod.DELETE, produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
+	public ResourceStatus<PluginResource> softUninstall(
+			HttpServletRequest request, @PathVariable String id)
+			throws Exception {
+		var r = resourceService.getResourceById(id);
+		resourceService.uninstall(r, false);
+		return new ResourceStatus<>(r);
 	}
 }

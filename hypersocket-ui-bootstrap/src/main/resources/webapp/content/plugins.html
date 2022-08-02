@@ -61,13 +61,35 @@
 					});
 				});
 			}
+			
+			var additionalButtons = [];
+			if(currentMenu.canCreate) {
+				additionalButtons.push({ 
+					resourceKey: 'uploadPlugin',
+					buttonClass: 'btn-primary',
+					icon: 'fa-upload',
+					action: function() {
+						$('#pluginUpload').data('action')(function(msg) {
+							getJSON('session/flash/success/' + msg + '/', null, function(data) {
+								window.location.hash = 'menu=plugins';
+								window.location.reload();	
+							})
+						});
+					}
+				});
+
+				$('#additionalActions').append('<div id="pluginUploadDiv"></div>');
+				$('#pluginUploadDiv').load(uiPath + '/content/pluginUpload.html');
+			};
 
 			$('#contentPlugins').ajaxResourcePage({
 				id : "Plugin",
 				tableUrl : "plugins/table",
 				title : getResource("plugins.label"),
+				additionalButtons: additionalButtons,
 				icon : 'fa-plug',
 				resourceUrl : "plugins/plugin",
+				infoHtml: getResource('plugins.infoHtml'),
 				fields : [
 						{
 							name : "id",
@@ -92,8 +114,9 @@
 				resourceKey : "plugin",
 				additionalActions: actions,
 				canCopy : false,
-				canCreate : currentMenu.canCreate,
-				canDelete : currentMenu.canDelete,
+				sortName: 'id',
+				canCreate : false,
+				canDelete : false,
 				canView : currentMenu.canUpdate,
 				canUpdate : false,
 				validate : function() {

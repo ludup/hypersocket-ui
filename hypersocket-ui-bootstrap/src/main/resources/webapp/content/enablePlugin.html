@@ -1,0 +1,24 @@
+<div id="enablePlugin"></div>
+<script type="text/javascript">
+
+function canEnable(plugin) {
+	return plugin.state === 'DISABLED';
+}
+
+legacyjQueryReadyFix(function() {
+	$('#enablePlugin').data('action', function(plugin, callback) {
+		getJSON('plugins/enable/' + plugin.id, null, function(data) {
+			if(data.success) {
+				showInformation(data.message);
+				callback(plugin);
+				$('#enablePluginDialog').modal('hide');
+			} else {
+				showError(data.message);
+			}
+			stopSpin($('#enablePluginInstance i'));
+		});
+	});
+});
+
+
+</script>

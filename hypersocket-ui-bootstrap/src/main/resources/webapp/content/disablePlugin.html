@@ -1,0 +1,59 @@
+<div id="disablePlugin"></div>
+<div id="disablePluginDialog" class="modal" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header lb-modal-header-text-reverse">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 localize="disablePlugin.label"></h4>
+			</div>
+			<div class="modal-body">
+				<div class="propertyItem form-group lb-row">
+					<label for="file" class="col-md-12 control-label"
+						   localize="disablePlugin.info"></label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="far fa-ban"></i><span localize="text.cancel"></span></button>
+				<button id="disablePluginInstance" type="button" class="btn btn-primary"><i class="far fa-power-off"></i><span localize="disablePlugin.disable"></span></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+function canDisable(plugin) {
+	return plugin.state !== 'DISABLED' && plugin.state !== 'STARTED';
+}
+
+legacyjQueryReadyFix(function() {
+	
+	$('#disablePluginDialog').localize();
+	$('#disablePluginInstance').click(function(e) {
+		startSpin($('#disablePluginInstance i'));
+		e.preventDefault();
+		removeMessage();
+		var plugin = $('#disablePluginDialog').data('plugin');
+		var callback = $('#disablePluginDialog').data('callback');
+		getJSON('plugins/disable/' + plugin.id, null, function(data) {
+			if(data.success) {
+				showInformation(data.message);
+				callback(plugin);
+				$('#disablePluginDialog').modal('hide');
+			} else {
+				showError(data.message);
+			}
+			stopSpin($('#disablePluginInstance i'));
+		});
+	});
+	
+	$('#disablePlugin').data('action', function(resource, callback) {
+		$('#disablePluginDialog').data('plugin', resource);
+		$('#disablePluginDialog').data('callback', callback);
+		$('#disablePluginDialog').find('h4').text(getResource('disablePlugin.title').format(resource.id));
+		$('#disablePluginDialog').modal('show');
+	});
+});
+
+
+</script>

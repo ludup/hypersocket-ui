@@ -2,7 +2,7 @@
 <script type="text/javascript">
 
 function canStart(plugin) {
-	return plugin.state !== 'STARTED';
+	return plugin.state !== 'STARTED' && plugin.state !== 'DISABLED';
 }
 
 legacyjQueryReadyFix(function() {
@@ -14,6 +14,7 @@ legacyjQueryReadyFix(function() {
 				showInformation(data.message);
 				callback(plugin);
 				$('#startPluginDialog').modal('hide');
+				window.location.reload();
 			} else {
 				showError(data.message);
 			}
