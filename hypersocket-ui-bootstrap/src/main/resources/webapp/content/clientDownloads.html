@@ -1,34 +1,45 @@
-<div id="clientDownloadsContent" class="col-12">
-	<div class="panel panel-default">
-			<div class="panel-heading">
-				<h2>
-					<i class="far fa-download"></i> <span class="ml-2 break"
-						localize="clientDownloads.title"></span>
-				</h2>
-			</div>
-			<div id="downloads" class="panel-body tab-content">
-			</div>
-		</div>
+<div id='clientDownloadsContent'>
+	<div id="additionalActions"></div>
 </div>
-<script type="text/javascript">
+<script type='text/javascript'>
 	legacyjQueryReadyFix(function() {
-		
-		
-		getJSON('downloads', null, function(data) {
-			$.each(data.resources, function(idx, obj) {
-				if(!$('#' + obj.subsystem).length) {
-					$('#downloads').append('<div id="' + obj.subsystem + '" class="row mt-3 ml-3 mr-3"><div class="col-12"><h2 style="font-size: 18px; margin-bottom: 40px;" localize="text.' + obj.subsystem + '"></h2></div></div>');
-				}
-				$('#' + obj.subsystem).append('<div class="col-3">' 
-						+ '<div style="margin-bottom: 20px; font-size: 12px; text-align: center; text-decoration: none; line-height: 1.5em; color: #555"><a target="_blank" href="'
-						+ obj.url + '">'
-						+ '<i class="fab fa-3x ' + obj.icon + '" style="margin-bottom: 10px;"></i><br>'
-						+ obj.description 
-						+ '</a></div></div>');
-			});
-			
-			$('#clientDownloadsContent').localize();
-			loadComplete();
+		$('#clientDownloadsContent').localize();
+		$('#clientDownloadsContent').ajaxResourcePage({
+			id : 'Session',
+			tableUrl : 'downloads/table',
+			title : getResource('clientDownloads.title'),
+			icon : 'fa-download',
+			disableEditView : true,
+			fields : [
+					{
+						name : 'description',
+						formatter : function(value, obj, index) {
+							return '<a href="' + obj.url + '"><i class="mr-3 fa-2x ' + obj.icon  + '"></i></a><a href="' + obj.URL + '">' + value + '</a>';
+						}
+					},{
+						name : 'subsystem',
+						formatter : function(value, obj, index) {
+							return getResource('subsystem.' + value);
+						}
+					}
+			],
+			additionalActions: [{
+				resourceKey : 'download',
+				iconClass : 'fa-download',
+				action : function(resource, callback) {
+					window.location.href = resource.url;
+				},
+				enabled : true
+			}],
+			resourceUrl: 'download',
+			resourceKey : 'clientDownloads',
+			sortable : false,
+			canCreate : false,
+			canUpdate : false,
+			canDelete : false,
+			complete : function() {
+				loadComplete();
+			}
 		});
 	});
 </script>
