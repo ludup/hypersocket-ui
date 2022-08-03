@@ -185,6 +185,7 @@ $.fn.resourceTable = function(params) {
 		checkReadOnly: true,
 		canDelete : false,
 		icon : 'fa-cog',
+		sortable: true,
 		sortName: 'name',
 		sortOrder: 'asc',
 		disableDecoration: false,
@@ -829,7 +830,7 @@ $.fn.resourceTable = function(params) {
 		    sortName: options.sortName,
 		    sortOrder: options.sortOrder,
 		    rowStyle: options.rowStyle,
-		    sortable: true,
+		    sortable: options.sortable,
 		    cache: false,
 			escape: options.escapeHTMLInTable,
 		    uniqueId: 'id',
@@ -860,6 +861,10 @@ $.fn.resourceTable = function(params) {
 	    		delete params.searchColumn;
 	    		delete params.search;
 	    		delete params.filter;
+	    		if(!options.sortable) {
+	    			delete params.order;
+	    			delete params.name;
+	    		}
 
 		    	if($('#' + divName + 'filterColumn').length > 0) {
 		    		var val = $('#' + divName + 'filterColumn').widget().getValue();

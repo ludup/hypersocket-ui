@@ -384,16 +384,22 @@ function processLogon(data, opts, message) {
 						$.each(
 							data['formTemplate']['inputFields'],
 							function() {
-
-								
-							    var elem = this.type === 'radio' ? $('input[name="' + this.resourceKey + '"]:checked') : $('#' + this.resourceKey);
-								var name = encodeURIComponent(this.resourceKey);
-								var value = encodeURIComponent(elem.val());
-
-								if(elem.is(':checkbox')) {
-								    credentials = credentials + '&' + name + '=' + elem.is(':checked');
-								} else {
-								    credentials = credentials + '&' + name + '=' + value;
+								if(this.type === 'text' ||
+								   this.type === 'textarea' ||
+								   this.type === 'password' ||
+								   this.type === 'select' ||
+								   this.type === 'hidden' ||
+								   this.type === 'checkbox' ||
+								   this.type === 'radio') {								
+								    var elem = this.type === 'radio' ? $('input[name="' + this.resourceKey + '"]:checked') : $('#' + this.resourceKey);
+									var name = encodeURIComponent(this.resourceKey);
+									var value = encodeURIComponent(elem.val());
+	
+									if(elem.is(':checkbox')) {
+									    credentials = credentials + '&' + name + '=' + elem.is(':checked');
+									} else {
+									    credentials = credentials + '&' + name + '=' + value;
+									}
 								}
 							});
 
