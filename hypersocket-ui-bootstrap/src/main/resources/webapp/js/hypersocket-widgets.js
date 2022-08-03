@@ -5756,8 +5756,8 @@ $.fn.html5Upload = function(data) {
 		}, data);
 	var fileIndex = 0;
 	var id = checkElementHasId($(this)).attr('id') + "FileDragAndDrop";
-	var html = 	'<div id="' + id + 'Div" class="pt-3">'
-			+	'	<div id="' + id + 'Area" class="fileDragAndDrop pt-5 pb-5 m-2 bg-light text-center border">'
+	var html = 	'<div id="' + id + 'Div">'
+			+	'	<div id="' + id + 'Area" class="fileDragAndDrop p-5 bg-light text-center border">'
 			+	'		<span class="optionalField" id="' + id + 'ProgressText" hidden><i class="far fa-spinner fa-spin" aria-hidden="true"></i>&nbsp;' + getResource('dragAndDrop.progresText') + '</span>'
 			+	'		<span class="optionalField" id="' + id + 'StandByText">' + options.text + '</span>'
 			+	'	</div>'
