@@ -1,14 +1,11 @@
 package com.hypersocket.plugins.json;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +31,6 @@ import com.hypersocket.menus.AbstractTableAction;
 import com.hypersocket.menus.MenuRegistration;
 import com.hypersocket.menus.MenuService;
 import com.hypersocket.permissions.AccessDeniedException;
-import com.hypersocket.plugins.ExtensionsPluginManager;
 import com.hypersocket.plugins.PluginResource;
 import com.hypersocket.plugins.PluginResourceColumns;
 import com.hypersocket.plugins.PluginResourcePermission;
@@ -231,7 +227,8 @@ public class PluginResourceController extends ResourceController {
 	@AuthenticatedContext
 	public ResourceStatus<PluginResource> upload(
 			HttpServletRequest request, HttpServletResponse response,
-			@RequestPart(value = "file") MultipartFile file)
+			@RequestPart(value = "file") MultipartFile file,
+			@RequestParam boolean start)
 			throws AccessDeniedException, UnauthorizedException,
 			SessionTimeoutException, ResourceException {
 
@@ -239,20 +236,20 @@ public class PluginResourceController extends ResourceController {
 
 			PluginResource newResource;
 			Realm realm = sessionUtils.getCurrentRealm(request);
-			newResource = resourceService.upload(realm, file.getInputStream(), file.getName());
+			newResource = resourceService.upload(realm, file.getInputStream(), start);
 
 			return new ResourceStatus<PluginResource>(newResource,
 					I18N.getResource(sessionUtils.getLocale(request),
 							PluginResourceService.RESOURCE_BUNDLE,
-							"plugin.uploaded.info", newResource
+							start ?  "plugin.uploadedAndStarted.info" : "plugin.uploaded.info", newResource
 									.getName()));
 
 		} catch (Throwable e) {
-			LOG.error("Unexpected error", e);
+			LOG.error("Unexpected error.", e);
 			return new ResourceStatus<PluginResource>(false, I18N.getResource(
 					sessionUtils.getLocale(request),
 					PluginResourceService.RESOURCE_BUNDLE,
-					"error.unexpectedError", e.getMessage()));
+					start ? "plugin.uploadedAndStarted.error" : "plugin.uploaded.error", e.getMessage()));
 		}
 	}
 
@@ -306,9 +303,22 @@ public class PluginResourceController extends ResourceController {
 	public ResourceStatus<PluginResource> uninstall(
 			HttpServletRequest request, @PathVariable String id)
 			throws Exception {
-		var r = resourceService.getResourceById(id);
-		resourceService.uninstall(r, true);
-		return new ResourceStatus<>(r);
+		try {
+			var r = resourceService.getResourceById(id);
+			resourceService.uninstall(r, true);
+			return new ResourceStatus<PluginResource>(r,
+					I18N.getResource(sessionUtils.getLocale(request),
+							PluginResourceService.RESOURCE_BUNDLE,
+							"plugin.uninstall.info", r
+									.getName()));
+
+		} catch (Throwable e) {
+			LOG.error("Unexpected error.", e);
+			return new ResourceStatus<PluginResource>(false, I18N.getResource(
+					sessionUtils.getLocale(request),
+					PluginResourceService.RESOURCE_BUNDLE,
+					"plugin.uninstall.error", id, e.getMessage()));
+		}
 	}
 
 	@AuthenticationRequired
@@ -319,8 +329,20 @@ public class PluginResourceController extends ResourceController {
 	public ResourceStatus<PluginResource> softUninstall(
 			HttpServletRequest request, @PathVariable String id)
 			throws Exception {
-		var r = resourceService.getResourceById(id);
-		resourceService.uninstall(r, false);
-		return new ResourceStatus<>(r);
+		try {
+			var r = resourceService.getResourceById(id);
+			resourceService.uninstall(r, false);
+			return new ResourceStatus<PluginResource>(r,
+					I18N.getResource(sessionUtils.getLocale(request),
+							PluginResourceService.RESOURCE_BUNDLE,
+							"plugin.softUninstall.info", r.getName()));
+
+		} catch (Throwable e) {
+			LOG.error("Unexpected error.", e);
+			return new ResourceStatus<PluginResource>(false, I18N.getResource(
+					sessionUtils.getLocale(request),
+					PluginResourceService.RESOURCE_BUNDLE,
+					"plugin.softUninstall.error", id, e.getMessage()));
+		}
 	}
 }
