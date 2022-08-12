@@ -48,10 +48,10 @@ legacyjQueryReadyFix(function() {
 		deleteJSON('plugins/' + ($('#uninstallData').data('widget').getValue() ? 'uninstall' : 'softUninstall')+ '/' + plugin.id, null, function(data) {
 			if(data.success) {
 				showInformation(data.message);
-				callback(plugin);
 			} else {
 				showError(data.message);
 			}
+			callback(plugin);
 			stopSpin($('#uninstallPluginInstance i'));
 			$('#uninstallPluginDialog').modal('hide');
 		});

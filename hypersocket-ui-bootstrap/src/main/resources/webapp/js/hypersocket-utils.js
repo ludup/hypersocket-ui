@@ -1538,7 +1538,8 @@ const notificationInitHelper = new NotificationInitHelper();
 
 
 function showAuditError(text) {
-	
+	if(!text)
+		text='No error message.';
 	if($(document).data('lastError') === 'error.cannotContactServer' && text === 'error.cannotContactServer') {
 		return;
 	}

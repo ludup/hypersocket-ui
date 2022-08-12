@@ -4,7 +4,7 @@ public class Badge {
 
 	private String resourceKey;
 	private String badge;
-	private String cssClass;
+	private String cssClass = "badge-info";
 
 	public String getCssClass() {
 		return cssClass;

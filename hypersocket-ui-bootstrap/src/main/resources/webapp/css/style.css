@@ -979,8 +979,8 @@ header .navbar {
 	color: #fff;
 }
 
-.navbar-inverse a, .navbar-inverse a:visited, .navbar-inverse a:hover, .navbar-inverse a:active {
-	/* color: #fff; */
+.navbar-inverse a, .navbar-inverse a:visited, .navbar-inverse a:hover, .navbar-inverse a:hover:visited, .navbar-inverse a:active, .navbar-inverse a:active:hover, .navbar-inverse a:active:hover:visited {
+	color: #fff !important;
 }
 
 .navbar-inverse input[type=email], .navbar-inverse input[type=text], .navbar-inverse textarea {
@@ -2021,11 +2021,6 @@ select[multiple] {
 	font-size: small;
 	float: right;
 	margin-top: 10px;
-}
-
-.badge {
-	margin-left: 5px;
-	background-color: #B71C1C;
 }
 
 .setupDownloadProgress {

@@ -44,7 +44,9 @@
 		
 		$('#pluginUpload').localize();
 		$('#start').empty();
-		$('#start').switchInput({});
+		$('#start').switchInput({
+			value: true
+		});
 		
 		$('#pluginUpload').data('action', function(callback) {
 			$('#pluginUpload').data('callback', callback);

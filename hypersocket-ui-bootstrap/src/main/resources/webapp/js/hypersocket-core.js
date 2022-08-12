@@ -10,6 +10,7 @@ var menuList = null;
 var allMenus = new Array();
 var systemAdmin;
 var checkTimeoutHandle;
+var badgesTask = false;
 
 doAjax({
     url: uiPath + '/json/countries.json',
@@ -440,18 +441,25 @@ function logoff() {
 }
 
 function checkBadges(schedule) {
-	
+	if(badgesTask) {
+		window.clearTimeout(badgesTask);
+		badgesTask = false;
+	}
 	backgroundJSON('menus/badges', null, function(data) {
 		$('.menuBadge').remove();
 		if(data.success) {
 			$.each(data.resources, function(_idx, obj) {
 				if(obj.badge!=null) {
-					$('#' + obj.resourceKey).find('span').after('<span class="menuBadge badge' + (obj.cssClass ? ' ' + obj.cssClass : '') + '">' + obj.badge + '</span>');
+					if(!($('#menuBadge'  + obj.resourceKey).length)) {
+						$('#' + obj.resourceKey).find('span').after('<span id="menuBadge' + obj.resourceKey + '" class="menuBadge badge' + (obj.cssClass ? ' ' + obj.cssClass : '') + '">' + obj.badge + '</span>');
+						$('#buttonLarge_' + obj.resourceKey).find('p').after('<span style="top: 0; right: 25%; font-size: 1em;" class="menuBadge badge' + (obj.cssClass ? ' ' + obj.cssClass : '') + ' position-absolute">' + obj.badge + '</span>');
+						$('#navMenu_' + obj.resourceKey).find('span').after('<span style="top: 0; right: 25%;" class="menuBadge badge' + (obj.cssClass ? ' ' + obj.cssClass : '') + ' position-absolute">' + obj.badge + '</span>');
+					}
 				}
 			});
 		}
 		if(schedule) {
-			setTimeout(function() { checkBadges(true) }, 100000);
+			badgesTask = setTimeout(function() { checkBadges(true) }, 100000);
 		}
 	});
 };
@@ -654,7 +662,7 @@ function home(data) {
 					}
 					
 					$('#navMenu').append('<li class="navicon" id="' + this.id 
-							+ '"><a '
+							+ '"><a id="navMenu_' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '" ' 
 							+ ' href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><span data-toggle="tooltip" data-placement="bottom" title="' +  getResource(this.resourceKey + '.label') + '"><i class="far ' + this.icon + '"></i></span></a></li>');
 					
 					$('#' + this.id).data('menu', this);
@@ -1202,6 +1210,8 @@ function loadMenu(menu) {
 		
 		closeMenu();
 	}
+
+	checkBadges(true);
 }
 
 function loadSubPage(menu, element) {

@@ -48,6 +48,7 @@ import com.hypersocket.tables.json.BootstrapTablePageProcessor;
 
 
 @Controller
+@Deprecated
 public class PluginResourceController extends ResourceController {
 	private final static Logger LOG = LoggerFactory.getLogger(PluginResourceController.class);
 
@@ -60,7 +61,7 @@ public class PluginResourceController extends ResourceController {
 	@PostConstruct
 	private void setup() {
 		menuService.registerMenu(new MenuRegistration(PluginResourceServiceImpl.RESOURCE_BUNDLE,
-				"plugins", "fa-plug", "plugins", 100,
+				"plugins", "fa-plug", "plugins", Integer.MAX_VALUE,
 				PluginResourcePermission.READ,
 				PluginResourcePermission.CREATE,
 				PluginResourcePermission.UPDATE,
