@@ -831,7 +831,7 @@ $.fn.resourceTable = function(params) {
 		    sortOrder: options.sortOrder,
 		    rowStyle: options.rowStyle,
 		    sortable: options.sortable,
-		    cache: false,
+		    cache: true,
 			escape: options.escapeHTMLInTable,
 		    uniqueId: 'id',
 		    mobileResponsive: true,

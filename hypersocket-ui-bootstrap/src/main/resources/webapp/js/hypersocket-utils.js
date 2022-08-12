@@ -846,7 +846,7 @@ function getJSON(url, params, callback, errorCallback) {
 	return doAjax({
 		type: "GET",
 	    url:  url + (params ? (url.endsWith('?') ? '' : '?') + $.param(params) : ''),
-	    cache: false,
+	    cache: true,
 	    dataType: 'json',
 	    success: callback
 	}).fail(function(xmlRequest) {
@@ -1414,7 +1414,11 @@ function getState(name, specific, callback){
 		if(callback){
 		    var prefs = {};
 		    if(data && data.resources && data.resources[0]) {
-		    	prefs = JSON.parse(data.resources[0].preferences); 
+				try {
+		    		prefs = JSON.parse(data.resources[0].preferences);
+		    	}
+		    	catch(e) {
+				} 
 		    }	
 			callback(data, prefs);
 		}

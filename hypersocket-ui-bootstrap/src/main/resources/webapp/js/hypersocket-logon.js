@@ -316,6 +316,8 @@ function processLogon(data, opts, message) {
                 }
 			});
 		}
+		
+		 $('#logonForm').append('<input  type="hidden" name="csrf" value="' + getCsrfToken() + '"/>');
 
 		$.each(scripts, function(idx, script) {
 			log('Executing script ' + script.resourceKey);
@@ -455,7 +457,12 @@ function setUpPersonalMenuPostLogon() {
 		getState('menuStates', 'true', function(prefs) {
 			var menuStates = {};
 			if(prefs.resources.length > 0) {
-			   menuStates = JSON.parse(prefs.resources[0].preferences);
+				try {
+			   		menuStates = JSON.parse(prefs.resources[0].preferences);
+			   	}
+			   	catch(e) {
+				}
+			   		
 			}
 			
 			if (!menuStates.personal) {

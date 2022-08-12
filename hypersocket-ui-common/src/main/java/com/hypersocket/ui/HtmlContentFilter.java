@@ -21,6 +21,7 @@ import com.hypersocket.json.version.HypersocketVersion;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.servlet.request.Request;
+import com.hypersocket.session.SessionService;
 import com.hypersocket.utils.ITokenResolver;
 import com.hypersocket.utils.TokenReplacementReader;
 
@@ -31,6 +32,9 @@ public class HtmlContentFilter implements ContentFilter {
 	
 	@Autowired
 	private HypersocketServer server;
+	
+	@Autowired
+	private SessionService sessionService;
 
 	private List<ITokenResolver> additionalResolvers = new ArrayList<ITokenResolver>();
 	private List<FilterExtender> extenders = new ArrayList<FilterExtender>();
@@ -58,6 +62,13 @@ public class HtmlContentFilter implements ContentFilter {
 		resolver.addToken("appPath", server.getApplicationPath());
 		resolver.addToken("basePath", server.getBasePath());
 		resolver.addToken("uiPath", server.getUiPath());
+		try {
+			var session = sessionService.getCurrentSession();
+			resolver.addToken("csrf", session.getCsrfToken());
+		}
+		catch(Exception e) {
+			resolver.addToken("csrf", "");
+		}
 		resolver.addToken("apiPath", server.getApiPath());
 		resolver.addToken("appName", server.getApplicationName());
 		resolver.addToken("brandImage", brandImage);
