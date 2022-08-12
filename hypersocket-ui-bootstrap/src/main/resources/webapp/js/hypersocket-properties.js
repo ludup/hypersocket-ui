@@ -768,7 +768,7 @@ $.fn.propertyPage = function(opts) {
                         $('.dismiss-icon').click(function(e) {
                             var prefs = new Object();
                             prefs.show = false;
-                            saveState(divName+'-infoPanel', prefs, true, function() {
+                            saveState(propertyDiv+'-infoPanel', prefs, true, function() {
                                 $('#infoPanel').fadeOut(1000);
                             });
                         });

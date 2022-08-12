@@ -82,23 +82,7 @@ $.ajaxSetup({ error : function(xmlRequest) {
 			showError(getResource("error.sessionTimeout"), false);
 		}
 	} 
-}, cache : false });
-
-$.ajaxPrefilter(function( options, originalOptions, _jqXHR ) {
-	/* This prevents caching of the following resources when they are loaded as the
-	 * result of Ajax. Being as this also includes actual content, such as Javascript
-	 * or CSS that we sometimes dynamically load, we need to turn off the cache defeat
-	 * parameters that jquery adds, because we DONT want to defect the cache!
-	 */
-	  if ( options.dataType == 'script' || originalOptions.dataType == 'script' ||  
-		   options.dataType == 'link' || originalOptions.dataType == 'link' ||
-		   ( options.dataType == 'json' && options.url && options.url.indexOf('/api/enum') != -1) ||
-		   ( options.dataType == 'json' && options.url && options.url.indexOf('/api/i18n') != -1) ) {
-	      options.cache = true;
-	
-	  }
-	  
-	});
+}, cache : true });
 
 window.onhashchange = function() { 
     $('[data-toggle="tooltip"], .tooltip').tooltip("hide"); 
@@ -285,7 +269,11 @@ function saveMenuPinState(state) {
 	getState('menuStates', 'true', function(prefs) {
 		var menuStates = {};
 		if(prefs.resources.length > 0) {
-		   menuStates = JSON.parse(prefs.resources[0].preferences);
+			try {
+		   		menuStates = JSON.parse(prefs.resources[0].preferences);
+		   	}
+		   	catch(e) {
+			}
 		}
 		
 		menuStates.pin = state;
@@ -497,7 +485,11 @@ function home(data) {
 
 			var menuStates = {};
 			if(prefs.resources.length > 0) {
-			   menuStates = JSON.parse(prefs.resources[0].preferences);
+			   try {
+			   		menuStates = JSON.parse(prefs.resources[0].preferences);
+			   }
+			   catch(e) {
+			   }
 			}
 			
 			log("Received menu state");
@@ -1237,7 +1229,11 @@ function pinnedMenuScreenWidthListener(e) {
 	getState('menuStates', 'true', function(prefs) {
 		var menuStates = undefined;
 		if(prefs.resources.length > 0) {
-		   menuStates = JSON.parse(prefs.resources[0].preferences);
+			try {
+		   		menuStates = JSON.parse(prefs.resources[0].preferences);
+		   	}
+		   	catch(e) {
+			}
 		}
 		
 		getJSON('configuration/values/session.menu.state/', null,

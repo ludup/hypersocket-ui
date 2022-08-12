@@ -96,6 +96,14 @@ public class UserInterfaceContentHandler implements ContentHandler {
 		
 		server.addCompressablePath(server.getUiPath());
 		server.registerHttpHandler(actualHandler);
+		
+		actualHandler.addDynamicPage("content/password.html");
+		actualHandler.addDynamicPage("content/roleAttributes.html");
+		actualHandler.addDynamicPage("content/roleAttributeTabs.html");
+		actualHandler.addDynamicPage("content/suspendUser.html");
+		actualHandler.addDynamicPage("content/userAttributes.html");
+		actualHandler.addDynamicPage("content/userAttributeTabs.html");
+		actualHandler.addDynamicPage("content/users.html");
 	}
 	
 

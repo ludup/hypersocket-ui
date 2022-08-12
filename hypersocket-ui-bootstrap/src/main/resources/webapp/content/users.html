@@ -1,5 +1,6 @@
 <div id="contentExportUsers">
 	<form id="csvForm" action="${apiPath}/currentRealm/csv" method="POST" autocomplete="off">
+		<input type="hidden" name="token" id="csrfToken" value="${csrf}"/>
 		<div class="modal" id="exportCSVForm" tabindex="-1" role="dialog" dialog-for="contentExportUsers">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
