@@ -94,7 +94,6 @@ function processLogon(data, opts, message) {
 			}
 			data.requestParameters[k] = v;
 		}
-		debugger;
 	}
 
 	var nonce = $(document).data("pageNonce");

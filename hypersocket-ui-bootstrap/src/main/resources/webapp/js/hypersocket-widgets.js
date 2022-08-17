@@ -1784,8 +1784,6 @@ $.fn.twoColumnMultipleSelect = function(data) {
 
 	if ($(this).data('created')) {
 		
-		debugger;
-		
 		options = $(this).widget().options();
 		
 		let searchBoxInput = $('#search_input_' + id);
