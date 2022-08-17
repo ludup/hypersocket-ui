@@ -68,6 +68,20 @@ function checkRedirect(data) {
 		return false;
 }
 
+function showFlashMessage(data) {
+	if (data['errorMsg']) {
+		if("success" === data['errorStyle']) {
+			showSuccess(data['errorMsg']);
+		} else if("info" ===  data['errorStyle']) {
+			showInformation(data['errorMsg']); 
+		} else if("warning" ===  data['errorStyle']) {
+			showWarning(data['errorMsg']); 
+		} else {
+			showError(data['errorMsg']);
+		}
+	}	
+}
+
 function processLogon(data, opts, message) {
 	log("Received logon data");
 
@@ -98,19 +112,7 @@ function processLogon(data, opts, message) {
 		opts.formContent.append(
 			'<div class="col"><div class="logonFormContainer mt-4"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin ml-auto mr-auto") + ' mt-4 p-4" role="form"/></div></div>');
 
-		if (data['errorMsg']) {
-			if("success" === data['errorStyle']) {
-				showSuccess(data['errorMsg']);
-			} else if("info" ===  data['errorStyle']) {
-				showInformation(data['errorMsg']); 
-			} else if("warning" ===  data['errorStyle']) {
-				showWarning(data['errorMsg']); 
-			} else {
-				showError(data['errorMsg']);
-			}
-			
-		}
-
+		showFlashMessage(data);
 
 		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
 
@@ -438,6 +440,7 @@ function processLogon(data, opts, message) {
 		setUpPersonalMenuPostLogon();
 		
 		stopSpin($('#logonButton i'), 'fa-sign-in');
+		showFlashMessage(data);
 
 	}
 
