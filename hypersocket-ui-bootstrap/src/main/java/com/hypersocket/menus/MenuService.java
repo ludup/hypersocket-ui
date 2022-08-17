@@ -113,6 +113,8 @@ public interface MenuService extends AuthenticatedService {
 
 	void registerFilter(MenuFilter filter);
 
+	void deregisterFilter(MenuFilter filter);
+
 	Menu getMenu(String resourceKey);
 
 	Collection<Badge> getCurrentBadges();

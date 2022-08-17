@@ -125,9 +125,17 @@ public class IndexPageFilter implements ContentFilter {
 	public void addStyleSheet(String stylesheet) {
 		stylesheets.add(stylesheet);
 	}
+
+	public void removeStyleSheet(String stylesheet) {
+		stylesheets.remove(stylesheet);
+	}
 	
 	public void addScript(String script) {
 		scripts.add(script);
+	}
+	
+	public void removeScript(String script) {
+		scripts.remove(script);
 	}
 	
 	public void addResolver(ITokenResolver resolver) {

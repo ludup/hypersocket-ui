@@ -7,11 +7,9 @@
  ******************************************************************************/
 package com.hypersocket.ui;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.StringTokenizer;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +26,6 @@ import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.server.handlers.impl.ClasspathContentHandler;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.server.handlers.impl.ContentHandler;
-import com.hypersocket.server.handlers.impl.FileContentHandler;
 import com.hypersocket.server.handlers.impl.RedirectException;
 import com.hypersocket.utils.FileUtils;
 
@@ -238,6 +235,11 @@ public class UserInterfaceContentHandler implements ContentHandler {
 	@Override
 	public void addDynamicPage(String path) {
 		actualHandler.addDynamicPage(path);
+	}
+
+	@Override
+	public void removeDynamicPage(String path) {
+		actualHandler.removeDynamicPage(path);
 	}
 
 }

@@ -140,6 +140,10 @@ public class HtmlContentFilter implements ContentFilter {
 		additionalResolvers.add(resolver);
 	}
 
+	public void removeResolver(ITokenResolver resolver) {
+		additionalResolvers.remove(resolver);
+	}
+
 	public void setCompany(String brandCompany) {
 		this.brandCompany = brandCompany;
 	}

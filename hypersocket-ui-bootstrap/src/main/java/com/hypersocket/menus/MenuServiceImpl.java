@@ -683,6 +683,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			
 		});
 	}
+	@Override
+	public void deregisterFilter(MenuFilter filter) {
+		filters.remove(filter);
+	}
 
 	@Override
 	public void registerFilter(MenuFilter filter) {
