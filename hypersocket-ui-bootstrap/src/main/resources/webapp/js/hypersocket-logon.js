@@ -68,6 +68,20 @@ function checkRedirect(data) {
 		return false;
 }
 
+function showFlashMessage(data) {
+	if (data['errorMsg']) {
+		if("success" === data['errorStyle']) {
+			showSuccess(data['errorMsg']);
+		} else if("info" ===  data['errorStyle']) {
+			showInformation(data['errorMsg']); 
+		} else if("warning" ===  data['errorStyle']) {
+			showWarning(data['errorMsg']); 
+		} else {
+			showError(data['errorMsg']);
+		}
+	}	
+}
+
 function processLogon(data, opts, message) {
 	log("Received logon data");
 
@@ -98,19 +112,7 @@ function processLogon(data, opts, message) {
 		opts.formContent.append(
 			'<div><form id="logonForm" autocomplete="off" class="panel panel-default ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
 
-		if (data['errorMsg']) {
-			if("success" === data['errorStyle']) {
-				showSuccess(data['errorMsg']);
-			} else if("info" ===  data['errorStyle']) {
-				showInformation(data['errorMsg']); 
-			} else if("warning" ===  data['errorStyle']) {
-				showWarning(data['errorMsg']); 
-			} else {
-				showError(data['errorMsg']);
-			}
-			
-		}
-
+		showFlashMessage(data);
 
 		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
 
@@ -427,6 +429,7 @@ function processLogon(data, opts, message) {
 		}
 
 		stopSpin($('#logonButton i'), 'fa-sign-in');
+		showFlashMessage(data);
 
 	}
 
