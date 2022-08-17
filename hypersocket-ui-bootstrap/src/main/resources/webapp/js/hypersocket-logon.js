@@ -70,6 +70,18 @@ function checkRedirect(data) {
 
 function processLogon(data, opts, message) {
 	log("Received logon data");
+	
+	if(data.requestParameters) {
+		var dp = new DOMParser();
+		for(var k in data.requestParameters) {
+			var v = data.requestParameters[k];
+			for(var i = 0; i < v.length; i++) {
+				v[i] = dp.parseFromString(v[i], 'text/html').documentElement.textContent;
+			}
+			data.requestParameters[k] = v;
+		}
+		debugger;
+	}
 
 	var nonce = $(document).data("pageNonce");
 	
