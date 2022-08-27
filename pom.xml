@@ -31,7 +31,6 @@
 			<url>https://artifactory.jadaptive.com/opensource-releases</url>
 		</repository>
 		<snapshotRepository>
-			<uniqueVersion>false</uniqueVersion>
 			<id>opensource-snapshots</id>
 			<url>https://artifactory.jadaptive.com/opensource-snapshots</url>
 		</snapshotRepository>
