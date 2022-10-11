@@ -855,7 +855,7 @@ $.fn.selectButton = function(data) {
 
 	if(obj.emptySelectionAllowed) {
 		$('#select_' + id).append('<li class="dropdown-item"><a id="data_no_set_' + id + '" class="selectButton_'
-				+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + getResource(obj.notSetResourceKey) + '">'
+				+ id + '" href="#" name="link_' + obj.notSetResourceKey + '" data-value="" data-label="' + cleanValue(getResource(obj.notSetResourceKey)) + '">'
 				+ getResource(obj.notSetResourceKey) + '</a></li>');
 	}
 
@@ -923,7 +923,9 @@ $.fn.selectButton = function(data) {
 							}
 						}
 						if(!ignore) {
-							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr];
+							
+							listItem = cleanValue(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(obj.options[i][obj.nameAttr])) : obj.options[i][obj.nameAttr]);
+							
 							$('#select_' + id).append('<li class="dropdown-item"><a id="data_' + id + "_" + i + '" class="selectButton_' + id + '" href="#" data-value="'
 									+ stripNull(obj.options[i][obj.valueAttr]) + '" data-label="' + listItem + '" name="link_' + listItem + '">'
 									+ listItem + '</a></li>');
@@ -1001,7 +1003,7 @@ $.fn.selectButton = function(data) {
 								}
 							}
 
-							listItem = obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj.nameAttr])) : option[obj.nameAttr];
+							listItem = cleanValue(obj.nameIsResourceKey ? getResource(obj.resourceKeyTemplate.format(option[obj.nameAttr])) : option[obj.nameAttr]);
 
 							$('#select_' + id).append('<li class="dropdown-item"><a id="data_' + id + "_" + idx + '" class="selectButton_' + id + '" href="#" data-value="'
 									+ stripNull(option[obj.valueAttr]) + '" data-label="'+ listItem + '" name="link_' + listItem + '">'
