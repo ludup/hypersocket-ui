@@ -1264,7 +1264,6 @@ $.fn.autoComplete = function(data) {
 			});
 			$('#auto_' + id + ' .optionSelect').off('click');
 			$('#auto_' + id + ' .optionSelect').on('click', function(e) {
-				debugger;
 				e.preventDefault();
 				var value = $(this).data('value');
 				var obj = $('#input_' + id).data('map')[value];
@@ -1624,7 +1623,6 @@ $.fn.textDropdown = function(data) {
  * Shows 2 list boxes so that values can be moved between them.
  */
 $.fn.multipleSelect = function(data) {
-	debugger; 
 	var id = checkElementHasId($(this)).attr('id');
 	var multipleSelectDisabled = false;
 	var addElement = function(element){
