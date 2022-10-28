@@ -1900,6 +1900,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 						addSingleInfoResourceKey: 'text.add.single.info',
 						removeSingleInfoResourceKey: 'text.remove.single.info',
 						resetInfoResourceKey: 'text.reset.tcms.info',
+						i18nNamespace: false,
 						isArrayValue: true,
 						allowOrdering: true,
 						getUrlData: function(data) {
@@ -2073,13 +2074,13 @@ $.fn.twoColumnMultipleSelect = function(data) {
 				var newElement;
 				if(options.valuesIsObjectList) {
 					newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
-							? (getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
-								: getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
+							? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+								: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
 
 				} else {
 					newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + obj + '"><span>' + (options.nameIsResourceKey
-							? (getResourceNoDefault(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
-								: getResourceNoDefault(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
+							? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+								: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
 				}
 				if(options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0)){
 					addElement(newElement);
@@ -2112,12 +2113,12 @@ $.fn.twoColumnMultipleSelect = function(data) {
 					var newElement;
 					if(options.valuesIsObjectList) {
 						newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '"  value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
-								? (getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
-										: getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
+								? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+										: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
 					} else {
 						newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '"  value="' + he.encode(obj) + '"><span>' + (options.nameIsResourceKey
-								? (getResourceNoDefault(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
-									: getResourceNoDefault(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
+								? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+									: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
 					}
 					
 					if((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty){
@@ -2453,6 +2454,7 @@ $.fn.multipleSelect = function(data) {
 						resourceKeyTemplate: '{0}',
 						excludedLabelResourceKey: 'text.excluded',
 						includedLabelResourceKey: 'text.included',
+						i18nNamespace: false,
 						isArrayValue: true,
 						allowOrdering: false,
 						getUrlData: function(data) {
@@ -2569,13 +2571,13 @@ $.fn.multipleSelect = function(data) {
 				var newElement;
 				if(options.valuesIsObjectList) {
 					newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
-							? (getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
-								: getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<span class="fa-holder"><i class="far fa-arrow-down"></i></span></li>');
+							? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+								: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<span class="fa-holder"><i class="far fa-arrow-down"></i></span></li>');
 
 				} else {
 					newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + obj + '"><span>' + (options.nameIsResourceKey
-							? (getResourceNoDefault(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
-								: getResourceNoDefault(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<span class="fa-holder"><i class="far fa-arrow-down"></i></span></li>');
+							? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+								: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<span class="fa-holder"><i class="far fa-arrow-down"></i></span></li>');
 				}
 				if(options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0)){
 					addElement(newElement);
@@ -2608,12 +2610,12 @@ $.fn.multipleSelect = function(data) {
 					var newElement;
 					if(options.valuesIsObjectList) {
 						newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
-								? (getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
-										: getResourceNoDefault(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<span class="fa-holder"><i class="far fa-arrow-down"></i></span></li>');
+								? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+										: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<span class="fa-holder"><i class="far fa-arrow-down"></i></span></li>');
 					} else {
 						newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj) + '"><span>' + (options.nameIsResourceKey
-								? (getResourceNoDefault(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
-									: getResourceNoDefault(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<span class="fa-holder"><i class="far fa-arrow-down"></i></span></li>');
+								? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+									: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<span class="fa-holder"><i class="far fa-arrow-down"></i></span></li>');
 					}
 					if((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty){
 						addElement(newElement);

@@ -149,7 +149,7 @@ button.row-additional::after {display: none;}
 	/* font-weight: normal; */
 }
 
-.form-control {
+.form-control, .form-group .input-group .input-group-text {
 	font-size: 12px;
 }
 

@@ -1036,8 +1036,30 @@ $.fn.propertyPage = function(opts) {
 											disabled : !allowEdit  || obj.readOnly || obj.disabled,
 											variables: options.variables,
 											errorElementId: '#' + tab + '_helpspan' + inputId,
-											i18nNamespace: categoryNamespace,
-											resourceKeyTemplate: (categoryNamespace && categoryNamespace != '' ? (categoryNamespace + '.{0}') : '{0}')
+											i18nNamespace: categoryNamespace
+											/**
+											 * BPS - 28/10/22
+											 *
+											 * Do not set a resourceKey template as this makes it impossible to
+											 * fallback to non-namespaced resources. 
+											 *
+											 * This is looks like it was to avoid having to change all getResource()
+											 * calls to getResourceWithCallback(), but I am afraid that cannot work.
+											 *
+											 * This problem is exposed in the AD connector where some resource
+											 * are namespaced and some are not. Those non-namespaced keys won't
+											 * work when a namespace is specified for those that do have namespace, 
+											 * and when a namespace isn't specified those that do have one won't work.
+											 *
+											 * In short "resourceKeyTemplate" should not be used to disambiguate 
+											 * colliding resource keys, only i18nnamespace should be used for this. 
+											 * Only use resourceKeyTemplate when you need a different template for
+											 * things such as labels. 
+											 *
+											 * I am leaving this here as I suspect this may cause problems elsewhere,
+											 * but they will have to be fixed properly. 
+											 */
+											/*, resourceKeyTemplate: (categoryNamespace && categoryNamespace != '' ? (categoryNamespace + '.{0}') : '{0}')*/
 										}, obj);
 
 										if(options.defaults[obj.resourceKey]) {

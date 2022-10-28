@@ -685,6 +685,20 @@ function getResourceNoDefault(key) {
 	}
 };
 
+function getResourceNoDefaultWithNamespace(namespace, key) {
+	
+	var withNamespace = getResourceNoDefault(namespace + '.' + key);
+	var withoutNamespace = getResourceNoDefault(key);
+	
+	if(withNamespace == undefined && withoutNamespace == undefined) {
+		return undefined;
+	} else if(withNamespace != undefined) {
+		return replacePaths(withNamespace);
+	} else {
+		return replacePaths(withoutNamespace);
+	}
+};
+
 function getResourceOrText(key) {
 	if($(document).data('i18n')) {
 		var result = $(document).data('i18n')[key];
