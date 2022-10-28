@@ -1624,6 +1624,7 @@ $.fn.textDropdown = function(data) {
  * Shows 2 list boxes so that values can be moved between them.
  */
 $.fn.multipleSelect = function(data) {
+	debugger; 
 	var id = checkElementHasId($(this)).attr('id');
 	var multipleSelectDisabled = false;
 	var addElement = function(element){
@@ -1901,6 +1902,7 @@ $.fn.multipleSelect = function(data) {
 						resourceKeyTemplate: '{0}',
 						excludedLabelResourceKey: 'text.excluded',
 						includedLabelResourceKey: 'text.included',
+						i18nNamespace: false,
 						isArrayValue: true,
 						allowOrdering: false,
 						getUrlData: function(data) {
@@ -1983,14 +1985,14 @@ $.fn.multipleSelect = function(data) {
 		//$(this).addClass('container-fluid');
 
 		$(this).append('<div id="' + id + '"></div>');
-		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><label>' + getResource(options.excludedLabelResourceKey) + '</label><div class="excludedList col-md-5 formInput form-control excludedSelect" id="' + id
+		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><label>' + getResourceWithNamespace(options.i18nNamespace, options.excludedLabelResourceKey) + '</label><div class="excludedList col-md-5 formInput form-control excludedSelect" id="' + id
 				+ 'Excluded"></div></div>');
 
 		$('#' + id + 'Excluded').append(
 					'<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'id="' + id
 						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"/>');
 
-		$('#' + id).append('<div id="' + id + 'IncludedList" class="includedList1"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="includedList col-md-5 formInput form-control includedSelect" id="' + id
+		$('#' + id).append('<div id="' + id + 'IncludedList" class="includedList1"><label>' + getResourceWithNamespace(options.i18nNamespace, options.includedLabelResourceKey) + '</label><div class="includedList col-md-5 formInput form-control includedSelect" id="' + id
 				+ 'Included"></div></div>');
 
 		$('#' + id + 'Included').append('<ul ' + (!options.disabled ? '' : 'disabled="disabled" ')
@@ -2017,13 +2019,13 @@ $.fn.multipleSelect = function(data) {
 				var newElement;
 				if(options.valuesIsObjectList) {
 					newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
-							? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
-								: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
+							? (getResourceWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+								: getResourceWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
 
 				} else {
 					newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + obj + '"><span>' + (options.nameIsResourceKey
-							? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
-								: getResource(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
+							? (getResourceWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+								: getResourceWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
 				}
 				if(options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0)){
 					addElement(newElement);
@@ -2056,12 +2058,12 @@ $.fn.multipleSelect = function(data) {
 					var newElement;
 					if(options.valuesIsObjectList) {
 						newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
-								? (getResource(options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
-										: getResource(options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
+								? (getResourceWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+										: getResourceWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
 					} else {
 						newElement = $('<li id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" draggable="true" class="draggable ' + id + 'excludedDraggable" value="' + he.encode(obj) + '"><span>' + (options.nameIsResourceKey
-								? (getResource(options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
-									: getResource(options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
+								? (getResourceWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+									: getResourceWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span>&ensp;<i class="fa fa-arrow-down"></i></li>');
 					}
 					if((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty){
 						addElement(newElement);

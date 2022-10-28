@@ -69,6 +69,11 @@
 		$('#tabAttributes').load('${uiPath}/content/userAttributes.html');
 		$('#tabAttributeCategories').load('${uiPath}/content/userAttributeCategories.html');
 		
+		var useNamespace = false;
+		if(currentRealm && currentRealm.resourceCategory) {
+			useNamespace = currentRealm.resourceCategory;
+		}
+		
 	    $('#attributeProperties').propertyPage({
 	    	  url : 'configuration/realm/userProfiles',
 	   	   title: getResource('attributes.title'),
@@ -76,6 +81,7 @@
 	   	   disableDecoration: true,
 	   	   canUpdate: currentMenu.canUpdate,
 	   	   propertyTabsLast: false,
+	   	   i18nNamespace: useNamespace,
 	   	   additionalTabs: [{
 				id : "tabAttributes",
 				name : getResource("attributes.label")
