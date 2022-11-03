@@ -118,7 +118,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--
 			<plugin>
 				<groupId>com.nervepoint</groupId>
 				<artifactId>google-translate-v2-java-maven-plugin</artifactId>
@@ -131,7 +130,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -149,7 +147,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -162,11 +159,9 @@
 					</execution>
 				</executions>
 			</plugin>
-			-->
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
@@ -175,12 +170,11 @@
 						<encoding>UTF-8</encoding>
 						<excludePackageNames>**.impl.*</excludePackageNames>
 
-						https://bugs.openjdk.java.net/browse/JDK-8212233
+						<!-- https://bugs.openjdk.java.net/browse/JDK-8212233 -->
 						<source>11</source>
 						<additionalparam>-Xdoclint:none</additionalparam>
 					</configuration>
 				</plugin>
-				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -196,7 +190,6 @@
 					<artifactId>exec-maven-plugin</artifactId>
 					<version>1.6.0</version>
 				</plugin>
-				<!--
 				<plugin>
 					<groupId>com.nervepoint</groupId>
 					<artifactId>google-translate-v2-java-maven-plugin</artifactId>
@@ -226,7 +219,6 @@
 						</execution>
 					</executions>
 				</plugin>
-				-->
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
@@ -236,7 +228,6 @@
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
-								<!--
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>com.nervepoint</groupId>
@@ -254,7 +245,6 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
-								-->
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -271,16 +261,14 @@
 			<build>
 				<pluginManagement>
 					<plugins>
-						<!--
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-javadoc-plugin</artifactId>
 							<configuration>
-								TODO: Why is this STILL broken!
+								<!-- TODO: Why is this STILL broken! -->
 								<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
 							</configuration>
 						</plugin>
-						-->
 					</plugins>
 				</pluginManagement>
 			</build>
