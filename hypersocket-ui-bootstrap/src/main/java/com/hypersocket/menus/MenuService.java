@@ -96,6 +96,8 @@ public interface MenuService extends AuthenticatedService {
 	
 	static final String MENU_DASHBOARD_HELPZONE = "helpzone"; 
 	
+	static final String TAB_ACTIONS_PRINCIPAL_PROFILE = "principalProfile";
+	
 	
 	List<Menu> getMenus();
 
@@ -104,10 +106,14 @@ public interface MenuService extends AuthenticatedService {
 	boolean registerMenu(MenuRegistration module);
 
 	boolean registerMenu(MenuRegistration module, String parentModule);
+	
+	void registerTabAction(String tab, TabAction action);
 
-	void registerTableAction(String table, AbstractTableAction action);
+	void registerTableAction(String table, TableAction action);
 
-	List<AbstractTableAction> getTableActions(String table);
+	List<TableAction> getTableActions(String table);
+	
+	List<TabAction> getTabActions(String tab);
 
 	void registerFilter(MenuFilter filter);
 

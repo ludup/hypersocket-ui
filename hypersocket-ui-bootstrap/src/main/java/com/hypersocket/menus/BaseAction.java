@@ -4,20 +4,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionType;
 
-public class AbstractTableAction {
+public abstract class BaseAction {
 
-	private String resourceKey;
-	private String iconClass;
-	private String url;
-	private PermissionType[] permissions;
-	private int weight;
-	private String enableFunction;
-	private String displayFunction;
+	protected String resourceKey;
+	protected String iconClass;
+	protected String url;
+	protected PermissionType[] permissions;
+	protected int weight;
+	protected String enableFunction;
+	protected String displayFunction;
 	
-	public AbstractTableAction() {
+	public BaseAction() {
 	}
 
-	public AbstractTableAction(String resourceKey, String iconClass,
+	public BaseAction(String resourceKey, String iconClass,
 			String url, PermissionType permission, int weight, 
 			String enableFunction, String displayFunction) {
 		this.resourceKey = resourceKey;
@@ -29,7 +29,7 @@ public class AbstractTableAction {
 		this.displayFunction = displayFunction;
 	}
 	
-	public AbstractTableAction(String resourceKey, String iconClass,
+	public BaseAction(String resourceKey, String iconClass,
 			String url, int weight, 
 			String enableFunction, String displayFunction, PermissionType... permissions) {
 		this.resourceKey = resourceKey;
