@@ -447,7 +447,7 @@ $.fn.resourceTable = function(params) {
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-								renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="' + (act.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a>';
+								renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="' + (act.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + act.iconClass + '"></i><span class="ml-1">' + getResource(act.resourceKey + ".label") + '</span></a>';
 								$(document).off('click',
 								                '#' + id + 'ActionDropdown .row-' + act.resourceKey);
 								$(document).on(
