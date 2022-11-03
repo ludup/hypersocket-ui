@@ -4,16 +4,18 @@
 
 
 <script type="text/javascript">
-
-      $('#profileContent').propertyPage({
-		   url : 'currentRealm/user/profile',
-		   title: getResource('profile.title'),
-		   icon: 'fa-tags',
-		   canUpdate: currentMenu.canUpdate,
-		   complete: function() {
-			   loadComplete();
-		   }
-      });
-   
-      
+	var realmCategory = getAnchorByName('realmCategory');
+	if (!realmCategory) {
+		realmCategory = currentRealm.resourceCategory;
+	}
+	$('#profileContent').propertyPage({
+		url : 'currentRealm/user/profile',
+		title : getResource('profile.title'),
+		icon : 'fa-tags',
+		canUpdate : currentMenu.canUpdate,
+		i18nNamespace: realmCategory,
+		complete : function() {
+			loadComplete();
+		}
+	});
 </script>
