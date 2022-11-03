@@ -447,7 +447,7 @@ $.fn.resourceTable = function(params) {
 						options.additionalActions,
 						function(x, act) {
 							if (act.enabled) {
-								renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="' + (act.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + act.iconClass + '"></i><span class="ml-1">' + getResource(act.resourceKey + ".label") + '</span></a>';
+								renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="' + (act.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + act.iconClass + '"></i>&nbsp;&nbsp;<span>' + getResource(act.resourceKey + ".label") + '</span></a>';
 								$(document).off('click',
 								                '#' + id + 'ActionDropdown .row-' + act.resourceKey);
 								$(document).on(
@@ -2282,14 +2282,11 @@ $.fn.extendedResourcePanel = function(params){
     var options = $.extend({tabIcon: 'fa-cog'}, params);
 
     var id = $(this).attr('id');
-    
     if(id == null || typeof id == 'undefined' || id.trim().length == 0) {
         id = 'lb_tab_' + options.resource.id.toString();
     }
-    
     var tabContentHolderId = id + 'Tabs';
     var tabsId = 'tabs' + id.charAt(0).toUpperCase() + id.substring(1);
-    
     $(this).empty();
     $(this).append('<div id=' + tabContentHolderId + '></div>');
     var $tabContentHolder = $('#' + tabContentHolderId);
@@ -2306,7 +2303,6 @@ $.fn.extendedResourcePanel = function(params){
             var tabArray = [];
             $.each(tabList,function(index, value){
                 var tabId = id + value.resourceKey.charAt(0).toUpperCase() + value.resourceKey.substring(1);
-                 
                 tabArray.push({id : tabId, name: getResource(value.resourceKey + '.label')});
                 $tabContentHolder.append('<div id=' + tabId + '></div>');
                 $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){
@@ -2318,60 +2314,8 @@ $.fn.extendedResourcePanel = function(params){
                     $.each(elements, function(i, element) {
                         $(element).attr('dialog-for', $(element).attr('dialog-for') + '_' + options.resource.id);
                     });
-                    
-                    const tab = $('#' + tabId);
-                    const tabContent = tab.children('.extendedTabContent');
-                    
-                    if (tabContent.length > 0) {
-	
-						const { resource, data } = options;
-						
-                        tabContent.data('initPage')(resource, data, value.readOnly);
-                        
-                        const tabContentActionsHolders = tabContent.find(".extendedTabContentActions");
-                        
-                        if (tabContentActionsHolders.length > 0) {
-							$.each(tabContentActionsHolders,function(idx, tabContentActionsHolder) {
-								
-								const { resourceKey } = value;
-					
-								if (resourceKey) {
-									getJSON('menus/tabActions/' + resourceKey, null, function(data) {
-										if (data.resources.length > 0) {
-											$.each(data.resources, function(idx, action) {
-												
-												const actionLink = 'lb_action_link_' + resource.id.toString() + action.resourceKey;
-												
-												tabContentActionsHolders.append('<a href="#" id="' + actionLink + '">'  
-													+  '<i class="' + (action.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + action.iconClass + '"></i>'
-												 	+ '<span class="ml-1">' + getResource(action.resourceKey + ".label") + '</span></a>');
-												 	
-												 	const div = action.resourceKey + 'Div';
-													tabContentActionsHolders.append('<div id="' + div + '"></div>');
-													loadContent('#' + div, uiPath + '/content/' + action.url + '.html', () => {
-														const actionFunction = $('#' + action.resourceKey).data('action');
-														if(actionFunction) {
-															$(document).off('click', '#' + actionLink);
-															$(document).on('click', '#' + actionLink, function(e) {
-																 e.preventDefault();
-																 
-																 actionFunction(resource, function(resource) {
-						                                            if (data && data.parentContainer) {
-																 		$(data.parentContainer + ' table').bootstrapTable('refresh');
-																 	}
-						                                            checkBadges(false);
-						                                        });
-																 
-															});
-														}
-													});
-											});
-										}
-									});
-								}
-					
-							});
-						}
+                    if($('#' + tabId).children('.extendedTabContent').length > 0) {
+                        $('#' + tabId).children('.extendedTabContent').data('initPage')(options.resource, options.data, value.readOnly);
                     }
                 });
             });
