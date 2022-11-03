@@ -90,8 +90,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 	private Map<String, MenuRegistration> rootMenus = new HashMap<String, MenuRegistration>();
 	private Map<String, List<MenuRegistration>> pendingMenus = new HashMap<String, List<MenuRegistration>>();
-	private Map<String, List<TableAction>> registeredActions = new HashMap<String, List<TableAction>>();
-	private Map<String, List<TabAction>> registeredTabActions = new HashMap<String, List<TabAction>>();
+	private Map<String, List<AbstractTableAction>> registeredActions = new HashMap<String, List<AbstractTableAction>>();
 	private List<BadgeProvider> badgeProviders = new ArrayList<BadgeProvider>();
 	private Map<String, List<TabRegistration>> extendedInformationTabs = new HashMap<>();
 	private List<MenuFilter> filters = new ArrayList<MenuFilter>();
@@ -371,35 +370,35 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 					SystemPermission.SYSTEM_ADMINISTRATION), "dictionary");
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
-				new TableAction("downloadCSR", "fa-certificate",
+				new AbstractTableAction("downloadCSR", "fa-certificate",
 						"downloadCSR", CertificateResourcePermission.UPDATE, 0,
 						null, null));
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
-				new TableAction("certificateUpload", "fa-upload",
+				new AbstractTableAction("certificateUpload", "fa-upload",
 						"certificateUpload",
 						CertificateResourcePermission.UPDATE, 100, null, null));
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
-				new TableAction("pemUpload", "fa-upload", "pemUpload",
+				new AbstractTableAction("pemUpload", "fa-upload", "pemUpload",
 						CertificateResourcePermission.UPDATE, 200, null, null));
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
-				new TableAction("pfxUpload", "fa-upload", "pfxUpload",
+				new AbstractTableAction("pfxUpload", "fa-upload", "pfxUpload",
 						CertificateResourcePermission.UPDATE, 300, null, null));
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
-				new TableAction("downloadCertificate", "fa-download",
+				new AbstractTableAction("downloadCertificate", "fa-download",
 						"downloadCertificate",
 						CertificateResourcePermission.READ, 400, null, null));
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
-				new TableAction("pemExport", "fa-download",
+				new AbstractTableAction("pemExport", "fa-download",
 						"pemExport", CertificateResourcePermission.READ, 500,
 						null, null));
 
 		registerTableAction(MenuService.ACTIONS_CERTIFICATES,
-				new TableAction("pfxExport", "fa-download",
+				new AbstractTableAction("pfxExport", "fa-download",
 						"pfxExport", CertificateResourcePermission.READ, 600,
 						null, null));
 
@@ -506,7 +505,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				MenuService.MENU_RESOURCES, "", null, 300, null, null, null,
 				null));
 		
-		registerTableAction(MenuService.ACTIONS_USERS, new TableAction(
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"setPassword", "fa-key", "password", 0,
 				null, null, UserPermission.UPDATE, PasswordPermission.RESET) {
 			public boolean isEnabled() {
@@ -514,35 +513,39 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		});
 		
-		registerTableAction(MenuService.ACTIONS_USERS, new TableAction(
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"impersonateUser", "fa-male", "impersonateUser",
 				UserPermission.IMPERSONATE, 0, null, "canImpersonateUser"));
 		
-		registerTableAction(MenuService.ACTIONS_USERS, new TableAction(
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
+				"resetProfile", "fa-ban", "resetProfile",
+				0, null, null, UserPermission.UPDATE, UserPermission.DELETE));
+
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"suspendUser", "fa-ban", "suspendUser",
 				UserPermission.LOCK, 0, null, "isSuspended"));
 
-		registerTableAction(MenuService.ACTIONS_USERS, new TableAction(
+		registerTableAction(MenuService.ACTIONS_USERS, new AbstractTableAction(
 				"resumeUser", "fa-check", "resumeUser",
 				UserPermission.UNLOCK, 0, null, "isResumed"));
 
 		registerTableAction(MenuService.ACTIONS_REALMS,
-				new TableAction("defaultRealm", "fa-tag",
+				new AbstractTableAction("defaultRealm", "fa-tag",
 						"defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION,
 						0, "isDefault", null));
 		
 		registerTableAction(MenuService.ACTIONS_USERS,
-				new TableAction("deleteAccount", "fa-trash",
+				new AbstractTableAction("deleteAccount", "fa-trash",
 						"deleteAccount", UserPermission.DELETE, 900, "canDelete",
 						null));
 		
 		registerTableAction(MenuService.ACTIONS_GROUPS,
-				new TableAction("deleteGroup", "fa-trash",
+				new AbstractTableAction("deleteGroup", "fa-trash",
 						"deleteGroup", GroupPermission.DELETE, 900, "canDelete",
 						null));
 
 		registerTableAction(MenuService.TOOLBAR_USERS,
-				new TableAction("deleteAccounts", "fa-trash",
+				new AbstractTableAction("deleteAccounts", "fa-trash",
 						"deleteAccounts", null, 0, null,
 						"") {
 							@Override
@@ -555,7 +558,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		});
 
 		registerTableAction(MenuService.TOOLBAR_GROUPS,
-				new TableAction("deleteGroups", "fa-trash",
+				new AbstractTableAction("deleteGroups", "fa-trash",
 						"deleteGroups", null, 0, null,
 						"") {
 							@Override
@@ -642,7 +645,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}, "messageMenu");
 		
 		registerTableAction("messagesActions",
-				new TableAction("sendTestMessage", "fa-paper-plane", "sendTestMessage", 100, null,
+				new AbstractTableAction("sendTestMessage", "fa-paper-plane", "sendTestMessage", 100, null,
 						null, MessageResourcePermission.CREATE, MessageResourcePermission.READ,
 						MessageResourcePermission.DELETE));
 
@@ -668,7 +671,7 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		
 		registerTableAction(MenuService.ACTIONS_USERS,
-				new TableAction("forceProfileSync", "fa-refresh",
+				new AbstractTableAction("forceProfileSync", "fa-refresh",
 						"forceProfileSync", null, 0, null,
 						"") {
 							@Override
@@ -772,26 +775,22 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	}
 
 	@Override
-	public void registerTableAction(String table, TableAction action) {
+	public void registerTableAction(String table, AbstractTableAction action) {
 		if (!registeredActions.containsKey(table)) {
-			registeredActions.put(table, new ArrayList<TableAction>());
+			registeredActions.put(table, new ArrayList<AbstractTableAction>());
 		}
 		registeredActions.get(table).add(action);
 	}
-	
+
 	@Override
-	public void registerTabAction(String tab, TabAction action) {
-		if (!registeredTabActions.containsKey(tab)) {
-			registeredTabActions.put(tab, new ArrayList<TabAction>());
+	public List<AbstractTableAction> getTableActions(String table) {
+		if (!registeredActions.containsKey(table)) {
+			return new ArrayList<AbstractTableAction>();
 		}
-		registeredTabActions.get(tab).add(action);
-	}
-	
-	public List<? extends BaseAction> getActions(List<? extends BaseAction> baseActions) {
+
+		List<AbstractTableAction> results = new ArrayList<AbstractTableAction>();
 		
-		var results = new ArrayList<BaseAction>();
-		
-		for (var action : baseActions) {
+		for (AbstractTableAction action : registeredActions.get(table)) {
 
 			try {
 				boolean hasPermission = action.canRead();
@@ -817,35 +816,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 
 		}
 
-		Collections.sort(results, new Comparator<BaseAction>() {
+		Collections.sort(results, new Comparator<AbstractTableAction>() {
 			@Override
-			public int compare(BaseAction o1, BaseAction o2) {
+			public int compare(AbstractTableAction o1, AbstractTableAction o2) {
 				return Integer.valueOf(o1.getWeight()).compareTo(o2.getWeight());
 			}
 		});
 
 		return results;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<TableAction> getTableActions(String table) {
-		
-		if (!registeredActions.containsKey(table)) {
-			return new ArrayList<TableAction>();
-		}
-		
-		return (List<TableAction>) getActions(registeredActions.get(table));
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<TabAction> getTabActions(String tab) {
-		if (!registeredTabActions.containsKey(tab)) {
-			return new ArrayList<TabAction>();
-		}
-
-		return (List<TabAction>) getActions(registeredTabActions.get(tab));
 	}
 
 	public Menu getMenu(String resourceKey) {
