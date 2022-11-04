@@ -40,10 +40,15 @@
 					}
 
 					el2.append('<h4 localize="credentials.text"></h4>');
-
-					$.each(data.resource.credentials, function(idx, creds) {
-						el2.append('<div class="row"><label localize="' + creds.resourceKey + '" class="col-sm-6"></label><span class="col-sm-6">' + creds.state + '</span></div>');
-					});
+					
+					if (data.resource.credentials && data.resource.credentials.length > 0) {
+						$.each(data.resource.credentials, function(idx, creds) {
+							el2.append('<div class="row"><label localize="' + creds.resourceKey + '" class="col-sm-6"></label><span class="col-sm-6">' + creds.state + '</span></div>');
+						});
+					} else {
+						el2.append('<div><span class="font-weight-bold" localize="text.noData"></span></div>');
+					}
+					
 
 					_$('#principalProfileContainer').append('<div class="row"><div class="col-sm-12"><a  id="force_' + resource.id + '" href="#"><span localize="forceSync.text"></span></a> | <a id="reset_' + resource.id + '" href="#"><span localize="resetProfile.label"></span></a></div></div>');
 
