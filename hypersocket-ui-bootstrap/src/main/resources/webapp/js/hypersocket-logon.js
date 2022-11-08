@@ -123,19 +123,22 @@ function processLogon(data, opts, message) {
 		opts.formContent.append(
 			'<div class="col"><div class="logonFormContainer mt-4"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin ml-auto mr-auto") + ' mt-4 p-4" role="form"/></div></div>');
 
-		showFlashMessage(data);
-
 		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
 
 		var links = new Array();
 		var scripts = new Array();
 		var setFocus = false;
+		var isAlert = false;
+		
 		if(data.formTemplate) {
 
 			$('#logonForm').before('<h4 class="text-center form-scheme-heading">' 
 					+ getResourceOrDefault(data.formTemplate.scheme 
 					+ '.logon.title', data.formTemplate.scheme ) + '</h4>');
 			$.each(data.formTemplate.inputFields, function() {
+				if(this.alert) {
+					isAlert = true;
+				}
 				if (this.type == 'hidden') {
 					$('#logonForm').append('<input type="' + this.type + '" name="'
 								+ this.resourceKey + '" autocomplete="off" id="'
@@ -330,6 +333,10 @@ function processLogon(data, opts, message) {
 			});
 		}
 		
+		if(!isAlert) {
+			showFlashMessage(data);
+		}
+		
 		 $('#logonForm').append('<input  type="hidden" name="csrf" value="' + getCsrfToken() + '"/>');
 
 		$.each(scripts, function(idx, script) {
@@ -355,7 +362,7 @@ function processLogon(data, opts, message) {
 			}
 		}
 
-		if(!data.postAuthentication) {
+		if(!data.postAuthentication || !data.success) {
 			if(data.formTemplate.overrideStartAgain || (!data.first && data.formTemplate.showStartAgain)) {
 				$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 				$('#resetLogon').click(function(e) {
