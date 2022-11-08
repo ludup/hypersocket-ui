@@ -112,19 +112,21 @@ function processLogon(data, opts, message) {
 		opts.formContent.append(
 			'<div><form id="logonForm" autocomplete="off" class="panel panel-default ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin") + '" role="form"/></div>');
 
-		showFlashMessage(data);
-
 		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
 
 		var links = new Array();
 		var scripts = new Array();
 		var setFocus = false;
+		var isAlert = false;
+		
 		if(data.formTemplate) {
-
 			$('#logonForm').before('<h1 class="form-scheme-heading">' 
 					+ getResourceOrDefault(data.formTemplate.scheme 
 					+ '.logon.title', data.formTemplate.scheme ) + '</h1>');
 			$.each(data.formTemplate.inputFields, function() {
+				if(this.alert) {
+					isAlert = true;
+				}
 				if (this.type == 'hidden') {
 					$('#logonForm').append('<input type="' + this.type + '" name="'
 								+ this.resourceKey + '" autocomplete="off" id="'
@@ -318,6 +320,10 @@ function processLogon(data, opts, message) {
                 }
 			});
 		}
+		
+		if(!isAlert) {
+			showFlashMessage(data);
+		}
 
 		$.each(scripts, function(idx, script) {
 			log('Executing script ' + script.resourceKey);
@@ -342,7 +348,7 @@ function processLogon(data, opts, message) {
 			}
 		}
 
-		if(!data.postAuthentication) {
+		if(!data.postAuthentication || !data.success) {
 			if(data.formTemplate.overrideStartAgain || (!data.first && data.formTemplate.showStartAgain)) {
 				$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 				$('#resetLogon').click(function(e) {
