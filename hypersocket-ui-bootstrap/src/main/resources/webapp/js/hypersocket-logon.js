@@ -348,7 +348,7 @@ function processLogon(data, opts, message) {
 			}
 		}
 
-		if(!data.postAuthentication || !data.success) {
+		if(!data.postAuthentication || isAlert) {
 			if(data.formTemplate.overrideStartAgain || (!data.first && data.formTemplate.showStartAgain)) {
 				$('#logonForm').append('<div class="logonLink center"><a id="resetLogon" href="#">' + getResource("restart.logon") + '</a></div>');
 				$('#resetLogon').click(function(e) {
