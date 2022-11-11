@@ -1308,6 +1308,20 @@ function log(str) {
 	window.console.log(str);
 }
 
+function warn(str) {
+	if(!window.console) {
+		return;
+	}
+	window.console.warn(str);
+}
+
+function error(str) {
+	if(!window.console) {
+		return;
+	}
+	window.console.error(str);
+}
+
 function stripNull(str) {
 	return str==null ? "" : str;
 }
