@@ -1,14 +1,21 @@
 <div data-id="principalProfile" class="extendedTabContent">
 	<div data-id="principalProfileContainer" class="container-fluid">
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div data-id="profileTab"></div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div data-id="credentialsTab"></div>
 			</div>
-			<div class="col-md-4">
-				<div data-id="profileTabActions" class="extendedTabContentActions"></div>
+		</div>
+		<div id="syncProfileOptionsContainer">
+		</div>
+		<div class="row">
+			<div class="col-md-6 offset-md-6">
+				<div>
+					<h4 localize="text.actions"></h4>
+					<div data-id="profileTabActions" class="extendedTabContentActions"></div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -43,14 +50,14 @@
 					
 					if (data.resource.credentials && data.resource.credentials.length > 0) {
 						$.each(data.resource.credentials, function(idx, creds) {
-							el2.append('<div class="row"><label localize="' + creds.resourceKey + '" class="col-sm-6"></label><span class="col-sm-6">' + creds.state + '</span></div>');
+							el2.append('<div class="row"><label localize="' + creds.resourceKey + '" class="col-sm-4"></label><span class="col-sm-3">' + creds.state + '</span><span id="parent_container_tab_action_' + creds.resourceKey + '" class="col-sm-5"></span></div>');
 						});
 					} else {
 						el2.append('<div><span class="font-weight-bold" localize="text.noData"></span></div>');
 					}
 					
 
-					_$('#principalProfileContainer').append('<div class="row"><div class="col-sm-12"><a  id="force_' + resource.id + '" href="#"><span localize="forceSync.text"></span></a> | <a id="reset_' + resource.id + '" href="#"><span localize="resetProfile.label"></span></a></div></div>');
+					$('#syncProfileOptionsContainer').append('<div class="row"><div class="col-sm-12"><a  id="force_' + resource.id + '" href="#"><span localize="forceSync.text"></span></a> | <a id="reset_' + resource.id + '" href="#"><span localize="resetProfile.label"></span></a></div></div>');
 
 					var force = _$('#force');
 					force.click(function(e) {

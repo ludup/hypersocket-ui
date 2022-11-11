@@ -2234,7 +2234,7 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 	};
 };
 
-$.fn.extendedResourcePanel = function(params){
+$.fn.extendedResourcePanel = function(params) {
     var options = $.extend({tabIcon: 'fa-cog'}, params);
 
     var id = $(this).attr('id');
@@ -2250,96 +2250,214 @@ $.fn.extendedResourcePanel = function(params){
     $(this).append('<div id=' + tabContentHolderId + '></div>');
     var $tabContentHolder = $('#' + tabContentHolderId);
     $tabContentHolder.append('<div id=' + tabsId + '></div>');
-
-    getJSON('menus/extendedResourceInfo/' + options.resourceKey, null, function(data) {
-        if(data.success) {
-            var tabList = data.resources;
-            if(tabList == null || typeof tabList == 'undefined' || tabList.length == 0) {
-                $tabContentHolder.empty().html('<div class="well well-sm text-center">' + getResource('tabs.not.found') + '</div>');
-                return;
-            }
-            tabList.sort(function(obj1, obj2){ return obj1.weight - obj2.weight});
-            var tabArray = [];
-            $.each(tabList,function(index, value){
-                var tabId = id + value.resourceKey.charAt(0).toUpperCase() + value.resourceKey.substring(1);
-                 
-                tabArray.push({id : tabId, name: getResource(value.resourceKey + '.label')});
-                $tabContentHolder.append('<div id=' + tabId + '></div>');
-                $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){
-                    var elements = $('#' + tabId).find('[data-id]');
-                    $.each(elements, function(i, element) {
-                        $(element).attr('id', $(element).attr('data-id') + '_' + options.resource.id);
-                    });
-                    elements = $('#' + tabId).find('[dialog-for]');
-                    $.each(elements, function(i, element) {
-                        $(element).attr('dialog-for', $(element).attr('dialog-for') + '_' + options.resource.id);
-                    });
-                    
-                    const tab = $('#' + tabId);
-                    const tabContent = tab.children('.extendedTabContent');
-                    
-                    if (tabContent.length > 0) {
+    
+    getJSON('authSchemes/current', null, (data) => {
 	
-						const { resource, data } = options;
+		var authSchemes = [];
+		
+		if (data.success && data.resources) {
+			authSchemes = data.resources;
+		}
+		
+		processTabList(options, authSchemes);
+		
+	});
+
+    
+    function processTabList(options, authSchemes) {
+	
+		getJSON('menus/extendedResourceInfo/' + options.resourceKey, null, function(data) {
+	        if(data.success) {
+	            var tabList = data.resources;
+	            if(tabList == null || typeof tabList == 'undefined' || tabList.length == 0) {
+	                $tabContentHolder.empty().html('<div class="well well-sm text-center">' + getResource('tabs.not.found') + '</div>');
+	                return;
+	            }
+	            tabList.sort(function(obj1, obj2){ return obj1.weight - obj2.weight});
+	            var tabArray = [];
+	            $.each(tabList,function(index, value){
+	                var tabId = id + value.resourceKey.charAt(0).toUpperCase() + value.resourceKey.substring(1);
+	                 
+	                tabArray.push({id : tabId, name: getResource(value.resourceKey + '.label')});
+	                $tabContentHolder.append('<div id=' + tabId + '></div>');
+	                $('#' + tabId).load(uiPath + '/content/' + value.url + '.html', null, function(){
+	                    var elements = $('#' + tabId).find('[data-id]');
+	                    $.each(elements, function(i, element) {
+	                        $(element).attr('id', $(element).attr('data-id') + '_' + options.resource.id);
+	                    });
+	                    elements = $('#' + tabId).find('[dialog-for]');
+	                    $.each(elements, function(i, element) {
+	                        $(element).attr('dialog-for', $(element).attr('dialog-for') + '_' + options.resource.id);
+	                    });
+	                    
+	                    var tab = $('#' + tabId);
+	                    var tabContent = tab.children('.extendedTabContent');
+	                    
+	                    if (tabContent.length > 0) {
+		
+							var resource = options.resource;
+							var data = options.data;
+							
+	                        tabContent.data('initPage')(resource, data, value.readOnly);
+	                        
+	                        processTabContent(value, tabContent, resource, authSchemes);
+	                        
+	                    }
+	                });
+	            });
+	
+	            $tabContentHolder.tabPage({
+	                title : getResource(options.resourceKey + '.label'),
+	                icon : options.tabIcon,
+	                tabs : tabArray,
+	                complete : function() {
+	                    loadComplete();
+	                }
+	            });
+        	}
+    	});
+	}
+	
+	function shouldProcessLinkIfAuthenticator(properties, authSchemes) {
+		
+		var actionType = properties.actionType;
+		var resourceKey = properties.resourceKey;
+		
+		if (!actionType) {
+			return true;
+		}
+		
+		return actionType === "authenticator" 
+			&& authSchemes.indexOf(resourceKey) != -1;
+	}
+	
+	function createActionLink(tabContentActionsHolders, properties, action, resource) {
+		
+		var appendTo = tabContentActionsHolders
+					
+		var actionLink = 'lb_tab_action_link_' + resource.id.toString() + action.resourceKey;
+		
+		var parentContainer = properties.parentContainer;
+		
+		if (parentContainer) {
+			
+			 const tabParentContainer = $('#' + parentContainer);	
+			 
+			 if (tabParentContainer.length > 0) {
+			 	appendTo = tabParentContainer;
+			 } else {
+				warn("The parent container value is present but not found " + JSON.stringify(parentContainer));
+			 }
+		}
+	
+		appendTo.append('<a class="d-sm-inline d-md-block lb-tab-action" href="#" id="' + actionLink + '">'  
+			+  '<i class="' + (action.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + action.iconClass + '"></i>'
+ 			+ '<span class="ml-1">' + getResource(action.resourceKey + ".label") + '</span></a>');
+ 			
+ 		return actionLink;	
+				 			
+	}
+	
+	function processActionLink(tabContentActionsHolders, resourceKey, resource, authSchemes, cb) {
+		
+		var length = 0;
+		var passedCb = cb;
+		
+		function callCallback(idx, action) {
+			if (passedCb && (idx === length - 1)) passedCb(action);
+		}
+		
+		getJSON('menus/tabActions/' + resourceKey, null, function(data) {
+			if (data.resources.length > 0) {
+				
+				length = data.resources.length;
+				
+				$.each(data.resources, function(idx, action) {
+					
+					var properties = action.properties;
+					
+					if (!shouldProcessLinkIfAuthenticator(properties, authSchemes)) {
+						warn("The tab action with resource key " + JSON.stringify(action) + " not present in auth scheme list.");
+						callCallback(idx, action);
+						return;
+					}
+					
+				 	var div = action.resourceKey + 'Div';
+					tabContentActionsHolders.append('<div id="' + div + '"></div>');
+					loadContent('#' + div, uiPath + '/content/' + action.url + '.html', () => {
 						
-                        tabContent.data('initPage')(resource, data, value.readOnly);
-                        
-                        const tabContentActionsHolders = tabContent.find(".extendedTabContentActions");
-                        
-                        if (tabContentActionsHolders.length > 0) {
-							$.each(tabContentActionsHolders,function(idx, tabContentActionsHolder) {
-								
-								const { resourceKey } = value;
-					
-								if (resourceKey) {
-									getJSON('menus/tabActions/' + resourceKey, null, function(data) {
-										if (data.resources.length > 0) {
-											$.each(data.resources, function(idx, action) {
-												
-												const actionLink = 'lb_action_link_' + resource.id.toString() + action.resourceKey;
-												
-												tabContentActionsHolders.append('<a href="#" id="' + actionLink + '">'  
-													+  '<i class="' + (action.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + action.iconClass + '"></i>'
-												 	+ '<span class="ml-1">' + getResource(action.resourceKey + ".label") + '</span></a>');
-												 	
-												 	const div = action.resourceKey + 'Div';
-													tabContentActionsHolders.append('<div id="' + div + '"></div>');
-													loadContent('#' + div, uiPath + '/content/' + action.url + '.html', () => {
-														const actionFunction = $('#' + action.resourceKey).data('action');
-														if(actionFunction) {
-															$(document).off('click', '#' + actionLink);
-															$(document).on('click', '#' + actionLink, function(e) {
-																 e.preventDefault();
-																 
-																 actionFunction(resource, function(resource) {
-						                                            if (data && data.parentContainer) {
-																 		$(data.parentContainer + ' table').bootstrapTable('refresh');
-																 	}
-						                                            checkBadges(false);
-						                                        });
-																 
-															});
-														}
-													});
-											});
-										}
-									});
-								}
-					
+						if(action.displayFunction && action.displayFunction != '') {
+							const display = window[action.displayFunction].apply(null, [resource, action]);
+							if(!display) {
+								warn("The tab action with resource key " + JSON.stringify(action) + " will not be displayed as per displayed function.");
+								callCallback(idx, action);
+								return;
+							}
+						} 
+				
+						var makeDisabled = undefined;
+						if(action.enableFunction && action.enableFunction != '') {
+							makeDisabled = window[action.enableFunction].apply(null, [resource, action]);
+						} 
+						
+						var actionLink = createActionLink(tabContentActionsHolders, properties, action, resource);
+			
+						
+						var actionDefinition = $('#' + action.resourceKey);
+						var actionFunction = actionDefinition.data('action');
+						if(actionFunction) {
+							
+							$(document).off('click', '#' + actionLink);
+							
+							if (makeDisabled) {
+								warn("The tab action with resource key " + JSON.stringify(action) + " will be marked disabled as per diable function.");
+								callCallback(idx, action);
+								return;	
+							}
+							
+							$(document).on('click', '#' + actionLink, function(e) {
+								 e.preventDefault();
+								 
+								 actionFunction(resource, function(resource) {
+                                    if (data && data.parentContainer) {
+								 		$(data.parentContainer + ' table').bootstrapTable('refresh');
+								 	}
+                                    checkBadges(false);
+                                });
+								 
 							});
 						}
-                    }
-                });
-            });
-
-            $tabContentHolder.tabPage({
-                title : getResource(options.resourceKey + '.label'),
-                icon : options.tabIcon,
-                tabs : tabArray,
-                complete : function() {
-                    loadComplete();
-                }
-            });
-        }
-    });
+						
+						callCallback(idx, action);
+					});
+				});
+			}
+		});
+	}
+    
+    function processTabContent(value, tabContent, resource, authSchemes) {
+	
+		const tabContentActionsHolders = tabContent.find(".extendedTabContentActions");
+                        
+	    if (tabContentActionsHolders.length > 0) {
+			$.each(tabContentActionsHolders,function() {
+				
+				var resourceKey = value.resourceKey;
+				
+				if (resourceKey) {
+					processActionLink(tabContentActionsHolders, resourceKey, resource, authSchemes, (action) => {
+						var links = tabContentActionsHolders.find(".lb-tab-action");
+			
+						if (links.length == 0) {
+							var text = getResourceOrText("text.noAction");
+							tabContentActionsHolders.append('<div><span>' + text + '</span></div>');
+						}
+					});
+				} else {
+					warn("No resource data found " + JSON.stringify(value));
+				}
+	
+			});
+		}
+	}
 };
