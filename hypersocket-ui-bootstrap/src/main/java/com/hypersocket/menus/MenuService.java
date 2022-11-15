@@ -11,6 +11,9 @@ import java.util.Collection;
 import java.util.List;
 
 import com.hypersocket.auth.AuthenticatedService;
+import com.hypersocket.permissions.AccessDeniedException;
+import com.hypersocket.profile.Profile;
+import com.hypersocket.realm.Principal;
 
 public interface MenuService extends AuthenticatedService {
 
@@ -128,6 +131,8 @@ public interface MenuService extends AuthenticatedService {
 	void registerExtendedInformationTab(String tab, TabRegistration tabRegistration);
 
 	List<Tab> getExtendedInformationTab(String tab);
+	
+	Profile getProfileForUserWithIcons(String tab, Principal target) throws AccessDeniedException;
 
 	default Menu getMenuForPath(String path) {
 		return getMenuForPath(getMenus(), path);

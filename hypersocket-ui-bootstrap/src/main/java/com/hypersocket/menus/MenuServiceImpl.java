@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -44,8 +45,11 @@ import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionStrategy;
 import com.hypersocket.permissions.PermissionType;
 import com.hypersocket.permissions.SystemPermission;
+import com.hypersocket.profile.Profile;
+import com.hypersocket.profile.ProfileCredentialsService;
 import com.hypersocket.realm.GroupPermission;
 import com.hypersocket.realm.PasswordPermission;
+import com.hypersocket.realm.Principal;
 import com.hypersocket.realm.ProfilePermission;
 import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
@@ -87,6 +91,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	
 	@Autowired
 	private OverviewWidgetService widgetService; 
+	
+	@Autowired
+	private ProfileCredentialsService credentialsService; 
 
 	private Map<String, MenuRegistration> rootMenus = new HashMap<String, MenuRegistration>();
 	private Map<String, List<MenuRegistration>> pendingMenus = new HashMap<String, List<MenuRegistration>>();
@@ -499,7 +506,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
                 new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.READ, 100));
 		
 		registerExtendedInformationTab("principalTabs",
-                new TabRegistration("principalProfile", "principalProfile", UserPermission.READ, 0));
+                new TabRegistration("principalAddress", "principalAddress", UserPermission.READ, 0));
+		
+		registerExtendedInformationTab("principalTabs",
+                new TabRegistration("principalProfile", "principalProfile", UserPermission.READ, 2));
 		
 		registerExtendedInformationTab("principalTabs",
                 new TabRegistration("principalLinkedAccounts", "principalLinkedAccounts", UserPermission.READ, 3) {
@@ -1062,5 +1072,39 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 			}
 		}
 		return processedTabRegistration;
+	}
+	
+	@Override
+	public Profile getProfileForUserWithIcons(String tab, Principal target) throws AccessDeniedException {
+		
+		var profile = credentialsService.getProfileForUser(target);
+		
+		var tabActions = registeredTabActions.get(tab); 
+		
+		if (tabActions != null) {
+			
+			var grouping = tabActions.stream().filter(ta -> {
+				return ta.getProperties().containsKey(TabAction.COMMON_PROPERTY_RESOURCE_KEY);
+			}).collect(Collectors.groupingBy(TabAction::getCommonResourceKey));
+			
+			if (profile != null) {
+				var credentials = profile.getCredentials();
+				if (credentials != null) {
+					credentials.stream().forEach(c -> {
+						var resourceKey = c.getResourceKey();
+						var action = grouping.get(resourceKey);
+						if (action != null) {
+							c.setIconClass(action.get(0).getIconClass());
+						}
+					});
+				}
+			}
+		}
+		
+		
+		
+		
+		
+		return profile;
 	}
 }

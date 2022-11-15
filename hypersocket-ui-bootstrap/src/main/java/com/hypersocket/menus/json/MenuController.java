@@ -28,18 +28,20 @@ import com.hypersocket.auth.json.UnauthorizedException;
 import com.hypersocket.context.AuthenticatedContext;
 import com.hypersocket.json.ResourceList;
 import com.hypersocket.json.ResourceStatus;
-import com.hypersocket.menus.TabAction;
-import com.hypersocket.menus.TableAction;
 import com.hypersocket.menus.Badge;
 import com.hypersocket.menus.Menu;
 import com.hypersocket.menus.MenuService;
 import com.hypersocket.menus.Tab;
+import com.hypersocket.menus.TableAction;
 import com.hypersocket.permissions.AccessDeniedException;
 import com.hypersocket.permissions.PermissionService;
 import com.hypersocket.permissions.PermissionStrategy;
 import com.hypersocket.permissions.SystemPermission;
+import com.hypersocket.profile.Profile;
+import com.hypersocket.realm.Principal;
 import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
+import com.hypersocket.resource.ResourceNotFoundException;
 import com.hypersocket.session.json.SessionTimeoutException;
 
 @Controller
@@ -142,20 +144,6 @@ public class MenuController extends AuthenticatedController {
 				menuService.getTableActions(table));
 	}
 	
-	@AuthenticationRequired
-	@RequestMapping(value = "menus/tabActions/{tab}", method = RequestMethod.GET, produces = { "application/json" })
-	@ResponseBody
-	@ResponseStatus(value = HttpStatus.OK)
-	@AuthenticatedContext
-	public ResourceList<TabAction> getTabActions(
-			HttpServletRequest request, HttpServletResponse respone,
-			@PathVariable String tab) throws UnauthorizedException,
-			SessionTimeoutException {
-
-		return new ResourceList<TabAction>(
-				menuService.getTabActions(tab));
-	}
-	
 	@AuthenticationRequiredButDontTouchSession
 	@RequestMapping(value = "menus/badges", method = RequestMethod.GET, produces = { "application/json" })
 	@ResponseBody
@@ -182,5 +170,26 @@ public class MenuController extends AuthenticatedController {
 
 		return new ResourceList<Tab>(
 				menuService.getExtendedInformationTab(tab));
+	}
+	
+	@AuthenticationRequired
+	@RequestMapping(value = "menus/{tab}/userProfile/{id}", method = RequestMethod.GET, produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
+	public ResourceStatus<Profile> getUserProfile(HttpServletRequest request, 
+			HttpServletResponse response, @PathVariable String tab,
+			@PathVariable Long id)
+			throws AccessDeniedException, UnauthorizedException,
+			ResourceNotFoundException, SessionTimeoutException {
+		try {
+			Principal principal = realmService.getPrincipalById(id);
+			if(principal ==null)
+				throw new IllegalStateException("Invalid principal");
+			
+			return new ResourceStatus<>(menuService.getProfileForUserWithIcons(tab,principal));
+		} catch(Throwable t) { 
+			return new ResourceStatus<>(false, t.getMessage());
+		}
 	}
 }
