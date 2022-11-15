@@ -2331,13 +2331,19 @@ $.fn.extendedResourcePanel = function(params) {
 			&& authSchemes.indexOf(resourceKey) != -1;
 	}
 	
-	function createActionLink(tabContentActionsHolders, properties, action, resource) {
+	function createActionLink(action, resource) {
 		
-		var appendTo = tabContentActionsHolders
+		var properties = action.properties;
+		
+		var appendTo = undefined;
 					
 		var actionLink = 'lb_tab_action_link_' + resource.id.toString() + action.resourceKey;
 		
 		var parentContainer = properties.parentContainer;
+		
+		var labelKey = properties.labelTextKey;
+		
+		var addSeparator = false;
 		
 		if (parentContainer) {
 			
@@ -2345,14 +2351,23 @@ $.fn.extendedResourcePanel = function(params) {
 			 
 			 if (tabParentContainer.length > 0) {
 			 	appendTo = tabParentContainer;
+			 	addSeparator = tabParentContainer.find(".lb-tab-action").length > 0;
 			 } else {
 				warn("The parent container value is present but not found " + JSON.stringify(parentContainer));
 			 }
 		}
+		
+		if (!appendTo) {
+			return undefined;
+		}
+		
+		if (addSeparator) {
+			appendTo.append('<span class="font-weight-bold">|</span>');
+		}
 	
-		appendTo.append('<a class="d-sm-inline d-md-block lb-tab-action" href="#" id="' + actionLink + '">'  
-			+  '<i class="' + (action.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + action.iconClass + '"></i>'
- 			+ '<span class="ml-1">' + getResource(action.resourceKey + ".label") + '</span></a>');
+		appendTo.append('<a class="lb-tab-action" href="#" id="' + actionLink + '">'  
+ 			+ '<span class="ml-1">' + getResource(labelKey + ".label") + '</span></a>');
+ 			
  			
  		return actionLink;	
 				 			
@@ -2367,7 +2382,7 @@ $.fn.extendedResourcePanel = function(params) {
 			if (passedCb && (idx === length - 1)) passedCb(action);
 		}
 		
-		getJSON('menus/tabActions/' + resourceKey, null, function(data) {
+		getJSON('tabs/tabActions/' + resourceKey, null, function(data) {
 			if (data.resources.length > 0) {
 				
 				length = data.resources.length;
@@ -2400,7 +2415,11 @@ $.fn.extendedResourcePanel = function(params) {
 							makeDisabled = window[action.enableFunction].apply(null, [resource, action]);
 						} 
 						
-						var actionLink = createActionLink(tabContentActionsHolders, properties, action, resource);
+						var actionLink = createActionLink(action, resource);
+						
+						if (!actionLink) {
+							return;
+						}
 			
 						
 						var actionDefinition = $('#' + action.resourceKey);
@@ -2445,14 +2464,7 @@ $.fn.extendedResourcePanel = function(params) {
 				var resourceKey = value.resourceKey;
 				
 				if (resourceKey) {
-					processActionLink(tabContentActionsHolders, resourceKey, resource, authSchemes, (action) => {
-						var links = tabContentActionsHolders.find(".lb-tab-action");
-			
-						if (links.length == 0) {
-							var text = getResourceOrText("text.noAction");
-							tabContentActionsHolders.append('<div><span>' + text + '</span></div>');
-						}
-					});
+					processActionLink(tabContentActionsHolders, resourceKey, resource, authSchemes);
 				} else {
 					warn("No resource data found " + JSON.stringify(value));
 				}

@@ -10,14 +10,7 @@
 		</div>
 		<div id="syncProfileOptionsContainer">
 		</div>
-		<div class="row">
-			<div class="col-md-6 offset-md-6">
-				<div>
-					<h4 localize="text.actions"></h4>
-					<div data-id="profileTabActions" class="extendedTabContentActions"></div>
-				</div>
-			</div>
-		</div>
+		<div data-id="profileTabActions" class="extendedTabContentActions"></div>
 	</div>
 </div>
 <script type="text/javascript">
@@ -33,7 +26,7 @@
 			el.empty();
 			var el2 = _$('#credentialsTab');
 			el2.empty();
-			getJSON('currentRealm/userProfile/' + resource.id, null, function(data) {
+			getJSON('tabs/principalProfile/userProfile/' + resource.id, null, function(data) {
 				if (data.resource) {
 					if (data.resource.state === 'COMPLETE') {
 						el.append('<div class="row"><span class="col-sm-12 h4 pl-0"><i class="far fa-star text-success"></i> <span localize="completedProfile.text"></span></span></div>');
@@ -50,7 +43,7 @@
 					
 					if (data.resource.credentials && data.resource.credentials.length > 0) {
 						$.each(data.resource.credentials, function(idx, creds) {
-							el2.append('<div class="row"><label localize="' + creds.resourceKey + '" class="col-sm-4"></label><span class="col-sm-3">' + creds.state + '</span><span id="parent_container_tab_action_' + creds.resourceKey + '" class="col-sm-5"></span></div>');
+							el2.append('<div class="row no-gutters">' + '<span class="col-sm-5"><i class="mr-2 ' + (creds.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + creds.iconClass + '"></i>' + '<label localize="' + creds.resourceKey + '"></label></span><span class="col-sm-4">' + creds.state + '</span><span id="parent_container_tab_action_' + creds.resourceKey + '" class="col-sm-3"></span></div>');
 						});
 					} else {
 						el2.append('<div><span class="font-weight-bold" localize="text.noData"></span></div>');

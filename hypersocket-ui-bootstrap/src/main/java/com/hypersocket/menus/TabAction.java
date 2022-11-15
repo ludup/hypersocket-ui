@@ -14,6 +14,7 @@ public class TabAction extends BaseAction {
 	public static final String COMMON_PROPERTY_RESOURCE_KEY = "resourceKey"; 
 	public static final String COMMON_PROPERTY_PARENT_CONTAINER = "parentContainer"; 
 	public static final String COMMON_PROPERTY_TYPE = "actionType";
+	public static final String COMMON_PROPERTY_LABEL_TEXT_KEY = "labelTextKey";
 	
 	public static final String COMMON_PROPERTY_TYPE_AUTHENTICATOR = "authenticator";
 	
@@ -50,6 +51,10 @@ public class TabAction extends BaseAction {
 
 	public Map<String, String> getProperties() {
 		return properties;
+	}
+	
+	public String getCommonResourceKey() {
+		return properties.get(COMMON_PROPERTY_RESOURCE_KEY);
 	}
 	
 	private Map<String, String> mapValuesIfRequired(Map<String, String> properties) {
