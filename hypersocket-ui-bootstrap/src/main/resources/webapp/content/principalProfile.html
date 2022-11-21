@@ -16,7 +16,7 @@
 <script type="text/javascript">
 	legacyjQueryReadyFix(function() {
 
-		var loadProfile = async function(resource, data, readOnly, tab) {
+		var loadProfile = function(resource, data, readOnly, tab) {
 			var _$ = function(jq) {
 				return $(jq + '_' + resource.id);
 			}
