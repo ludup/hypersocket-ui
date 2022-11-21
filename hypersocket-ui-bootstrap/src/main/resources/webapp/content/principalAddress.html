@@ -1,0 +1,131 @@
+<div data-id="principalAddress" class="extendedTabContent">
+	<div data-id="principalAddressContainer" class="container-fluid">
+		<div class="row">
+			<div class="col-md-6">
+				<div data-id="principalAddressEmailTab"><span class="font-weight-bold">Email</span></div>
+			</div>
+			<div class="col-md-6">
+				<div data-id="principalAddressMobileTab"><span class="font-weight-bold">Mobile</span></div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+legacyjQueryReadyFix(function() {
+	
+	var loadAddressTab = function(resource, data, readOnly, tab) {
+		
+		var _$ = function(jq) {
+			return $(jq + '_' + resource.id);
+		}
+		
+		getJSON('currentRealm/communicationDataView/' + resource.id, null, function(data) {
+			if (data.resources) {
+				
+				var mobiles = {};
+				var emails = {};
+				
+				var mobileDisplayMap = {};
+				var emailDisplayMap = {};
+				
+				var mobileDisplayOrder= [];
+				var emailDisplayOrder= [];
+				
+				var emailHtml = '<div id="profileEmailContainer' + resource.id + '" class="container p-0">';
+				var mobileHtml = '<div id="profileMobileContainer' + resource.id + '" class="container p-0">';
+				
+				
+				$.each(data.resources, function(idx, item) {
+					if (item.type === 'mobile') {
+						processData(item, mobiles);
+					} else {
+						processData(item, emails);
+					}
+				});
+				
+				
+				processDisplay(emails["email"], emailDisplayMap, emailDisplayOrder);
+				processDisplay(emails["secondaryEmail"], emailDisplayMap, emailDisplayOrder);
+				processDisplay(emails["validated.email"], emailDisplayMap, emailDisplayOrder);
+				
+				processDisplay(mobiles["mobile"], mobileDisplayMap, mobileDisplayOrder);
+				processDisplay(mobiles["secondaryMobile"], mobileDisplayMap, mobileDisplayOrder);
+				
+				emailHtml = constructUIFragments(emailDisplayMap, emailDisplayOrder);
+				mobileHtml = constructUIFragments(mobileDisplayMap, mobileDisplayOrder);
+				
+				emailHtml += '</div>';
+				mobileHtml += '</div>';
+				
+				_$("#principalAddressEmailTab").append(emailHtml);
+				_$("#principalAddressMobileTab").append(mobileHtml);
+			}
+			
+			function constructUIFragments(displayMap, displayOrder) {
+				var html = "";
+				$.each(displayOrder, function (idx, value) {
+					var data = displayMap[value];
+					html += '<div class="row"><div class="col-sm-12 col-md-6 pt-1">' + data.value 
+							+ '</div><div class="col-sm-12 col-md-6 pt-1">' + data.tags.join(", ")
+							+ '</div></div>';
+				});
+				return html;
+			}
+			
+			/*
+			Try to map everything to resource key if not present map to empty string resource key
+			*/
+			function processData(item, obj) {
+				var data = undefined;
+				var resourceKey = (item.properties || { resourceKey : ''})['resourceKey'];
+				
+				if (resourceKey === '') {
+					data = obj[resourceKey] || [];
+					if (!obj[resourceKey]) {
+						obj[resourceKey] = data;
+					}
+					obj[resourceKey].push(item);
+				} else {
+					obj[resourceKey] = item;
+				}
+			}
+			
+			function isValuePresent(obj) {
+				return obj && obj.value;
+			}
+			
+			function processDisplay(obj, display, order) {
+				if (isValuePresent(obj)) {
+					var value = obj.value;
+					$.each(value, function (idx, val) {
+						
+						if (!display[val]) {
+							display[val] = {value: val, tags: []}
+							order.push(val);
+						}
+						
+						var tag = getTag(obj);
+						if (tag) {
+							display[val]["tags"].push(tag);
+						}
+					});
+				}
+				
+				return undefined;
+			}
+			
+			function getTag(obj) {
+				
+				if (obj && obj.properties && obj.properties["tag"]) {
+					return obj.properties["tag"];
+				}
+				
+				return undefined;
+			}
+		});
+	}
+	
+	
+	$('.extendedTabContent').data('initPage', loadAddressTab);
+});
+</script>
