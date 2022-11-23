@@ -16,12 +16,20 @@
 <script type="text/javascript">
 	legacyjQueryReadyFix(function() {
 
+		var tabRefresh = undefined;
+		
 		var loadProfile = function(resource, data, readOnly, tab) {
+			
+			if (!tabRefresh && tab) {
+				tabRefresh = tab.data('refresh');
+			}
+			
 			var _$ = function(jq) {
 				return $(jq + '_' + resource.id);
 			}
 
-			_$('#principalProfile .col-md-4').find('.row').remove();
+			_$('#principalProfile .col-md-6').find('.row').remove();
+			$('#syncProfileOptionsContainer').empty();
 			var el = _$('#profileTab');
 			el.empty();
 			var el2 = _$('#credentialsTab');
@@ -59,6 +67,7 @@
 							if (data.success) {
 								showSuccess(getResource("profile.synchronized"));
 								loadProfile(resource);
+								tabRefresh();
 							} else {
 								showError(data.message);
 							}
@@ -74,6 +83,7 @@
 									if (data.success) {
 										showSuccess(getResource("profile.reset"));
 										loadProfile(resource);
+										tabRefresh();
 									} else {
 										showError(data.message);
 									}
@@ -94,6 +104,7 @@
 			    			if(data.success) {
 			    				showSuccess(getResource("profile.synchronized"));
 			    				loadProfile(resource);
+			    				tabRefresh();
 			    			} else {
 			    				showError(data.message);
 			    			}
