@@ -2348,7 +2348,7 @@ $.fn.extendedResourcePanel = function(params) {
 		
 		var appendTo = undefined;
 					
-		var actionLink = 'lb_tab_action_link_' + resource.id.toString() + action.resourceKey;
+		var actionLink = 'lb_tab_action_link_' + resource.id.toString() + '_' + action.resourceKey;
 		
 		var parentContainer = properties.parentContainer;
 		
