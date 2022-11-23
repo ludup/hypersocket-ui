@@ -2298,7 +2298,17 @@ $.fn.extendedResourcePanel = function(params) {
 							var resource = options.resource;
 							var data = options.data;
 							
-	                        tabContent.data('initPage')(resource, data, value.readOnly);
+							tab.data('refresh', function() {
+
+									var v = value;
+									var t = tabContent;
+									var r = resource;
+									var a = authSchemes;
+									
+									processTabContent(v, t, r, a);
+								});
+							
+	                        tabContent.data('initPage')(resource, data, value.readOnly, tab);
 	                        
 	                        processTabContent(value, tabContent, resource, authSchemes);
 	                        
