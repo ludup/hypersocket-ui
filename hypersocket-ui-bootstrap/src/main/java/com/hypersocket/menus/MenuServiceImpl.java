@@ -573,6 +573,17 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				}
 			
 		});
+		
+		registerTableAction(MenuService.TOOLBAR_USERS,
+				new TableAction("bulkResetProfile", "fa-user-slash",
+						"bulkResetProfile", null, 2, null,
+						"") {
+							@Override
+				public boolean isEnabled() {
+					return permissionService.hasAdministrativePermission(getCurrentPrincipal());
+				}
+			
+		});
 
 		registerTableAction(MenuService.TOOLBAR_GROUPS,
 				new TableAction("deleteGroups", "fa-trash",

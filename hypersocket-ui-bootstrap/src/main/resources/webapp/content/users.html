@@ -817,31 +817,6 @@
 
 									loadComplete();
 								}
-							,
-							topToolbarActions: [{
-									name: "bulkResetProfile",
-									title: "bulk.profile.reset",
-									canAct: function () { return true; },
-									iconClass: function () { return "far fa-user-slash"; },
-									action: function(table, ids, names) {
-										bootbox.confirm(getResource("bulk.profile.reset.confirm").format(cleanValue(names.join(", "))),
-												function(confirmed) {
-											if (confirmed) {
-												if (ids && ids.length > 0) {
-													postJSON("currentRealm/resetProfiles", ids, function(data) {
-														if(data.success) {
-															table.bootstrapTable('refresh');
-                                                            checkBadges(false);
-                                                            showSuccess(data.message);
-														} else {
-															showError(data.message);
-														}
-													});
-												}
-											}
-										});
-									}
-								}]
 							});
 
 				});

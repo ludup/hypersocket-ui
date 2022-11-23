@@ -208,8 +208,7 @@ $.fn.resourceTable = function(params) {
 		loaded: false,
 		onReady: false,
         infoLevel: 'info', 
-		escapeHTMLInTable: true,
-		topToolbarActions: [], // array of objects should have properties name, title and methods canAct(), iconClass(), action() 
+		escapeHTMLInTable: true
 		}, params);
 	
 	
@@ -1158,37 +1157,6 @@ $.fn.resourceTable = function(params) {
                             });
                         }
                     }
-                    
-                    if (options.checkbox && options.topToolbarActions.length > 0) {
-						$.each(options.topToolbarActions, function (idx, action) {
-							
-							if (action.canAct && !action.canAct()) {
-								return;
-							}
-							
-							var name = action.name;
-							var title = getResource(action.title);
-							var iconClass = action.iconClass();
-							
-							$('#' + divName +  ' .fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' + name + divName +'" class="btn btn-default" type="button" name="' + name + divName +'" title="' + title + '"><i class="' + iconClass + '"></i></button>');
-							
-							$('#' + name + divName).click(function(e) {
-								var arr = $('#' + divName + 'Placeholder').bootstrapTable('getSelections');
-								
-								var ids = [];
-                                var names = [];
-                                    
-                                if(arr.length > 0) {
-                                    $.each(arr, function(idx, val) {
-                                    	ids.push(val.id);
-                                    	names.push(val.name);
-                                    });
-                                }
-                                
-                                action.action($('#' + divName + 'Placeholder'), ids, names);
-							});
-						});
-					}
 
 					$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').last().append('<div id="searchRendered' + divName + '"></div>');
 		    	}
