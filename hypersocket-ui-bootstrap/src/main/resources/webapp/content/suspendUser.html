@@ -85,7 +85,12 @@
 			clearDialog : function() {
 				$('#startDate').data('widget').reset();
 				$('#startTime').data('widget').reset();
-				$('#duration').data('widget').setValue(0);
+				try {
+					$('#duration').data('widget').setValue(0);
+				}
+				catch(e) {
+					console.log('FIXME: ' + e);
+				}
 			},
 			validate : function() {
 				return true;
@@ -94,5 +99,5 @@
 				$('#suspendUser').data('callback')();
 			}
 		});
-	});
+	}, this);
 </script>
