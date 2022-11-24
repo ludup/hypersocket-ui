@@ -1,0 +1,36 @@
+<div id="bulkResetProfile">
+</div>
+<script type="text/javascript">
+	
+	legacyjQueryReadyFix(function() {
+		$('#bulkResetProfile').data('action', function(resource) {
+			var ids = [];
+            var names = [];
+                
+            if(resource.length > 0) {
+                $.each(resource, function(idx, val) {
+                	ids.push(val.id);
+                	names.push(val.name);
+                });
+            }
+            
+            bootbox.confirm(getResource("bulk.profile.reset.confirm").format(cleanValue(names.join(", "))),
+				function(confirmed) {
+					if (confirmed) {
+						if (ids && ids.length > 0) {
+							postJSON("currentRealm/resetProfiles", ids, function(data) {
+								if(data.success) {
+									$('#contentUsersPlaceholder').bootstrapTable('refresh');
+	                                checkBadges(false);
+	                                showSuccess(data.message);
+								} else {
+									showError(data.message);
+								}
+							});
+						}
+					}
+			});
+            
+		});
+	});
+</script>	
