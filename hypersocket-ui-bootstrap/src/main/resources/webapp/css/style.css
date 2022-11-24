@@ -281,6 +281,11 @@ button.row-additional::after {display: none;}
 	margin-left: 5px;
 }
 
+.btn-link.disabled, .btn-link.disabled:visited {
+    color: inherit !important;
+    opacity: 50%;
+}
+
 .btn-link, .btn-link:visited {
     color: inherit !important;
 }
