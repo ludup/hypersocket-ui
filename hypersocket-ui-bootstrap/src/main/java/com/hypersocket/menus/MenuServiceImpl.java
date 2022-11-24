@@ -506,10 +506,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
                 new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.READ, 100));
 		
 		registerExtendedInformationTab("principalTabs",
-                new TabRegistration("principalAddress", "principalAddress", UserPermission.READ, 0));
+                new TabRegistration("principalAddress", "principalAddress", UserPermission.READ, 2));
 		
 		registerExtendedInformationTab("principalTabs",
-                new TabRegistration("principalProfile", "principalProfile", UserPermission.READ, 2));
+                new TabRegistration("principalProfile", "principalProfile", UserPermission.READ, 0));
 		
 		registerExtendedInformationTab("principalTabs",
                 new TabRegistration("principalLinkedAccounts", "principalLinkedAccounts", UserPermission.READ, 3) {
