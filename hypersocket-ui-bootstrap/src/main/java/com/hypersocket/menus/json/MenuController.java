@@ -28,7 +28,8 @@ import com.hypersocket.auth.json.UnauthorizedException;
 import com.hypersocket.context.AuthenticatedContext;
 import com.hypersocket.json.ResourceList;
 import com.hypersocket.json.ResourceStatus;
-import com.hypersocket.menus.AbstractTableAction;
+import com.hypersocket.menus.TabAction;
+import com.hypersocket.menus.TableAction;
 import com.hypersocket.menus.Badge;
 import com.hypersocket.menus.Menu;
 import com.hypersocket.menus.MenuService;
@@ -132,13 +133,27 @@ public class MenuController extends AuthenticatedController {
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
 	@AuthenticatedContext
-	public ResourceList<AbstractTableAction> getTableActions(
+	public ResourceList<TableAction> getTableActions(
 			HttpServletRequest request, HttpServletResponse respone,
 			@PathVariable String table) throws UnauthorizedException,
 			SessionTimeoutException {
 
-		return new ResourceList<AbstractTableAction>(
+		return new ResourceList<TableAction>(
 				menuService.getTableActions(table));
+	}
+	
+	@AuthenticationRequired
+	@RequestMapping(value = "menus/tabActions/{tab}", method = RequestMethod.GET, produces = { "application/json" })
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	@AuthenticatedContext
+	public ResourceList<TabAction> getTabActions(
+			HttpServletRequest request, HttpServletResponse respone,
+			@PathVariable String tab) throws UnauthorizedException,
+			SessionTimeoutException {
+
+		return new ResourceList<TabAction>(
+				menuService.getTabActions(tab));
 	}
 	
 	@AuthenticationRequiredButDontTouchSession
