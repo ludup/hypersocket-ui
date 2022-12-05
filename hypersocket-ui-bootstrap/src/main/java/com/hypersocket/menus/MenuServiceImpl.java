@@ -100,6 +100,8 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	private void postConstruct() {
 
 		i18nService.registerBundle(MenuService.RESOURCE_BUNDLE);
+		
+		i18nService.registerBundle(MenuService.RESOURCE_BUNDLE_TAB_LINKED_ACCOUNTS);
 
 		server.addAlias("${basePath}/recover", "redirect:${basePath}/recover/");
 		server.addAlias("${basePath}/recover/", "${uiPath}/recover-index.html");
@@ -497,6 +499,14 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		registerExtendedInformationTab("principalTabs",
                 new TabRegistration("principalProfile", "principalProfile", UserPermission.READ, 0));
+		
+		registerExtendedInformationTab("principalTabs",
+                new TabRegistration("principalLinkedAccounts", "principalLinkedAccounts", UserPermission.READ, 3) {
+					@Override
+					public boolean canRead() {
+						return realmService.getLinkedAccountProvider() != null;
+					}
+		});
 		
 		registerExtendedInformationTab("secondaryTabs",
                 new TabRegistration("principalPasswordPolicy", "principalPasswordPolicy", UserPermission.UPDATE, 0));
