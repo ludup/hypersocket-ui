@@ -1,0 +1,331 @@
+<div data-id="principalLinkedAccounts" class="extendedTabContent" style="overflow: visible;">
+	<div data-id="principalLinkedAccountsContainer" class="container-fluid border-bottom">
+	</div>
+	<div data-id="principalLinkToAnAccount" class="container">
+		<span class="font-weight-bold d-block pt-3"><span localize="link.account.to.label"></span><span data-id="identityConnectors" class="ml-1"></span></span>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="linkAccountModal" tabindex="-1" role="dialog" aria-labelledby="linkAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="linkAccountModalLabel" localize="link.account.modal.title.label"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="linkAccountModalBody">
+        	<div id="linkAccountFor" class="pb-2 font-weight-bold">
+        		<span localize="link.account.for.label"></span>
+        		<span id="linkAccountForUser" class="ml-1"></span>
+        	</div>
+        	<div id="linkAccountCheckerSpinner" class="pb-3 d-none">
+        		<i class="far fa-2x fa-spinner" style="position: relative;top: 5px;"></i>
+        		<span localize="link.account.check.already.linked.label" class="pl-2"></span>
+        	</div>
+        	<div id="linkAccountUsers"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="linkAccountModalButton" class="btn btn-primary" localize="link.account.link.label"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+legacyjQueryReadyFix(function() {
+	
+	$('#linkAccountModal').localize();
+	
+	var linkAccountModalButton = $('#linkAccountModalButton');
+	
+	var loadLinkedAccountsTab = function(resource, data, readOnly, tab) {
+		
+		// reset
+		linkAccountModalButton.data('info', undefined);
+		 
+		linkAccountModalButton.off('click');
+		linkAccountModalButton.on('click', function(e) {
+			var linkAccountInfo = linkAccountModalButton.data('info');
+			
+			if (!linkAccountInfo || !linkAccountInfo.linkToAccount) {
+				showError(getResource('link.account.no.selection.error'));
+				return;
+			}
+			
+			var realmValue = linkAccountInfo.realmValue;
+			var linkToAccount = linkAccountInfo.linkToAccount;
+			var primaryAccount = linkAccountInfo.primaryAccount;
+			
+			getJSON('ownerRealm/' + realmValue + '/linkAccount/' + linkToAccount + '/' + primaryAccount, null, function(remote) {
+				if(remote.success) {
+					$('#linkAccountModal').modal('hide');
+					showInformation(remote.message);
+					loadLinkedAccountsTab(resource, data, readOnly, tab)
+				} else {
+					showError(remote.message);
+				}
+			});
+		});
+		
+		
+		var _$ = function(jq) {
+			return $(jq + '_' + resource.id);
+		}
+		
+		_$('#principalLinkedAccounts').localize();
+		_$('#principalLinkedAccountsContainer').empty();
+		_$('#identityConnectors').empty();
+		
+		function getData(map, realm, email) {
+			
+			var list = map[realm];
+			
+			if (list == null) {
+				return null;	
+			}
+			
+			var obj = null;
+			for(var i = 0; i < list.length; ++i) {
+				var val = list[i];
+				if (val['email'] === email) {
+					return val;
+				}
+			}
+			
+			return null;
+		}
+		
+		
+		getJSON('identityConnectors/list', null, function(data) {
+			
+			var connectorWithConnectorRealm = [];
+			$.each(data.resources, function(idx, connector) {
+				connectorWithConnectorRealm.push({
+					id: connector.id,
+					name: connector.name,
+					connectorRealmId: (connector.connectorRealm || {id: 0}).id,
+					connectorRealmName: (connector.connectorRealm || {name: 'Empty'}).name,
+				});
+			});
+			
+			_$('#identityConnectors').selectButton({
+				options : connectorWithConnectorRealm,
+				valueAttr: 'connectorRealmId',
+				nameIsResourceKey: false,
+				emptySelectionAllowed: true,
+				notSetResourceKey: 'text.select',
+				changed: function(widget) {
+					
+					var remoteCallSpinner = $('#linkAccountCheckerSpinner');
+					
+					function makeLinkButtonDisabled() {
+						linkAccountModalButton.addClass('disabled');
+						linkAccountModalButton.attr('aria-disabled', 'true');
+					}
+					
+					function makeLinkButtonEnabled() {
+						linkAccountModalButton.removeClass('disabled');
+						linkAccountModalButton.removeAttr('aria-disabled');
+					}
+					
+					function startSpinner() {
+						remoteCallSpinner.removeClass('d-none');
+						remoteCallSpinner.addClass('d-block');
+					}
+					
+					function stopSpinner() {
+						remoteCallSpinner.addClass('d-none');
+						remoteCallSpinner.removeClass('d-block');
+					}
+					
+					var realmValue =  widget.getValue();
+					if (realmValue && realmValue !== '') {
+						
+						$('#linkAccountUsers').empty();
+						
+						$('#linkAccountUsers').autoComplete({
+							url: 'ownerRealm/' + realmValue + '/users/table',
+							valueAttr: 'id',
+							remoteSearch: true,
+							changed: function(widget) {
+								
+								linkAccountModalButton.data('info', undefined);
+								
+								var linkToAccount = widget.getValue();
+								
+								startSpinner();
+								
+								getJSON('ownerRealm/' + realmValue + '/isLinked/' + linkToAccount, null, function(remote) {
+									try {
+										if(remote.success) {
+											
+											if (!remote.resource) {
+												$('#linkAccountModalButton').data('info', {
+													realmValue: realmValue, 
+													linkToAccount: linkToAccount,
+													primaryAccount: resource.id
+												});
+												showSuccess(remote.message);
+												makeLinkButtonEnabled();
+											} else {
+												showError(remote.message);
+											}
+											
+									
+										} else {
+											showError(remote.message);
+										}
+									} finally {
+										stopSpinner();
+									}
+								});
+								
+								
+							}
+						});
+						
+						$('#linkAccountForUser').text(resource.email || resource.principalName);
+						$('#linkAccountModal').modal('show');
+						
+						makeLinkButtonDisabled();
+					}
+				}
+			});
+			
+			
+		});
+		
+		
+		getJSON('accountLinking/account/' + resource.id, null, function(data) {
+			if (data.success) {
+				
+				var values = data.resources;
+				var map = {};
+
+				$.each(values, function(idx, value) {
+					
+					if (!map[value.realm.name]) {
+						map[value.realm.name] = [];
+					}
+					
+					map[value.realm.name].push({
+						email: value.principal.email, 
+						name: value.principal.name, 
+						id: value.principal.id, 
+						realmName: value.realm.name, 
+						realmId: value.realm.id
+					});
+				});
+				
+				
+				sortedData = [];
+				var sorter = function(a,b) { return a.localeCompare(b) }
+				
+				var keys = Object.keys(map).sort(sorter);
+				$.each(keys, function(idx, key) {
+					var emails = [];
+					$.each(map[key], function(idx, obj){
+						emails.push(obj['email'])
+					});
+					var sorted = emails.sort(sorter);
+					sortedData.push({key: key, value: sorted});
+				});
+				
+				var container = _$('#principalLinkedAccountsContainer');
+				
+				if (!sortedData || sortedData.length === 0) {
+					var noAccountsLabel = getResource('no.link.accounts.found');
+					container.append('<span class="font-weight-bold d-block pb-2">' + noAccountsLabel + '</span>');
+					return;
+				}
+				
+				var titleRowId = 'linkedAccountsInformation_title' + '_' + resource.id;
+				container.append('<div id="' + titleRowId + '" class="row pt-2 mb-2 rounded bg-dark text-white"></div>');
+				
+				var titleRow = $('#' + titleRowId);
+				var titleCol1 = '<div id="col1_' + titleRowId + '" class="col-4 h6">' + getResource('link.account.table.connector.label') + '</div>'
+				var titleCol2 = '<div id="col2_' + titleRowId + '" class="col-4 h6">' + getResource('link.account.table.accounts.label') + '</div>'
+				var titleCol3 = '<div id="col3_' + titleRowId + '" class="col-4 h6">' + getResource('link.account.table.actions.label') + '</div>'
+				
+				titleRow.append(titleCol1);
+				titleRow.append(titleCol2);
+				titleRow.append(titleCol3);
+				
+				
+				$.each(sortedData, function(idx, data) {
+					var connector = data.key;
+					var accountList = data.value;
+					
+					var rowId = 'linkedAccountsInformation_' + connector + '_' + resource.id;
+					
+					container.append('<div id="' + rowId + '" class="row"></div>');
+					
+					var row = $('#' + rowId);
+					var col1 = '<div id="col1_' + rowId + '" class="col-4"></div>'
+					var col2 = '<div id="col2_' + rowId + '" class="col-4"></div>'
+					var col3 = '<div id="col3_' + rowId + '" class="col-4"></div>'
+					
+					row.append(col1);
+					row.append(col2);
+					row.append(col3);
+					
+					var col1jq = $('#' + 'col1_' + rowId);
+					var col2jq = $('#' + 'col2_' + rowId);
+					var col3jq = $('#' + 'col3_' + rowId);
+					
+					col1jq.append('<span class="font-weight-bold">' + connector + '</span>');
+					
+					var accountListId = 'account_list_' + rowId;
+					var list = '<ul class="pl-0 list-unstyled" id="' + accountListId + '"></ul>'
+					col2jq.append('<span>' + list + '</span>');
+					
+					
+					var listjq = $('#' + accountListId);
+					
+					
+					$.each(accountList, function(idx, account){
+						listjq.append('<li class="font-weight-light">' + account + '</li>');
+						var accountInfo = getData(map, connector, account);
+						var unLinkId = 'unlink_' + rowId + '_' + accountInfo.id;
+						var label = getResource('link.account.unlink.label');
+						col3jq.append('<div><a href="#" id="' + unLinkId + '">' + label + '</div>');
+						
+						var unLinkJq = $('#' + unLinkId);
+						unLinkJq.data('accountInfo', accountInfo);
+						unLinkJq.off('click');
+						unLinkJq.on('click', function (e) {
+							e.preventDefault();
+							var $that = $(this);
+							bootbox.confirm(getResource('unlinkTo.text').format(cleanValue(accountInfo.email), cleanValue(resource.email)), function(result) {
+								if(result) {
+									var accountInfo = $that.data("accountInfo");
+									getJSON('ownerRealm/' + accountInfo.realmId + '/unlinkAccount/' + accountInfo.id, null, function(remote) {
+										if(remote.success) {
+											showInformation(remote.message);
+											loadLinkedAccountsTab(resource, data, readOnly, tab)
+										} else {
+											showError(remote.message);
+										}
+									});
+								}
+							});
+							
+						});
+					});
+				});
+			} else {
+				showError(data.message);
+			}
+		});
+		
+	}
+	
+	
+	$('.extendedTabContent').data('initPage', loadLinkedAccountsTab);
+});
+</script>
