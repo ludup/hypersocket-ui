@@ -16,6 +16,8 @@ public interface MenuService extends AuthenticatedService {
 
 	final static String RESOURCE_BUNDLE = "MenuService";
 	
+	final static String RESOURCE_BUNDLE_TAB_LINKED_ACCOUNTS = "TabLinkedAccounts";
+	
 	static final String MENU_NAV = "navigation";
 	
 	static final String MENU_PAGES = "pages";
