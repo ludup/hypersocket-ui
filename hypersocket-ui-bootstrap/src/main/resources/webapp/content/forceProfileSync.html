@@ -3,6 +3,12 @@
 </div>
 <script type="text/javascript">
 
+
+function showForceProfileSyncAction(principal, menu) {
+	return menu.enabled && principal.primaryAccount;
+}
+
+
 legacyjQueryReadyFix(function() {
 	$('#forceProfileSync').data('action', function(resource) {
 		

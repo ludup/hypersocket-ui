@@ -353,6 +353,8 @@
 
 				getJSON('menus/tableActions/userActions', null, function(data) {
 
+					var isConnectorRealm = getAnchorByName('realmId') ? true : false;
+					
 					var actions = new Array();
 
 					if(data.resources.length > 0) {
