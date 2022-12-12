@@ -412,6 +412,7 @@ function processLogon(data, opts, message) {
 								   this.type === 'select' ||
 								   this.type === 'hidden' ||
 								   this.type === 'checkbox' ||
+								   this.type === 'countries' ||
 								   this.type === 'radio') {								
 								    var elem = this.type === 'radio' ? $('input[name="' + this.resourceKey + '"]:checked') : $('#' + this.resourceKey);
 									var name = encodeURIComponent(this.resourceKey);
