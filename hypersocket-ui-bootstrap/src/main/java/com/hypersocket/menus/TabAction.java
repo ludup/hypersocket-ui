@@ -11,6 +11,7 @@ import com.hypersocket.permissions.PermissionType;
 @JsonInclude(value = Include.NON_NULL)
 public class TabAction extends BaseAction {
 	
+	
 	public static final String COMMON_PROPERTY_RESOURCE_KEY = "resourceKey"; 
 	public static final String COMMON_PROPERTY_PARENT_CONTAINER = "parentContainer"; 
 	public static final String COMMON_PROPERTY_TYPE = "actionType";
@@ -19,6 +20,7 @@ public class TabAction extends BaseAction {
 	public static final String COMMON_PROPERTY_TYPE_AUTHENTICATOR = "authenticator";
 	
 	private final Map<String, String> properties;
+	
 	
 	public TabAction(String resourceKey, String iconClass,
 			String url, PermissionType permission, int weight, 
@@ -46,7 +48,6 @@ public class TabAction extends BaseAction {
 			String enableFunction, String displayFunction, Map<String, String> properties, PermissionType... permissions) {
 		super(resourceKey, iconClass, url, weight, enableFunction, displayFunction, permissions);
 		this.properties = mapValuesIfRequired(properties == null ? Collections.emptyMap() : properties);
-		mapValuesIfRequired(this.properties);
 	}
 
 	public Map<String, String> getProperties() {
