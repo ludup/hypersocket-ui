@@ -1240,7 +1240,8 @@ $.fn.resourceTable = function(params) {
 								var txt = resource.name;
 								if(!txt || txt == '')
 									txt = 'Default';
-								var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
+								// double encode resource name in case "/" (slash) is present	
+								var uri = basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(encodeURIComponent(cleanValue(resource.name))) + '/' + value.slice(prefix.length);
 								$('#' + divName + 'Grid').append('<div id="' + resource.id + 'GridDiv" class="template" style="float:left; height:180px;"><div><img width="100" height="100" src="' + uri + '"/></div><span>' + cleanValue(resource.name) + '</span><div id="' + resource.id + 'GridOptions" class="gridOptions"></div></div>');
 							}
 							else {

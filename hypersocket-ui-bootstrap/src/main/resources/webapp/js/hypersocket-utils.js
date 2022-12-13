@@ -627,7 +627,8 @@ function getLogoPath(itype, value, resourceName) {
 		var txt = resourceName;
 		if(!txt || txt == '')
 			txt = 'Default';
-		return basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(txt) + '/' + value.slice(prefix.length);
+			// double encode resource name in case "/" (slash) is present	
+		return basePath + '/api/logo/' + encodeURIComponent(itype) + "/" + encodeURIComponent(encodeURIComponent(cleanValue(txt))) + '/' + value.slice(prefix.length);
 	}
 	else {
 		var idx = value.indexOf('/');
