@@ -305,6 +305,12 @@ $.fn.resourceTable = function(params) {
         addEventListener('popstate', psl, false);
 	}
 	
+	function resourceForCurrentRow(jqElem) {
+		var tr = jqElem.closest("tr").get(0);
+		var curRow = $(tr).data('index'); 
+		return $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+	}
+	
 	options = $.extend({
 		onDialogClose: function() {
 			if(psl) {
@@ -354,7 +360,7 @@ $.fn.resourceTable = function(params) {
 	}
 
 	$.each(options.fields,function(idx, obj) {
-		var c= $.extend({
+		var c = $.extend({
 			field : obj.name,
 			title: getResource(options.resourceKey + "." + obj.name + '.label'),
 			align: obj.align ? obj.align : 'left',
@@ -364,6 +370,42 @@ $.fn.resourceTable = function(params) {
 		if(obj.width) {
 			c.width = obj.width;
 		}
+		
+		if (c.name === "name") {
+			var oldFormatter = c.formatter;
+			c.formatter = function (value, row, index) {
+				
+				var id = row.id;
+				
+				if (oldFormatter) {
+					value = oldFormatter(value, row, index);
+				}
+				
+				var canUpdate = options.canUpdate;
+				if(options.checkUpdate) {
+					canUpdate = options.checkUpdate(row);
+				}
+				
+				var anchorId = divName + 'AnchorAction' + id;
+				var anchorSearchSelector = 'tr[data-uniqueid=' + id + '] .anchor-row-edit';
+				
+				$(document).off('click', anchorSearchSelector);
+				$(document).on('click', anchorSearchSelector, function(e) {
+						e.preventDefault();
+						history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
+						var resource = resourceForCurrentRow($(this));
+						if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
+							setUpPsl($('#' + anchorId));
+							options.view.editResource(resource);
+						} else {
+							options.view.viewResource(resource);
+						}
+				});
+				
+				return '<a href="#" id="' + anchorId + '" class="text-primary anchor-row-edit">' + value + '</a>';
+			}
+		}
+		
 		columns.push(c);	
 	});
 	
@@ -559,9 +601,7 @@ $.fn.resourceTable = function(params) {
 					e.preventDefault();
                     $('[data-toggle="tooltip"], .tooltip').tooltip("hide");
 					history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
-					var tr = $(this).closest("tr").get(0);
-					var curRow = $(tr).data('index'); 
-					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+					var resource = resourceForCurrentRow($(this));
 					if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
 						
 						setUpPsl($('#' + divName + 'Actions' + id + ' .row-edit'));
