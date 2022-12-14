@@ -208,7 +208,8 @@ $.fn.resourceTable = function(params) {
 		loaded: false,
 		onReady: false,
         infoLevel: 'info', 
-		escapeHTMLInTable: true
+		escapeHTMLInTable: true,
+		disableActionsDropdown: false
 		}, params);
 	
 	
@@ -477,203 +478,241 @@ $.fn.resourceTable = function(params) {
 	}
 	
 	var renderActions = function(value, row, index) {
-		var id = row.id;
-		var renderedActions = '';
 		
-		if (options.additionalActions) {
-
-			if(options.forceActionsDropdown || (!options.disableActionsDropdown && options.additionalActions.length > 1)) {
-				renderedActions += '<div id="dropdown_' + id + '" class="btn-group" data-toggle="tooltip" title="' + getResource('text.otherActions') + '" ><a class="row-additional dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-xl fa-cogs"></i></a>';
-				renderedActions += '<div id="' + id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
-				$.each(
-						options.additionalActions,
-						function(x, act) {
-							if (act.enabled) {
-								renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="' + (act.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + act.iconClass + '"></i><span class="ml-1">' + getResource(act.resourceKey + ".label") + '</span></a>';
-								$(document).off('click',
-								                '#' + id + 'ActionDropdown .row-' + act.resourceKey);
-								$(document).on(
-									'click',
-									'#' + id + 'ActionDropdown .row-' + act.resourceKey,
-									function(e) {
-										e.preventDefault();
-										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[parseInt($(this).data('idx'))];
-										act.action(resource, function(resource) {
-											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-											checkBadges(false);
-										});
-									});
-							}
-				});
-				renderedActions += '</div></div>';
-				
-				$(document).on('hide.bs.dropdown', '#' + divName + 'Actions' + id, function () {
-					let fixedTableBody = $(".bootstrap-table .fixed-table-container .fixed-table-body");
-					fixedTableBody.css("overflow-x", "auto");
-					fixedTableBody.css("overflow-y", "auto");
-				});
-				
-				$(document).on('show.bs.dropdown', '#' + divName + 'Actions' + id, function () {
+		var id = row.id;
+		
+		function addEditClickHandler(jqElemSelector) {
+			$(document).off('click', jqElemSelector);
+			$(document).on('click', jqElemSelector, function(e) {
+				e.preventDefault();
+                $('[data-toggle="tooltip"], .tooltip').tooltip("hide");
+				history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
+				var resource = resourceForCurrentRow($(this));
+				if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
 					
-					let fixedTableBody = $(".bootstrap-table .fixed-table-container .fixed-table-body");
+					setUpPsl($('#' + divName + 'Actions' + id + ' .row-edit'));
 					
-					fixedTableBody.css("overflow-x", "initial");
-					fixedTableBody.css("overflow-y", "initial");
-					
-					var dropdown = $(this);
-					
-					var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
-					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-					
-					$.each(options.additionalActions, function(x, act) {
-						if(act.enabled) {
-							if(act.displayFunction && act.displayFunction != '') {
-								var display = window[act.displayFunction].apply(null, [resource, act]);
-								var el = $('.row-' + act.resourceKey, dropdown);   
-								if(display) {
-									el.show();
-								} else {
-									el.hide();
-								}
-							} 
-							if(act.isDisplayable) {
-								var el = $('.row-' + act.resourceKey, dropdown);   
-								if(act.isDisplayable(resource)) {
-									el.show();
-								} else {
-									el.hide();
-								}
-							}
-							if(act.enableFunction && act.enableFunction != '') {
-								if(!window[act.enableFunction].apply(null, [resource, act])) {
-									var el = $('.row-' + act.resourceKey, dropdown);    
-									el.parent().addClass('disabled');
-									el.attr('disabled', true);
-								}
-							} 
-							if(act.isEnabled && !act.isEnabled(resource)) {
-								var el = $('.row-' + act.resourceKey, dropdown);    
-								el.parent().addClass('disabled');
-								el.attr('disabled', true);
-							} 
-						}
-						
-					});
-				});
-				
-			}  else {
-				$.each(options.additionalActions,
-						function(x, act) {
-							if (act.enabled) {
-
-								renderedActions += '<a class="btn-link row-' 
-												+ act.resourceKey + '" href="#" data-toggle="tooltip" data-placement="top" title="' 
-												+ getResource(act.resourceKey + ".label") + '"><i class="far fa-xl ' + act.iconClass + '"></i></a>';
-
-								$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
-								$(document).on('click',
-									'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
-									function() {
-										var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
-										var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
-										act.action(resource, function(resource) {
-											$('#' + divName + 'Placeholder').bootstrapTable('refresh');
-											checkBadges(false);
-										});
-								});
-						}
-					});
+					options.view.editResource(resource);
+				} else {
+					options.view.viewResource(resource);
 				}
+			});
 		}
+		
+		function addCopyClickHandler(jqElemSelector) {
+			$(document).off('click', jqElemSelector);
+			$(document).on('click', jqElemSelector, function() {
+				var row = parseInt($('#' + divName + ' [data-uniqueid="' + id + '"]').data('index'));
+				var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[row];
+				options.view.copyResource(resource);
+			});
+		}
+		
+		function addDeleteClickHandler(jqElemSelector) {
+			$(document).off('click', jqElemSelector);
+	
+			$(document).on('click', jqElemSelector, function() {
+					
+					log("Entering resource delete for id " + id);
+
+					var row = parseInt($('#' + divName + ' [data-uniqueid="' + id + '"]').data('index'));
+					var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[row];
+
+					bootbox.confirm(getResource(options.resourceKey + ".delete.desc")
+							.format(cleanValue(resource.name)), function(confirmed) {
+						if (confirmed) {
+							$('#mainContainer').startSpin(getResource("text.deleting").format(resource.name));
+							deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
+								if (data.success) {
+									if (options.resourceDeleted) {
+										options.resourceDeleted(resource, data.message);
+									}
+									$('#' + divName + 'Placeholder').bootstrapTable('remove', {
+					                    field: 'id',
+					                    values: [resource.id]
+					                });
+									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+									checkBadges(false);
+									showSuccess(data.message);
+								} else {
+									showError(data.message);
+								}
+								$('#mainContainer').stopSpin();
+							});
+						}
+				});
+			});	
+		}
+		
+		var renderedActions = '';
 		
 		var canUpdate = options.canUpdate;
 		if(options.checkUpdate) {
 			canUpdate = options.checkUpdate(row);
 		}
+		
+		options.additionalActions = options.additionalActions || [];
 
-		if(!options.disableEditView) {
-			renderedActions += '<a data-placement="top" data-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ml-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
-			$(document).off('click', 'tr[data-uniqueid=' + id + '] .row-edit');
-			$(document).on(
-				'click',
-				'tr[data-uniqueid=' + id + '] .row-edit',
-				function(e) {
-					e.preventDefault();
-                    $('[data-toggle="tooltip"], .tooltip').tooltip("hide");
-					history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
-					var resource = resourceForCurrentRow($(this));
-					if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
-						
-						setUpPsl($('#' + divName + 'Actions' + id + ' .row-edit'));
-						
-						options.view.editResource(resource);
-					} else {
-						options.view.viewResource(resource);
-					}
+		if(options.disableActionsDropdown) {
+			
+			$.each(options.additionalActions,
+				function(x, act) {
+					if (act.enabled) {
+
+						renderedActions += '<a class="btn-link row-' 
+										+ act.resourceKey + '" href="#" data-toggle="tooltip" data-placement="top" title="' 
+										+ getResource(act.resourceKey + ".label") + '"><i class="far fa-xl ' + act.iconClass + '"></i></a>';
+
+						$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
+						$(document).on('click',
+							'#' + divName + 'Actions' + id + ' .row-' + act.resourceKey,
+							function() {
+								var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
+								var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+								act.action(resource, function(resource) {
+									$('#' + divName + 'Placeholder').bootstrapTable('refresh');
+									checkBadges(false);
+								});
+						});
+				}
 			});
-			if(options.canCopy) {
-				renderedActions += '<a data-toggle="tooltip" title="' + getResource('text.copy') + '" class="btn-link row-copy" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
-				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-copy');
-				$(document).on(
-					'click',
-					'#' + divName + 'Actions' + id + ' .row-copy',
-					function() {
-						var row = parseInt($('#' + divName + ' [data-uniqueid="' + id + '"]').data('index'));
-						var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[row];
-						options.view.copyResource(resource);
-				});
+			
+			if(!options.disableEditView) {
+				renderedActions += '<a data-placement="top" data-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ml-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
+				
+				addEditClickHandler('tr[data-uniqueid=' + id + '] .row-edit');
+				
+				if(options.canCopy) {
+					renderedActions += '<a data-toggle="tooltip" title="' + getResource('text.copy') + '" class="btn-link row-copy" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
+					addCopyClickHandler('#' + divName + 'Actions' + id + ' .row-copy');
+				}
 			}
-		}
-
-		if (options.canDelete) {
-			var canDelete = !row.system;
-			if(options.checkDelete) {
-				canDelete = !row.system && options.checkDelete(row);
+	
+			if (options.canDelete) {
+				var canDelete = !row.system;
+				if(options.checkDelete) {
+					canDelete = !row.system && options.checkDelete(row);
+				}
+				
+				if(canDelete) {
+					renderedActions += '<a data-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link row-delete" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
+					addDeleteClickHandler('#' + divName + 'Actions' + id + ' .row-delete');
+				} else {
+					renderedActions += '<a href="#" data-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link disabled" aria-disabled="true"><i class="ml-1 far fa-xl fa-trash"></i></a>';
+				}
+				
 			}
 			
-			if(canDelete) {
-				renderedActions += '<a data-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link row-delete" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
-	
-				$(document).off('click', '#' + divName + 'Actions' + id + ' .row-delete');
-	
-				$(document).on(
-					'click',
-					'#' + divName + 'Actions' + id + ' .row-delete',
-					function() {
-						
-						log("Entering resource delete for id " + id);
-	
-						var row = parseInt($('#' + divName + ' [data-uniqueid="' + id + '"]').data('index'));
-						var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[row];
-	
-						bootbox.confirm(getResource(options.resourceKey + ".delete.desc")
-								.format(cleanValue(resource.name)), function(confirmed) {
-							if (confirmed) {
-								$('#mainContainer').startSpin(getResource("text.deleting").format(resource.name));
-								deleteJSON(options.resourceUrl + "/" + id, null, function(data) {
-									if (data.success) {
-										if (options.resourceDeleted) {
-											options.resourceDeleted(resource, data.message);
-										}
-										$('#' + divName + 'Placeholder').bootstrapTable('remove', {
-						                    field: 'id',
-						                    values: [resource.id]
-						                });
+		}  else {
+			renderedActions += '<div id="dropdown_' + id + '" class="btn-group" data-toggle="tooltip" title="' + getResource('text.actions') + '" ><a class="row-additional dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-xl fa-ellipsis"></i></a>';
+			renderedActions += '<div id="' + id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
+			
+			// crud ops
+			
+			// edit
+			renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.edit') + '" href="#"><i class="far ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i><span class="ml-1">' + getResource('text.edit') + '</span></a>';
+			if(!options.disableEditView) {
+				addEditClickHandler('#' + id + 'ActionDropdown .row-' + getResource('text.edit'));
+				
+				// copy
+				if(options.canCopy) {
+					renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.copy') + '" href="#"><i class="far fa-copy"></i><span class="ml-1">' + getResource('text.copy') + '</span></a>';
+					addCopyClickHandler('#' + id + 'ActionDropdown .row-' + getResource('text.copy'));
+				}
+			}
+			
+			if (options.canDelete) {
+				var canDelete = !row.system;
+				if(options.checkDelete) {
+					canDelete = !row.system && options.checkDelete(row);
+				}
+				
+				// delete
+				if(canDelete) {
+					renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.delete') + '" href="#"><i class="far fa-trash"></i><span class="ml-1">' + getResource('text.delete') + '</span></a>';
+					addDeleteClickHandler('#' + id + 'ActionDropdown .row-' + getResource('text.delete'));
+				} else {
+					renderedActions += '<a data-idx="' + index + '" class="dropdown-item disabled row-' + getResource('text.delete') + '" href="#"><i class="far fa-trash"></i><span class="ml-1">' + getResource('text.delete') + '</span></a>';
+				}
+		
+			}
+			
+			$.each(
+					options.additionalActions,
+					function(x, act) {
+						if (act.enabled) {
+							renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="' + (act.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + act.iconClass + '"></i><span class="ml-1">' + getResource(act.resourceKey + ".label") + '</span></a>';
+							$(document).off('click',
+							                '#' + id + 'ActionDropdown .row-' + act.resourceKey);
+							$(document).on(
+								'click',
+								'#' + id + 'ActionDropdown .row-' + act.resourceKey,
+								function(e) {
+									e.preventDefault();
+									var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[parseInt($(this).data('idx'))];
+									act.action(resource, function(resource) {
 										$('#' + divName + 'Placeholder').bootstrapTable('refresh');
 										checkBadges(false);
-										showSuccess(data.message);
-									} else {
-										showError(data.message);
-									}
-									$('#mainContainer').stopSpin();
+									});
 								});
-							}
-					});
-				});
-			} else {
-				renderedActions += '<a href="#" data-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link disabled" aria-disabled="true"><i class="ml-1 far fa-xl fa-trash"></i></a>';
-			}
+						}
+			});
 			
+			renderedActions += '</div></div>';
+			
+			$(document).on('hide.bs.dropdown', '#' + divName + 'Actions' + id, function () {
+				let fixedTableBody = $(".bootstrap-table .fixed-table-container .fixed-table-body");
+				fixedTableBody.css("overflow-x", "auto");
+				fixedTableBody.css("overflow-y", "auto");
+			});
+			
+			$(document).on('show.bs.dropdown', '#' + divName + 'Actions' + id, function () {
+				
+				let fixedTableBody = $(".bootstrap-table .fixed-table-container .fixed-table-body");
+				
+				fixedTableBody.css("overflow-x", "initial");
+				fixedTableBody.css("overflow-y", "initial");
+				
+				var dropdown = $(this);
+				
+				var curRow = $.inArray($(this).closest("tr").get(0), $('#' + divName + 'Placeholder').find('tbody').children()); 
+				var resource = $('#' + divName + 'Placeholder').bootstrapTable('getData')[curRow];
+				
+				$.each(options.additionalActions, function(x, act) {
+					if(act.enabled) {
+						if(act.displayFunction && act.displayFunction != '') {
+							var display = window[act.displayFunction].apply(null, [resource, act]);
+							var el = $('.row-' + act.resourceKey, dropdown);   
+							if(display) {
+								el.show();
+							} else {
+								el.hide();
+							}
+						} 
+						if(act.isDisplayable) {
+							var el = $('.row-' + act.resourceKey, dropdown);   
+							if(act.isDisplayable(resource)) {
+								el.show();
+							} else {
+								el.hide();
+							}
+						}
+						if(act.enableFunction && act.enableFunction != '') {
+							if(!window[act.enableFunction].apply(null, [resource, act])) {
+								var el = $('.row-' + act.resourceKey, dropdown);    
+								el.parent().addClass('disabled');
+								el.attr('disabled', true);
+							}
+						} 
+						if(act.isEnabled && !act.isEnabled(resource)) {
+							var el = $('.row-' + act.resourceKey, dropdown);    
+							el.parent().addClass('disabled');
+							el.attr('disabled', true);
+						} 
+					}
+					
+				});
+			});
 		}
 
 		return '<div id="' + divName + 'Actions' + id + '" class="tableActions"> ' + renderedActions + '</div>';
