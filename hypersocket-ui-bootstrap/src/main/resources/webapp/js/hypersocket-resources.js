@@ -2384,13 +2384,14 @@ $.fn.extendedResourcePanel = function(params) {
 									var t = tabContent;
 									var r = resource;
 									var a = authSchemes;
+									var o = options;
 									
-									processTabContent(v, t, r, a);
+									processTabContent(v, t, r, a, o);
 								});
 							
 	                        tabContent.data('initPage')(resource, data, value.readOnly, tab);
 	                        
-	                        processTabContent(value, tabContent, resource, authSchemes);
+	                        processTabContent(value, tabContent, resource, authSchemes, options);
 	                        
 	                    }
 	                });
@@ -2429,7 +2430,7 @@ $.fn.extendedResourcePanel = function(params) {
 					
 		var actionLink = 'lb_tab_action_link_' + resource.id.toString() + '_' + action.resourceKey;
 		
-		var parentContainer = properties.parentContainer;
+		var parentContainer = properties.parentContainer + '_' + resource.id.toString();
 		
 		var labelKey = properties.labelTextKey;
 		
@@ -2463,7 +2464,7 @@ $.fn.extendedResourcePanel = function(params) {
 				 			
 	}
 	
-	function processActionLink(tabContentActionsHolders, resourceKey, resource, authSchemes, cb) {
+	function processActionLink(tabContentActionsHolders, resourceKey, resource, authSchemes, options, cb) {
 		
 		var length = 0;
 		var passedCb = cb;
@@ -2528,6 +2529,7 @@ $.fn.extendedResourcePanel = function(params) {
 								 e.preventDefault();
 								 
 								 actionFunction(resource, function(resource) {
+									var data = options.data;
                                     if (data && data.parentContainer) {
 								 		$(data.parentContainer + ' table').bootstrapTable('refresh');
 								 	}
@@ -2544,7 +2546,7 @@ $.fn.extendedResourcePanel = function(params) {
 		});
 	}
     
-    function processTabContent(value, tabContent, resource, authSchemes) {
+    function processTabContent(value, tabContent, resource, authSchemes, options) {
 	
 		const tabContentActionsHolders = tabContent.find(".extendedTabContentActions");
                         
@@ -2554,7 +2556,7 @@ $.fn.extendedResourcePanel = function(params) {
 				var resourceKey = value.resourceKey;
 				
 				if (resourceKey) {
-					processActionLink(tabContentActionsHolders, resourceKey, resource, authSchemes);
+					processActionLink(tabContentActionsHolders, resourceKey, resource, authSchemes, options);
 				} else {
 					warn("No resource data found " + JSON.stringify(value));
 				}
