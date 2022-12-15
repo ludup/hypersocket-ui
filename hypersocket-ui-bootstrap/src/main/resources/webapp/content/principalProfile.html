@@ -8,7 +8,7 @@
 				<div data-id="credentialsTab"></div>
 			</div>
 		</div>
-		<div id="syncProfileOptionsContainer">
+		<div data-id="syncProfileOptionsContainer">
 		</div>
 		<div data-id="profileTabActions" class="extendedTabContentActions"></div>
 	</div>
@@ -29,7 +29,7 @@
 			}
 
 			_$('#principalProfile .col-md-6').find('.row').remove();
-			$('#syncProfileOptionsContainer').empty();
+			_$('#syncProfileOptionsContainer').empty();
 			var el = _$('#profileTab');
 			el.empty();
 			var el2 = _$('#credentialsTab');
@@ -51,14 +51,14 @@
 					
 					if (data.resource.credentials && data.resource.credentials.length > 0) {
 						$.each(data.resource.credentials, function(idx, creds) {
-							el2.append('<div class="row no-gutters">' + '<span class="col-sm-5"><i class="mr-2 ' + (creds.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + creds.iconClass + '"></i>' + '<label localize="' + creds.resourceKey + '"></label></span><span class="col-sm-4">' + creds.state + '</span><span id="parent_container_tab_action_' + creds.resourceKey + '" class="col-sm-3"></span></div>');
+							el2.append('<div class="row no-gutters">' + '<span class="col-sm-5"><i class="mr-2 ' + (creds.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + creds.iconClass + '"></i>' + '<label localize="' + creds.resourceKey + '"></label></span><span class="col-sm-4">' + creds.state + '</span><span id="parent_container_tab_action_' + creds.resourceKey + '_' + data.resource.id + '" class="col-sm-3"></span></div>');
 						});
 					} else {
 						el2.append('<div><span class="font-weight-bold" localize="text.noData"></span></div>');
 					}
 					
 
-					$('#syncProfileOptionsContainer').append('<div class="row"><div class="col-sm-12"><a  id="force_' + resource.id + '" href="#"><span localize="forceSync.text"></span></a> | <a id="reset_' + resource.id + '" href="#"><span localize="resetProfile.label"></span></a></div></div>');
+					_$('#syncProfileOptionsContainer').append('<div class="row"><div class="col-sm-12"><a  id="force_' + resource.id + '" href="#"><span localize="forceSync.text"></span></a> | <a id="reset_' + resource.id + '" href="#"><span localize="resetProfile.label"></span></a></div></div>');
 
 					var force = _$('#force');
 					force.click(function(e) {
