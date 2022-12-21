@@ -2,10 +2,11 @@ package com.hypersocket.menus;
 
 import com.hypersocket.permissions.PermissionType;
 
-public class TableAction extends BaseAction {
+public class TableAction extends URLButtonAction {
 	
-	public TableAction() {}
-
+	public TableAction() {
+	}
+	
 	public TableAction(String resourceKey, String iconClass,
 			String url, PermissionType permission, int weight, 
 			String enableFunction, String displayFunction) {

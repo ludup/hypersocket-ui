@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.hypersocket.permissions.PermissionType;
 
 @JsonInclude(value = Include.NON_NULL)
-public class TabAction extends BaseAction {
+public class TabAction extends URLButtonAction {
 	
 	
 	public static final String COMMON_PROPERTY_RESOURCE_KEY = "resourceKey"; 

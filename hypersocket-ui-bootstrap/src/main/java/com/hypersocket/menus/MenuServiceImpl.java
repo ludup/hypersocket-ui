@@ -561,9 +561,9 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 						"deleteGroup", GroupPermission.DELETE, 900, "canDelete",
 						null));
 
-		registerTableAction(MenuService.TOOLBAR_USERS,
+		registerTableAction(MenuService.TOOLBAR_USERS, new GroupTableAction("deleteAccountsGroup", "deleteAccountsGroup",
 				new TableAction("deleteAccounts", "fa-trash",
-						"deleteAccounts", null, 0, null,
+						"deleteAccounts", null, 1, null,
 						"") {
 							@Override
 				public boolean isEnabled() {
@@ -572,11 +572,16 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 							|| permissionService.hasPermission(getCurrentPrincipal(), UserPermission.DELETE);
 				}
 			
+		}, null, 0, null, null) {
+			@Override
+			public boolean isEnabled() {
+				return permissionService.hasAdministrativePermission(getCurrentPrincipal());
+			}
 		});
 		
 		registerTableAction(MenuService.TOOLBAR_USERS,
 				new TableAction("bulkResetProfile", "fa-user-slash",
-						"bulkResetProfile", null, 2, null,
+						"bulkResetProfile", null, 1, null,
 						"") {
 							@Override
 				public boolean isEnabled() {
@@ -821,11 +826,22 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 	
 	public List<? extends BaseAction> getActions(List<? extends BaseAction> baseActions) {
 		
+		if (baseActions == null) {
+			return Collections.emptyList();
+		}
+		
+		var baseActionProcessor = new BaseActionProcessor();
+		
+		var actionsToProcessList = baseActionProcessor.preProcessBaseActions(baseActions);
+		
 		var results = new ArrayList<BaseAction>();
 		
-		for (var action : baseActions) {
+		for (var action : actionsToProcessList) {
 
 			try {
+				
+				baseActionProcessor.processBaseAction(action, baseActions);
+				
 				boolean hasPermission = action.canRead();
 				if (action.getPermissions() != null) {
 					hasPermission = false;
@@ -1118,5 +1134,81 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		
 		return profile;
+	}
+	
+	private class BaseActionProcessor {
+		
+		private Map<String, GroupTableAction> groupTableActionTracker = new HashMap<>();
+		
+		/* --------------- PRE PROCESSORS --------------- */
+		
+		/**
+		 * {@link GroupTableAction} if present in base action list are grouped under a single group.
+		 * {@link GroupTableAction} can be registered in one go as a list or at different locations in source
+		 * files, hence we need to group all of them under single {@link GroupTableAction}.
+		 * 
+		 * We loop over items, track and collect them under single {@link GroupTableAction}
+		 * 
+		 * @param groupTableAction
+		 * @param actionsToProcessList
+		 */
+		private void preProcessGroupTableAction(GroupTableAction groupTableAction, 
+				List<BaseAction> actionsToProcessList) {
+			GroupTableAction groupTableActionToProcess = null;
+			var groupName = groupTableAction.getGroupName();
+			
+			if (!groupTableActionTracker.containsKey(groupName)) {
+				groupTableActionToProcess = groupTableAction.copyWithEmptyList();
+				groupTableActionTracker.put(groupName, groupTableActionToProcess);
+				actionsToProcessList.add(groupTableActionToProcess);
+			}
+			
+			groupTableActionTracker.get(groupName).getTableActions().addAll(groupTableAction.getTableActions());
+		}
+		
+		/**
+		 * Delegate to a pre processor as per instance type
+		 * @param baseActions
+		 * @return
+		 */
+		public List<BaseAction> preProcessBaseActions(List<? extends BaseAction> baseActions) {
+			
+			var actionsToProcessList = new ArrayList<BaseAction>();
+			
+			for (var baseAction : baseActions) {
+				if (baseAction instanceof GroupTableAction) {
+					preProcessGroupTableAction((GroupTableAction) baseAction, actionsToProcessList);
+				} else {
+					actionsToProcessList.add(baseAction);
+				}
+			};
+			
+			return actionsToProcessList;
+		}
+		
+		
+		
+		
+		
+		/* ------------------ PROCESSORS -------------------*/
+		
+		@SuppressWarnings({ "unchecked" })
+		private void processGroupTableAction(GroupTableAction groupTableAction, List<? extends BaseAction> baseActions) {
+			groupTableAction.setTableActions((List<TableAction>) getActions((groupTableAction).getTableActions()));
+		}
+		
+		
+
+		/**
+		 * Delegate to a processor as per instance type
+		 * 
+		 * @param baseAction
+		 * @param baseActions
+		 */
+		public void processBaseAction(BaseAction baseAction, List<? extends BaseAction> baseActions) {
+			if (baseAction instanceof GroupTableAction) {
+				processGroupTableAction((GroupTableAction) baseAction, baseActions);
+			}
+		}
 	}
 }
