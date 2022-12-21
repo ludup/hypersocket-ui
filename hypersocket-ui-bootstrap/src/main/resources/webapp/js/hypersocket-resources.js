@@ -1160,12 +1160,23 @@ $.fn.resourceTable = function(params) {
 					
 					if(options.toolbarButtonsUrl) {
 						getJSON(options.toolbarButtonsUrl, null, function(data) {
-							$.each(data.resources, function(idx, action) {
-								$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
-										+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
-										+ getResource(action.resourceKey + '.label') + '"><i class="far ' 
-										+ action.icon + '"></i></button>');
-								
+							
+							var locateToolbar = $('.' + divName).closest('.bootstrap-table')
+										.find('.fixed-table-toolbar')
+										.find('.btn-group').first();
+							
+							function getToolbarId(action) {
+								var groupName = action.groupName;
+								return divName + '_table_toolbar_' + groupName;
+							}
+							
+							function getToolbarButtonGroupId(action) {
+								var groupName = action.groupName;
+								return divName + '_table_toolbar_button_group_' + groupName;
+							}
+							
+							
+							function attachClickHandler(action) {
 								var div = action.resourceKey + 'Div';
 								$('#' + options.additionalActionsId).append('<div id="' + div + '"></div>');
 								$('#' + div).load(uiPath + '/content/' + action.url + '.html');
@@ -1179,6 +1190,45 @@ $.fn.resourceTable = function(params) {
 										});
 									}
 								});
+							}
+							
+							function generateToolbarGroupButton(location, action) {
+								
+								var html = '<div class="btn-toolbar" role="toolbar" aria-label="" id="' + getToolbarId(action) + '">';
+								html += '<div class="btn-group mr-2" role="group" aria-label="" id="' + getToolbarButtonGroupId(action) + '">';
+								html += '</div>';
+								html += '</div>';
+								
+								location.prepend(html);
+							}
+							
+							function generateToolbarButton(location, action, type) {
+								
+								type = type || 'btn-default';
+								
+								location.prepend('<button id="' 
+										+ divName + action.resourceKey + 'TableAction" class="btn ' + type + '" data-toggle="tooltip" title="' 
+										+ getResource(action.resourceKey + '.label') + '"><i class="far ' 
+										+ action.icon + '"></i></button>');
+								
+								attachClickHandler(action);
+							}
+							
+							$.each(data.resources, function(idx, action) {
+								var tableActions = action.tableActions
+								
+								if (tableActions) {
+									// group action
+									generateToolbarGroupButton(locateToolbar, action);
+									var toolbarButtonGroupJqElem = $('#' + getToolbarButtonGroupId(action));
+									$.each(tableActions, function(idx, tableAction) {
+										generateToolbarButton(toolbarButtonGroupJqElem, tableAction, 'btn-secondary');
+									});
+								} else {
+									// normal
+									generateToolbarButton(locateToolbar, action);
+								}
+								
 							});
 						});
 						
