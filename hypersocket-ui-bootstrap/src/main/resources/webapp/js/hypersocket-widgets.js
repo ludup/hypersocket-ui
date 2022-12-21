@@ -3723,7 +3723,7 @@ $.fn.buttonAction = function(options) {
 	$(this).append(
 		'<button class="btn ' + obj.buttonClass
 				+ '" id="' + id + '"><i class="far ' + obj.buttonIcon
-				+ '"></i>' + getResource(obj.buttonLabel) + '</button>');
+				+ '"></i><span class="btn-text">' + getResource(obj.buttonLabel) + '</span></button>');
 
 	var el = $('#'+ id);
 	el.on('click', function(e) {
@@ -6285,11 +6285,11 @@ $.fn.wizardPage = function(data) {
 				html += '		<div class="wizardButtons propertyItem form-group ' + options.buttonBarClass + '">';
 				if(index > 0 && options.allowBack && page.allowBack) {
 					html += '			<button id="backButton' + index + '" class="backButton pageState' + index + ' btn btn-danger">'
-					+ '				<i class="far fa-step-backward"></i><span localize="text.back"></span>'
+					+ '				<i class="far fa-step-backward"></i><span class="btn-text" localize="text.back"></span>'
 					+ '			</button>&nbsp';
 				}
 				html += '			<button id="button' + index + '" class="nextButton pageState' + index + ' ' + page.buttonClass + '">'
-					+ '				<i class="fa ' + page.buttonIcon + '"></i><span localize="' + page.buttonText + '"></span>'
+					+ '				<i class="fa ' + page.buttonIcon + '"></i><span class="btn-text" localize="' + page.buttonText + '"></span>'
 					+ '			</button>'
 					+ '		</div>';
 			}
