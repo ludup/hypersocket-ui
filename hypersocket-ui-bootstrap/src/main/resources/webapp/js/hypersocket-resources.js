@@ -1519,7 +1519,7 @@ $.fn.resourceTable = function(params) {
 					return;
 				}
 				$('#' + divName + 'Actions').append(
-					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="far ' + this.icon + '"></i>&nbsp;' + getResource(this.resourceKey + '.label') + '</button>');
+					'<button id="' + this.resourceKey + '" class="btn ' + this.buttonClass + '"><i class="far ' + this.icon + '"></i><span class="btn-text">' + getResource(this.resourceKey + '.label') + '</span></button>');
 				var button = this;
 				$('#' + this.resourceKey).click(function() {
 					if(button.action) {
@@ -1630,9 +1630,9 @@ $.fn.samePageResourceView = function(params, params2) {
 			dialog.find('.panel-footer').remove();
 		}
 		var html = '<div class="panel-footer p-2">';
-        html += '<button id="' + dialog.attr('id') + 'Save" class="btn btn-primary"><i class="far fa-save"></i>' + getResource('text.save') + '</button>';
+        html += '<button id="' + dialog.attr('id') + 'Save" class="btn btn-primary"><i class="far fa-save"></i><span class="btn-text">' + getResource('text.save') + '</span></button>';
 		if(save) {
-            html+= '<button id="' + dialog.attr('id') + 'Cancel" class="btn btn-danger ml-2"><i class="far fa-ban"></i>' + getResource('text.cancel') + '</button>';
+            html+= '<button id="' + dialog.attr('id') + 'Cancel" class="btn btn-danger ml-2"><i class="far fa-ban"></i><span class="btn-text">' + getResource('text.cancel') + '</span></button>';
 		}
 		html += '</div>';
 		if(dialog.find('.property-body').length > 0) {
