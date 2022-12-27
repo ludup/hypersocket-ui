@@ -18,7 +18,7 @@
 
 		var tabRefresh = undefined;
 		
-		var loadProfile = function(resource, data, readOnly, tab) {
+		var loadProfile = function(resource, data, readOnly, tab, authSchemes) {
 			
 			if (!tabRefresh && tab) {
 				tabRefresh = tab.data('refresh');
@@ -50,7 +50,13 @@
 					el2.append('<h4 localize="credentials.text"></h4>');
 					
 					if (data.resource.credentials && data.resource.credentials.length > 0) {
+						
 						$.each(data.resource.credentials, function(idx, creds) {
+							creds.iconClass = creds.iconClass || 'fa-question';
+							if (authSchemes.indexOf(creds.resourceKey) === -1) {
+								warn("The creds with data " + JSON.stringify(creds) + " not present in auth scheme list.");
+								return;
+							}
 							el2.append('<div class="row no-gutters">' + '<span class="col-sm-5"><i class="mr-2 ' + (creds.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + creds.iconClass + '"></i>' + '<label localize="' + creds.resourceKey + '"></label></span><span class="col-sm-4">' + creds.state + '</span><span id="parent_container_tab_action_' + creds.resourceKey + '_' + data.resource.id + '" class="col-sm-3"></span></div>');
 						});
 					} else {

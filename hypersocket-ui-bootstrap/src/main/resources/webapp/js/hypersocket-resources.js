@@ -2381,7 +2381,7 @@ $.fn.extendedResourcePanel = function(params) {
     var $tabContentHolder = $('#' + tabContentHolderId);
     $tabContentHolder.append('<div id=' + tabsId + '></div>');
     
-    getJSON('authSchemes/current', null, (data) => {
+    getJSON('authSchemes/current', null, function(data) {
 	
 		var authSchemes = [];
 		
@@ -2439,7 +2439,7 @@ $.fn.extendedResourcePanel = function(params) {
 									processTabContent(v, t, r, a, o);
 								});
 							
-	                        tabContent.data('initPage')(resource, data, value.readOnly, tab);
+	                        tabContent.data('initPage')(resource, data, value.readOnly, tab, authSchemes);
 	                        
 	                        processTabContent(value, tabContent, resource, authSchemes, options);
 	                        
@@ -2469,38 +2469,21 @@ $.fn.extendedResourcePanel = function(params) {
 		}
 		
 		return actionType === "authenticator" 
-			&& authSchemes.indexOf(resourceKey) != -1;
+			&& authSchemes.indexOf(resourceKey) !== -1;
 	}
 	
-	function createActionLink(action, resource) {
+	function createActionLink(action, resource, tabParentContainer) {
 		
 		var properties = action.properties;
 		
-		var appendTo = undefined;
-					
 		var actionLink = 'lb_tab_action_link_' + resource.id.toString() + '_' + action.resourceKey;
-		
-		var parentContainer = properties.parentContainer + '_' + resource.id.toString();
 		
 		var labelKey = properties.labelTextKey;
 		
 		var addSeparator = false;
 		
-		if (parentContainer) {
-			
-			 const tabParentContainer = $('#' + parentContainer);	
-			 
-			 if (tabParentContainer.length > 0) {
-			 	appendTo = tabParentContainer;
-			 	addSeparator = tabParentContainer.find(".lb-tab-action").length > 0;
-			 } else {
-				warn("The parent container value is present but not found " + JSON.stringify(parentContainer));
-			 }
-		}
-		
-		if (!appendTo) {
-			return undefined;
-		}
+		var appendTo = tabParentContainer;
+		addSeparator = tabParentContainer.find(".lb-tab-action").length > 0;
 		
 		if (addSeparator) {
 			appendTo.append('<span class="font-weight-bold">|</span>');
@@ -2533,19 +2516,28 @@ $.fn.extendedResourcePanel = function(params) {
 					var properties = action.properties;
 					
 					if (!shouldProcessLinkIfAuthenticator(properties, authSchemes)) {
-						warn("The tab action with resource key " + JSON.stringify(action) + " not present in auth scheme list.");
+						warn("The tab action with data " + JSON.stringify(action) + " not present in auth scheme list.");
 						callCallback(idx, action);
+						return;
+					}
+					
+					var parentContainer = properties.parentContainer + '_' + resource.id.toString();
+					var tabParentContainer = $('#' + parentContainer);	
+					
+					if (tabParentContainer.length == 0) {
+						warn("The parent container value is present but not found " + JSON.stringify(parentContainer) 
+							+ " may be filtered out as not present in auth scheme list.");
 						return;
 					}
 					
 				 	var div = action.resourceKey + 'Div';
 					tabContentActionsHolders.append('<div id="' + div + '"></div>');
-					loadContent('#' + div, uiPath + '/content/' + action.url + '.html', () => {
+					loadContent('#' + div, uiPath + '/content/' + action.url + '.html', function(){
 						
 						if(action.displayFunction && action.displayFunction != '') {
 							const display = window[action.displayFunction].apply(null, [resource, action]);
 							if(!display) {
-								warn("The tab action with resource key " + JSON.stringify(action) + " will not be displayed as per displayed function.");
+								warn("The tab action with data " + JSON.stringify(action) + " will not be displayed as per displayed function.");
 								callCallback(idx, action);
 								return;
 							}
@@ -2556,12 +2548,7 @@ $.fn.extendedResourcePanel = function(params) {
 							makeDisabled = window[action.enableFunction].apply(null, [resource, action]);
 						} 
 						
-						var actionLink = createActionLink(action, resource);
-						
-						if (!actionLink) {
-							return;
-						}
-			
+						var actionLink = createActionLink(action, resource, tabParentContainer);
 						
 						var actionDefinition = $('#' + action.resourceKey);
 						var actionFunction = actionDefinition.data('action');
