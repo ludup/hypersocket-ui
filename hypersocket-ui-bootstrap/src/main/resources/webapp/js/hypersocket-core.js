@@ -1201,7 +1201,9 @@ function loadSubPage(menu, element) {
 	$('#subMenuIconPanel').find('.small-button-active').removeClass('small-button-active');
 	if(element.data() && element.data().value) {
 		element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').addClass('large-button-active');
+		element.parent().parent().find('.large-button[id!="buttonLarge_' + element.data().value + '"]').addClass('disabled');
 		element.parent().parent().find('.small-button[id="buttonSmall_' + element.data().value + '"]').addClass('small-button-active');
+		element.parent().parent().find('.small-button[id!="buttonSmall_' + element.data().value + '"]').addClass('disabled');
 		var parent = element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').data('parent');
 		if(parent !== '')
 			$('#' + parent).parents('.collapse').addClass('show');
