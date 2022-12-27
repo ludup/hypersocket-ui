@@ -377,7 +377,7 @@ button.row-additional::after {display: none;}
 	-ms-transition: all 0.3s ease;
 	-o-transition: all 0.3s ease;
 	transition: all 0.3s ease;
-	color: inherit;
+	color: #c0cadd;
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	border-radius: 2px;
