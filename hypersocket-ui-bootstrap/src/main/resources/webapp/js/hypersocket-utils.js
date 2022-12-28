@@ -1476,6 +1476,18 @@ function msToTime(duration, showMs) {
 	return ( hours > 0 ? hourss + "h " : '') + ( minutes > 0 ? minutess + "m " : '') + ( secondss > 0 ? secondss + "s " : '') + ( showMs ? milliseconds + 'ms' : '');
 }
 
+function getIconForLevel(level) {
+	level = level || 'info';
+	
+	if (level === 'info') {
+		return 'fa-info';
+	} else if (level === 'warning') {
+		return 'fa-warning';
+	} else if (level === 'danger') {
+		return 'fa-ban';
+	}
+}
+
 
 var ByteArrayReader = function ByteArrayReader(data) {
 	this.pos = 0;
