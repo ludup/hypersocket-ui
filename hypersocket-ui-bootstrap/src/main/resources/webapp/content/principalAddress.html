@@ -65,8 +65,8 @@ legacyjQueryReadyFix(function() {
 				var html = "";
 				$.each(displayOrder, function (idx, value) {
 					var data = displayMap[value];
-					html += '<div class="row"><div class="col-sm-12 col-md-4 pt-1">' + data.value 
-							+ '</div><div class="col-sm-12 col-md-8 pt-1">' + data.tags.join(", ")
+					html += '<div class="row"><div class="col-sm-12 col-md-4 pt-1">' + cleanValue(data.value) 
+							+ '</div><div class="col-sm-12 col-md-8 pt-1">' + cleanValue(data.tags.join(", "))
 							+ '</div></div>';
 				});
 				return html;
