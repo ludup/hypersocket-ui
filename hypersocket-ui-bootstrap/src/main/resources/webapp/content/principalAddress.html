@@ -65,8 +65,8 @@ legacyjQueryReadyFix(function() {
 				var html = "";
 				$.each(displayOrder, function (idx, value) {
 					var data = displayMap[value];
-					html += '<div class="row"><div class="col-sm-12 col-md-6 pt-1">' + data.value 
-							+ '</div><div class="col-sm-12 col-md-6 pt-1">' + data.tags.join(", ")
+					html += '<div class="row"><div class="col-sm-12 col-md-4 pt-1">' + data.value 
+							+ '</div><div class="col-sm-12 col-md-8 pt-1">' + data.tags.join(", ")
 							+ '</div></div>';
 				});
 				return html;
@@ -78,6 +78,7 @@ legacyjQueryReadyFix(function() {
 			function processData(item, obj) {
 				var data = undefined;
 				var resourceKey = (item.properties || { resourceKey : ''})['resourceKey'];
+				
 				
 				if (resourceKey === '') {
 					data = obj[resourceKey] || [];
