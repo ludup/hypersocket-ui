@@ -1207,6 +1207,10 @@ function isNotGmail(email){
 	return validateRegex("^(.(?!@gmail\.com))*$",email);
 }
 
+function isValidTelephone(telephone) {
+	return validateRegex("^\\+?(\\d{1,5}|\\(\\d{1,5}\\))?[-.\\s]?(\\d{1,3}|\\(\\d{1,3}\\))?[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,4}[-.\\s]?\\d{1,9}$", telephone);
+}
+
 function validateRegex(regex,value){
 	if(value) {
 		var patt = new RegExp(regex) ;
