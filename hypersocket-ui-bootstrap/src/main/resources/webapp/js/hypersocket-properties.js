@@ -331,6 +331,11 @@ function validateAny(widget,value){
 					matched = true;
 			    }
 			    break;
+			case 'telephone' :
+				if(isValidTelephone(value)) {
+					matched = true;
+				} 
+				break;   
 			case 'cidr' :
 				if(isValidCIDR(value)){
 					matched = true;
@@ -404,6 +409,13 @@ function validateAll(widget,value,conditions){
 			    break;
 			case 'email' :
 				if(isValidEmail(value)){
+					matched = true;
+			    }else{
+					matched = false;
+				}
+			    break;
+			case 'telephone' :
+				if(isValidTelephone(value)){
 					matched = true;
 			    }else{
 					matched = false;
