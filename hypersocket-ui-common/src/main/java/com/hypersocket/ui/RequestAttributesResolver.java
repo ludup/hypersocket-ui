@@ -25,12 +25,16 @@ public class RequestAttributesResolver implements ITokenResolver {
 				Object val = request.getSession().getAttribute(token);
 				if(Objects.nonNull(val)) {
 					return val.toString();
+				} else {
+					return "";
 				}
 			} else {
 				String token = StringUtils.substring(tokenName, 8);
 				Object val = request.getAttribute(token);
 				if(Objects.nonNull(val)) {
 					return val.toString();
+				} else {
+					return "";
 				}
 			}
 		}
