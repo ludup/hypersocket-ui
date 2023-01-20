@@ -604,7 +604,7 @@ $.fn.resourceTable = function(params) {
 			}
 			
 		}  else {
-			renderedActions += '<div id="dropdown_' + id + '" class="btn-group" data-toggle="tooltip" title="' + getResource('text.actions') + '" ><a class="row-additional dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-xl fa-ellipsis"></i></a>';
+			renderedActions += '<div id="dropdown_' + id + '" class="btn-group" data-toggle="tooltip" title="' + getResource('text.actions') + '" ><a class="row-additional pointer-hover" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-xl fa-ellipsis"></i></a>';
 			renderedActions += '<div id="' + id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 			
 			// crud ops
