@@ -566,6 +566,8 @@ div.tablePages ul.pagination {
 	border-color: #000033;
 }
 
+.pointer-hover:hover {cursor: pointer;}
+
 .tabContent {
 	display: block;
 	overflow: visible;
