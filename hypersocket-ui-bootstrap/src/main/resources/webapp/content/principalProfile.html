@@ -56,7 +56,7 @@
 							if (authSchemes.indexOf(creds.resourceKey) === -1) {
 								warn("The creds with data " + JSON.stringify(creds) + " not present in auth scheme list.");
 								return;
-							}
+							} 
 							el2.append('<div class="row no-gutters">' + '<span class="col-sm-5"><i class="mr-2 ' + (creds.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + cleanValue(creds.iconClass) + '"></i>' + '<label localize="' + creds.resourceKey + '"></label></span><span class="col-sm-4">' + cleanValue(creds.state) + '</span><span id="parent_container_tab_action_' + creds.resourceKey + '_' + data.resource.id + '" class="col-sm-3"></span></div>');
 						});
 					} else {
@@ -72,8 +72,7 @@
 						getJSON('currentRealm/forceProfileSync/' + resource.id, null, function(data) {
 							if (data.success) {
 								showSuccess(getResource("profile.synchronized"));
-								loadProfile(resource);
-								tabRefresh();
+								loadProfile(resource, data, readOnly, tab, authSchemes);
 							} else {
 								showError(data.message);
 							}
@@ -88,8 +87,7 @@
 								getJSON('currentRealm/resetProfile/' + resource.id, null, function(data) {
 									if (data.success) {
 										showSuccess(getResource("profile.reset"));
-										loadProfile(resource);
-										tabRefresh();
+										loadProfile(resource, data, readOnly, tab, authSchemes);
 									} else {
 										showError(data.message);
 									}
@@ -109,8 +107,7 @@
 			    		getJSON('currentRealm/forceProfileSync/' + resource.id, null, function(data) {
 			    			if(data.success) {
 			    				showSuccess(getResource("profile.synchronized"));
-			    				loadProfile(resource);
-			    				tabRefresh();
+			    				loadProfile(resource, data, readOnly, tab, authSchemes);
 			    			} else {
 			    				showError(data.message);
 			    			}
@@ -119,6 +116,10 @@
 				}
 
 				_$('#principalProfile').localize();
+				
+				if (tabRefresh) { 
+					tabRefresh();
+				}
 			});
 		};
 		$('.extendedTabContent').data('initPage', loadProfile);
