@@ -2440,9 +2440,6 @@ $.fn.extendedResourcePanel = function(params) {
 								});
 							
 	                        tabContent.data('initPage')(resource, data, value.readOnly, tab, authSchemes);
-	                        
-	                        processTabContent(value, tabContent, resource, authSchemes, options);
-	                        
 	                    }
 	                });
 	            });
