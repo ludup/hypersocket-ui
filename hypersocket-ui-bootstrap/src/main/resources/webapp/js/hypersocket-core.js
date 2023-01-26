@@ -784,6 +784,12 @@ function home(data) {
 			});
 		};		
 		checkTimeoutHandle = setTimeout(checkTimeout, 30000);
+		
+		getJSON('session/hasConcurrentSession', null, function(data) {
+			if(data.success && data.resource) {
+				showError(getResource('error.concurrentSessionFound'));
+			}
+		});
 
 }
 
