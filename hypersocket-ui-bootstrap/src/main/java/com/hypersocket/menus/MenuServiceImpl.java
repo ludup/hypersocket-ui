@@ -58,6 +58,7 @@ import com.hypersocket.realm.UserPermission;
 import com.hypersocket.server.HypersocketServer;
 import com.hypersocket.session.SessionPermission;
 import com.hypersocket.ui.IndexPageFilter;
+import com.hypersocket.util.Pair;
 
 @Service
 public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements MenuService {
@@ -1111,16 +1112,29 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		if (tabActions != null) {
 			
-			var grouping = tabActions.stream().filter(ta -> {
+			var groupingByResourceKey = tabActions.stream().filter(ta -> {
 				return ta.getProperties().containsKey(TabAction.COMMON_PROPERTY_RESOURCE_KEY);
 			}).collect(Collectors.groupingBy(TabAction::getCommonResourceKey));
+			
+			
+			var groupingByResourceKeyToName = tabActions.stream().filter(ta -> {
+								return ta.getProperties().containsKey(TabAction.COMMON_MAPS_TO_NAME);
+							})
+							.map(ta -> new Pair<String>(ta.getProperties().get(TabAction.COMMON_MAPS_TO_NAME), ta.getCommonResourceKey()))
+							.collect(Collectors.groupingBy(Pair::getFirst));
 			
 			if (profile != null) {
 				var credentials = profile.getCredentials();
 				if (credentials != null) {
 					credentials.stream().forEach(c -> {
 						var resourceKey = c.getResourceKey();
-						var action = grouping.get(resourceKey);
+						var action = groupingByResourceKey.get(resourceKey);
+						if (action == null) {
+							var mapsByName = groupingByResourceKeyToName.get(resourceKey);
+							if (mapsByName != null) {
+								action = groupingByResourceKey.get(mapsByName.get(0).getSecond());
+							}
+						}
 						if (action != null) {
 							c.setIconClass(action.get(0).getIconClass());
 						}

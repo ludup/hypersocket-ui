@@ -15,6 +15,7 @@ public class TabAction extends URLButtonAction {
 	public static final String COMMON_PROPERTY_RESOURCE_KEY = "resourceKey"; 
 	public static final String COMMON_PROPERTY_PARENT_CONTAINER = "parentContainer"; 
 	public static final String COMMON_PROPERTY_TYPE = "actionType";
+	public static final String COMMON_MAPS_TO_NAME = "mapsToName";
 	public static final String COMMON_PROPERTY_LABEL_TEXT_KEY = "labelTextKey";
 	
 	public static final String COMMON_PROPERTY_TYPE_AUTHENTICATOR = "authenticator";
@@ -58,11 +59,17 @@ public class TabAction extends URLButtonAction {
 		return properties.get(COMMON_PROPERTY_RESOURCE_KEY);
 	}
 	
+	public String getMapsToName() {
+		return properties.get(COMMON_MAPS_TO_NAME);
+	}
+	
 	private Map<String, String> mapValuesIfRequired(Map<String, String> properties) {
 		
 		var map = new HashMap<>(properties);
 		
-		if (map.containsKey(COMMON_PROPERTY_RESOURCE_KEY)) {
+		if (map.containsKey(COMMON_MAPS_TO_NAME)) {
+			map.put(COMMON_PROPERTY_PARENT_CONTAINER, String.format("parent_container_tab_action_%s", map.get(COMMON_MAPS_TO_NAME)));
+		} else if (map.containsKey(COMMON_PROPERTY_RESOURCE_KEY)) {
 			map.put(COMMON_PROPERTY_PARENT_CONTAINER, String.format("parent_container_tab_action_%s", map.get(COMMON_PROPERTY_RESOURCE_KEY)));
 		}
 		
