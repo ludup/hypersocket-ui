@@ -704,19 +704,6 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		}, MenuService.MENU_MY_PROFILE);
 		
 		
-		registerTableAction(MenuService.ACTIONS_USERS,
-				new TableAction("forceProfileSync", "fa-refresh",
-						"forceProfileSync", null, 0, null,
-						"showForceProfileSyncAction") {
-							@Override
-				public boolean isEnabled() {
-					return permissionService.hasAdministrativePermission(getCurrentPrincipal())
-							|| permissionService.hasPermission(getCurrentPrincipal(), UserPermission.UPDATE)
-							|| permissionService.hasPermission(getCurrentPrincipal(), UserPermission.DELETE);
-				}
-			
-		});
-		
 	}
 
 	@Override
