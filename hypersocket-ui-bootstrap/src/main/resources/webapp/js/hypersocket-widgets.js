@@ -3963,6 +3963,7 @@ $.fn.imageInput = function(options) {
 	var obj = $.extend(
 			{   readOnly: false,
 			    disabled: false,
+			    asData: false
 			},  options);
 
 
@@ -3972,7 +3973,28 @@ $.fn.imageInput = function(options) {
 
 	if(obj.value && obj.value !== '') {
 		$('#reset' + id).show();
-		$(this).append('<img id="image' + id + '" class="imagePreview" src="' + obj.value + '">');
+		if (obj.asData) {
+			 $(this).append('<img id="image' + id + '" class="imagePreview">');
+			 $(this).append('<span id="image_loading' + id + '" style="font-weight: bold;padding-left: 4px;font-style: italic;">Loading...</span>');
+			 
+			 var image = $('#image' + id);
+			 var imageLoading = $('#image_loading' + id);
+			 
+			 image.hide();
+			 
+			 getJSON(obj.value, null, function(data){
+				if (data.success) {
+					imageLoading.hide();
+					image.attr('src', data.resource);
+					image.show();
+				} else {
+					imageLoading.text('Error');
+				}
+			 });
+		} else {
+			$(this).append('<img id="image' + id + '" class="imagePreview" src="' + obj.value + '">');
+		}
+		
 	}
 
 	var input = $('#' + id);
@@ -3995,12 +4017,24 @@ $.fn.imageInput = function(options) {
 				this.setValue(obj.value);
 			},
 			disable: function() {
-				$('#' + id).attr('disabled', true);
-				$('#reset' + id).attr('disabled', true);
+				var input = $('#' + id);
+				var reset = $('#reset' + id);
+				
+				input.attr('disabled', true);
+				reset.css({"pointer-events": "none"});
+				
+				input.hide();
+				reset.hide();
 			},
 			enable: function() {
-				$('#' + id).attr('disabled', false);
-				$('#reset' + id).attr('disabled', false);
+				var input = $('#' + id);
+				var reset = $('#reset' + id);
+				
+				input.attr('disabled', false);
+				reset.css({"pointer-events": "auto"});
+				
+				input.show();
+				reset.show();
 			},
 			options: function() {
 				return obj;
