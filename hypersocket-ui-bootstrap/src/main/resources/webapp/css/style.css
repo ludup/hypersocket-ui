@@ -2552,3 +2552,8 @@ For < 576px
 		max-width: 100%;
 	}
 }
+
+@media (max-height: 700px) {
+	fieldset#authenticationFlow {height: 150px; overflow-x: clip;overflow-y: scroll; }
+	#feedbackPanel {height: 275px;}
+}
