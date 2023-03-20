@@ -28,6 +28,7 @@ import com.hypersocket.server.handlers.impl.ClasspathContentHandler;
 import com.hypersocket.server.handlers.impl.ContentFilter;
 import com.hypersocket.server.handlers.impl.ContentHandler;
 import com.hypersocket.server.handlers.impl.ContentHandlerImpl;
+import com.hypersocket.server.handlers.impl.ContentHandlerImpl.CSPFilter;
 import com.hypersocket.server.handlers.impl.FileContentHandler;
 import com.hypersocket.server.handlers.impl.RedirectException;
 import com.hypersocket.utils.FileUtils;
@@ -219,6 +220,11 @@ public class UserInterfaceContentHandler implements ContentHandler {
 	@Override
 	public void addDynamicPage(String path) {
 		actualHandler.addDynamicPage(path);
+	}
+
+	@Override
+	public void addCSPFilter(CSPFilter filter) {
+		actualHandler.addCSPFilter(filter);
 	}
 
 }
