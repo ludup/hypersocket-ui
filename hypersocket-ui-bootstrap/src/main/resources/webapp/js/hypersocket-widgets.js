@@ -6189,7 +6189,8 @@ $.fn.wizardPage = function(data) {
         $(this).append(bar);
 	}
 
-	$(this).append('<div id="wizardPages" class="' + options.panelClass + '-group" id="accordion" role="tablist" aria-multiselectable="false"></div>');
+	var wizardPages = $('<div id="wizardPages" class="' + options.panelClass + '-group" id="accordion" role="tablist" aria-multiselectable="false"></div>'); 
+	$(this).append(wizardPages);
 	
 	var pageChanged = function(page) {
 		if(resetEl && page) {
@@ -6203,6 +6204,9 @@ $.fn.wizardPage = function(data) {
 	};
 
 	var callback = {
+		wizardPages: function() {
+			return wizardPages;
+		},
 		skip: function(pages) {
 			/* Find where we currently are in the wizard flow */
 			var active = $('#wizardPages').find('.collapse.show');
@@ -6363,10 +6367,31 @@ $.fn.wizardPage = function(data) {
 			var page = $(this).closest('.' + options.panelClass + '').data('page');
 			var idx = $(this).closest('.' + options.panelClass + '').data('index');
 
-			var previousPage = idx - 1;
+			var previousPage = idx;
+			var previousPageW;
+			
+			while(previousPage > 0) {
+				previousPage--;
+				
+				previousPageW = $('#panel' + previousPage).data('page');
+				
+				var skip = false;
+				var skips = wizardPages.data('skip');
+				if(skips) {
+					for(var skipIdx = 0 ; skipIdx < skips.length; skipIdx++) {
+						if(skips[skipIdx] === options.steps[previousPage].resourceKey) {
+							skip = true;
+						}
+					}
+				}
+				
+				if(!skip)
+					break;
+				else
+					$('#panel' + previousPage).hide();
+			}
+			
 			$('.pageState' + idx).attr('disabled', true);
-
-			var previousPageW = $('#panel' + previousPage).data('page');
 
 			var doShow = function() {
 				$('.pageState' + previousPage).attr('disabled', false);
@@ -6417,11 +6442,31 @@ $.fn.wizardPage = function(data) {
 
 					if(options.steps.length > idx + 1) {
 						stopSpin($('#button' + idx).find('i'), page.buttonIcon);
-						var nextPage = idx + 1;
-						$('.pageState' + idx).attr('disabled', true);
-
-						var nextPageW = $('#panel' + nextPage).data('page');
-
+						var nextPage = idx;
+						var nextPageW;
+						while(nextPage < options.steps.length) {
+							nextPage++;
+							
+							$('.pageState' + idx).attr('disabled', true);
+	
+							nextPageW = $('#panel' + nextPage).data('page');
+							
+							var skip = false;
+							var skips = wizardPages.data('skip');
+							if(skips) {
+								for(var skipIdx = 0 ; skipIdx < skips.length; skipIdx++) {
+									if(skips[skipIdx] === options.steps[nextPage].resourceKey) {
+										skip = true;
+									}
+								}
+							}
+							
+							if(!skip)
+								break;
+							else
+								$('#panel' + nextPage).show();
+						}
+	
 						var doShow = function() {
 							$('#panel' + nextPage).show();
 							$('#collapse' + idx).collapse('hide');
@@ -6437,7 +6482,6 @@ $.fn.wizardPage = function(data) {
 							doShow();
 							pageChanged(nextPageW);
 						}
-
 
 					} else {
 						stopSpin($('#button' + idx).find('i'), options.doneIcon);
