@@ -356,7 +356,7 @@ function validateAny(widget,value){
 				break;
 			default : 
 				if($('body')[arr[i]] != undefined) {
-					matched = $('body')[arr[i]](widget);
+					matched = $('body')[arr[i]](widget, value);
 				} else {
 					matched = false;
 				}
@@ -454,7 +454,7 @@ function validateAll(widget,value,conditions){
 				break;
 			default : 
 				if($('body')[arr[i]] != undefined) {
-					matched = $('body')[arr[i]](widget);
+					matched = $('body')[arr[i]](widget, value);
 				} else {
 					matched = false;
 				}
