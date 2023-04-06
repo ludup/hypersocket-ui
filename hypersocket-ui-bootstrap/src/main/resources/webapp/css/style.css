@@ -206,8 +206,11 @@ button.row-additional::after {display: none;}
 }
 
 .requiredField:after {
-	content: "*";
-	margin-right: 4px;
+	content: "●";
+	color: red;
+	position: relative;
+	top: -4px;
+	left: 2px;
 }
 
 .optionalField {
