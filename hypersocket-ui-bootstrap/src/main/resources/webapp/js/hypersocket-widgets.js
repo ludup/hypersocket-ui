@@ -1287,6 +1287,7 @@ $.fn.autoComplete = function(data) {
 				$('#' + id).val(value.toString());
 				$('#input_' + id).val($(this).text());
 				$('[data-toggle="dropdown"]').parent().removeClass('show');
+				$('[data-toggle="dropdown"]').next().removeClass('show');
 
 				if(options.changed) {
 					options.changed(callback);
