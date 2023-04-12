@@ -206,7 +206,7 @@ button.row-additional::after {display: none;}
 }
 
 .requiredField:after {
-	content: "●";
+	content: "\25CF";
 	color: red;
 	position: relative;
 	top: -4px;
