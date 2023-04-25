@@ -564,7 +564,10 @@ function getParameterByName(name) {
 }
 
 function decodeFormParameter(val) {
-	return decodeURIComponent(val.replace(/\+/g, " "));
+	if(val) {
+		return decodeURIComponent(val.replace(/\+/g, " "));
+	}
+	return val;
 }
 
 function getAnchorByName(name) {
