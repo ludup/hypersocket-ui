@@ -7,6 +7,8 @@
  ******************************************************************************/
 package com.hypersocket.menus.json;
 
+import java.util.Collection;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,10 +41,14 @@ import com.hypersocket.permissions.PermissionStrategy;
 import com.hypersocket.permissions.SystemPermission;
 import com.hypersocket.profile.Profile;
 import com.hypersocket.realm.Principal;
+import com.hypersocket.realm.Realm;
+import com.hypersocket.realm.RealmColumns;
 import com.hypersocket.realm.RealmPermission;
 import com.hypersocket.realm.RealmService;
 import com.hypersocket.resource.ResourceNotFoundException;
 import com.hypersocket.session.json.SessionTimeoutException;
+import com.hypersocket.tables.ColumnSort;
+import com.hypersocket.tables.Sort;
 
 @Controller
 public class MenuController extends AuthenticatedController {
@@ -94,6 +100,7 @@ public class MenuController extends AuthenticatedController {
 		return new ResourceStatus<Menu>(menuService.getMenu(resourceKey));
 	}
 
+	@SuppressWarnings("unchecked")
 	private MenuList getModuleList(HttpServletRequest request, String resourceKey)
 			throws UnauthorizedException, AccessDeniedException,
 			SessionTimeoutException {
@@ -118,8 +125,11 @@ public class MenuController extends AuthenticatedController {
 						PermissionStrategy.EXCLUDE_IMPLIED, 
 						RealmPermission.READ, 
 						SystemPermission.SWITCH_REALM);
-				list.setRealms(realmService.getPublicRealmsByParent(getCurrentRealm()));
-				list.getRealms().add(getCurrentRealm());
+				/**
+				 * Only list realms the user has access to.
+				 */
+				list.setRealms((Collection<Realm>)realmService.getRealms("", "", 0, 10, new ColumnSort[] { new ColumnSort(RealmColumns.NAME, Sort.ASC) }));
+
 			} catch (AccessDeniedException e) {
 			}
 
