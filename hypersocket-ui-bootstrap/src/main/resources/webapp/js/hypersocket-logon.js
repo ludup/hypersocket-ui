@@ -136,7 +136,7 @@ function processLogon(data, opts, message) {
 					+ getResourceOrDefault(data.formTemplate.scheme 
 					+ '.logon.title', data.formTemplate.scheme ) + '</h4>');
 			$.each(data.formTemplate.inputFields, function() {
-				if(this.alert) {
+				if(this.alert && this.alertType == 'danger') {
 					isAlert = true;
 				}
 				if (this.type == 'hidden') {
