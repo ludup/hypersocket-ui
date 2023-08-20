@@ -210,6 +210,10 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				SystemPermission.SYSTEM, null, null, SystemPermission.SYSTEM,
 				null), MenuService.MENU_SYSTEM_CONFIGURATION);
 
+		registerMenu(new MenuRegistration(RESOURCE_BUNDLE, "cacheInfo", "fa-disc-drive", "cacheInfo", 999989,
+				SystemPermission.SYSTEM, SystemPermission.SYSTEM, SystemPermission.SYSTEM, SystemPermission.SYSTEM,
+				null), MenuService.MENU_SYSTEM_CONFIGURATION);
+
 		registerMenu(new MenuRegistration(RESOURCE_BUNDLE,
 				MenuService.MENU_MY_PROFILE, "fa-tags", null, 0, null, null,
 				null, null), MenuService.MENU_PERSONAL);
