@@ -40,7 +40,7 @@ function validate(widget, value, widgetsByResourceKey) {
 		if(options.description)
 			$(options.errorElementId).text(options.description);
 		else
-			$(options.errorElementId).text(getResourceWithNamespace(options.i18nNamespace, options.resourceKey + '.info'));
+			$(options.errorElementId).html(getResourceWithNamespace(options.i18nNamespace, options.resourceKey + '.info'));
 		return true;
 	}
 }
