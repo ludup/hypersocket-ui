@@ -9,7 +9,6 @@ var restartAutoLogoff = false;
 var menuList = null;
 var allMenus = new Array();
 var systemAdmin;
-var checkTimeoutHandle;
 
 doAjax({
     url: uiPath + '/json/countries.json',
@@ -75,13 +74,10 @@ $.ajaxSetup({ error : function(xmlRequest) {
 
 	if (xmlRequest.status == 401) {
 		var session = $(document).data('session');
-		if(session && !polling) {
-			$("#surveyPopupContainer").remove();
-			clearPinnedMenu();
-			startLogon();
-			showError(getResource("error.sessionTimeout"), false);
+		if(session && pollingForSession) {
+			serverSideSessionInvalidated();
 		}
-	} 
+	}
 }, cache : true });
 
 window.onhashchange = function() { 
@@ -757,33 +753,8 @@ function home(data) {
 	       });
 			
 		});
-
-        if(checkTimeoutHandle)
-            clearTimeout(checkTimeoutHandle);
-		var checkTimeout = function() {
-			
-			log("Checking session timeout");
-			
-			getJSON('session/peek', null, function(data) {
-				if(data && data.closed) {
-                    startLogon();
-                    showError(getResource("error.sessionTimeout"), false);
-                }
-                else
-                    checkTimeoutHandle = setTimeout(checkTimeout, 30000);
-			}, function(xhr) {
-                if(xhr.status==401) {
-                    /* Session invalidated */
-                    startLogon();
-                    showError(getResource("error.sessionTimeout"), false);
-                return false;
-                }
-
-                /* Server down, other errors so start the 'server is back' poll */
-                return true;
-			});
-		};		
-		checkTimeoutHandle = setTimeout(checkTimeout, 30000);
+		
+		startPollForSession();
 		
 		getJSON('session/hasConcurrentSession', null, function(data) {
 			if(data.success && data.resource) {

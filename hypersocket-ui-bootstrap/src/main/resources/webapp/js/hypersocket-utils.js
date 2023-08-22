@@ -3,6 +3,8 @@
  */
 var hasShutdown = false;
 var polling = false;
+var pollingForSession = false;
+var pollHandle = false;
 var baseUrl = '${baseUrl}';
 var basePath = '${appPath}';
 var uiPath = '${uiPath}';
@@ -758,7 +760,7 @@ function clearError() {
 
 function showError(text, fade, fadeCallback) {
 	if(errorFunc) {
-		errorFunc(text);
+		errorFunc(text, fade, fadeCallback);
 	} else {
 		showMessage(text, 'fa-warning', 'alert-danger', typeof fade == 'undefined' ? true : fade, fadeCallback);
 	}
@@ -766,7 +768,7 @@ function showError(text, fade, fadeCallback) {
 
 function showWarning(text, fade, fadeCallback) {
 	if(warningFunc) {
-		warningFunc(text);
+		warningFunc(text, fade, fadeCallback);
 	} else {
 		showMessage(text, 'fa-warning', 'alert-warning', typeof fade == 'undefined' ? true : fade, fadeCallback);
 	}
@@ -774,7 +776,7 @@ function showWarning(text, fade, fadeCallback) {
 
 function showSuccess(text, fade, fadeCallback) {
 	if(successFunc) {
-		successFunc(text);
+		successFunc(text, fade, fadeCallback);
 	} else {
 		showMessage(text, 'fa-warning', 'alert-success', typeof fade == 'undefined' ? true : fade, fadeCallback);
 	}
@@ -782,7 +784,7 @@ function showSuccess(text, fade, fadeCallback) {
 
 function showInformation(text, fade, fadeCallback) {
 	if(infoFunc) {
-		infoFunc(text);
+		infoFunc(text, fade, fadeCallback);
 	} else {
 		showMessage(text, 'fa-info', 'alert-info', typeof fade == 'undefined' ? true : fade, fadeCallback);
 	}
@@ -1080,8 +1082,46 @@ function loadContent(selector, url, successCb, failCb) {
 	});
 }
 
-function pollForServerContact() {
+function serverSideSessionInvalidated() {
+	console.log('Server side session invalidated.');
+    stopPolling();
+	$("#surveyPopupContainer").remove();
+	clearPinnedMenu();
+	startLogon();
+	showError(getResource("error.sessionTimeout"), false);
+}
+
+function startPollForSession() {
+	stopPolling();
+	pollingForSession = true;
+    pollHandle = window.setTimeout(pollForSession, 30000);
+}
+
+function pollForSession() {
+	stopPolling();
+	pollingForSession = true;
+	log("Checking session timeout");
+	getJSON('session/peek', null, function(data) {
+		if(data && !data.closed) {
+            pollHandle =  window.setTimeout(pollForSession, 30000);
+        }
+	}, function(xmlRequest) {
+		if(xmlRequest.status == 503 && xmlRequest.statusText == 'Service Unavailable') {
+			pollForServerContact();	
+		}
+	});
 	
+}
+
+function stopPolling() {
+    if(pollHandle)
+        clearTimeout(pollHandle);
+	polling = pollingForSession = false;
+}
+
+function pollForServerContact() {
+	console.log('Polling for return of server');
+	stopPolling();
 	polling = true;
 	doAjax({
 		type: "GET",
@@ -1090,7 +1130,6 @@ function pollForServerContact() {
 	    contentType: 'application/json',
 	    success: function() {
 	    	showInformation(getResource('info.serverIsBack'), true, function() {
-	    		polling = false;
 	    		window.location.reload();	
 	    	});
 	    	
@@ -1098,15 +1137,14 @@ function pollForServerContact() {
 	}).fail(function(xmlRequest) {
 		if(xmlRequest.status==401) {
 			showInformation(getResource('info.serverIsBack'), true, function() {
-	    		polling = false;
 	    		window.location.reload();	
 	    	});
 		} else {
-			setTimeout(pollForServerContact, 1000);
+			pollHandle =  window.setTimeout(pollForServerContact, 1000);
 		}
 	});
-	
 }
+
 function msgBox(data) {
 	
 	var $msgbox = $('<div id=\"msgbox\" title=\"' + data.title + '\"><p>' + data.message + '</p></div>');
@@ -1554,7 +1592,7 @@ const notificationInitHelper = new NotificationInitHelper();
 
 
 
-function showAuditError(text) {
+function showAuditError(text, fade, fadeCallback) {
 	
 	if($(document).data('lastError') === 'error.cannotContactServer' && text === 'error.cannotContactServer') {
 		return;
@@ -1569,23 +1607,29 @@ function showAuditError(text) {
 		notificationInitHelper.setUp(function(_text, _position) {
 			$.notify(_text, { arrowShow: false, className: 'error', 
 			position: _position, autoHideDelay: 7500, style: 'hypersocket'});
-		}, text);	
+		}, text);
+		
+		if(fade)
+			window.setInterval(fadeCallback, 3000);	
 	});
 }
 
-function showAuditWarning(text) {
+function showAuditWarning(text, fade, fadeCallback) {
 	loadResources(function() {
 		text = (getResourceNoDefault(text) == undefined ? text.encodeHTML() : getResource(text).encodeHTML());
 		
 		notificationInitHelper.setUp(function(_text, _position) {
 			$.notify(_text, { arrowShow: false, className: 'warn', 
 			position: _position, autoHideDelay: 7500, style: 'hypersocket'});	
-		}, text);	
+		}, text);
+		
+		if(fade)
+			window.setInterval(fadeCallback, 3000);	
 	});
 
 }
 
-function showAuditSuccess(text) {
+function showAuditSuccess(text, fade, fadeCallback) {
 	loadResources(function() {
 		
 		if(text) {
@@ -1595,13 +1639,12 @@ function showAuditSuccess(text) {
 			$.notify(_text, { arrowShow: false, className: 'success', 
 			position: _position, autoHideDelay: 7500, style: 'hypersocket'});
 		}, text);
-		
-		
-		
+		if(fade)
+			window.setInterval(fadeCallback, 3000);
 	});
 }
 
-function showAuditInfo(text) {
+function showAuditInfo(text, fade, fadeCallback) {
 	loadResources(function() {
 		if(text) {
 			text = (getResourceNoDefault(text) == undefined ? text.encodeHTML() : getResource(text).encodeHTML());
@@ -1610,6 +1653,8 @@ function showAuditInfo(text) {
 			$.notify(_text, { arrowShow: false, className: 'info', 
 			position: _position, autoHideDelay: 7500, style: 'hypersocket'});
 		}, text);
+		if(fade)
+			window.setInterval(fadeCallback, 3000);
 	});
 }
 
