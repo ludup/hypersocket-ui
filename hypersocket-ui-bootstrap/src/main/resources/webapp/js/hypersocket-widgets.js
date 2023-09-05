@@ -4103,13 +4103,13 @@ $.fn.sliderInput = function(options) {
 
 	var callback = {
 			setValue: function(val) {
-				$('#' + id).slider('setValue', parseFloat(val));
+				$('#' + id).bootstrapSlider('setValue', parseFloat(val));
 			},
 			getValue: function() {
 				return $('#' + id).val();
 			},
 			reset: function() {
-				$('#' + id).slider('setValue', parseFloat(obj.value));
+				$('#' + id).bootstrapSlider('setValue', parseFloat(obj.value));
 			},
 			disable: function() {
 				$('#' + id).attr('disabled', true);
@@ -4124,7 +4124,7 @@ $.fn.sliderInput = function(options) {
 				return $('#' + id);
 			},
 			clear: function() {
-				$('#' + id).slider('setValue', parseFloat(obj.value));
+				$('#' + id).bootstrapSlider('setValue', parseFloat(obj.value));
 			}
 	};
 
