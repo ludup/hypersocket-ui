@@ -762,8 +762,15 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		
 		MenuRegistration was = allMenus.put(module.getResourceKey(), module);
 		if(was != null) {
-			/* Replacing existing registration. Move the children to it
+			/* Replacing existing registration. Move the children to it and
+			 * from it's existing parent
 			 */
+			if (parentModule != null) {
+				if (allMenus.containsKey(parentModule)) {
+					MenuRegistration parent = allMenus.get(parentModule);
+					parent.getMenus().remove(was);
+				}
+			}
 			module.getModules().addAll(was.getModules());
 		}
 		
