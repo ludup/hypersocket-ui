@@ -258,13 +258,13 @@ function processLogon(data, opts, message) {
 					var html = '<div class="logonInput radio mt-2 ml-auto mr-auto"><fieldset id="' + this.resourceKey + '">'
 					$.each(this.options, function(idx, obj) {
 						html += '<p><strong>'
-                                + '<input  type="radio" name="'
+                                + '<input id="' + _this.resourceKey +  obj.value + 'Radio" type="radio" name="'
                                 + _this.resourceKey
                                 + '" value="' + obj.value
                                  + '"'
                                  + (obj.selected ? ' checked' : '')
-                                 + '/>'
-                                + obj.name
+                                 + '/>&nbsp;'
+                                + '<label for="' + _this.resourceKey +  obj.value + 'Radio">' + obj.name + '</label>'
                                 + '</strong></p>';	
 						if(obj.description) {
 							html += '<p>' + getResourceOrText(obj.description) + '</p>';
