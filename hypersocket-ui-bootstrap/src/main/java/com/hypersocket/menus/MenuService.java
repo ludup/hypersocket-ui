@@ -65,6 +65,8 @@ public interface MenuService extends AuthenticatedService {
 	
 	static final String ACTIONS_USERS = "userActions";
 	
+	static final String ACTIONS_SECONDARY_USERS = "secondaryUserActions";
+	
 	static final String ACTIONS_GROUPS = "groupActions";
 
 	static final String ACTIONS_REALMS = "realmActions";
