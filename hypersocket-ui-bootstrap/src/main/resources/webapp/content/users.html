@@ -132,8 +132,20 @@
 </div>
 
 <script type="text/javascript">
+	
 	var apiUrl = 'currentRealm';
-	legacyjQueryReadyFix(
+	
+	var realmId = getAnchorByName('realmId');
+	if (realmId) {
+		getJSON("permissions/status/secondary.user.create,secondary.user.update", null, function(data) {
+			loadResourcePage(data);
+		});
+	} else {
+		loadResourcePage({});
+	}
+	
+	function loadResourcePage(ownerPermissions) {
+		legacyjQueryReadyFix(
 			function() {
 				$('#csrfToken').val(getCsrfToken());
 
@@ -142,7 +154,7 @@
 
 				var ownerRealm;
 				var realmName = getAnchorByName('realmName');
-				var realmId = getAnchorByName('realmId');
+				
 				var realmCategory = getAnchorByName('realmCategory');
 				if(!realmCategory) {
 					realmCategory = currentRealm.resourceCategory;
@@ -349,9 +361,12 @@
 				$('#userDialog').load(uiPath + '/content/userDialog.html', function() {
 
 				$('#contentUsers').localize();
-
-
-				getJSON('menus/tableActions/userActions', null, function(data) {
+				
+				var tableActionsUrl = ownerRealm ? "menus/tableActions/secondaryUserActions" :
+					 "menus/tableActions/userActions";
+				
+				
+				getJSON(tableActionsUrl, null, function(data) {
 
 					var isConnectorRealm = getAnchorByName('realmId') ? true : false;
 					
@@ -469,6 +484,41 @@
 							}
 						});
 					}
+					
+					let permissions = {
+						canCreate: false,
+						canUpdate: false,
+						canCopy: false
+						
+					};
+					
+					if (ownerPermissions.resource) {
+						
+						let map = {};
+						
+						for (let d of ownerPermissions.resource) {
+							map[d.name] = d.status;
+						}
+						
+						let createPermission = map['secondary.user.create'];
+
+						if (createPermission) {
+							permissions.canCreate = createPermission;
+						}
+						
+						let updatePermission = map['secondary.user.update'];
+						
+						if (updatePermission) {
+							permissions.canUpdate = updatePermission;
+							permissions.canCopy =  updatePermission;
+						}
+						
+					} else {
+						permissions.canCreate = currentMenu.canCreate;
+						permissions.canUpdate = currentMenu.canUpdate;
+						permissions.canCopy =  currentMenu.canUpdate;
+					}
+					
 
 					var resourcePage = $('#contentUsers').ajaxResourcePage(
 
@@ -484,9 +534,9 @@
 								searchColumn: 'name',
 								searchFields: searchFields,
 								resourceKey : 'user',
-								canCreate : currentMenu.canCreate,
-								canUpdate : currentMenu.canUpdate,
-								canCopy: currentMenu.canUpdate,
+								canCreate : permissions.canCreate,
+								canUpdate : permissions.canUpdate,
+								canCopy: permissions.canUpdate,
 								checkReadOnly: false,
 								additionalButtons: buttons,
 								toolbarButtonsUrl: 'menus/tableActions/usersToolbar',
@@ -826,4 +876,5 @@
 				});
 
 			});
+	}
 </script>

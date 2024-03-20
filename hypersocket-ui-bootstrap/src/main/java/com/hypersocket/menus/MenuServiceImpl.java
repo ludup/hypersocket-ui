@@ -550,16 +550,16 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 		registerTableAction(MenuService.ACTIONS_USERS, new TableAction(
 				"resumeUser", "fa-check", "resumeUser",
 				UserPermission.UNLOCK, 0, null, "isResumed"));
-
-		registerTableAction(MenuService.ACTIONS_REALMS,
-				new TableAction("defaultRealm", "fa-tag",
-						"defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION,
-						0, "isDefault", null));
 		
 		registerTableAction(MenuService.ACTIONS_USERS,
 				new TableAction("deleteAccount", "fa-trash",
 						"deleteAccount", UserPermission.DELETE, 900, "canDelete",
 						null));
+
+		registerTableAction(MenuService.ACTIONS_REALMS,
+				new TableAction("defaultRealm", "fa-tag",
+						"defaultRealm", SystemPermission.SYSTEM_ADMINISTRATION,
+						0, "isDefault", null));
 		
 		registerTableAction(MenuService.ACTIONS_GROUPS,
 				new TableAction("deleteGroup", "fa-trash",
