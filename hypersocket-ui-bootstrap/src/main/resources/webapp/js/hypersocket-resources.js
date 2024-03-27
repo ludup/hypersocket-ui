@@ -2554,7 +2554,7 @@ $.fn.extendedResourcePanel = function(params) {
 							$(document).off('click', '#' + actionLink);
 							
 							if (makeDisabled) {
-								warn("The tab action with resource key " + JSON.stringify(action) + " will be marked disabled as per diable function.");
+								warn("The tab action with resource key " + action.resourceKey + " will be marked disabled as per diable function.");
 								callCallback(idx, action);
 								return;	
 							}
@@ -2574,6 +2574,8 @@ $.fn.extendedResourcePanel = function(params) {
 						}
 						
 						callCallback(idx, action);
+					}, function(err) {
+						error("Possible error in table tab action with resource key " + action.resourceKey + ". => " + JSON.stringify(err));
 					});
 				});
 			}
