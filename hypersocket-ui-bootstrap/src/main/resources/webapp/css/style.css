@@ -2507,7 +2507,7 @@ For < 576px
 	}
 }
 
-.multiselectAddAllButton, .multiselectRemoveAllButton, multiselectResetButton {
+.multiselectAddAllButton, .multiselectRemoveAllButton, .multiselectResetButton {
 	font-size: .78rem
 }
 .multiSelectButtonsContainer {height: 100% !important;}
