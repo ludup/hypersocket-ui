@@ -185,6 +185,7 @@ function setUpMenuMakePinned(ignoreState) {
 	menu.css("padding-left", "0px");
 
 	content.css("margin-left", "0px");
+	content.css("overflow-x", "auto");
 	content.removeClass("row");
 	
 	//content.removeClass("col-sm-8");
