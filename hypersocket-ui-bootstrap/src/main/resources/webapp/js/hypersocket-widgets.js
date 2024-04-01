@@ -2011,7 +2011,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 					'<select multiple class="multiSelectList multiSelect"' + (!options.disabled ? '' : ' disabled="disabled" ') + 'id="' + id
 						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"/>');
 		
-		$('#' + id + 'Excluded').append('<div class="pt-1"><button id="' + id + 'AddAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.addAllInfoResourceKey) + '" class="btn btn-sm multiselectAddAllButton multiSelect ml-1 mb-1">' + getResource(options.addAllResourceKey) + '</button><button id="' + id + 'Reset" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.resetInfoResourceKey) + '" class="btn btn-sm multiselectResetButton multiSelect ml-1 mb-1">' + getResource(options.resetResourceKey) + '</button></div>');				
+		$('#' + id + 'Excluded').append('<div class="pt-1"><button id="' + id + 'AddAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.addAllInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectAddAllButton multiSelect ml-1 mb-1">' + getResource(options.addAllResourceKey) + '</button><button id="' + id + 'Reset" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.resetInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectResetButton multiSelect ml-1 mb-1">' + getResource(options.resetResourceKey) + '</button></div>');				
 
 		slectContainer.append('<div class="multiSelectButtonList" id="' + id + 'MultiSelectButtons">  <div class="d-flex justify-content-center multiSelectButtonsContainer"><div class="align-self-center mt-3 mb-3 mt-lg-0 mb-lg-0">' + 
 		'<span class="pt-0 pb-0 pt-lg-2 pb-lg-2 pl-2 pr-2 pl-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectAdd" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.addSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-arrow-circle-down d-inline d-lg-none multiSelectButtonIcon"></i><i class="far fa-arrow-circle-right d-none d-lg-inline multiSelectButtonIcon"></i></button></span>' + 
@@ -2023,7 +2023,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		$('#' + id + 'Included').append('<select multiple class="multiSelectList multiSelect"' + (!options.disabled ? '' : ' disabled="disabled" ')
 				+ 'id="' + id + 'IncludedSelect" name="IncludedSelect_' + name + '"/>');
 				
-		$('#' + id + 'Included').append('<div class="pt-1"><button id="' + id + 'RemoveAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.removeAllInfoResourceKey) + '" class="btn btn-sm multiselectRemoveAllButton multiSelect ml-1 mb-1">' + getResource(options.removeAllResourceKey) + '</button></div>');			
+		$('#' + id + 'Included').append('<div class="pt-1"><button id="' + id + 'RemoveAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.removeAllInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectRemoveAllButton multiSelect ml-1 mb-1">' + getResource(options.removeAllResourceKey) + '</button></div>');			
 
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
