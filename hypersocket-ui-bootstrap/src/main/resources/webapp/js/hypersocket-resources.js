@@ -718,11 +718,12 @@ $.fn.resourceTable = function(params) {
 		return '<div id="' + divName + 'Actions' + id + '" class="tableActions"> ' + renderedActions + '</div>';
 	};
 	
-	columns.push({ field : "actions",
+	columns.push({ field : 'actions',
 		formatter: renderActions,
 		class: 'actionsColumn',
-		title: ''
+		title: getResource('text.actions')
 	});
+	
 
 	if (options.canCreate) {
 
