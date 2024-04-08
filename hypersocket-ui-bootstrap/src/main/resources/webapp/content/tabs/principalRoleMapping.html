@@ -39,8 +39,7 @@ legacyjQueryReadyFix(function() {
                         },
                         preRemoveCallback : function(evt) {
                             
-                                var callback = el.data('widget');
-                                var roleId = $(evt.target).data('value').id;
+                                var roleId = $(evt.currentTarget).data('value').id;
                                 deleteJSON('roles/' + roleId + '/user/' + resource.id, null, function(response){
                                     if(response.success){
                                         showSuccess(response.message);
