@@ -2680,7 +2680,7 @@ $.fn.multipleSearchInput = function(data) {
 	var processCrossDeletable = function(cross, obj) {
 	    if(typeof options.objectDeletable == 'undefined' || options.objectDeletable(obj)) {
             cross.data('value', obj);
-            cross.click(function(e){
+            cross.on('click', function(e){
                 if(options.confirmRemove){
                     bootbox.confirm({
                         message: getResource(options.confirmRemoveMsgKey || 'confirm.remove.operation'),
