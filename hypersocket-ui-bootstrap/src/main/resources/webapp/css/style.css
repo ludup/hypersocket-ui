@@ -38,12 +38,17 @@ h2 {
 	text-align: center;
 }
 
-input:disabled, input:readonly {
+input:disabled {
+	background-color: #ddd;
+}
+
+input:readonly {
 	background-color: #fff;
 }
 
+
 .form-control[disabled] {
-	background-color: #fff;
+	background-color: #ddd;
 }
 
 .form-control[readonly] {
