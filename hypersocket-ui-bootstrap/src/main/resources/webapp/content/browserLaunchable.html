@@ -19,7 +19,10 @@
 							},
 							resourceUrl : "browser/browser",
 							fields : [ {
-								name : "name"
+								name : "name",
+								formatter : function(value, row, index) {
+									return '<a onclick="$(\'tr[data-uniqueid=' + row.id + '] .row-launchBrowserLaunchable\').click();return false;" href="#">' + value + '</a>';
+								}
 							}],
 							resourceKey : "browserLaunchable",
 							canCreate: false,
