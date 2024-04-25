@@ -1784,6 +1784,38 @@ $.fn.twoColumnMultipleSelect = function(data) {
 	var removeElement = function(element){
 		actOnElementInList(element, 'ExcludedSelect');
 	}
+	
+	var createElement = function (id, obj, options) {
+		let newElement = null;
+		if(options.valuesIsObjectList) {
+			newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
+					? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
+						: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
+
+		} else {
+			newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + obj + '"><span>' + (options.nameIsResourceKey
+					? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
+						: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
+		}
+		
+		return newElement;	
+	}
+	
+	var markSelected = function (options) {
+		if (options.selected) {
+			$.each(options.selected, function(idx, id) {
+				var selectedOpt;
+				if (options.selectedIsObjectList) {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
+				} else {
+					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
+				}
+				if (selectedOpt && selectedOpt.length) {
+					addElement(selectedOpt);
+				}
+			});
+		}
+	} 
 
 	if ($(this).data('created')) {
 		
@@ -1990,9 +2022,6 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		var searchBox = '<div id="search_box_container_'+ id +'" class="lb-row col-12 mb-3 pl-0 pr-0"><div class="input-group input-group-sm multiSelectSearchWidth">'
 			+ '<input type="text" class="form-control multiSelect" ' + (options.disabled ? ' disabled="disabled"' : '') + ' autocomplete="off" placeholder="Search" id="search_input_' + id + '" value="" >';
     
-    	searchBox += '<span id="click_' + id + '" class="input-group-append">'
-		 +  '<a class="input-group-text" href="#"><i id="spin_' + id + '" class="far fa-search"></i></a></span></div></div>';
-		
 		$('#' + id).append(searchBox);
 		
 		let searchBoxInput = $('#search_input_' + id);
@@ -2072,37 +2101,16 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		}
 		$.each(options.options,
 			function(idx, obj) {
-				var newElement;
-				if(options.valuesIsObjectList) {
-					newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
-							? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
-								: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
-
-				} else {
-					newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + obj + '"><span>' + (options.nameIsResourceKey
-							? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
-								: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
-				}
+				var newElement = createElement(id, obj, options);
+				
 				if(options.selectAllIfEmpty == "true" && (options.selected && options.selected.length==0)){
 					addElement(newElement);
 				}else{
 					removeElement(newElement);
 				}
 		});
-
-		if (options.selected) {
-			$.each(options.selected, function(idx, id) {
-				var selectedOpt;
-				if (options.selectedIsObjectList) {
-					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
-				} else {
-					selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
-				}
-				if (selectedOpt && selectedOpt.length) {
-					addElement(selectedOpt);
-				}
-			});
-		}
+		
+		markSelected(options);
 		
 	} else if (options.url) {
 		getJSON(
@@ -2111,17 +2119,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 			function(data) {
 				$.each(options.getUrlData(data),
 					function(idx, obj) {
-					var newElement;
-					if(options.valuesIsObjectList) {
-						newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '"  value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
-								? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
-										: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
-					} else {
-						newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '"  value="' + he.encode(obj) + '"><span>' + (options.nameIsResourceKey
-								? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
-									: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
-					}
-					
+					var newElement = createElement(id, obj, options);
 					if((!options.selected || (options.selected && options.selected.length == 0)) && options.selectAllIfEmpty){
 						addElement(newElement);
 					}else{
@@ -2129,20 +2127,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 					}
 				});
 				
-
-				if (options.selected) {
-					$.each(options.selected, function(idx, id) {
-						var selectedOpt;
-						if (options.selectedIsObjectList) {
-							selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id[options.valueAttr]) + '"]');
-						} else {
-							selectedOpt = $('#' + select.attr('id') + ' option[value="' + he.encode(id) + '"]');
-						}
-						if (selectedOpt && selectedOpt.length) {
-							addElement(selectedOpt);
-						}
-					});
-				}
+				markSelected(options);
 			});
 	}
 
