@@ -366,7 +366,9 @@ var HeatMap = class HeatMap {
 													 	let mapData = [];
 														let resource = response.resource;
 														for (k in resource) {
-															mapData.push({ "id": k, "name": am4geodata_data_countries2[k].country, "value": resource[k]});
+															if (am4geodata_data_countries2[k]) {
+																mapData.push({ "id": k, "name": am4geodata_data_countries2[k].country, "value": resource[k]});
+															}
 														}
 														let hm = new HeatMap({"world" : mapData});
 												        loadComplete();
