@@ -85,11 +85,11 @@
 		
 		$('#pemUpload').localize();
 		
-		$('#morePresentHelperMsgPem').text('');
-		
-		$('#busyIndicatorPem').hide();
-		
 		$('#pemUpload').data('action', function(resource, callback) {
+			
+			$('#morePresentHelperMsgPem').text('');
+					
+			$('#busyIndicatorPem').hide();
 			
 			getJSON('httpInterfaces/list/HTTPS', null, (data) => {
 				if (data && data.success) {

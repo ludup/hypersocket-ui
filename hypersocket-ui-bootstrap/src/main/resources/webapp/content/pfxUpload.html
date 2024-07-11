@@ -62,11 +62,11 @@
 		
 		$('#pfxUpload').localize();
 		
-		$('#morePresentHelperMsgPfx').text('');
-				
-		$('#busyIndicatorPfx').hide();
-		
 		$('#pfxUpload').data('action', function(resource, callback) {
+			
+			$('#morePresentHelperMsgPfx').text('');
+							
+			$('#busyIndicatorPfx').hide();
 			
 			getJSON('httpInterfaces/list/HTTPS', null, (data) => {
 				if (data && data.success) {
