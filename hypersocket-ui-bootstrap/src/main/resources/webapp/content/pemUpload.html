@@ -6,9 +6,24 @@
 				<h4 class="modal-title" localize="pemUpload.title"></h4>
 			</div>
 			<div class="modal-body">
-				<div id="importWarning" class="alert alert-warning"><i class="far fa-warning"></i>&nbsp;&nbsp;<span id="importText"></span></div>
 				<div class="propertyItem form-group lb-row">
 					<p id="pemUploadInfo"></p>
+				</div>
+				
+				<div id="replaceDefaultDivPem" class="propertyItem form-group lb-row">
+					<label id="localizeOnlyDefaultPresentLabelPem" class="col-md-3 control-label"
+						localize="upload.replaceDefault.label"></label>
+					<label id="localizeMorePresentlabelPem" class="col-md-3 control-label"
+						localize="upload.moreInterfacePresent.label"></label>
+					<div class="propertyValue col-md-9">
+						<div id="replaceDefaultPem" class="d-inline-block"></div>
+						<span id="busyIndicatorPem"><i class="fal fa-spinner fa-spin"></i></span>
+						<div>
+							<span id="localizeOnlyDefaultPresentInfoPem" class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="upload.replaceDefault.info"></span>
+							<span id="localizeMorePresentInfoPem" class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="upload.moreInterfacePresent.info"></span>
+							<span id="morePresentHelperMsgPem" class="lb-help-block form-text text-info mt-2 mb-3 pl-1"></span>
+						</div>
+					</div>
 				</div>
 				<div id="certDiv" class="propertyItem form-group lb-row">
 					<label id="fileLabel" class="col-md-3 control-label"
@@ -63,28 +78,54 @@
 		</div>
 	</div>
 </div>
+<script src="${uiPath}/js/ext/certificate/src.js"></script>
 <script type="text/javascript">
-
+	
 	legacyjQueryReadyFix(function() {
 		
 		$('#pemUpload').localize();
-		$('#importText').append(getResource('import.text'));
+		
+		$('#morePresentHelperMsgPem').text('');
+		
+		$('#busyIndicatorPem').hide();
 		
 		$('#pemUpload').data('action', function(resource, callback) {
 			
-			$('#pemResourceId').val(resource==null ? '' : resource.id);
-			if(resource==null) {
-				$('#importWarning').show();
-			} else {
-				$('#importWarning').hide();
-			}
-			$('#pemPassphrase').val('');
-			$('#pemFile').val('');
-			$('#pemBundle').val('');
-			$('#pemKey').val('');
-			$('#pemUpload').data('callback', callback);
-			
-			$('#pemUpload').modal('show');
+			getJSON('httpInterfaces/list/HTTPS', null, (data) => {
+				if (data && data.success) {
+					
+					const interfaces = data.resources;
+					
+					const isOnlyDefaultInterfacePresent = checkIsOnlyDefaultInterfacePresent(interfaces);
+					
+					showHideComponentsAsPerNumberOfHttpInterfaces(isOnlyDefaultInterfacePresent, 'Pem');
+						
+					$('#pemResourceId').val(resource==null ? '' : resource.id);
+					if(resource==null) {
+						$('#replaceDefaultDivPem').show();
+						if (isOnlyDefaultInterfacePresent) {
+							setUpReplaceDefaultSSLDropDown(interfaces, getDefaultInterfaceId(interfaces), 'Pem');
+						} else {
+							setUpReplaceDefaultSSLDropDown(interfaces, -1, 'Pem');
+						}
+					} else {//on direct selection in table row
+						$('#replaceDefaultDivPem').hide();
+						setUpReplaceDefaultSSLDropDown([], -1, 'Pem');
+					}
+					
+					$('#pemPassphrase').val('');
+					$('#pemFile').val('');
+					$('#pemBundle').val('');
+					$('#pemKey').val('');
+					$('#pemUpload').data('callback', callback);
+					
+					$('#pemUpload').modal('show');	
+					
+				} else {
+					showError("Problem in fetching interface list.");
+					console.error(data.message);
+				}
+			});
 		});
 		
 		$('#uploadPemButton').click(function(e) {
@@ -102,7 +143,15 @@
 				return;
 			}
 			
-			var formData = new FormData();
+			const formData = new FormData();
+			
+			const selectedInterface = $('#replaceDefaultPem').widget().getValue();
+			const certificateId = getSelectedCertificate(selectedInterface, 'Pem');
+			
+			if (certificateId == null)
+				return;
+			
+			formData.append('replaceCertificate', certificateId);
 			
 			formData.append('passphrase', $('#pemPassphrase').val());
 			
