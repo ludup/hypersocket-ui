@@ -9,6 +9,21 @@
 				<div class="propertyItem form-group lb-row">
 					<p id="pfxUploadInfo"></p>
 				</div>
+				<div id="replaceDefaultPfxDiv" class="propertyItem form-group lb-row">
+					<label id="localizeOnlyDefaultPresentLabelPfx" class="col-md-3 control-label"
+						localize="upload.replaceDefault.label"></label>
+					<label id="localizeMorePresentlabelPfx" class="col-md-3 control-label"
+						localize="upload.moreInterfacePresent.label"></label>
+					<div class="propertyValue col-md-9">
+						<div id="replaceDefaultPfx" class="d-inline-block"></div>
+						<span id="busyIndicatorPfx"><i class="fal fa-spinner fa-spin"></i></span>
+						<div>
+							<span id="localizeOnlyDefaultPresentInfoPfx" class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="upload.replaceDefault.info"></span>
+							<span id="localizeMorePresentInfoPfx" class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="upload.moreInterfacePresent.info"></span>
+							<span id="morePresentHelperMsgPfx" class="lb-help-block form-text text-info mt-2 mb-3 pl-1"></span>
+						</div>
+					</div>
+				</div>
 				<div id="keyDiv" class="propertyItem form-group lb-row">
 					<label id="fileLabel" class="col-md-3 control-label"
 						localize="uploadPfx.privateKey.label"></label>
@@ -40,6 +55,7 @@
 		</div>
 	</div>
 </div>
+<script src="${uiPath}/js/ext/certificate/src.js"></script>
 <script type="text/javascript">
 
 	legacyjQueryReadyFix(function() {
@@ -48,18 +64,47 @@
 		
 		$('#pfxUpload').data('action', function(resource, callback) {
 			
-			if(resource==null) {
-				$('#pfxResourceId').val('');
-			} else {
-				$('#pfxResourceId').val(resource.id);
-			}
-			$('#pfxUpload').data('callback', callback);
+			$('#morePresentHelperMsgPfx').text('');
+							
+			$('#busyIndicatorPfx').hide();
 			
-			$('#pfxPassphrase').val('');
-			$('#pfxKey').val('');
-			
-			
-			$('#pfxUpload').modal('show');
+			getJSON('httpInterfaces/list/HTTPS', null, (data) => {
+				if (data && data.success) {
+					
+					const interfaces = data.resources;
+					
+					const isOnlyDefaultInterfacePresent = checkIsOnlyDefaultInterfacePresent(interfaces);
+					
+					showHideComponentsAsPerNumberOfHttpInterfaces(isOnlyDefaultInterfacePresent, 'Pfx');
+					
+					$('#pfxResourceId').val(resource==null ? '' : resource.id);
+						
+					if(resource==null) {
+						$('#replaceDefaultPfxDiv').show();
+						if (isOnlyDefaultInterfacePresent) {
+							setUpReplaceDefaultSSLDropDown(interfaces, getDefaultInterfaceId(interfaces), 'Pfx');
+						} else {
+							setUpReplaceDefaultSSLDropDown(interfaces, -1, 'Pfx');
+						}
+					} else {//on direct selection in table row
+						$('#replaceDefaultPfxDiv').hide();
+						setUpReplaceDefaultSSLDropDown([], -1, 'Pfx');
+					}
+					
+					$('#pfxUpload').data('callback', callback);
+								
+					$('#pfxPassphrase').val('');
+					$('#pfxKey').val('');
+					
+					
+					$('#pfxUpload').modal('show');
+					
+				} else {
+					showError("Problem in fetching interface list.");
+					console.error(data.message);
+				}
+			});
+
 		});
 		
 		$('#uploadPfxButton').click(function(e) {
@@ -69,6 +114,14 @@
 			}
 			var formData = new FormData();
 			
+			const selectedInterface = $('#replaceDefaultPfx').widget().getValue();
+			const certificateId = getSelectedCertificate(selectedInterface, 'Pfx');
+			
+			if (certificateId == null)
+				return;
+			
+			formData.append('replaceCertificate', certificateId);
+						
 			formData.append('passphrase', $('#pfxPassphrase').val());
 			formData.append('key', $('#pfxKey')[0].files[0]);
 			
