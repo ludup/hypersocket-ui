@@ -7,7 +7,7 @@ var submitLogon;
  * @param credentials
  */
 function logon(credentials, opts) {
-
+	
 	log("Logging on");
 
 	submitLogon = function(params) {
@@ -48,8 +48,13 @@ function showLogon(credentials, opts, message) {
 	}
 
 	var url = basePath + '/api/logon';
+	
 	if(opts.scheme) {
 		url += '/' + opts.scheme;
+	}
+	
+	if(opts.requestParameters) {
+		url += '?' + $.param(opts.requestParameters);
 	}
 
 	postFORM(url, credentials, function(data) {
