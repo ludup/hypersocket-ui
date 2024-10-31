@@ -2,7 +2,6 @@
 var contentDiv = '#content';
 var currentMenu = null;
 var currentRealm = null;
-var currentRole = null;
 var countries = null;
 var dialingCodes = null;
 var restartAutoLogoff = false;
@@ -388,10 +387,7 @@ function startLogon(opts, credentials) {
 			}
 			$('#userInf').empty();
 			
-			if(currentRole) {
-				$('#userInf').append(getResource('text.loggedIn').format(
-						data.session.currentPrincipal.name, data.session.currentRealm.name, currentRole.name));
-			} else if(data.session.impersonatedPrincipal) { 
+			if(data.session.impersonatedPrincipal) { 
 				$('#userInf').append(getResource('text.loggedInImpersonating').format(
 						data.session.inheritedPrincipal.name, data.session.currentRealm.name, data.session.currentPrincipal.name));
 			} else {
@@ -469,7 +465,6 @@ function home(data) {
 	removeMessage();
 	
 	currentRealm = data.session.currentRealm;
-	currentRole = data.currentRole;
 	currentMenu = null;
 	homeMenu = null;
 	var message = data.bannerMsg;
@@ -617,14 +612,6 @@ function home(data) {
 				});
 			}
 			
-			$('#currentRole').remove();
-
-			if(currentRole) {
-				getJSON('roles/personal', null, function(roles) {
-					loadRoles(roles.resources);
-				});
-			}
-
 			$('#burger-toggle').show();
 			$('#burger-toggle').off('click');
 			$('#burger-toggle').click(function(e) {
@@ -942,55 +929,6 @@ function loadRealms(realms, session) {
 		}
 	);
 
-}
-
-function loadRoles(roles) {
-
-	$('#currentRole').remove();
-	
-	var deletedCurrentRole = true;
-	$.each(roles, function() {
-		if (currentRole.id === this.id) {
-			deletedCurrentRole = false;
-		}
-	});
-
-	if (deletedCurrentRole) {
-		currentRole = roles[0];
-	}
-	
-	var func = function(role) {
-		getJSON('session/switchRole/' + role, null,
-			function(data) {
-				if (!data.success) {
-					showError(data.errorMsg);
-				} else {
-					
-					document.location.reload();
-				}
-			});
-	};
-	
-	if(roles.length > 1) {
-		$('#navMenu').prepend('<li id="currentRole" class="navicon" class="dropdown"><a class="dropdown" data-toggle="dropdown" href="#"><i class="far fa-user-md"></i></a></li>');
-
-		$('#currentRole').append('<ul id="roles" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu2"></ul>');
-		$.each(roles, function() {
-			$('#roles').append(
-				'<li role="presentation"><a class="roleSelect" href="#" role="menuitem" tabindex="-1" data-value="' + this.id + '">' + this.name + '</a></li>');
-		});
-	
-		$('.roleSelect').on(
-			'click', function(evt) {
-				evt.preventDefault();
-				func($(this).attr('data-value'));
-			}
-		);
-	}
-	
-	if (deletedCurrentRole) {
-		func(currentRole.id);
-	}
 }
 
 function reloadRealms() {
