@@ -34,6 +34,11 @@ function logon(credentials, opts) {
 	});
 }
 
+function isValidJsPath(urlPath) {
+    const regex = /^\/app\/ui\/.*\.js$/;
+    return regex.test(urlPath);
+}
+
 function showLogon(credentials, opts, message) {
 	log("Showing logon");
 
@@ -346,8 +351,19 @@ function processLogon(data, opts, message) {
 
 		$.each(scripts, function(idx, script) {
 			log('Executing script ' + script.resourceKey);
-			if(window[script.resourceKey]) {
+			if(window[script.resourceKey] && typeof window[script.resourceKey] === 'function') {
 				window[script.resourceKey](script.defaultValue);
+			} else if (isValidJsPath(script.defaultValue)) {
+				$.ajax({
+				  url: script.defaultValue,
+				  dataType: "script",
+				  cache: true, // Enable caching for this specific request
+				  success: () => console.log("Script loaded for this request!"),
+				  error: () => console.log("Failed to load script.")
+				});
+			} else {
+				const f = new Function(script.defaultValue);
+				f();
 			}
 		});
 
