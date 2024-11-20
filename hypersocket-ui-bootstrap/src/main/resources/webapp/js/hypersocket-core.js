@@ -323,11 +323,13 @@ function startLogon(opts, credentials) {
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
 
+	/* :BS-5 Upgrade: Conflict with dropdown open/close
 	$(document).click(function () {
 	    $('.dropdown-menu[data-parent]').hide();
 	    $('.dropdown.open').removeClass('open');
 	    $('.dropdown-menu.show').removeClass('show');
 	});
+	*/
 	
 	$('#burger-toggle').hide();
 	
@@ -596,8 +598,8 @@ function home(data) {
 
 			var session = $(document).data('session');
 			if(session.impersonating) {
-				$('#navMenu').append(
-					'<li class="navicon"><a id="impersonateMenu" data-toggle="tooltip" title="' + getResource('text.revertImpersonation') + '" data-placement="bottom" href="#"><i class="far fa-male"></i></a></li>');
+				$('#navMenu').append(//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
+					'<li class="navicon"><a id="impersonateMenu" data-bs-toggle="tooltip" title="' + getResource('text.revertImpersonation') + '" data-placement="bottom" href="#"><i class="far fa-male"></i></a></li>');
 				$('#impersonateMenu').click(function(e) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
@@ -630,8 +632,8 @@ function home(data) {
 					}
 					
 					$('#navMenu').append('<li class="navicon" id="' + this.id 
-							+ '"><a '
-							+ ' href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><span data-toggle="tooltip" data-placement="bottom" title="' +  getResource(this.resourceKey + '.label') + '"><i class="far ' + this.icon + '"></i></span></a></li>');
+							+ '"><a '																						// :BS-5 Upgrade: changed data-toggle to data-bs-toggle
+							+ ' href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><span data-bs-toggle="tooltip" data-placement="bottom" title="' +  getResource(this.resourceKey + '.label') + '"><i class="far ' + this.icon + '"></i></span></a></li>');
 					
 					$('#' + this.id).data('menu', this);
 					$('#' + this.id).click(function(e) {
@@ -647,8 +649,8 @@ function home(data) {
 			if(data.systemAdmin) {
 				
 				$('#bottomMenu').empty();
-				
-				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="far fa-power-off"></i></a></li>');
+																							//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
+				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-bs-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="far fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function() {
 					showShutdownDialog();
@@ -657,8 +659,8 @@ function home(data) {
 			
 			if (showLocales) {
 				$('#navMenu')
-						.append(
-						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span data-toggle="tooltip" data-placement="bottom" title="' +  getResource('text.selectLanguages') + '"><i class="far fa-globe"></i></span></a></li>')
+						.append(//:BS-5 Upgrade: changed data-toggle to data-bs-toggle 
+						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-bs-toggle="dropdown" href="#"><span data-bs-toggle="tooltip" data-placement="bottom" title="' +  getResource('text.selectLanguages') + '"><i class="far fa-globe"></i></span></a></li>')
 				$('#langMenu')
 						.append(
 							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
@@ -688,8 +690,8 @@ function home(data) {
 			
 			// Setup header actions
 			$('#navMenu')
-					.append(
-						'<li class="navicon"><a id="actionLogoff" data-toggle="tooltip" title="' + getResource('text.signOut') + '" data-placement="bottom" href="#"><i class="far fa-sign-out"></i></a></li>');
+					.append(										//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
+						'<li class="navicon"><a id="actionLogoff" data-bs-toggle="tooltip" title="' + getResource('text.signOut') + '" data-placement="bottom" href="#"><i class="far fa-sign-out"></i></a></li>');
 
 			$('#actionLogoff').click(function(e) {
 				e.preventDefault();
@@ -758,7 +760,8 @@ function showShutdownDialog(option, logoff) {
 	'<div class="modal-dialog modal-sm">' +
 		'<div class="modal-content">' +
 			'<div class="modal-header lb-modal-header-text-reverse">' +
-				'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+			// :BS-5 Upgrade: Changed class btn to btn-close and data-dismiss to data-bs-dismiss
+				'<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>' +
 				'<h4 class="modal-title" id="myModalLabel">' + getResource('power.shutdownServer') + '</h4>' +
 			'</div>' +
 			'<div class="modal-body row">' +
@@ -892,8 +895,8 @@ function loadRealms(realms, session) {
 
 	}
 	
-	$('#currentRealm').empty();
-	$('#currentRealm').append('<a class="dropdown" data-toggle="dropdown" href="#"><span data-toggle="tooltip" title="' + getResource('text.userRealms')  + '" data-placement="bottom"><i class="far fa-database"></i></span></a>');
+	$('#currentRealm').empty();//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
+	$('#currentRealm').append('<a class="dropdown" data-bs-toggle="dropdown" href="#"><span data-bs-toggle="tooltip" title="' + getResource('text.userRealms')  + '" data-placement="bottom"><i class="far fa-database"></i></span></a>');
 	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 	
 	if ($("#currentRealm > a").length === 1) {
@@ -941,13 +944,21 @@ function reloadRealms() {
 	});
 }
 
+/*:BS-5 Upgrade: New way of initialising tooltips*/
+function initTooltip() {
+	document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(tooltipTriggerEl =>
+	    new bootstrap.Tooltip(tooltipTriggerEl)
+	);
+}
 
 function loadComplete(pageChange) {
 	log("Signaling load complete");
 	$('#mainContent').data('loadComplete', true);
 	$('#mainContent').data('pageChange', pageChange);
 	$('#mainContainer').stopSpin();
-    $('[data-toggle="tooltip"]').tooltip(); 
+	/*:BS-5 Upgrade: calling new way tool tips*/
+	//$('[data-toggle="tooltip"]').tooltip(); 
+	initTooltip();
     $('[data-toggle="offset-tooltip"]').tooltip({
         offset: 20
     }); 

@@ -485,7 +485,8 @@ $.fn.resourceTable = function(params) {
 			$(document).off('click', jqElemSelector);
 			$(document).on('click', jqElemSelector, function(e) {
 				e.preventDefault();
-                $('[data-toggle="tooltip"], .tooltip').tooltip("hide");
+				// :BS-5 Upgrade: Commented for now
+                //$('[data-toggle="tooltip"], .tooltip').tooltip("hide");
 				history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
 				var resource = resourceForCurrentRow($(this));
 				if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
@@ -559,8 +560,8 @@ $.fn.resourceTable = function(params) {
 				function(x, act) {
 					if (act.enabled) {
 
-						renderedActions += '<a class="btn-link row-' 
-										+ act.resourceKey + '" href="#" data-toggle="tooltip" data-placement="top" title="' 
+						renderedActions += '<a class="btn-link row-' // :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+										+ act.resourceKey + '" href="#" data-bs-toggle="tooltip" data-placement="top" title="' 
 										+ getResource(act.resourceKey + ".label") + '"><i class="far fa-xl ' + act.iconClass + '"></i></a>';
 
 						$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
@@ -577,13 +578,13 @@ $.fn.resourceTable = function(params) {
 				}
 			});
 			
-			if(!options.disableEditView) {
-				renderedActions += '<a data-placement="top" data-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ml-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
+			if(!options.disableEditView) {					// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+				renderedActions += '<a data-placement="top" data-bs-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ml-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
 				
 				addEditClickHandler('tr[data-uniqueid=' + id + '] .row-edit');
 				
-				if(options.canCopy) {
-					renderedActions += '<a data-toggle="tooltip" title="' + getResource('text.copy') + '" class="btn-link row-copy" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
+				if(options.canCopy) {			// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+					renderedActions += '<a data-bs-toggle="tooltip" title="' + getResource('text.copy') + '" class="btn-link row-copy" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
 					addCopyClickHandler('#' + divName + 'Actions' + id + ' .row-copy');
 				}
 			}
@@ -594,17 +595,17 @@ $.fn.resourceTable = function(params) {
 					canDelete = !row.system && options.checkDelete(row);
 				}
 				
-				if(canDelete) {
-					renderedActions += '<a data-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link row-delete" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
+				if(canDelete) {			// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+					renderedActions += '<a data-bs-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link row-delete" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
 					addDeleteClickHandler('#' + divName + 'Actions' + id + ' .row-delete');
-				} else {
-					renderedActions += '<a href="#" data-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link disabled" aria-disabled="true"><i class="ml-1 far fa-xl fa-trash"></i></a>';
+				} else {				// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+					renderedActions += '<a href="#" data-bs-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link disabled" aria-disabled="true"><i class="ml-1 far fa-xl fa-trash"></i></a>';
 				}
 				
 			}
 			
-		}  else {
-			renderedActions += '<div id="dropdown_' + id + '" class="btn-group" data-toggle="tooltip" title="' + getResource('text.actions') + '" ><a class="row-additional pointer-hover" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-xl fa-ellipsis"></i></a>';
+		}  else {																// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+			renderedActions += '<div id="dropdown_' + id + '" class="btn-group" data-bs-toggle="tooltip" title="' + getResource('text.actions') + '" ><a class="row-additional pointer-hover" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-xl fa-ellipsis"></i></a>';
 			renderedActions += '<div id="' + id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 			
 			// crud ops
@@ -740,7 +741,8 @@ $.fn.resourceTable = function(params) {
 	}
 
 	$('#' + divName + 'Placeholder').on('post-body.bs.table', function() {
-		$('[data-toggle="tooltip"]').tooltip();
+		// :BS-5 Upgrade: Commented for now
+		//$('[data-toggle="tooltip"]').tooltip();
 	});
 	
 	var callback = {
@@ -1141,10 +1143,10 @@ $.fn.resourceTable = function(params) {
                         });
                     }
 
-					if(options.toolbarButtons) {
+					if(options.toolbarButtons) { // :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
 						$.each(options.toolbarButtons, function(idx, action) {
 							$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
-									+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-toggle="tooltip" title="' 
+									+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-bs-toggle="tooltip" title="' 
 									+ getResource(action.resourceKey + '.label') + '"><i class="far ' 
 									+ action.icon + '"></i></button>');
 							
@@ -1207,8 +1209,8 @@ $.fn.resourceTable = function(params) {
 								
 								type = type || 'btn-default';
 								
-								location.prepend('<button id="' 
-										+ divName + action.resourceKey + 'TableAction" class="btn ' + type + '" data-toggle="tooltip" title="' 
+								location.prepend('<button id="' 		// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+										+ divName + action.resourceKey + 'TableAction" class="btn ' + type + '" data-bs-toggle="tooltip" title="' 
 										+ getResource(action.resourceKey + '.label') + '"><i class="far ' 
 										+ action.icon + '"></i></button>');
 								
@@ -1351,8 +1353,8 @@ $.fn.resourceTable = function(params) {
 							var renderedActions = '';
 							if (options.additionalActions) {
 
-								if(!options.disableActionsDropdown && options.additionalActions.length > 1) {
-									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-toggle="dropdown" href="#"><i class="far fa-xl fa-cogs"></i></a>';
+								if(!options.disableActionsDropdown && options.additionalActions.length > 1) {																				// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-bs-toggle="dropdown" href="#"><i class="far fa-xl fa-cogs"></i></a>';
 									renderedActions += '<ul id="' + resource.id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 									$.each(options.additionalActions, function(x, act) {
 										if (act.enabled) {
@@ -1395,9 +1397,9 @@ $.fn.resourceTable = function(params) {
 									});
 								}else{
 									$.each(options.additionalActions, function(x, act) {
-										if (act.enabled) {
+										if (act.enabled) {		// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
 											renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' 
-													+ act.resourceKey + ' btn-action" href="#" data-toggle="tooltip" data-placement="top" title="' 
+													+ act.resourceKey + ' btn-action" href="#" data-bs-toggle="tooltip" data-placement="top" title="' 
 													+ getResource(act.resourceKey + ".label") + '"><i class="far ' + act.iconClass + '"></i></a>';
 											$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
 											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
@@ -1440,8 +1442,8 @@ $.fn.resourceTable = function(params) {
 									}
 								});
 								
-								if(options.canCopy) {
-									renderedActions += '<a class="row-copy" data-toggle="tooltip" title="' + getResource('text.copy') + '" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
+								if(options.canCopy) {		// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+									renderedActions += '<a class="row-copy" data-bs-toggle="tooltip" title="' + getResource('text.copy') + '" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-copy');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function() {
 										if(options.showCopy) {
@@ -1999,8 +2001,9 @@ $.fn.bulkAssignmentDialog = function(options) {
                 '<div class="modal-dialog">' +
                     '<div class="modal-content">' +
                         '<div class="modal-header lb-modal-header-text-reverse">' +
-                            '<button type="button" class="close" data-dismiss="modal"' +
-                                    'aria-hidden="true">&times;</button>' +
+						// :BS-5 Upgrade: Changed class btn to btn-close and data-dismiss to data-bs-dismiss
+                            '<button type="button" class="btn-close" data-bs-dismiss="modal"' +
+                                    'aria-hidden="true"></button>' +
                             '<h4 class="modal-title">' + getResource(dataOptions.tabTitle)  + '</h4>' +
                         '</div>' +
                         '<div class="modal-body">' +
