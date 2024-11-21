@@ -508,9 +508,9 @@ function home(data) {
 					var expanded = menuStates[this.id] && menuStates[this.id].expanded;
 					
 					$('#menu')
-							.append(
+							.append(			// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
 								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') + ' data-menu="' + this.id + '"'
-								       + '><div class="menuitem"><a data-toggle="collapse" aria-expanded="false" aria-controls="cont_sub_' + this.id + '" href="#cont_sub_' 
+								       + '><div class="menuitem"><a data-bs-toggle="collapse" aria-expanded="false" aria-controls="cont_sub_' + this.id + '" href="#cont_sub_' 
 								       + this.id + '"><i class="imenu far ' + (expanded ? 'fa-chevron-down' : 'fa-chevron-right' ) + '"></i>&nbsp;<span>' + getResource(this.resourceKey + '.label') + '</span></a></div></div>');
 
 					var root = this;

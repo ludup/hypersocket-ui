@@ -6278,13 +6278,13 @@ $.fn.wizardPage = function(data) {
 				if(options.wizardTitle) {
 					html = html + ' 	<h5 class="' + options.panelClass + '-title ' + options.wizardTitleClass + '"><span class="fa-stack"><i class="far fa-circle fa-stack-2x"></i>'
 					+ '<i class="fa fa-stack-1x" style="color: white"><strong>' + (index+1) + '</strong></i></span>'
-					+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+					+ '		    <a data-bs-toggle="collapse" data-bs-parent="#accordion"' // :BS-5 Upgrade: Changed data-toggle to data-bs-toggle and data-parent to data-bs-parent
 					+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
 					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
 					+ '	    </h5>';
 				}
-				html = html + '</div>'
-				+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse collapse' + (index == 0 ? ' show' : '') + '"'
+				html = html + '</div>'												// :BS-5 Upgrade: Changed collapse class to accordion-collapse
+				+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse accordion-collapse' + (index == 0 ? ' show' : '') + '"'
 				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 				+ '	<div class="' + options.panelClass + '-body"><div id="page' + index + '"></div>';
 
@@ -6293,13 +6293,13 @@ $.fn.wizardPage = function(data) {
 					+ '<div class="' + options.panelClass + '-heading" role="tab" id="heading' + index + '">';
 				if(options.wizardTitle) {
 					html = html + ' 	<h4 class="' + options.panelClass + '-title ' + options.wizardTitleClass + '"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
-					+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+					+ '		    <a data-bs-toggle="collapse" data-bs-parent="#accordion"' // :BS-5 Upgrade: Changed data-toggle to data-bs-toggle and data-parent to data-bs-parent
 					+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
 					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
 					+ '	    </h4>';
 				}
-				html = html	+ '</div>'
-					+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse collapse' + (index == 0 ? ' show' : '') + '"'
+				html = html	+ '</div>'												// :BS-5 Upgrade: Changed collapse class to accordion-collapse
+					+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse accordion-collapse' + (index == 0 ? ' show' : '') + '"'
 					+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 					+ '	<div class="' + options.panelClass + '-body"><div id="page' + index + '"></div>';
 			}
