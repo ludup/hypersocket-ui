@@ -21,8 +21,8 @@ $.fn.stepForm = function(params) {
 					'<h4 class="panel-title">' +			// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
 						'<a role="button" class="stepCollaspe" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#' + collaspe + '" aria-expanded="' + (stepCount == 0 ? 'true' : 'false') + '" aria-controls="' + collaspe + '">' + this.title + '</a>' +
 					'</h4>' +
-				'</div>' +						// :BS-5 Upgrade: Changed collapse class to accordion-collapse
-				'<div id="' + collaspe + '" class="panel-collapse accordion-collapse' + (stepCount == 0 ? 'in' : '') + '" role="tabpanel" aria-labelledby="' + stepId + '">' +
+				'</div>' +						
+				'<div id="' + collaspe + '" class="panel-collapse collapse' + (stepCount == 0 ? 'in' : '') + '" role="tabpanel" aria-labelledby="' + stepId + '">' +
 					'<div class="panel-body">' +
 	      
 					'</div>' +

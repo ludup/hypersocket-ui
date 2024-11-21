@@ -6283,8 +6283,8 @@ $.fn.wizardPage = function(data) {
 					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
 					+ '	    </h5>';
 				}
-				html = html + '</div>'												// :BS-5 Upgrade: Changed collapse class to accordion-collapse
-				+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse accordion-collapse' + (index == 0 ? ' show' : '') + '"'
+				html = html + '</div>'												
+				+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse collapse' + (index == 0 ? ' show' : '') + '"'
 				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 				+ '	<div class="' + options.panelClass + '-body"><div id="page' + index + '"></div>';
 
@@ -6298,8 +6298,8 @@ $.fn.wizardPage = function(data) {
 					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
 					+ '	    </h4>';
 				}
-				html = html	+ '</div>'												// :BS-5 Upgrade: Changed collapse class to accordion-collapse
-					+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse accordion-collapse' + (index == 0 ? ' show' : '') + '"'
+				html = html	+ '</div>'												
+					+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse collapse' + (index == 0 ? ' show' : '') + '"'
 					+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 					+ '	<div class="' + options.panelClass + '-body"><div id="page' + index + '"></div>';
 			}

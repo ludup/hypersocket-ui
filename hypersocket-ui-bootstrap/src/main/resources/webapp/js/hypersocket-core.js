@@ -519,7 +519,7 @@ function home(data) {
 					
 					if (this.menus.length > 0) {
 						var menu = '#sub_' + this.id;
-						$("#menu_" + this.id).append('<div class="collapse' + (expanded ? ' show' : '') + '" id="cont_sub_' + this.id + '">' + 
+						$("#menu_" + this.id).append('<div class="accordion-collapse' + (expanded ? ' show' : '') + '" id="cont_sub_' + this.id + '">' + 
 							'<ul id="sub_' + this.id + '" class="nav nav-sidebar flex-column"/>');
 						
 						$.each(this.menus, function() {
@@ -560,7 +560,7 @@ function home(data) {
 								}
 								$(".sideMenu").removeClass("active");
 								$(this).addClass("active");
-								$(this).parents(".collapse").addClass('show');
+								$(this).parents(".accordion-collapse").addClass('show');
 								closeMenu();
 							});
 
@@ -576,7 +576,7 @@ function home(data) {
 					
 			});
 						
-			$('.collapse').on('show.bs.collapse', function(){
+			$('.accordion-collapse').on('show.bs.collapse', function(){
 				$(this).parent().find(".fa-chevron-right").removeClass("fa-chevron-right").addClass("fa-chevron-down");
 				saveMenuState($(this).parent().data('menu'), menuStates, true);
 			}).on('hide.bs.collapse', function(){
@@ -1133,7 +1133,7 @@ function loadSubPage(menu, element) {
 		element.parent().parent().find('.small-button[id!="buttonSmall_' + element.data().value + '"]').addClass('disabled');
 		var parent = element.parent().parent().find('.large-button[id="buttonLarge_' + element.data().value + '"]').data('parent');
 		if(parent !== '')
-			$('#' + parent).parents('.collapse').addClass('show');
+			$('#' + parent).parents('.accordion-collapse').addClass('show');
 	}
 	$('#subMenuPageContent').startSpin();
 	loadWait();
