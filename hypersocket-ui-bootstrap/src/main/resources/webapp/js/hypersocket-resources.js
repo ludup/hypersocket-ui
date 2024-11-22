@@ -175,7 +175,7 @@ $.fn.resourceTable = function(params) {
 		pageList : [ 5, 10, 25, 50, 100, 250, 500],
 		search: true,
         showButtons : true,
-        buttonClass: 'tabActions card-footer',
+        buttonClass: 'tabActions card-footer lb-card-footer-bg p-3',
 		showColumns : true,
 		showRefresh : true,
 	    showToggle : false,
@@ -267,7 +267,7 @@ $.fn.resourceTable = function(params) {
 		}
 		getState(divName+'-infoPanel', true, function(data) {
 			if(data.resources.length == 0 || data.resources[0].show) {
-				theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="far fa-xl ' + getIconForLevel(options.infoLevel) + ' align-middle"></i><i id="messageDismiss" '
+				theDiv.after('<div id="infoPanel" class="col-12 px-3"><div class="alert alert-' + options.infoLevel + '"><i class="far fa-xl ' + getIconForLevel(options.infoLevel) + ' align-middle"></i><i id="messageDismiss" '
 						+ 'class="far fa-times dismiss-icon float-right mt-2"></i>&nbsp;&nbsp;<span class="align-middle">' + options.infoHtml + '</span></div></div>');
 			
 				$('.dismiss-icon').click(function(e) {
@@ -917,6 +917,11 @@ $.fn.resourceTable = function(params) {
 			escape: options.escapeHTMLInTable,
 		    uniqueId: 'id',
 		    mobileResponsive: true,
+			icons: {
+				refresh: 'fas fa-sync-alt', 
+				toggleOff: 'fas fa-toggle-off',
+				toggleOn: 'fas fa-toggle-on'
+			},
 		    ajaxOptions: {
 		    	beforeSend: function(request) {
 		    		request.setRequestHeader("X-Csrf-Token", getCsrfToken());

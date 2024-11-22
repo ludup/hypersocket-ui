@@ -774,7 +774,7 @@ $.fn.propertyPage = function(opts) {
                 }
                 getState(propertyDiv+'-infoPanel', true, function(data) {
                     if(data.resources.length == 0 || data.resources[0].show) {
-                        theDiv.after('<div id="infoPanel" class="col-12"><div class="alert alert-' + options.infoLevel + '"><i class="far fa-2x ' + getIconForLevel(options.infoLevel) + ' align-middle"></i><i id="messageDismiss" '
+                        theDiv.after('<div id="infoPanel" class="col-12 px-3"><div class="alert alert-' + options.infoLevel + '"><i class="far fa-2x ' + getIconForLevel(options.infoLevel) + ' align-middle"></i><i id="messageDismiss" '
                                 + 'class="far fa-times dismiss-icon float-right mt-2"></i>&nbsp;&nbsp;<span class="align-middle">' + options.infoHtml + '</span></div></div>');
                     
                         $('.dismiss-icon').click(function(e) {
