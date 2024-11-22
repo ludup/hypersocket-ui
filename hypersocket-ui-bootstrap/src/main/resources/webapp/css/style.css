@@ -1009,11 +1009,9 @@ header .navbar {
 
 .navicons {
 	padding-left: 0px;
-	float: right;
 	height: 50px;
 	margin: auto;
 	line-height: 50px;
-	float: right;
 }
 
 .navicons i {
