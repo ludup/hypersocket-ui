@@ -323,13 +323,12 @@ function startLogon(opts, credentials) {
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
 
-	/* :BS-5 Upgrade: Conflict with dropdown open/close
+	/* :BS-5 Upgrade: Back on some custom drop down widgets require this feature.*/
 	$(document).click(function () {
-	    $('.dropdown-menu[data-parent]').hide();
-	    $('.dropdown.open').removeClass('open');
-	    $('.dropdown-menu.show').removeClass('show');
+	   // $('.dropdown-menu[data-parent]').hide();
+	    //$('.dropdown.open').removeClass('open');
+	    $('.lb-dropdown-menu.dropdown-menu.show').removeClass('show');
 	});
-	*/
 	
 	$('#burger-toggle').hide();
 	

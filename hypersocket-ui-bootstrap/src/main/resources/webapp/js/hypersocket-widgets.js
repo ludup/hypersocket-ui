@@ -1131,16 +1131,16 @@ $.fn.autoComplete = function(data) {
 	var hasVariables = (options.variables && options.variables.length > 0);
 	
     var html = '<div class="input-group dropdown"><input type="hidden" id="' + id
-			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" autocomplete="off" data-toggle="dropdown"' : 'class="form-control"')
+			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" autocomplete="off" data-bs-toggle="dropdown"' : 'class="form-control"')
 			+ (options.placeholder ? ' placeholder="' + options.placeholder + '"' : '')
 			+ ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
-			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>';
+			+ '<ul id="' + 'auto_' + id + '" class="lb-dropdown-menu dropdown-menu scrollable-menu" role="menu"></ul>';
     
-    html += '<span id="click_' + id + '" class="input-group-append">'
-		 +  '<a class="input-group-text" href="#" ' + (options.alwaysDropdown ? 'class="btn btn-secondary" data-toggle' : '') + '><i id="spin_' + id + '" class="far ' + options.icon + '"></i></a></span></div>';
+    html += '<span id="click_' + id + '" class="input-group-text">'
+		 +  '<a class="" href="#" ' + (options.alwaysDropdown ? 'class="btn btn-secondary" data-bs-toggle' : '') + '><i id="spin_' + id + '" class="far ' + options.icon + '"></i></a></span></div>';
     	
 	if(hasVariables || options.variablesUrl) {
-		html += '<div class="dropdown floatRight"><ul id="vars_' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><a href="#" class="dropdown-toggle unselectable" data-toggle="dropdown">${} Insert Variable</span></div>';
+		html += '<div class="dropdown floatRight"><ul id="vars_' + id + 'Dropdown" class="lb-dropdown-menu dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><a href="#" class="dropdown-toggle unselectable" data-bs-toggle="dropdown">${} Insert Variable</span></div>';
 	} 
 	
 	$(this).append(html);
@@ -1167,7 +1167,8 @@ $.fn.autoComplete = function(data) {
 			thisWidget.data('selectedObject', obj);
 			$('#' + id).val($(this).text());
 			$('#input_' + id).val($(this).text());
-			$('[data-toggle="dropdown"]').parent().removeClass('show');
+			// :BS-5 Upgrade: Below line seems redundant, commenting for now
+			//$('[data-bs-toggle="dropdown"]').parent().removeClass('show');
 			
 			if(options.changed) {
 				options.changed(callback);
@@ -1286,8 +1287,8 @@ $.fn.autoComplete = function(data) {
 				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value.toString());
 				$('#input_' + id).val($(this).text());
-				$('[data-toggle="dropdown"]').parent().removeClass('show');
-				$('[data-toggle="dropdown"]').next().removeClass('show');
+				$('[data-bs-toggle="dropdown"]').parent().removeClass('show');
+				$('[data-bs-toggle="dropdown"]').next().removeClass('show');
 
 				if(options.changed) {
 					options.changed(callback);
@@ -1310,7 +1311,7 @@ $.fn.autoComplete = function(data) {
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value.toString());
-				$('[data-toggle="dropdown"]').parent().removeClass('show');
+				$('[data-bs-toggle="dropdown"]').parent().removeClass('show');
 				if(options.changed) {
 					options.changed(callback);
 				}
