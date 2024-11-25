@@ -1425,7 +1425,7 @@ $.fn.propertyPage = function(opts) {
 												widgets.push(widget);
 												
 												$('#' + tab + '_value' + inputId).append(
-														'<span id="' + tab + '_helpspan' + inputId + '" class="lb-help-block form-text text-muted mt-2 mb-2 pl-1">' 
+														'<span id="' + tab + '_helpspan' + inputId + '" class="lb-help-block form-text text-muted mt-2 mb-2 ps-1">' 
 														+  ( obj.description ? obj.description : getResourceWithNamespace(categoryNamespace, obj.resourceKey + '.info') ) 
 
 														+ '</span>');
