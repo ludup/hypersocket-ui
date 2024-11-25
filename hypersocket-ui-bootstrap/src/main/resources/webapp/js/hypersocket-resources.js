@@ -920,7 +920,9 @@ $.fn.resourceTable = function(params) {
 			icons: {
 				refresh: 'fas fa-sync-alt', 
 				toggleOff: 'fas fa-toggle-off',
-				toggleOn: 'fas fa-toggle-on'
+				toggleOn: 'fas fa-toggle-on',
+				detailOpen: 'fas fa-plus',
+				detailClose: 'fas fa-dash'
 			},
 		    ajaxOptions: {
 		    	beforeSend: function(request) {
