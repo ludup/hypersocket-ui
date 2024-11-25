@@ -1005,7 +1005,7 @@ $.fn.resourceTable = function(params) {
 		    		
 		    		var loadSearchColumns = function(columns) {
 		    			if(!$('#' + divName + 'searchHolder').length) {
-		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div id="' + divName + 'searchHolder" class="tableToolbar float-right search mr-sm-2"><label>Search:</label><div class="toolbarWidget" id="' + divName + 'searchColumn"></div></div>');
+		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div id="' + divName + 'searchHolder" class="tableToolbar float-end search me-sm-2"><label>Search:</label><div class="toolbarWidget" id="' + divName + 'searchColumn"></div></div>');
 		    			}
 		    			$('#' + divName + 'searchColumn').empty();
 		    			$('#' + divName + 'searchColumn').textDropdown({
@@ -1055,7 +1055,7 @@ $.fn.resourceTable = function(params) {
 		    		
 		    		if(options.searchFiltersUrl) {
 		    			getJSON(options.searchFiltersUrl, null, function(data) {
-		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar float-right search mr-sm-2"><label>Filter:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
+		    				$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar float-end search me-sm-2"><label>Filter:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
 		    				var filters = [];
 		    				if(options.searchFilters) {
 		    					filters = options.searchFilters;
@@ -1108,7 +1108,7 @@ $.fn.resourceTable = function(params) {
 			    			}
 		    			});
 		    		} else if(options.searchFilters) {
-		    			$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar float-right search mr-sm-2"><label>Filter By:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
+		    			$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').append('<div class="tableToolbar float-end search me-sm-2"><label>Filter By:</label><div class="toolbarWidget" id="' + divName + 'filterColumn"></div></div>');
 		    			$('#' + divName + 'filterColumn').textDropdown({
 							values: options.searchFilters,
 							changed: function(widget) {
