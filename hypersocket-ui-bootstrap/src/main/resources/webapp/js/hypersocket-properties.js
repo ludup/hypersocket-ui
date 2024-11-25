@@ -599,7 +599,7 @@ $.fn.tabPage = function(opts) {
 	$('#' + propertyDiv)
 	.append(
 		'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
-		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
+		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default my-2"><div class="panel-heading"><h2><i class="far ' 
 		+ options.icon + '"></i><span class="ml-2 break"></span>' + options.title + '</h2><ul id="' 
 		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body mt-3"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
@@ -753,7 +753,7 @@ $.fn.propertyPage = function(opts) {
             if(options.useFilters) {
     			tabHtml = '<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>';
             }
-            tabHtml += '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
+            tabHtml += '<div id="' + propertyDiv + 'Panel" class="panel panel-default my-2"><div class="panel-heading"><h2><i class="far ' 
                             + options.icon + '"></i><span>' + options.title + '</span></h2><ul id="' 
                             + propertyDiv + 'Tabs" class="nav nav-tabs ' + ( options.tabStyle === 'hypersocket' ? 'float ' : '') + '"/></div><div class="panel-body property-body mt-3"><div id="' 
                             + propertyDiv + 'Content" class="tab-content"></div></div></div>';
@@ -761,7 +761,7 @@ $.fn.propertyPage = function(opts) {
 			
 			if (options.showButtons) {
 				$(panel).append(
-							'<div id="' + propertyDiv + 'Actions" class="panel-footer tabActions ' + options.footerStyle + '"><button class="btn btn-small btn-primary" id="' + propertyDiv 
+							'<div id="' + propertyDiv + 'Actions" class="d-flex justify-content-end gap-2 tabActions ' + options.footerStyle + '"><button class="btn btn-small btn-primary" id="' + propertyDiv 
                             + 'Apply"><i class="far fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button><button class="btn btn-small btn-danger ml-2" id="' 
 							+ propertyDiv + 'Revert"><i class="far fa-ban"></i><span class="btn-text">' + getResource(options.revertText)
 							+ '</span></button></div>');
@@ -1127,9 +1127,9 @@ $.fn.propertyPage = function(opts) {
 												sizeClass = 'col-md-' + obj.numCols;
 											}
 
-											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div class="lb-row" id="' + tab + '_item' + inputId + '"/></div>');
+											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div class="lb-row py-3" id="' + tab + '_item' + inputId + '"/></div>');
 											if(!obj.noLabel) {
-    											$('#' + tab + '_item' + inputId).append('<label id="" class="col-md-3 control-label ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
+    											$('#' + tab + '_item' + inputId).append('<label id="" class="col-md-3 control-label ps-3 ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
     													+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');
 											} else if(obj.fullwidth) {
 												sizeClass = 'col-md-12';
