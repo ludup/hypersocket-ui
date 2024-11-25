@@ -1541,6 +1541,7 @@ $.fn.autoComplete = function(data) {
 
 	var f = function(e) {
 		e.preventDefault();
+		e.stopPropagation();
 		if(options.alwaysDropdown) {
 			createDropdown("", true, false);
 		} else {
