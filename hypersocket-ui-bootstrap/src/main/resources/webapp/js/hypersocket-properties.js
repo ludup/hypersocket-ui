@@ -761,7 +761,7 @@ $.fn.propertyPage = function(opts) {
 			
 			if (options.showButtons) {
 				$(panel).append(
-							'<div id="' + propertyDiv + 'Actions" class="d-flex justify-content-end gap-2 tabActions ' + options.footerStyle + '"><button class="btn btn-small btn-primary" id="' + propertyDiv 
+							'<div id="' + propertyDiv + 'Actions" class="lb-panel-footer tabActions ' + options.footerStyle + '"><button class="btn btn-small btn-primary" id="' + propertyDiv 
                             + 'Apply"><i class="far fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button><button class="btn btn-small btn-danger ml-2" id="' 
 							+ propertyDiv + 'Revert"><i class="far fa-ban"></i><span class="btn-text">' + getResource(options.revertText)
 							+ '</span></button></div>');

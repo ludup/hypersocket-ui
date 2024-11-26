@@ -1636,10 +1636,10 @@ $.fn.samePageResourceView = function(params, params2) {
 	
 	var addActions = function(save, copy) {
 	
-		if(dialog.find('.panel-footer').length > 0) {
-			dialog.find('.panel-footer').remove();
+		if(dialog.find('.lb-panel-footer').length > 0) {
+			dialog.find('.lb-panel-footer').remove();
 		}
-		var html = '<div class="panel-footer p-2">';
+		var html = '<div class="lb-panel-footer p-2">';
         html += '<button id="' + dialog.attr('id') + 'Save" class="btn btn-primary"><i class="far fa-save"></i><span class="btn-text">' + getResource('text.save') + '</span></button>';
 		if(save) {
             html+= '<button id="' + dialog.attr('id') + 'Cancel" class="btn btn-danger ml-2"><i class="far fa-ban"></i><span class="btn-text">' + getResource('text.cancel') + '</span></button>';
