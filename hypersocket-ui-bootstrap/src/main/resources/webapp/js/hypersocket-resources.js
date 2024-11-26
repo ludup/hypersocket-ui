@@ -2076,7 +2076,7 @@ $.fn.bulkAssignmentDialog = function(options) {
                             '<label id="' + id  + 'ModeComponentInputLabel" for="' + id + 'ModeComponentInput" class="col-md-3 control-label optionalField">' + getResource(dataOptions.modeInputLabel) + '</label>' +
                             '<div class="propertyValue col-md-9">' +
                             '<div id="' + id +'ModeComponentInput"></div><div class="clear">'+
-                            '<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource(dataOptions.modeInputInfo) + '</span></div></div></div>';
+                            '<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource(dataOptions.modeInputInfo) + '</span></div></div></div>';
         $('#' + id + 'TabMode').empty().append(modeComponent);
 
     }
