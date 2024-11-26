@@ -6939,24 +6939,24 @@ $.fn.roles = function(data) {
 
 	if(!$('#' + roleDivId).data('created')) {
 		var div = '<div class="propertyItem form-group lb-row">' +
-				'<label class="col-md-3 control-label optionalField">' + getResource('roles.label') + '</label>' +
+				'<label class="col-md-3 control-label optionalField ps-3 pe-3">' + getResource('roles.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + '" class="roles"></div>' +
-				'<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('roles.info') + '</span>' +
+				'<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('roles.info') + '</span>' +
 				'</div>' +
 		'</div>' +
 		'<div class="propertyItem form-group lb-row">' +
-				'<label class="col-md-3 control-label optionalField">' + getResource('users.label') + '</label>' +
+				'<label class="col-md-3 control-label optionalField ps-3 pe-3">' + getResource('users.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Users" class="users"></div>' +
-				'<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('users.info') + '</span>' +
+				'<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('users.info') + '</span>' +
 				'</div>' +
 		'</div>' +
 		'<div class="propertyItem form-group lb-row">' +
-				'<label class="col-md-3 control-label optionalField">' + getResource('groups.label') + '</label>' +
+				'<label class="col-md-3 control-label optionalField ps-3 pe-3">' + getResource('groups.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Groups" class="groups"></div>' +
-				'<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('groups.info') + '</span>' +
+				'<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('groups.info') + '</span>' +
 				'</div>' +
 		'</div>';
 		$(this).append(div);
