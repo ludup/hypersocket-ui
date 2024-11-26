@@ -98,6 +98,7 @@ pre {
 /*B4 row adds margin left and right with -15 px making it difficult to adjust with old code hence added custom*/
 .lb-row {display: -ms-flexbox; display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;}
 
+.lb-panel-footer {gap: .5rem;justify-content: flex-end;display: flex;}
 /* .tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
 .tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;} */
 .lb-modal-header-text-reverse {flex-direction: row-reverse;}
