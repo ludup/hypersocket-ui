@@ -599,9 +599,9 @@ $.fn.tabPage = function(opts) {
 	$('#' + propertyDiv)
 	.append(
 		'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
-		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default my-2"><div class="panel-heading"><h2><i class="far ' 
+		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
 		+ options.icon + '"></i><span class="ml-2 break"></span>' + options.title + '</h2><ul id="' 
-		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body mt-3"><div id="' 
+		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="lb-panel-body property-body mt-3"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 
 	var lastTab = null;
