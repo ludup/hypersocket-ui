@@ -582,8 +582,8 @@ div.tablePages ul.pagination {
 }
 
 .propertyItem {
-	/*display: table;
-	width: 100%;*/
+	margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .propertyItem p {
