@@ -600,7 +600,7 @@ $.fn.tabPage = function(opts) {
 	.append(
 		'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
-		+ options.icon + '"></i><span class="ml-2 break"></span>' + options.title + '</h2><ul id="' 
+		+ options.icon + '"></i><span class="ms-2 break"></span>' + options.title + '</h2><ul id="' 
 		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body mt-3"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 
@@ -762,7 +762,7 @@ $.fn.propertyPage = function(opts) {
 			if (options.showButtons) {
 				$(panel).append(
 							'<div id="' + propertyDiv + 'Actions" class="lb-panel-footer tabActions ' + options.footerStyle + '"><button class="btn btn-small btn-primary" id="' + propertyDiv 
-                            + 'Apply"><i class="far fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button><button class="btn btn-small btn-danger ml-2" id="' 
+                            + 'Apply"><i class="far fa-save"></i><span class="btn-text">' + getResource(options.applyText) + '</span></button><button class="btn btn-small btn-danger ms-2" id="' 
 							+ propertyDiv + 'Revert"><i class="far fa-ban"></i><span class="btn-text">' + getResource(options.revertText)
 							+ '</span></button></div>');
 			}

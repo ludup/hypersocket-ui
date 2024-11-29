@@ -245,7 +245,7 @@ $.fn.resourceTable = function(params) {
 	var html = '';
 	if(!options.disableDecoration) {
 		html += '<div class="panel panel-default showOnComplete" style="display: none"><div class="panel-heading"><h2><i class="far '
-			+ options.icon + '"></i><span class="ml-2 break">' 
+			+ options.icon + '"></i><span class="ms-2 break">' 
 			+ options.title + '</span></h2></div>';
 	}
 
@@ -579,12 +579,12 @@ $.fn.resourceTable = function(params) {
 			});
 			
 			if(!options.disableEditView) {					// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
-				renderedActions += '<a data-placement="top" data-bs-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ml-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
+				renderedActions += '<a data-placement="top" data-bs-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ms-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
 				
 				addEditClickHandler('tr[data-uniqueid=' + id + '] .row-edit');
 				
 				if(options.canCopy) {			// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
-					renderedActions += '<a data-bs-toggle="tooltip" title="' + getResource('text.copy') + '" class="btn-link row-copy" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
+					renderedActions += '<a data-bs-toggle="tooltip" title="' + getResource('text.copy') + '" class="btn-link row-copy" href="#"><i class="ms-1 far fa-xl fa-copy"></i></a>';
 					addCopyClickHandler('#' + divName + 'Actions' + id + ' .row-copy');
 				}
 			}
@@ -596,10 +596,10 @@ $.fn.resourceTable = function(params) {
 				}
 				
 				if(canDelete) {			// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
-					renderedActions += '<a data-bs-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link row-delete" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
+					renderedActions += '<a data-bs-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link row-delete" href="#"><i class="ms-1 far fa-xl fa-trash"></i></a>';
 					addDeleteClickHandler('#' + divName + 'Actions' + id + ' .row-delete');
 				} else {				// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
-					renderedActions += '<a href="#" data-bs-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link disabled" aria-disabled="true"><i class="ml-1 far fa-xl fa-trash"></i></a>';
+					renderedActions += '<a href="#" data-bs-toggle="tooltip" title="' + getResource('text.delete') + '" class="btn-link disabled" aria-disabled="true"><i class="ms-1 far fa-xl fa-trash"></i></a>';
 				}
 				
 			}
@@ -611,13 +611,13 @@ $.fn.resourceTable = function(params) {
 			// crud ops
 			
 			// edit
-			renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.edit') + '" href="#"><i class="far ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i><span class="ml-1">' + getResource('text.edit') + '</span></a>';
+			renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.edit') + '" href="#"><i class="far ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i><span class="ms-1">' + getResource('text.edit') + '</span></a>';
 			if(!options.disableEditView) {
 				addEditClickHandler('#' + id + 'ActionDropdown .row-' + getResource('text.edit'));
 				
 				// copy
 				if(options.canCopy) {
-					renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.copy') + '" href="#"><i class="far fa-copy"></i><span class="ml-1">' + getResource('text.copy') + '</span></a>';
+					renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.copy') + '" href="#"><i class="far fa-copy"></i><span class="ms-1">' + getResource('text.copy') + '</span></a>';
 					addCopyClickHandler('#' + id + 'ActionDropdown .row-' + getResource('text.copy'));
 				}
 			}
@@ -630,10 +630,10 @@ $.fn.resourceTable = function(params) {
 				
 				// delete
 				if(canDelete) {
-					renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.delete') + '" href="#"><i class="far fa-trash"></i><span class="ml-1">' + getResource('text.delete') + '</span></a>';
+					renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.delete') + '" href="#"><i class="far fa-trash"></i><span class="ms-1">' + getResource('text.delete') + '</span></a>';
 					addDeleteClickHandler('#' + id + 'ActionDropdown .row-' + getResource('text.delete'));
 				} else {
-					renderedActions += '<a data-idx="' + index + '" class="dropdown-item disabled row-' + getResource('text.delete') + '" href="#"><i class="far fa-trash"></i><span class="ml-1">' + getResource('text.delete') + '</span></a>';
+					renderedActions += '<a data-idx="' + index + '" class="dropdown-item disabled row-' + getResource('text.delete') + '" href="#"><i class="far fa-trash"></i><span class="ms-1">' + getResource('text.delete') + '</span></a>';
 				}
 		
 			}
@@ -642,7 +642,7 @@ $.fn.resourceTable = function(params) {
 					options.additionalActions,
 					function(x, act) {
 						if (act.enabled) {
-							renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="' + (act.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + act.iconClass + '"></i><span class="ml-1">' + getResource(act.resourceKey + ".label") + '</span></a>';
+							renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + act.resourceKey + '" href="#"><i class="' + (act.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + act.iconClass + '"></i><span class="ms-1">' + getResource(act.resourceKey + ".label") + '</span></a>';
 							$(document).off('click',
 							                '#' + id + 'ActionDropdown .row-' + act.resourceKey);
 							$(document).on(
@@ -1425,7 +1425,7 @@ $.fn.resourceTable = function(params) {
 							}
 
 							if(!options.disableEditView) {
-								renderedActions += '<a class="row-edit" href="#"><i class="ml-1 far ' + (options.canUpdate && canUpdate && !resource.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
+								renderedActions += '<a class="row-edit" href="#"><i class="ms-1 far ' + (options.canUpdate && canUpdate && !resource.readOnly ? 'fa-edit' : 'fa-search') + '"></i></a>';
 								$(document).off('click', '#' + resource.id + 'GridOptions .row-edit');
 								$(document).on('click', '#' + resource.id + 'GridOptions .row-edit', function() {
 									if(options.showEdit) {
@@ -1450,7 +1450,7 @@ $.fn.resourceTable = function(params) {
 								});
 								
 								if(options.canCopy) {		// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
-									renderedActions += '<a class="row-copy" data-bs-toggle="tooltip" title="' + getResource('text.copy') + '" href="#"><i class="ml-1 far fa-xl fa-copy"></i></a>';
+									renderedActions += '<a class="row-copy" data-bs-toggle="tooltip" title="' + getResource('text.copy') + '" href="#"><i class="ms-1 far fa-xl fa-copy"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-copy');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function() {
 										if(options.showCopy) {
@@ -1481,7 +1481,7 @@ $.fn.resourceTable = function(params) {
 								}
 								
 								if(canDelete) {
-									renderedActions += '<a class="row-delete" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
+									renderedActions += '<a class="row-delete" href="#"><i class="ms-1 far fa-xl fa-trash"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-delete');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-delete', function() {
 										log("Entering resource delete for id " + resource.id);
@@ -1504,7 +1504,7 @@ $.fn.resourceTable = function(params) {
 										});
 									});
 								} else {
-									renderedActions += '<a class="btn-disabled" href="#"><i class="ml-1 far fa-xl fa-trash"></i></a>';
+									renderedActions += '<a class="btn-disabled" href="#"><i class="ms-1 far fa-xl fa-trash"></i></a>';
 								}
 							}
 							$('#' + resource.id + 'GridOptions').append(renderedActions);
@@ -1642,7 +1642,7 @@ $.fn.samePageResourceView = function(params, params2) {
 		var html = '<div class="lb-panel-footer p-2">';
         html += '<button id="' + dialog.attr('id') + 'Save" class="btn btn-primary"><i class="far fa-save"></i><span class="btn-text">' + getResource('text.save') + '</span></button>';
 		if(save) {
-            html+= '<button id="' + dialog.attr('id') + 'Cancel" class="btn btn-danger ml-2"><i class="far fa-ban"></i><span class="btn-text">' + getResource('text.cancel') + '</span></button>';
+            html+= '<button id="' + dialog.attr('id') + 'Cancel" class="btn btn-danger ms-2"><i class="far fa-ban"></i><span class="btn-text">' + getResource('text.cancel') + '</span></button>';
 		}
 		html += '</div>';
 		if(dialog.find('.property-body').length > 0) {
@@ -2498,7 +2498,7 @@ $.fn.extendedResourcePanel = function(params) {
 		}
 	
 		appendTo.append('<a class="lb-tab-action" href="#" id="' + actionLink + '">'  
- 			+ '<span class="ml-1">' + getResource(labelKey + ".label") + '</span></a>');
+ 			+ '<span class="ms-1">' + getResource(labelKey + ".label") + '</span></a>');
  			
  			
  		return actionLink;	
