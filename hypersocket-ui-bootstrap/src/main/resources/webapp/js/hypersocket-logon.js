@@ -205,11 +205,11 @@ function processLogon(data, opts, message) {
 					$('#logonForm').append(
 								'<div class="logonInput mt-2 mx-auto">' 
 									+ (isIE() ?
-									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' 
+									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' 
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 								+ '<div id="' + this.resourceKey + 'Select"></div>' 
-								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + this.help + '</span></div>' : '')
+								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
 
@@ -237,11 +237,11 @@ function processLogon(data, opts, message) {
 					$('#logonForm').append(
 								'<div class="logonInput mt-2 mx-auto">' 
 									+ (isIE() ?
-									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' 
+									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' 
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 								+ '<div id="' + this.resourceKey + 'Select"></div>' 
-								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + this.help + '</span></div>' : '')
+								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 								
 					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
@@ -300,7 +300,7 @@ function processLogon(data, opts, message) {
 					.append(
 						'<div class="logonInput mt-2 mx-auto">'
 							+ (isIE() ?
-									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' 
+									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' 
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 						+ '<textarea class="form-control" " name="'
@@ -309,7 +309,7 @@ function processLogon(data, opts, message) {
 							    (' placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '"'))
 						+ ' id="' + this.resourceKey + '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 						+ '">' + stripNull(this.defaultValue) + '</textarea>' 
-						+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + this.help + '</span></div>' : '')
+						+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + this.help + '</span></div>' : '')
 						+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
@@ -320,7 +320,7 @@ function processLogon(data, opts, message) {
 							.append(
 								'<div class="logonInput mt-2 mx-auto">' 
 									+ (isIE() ?
-									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' 
+									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' 
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 								+ '<input class="form-control" type="' + this.type + '" name="' + this.resourceKey + '"'
@@ -329,7 +329,7 @@ function processLogon(data, opts, message) {
 								+ ' id="' + this.resourceKey + '" value="' + stripNull(this.defaultValue)
 								+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 								+ '"' + (this.readOnly ? 'readonly="readonly"' : '' ) + '>' 
-								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + this.help + '</span></div>' : '')
+								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
