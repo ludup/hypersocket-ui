@@ -107,9 +107,9 @@ $.fn.passwordPolicy = function(data) {
 				options.suggestionsElement.empty();
 				if(data.success) {
 					if(password === confirm) {
-						options.suggestionsElement.append('<strong class="text-success"><i class="far fa-circle-check mr-3"></i>' + getResource('message.goodPassword') + '</strong>');
+						options.suggestionsElement.append('<strong class="text-success"><i class="far fa-circle-check me-2"></i>' + getResource('message.goodPassword') + '</strong>');
 					} else {
-						options.suggestionsElement.append('<strong class="text-warning"><i class="far fa-triangle-exclamation mr-3"></i>' + getResource('message.needsConfirm') + '</strong>');
+						options.suggestionsElement.append('<strong class="text-warning"><i class="far fa-triangle-exclamation me-2"></i>' + getResource('message.needsConfirm') + '</strong>');
 					}
 					if(options.buttonElement) {
 						$(options.buttonElement).prop('disabled', false);
@@ -119,9 +119,9 @@ $.fn.passwordPolicy = function(data) {
 					return;
 				} else {
 					if (data.message) {
-						options.suggestionsElement.append('<strong id="passwordPolicysMessage" class="error"><i class="far fa-circle-exclamation mr-3"></i>' + data.message + '</strong>');
+						options.suggestionsElement.append('<strong id="passwordPolicysMessage" class="error"><i class="far fa-circle-exclamation me-2"></i>' + data.message + '</strong>');
 					} else {
-						options.suggestionsElement.append('<strong class="error"><i class="far fa-circle-exclamation mr-3"></i>' + getResource('message.doesNotConform') + '</strong>');
+						options.suggestionsElement.append('<strong class="error"><i class="far fa-circle-exclamation me-2"></i>' + getResource('message.doesNotConform') + '</strong>');
 					}
 				}
 				if(options.buttonElement) {
@@ -187,34 +187,19 @@ $.fn.passwordPolicy = function(data) {
                     $(this).select();
             });
             var parent = $(options.passwordElement).parent();
-            if(parent.hasClass('input-group'))
-                /* Cleanup previous instance */
-                parent.find('.input-group-text').remove();
-            else
-                parent.addClass('input-group');
-            var ig = $('<span class="input-group-text"><a id="regeneratePassword" href="#" class="mr-3"><i class="far fa-refresh"></i></a><a id="copyPassword" class="copyPassword" href="#"><i class="far fa-copy"></i></a></span>'); 
-            ig.insertAfter($(options.passwordElement));
-            
-            /* Special case, if the next sibling contains a help block, 
-            then shift this into it's own row. */
-            var next = ig.next(); 
-            if(next.find('.lb-help-block').length > 0) {
-                var newRow = parent.clone();
-                newRow.empty();
-                newRow.insertAfter(parent);
-                next.appendTo(newRow);
-                
-                /* Also copy the label column (if one exists) and 
-                   empty it of content to align the help block */
-                var prev = parent.prev();
-                if(prev.hasClass('control-label')) {
-                    var newLabel = prev.clone();
-                    newLabel.empty();
-                    newLabel.removeClass('requiredField');
-                    newLabel.attr('localize', '');
-                    newLabel.insertAfter(parent);
-                }
-            }
+			
+			if (!parent.hasClass('input-group')) {
+				const containerDiv = $('<div>', { class: 'input-group'});
+		        parent.prepend(containerDiv); // prepend the new div as a child
+				parent = containerDiv;
+			} else {
+				/* Cleanup previous instance */
+				parent.find('.input-group-text').remove();
+			}
+			
+			$(options.passwordElement).appendTo(parent);	
+            var ig = $('<span class="input-group-text gap-3"><span><a id="regeneratePassword" href="#" class="me-1"><i class="far fa-refresh"></i></a></span><span><a id="copyPassword" class="copyPassword" href="#"><i class="far fa-copy"></i></a></span></span>'); 
+			parent.append(ig);
         }
 	}
 
@@ -225,11 +210,11 @@ $.fn.passwordPolicy = function(data) {
 			var passwordRulesContent;
 			var passwordRulesExpander;
 			if(options.showRulesDefault){
-				passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + options.title + '</a>');
-				passwordRulesContent = $('<div id="passwordRulesContent" class="ml-3 mt-3"></div>');
+				passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus me-2"></i>' + options.title + '</a>');
+				passwordRulesContent = $('<div id="passwordRulesContent" class="ms-2 mt-3"></div>');
 			}else{
-				passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + options.title + '</a>');
-				passwordRulesContent = $('<div id="passwordRulesContent" class="ml-3 mt-3"></div>');
+				passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus me-2"></i>' + options.title + '</a>');
+				passwordRulesContent = $('<div id="passwordRulesContent" class="ms-2 mt-3"></div>');
 			}
 			var passwordRulesCol = $('<div class="' + options.columnStyle + '">');
 			passwordRulesCol.append(passwordRulesExpander);
@@ -260,16 +245,16 @@ $.fn.passwordPolicy = function(data) {
             var passwordRulesExpander;
 			if(options.showRulesDefault){
 				if(options.showPolicyName)
-                    passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + policy.name + '</a>');
+                    passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus me-2"></i>' + policy.name + '</a>');
 				else
-                    passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + options.title + '</a>');
-				passwordRulesContent = $('<div id="passwordRulesContent" class="ml-3 mt-3 "></div>');
+                    passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus me-2"></i>' + options.title + '</a>');
+				passwordRulesContent = $('<div id="passwordRulesContent" class="ms-2 mt-3 "></div>');
 			}else{
 				if(options.showPolicyName)
-					passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-plus mr-3"></i>' + policy.name + '</a>');
+					passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-plus me-2"></i>' + policy.name + '</a>');
 				else
-					passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-plus mr-3"></i>' + options.title + '</a>');
-				passwordRulesContent = $('<div id="passwordRulesContent" class="ml-3 mt-3" style="display: none;"></div>');
+					passwordRulesExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-plus me-2"></i>' + options.title + '</a>');
+				passwordRulesContent = $('<div id="passwordRulesContent" class="ms-2 mt-3" style="display: none;"></div>');
 			}
 			
             var passwordRulesCol = $('<div class="' + options.columnStyle + '">');
@@ -418,11 +403,11 @@ $.fn.passwordPolicy = function(data) {
 			var passwordGeneratorExpander;
 			var gentxt = getResource(options.alternativeUi ?  'passwordGenerator.options' : 'passwordGenerator.text'); 
 			if(options.showGeneratorDefault){
-				passwordGeneratorExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus mr-3"></i>' + gentxt + '</a>');
-				passwordGeneratorContent = $('<div id="passwordGeneratorContent" class="ml-3"></div>');
+				passwordGeneratorExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-minus me-2"></i>' + gentxt + '</a>');
+				passwordGeneratorContent = $('<div id="passwordGeneratorContent" class="ms-2"></div>');
 			} else {
-				passwordGeneratorExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-plus mr-3"></i>' + gentxt + '</a>');
-				passwordGeneratorContent = $('<div id="passwordGeneratorContent" class="ml-3" style="display: none;"></div>');
+				passwordGeneratorExpander = $('<a class="lb-detail-icon" href="javascript:"><i class="far fa-plus me-2"></i>' + gentxt + '</a>');
+				passwordGeneratorContent = $('<div id="passwordGeneratorContent" class="ms-2" style="display: none;"></div>');
 			}
 			
             var passwordGeneratorCol = $('<div class="' + options.columnStyle + '">');
@@ -436,10 +421,10 @@ $.fn.passwordPolicy = function(data) {
     					+ getResource("suggestedPassword.text")
     					+ '</strong></span></div>');
     
-                passwordGeneratorContent.append('<div id="generatedPassword" class="mt-3"><div id="passwordHolder" class="mb-4"><h5 id="suggestedPassword" class="text-success"></h5></div><a href="javascript:" class="mr-3" id="regeneratePassword"><i class="far fa-2x fa-refresh"></i></a></div>');
+                passwordGeneratorContent.append('<div id="generatedPassword" class="mt-3"><div id="passwordHolder" class="mb-4"><h5 id="suggestedPassword" class="text-success"></h5></div><a href="javascript:" class="me-2" id="regeneratePassword"><i class="far fa-2x fa-refresh"></i></a></div>');
     		}
-    		$('#regeneratePassword').attr('data-toggle', 'tooltip');
-            $('#regeneratePassword').attr('data-placement', 'top');
+    		$('#regeneratePassword').attr('data-bs-toggle', 'tooltip');
+            $('#regeneratePassword').attr('data-bs-placement', 'top');
             $('#regeneratePassword').attr('title', getResource("regeneratePassword.text"));
     		
     		$('#regeneratePassword').off('click').on('click', function(e) {
@@ -479,7 +464,7 @@ $.fn.passwordPolicy = function(data) {
                 
             
                 if(!options.alternativeUi) {
-    				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a class="mr-3" href="javascript:" id="insertPassword" data-toggle="tooltip" data-offset="30" data-placement="top" title="'
+    				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a class="me-2" href="javascript:" id="insertPassword" data-bs-toggle="tooltip" data-offset="30" data-bs-placement="top" title="'
     						 + getResource("injectCredentials.text") + '"><i class="far fa-2x fa-magic"></i></a>');
     				$('#insertPassword').off('click').on('click', function(e) {
     					e.preventDefault();
@@ -489,10 +474,10 @@ $.fn.passwordPolicy = function(data) {
     				});
     				
     				
-    				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a id="copyPassword" href="javascript:" class="mr-3 copyPassword" "><i class="far fa-2x fa-copy"></i></a>');
+    				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a id="copyPassword" href="javascript:" class="me-2 copyPassword" "><i class="far fa-2x fa-copy"></i></a>');
                 }
-                $('#copyPassword').attr('data-toggle', 'tooltip');
-                $('#copyPassword').attr('data-placement', 'top');
+                $('#copyPassword').attr('data-bs-toggle', 'tooltip');
+                $('#copyPassword').attr('data-bs-placement', 'top');
                 $('#copyPassword').attr('title', getResource("copyCredentials.text"));
 			
 				var opts = {
@@ -521,7 +506,7 @@ $.fn.passwordPolicy = function(data) {
 				});
 			}
 			
-			$('[data-toggle="tooltip"]').tooltip();
+			$('[data-bs-toggle="tooltip"]').tooltip();
 		}
 		
 		validate();
