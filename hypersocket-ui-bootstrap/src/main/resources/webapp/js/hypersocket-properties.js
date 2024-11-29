@@ -611,7 +611,7 @@ $.fn.tabPage = function(opts) {
 				lastTab = $('#' + this.id);
 			$(contentTabs)
 					.append(
-						'<li class="class_default nav-item" id="' + this.id + 'Li" name="tab_' + this.name + '"><a href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2 nav-link" name="link_' + this.name + '" role="tab" data-toggle="tab"><span>' + this.name + '</span></a></li>');
+						'<li class="class_default nav-item" id="' + this.id + 'Li" name="tab_' + this.name + '"><a data-bs-target="#' + this.id + '" href="#' + this.id + '" class="' +  propertyDiv + 'Tab ' +  propertyDiv + 'Tab2 nav-link" name="link_' + this.name + '" role="tab" data-bs-toggle="tab"><span>' + this.name + '</span></a></li>');
 			$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 			$('#' + this.id).addClass('tab-pane');
 		});
@@ -753,9 +753,9 @@ $.fn.propertyPage = function(opts) {
             if(options.useFilters) {
     			tabHtml = '<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>';
             }
-            tabHtml += '<div id="' + propertyDiv + 'Panel" class="panel panel-default my-2"><div class="panel-heading"><h2><i class="far ' 
-                            + options.icon + '"></i><span>' + options.title + '</span></h2><ul id="' 
-                            + propertyDiv + 'Tabs" class="nav nav-tabs ' + ( options.tabStyle === 'hypersocket' ? 'float ' : '') + '"/></div><div class="panel-body property-body mt-3"><div id="' 
+            tabHtml += '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
+                            + options.icon + '"></i><span>' + options.title + '</span></h2><ul role="tablist" id="' 
+                            + propertyDiv + 'Tabs" class="nav nav-tabs ' + ( options.tabStyle === 'hypersocket' ? 'float ' : '') + '"/></div><div class="lb-panel-body property-body mt-3"><div id="' 
                             + propertyDiv + 'Content" class="tab-content"></div></div></div>';
             $('#' + propertyDiv).append(tabHtml);
 			
@@ -802,17 +802,18 @@ $.fn.propertyPage = function(opts) {
                     if(options.tabStyle === 'hypersocket')
     					$(contentTabs).append('<li class="' + filterPrefix + 'default" id="' + this.id +
                              'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + 
-                             '><a href="#' + this.id + '" class="' +  
+                             '><a role="tab" data-bs-target="#'  + this.id + '" href="#' + this.id + '" class="' +  
                              propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + 
                              this.name + '</span></a></li>');
                     else
                         $(contentTabs).append('<li class="nav-item ' + filterPrefix + 'default" id="' + this.id +
                              'Li" name="tab_' + this.name + '"' + (hide ? ' style="display:none"' : '') + 
-                             '><a href="#' + this.id + '" class="nav-link ' +  
+                             '><a role="tab" data-bs-target="#' + this.id + '" href="#' + this.id + '" class="nav-link ' +  
                              propertyDiv + 'Tab ' +  propertyDiv + 'Tab2" name="link_' + this.name + '"><span>' + 
                              this.name + '</span></a></li>');
 					$('#' + this.id).appendTo('#' + propertyDiv + 'Content');
 					$('#' + this.id).addClass('tab-pane');
+					$('#' + this.id).attr('role', 'tabpanel');
 				});
 			};
 			
@@ -969,7 +970,7 @@ $.fn.propertyPage = function(opts) {
                                         '</span></a></li>');
                                 else {
                                     $(contentTabs).append('<li class="nav-item tab' + idx + ' ' + tabfilterClass + 
-                                        '" name="tab_'+ this.categoryKey +'"><a ' + 'class="nav-link ' +  propertyDiv + 'Tab"'
+                                        '" name="tab_'+ this.categoryKey +'"><a role="tab" data-bs-target="#' + tab + '" class="nav-link ' +  propertyDiv + 'Tab"'
                                         + ' href="#' + tab + '"  name="link_' + this.categoryKey + '"><span>' + 
                                         (this.name ? this.name : getResource(this.categoryKey + '.label')) + 
                                         '</span></a></li>');
