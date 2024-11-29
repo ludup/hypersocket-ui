@@ -2021,7 +2021,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 			}	
 		}
 		
-		var searchBox = '<div id="search_box_container_'+ id +'" class="lb-row col-12 mb-3 ps-0 pr-0"><div class="input-group input-group-sm multiSelectSearchWidth">'
+		var searchBox = '<div id="search_box_container_'+ id +'" class="lb-row col-12 mb-3 ps-0 pe-0"><div class="input-group input-group-sm multiSelectSearchWidth">'
 			+ '<input type="text" class="form-control multiSelect" ' + (options.disabled ? ' disabled="disabled"' : '') + ' autocomplete="off" placeholder="Search" id="search_input_' + id + '" value="" >';
     
 		$('#' + id).append(searchBox);
@@ -2045,8 +2045,8 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		$('#' + id + 'Excluded').append('<div class="pt-1"><button id="' + id + 'AddAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.addAllInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectAddAllButton multiSelect ms-1 mb-1">' + getResource(options.addAllResourceKey) + '</button><button id="' + id + 'Reset" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.resetInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectResetButton multiSelect ms-1 mb-1">' + getResource(options.resetResourceKey) + '</button></div>');				
 
 		slectContainer.append('<div class="multiSelectButtonList" id="' + id + 'MultiSelectButtons">  <div class="d-flex justify-content-center multiSelectButtonsContainer"><div class="align-self-center mt-3 mb-3 mt-lg-0 mb-lg-0">' + 
-		'<span class="pt-0 pb-0 pt-lg-2 pb-lg-2 ps-2 pr-2 ps-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectAdd" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.addSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-arrow-circle-down d-inline d-lg-none multiSelectButtonIcon"></i><i class="far fa-arrow-circle-right d-none d-lg-inline multiSelectButtonIcon"></i></button></span>' + 
-		'<span class="pt-0 pb-0 pt-lg-2 pb-lg-2 ps-2 pr-2 ps-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectRemove" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.removeSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-arrow-circle-up d-inline d-lg-none multiSelectButtonIcon"></i><i class="far fa-arrow-circle-left d-none d-lg-inline multiSelectButtonIcon"></i></button></span></div></div></div>');
+		'<span class="pt-0 pb-0 pt-lg-2 pb-lg-2 ps-2 pe-2 ps-lg-0 pe-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectAdd" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.addSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-arrow-circle-down d-inline d-lg-none multiSelectButtonIcon"></i><i class="far fa-arrow-circle-right d-none d-lg-inline multiSelectButtonIcon"></i></button></span>' + 
+		'<span class="pt-0 pb-0 pt-lg-2 pb-lg-2 ps-2 pe-2 ps-lg-0 pe-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectRemove" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.removeSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-arrow-circle-up d-inline d-lg-none multiSelectButtonIcon"></i><i class="far fa-arrow-circle-left d-none d-lg-inline multiSelectButtonIcon"></i></button></span></div></div></div>');
 
 		slectContainer.append('<div id="' + id + 'IncludedList" class="multiSelectIncludeList"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="" id="' + id
 				+ 'Included"></div></div>');
