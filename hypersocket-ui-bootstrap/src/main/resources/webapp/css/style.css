@@ -102,7 +102,7 @@ pre {
 .lb-row > .col-md-9 {padding-right:15px; padding-left:15px;}
 */
 .lb-panel-footer {gap: .5rem;justify-content: flex-end;display: flex;}
-.lb-panel-body { padding: 15px 30px 15px 30px;margin: 0;}
+.panel-body { padding: 15px 30px 15px 30px;margin: 0;}
 .modal-body{padding: 15px 30px 15px 30px !important;}
 /* .tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
 .tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;} */
