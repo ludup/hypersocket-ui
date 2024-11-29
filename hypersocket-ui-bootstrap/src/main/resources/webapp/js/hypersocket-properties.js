@@ -1127,9 +1127,9 @@ $.fn.propertyPage = function(opts) {
 												sizeClass = 'col-md-' + obj.numCols;
 											}
 
-											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div class="lb-row py-3" id="' + tab + '_item' + inputId + '"/></div>');
+											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div class="lb-row" id="' + tab + '_item' + inputId + '"/></div>');
 											if(!obj.noLabel) {
-    											$('#' + tab + '_item' + inputId).append('<label id="" class="col-md-3 control-label ps-3 ' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
+    											$('#' + tab + '_item' + inputId).append('<label id="" class="col-md-3 control-label' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
     													+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');
 											} else if(obj.fullwidth) {
 												sizeClass = 'col-md-12';
