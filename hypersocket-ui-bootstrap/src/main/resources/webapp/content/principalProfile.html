@@ -56,7 +56,7 @@
 							if (authSchemes.indexOf(creds.resourceKey) === -1) {
 								warn("The creds with data " + JSON.stringify(creds) + " not present in auth scheme list may be maps by name is present.");
 							} 
-							el2.append('<div class="row no-gutters">' + '<span class="col-sm-5"><i class="mr-2 ' + 
+							el2.append('<div class="row no-gutters">' + '<span class="col-sm-5"><i class="me-2 ' + 
 								(creds.iconClass.indexOf('fab') == -1 ? 'far ' : '') + ' ' + cleanValue(creds.iconClass) + '"></i>' + 
 								'<label localize="' + creds.resourceKey + '"></label></span><span class="col-sm-4">' + 
 									cleanValue(creds.state) + '</span><span id="parent_container_tab_action_' + creds.resourceKey + '_' + data.resource.id + 
