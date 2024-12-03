@@ -311,13 +311,13 @@ var HeatMap = class HeatMap {
 						 {
 							 name: "session.createDate",
 							 formatter: function(value, obj, index) {
-								 return new Date(value).format("mmm dd HH:MM");
+								 return new Date(Number(value)).format("mmm dd HH:MM");
 							 }
 						 },
 						 {
 							 name: "session.lastUpdated",
 							 formatter: function(value, obj, index) {
-								 return new Date(value).format("mmm dd HH:MM");
+								 return new Date(Number(value)).format("mmm dd HH:MM");
 							 }
 						 },
 						 {
