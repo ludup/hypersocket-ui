@@ -97,13 +97,10 @@ pre {
 /** 2.4 changes LB custom css start*/
 /*B4 row adds margin left and right with -15 px making it difficult to adjust with old code hence added custom*/
 .lb-row {display: -ms-flexbox; display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;}
-/*
-.lb-row > .col-md-3 {padding-right:15px; padding-left:15px;}
-.lb-row > .col-md-9 {padding-right:15px; padding-left:15px;}
-*/
 .lb-panel-footer {gap: .5rem;justify-content: flex-end;display: flex;}
-.panel-body { padding: 15px 30px 15px 30px;margin: 0;}
-.modal-body{padding: 15px 30px 15px 30px !important;}
+.panel-body { padding: 15px 15px 15px 15px;margin: 0;}
+.modal-body  .propertyItem.form-group.lb-row {padding-right:15px; padding-left:15px;}
+.modal-body{padding: 15px 15px 15px 15px !important;}
 /* .tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
 .tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;} */
 .lb-modal-header-text-reverse {flex-direction: row-reverse;}
