@@ -100,6 +100,14 @@ function internalValidate(widget, value, widgetsByResourceKey) {
 			log("Validation failed for " + obj.resourceKey + " and value " + value);
 			return false;
 		}
+	} else 	if (obj.inputType == 'spinner') {
+		if(!(!isNaN(parseFloat(value)) && isFinite(value))) {
+			return false;
+		}
+		if(parseFloat(checkReplacement(obj.min, widgetsByResourceKey)) > parseFloat(value) || parseFloat(checkReplacement(obj.max, widgetsByResourceKey)) < parseFloat(value)){
+			log("Validation failed for " + obj.resourceKey + " and value " + value);
+			return false;
+		}
 	} else if (obj.inputType == 'integer') {
 		// Validate for integer
 		if(!validateRegex('^(\\-|\\+)?[0-9]+$',value)){

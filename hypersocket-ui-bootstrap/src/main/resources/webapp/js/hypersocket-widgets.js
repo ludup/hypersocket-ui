@@ -4143,13 +4143,23 @@ $.fn.spinnerInput = function(options) {
             {   min: parseFloat(options.min),
                 max: parseFloat(options.max),
                 step: options.step ? parseFloat(options.step) : 1,
-                value: parseFloat(options.value)
+                value: parseFloat(options.value),
+				allowEmpty: false
             });
 
     var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
-    var spinner = $('<input class="form-control" min="' + obj.min + '" max="' + obj.max + '" id="' + id + '" data-spinner-id="slider_' + id + '" name="spinner_' + name + '" value="' + obj.value + '" type="number">');
-    $(this).append(spinner);
-    var callback = {
+	
+	var labelResourceKey =((options && options.labelResourceKey != null ) ? getResource(obj.labelResourceKey) : null) ;
+	
+	var inputClass = labelResourceKey ? 'd-inline-block w-85' : '';
+	
+	var helperSpan = labelResourceKey ? '<span id="' + id + '_helper" class="ps-2">' + labelResourceKey + '</span>' : '<span></span>';
+	
+    var spinner = $('<div><input class="form-control ' + inputClass + '" min="' + obj.min + '" max="' + obj.max + '" id="' + id + '" data-spinner-id="slider_' + id + '" name="spinner_' + name + '" value="' + obj.value + '" type="number">' + helperSpan + '</div>');
+    
+	$(this).append(spinner);
+    
+	var callback = {
             setValue: function(val) {
                 $('#' + id).val(val);
             },
@@ -4176,7 +4186,7 @@ $.fn.spinnerInput = function(options) {
             }
     };
 
-    spinner.on('change', function(ev){
+    spinner.on('input', function(ev){
            if(options.changed) {
                options.changed(callback)
            }
