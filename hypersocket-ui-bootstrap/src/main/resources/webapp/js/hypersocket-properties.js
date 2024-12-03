@@ -609,7 +609,7 @@ $.fn.tabPage = function(opts) {
 		'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
 		+ options.icon + '"></i><span class="ms-2 break"></span>' + options.title + '</h2><ul id="' 
-		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body mt-3"><div id="' 
+		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 
 	var lastTab = null;
@@ -763,7 +763,7 @@ $.fn.propertyPage = function(opts) {
             }
             tabHtml += '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
                             + options.icon + '"></i><span>' + options.title + '</span></h2><ul role="tablist" id="' 
-                            + propertyDiv + 'Tabs" class="nav nav-tabs ' + ( options.tabStyle === 'hypersocket' ? 'float ' : '') + '"/></div><div class="panel-body property-body mt-3"><div id="' 
+                            + propertyDiv + 'Tabs" class="nav nav-tabs ' + ( options.tabStyle === 'hypersocket' ? 'float ' : '') + '"/></div><div class="panel-body property-body"><div id="' 
                             + propertyDiv + 'Content" class="tab-content"></div></div></div>';
             $('#' + propertyDiv).append(tabHtml);
 			
