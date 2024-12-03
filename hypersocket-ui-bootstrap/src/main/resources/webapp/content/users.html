@@ -446,7 +446,7 @@
 						name : "expires",
 						formatter: function(value, obj, index) {
 							if(value) {
-								return new Date(value).format();
+								return new Date(Number(value)).format();
 							}
 							return null;
 						},

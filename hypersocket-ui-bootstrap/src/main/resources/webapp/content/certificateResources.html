@@ -117,7 +117,7 @@
 									if(!value) {
 										return '-';
 									}
-									var fileDate = new Date(value);
+									var fileDate = new Date(Number(value));
 									return fileDate.format('yyyy-mm-dd');
 								}
 							}, {
@@ -126,7 +126,7 @@
 									if(!value) {
 										return '-';
 									}
-									var fileDate = new Date(value);
+									var fileDate = new Date(Number(value));
 									return fileDate.format('yyyy-mm-dd');
 								}
 							}],
