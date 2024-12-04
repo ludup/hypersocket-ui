@@ -922,7 +922,11 @@ $.fn.resourceTable = function(params) {
 				toggleOff: 'fas fa-toggle-off',
 				toggleOn: 'fas fa-toggle-on',
 				detailOpen: 'fas fa-plus',
-				detailClose: 'fas fa-dash'
+				detailClose: 'fas fa-dash',
+				paginationSwitchDown: 'fas fa-caret-square-down',
+			    paginationSwitchUp: 'fas fa-caret-square-up',
+			    columns: 'fas fa-th-list',
+			    fullscreen: 'fas fa-expand-arrows-alt',
 			},
 		    ajaxOptions: {
 		    	beforeSend: function(request) {
