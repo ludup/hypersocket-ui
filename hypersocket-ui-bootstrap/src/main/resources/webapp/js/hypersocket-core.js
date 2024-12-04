@@ -80,7 +80,7 @@ $.ajaxSetup({ error : function(xmlRequest) {
 }, cache : true });
 
 window.onhashchange = function() { 
-    $('[data-toggle="tooltip"], .tooltip').tooltip("hide"); 
+    $('[data-bs-toggle="tooltip"], .tooltip').tooltip("hide"); 
 	if($('#pageContent').length > 0) {
 		$('#pageContent').remove();
 		$('#mainContent').show();
@@ -598,7 +598,7 @@ function home(data) {
 			var session = $(document).data('session');
 			if(session.impersonating) {
 				$('#navMenu').append(//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
-					'<li class="navicon"><a id="impersonateMenu" data-bs-toggle="tooltip" title="' + getResource('text.revertImpersonation') + '" data-placement="bottom" href="#"><i class="far fa-male"></i></a></li>');
+					'<li class="navicon"><a id="impersonateMenu" data-bs-toggle="tooltip" title="' + getResource('text.revertImpersonation') + '" data-bs-placement="bottom" href="#"><i class="far fa-male"></i></a></li>');
 				$('#impersonateMenu').click(function(e) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
@@ -632,7 +632,7 @@ function home(data) {
 					
 					$('#navMenu').append('<li class="navicon" id="' + this.id 
 							+ '"><a '																						// :BS-5 Upgrade: changed data-toggle to data-bs-toggle
-							+ ' href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><span data-bs-toggle="tooltip" data-placement="bottom" title="' +  getResource(this.resourceKey + '.label') + '"><i class="far ' + this.icon + '"></i></span></a></li>');
+							+ ' href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="' +  getResource(this.resourceKey + '.label') + '"><i class="far ' + this.icon + '"></i></span></a></li>');
 					
 					$('#' + this.id).data('menu', this);
 					$('#' + this.id).click(function(e) {
@@ -649,7 +649,7 @@ function home(data) {
 				
 				$('#bottomMenu').empty();
 																							//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
-				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-bs-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="far fa-power-off"></i></a></li>');
+				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-bs-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-bs-placement="top" href="#"><i class="far fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function() {
 					showShutdownDialog();
@@ -658,8 +658,8 @@ function home(data) {
 			
 			if (showLocales) {
 				$('#navMenu')
-						.append(//:BS-5 Upgrade: changed data-toggle to data-bs-toggle 
-						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-bs-toggle="dropdown" href="#"><span data-bs-toggle="tooltip" data-placement="bottom" title="' +  getResource('text.selectLanguages') + '"><i class="far fa-globe"></i></span></a></li>')
+						.append(//:BS-5 Upgrade: changed data-bs-toggle to data-bs-toggle 
+						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-bs-toggle="dropdown" href="#"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="' +  getResource('text.selectLanguages') + '"><i class="far fa-globe"></i></span></a></li>')
 				$('#langMenu')
 						.append(
 							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
@@ -689,8 +689,8 @@ function home(data) {
 			
 			// Setup header actions
 			$('#navMenu')
-					.append(										//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
-						'<li class="navicon"><a id="actionLogoff" data-bs-toggle="tooltip" title="' + getResource('text.signOut') + '" data-placement="bottom" href="#"><i class="far fa-sign-out"></i></a></li>');
+					.append(										//:BS-5 Upgrade: changed data-bs-toggle to data-bs-toggle
+						'<li class="navicon"><a id="actionLogoff" data-bs-toggle="tooltip" title="' + getResource('text.signOut') + '" data-bs-placement="bottom" href="#"><i class="far fa-sign-out"></i></a></li>');
 
 			$('#actionLogoff').click(function(e) {
 				e.preventDefault();
@@ -895,7 +895,7 @@ function loadRealms(realms, session) {
 	}
 	
 	$('#currentRealm').empty();//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
-	$('#currentRealm').append('<a class="dropdown" data-bs-toggle="dropdown" href="#"><span data-bs-toggle="tooltip" title="' + getResource('text.userRealms')  + '" data-placement="bottom"><i class="far fa-database"></i></span></a>');
+	$('#currentRealm').append('<a class="dropdown" data-bs-toggle="dropdown" href="#"><span data-bs-toggle="tooltip" title="' + getResource('text.userRealms')  + '" data-bs-placement="bottom"><i class="far fa-database"></i></span></a>');
 	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 	
 	if ($("#currentRealm > a").length === 1) {
@@ -943,24 +943,12 @@ function reloadRealms() {
 	});
 }
 
-/*:BS-5 Upgrade: New way of initialising tooltips*/
-function initTooltip() {
-	document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(tooltipTriggerEl =>
-	    new bootstrap.Tooltip(tooltipTriggerEl)
-	);
-}
-
 function loadComplete(pageChange) {
 	log("Signaling load complete");
 	$('#mainContent').data('loadComplete', true);
 	$('#mainContent').data('pageChange', pageChange);
 	$('#mainContainer').stopSpin();
-	/*:BS-5 Upgrade: calling new way tool tips*/
-	//$('[data-toggle="tooltip"]').tooltip(); 
-	initTooltip();
-    $('[data-toggle="offset-tooltip"]').tooltip({
-        offset: 20
-    }); 
+	$('[data-bs-toggle="tooltip"]').tooltip(); 
 	if(!$("#surveyPopupContainer").length) {
 		var popup = $('<div id="surveyPopupContainer" style="position: absolute; bottom: -200px; right: 2em; z-index: 9999; width: 30em;"></div>');
 		$('body').append(popup);

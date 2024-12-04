@@ -486,7 +486,7 @@ $.fn.resourceTable = function(params) {
 			$(document).on('click', jqElemSelector, function(e) {
 				e.preventDefault();
 				// :BS-5 Upgrade: Commented for now
-                //$('[data-toggle="tooltip"], .tooltip').tooltip("hide");
+                //$('[data-bs-toggle="tooltip"], .tooltip').tooltip("hide");
 				history.pushState(null, "", "#menu=" + getAnchorByName('menu') + '&resource=' + row.id);
 				var resource = resourceForCurrentRow($(this));
 				if(canUpdate && (options.checkReadOnly ? !resource.readOnly : true)) {
@@ -561,7 +561,7 @@ $.fn.resourceTable = function(params) {
 					if (act.enabled) {
 
 						renderedActions += '<a class="btn-link row-' // :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
-										+ act.resourceKey + '" href="#" data-bs-toggle="tooltip" data-placement="top" title="' 
+										+ act.resourceKey + '" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="' 
 										+ getResource(act.resourceKey + ".label") + '"><i class="far fa-xl ' + act.iconClass + '"></i></a>';
 
 						$(document).off('click','#' + divName + 'Actions' + id + ' .row-' + act.resourceKey);
@@ -579,7 +579,7 @@ $.fn.resourceTable = function(params) {
 			});
 			
 			if(!options.disableEditView) {					// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
-				renderedActions += '<a data-placement="top" data-bs-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ms-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
+				renderedActions += '<a data-bs-placement="top" data-bs-toggle="tooltip" title="' + getResource('text.edit') + '" class="btn-link row-edit" href="#"><i class="ms-1 far fa-xl fa-fw ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i></a>';
 				
 				addEditClickHandler('tr[data-uniqueid=' + id + '] .row-edit');
 				
@@ -741,8 +741,7 @@ $.fn.resourceTable = function(params) {
 	}
 
 	$('#' + divName + 'Placeholder').on('post-body.bs.table', function() {
-		// :BS-5 Upgrade: Commented for now
-		//$('[data-toggle="tooltip"]').tooltip();
+		$('[data-bs-toggle="tooltip"]').tooltip();
 	});
 	
 	var callback = {
@@ -1154,7 +1153,7 @@ $.fn.resourceTable = function(params) {
                         });
                     }
 
-					if(options.toolbarButtons) { // :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+					if(options.toolbarButtons) { // :BS-5 Upgrade: Changed data-bs-toggle to data-bs-toggle
 						$.each(options.toolbarButtons, function(idx, action) {
 							$('.' + divName).closest('.bootstrap-table').find('.fixed-table-toolbar').find('.btn-group').first().prepend('<button id="' 
 									+ divName + action.resourceKey + 'TableAction" class="btn btn-default" data-bs-toggle="tooltip" title="' 
@@ -1220,7 +1219,7 @@ $.fn.resourceTable = function(params) {
 								
 								type = type || 'btn-default';
 								
-								location.prepend('<button id="' 		// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+								location.prepend('<button id="' 		// :BS-5 Upgrade: Changed data-bs-toggle to data-bs-toggle
 										+ divName + action.resourceKey + 'TableAction" class="btn ' + type + '" data-bs-toggle="tooltip" title="' 
 										+ getResource(action.resourceKey + '.label') + '"><i class="far ' 
 										+ action.icon + '"></i></button>');
@@ -1244,6 +1243,8 @@ $.fn.resourceTable = function(params) {
 								}
 								
 							});
+							
+							$('[data-bs-toggle="tooltip"]').tooltip();
 						});
 						
 					}
@@ -1364,7 +1365,7 @@ $.fn.resourceTable = function(params) {
 							var renderedActions = '';
 							if (options.additionalActions) {
 
-								if(!options.disableActionsDropdown && options.additionalActions.length > 1) {																				// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+								if(!options.disableActionsDropdown && options.additionalActions.length > 1) {																				// :BS-5 Upgrade: Changed data-bs-toggle to data-bs-toggle
 									renderedActions += '<div id="gridDropdown_' + resource.id + '" class="btn-group"><a class="btn btn-success row-additional dropdown-toggle btn-action" data-bs-toggle="dropdown" href="#"><i class="far fa-xl fa-cogs"></i></a>';
 									renderedActions += '<ul id="' + resource.id + 'ActionDropdown" class="dropdown-menu dropdown-menu-right" role="menu">';
 									$.each(options.additionalActions, function(x, act) {
@@ -1408,9 +1409,9 @@ $.fn.resourceTable = function(params) {
 									});
 								}else{
 									$.each(options.additionalActions, function(x, act) {
-										if (act.enabled) {		// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+										if (act.enabled) {		// :BS-5 Upgrade: Changed data-bs-toggle to data-bs-toggle
 											renderedActions += '<a class="btn ' + (act.buttonClass ? act.buttonClass : 'btn-success') + ' row-' 
-													+ act.resourceKey + ' btn-action" href="#" data-bs-toggle="tooltip" data-placement="top" title="' 
+													+ act.resourceKey + ' btn-action" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="' 
 													+ getResource(act.resourceKey + ".label") + '"><i class="far ' + act.iconClass + '"></i></a>';
 											$(document).off('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey);
 											$(document).on('click', '#' + resource.id + 'GridOptions .row-' + act.resourceKey, function() {
@@ -1453,7 +1454,7 @@ $.fn.resourceTable = function(params) {
 									}
 								});
 								
-								if(options.canCopy) {		// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
+								if(options.canCopy) {		// :BS-5 Upgrade: Changed data-bs-toggle to data-bs-toggle
 									renderedActions += '<a class="row-copy" data-bs-toggle="tooltip" title="' + getResource('text.copy') + '" href="#"><i class="ms-1 far fa-xl fa-copy"></i></a>';
 									$(document).off('click', '#' + resource.id + 'GridOptions .row-copy');
 									$(document).on('click', '#' + resource.id + 'GridOptions .row-copy', function() {
@@ -1522,6 +1523,7 @@ $.fn.resourceTable = function(params) {
 
 		    	checkReady.dataReady = true;
 		    	checkReady.check();
+				
 		    }
 		});
 
