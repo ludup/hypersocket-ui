@@ -1341,8 +1341,8 @@ dropdown-item.active, .dropdown-item:active {
 
 .rowInput {padding-left: 0px;}
 .rowInput .dow {padding-left: 0px;}
-.rowInput .timeFrom {padding-left: 0px;}
-.rowInput .timeTo {padding-left: 0px;}
+.rowInput .timeFrom {padding-left: 0px; padding-right: .25rem !important;}
+.rowInput .timeTo {padding-left: 0px; padding-right: .25rem !important;}
 
 .dialogActions {
 	padding-right: 0px;
