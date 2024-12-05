@@ -662,7 +662,7 @@ function home(data) {
 						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-bs-toggle="dropdown" href="#"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="' +  getResource('text.selectLanguages') + '"><i class="far fa-globe"></i></span></a></li>')
 				$('#langMenu')
 						.append(
-							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
+							'<ul id="lang" class="dropdown-menu dropdown-menu-end" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 				
 				getJSON('i18n/locales', null, function(data) {
 					for(var i=0;i<data.resources.length;i++) {
