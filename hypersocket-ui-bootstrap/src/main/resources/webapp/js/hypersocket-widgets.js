@@ -5059,7 +5059,7 @@ $.fn.logoInput = function(data) {
 			+	'	<img src="' + imagePath + '" id="' + id + 'Preview"/>'
 			+	'</div>'
 			+ 	generatorHtml
-			+	'<div class="logo-separator help-block text-muted mt-3 mb-3 text-left">'
+			+	'<div class="logo-separator help-block text-muted mt-3 mb-3 text-start">'
 			+	'	<span id="' + id + 'Separator">' + getResource('logo.separator')  + '</span>'
 			+	'</div>'
 			+	uploadHtml
