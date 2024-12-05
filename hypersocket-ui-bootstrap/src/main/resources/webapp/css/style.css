@@ -1046,7 +1046,7 @@ dropdown-item.active, .dropdown-item:active {
 
 .navicon {
 	display: inline;
-	padding: 5px 20px 5px 0px;
+	padding: 0px 20px 0px 0px;
 	margin: auto;
 	height: 100%;
 	position: relative;
