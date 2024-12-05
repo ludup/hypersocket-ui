@@ -962,6 +962,15 @@ function loadComplete(pageChange) {
 			return false; /* Stop error message */
 		});
 	}
+	$(document).on('hide.bs.modal', '.modal', function() {
+	   log(`Modal with ID ${this.id} is closing.`);
+
+	    // Example: Reset all tabs inside the closing modal
+	    $(this).find('.tab-pane[role="tabpanel"]').each(function() {
+	        $(this).removeClass('show active'); // Reset tab-pane classes
+	    });
+	});
+
 }
 
 function loadWait() {
