@@ -185,7 +185,7 @@ function setUpMenuMakePinned(ignoreState) {
 
 	content.css("margin-left", "0px");
 	content.css("overflow-x", "auto");
-	content.removeClass("row");
+	content.removeClass("row g-0 px-3");
 	
 	//content.removeClass("col-sm-8");
 	//content.removeClass("col-md-9");
@@ -236,8 +236,7 @@ function setUpMenuRemovePinned(ignoreState) {
 	menu.css("position", "absolute");
 	menu.css("height", "inherit");
 
-	content.css("margin-left", "-15px");
-	content.addClass("row");
+	content.addClass("row g-0 px-3");
 	
 	content.removeClass("expand-rest");
 	
