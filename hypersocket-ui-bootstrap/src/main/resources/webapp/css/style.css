@@ -1963,6 +1963,8 @@ span.input-group-addon .dropdown-toggle {
 	margin: 5px;
 }
 
+.progress { margin-top: .5rem!important;}
+
 .dragAndDrop-table .progress {
 	height: 20px;
 	margin: 0px;
