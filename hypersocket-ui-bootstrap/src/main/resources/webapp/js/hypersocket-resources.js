@@ -175,7 +175,7 @@ $.fn.resourceTable = function(params) {
 		pageList : [ 5, 10, 25, 50, 100, 250, 500],
 		search: true,
         showButtons : true,
-        buttonClass: 'tabActions card-footer lb-card-footer-bg p-3',
+        buttonClass: 'tabActions card-footer lb-card-footer-bg px-3 pt-3',
 		showColumns : true,
 		showRefresh : true,
 	    showToggle : false,

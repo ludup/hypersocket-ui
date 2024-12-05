@@ -1253,6 +1253,7 @@ dropdown-item.active, .dropdown-item:active {
 	float: right;
 	overflow: auto;
 	margin-left: 10px;
+	margin-bottom:15px;
 }
 
 
