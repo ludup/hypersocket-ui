@@ -606,7 +606,7 @@ $.fn.tabPage = function(opts) {
 	
 	$('#' + propertyDiv)
 	.append(
-		'<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
+		'<div class="row g-2"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
 		+ options.icon + '"></i><span class="ms-2 break"></span>' + options.title + '</h2><ul id="' 
 		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body"><div id="' 
@@ -759,7 +759,7 @@ $.fn.propertyPage = function(opts) {
 
             var tabHtml = '';
             if(options.useFilters) {
-    			tabHtml = '<div class="lb-row"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>';
+    			tabHtml = '<div class="row g-2"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>';
             }
             tabHtml += '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
                             + options.icon + '"></i><span>' + options.title + '</span></h2><ul role="tablist" id="' 
@@ -1136,7 +1136,7 @@ $.fn.propertyPage = function(opts) {
 												sizeClass = 'col-md-' + obj.numCols;
 											}
 
-											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div class="lb-row" id="' + tab + '_item' + inputId + '"/></div>');
+											$('#' + tab).append('<div class="propertyItem form-group ' + filterClass + '"><div class="row g-2" id="' + tab + '_item' + inputId + '"/></div>');
 											if(!obj.noLabel) {
     											$('#' + tab + '_item' + inputId).append('<label id="" class="col-md-3 control-label' + (obj.requiredField ? 'requiredField' : 'optionalField') + '">'
     													+ ( this.name ? this.name : getResourceWithNamespace(categoryNamespace, this.resourceKey) ) + '</label>');

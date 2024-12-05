@@ -6579,7 +6579,7 @@ $.fn.textAndSelect = function(data) {
 	var selectId = $(this).attr('id') + 'Select';
 
 	$(this).append('<div class="propertyItem form-group">' +
-			'<div class="row"><div class="col-6" id="' + textId + '"></div><div class="col-6" id="' +  selectId + '"></div></div>');
+			'<div class="row g-2"><div class="col-6" id="' + textId + '"></div><div class="col-6" id="' +  selectId + '"></div></div>');
 
 	var textInput = $('#' + textId).textInput(textOptions);
 
@@ -6948,21 +6948,21 @@ $.fn.roles = function(data) {
 		}
 
 	if(!$('#' + roleDivId).data('created')) {
-		var div = '<div class="propertyItem form-group lb-row">' +
+		var div = '<div class="propertyItem form-group row g-2">' +
 				'<label class="col-md-3 control-label optionalField ps-3 pe-3">' + getResource('roles.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + '" class="roles"></div>' +
 				'<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('roles.info') + '</span>' +
 				'</div>' +
 		'</div>' +
-		'<div class="propertyItem form-group lb-row">' +
+		'<div class="propertyItem form-group row g-2">' +
 				'<label class="col-md-3 control-label optionalField ps-3 pe-3">' + getResource('users.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Users" class="users"></div>' +
 				'<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('users.info') + '</span>' +
 				'</div>' +
 		'</div>' +
-		'<div class="propertyItem form-group lb-row">' +
+		'<div class="propertyItem form-group row g-2">' +
 				'<label class="col-md-3 control-label optionalField ps-3 pe-3">' + getResource('groups.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Groups" class="groups"></div>' +
