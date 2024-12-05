@@ -5039,8 +5039,8 @@ $.fn.logoInput = function(data) {
 
 
 	var uploadHtml =  '<div class="row">'
-			+ 	'	<div id="' + id + '" class="col-8 logo-uploader">'
-			+	'		<input type="file" id="' + id + 'File"/>'
+			+ 	'	<div id="' + id + '" class="logo-uploader">'
+			+	'		<input class="pe-2" type="file" id="' + id + 'File"/>'
 			+   '       <a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="far fa-upload"></i></a>'
 			+	'	</div>'
 			+	'	<div class="propertyValue col-4 dialogActions">'
