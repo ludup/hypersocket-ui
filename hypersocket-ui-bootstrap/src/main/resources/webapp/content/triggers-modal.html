@@ -27,7 +27,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="propertyItem form-group lb-row systemOnly">
+					<div class="propertyItem form-group row g-2 systemOnly">
 						<label class="col-3 control-label" localize="allRealms.label"></label>
 						<div class="propertyValue col-9">
 							<div id="triggerAllRealms"></div>
@@ -36,7 +36,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="propertyItem form-group lb-row requiresEvent">
+					<div class="propertyItem form-group row g-2 requiresEvent">
 						<label class="col-3 control-label" localize="event.result.label"></label>
 							<div class="propertyValue col-9">
 								<div id="triggerResult"></div>
@@ -45,7 +45,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="propertyItem form-group lb-row requiresEvent">
+					<div class="propertyItem form-group row g-2 requiresEvent">
 						<label class="col-3 control-label" localize="event.task.label"></label>
 						<div class="propertyValue col-9">
 							<div id="triggerTask"></div>
@@ -120,7 +120,7 @@
     		conditionId = "";
     		conditionClass = "newCondition";
     	}
-    	var html = '<div class="propertyItem form-group lb-row ' + conditionClass + ' ' + divId + ' condition">'
+    	var html = '<div class="propertyItem form-group row g-2 ' + conditionClass + ' ' + divId + ' condition">'
     			 + '    <div class="propertyValue col-4">'
     			 + '        <input type="hidden" class="conditionId" name="conditionId" value="' + (condition ? condition.id : '') + '">'
     			 + '        <select ' + conditionId.format('attribute') + ' class="form-control attributeKey">';

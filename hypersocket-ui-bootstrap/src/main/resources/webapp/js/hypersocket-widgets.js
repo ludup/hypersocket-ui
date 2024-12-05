@@ -4931,7 +4931,7 @@ $.fn.profileImage = function(data) {
 		}, data);
 
     var id = checkElementHasId($(this)).attr('id') + "ProfileImage";
-    var html = '<div class="lb-row">';
+    var html = '<div class="row g-2">';
 	html += '<div id="' + id + 'Preview" class="col-md-4 text-center">';
 	html += '<img class="img-fluid" src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview"/>';
 	html += '</div>';
@@ -5604,7 +5604,7 @@ $.fn.multipleFileUpload = function(data) {
 			+	'	<div id="' + id + 'FileUploads"></div>'
 			+	'	<div id="' + id + 'NewRow">'
 			+	'		<div class="col-12" style="padding-left: 0px; padding-right: 0px;">'
-			+	'         <div class="lb-row">'	
+			+	'         <div class="row">'	
 			+	'			<div class="propertyValue col-8" style="padding-left: 0px;">'
 			+	'				<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + options.text + '</span>'
 			+	'			</div>'
@@ -6824,11 +6824,11 @@ $.fn.multipleRows = function(data) {
 	var id = checkElementHasId($(this)).attr('id') + "Multiple";
 
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
-	+	'	<div class="col-11" id="' + id + 'Header"></div>'
+	+	'	<div class="row g-2"><div class="col-11" id="' + id + 'Header"></div>'
 	+	'	<div class="col-1"></div>'
-	+   '   </div>'
+	+   '   </div></div>'
 	+	'	<div id="' + id + 'Rows" ></div>'
-	+	'	<div id="' + id + 'NewRow" class="lb-row">'
+	+	'	<div id="' + id + 'NewRow" class="row g-2">'
 	+	'		<div class="propertyValue col-11">'
 	+	'			<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">&nbsp;</span>'
 	+	'		</div>'
@@ -6853,7 +6853,7 @@ $.fn.multipleRows = function(data) {
 
 		var elementId = id + options.count++;
 		$('#' + id + 'Rows').append(
-				 '    <div class="rowParent lb-row pb-1">'
+				 '    <div class="rowParent row g-2">'
 				+ '       <div id="' + elementId  + '" class="rowInput col-11 lb-row">'
 				+ '       </div>'
 				+ '       <div class="col-1 dialogActions">'
