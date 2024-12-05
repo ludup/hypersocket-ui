@@ -2078,9 +2078,9 @@ $.fn.bulkAssignmentDialog = function(options) {
             }
         });
 
-        var modeComponent = '<div id="' + id + 'ModeComponent" class="propertyItem form-group">' +
-                            '<label id="' + id  + 'ModeComponentInputLabel" for="' + id + 'ModeComponentInput" class="col-md-3 control-label optionalField">' + getResource(dataOptions.modeInputLabel) + '</label>' +
-                            '<div class="propertyValue col-md-9">' +
+        var modeComponent = '<div id="' + id + 'ModeComponent" class="propertyItem form-group row">' +
+                            '<label id="' + id  + 'ModeComponentInputLabel" for="' + id + 'ModeComponentInput" class="col-3 control-label optionalField">' + getResource(dataOptions.modeInputLabel) + '</label>' +
+                            '<div class="propertyValue col-9">' +
                             '<div id="' + id +'ModeComponentInput"></div><div class="clear">'+
                             '<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource(dataOptions.modeInputInfo) + '</span></div></div></div>';
         $('#' + id + 'TabMode').empty().append(modeComponent);
