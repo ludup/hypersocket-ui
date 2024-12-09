@@ -97,7 +97,10 @@ pre {
 /** 2.4 changes LB custom css start*/
 /*B4 row adds margin left and right with -15 px making it difficult to adjust with old code hence added custom*/
 .lb-row {display: -ms-flexbox; display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;}
-
+.lb-panel-footer {gap: .5rem;justify-content: flex-end;display: flex;}
+.panel-body { padding: 15px 15px 15px 15px;margin: 0;}
+.modal-body  .propertyItem.form-group.lb-row {padding-right:15px; padding-left:15px;}
+.modal-body{padding: 15px 15px 15px 15px !important;}
 /* .tooltip.lb-in { filter: alpha(opacity=90); opacity: .9;}
 .tooltip.lb-in  div.arrow {left: 50%; margin-left: -5px;} */
 .lb-modal-header-text-reverse {flex-direction: row-reverse;}
@@ -580,8 +583,8 @@ div.tablePages ul.pagination {
 }
 
 .propertyItem {
-	/*display: table;
-	width: 100%;*/
+	margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .propertyItem p {
@@ -1009,11 +1012,9 @@ header .navbar {
 
 .navicons {
 	padding-left: 0px;
-	float: right;
 	height: 50px;
 	margin: auto;
 	line-height: 50px;
-	float: right;
 }
 
 .navicons i {
@@ -1045,7 +1046,7 @@ dropdown-item.active, .dropdown-item:active {
 
 .navicon {
 	display: inline;
-	padding: 5px 20px 5px 0px;
+	padding: 0px 20px 0px 0px;
 	margin: auto;
 	height: 100%;
 	position: relative;
@@ -1252,6 +1253,7 @@ dropdown-item.active, .dropdown-item:active {
 	float: right;
 	overflow: auto;
 	margin-left: 10px;
+	margin-bottom:15px;
 }
 
 
@@ -1340,8 +1342,8 @@ dropdown-item.active, .dropdown-item:active {
 
 .rowInput {padding-left: 0px;}
 .rowInput .dow {padding-left: 0px;}
-.rowInput .timeFrom {padding-left: 0px;}
-.rowInput .timeTo {padding-left: 0px;}
+.rowInput .timeFrom {padding-left: 0px; padding-right: .25rem !important;}
+.rowInput .timeTo {padding-left: 0px; padding-right: .25rem !important;}
 
 .dialogActions {
 	padding-right: 0px;
@@ -1508,7 +1510,6 @@ span.input-group-addon .dropdown-toggle {
 
 .roles {
 	margin-bottom: 20px;
-	overflow: auto
 }
 
 .activity {
@@ -1577,7 +1578,6 @@ span.input-group-addon .dropdown-toggle {
 }
 
 .file-upload-info {
-	margin-left: 15px;
 	font-size: 10px;
 	padding-left: 0px;
 	padding-right: 10px;
@@ -1962,6 +1962,8 @@ span.input-group-addon .dropdown-toggle {
 	width: 100%;
 	margin: 5px;
 }
+
+.progress { margin-top: .5rem!important;}
 
 .dragAndDrop-table .progress {
 	height: 20px;
@@ -2431,7 +2433,10 @@ button#logonButton {
 .actionsColumn a i.fad {
 	font-size: 18px;
 }
-
+.lb-card-footer-bg {
+    background-color: #f7f7f9;
+}
+.lb-help-block {display:block;}
 /*-----------------------------------------------------------------------
 For < 767px
 -----------------------------------------------------------------------*/
@@ -2575,3 +2580,9 @@ For < 576px
 @media (max-height: 700px) {
 	#feedbackPanel {height: 275px;}
 }
+.w-10 { width: 10%; } .w-20 { width: 20%; } .w-30 { width: 30%; } .w-40 { width: 40%; } .w-50 { width: 50%; } .w-60 { width: 60%; } .w-70 { width: 70%; } .w-80 { width: 80%; } .w-90 { width: 90%; } .w-100 { width: 100%; }
+.w-15 { width: 15%; } .w-25 { width: 25%; } .w-35 { width: 35%; } .w-45 { width: 45%; } .w-55 { width: 55%; } .w-65 { width: 65%; } .w-70 { width: 75%; } .w-85 { width: 85%; } .w-95 { width: 95%; }
+.pt-2px {padding-top: 2px !important;} .pb-2px {padding-bottom: 2px !important;}
+.bootstrap-timepicker-widget.dropdown-menu.open {overflow: hidden;}
+.bootstrap-timepicker-minute{width: 30px !important;}
+.bootstrap-timepicker-hour{width: 30px !important;}

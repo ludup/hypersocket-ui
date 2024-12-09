@@ -157,7 +157,7 @@ $.fn.textInput = function(data) {
 
 		if(options.variables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="d-block text-center input-group-append input-group-text dropdown-toggle unselectable" '
-		    	+ 'data-toggle="dropdown">${}</span></div>';
+		    	+ 'data-bs-toggle="dropdown">${}</span></div>';
 		}
 
 			    
@@ -201,7 +201,7 @@ $.fn.textInput = function(data) {
 
 		if(hasVariables || options.url) {
 			html += '<ul id="' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><span id="variableToggle' + id + '" class="input-group-append input-group-text dropdown-toggle unselectable" '
-		 	  + 'data-toggle="dropdown">${}</span></div>';
+		 	  + 'data-bs-toggle="dropdown">${}</span></div>';
 		}
 
 	}
@@ -704,7 +704,7 @@ $.fn.editor = function(data) {
 
 	$(this).append( '<div class="btn-toolbar" data-role="editor-toolbar" data-target="#' + id + '">'
   + '  <div class="btn-group">'
-  + '    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font"><i class="far fa-font"></i><b class="caret"></b></a>'
+  + '    <a class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" title="" data-original-title="Font"><i class="far fa-font"></i><b class="caret"></b></a>'
   + '      <ul class="dropdown-menu">'
   + '       <li><a data-edit="fontName Serif" style="font-family:\'Serif\'">Serif</a>'
   + '       <li><a data-edit="fontName Sans" style="font-family:\'Sans\'">Sans</a></li>'
@@ -724,7 +724,7 @@ $.fn.editor = function(data) {
   + '      </ul>'
   + '    </div>'
   + '  <div class="btn-group">'
-  + '    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font Size"><i class="far fa-text-height"></i>&nbsp;<b class="caret"></b></a>'
+  + '    <a class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" title="" data-original-title="Font Size"><i class="far fa-text-height"></i>&nbsp;<b class="caret"></b></a>'
   + '      <ul class="dropdown-menu">'
   + '      <li><a data-edit="fontSize 5"><font size="5" localize="font.huge"></font></a></li>'
   + '      <li><a data-edit="fontSize 3"><font size="3" localize="font.normal"></font></a></li>'
@@ -750,7 +750,7 @@ $.fn.editor = function(data) {
   + '    <a class="btn btn-default" data-edit="justifyfull" title="" data-original-title="Justify (Ctrl/Cmd+J)"><i class="far fa-align-justify"></i></a>'
   + '  </div>'
   + '  <div class="btn-group">'
-  + '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Hyperlink"><i class="far fa-link"></i></a>'
+  + '<a class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" title="" data-original-title="Hyperlink"><i class="far fa-link"></i></a>'
   + '  <div class="dropdown-menu input-append">'
   + '	    <input class="span2" placeholder="URL" type="text" data-edit="createLink">'
   + '	    <button class="btn btn-default" type="button">Add</button>'
@@ -847,7 +847,7 @@ $.fn.selectButton = function(data) {
 	var name = (obj && obj.resourceKey != null ) ? formatResourceKey(obj.resourceKey) : $(this).attr('id') ;
 
 	$(this).append('<div class="btn-group"><input id="'
-			 + id + '" type="hidden" name="select_value_' + id + '" value=""><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" name="selectBtn_'+ name +'"><span id="select_button_'
+			 + id + '" type="hidden" name="select_value_' + id + '" value=""><button type="button" id="button_' + id + '" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" name="selectBtn_'+ name +'"><span id="select_button_'
 			 + id + '">' + getResource(obj.notSetResourceKey) + '</span>&nbsp;<span class="btn-icon caret"></span></button><ul id="'
 			 + 'select_' + id + '" name="select_' + name +'" class="dropdown-menu' + (obj.dropdownPosition ? ' ' + obj.dropdownPosition : '') + '" role="menu"></div>');
 
@@ -1044,12 +1044,12 @@ $.fn.selectButton = function(data) {
 				}
 			},
 			disable: function() {
-				$('#button_' + id).removeAttr('data-toggle');
+				$('#button_' + id).removeAttr('data-bs-toggle');
 				$('#button_' + id).removeClass('btn-primary');
 				$('#button_' + id).addClass('btn-disabled-dark');
 			},
 			enable: function() {
-				$('#button_' + id).attr('data-toggle', 'dropdown');
+				$('#button_' + id).attr('data-bs-toggle', 'dropdown');
 				$('#button_' + id).removeClass('btn-disabled-dark');
 				$('#button_' + id).addClass('btn-primary');
 			},
@@ -1131,16 +1131,16 @@ $.fn.autoComplete = function(data) {
 	var hasVariables = (options.variables && options.variables.length > 0);
 	
     var html = '<div class="input-group dropdown"><input type="hidden" id="' + id
-			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" autocomplete="off" data-toggle="dropdown"' : 'class="form-control"')
+			+ '"><input type="text" ' + (!options.alwaysDropdown ? 'class="form-control dropdown-toggle" autocomplete="off" data-bs-toggle="dropdown"' : 'class="form-control"')
 			+ (options.placeholder ? ' placeholder="' + options.placeholder + '"' : '')
 			+ ' id="input_' + id + '" value="" ' + (options.disabled ? 'disabled="disabled"' : '') + (options.alwaysDropdown ? ' readOnly="true"' : '') + '>'
-			+ '<ul id="' + 'auto_' + id + '" class="dropdown-menu scrollable-menu" role="menu"></ul>';
+			+ '<ul id="' + 'auto_' + id + '" class="lb-dropdown-menu dropdown-menu scrollable-menu" role="menu"></ul>';
     
-    html += '<span id="click_' + id + '" class="input-group-append">'
-		 +  '<a class="input-group-text" href="#" ' + (options.alwaysDropdown ? 'class="btn btn-secondary" data-toggle' : '') + '><i id="spin_' + id + '" class="far ' + options.icon + '"></i></a></span></div>';
+    html += '<span id="click_' + id + '" class="input-group-text pt-2px pb-2px">'
+		 +  '<a class="" href="#" ' + (options.alwaysDropdown ? 'class="btn btn-secondary" data-bs-toggle' : '') + '><i id="spin_' + id + '" class="far ' + options.icon + '"></i></a></span></div>';
     	
 	if(hasVariables || options.variablesUrl) {
-		html += '<div class="dropdown floatRight"><ul id="vars_' + id + 'Dropdown" class="dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><a href="#" class="dropdown-toggle unselectable" data-toggle="dropdown">${} Insert Variable</span></div>';
+		html += '<div class="dropdown floatRight"><ul id="vars_' + id + 'Dropdown" class="lb-dropdown-menu dropdown-menu scrollable-menu dropdown-menu-right" role="menu"></ul><a href="#" class="dropdown-toggle unselectable" data-bs-toggle="dropdown">${} Insert Variable</span></div>';
 	} 
 	
 	$(this).append(html);
@@ -1167,7 +1167,8 @@ $.fn.autoComplete = function(data) {
 			thisWidget.data('selectedObject', obj);
 			$('#' + id).val($(this).text());
 			$('#input_' + id).val($(this).text());
-			$('[data-toggle="dropdown"]').parent().removeClass('show');
+			// :BS-5 Upgrade: Below line seems redundant, commenting for now
+			//$('[data-bs-toggle="dropdown"]').parent().removeClass('show');
 			
 			if(options.changed) {
 				options.changed(callback);
@@ -1286,8 +1287,8 @@ $.fn.autoComplete = function(data) {
 				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value.toString());
 				$('#input_' + id).val($(this).text());
-				$('[data-toggle="dropdown"]').parent().removeClass('show');
-				$('[data-toggle="dropdown"]').next().removeClass('show');
+				$('[data-bs-toggle="dropdown"]').parent().removeClass('show');
+				$('[data-bs-toggle="dropdown"]').next().removeClass('show');
 
 				if(options.changed) {
 					options.changed(callback);
@@ -1310,7 +1311,7 @@ $.fn.autoComplete = function(data) {
 				var obj = $('#input_' + id).data('map')[value];
 				thisWidget.data('selectedObject', obj);
 				$('#' + id).val(value.toString());
-				$('[data-toggle="dropdown"]').parent().removeClass('show');
+				$('[data-bs-toggle="dropdown"]').parent().removeClass('show');
 				if(options.changed) {
 					options.changed(callback);
 				}
@@ -1463,7 +1464,7 @@ $.fn.autoComplete = function(data) {
 										thisWidget.data('selectedObject', obj);
 										$('#' + id).val(newValue.toString());
 										$('#input_' + id).val(obj[options.nameAttr]);
-										$('[data-toggle="dropdown"]').parent().parent().removeClass('show');
+										$('[data-bs-toggle="dropdown"]').parent().parent().removeClass('show');
 	
 										if(options.changed) {
 											options.changed(callback);
@@ -1541,6 +1542,7 @@ $.fn.autoComplete = function(data) {
 
 	var f = function(e) {
 		e.preventDefault();
+		e.stopPropagation();
 		if(options.alwaysDropdown) {
 			createDropdown("", true, false);
 		} else {
@@ -2019,7 +2021,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 			}	
 		}
 		
-		var searchBox = '<div id="search_box_container_'+ id +'" class="lb-row col-12 mb-3 pl-0 pr-0"><div class="input-group input-group-sm multiSelectSearchWidth">'
+		var searchBox = '<div id="search_box_container_'+ id +'" class="lb-row col-12 mb-3 ps-0 pe-0"><div class="input-group input-group-sm multiSelectSearchWidth">'
 			+ '<input type="text" class="form-control multiSelect" ' + (options.disabled ? ' disabled="disabled"' : '') + ' autocomplete="off" placeholder="Search" id="search_input_' + id + '" value="" >';
     
 		$('#' + id).append(searchBox);
@@ -2033,26 +2035,26 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		$('#' + id).append('<div id="' + id + 'SelectContainer" class="lb-row multiSelectContainerRow"></div>');
 		let slectContainer = $('#' + id + 'SelectContainer');
 		
-		slectContainer.append('<div id="' + id + 'ExcludedList" style="overflow: auto" class="multiSelectExcludeList pl-0"><label>' + getResource(options.excludedLabelResourceKey) + '</label><div class="" id="' + id
+		slectContainer.append('<div id="' + id + 'ExcludedList" style="overflow: auto" class="multiSelectExcludeList ps-0"><label class="pb-1">' + getResource(options.excludedLabelResourceKey) + '</label><div class="" id="' + id
 				+ 'Excluded"></div></div>');
 
 		$('#' + id + 'Excluded').append(
 					'<select multiple class="multiSelectList multiSelect"' + (!options.disabled ? '' : ' disabled="disabled" ') + 'id="' + id
 						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"/>');
 		
-		$('#' + id + 'Excluded').append('<div class="pt-1"><button id="' + id + 'AddAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.addAllInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectAddAllButton multiSelect ml-1 mb-1">' + getResource(options.addAllResourceKey) + '</button><button id="' + id + 'Reset" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.resetInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectResetButton multiSelect ml-1 mb-1">' + getResource(options.resetResourceKey) + '</button></div>');				
+		$('#' + id + 'Excluded').append('<div class="pt-1"><button id="' + id + 'AddAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.addAllInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectAddAllButton multiSelect ms-1 mb-1">' + getResource(options.addAllResourceKey) + '</button><button id="' + id + 'Reset" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.resetInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectResetButton multiSelect ms-1 mb-1">' + getResource(options.resetResourceKey) + '</button></div>');				
 
 		slectContainer.append('<div class="multiSelectButtonList" id="' + id + 'MultiSelectButtons">  <div class="d-flex justify-content-center multiSelectButtonsContainer"><div class="align-self-center mt-3 mb-3 mt-lg-0 mb-lg-0">' + 
-		'<span class="pt-0 pb-0 pt-lg-2 pb-lg-2 pl-2 pr-2 pl-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectAdd" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.addSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-arrow-circle-down d-inline d-lg-none multiSelectButtonIcon"></i><i class="far fa-arrow-circle-right d-none d-lg-inline multiSelectButtonIcon"></i></button></span>' + 
-		'<span class="pt-0 pb-0 pt-lg-2 pb-lg-2 pl-2 pr-2 pl-lg-0 pr-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectRemove" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.removeSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-arrow-circle-up d-inline d-lg-none multiSelectButtonIcon"></i><i class="far fa-arrow-circle-left d-none d-lg-inline multiSelectButtonIcon"></i></button></span></div></div></div>');
+		'<span class="pt-0 pb-0 pt-lg-2 pb-lg-2 ps-2 pe-2 ps-lg-0 pe-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectAdd" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.addSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-arrow-circle-down d-inline d-lg-none multiSelectButtonIcon"></i><i class="far fa-arrow-circle-right d-none d-lg-inline multiSelectButtonIcon"></i></button></span>' + 
+		'<span class="pt-0 pb-0 pt-lg-2 pb-lg-2 ps-2 pe-2 ps-lg-0 pe-lg-0 d-inline d-lg-block"><button id="' + id + 'MultiSelectRemove" ' + (options.disabled ? ' disabled="disabled"' : '') + ' type="button" title="' + getResource(options.removeSingleInfoResourceKey) + '" class="btn btn-dark btn-sm multiSelect"><i class="far fa-arrow-circle-up d-inline d-lg-none multiSelectButtonIcon"></i><i class="far fa-arrow-circle-left d-none d-lg-inline multiSelectButtonIcon"></i></button></span></div></div></div>');
 
-		slectContainer.append('<div id="' + id + 'IncludedList" class="multiSelectIncludeList"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="" id="' + id
+		slectContainer.append('<div id="' + id + 'IncludedList" class="multiSelectIncludeList"><label class="pb-1">' + getResource(options.includedLabelResourceKey) + '</label><div class="" id="' + id
 				+ 'Included"></div></div>');
 
 		$('#' + id + 'Included').append('<select multiple class="multiSelectList multiSelect"' + (!options.disabled ? '' : ' disabled="disabled" ')
 				+ 'id="' + id + 'IncludedSelect" name="IncludedSelect_' + name + '"/>');
 				
-		$('#' + id + 'Included').append('<div class="pt-1"><button id="' + id + 'RemoveAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.removeAllInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectRemoveAllButton multiSelect ml-1 mb-1">' + getResource(options.removeAllResourceKey) + '</button></div>');			
+		$('#' + id + 'Included').append('<div class="pt-1"><button id="' + id + 'RemoveAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.removeAllInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectRemoveAllButton multiSelect ms-1 mb-1">' + getResource(options.removeAllResourceKey) + '</button></div>');			
 
 		var select = $('#' + id + 'ExcludedSelect');
 		var toSelect = $('#' + id + 'IncludedSelect');
@@ -2523,14 +2525,14 @@ $.fn.multipleSelect = function(data) {
 		//$(this).addClass('container-fluid');
 
 		$(this).append('<div id="' + id + '"></div>');
-		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><label>' + getResource(options.excludedLabelResourceKey) + '</label><div class="excludedList formInput form-control excludedSelect" id="' + id
+		$('#' + id).append('<div id="' + id + 'ExcludedList" style="overflow: auto"><label class="pb-1">' + getResource(options.excludedLabelResourceKey) + '</label><div class="excludedList formInput form-control excludedSelect" id="' + id
 				+ 'Excluded"></div></div>');
 
 		$('#' + id + 'Excluded').append(
 					'<ul ' + (!options.disabled ? '' : 'disabled="disabled" ') + 'id="' + id
 						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"/>');
 
-		$('#' + id).append('<div id="' + id + 'IncludedList" class="includedList1"><label>' + getResource(options.includedLabelResourceKey) + '</label><div class="includedList formInput form-control includedSelect" id="' + id
+		$('#' + id).append('<div id="' + id + 'IncludedList" class="includedList1"><label class="pb-1">' + getResource(options.includedLabelResourceKey) + '</label><div class="includedList formInput form-control includedSelect" id="' + id
 				+ 'Included"></div></div>');
 
 		$('#' + id + 'Included').append('<ul ' + (!options.disabled ? '' : 'disabled="disabled" ')
@@ -3136,7 +3138,7 @@ $.fn.multipleTextInput = function(data) {
     		}
 		}
 
-		$('#' + id + 'Excluded.input-group').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-append"><span class="fa-holder input-group-text"><i class="far fa-plus"></i></span></span>');
+		$('#' + id + 'Excluded > .input-group').append('<span id="' + id + 'ExcludedSearchAddButton" class="input-group-text"><span class=""><i class="far fa-plus"></i></span></span>');
 		$('#input' + id + 'ExcludedSelect').after('<ul id="auto_' + id + 'ExcludedAutoComplete" class="dropdown-menu scrollable-menu" role="menu"><li><a>' + getResource('pressEnter.text') + '</a></li></ul>');
 		$('#input' + id + 'ExcludedSelect').focus(function(){
 			$('#auto_' + id + 'ExcludedAutoComplete').show();
@@ -4141,13 +4143,23 @@ $.fn.spinnerInput = function(options) {
             {   min: parseFloat(options.min),
                 max: parseFloat(options.max),
                 step: options.step ? parseFloat(options.step) : 1,
-                value: parseFloat(options.value)
+                value: parseFloat(options.value),
+				allowEmpty: false
             });
 
     var name = ((options && options.resourceKey != null ) ? formatResourceKey(options.resourceKey) : id) ;
-    var spinner = $('<input class="form-control" min="' + obj.min + '" max="' + obj.max + '" id="' + id + '" data-spinner-id="slider_' + id + '" name="spinner_' + name + '" value="' + obj.value + '" type="number">');
-    $(this).append(spinner);
-    var callback = {
+	
+	var labelResourceKey =((options && options.labelResourceKey != null ) ? getResource(obj.labelResourceKey) : null) ;
+	
+	var inputClass = labelResourceKey ? 'd-inline-block w-85' : '';
+	
+	var helperSpan = labelResourceKey ? '<span id="' + id + '_helper" class="ps-2">' + labelResourceKey + '</span>' : '<span></span>';
+	
+    var spinner = $('<div><input class="form-control ' + inputClass + '" min="' + obj.min + '" max="' + obj.max + '" id="' + id + '" data-spinner-id="slider_' + id + '" name="spinner_' + name + '" value="' + obj.value + '" type="number">' + helperSpan + '</div>');
+    
+	$(this).append(spinner);
+    
+	var callback = {
             setValue: function(val) {
                 $('#' + id).val(val);
             },
@@ -4174,7 +4186,7 @@ $.fn.spinnerInput = function(options) {
             }
     };
 
-    spinner.on('change', function(ev){
+    spinner.on('input', function(ev){
            if(options.changed) {
                options.changed(callback)
            }
@@ -4243,7 +4255,7 @@ $.fn.namePairInput = function(data) {
 		+	'	<div id="' + id + 'NamePairs" ></div>'
 		+	'	<div id="' + id + 'NewRow" class="row">'
 		+	'		<div class="propertyValue col-10">'
-		+	'			<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">&nbsp;</span>'
+		+	'			<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">&nbsp;</span>'
 		+	'		</div>'
 		+	'		<div class="propertyValue col-1 dialogActions">'
 		+	'			<a id="' + id + 'AddPair" href="#" class="btn btn-info addButton">'
@@ -4576,13 +4588,13 @@ $.fn.fileUploadInput = function(data) {
 			+	'		<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="far fa-upload"></i></a>'
 			+	'	</div>'
 			+	'</div>'
-	var html =	'<div id="' + id + '" class="col-xs-12" style="padding-left: 0px;">'
+	var html =	'<div id="' + id + '" class="col-12" style="padding-left: 0px;">'
 			+	'	<input type="file" id="' + id + 'File"/>'
 			+	'</div>'
-			+	'<div class="propertyValue col-xs-12 fileInputActions" id="' + id + 'Buttons">'
+			+	'<div class="propertyValue col-12 fileInputActions" id="' + id + 'Buttons">'
 			+	'	<a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="fa fa-upload"></i></a>'
 			+	'</div>'
-			+	'<div class="col-xs-12 uploadProgress">'
+			+	'<div class="col-12 uploadProgress">'
 			+	'	<div id="' + id + 'UpdateProgressHolder" class="progress">'
 			+	'		<div id="' + id + 'UpdateProgress" class="progress-bar" role="progressbar"></div>'
 			+	'	</div>'
@@ -4919,7 +4931,7 @@ $.fn.profileImage = function(data) {
 		}, data);
 
     var id = checkElementHasId($(this)).attr('id') + "ProfileImage";
-    var html = '<div class="lb-row">';
+    var html = '<div class="row g-2">';
 	html += '<div id="' + id + 'Preview" class="col-md-4 text-center">';
 	html += '<img class="img-fluid" src="' + basePath + '/api/userLogo/fetch" id="' + id + 'Preview"/>';
 	html += '</div>';
@@ -4988,7 +5000,7 @@ $.fn.logoInput = function(data) {
 
 	var generatorHtml =	'<div id="' + id + 'Generator" class="logo-generator">'
 		+	'	<div class="logo-text-container logo-row">'
-        +	'		<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('logo.text.label') + ':</span>'
+        +	'		<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('logo.text.label') + ':</span>'
         +   '		<select id="' + id + 'TextSource" class="logo-shape form-control">'
         +   '			<option value="auto">' + getResource('logo.text.auto') + '</option>'
         +   '			<option value="autoname">' + getResource('logo.text.autoname') + '</option>'
@@ -5000,7 +5012,7 @@ $.fn.logoInput = function(data) {
         +   '		<div id="' + id + 'Icon" class="logo-icon"></div>'
         +	'	</div>'
 		+	'	<div class="logo-shape-container logo-row">'
-        +	'		<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('logo.shape.label') + ':</span>'
+        +	'		<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('logo.shape.label') + ':</span>'
         +   '		<select id="' + id + 'Shape" class="logo-shape form-control">'
         +   '			<option value="autoname">' + getResource('logo.shape.autoname') + '</option>'
         +   '			<option value="autotype">' + getResource('logo.shape.autotype') + '</option>'
@@ -5027,8 +5039,8 @@ $.fn.logoInput = function(data) {
 
 
 	var uploadHtml =  '<div class="row">'
-			+ 	'	<div id="' + id + '" class="col-8 logo-uploader">'
-			+	'		<input type="file" id="' + id + 'File"/>'
+			+ 	'	<div id="' + id + '" class="logo-uploader">'
+			+	'		<input class="pe-2" type="file" id="' + id + 'File"/>'
 			+   '       <a href="#" class="btn btn-primary" id="' + id + 'UploadButton"><i class="far fa-upload"></i></a>'
 			+	'	</div>'
 			+	'	<div class="propertyValue col-4 dialogActions">'
@@ -5047,7 +5059,7 @@ $.fn.logoInput = function(data) {
 			+	'	<img src="' + imagePath + '" id="' + id + 'Preview"/>'
 			+	'</div>'
 			+ 	generatorHtml
-			+	'<div class="logo-separator help-block text-muted mt-3 mb-3 text-left">'
+			+	'<div class="logo-separator help-block text-muted mt-3 mb-3 text-start">'
 			+	'	<span id="' + id + 'Separator">' + getResource('logo.separator')  + '</span>'
 			+	'</div>'
 			+	uploadHtml
@@ -5592,9 +5604,9 @@ $.fn.multipleFileUpload = function(data) {
 			+	'	<div id="' + id + 'FileUploads"></div>'
 			+	'	<div id="' + id + 'NewRow">'
 			+	'		<div class="col-12" style="padding-left: 0px; padding-right: 0px;">'
-			+	'         <div class="lb-row">'	
+			+	'         <div class="row">'	
 			+	'			<div class="propertyValue col-8" style="padding-left: 0px;">'
-			+	'				<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + options.text + '</span>'
+			+	'				<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + options.text + '</span>'
 			+	'			</div>'
 			+	'			<div class="propertyValue col-4 dialogActions">';
 	if(!options.disabled) {
@@ -6278,12 +6290,12 @@ $.fn.wizardPage = function(data) {
 				if(options.wizardTitle) {
 					html = html + ' 	<h5 class="' + options.panelClass + '-title ' + options.wizardTitleClass + '"><span class="fa-stack"><i class="far fa-circle fa-stack-2x"></i>'
 					+ '<i class="fa fa-stack-1x" style="color: white"><strong>' + (index+1) + '</strong></i></span>'
-					+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+					+ '		    <a data-bs-toggle="collapse" data-bs-parent="#accordion"' // :BS-5 Upgrade: Changed data-bs-toggle to data-bs-toggle and data-parent to data-bs-parent
 					+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
 					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
 					+ '	    </h5>';
 				}
-				html = html + '</div>'
+				html = html + '</div>'												
 				+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse collapse' + (index == 0 ? ' show' : '') + '"'
 				+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 				+ '	<div class="' + options.panelClass + '-body"><div id="page' + index + '"></div>';
@@ -6293,12 +6305,12 @@ $.fn.wizardPage = function(data) {
 					+ '<div class="' + options.panelClass + '-heading" role="tab" id="heading' + index + '">';
 				if(options.wizardTitle) {
 					html = html + ' 	<h4 class="' + options.panelClass + '-title ' + options.wizardTitleClass + '"><i class="fa ' + page.titleIcon + '"></i>&nbsp;'
-					+ '		    <a data-toggle="collapse" data-parent="#accordion"'
+					+ '		    <a data-bs-toggle="collapse" data-bs-parent="#accordion"' // :BS-5 Upgrade: Changed data-toggle to data-bs-toggle and data-parent to data-bs-parent
 					+ '				href="#collapse' + index + '" aria-expanded="' + (index > 0 ? "false" : "true") + '"'
 					+ '				aria-controls="collapse' + index + '" >' + getResourceOrText(page.titleText) + '</a>'
 					+ '	    </h4>';
 				}
-				html = html	+ '</div>'
+				html = html	+ '</div>'												
 					+ '<div id="collapse' + index + '" class="' + options.panelClass + '-collapse collapse' + (index == 0 ? ' show' : '') + '"'
 					+ '	role="tabpanel" aria-labelledby="heading' + index + '">'
 					+ '	<div class="' + options.panelClass + '-body"><div id="page' + index + '"></div>';
@@ -6567,7 +6579,7 @@ $.fn.textAndSelect = function(data) {
 	var selectId = $(this).attr('id') + 'Select';
 
 	$(this).append('<div class="propertyItem form-group">' +
-			'<div class="row"><div class="col-6" id="' + textId + '"></div><div class="col-6" id="' +  selectId + '"></div></div>');
+			'<div class="row g-2"><div class="col-6" id="' + textId + '"></div><div class="col-6" id="' +  selectId + '"></div></div>');
 
 	var textInput = $('#' + textId).textInput(textOptions);
 
@@ -6812,13 +6824,13 @@ $.fn.multipleRows = function(data) {
 	var id = checkElementHasId($(this)).attr('id') + "Multiple";
 
 	var html = 	'<div id="' + id + '" class="propertyItem form-group">'
-	+	'	<div class="col-11" id="' + id + 'Header"></div>'
+	+	'	<div class="row g-2"><div class="col-11" id="' + id + 'Header"></div>'
 	+	'	<div class="col-1"></div>'
-	+   '   </div>'
+	+   '   </div></div>'
 	+	'	<div id="' + id + 'Rows" ></div>'
-	+	'	<div id="' + id + 'NewRow" class="lb-row">'
+	+	'	<div id="' + id + 'NewRow" class="row g-2">'
 	+	'		<div class="propertyValue col-11">'
-	+	'			<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">&nbsp;</span>'
+	+	'			<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">&nbsp;</span>'
 	+	'		</div>'
 	+	'		<div class="propertyValue col-1 dialogActions">'
 	+	'			<a id="' + id + 'AddRow" href="#" class="btn btn-info addButton">'
@@ -6841,7 +6853,7 @@ $.fn.multipleRows = function(data) {
 
 		var elementId = id + options.count++;
 		$('#' + id + 'Rows').append(
-				 '    <div class="rowParent lb-row">'
+				 '    <div class="rowParent row g-2">'
 				+ '       <div id="' + elementId  + '" class="rowInput col-11 lb-row">'
 				+ '       </div>'
 				+ '       <div class="col-1 dialogActions">'
@@ -6936,25 +6948,25 @@ $.fn.roles = function(data) {
 		}
 
 	if(!$('#' + roleDivId).data('created')) {
-		var div = '<div class="propertyItem form-group lb-row">' +
-				'<label class="col-md-3 control-label optionalField">' + getResource('roles.label') + '</label>' +
+		var div = '<div class="propertyItem form-group row g-2">' +
+				'<label class="col-md-3 control-label optionalField ps-3 pe-3">' + getResource('roles.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + '" class="roles"></div>' +
-				'<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('roles.info') + '</span>' +
+				'<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('roles.info') + '</span>' +
 				'</div>' +
 		'</div>' +
-		'<div class="propertyItem form-group lb-row">' +
-				'<label class="col-md-3 control-label optionalField">' + getResource('users.label') + '</label>' +
+		'<div class="propertyItem form-group row g-2">' +
+				'<label class="col-md-3 control-label optionalField ps-3 pe-3">' + getResource('users.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Users" class="users"></div>' +
-				'<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('users.info') + '</span>' +
+				'<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('users.info') + '</span>' +
 				'</div>' +
 		'</div>' +
-		'<div class="propertyItem form-group lb-row">' +
-				'<label class="col-md-3 control-label optionalField">' + getResource('groups.label') + '</label>' +
+		'<div class="propertyItem form-group row g-2">' +
+				'<label class="col-md-3 control-label optionalField ps-3 pe-3">' + getResource('groups.label') + '</label>' +
 				'<div class="propertyValue col-md-9">' +
 					'<div id="' + roleDivId + 'Groups" class="groups"></div>' +
-				'<span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + getResource('groups.info') + '</span>' +
+				'<span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + getResource('groups.info') + '</span>' +
 				'</div>' +
 		'</div>';
 		$(this).append(div);

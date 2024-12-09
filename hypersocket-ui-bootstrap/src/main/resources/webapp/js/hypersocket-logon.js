@@ -131,7 +131,7 @@ function processLogon(data, opts, message) {
 		removeMessage();
 
 		opts.formContent.append(
-			'<div class="col"><div class="logonFormContainer mt-4"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin ml-auto mr-auto") + ' mt-4 p-4" role="form"/></div></div>');
+			'<div class="col"><div class="logonFormContainer mt-4"><form id="logonForm" autocomplete="off" class="card ' + (data.formTemplate.formClass ? data.formTemplate.formClass : "form-signin mx-auto") + ' mt-4 p-4" role="form"/></div></div>');
 
 		$('#logonForm').attr("action", "../api/logon").attr("method", "post");
 
@@ -203,13 +203,13 @@ function processLogon(data, opts, message) {
 
 				} else if(this.type == 'countries') {
 					$('#logonForm').append(
-								'<div class="logonInput mt-2 ml-auto mr-auto">' 
+								'<div class="logonInput mt-2 mx-auto">' 
 									+ (isIE() ?
-									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' 
+									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' 
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 								+ '<div id="' + this.resourceKey + 'Select"></div>' 
-								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + this.help + '</span></div>' : '')
+								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
 
@@ -235,13 +235,13 @@ function processLogon(data, opts, message) {
 				} else if (this.type == 'select') {
 
 					$('#logonForm').append(
-								'<div class="logonInput mt-2 ml-auto mr-auto">' 
+								'<div class="logonInput mt-2 mx-auto">' 
 									+ (isIE() ?
-									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' 
+									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' 
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 								+ '<div id="' + this.resourceKey + 'Select"></div>' 
-								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + this.help + '</span></div>' : '')
+								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 								
 					$('#logonForm').append('<input name="' + this.resourceKey + '" type="hidden" id="' + this.resourceKey + '" value="' + this.defaultValue + '">');
@@ -265,7 +265,7 @@ function processLogon(data, opts, message) {
 				} else if(this.type == 'radio') {
 					
 					var _this = this;
-					var html = '<div class="logonInput radio mt-2 ml-auto mr-auto"><fieldset id="' + this.resourceKey + '">'
+					var html = '<div class="logonInput radio mt-2 mx-auto"><fieldset id="' + this.resourceKey + '">'
 					$.each(this.options, function(idx, obj) {
 						html += '<p><strong>'
                                 + '<input id="' + _this.resourceKey +  obj.value + 'Radio" type="radio" name="'
@@ -287,7 +287,7 @@ function processLogon(data, opts, message) {
 				} else if(this.type == 'checkbox') {
 				    $('#logonForm')
                             .append(
-                                '<div class="logonInput checkbox center mt-2 ml-auto mr-auto"><label id="'+ this.resourceKey + 'Label">'
+                                '<div class="logonInput checkbox center mt-2 mx-auto"><label id="'+ this.resourceKey + 'Label">'
                                 + '<input  type="' + this.type + '" name="'
                                 + this.resourceKey
                                 + '" id="' + this.resourceKey + '" value="' + this.defaultValue
@@ -298,9 +298,9 @@ function processLogon(data, opts, message) {
 				} else if(this.type == 'textarea') {
 					$('#logonForm')
 					.append(
-						'<div class="logonInput mt-2 ml-auto mr-auto">'
+						'<div class="logonInput mt-2 mx-auto">'
 							+ (isIE() ?
-									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' 
+									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' 
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 						+ '<textarea class="form-control" " name="'
@@ -309,7 +309,7 @@ function processLogon(data, opts, message) {
 							    (' placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '"'))
 						+ ' id="' + this.resourceKey + '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 						+ '">' + stripNull(this.defaultValue) + '</textarea>' 
-						+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + this.help + '</span></div>' : '')
+						+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + this.help + '</span></div>' : '')
 						+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
@@ -318,9 +318,9 @@ function processLogon(data, opts, message) {
 				} else {
 					$('#logonForm')
 							.append(
-								'<div class="logonInput mt-2 ml-auto mr-auto">' 
+								'<div class="logonInput mt-2 mx-auto">' 
 									+ (isIE() ?
-									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' 
+									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' 
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
 								+ '<input class="form-control" type="' + this.type + '" name="' + this.resourceKey + '"'
@@ -329,7 +329,7 @@ function processLogon(data, opts, message) {
 								+ ' id="' + this.resourceKey + '" value="' + stripNull(this.defaultValue)
 								+ '" title="' + ((this.infoKey != null && this.infoKey.length > 0) ? getResource(this.infoKey) : "")
 								+ '"' + (this.readOnly ? 'readonly="readonly"' : '' ) + '>' 
-								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 pl-1 d-inline-block">' + this.help + '</span></div>' : '')
+								+ (this.help ? '<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' + this.help + '</span></div>' : '')
 								+ '</div>');
 					if(!setFocus) {
 						$('#' + this.resourceKey).focus();
@@ -373,7 +373,7 @@ function processLogon(data, opts, message) {
 			}
 			if(data.formTemplate.showLogonButton) {
 				$('#logonForm').append(
-						'<button id="logonButton" class="btn btn-lg btn-primary btn-block mt-3 mb-3 ml-auto mr-auto" type="submit">'
+						'<button id="logonButton" class="btn btn-lg btn-primary w-100 mt-3 mb-3 mx-auto" type="submit">'
 							+ (data.formTemplate.logonButtonResourceKey ? getResourceOrText(data.formTemplate.logonButtonResourceKey) : getResource("text.next"))
 							+ '&nbsp;<i class="far ' + (data.formTemplate.logonButtonIcon ? data.formTemplate.logonButtonIcon : 'fa-sign-in') + '"></i></button>');
 			}

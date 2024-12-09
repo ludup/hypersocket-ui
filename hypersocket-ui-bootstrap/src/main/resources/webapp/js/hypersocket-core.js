@@ -80,7 +80,7 @@ $.ajaxSetup({ error : function(xmlRequest) {
 }, cache : true });
 
 window.onhashchange = function() { 
-    $('[data-toggle="tooltip"], .tooltip').tooltip("hide"); 
+    $('[data-bs-toggle="tooltip"], .tooltip').tooltip("hide"); 
 	if($('#pageContent').length > 0) {
 		$('#pageContent').remove();
 		$('#mainContent').show();
@@ -185,7 +185,7 @@ function setUpMenuMakePinned(ignoreState) {
 
 	content.css("margin-left", "0px");
 	content.css("overflow-x", "auto");
-	content.removeClass("row");
+	content.removeClass("row g-0 px-3");
 	
 	//content.removeClass("col-sm-8");
 	//content.removeClass("col-md-9");
@@ -236,8 +236,7 @@ function setUpMenuRemovePinned(ignoreState) {
 	menu.css("position", "absolute");
 	menu.css("height", "inherit");
 
-	content.css("margin-left", "-15px");
-	content.addClass("row");
+	content.addClass("row g-0 px-3");
 	
 	content.removeClass("expand-rest");
 	
@@ -323,10 +322,11 @@ function startLogon(opts, credentials) {
     $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
 
+	/* :BS-5 Upgrade: Back on some custom drop down widgets require this feature.*/
 	$(document).click(function () {
-	    $('.dropdown-menu[data-parent]').hide();
-	    $('.dropdown.open').removeClass('open');
-	    $('.dropdown-menu.show').removeClass('show');
+	   // $('.dropdown-menu[data-parent]').hide();
+	    //$('.dropdown.open').removeClass('open');
+	    $('.lb-dropdown-menu.dropdown-menu.show').removeClass('show');
 	});
 	
 	$('#burger-toggle').hide();
@@ -506,9 +506,9 @@ function home(data) {
 					var expanded = menuStates[this.id] && menuStates[this.id].expanded;
 					
 					$('#menu')
-							.append(
+							.append(			// :BS-5 Upgrade: Changed data-toggle to data-bs-toggle
 								'<div id="menu_' + this.id + '" class="nav-sidebar title" ' + (this.hidden ? 'style="display:none"' : '') + ' data-menu="' + this.id + '"'
-								       + '><div class="menuitem"><a data-toggle="collapse" aria-expanded="false" aria-controls="cont_sub_' + this.id + '" href="#cont_sub_' 
+								       + '><div class="menuitem"><a data-bs-toggle="collapse" aria-expanded="false" aria-controls="cont_sub_' + this.id + '" href="#cont_sub_' 
 								       + this.id + '"><i class="imenu far ' + (expanded ? 'fa-chevron-down' : 'fa-chevron-right' ) + '"></i>&nbsp;<span>' + getResource(this.resourceKey + '.label') + '</span></a></div></div>');
 
 					var root = this;
@@ -596,8 +596,8 @@ function home(data) {
 
 			var session = $(document).data('session');
 			if(session.impersonating) {
-				$('#navMenu').append(
-					'<li class="navicon"><a id="impersonateMenu" data-toggle="tooltip" title="' + getResource('text.revertImpersonation') + '" data-placement="bottom" href="#"><i class="far fa-male"></i></a></li>');
+				$('#navMenu').append(//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
+					'<li class="navicon"><a id="impersonateMenu" data-bs-toggle="tooltip" title="' + getResource('text.revertImpersonation') + '" data-bs-placement="bottom" href="#"><i class="far fa-male"></i></a></li>');
 				$('#impersonateMenu').click(function(e) {
 					e.preventDefault();
 					getJSON('session/revert', null, function(data) {
@@ -630,8 +630,8 @@ function home(data) {
 					}
 					
 					$('#navMenu').append('<li class="navicon" id="' + this.id 
-							+ '"><a '
-							+ ' href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><span data-toggle="tooltip" data-placement="bottom" title="' +  getResource(this.resourceKey + '.label') + '"><i class="far ' + this.icon + '"></i></span></a></li>');
+							+ '"><a '																						// :BS-5 Upgrade: changed data-toggle to data-bs-toggle
+							+ ' href="#menu=' + (this.menus.length > 0 ? this.menus[0].resourceKey : this.resourceKey) + '"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="' +  getResource(this.resourceKey + '.label') + '"><i class="far ' + this.icon + '"></i></span></a></li>');
 					
 					$('#' + this.id).data('menu', this);
 					$('#' + this.id).click(function(e) {
@@ -647,8 +647,8 @@ function home(data) {
 			if(data.systemAdmin) {
 				
 				$('#bottomMenu').empty();
-				
-				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-placement="top" href="#"><i class="far fa-power-off"></i></a></li>');
+																							//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
+				$('#bottomMenu').append('<li class="navicon" id="powerMenu" class="dropdown"><a data-bs-toggle="tooltip" title="' + getResource('text.powerOptions') + '" data-bs-placement="top" href="#"><i class="far fa-power-off"></i></a></li>');
 				
 				$('#powerMenu').click(function() {
 					showShutdownDialog();
@@ -657,11 +657,11 @@ function home(data) {
 			
 			if (showLocales) {
 				$('#navMenu')
-						.append(
-						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span data-toggle="tooltip" data-placement="bottom" title="' +  getResource('text.selectLanguages') + '"><i class="far fa-globe"></i></span></a></li>')
+						.append(//:BS-5 Upgrade: changed data-bs-toggle to data-bs-toggle 
+						'<li class="navicon" id="langMenu" class="dropdown"><a class="dropdown-toggle" data-bs-toggle="dropdown" href="#"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="' +  getResource('text.selectLanguages') + '"><i class="far fa-globe"></i></span></a></li>')
 				$('#langMenu')
 						.append(
-							'<ul id="lang" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
+							'<ul id="lang" class="dropdown-menu dropdown-menu-end" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 				
 				getJSON('i18n/locales', null, function(data) {
 					for(var i=0;i<data.resources.length;i++) {
@@ -688,8 +688,8 @@ function home(data) {
 			
 			// Setup header actions
 			$('#navMenu')
-					.append(
-						'<li class="navicon"><a id="actionLogoff" data-toggle="tooltip" title="' + getResource('text.signOut') + '" data-placement="bottom" href="#"><i class="far fa-sign-out"></i></a></li>');
+					.append(										//:BS-5 Upgrade: changed data-bs-toggle to data-bs-toggle
+						'<li class="navicon"><a id="actionLogoff" data-bs-toggle="tooltip" title="' + getResource('text.signOut') + '" data-bs-placement="bottom" href="#"><i class="far fa-sign-out"></i></a></li>');
 
 			$('#actionLogoff').click(function(e) {
 				e.preventDefault();
@@ -758,7 +758,8 @@ function showShutdownDialog(option, logoff) {
 	'<div class="modal-dialog modal-sm">' +
 		'<div class="modal-content">' +
 			'<div class="modal-header lb-modal-header-text-reverse">' +
-				'<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+			// :BS-5 Upgrade: Changed class btn to btn-close and data-dismiss to data-bs-dismiss
+				'<button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>' +
 				'<h4 class="modal-title" id="myModalLabel">' + getResource('power.shutdownServer') + '</h4>' +
 			'</div>' +
 			'<div class="modal-body row">' +
@@ -892,8 +893,8 @@ function loadRealms(realms, session) {
 
 	}
 	
-	$('#currentRealm').empty();
-	$('#currentRealm').append('<a class="dropdown" data-toggle="dropdown" href="#"><span data-toggle="tooltip" title="' + getResource('text.userRealms')  + '" data-placement="bottom"><i class="far fa-database"></i></span></a>');
+	$('#currentRealm').empty();//:BS-5 Upgrade: changed data-toggle to data-bs-toggle
+	$('#currentRealm').append('<a class="dropdown" data-bs-toggle="dropdown" href="#"><span data-bs-toggle="tooltip" title="' + getResource('text.userRealms')  + '" data-bs-placement="bottom"><i class="far fa-database"></i></span></a>');
 	$('#currentRealm').append('<ul id="realm" class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1"></ul>');
 	
 	if ($("#currentRealm > a").length === 1) {
@@ -941,16 +942,12 @@ function reloadRealms() {
 	});
 }
 
-
 function loadComplete(pageChange) {
 	log("Signaling load complete");
 	$('#mainContent').data('loadComplete', true);
 	$('#mainContent').data('pageChange', pageChange);
 	$('#mainContainer').stopSpin();
-    $('[data-toggle="tooltip"]').tooltip(); 
-    $('[data-toggle="offset-tooltip"]').tooltip({
-        offset: 20
-    }); 
+	$('[data-bs-toggle="tooltip"]').tooltip(); 
 	if(!$("#surveyPopupContainer").length) {
 		var popup = $('<div id="surveyPopupContainer" style="position: absolute; bottom: -200px; right: 2em; z-index: 9999; width: 30em;"></div>');
 		$('body').append(popup);
@@ -965,6 +962,21 @@ function loadComplete(pageChange) {
 			return false; /* Stop error message */
 		});
 	}
+	$(document).on('hide.bs.modal', '.modal', function(event) {
+	   log(`Modal with ID ${this.id} is closing.`);
+	   //need to protect against generic i.e. no namespace events
+	   //datepicker known to fire empty namespaced 'hide' event, which is caught here.
+	   // 'hide.bs.model' does catches generic 'hide' too.
+	   if (event.namespace !== 'bs.modal') {
+	   		log('Ignoring non-Bootstrap modal hide event');
+	   		return;
+	   }
+		   
+	   $(this).find('.tab-pane[role="tabpanel"]').each(function() {
+	      $(this).removeClass('show active'); // Reset tab-pane classes
+	   });
+	});
+
 }
 
 function loadWait() {

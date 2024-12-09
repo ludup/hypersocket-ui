@@ -4,24 +4,24 @@
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header lb-modal-header-text-reverse">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-hidden="true"></button>
 					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
-					<div class="propertyItem form-group lb-row">
+					<div class="propertyItem form-group row g-2">
 						<label class="col-md-3 control-label" localize="group.name"></label>
 						<div class="propertyValue col-md-9">
 							<input type="text" class="form-control"
 								 id="groupName" maxlength="" name="name" value="">
 							<div>
-								<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="group.name.info"></span>
+								<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="group.name.info"></span>
 							</div>
 						</div>
 					</div>
 					<div id="groupProperties" class="tabContent"></div>
-					<div id="tabGroupUsers" class="tabContent"></div>
-					<div id="tabGroupGroups" class="tabContent"></div>
+					<div id="tabGroupUsers" class="tabContent p-3"></div>
+					<div id="tabGroupGroups" class="tabContent p-3"></div>
 					<input type="hidden" name="groupId" id="groupId"/>
 					<input type="hidden" id="searchColumnHidden" name="searchColumn"></input>
 

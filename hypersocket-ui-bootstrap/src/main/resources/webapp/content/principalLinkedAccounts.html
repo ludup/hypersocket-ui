@@ -2,7 +2,7 @@
 	<div data-id="principalLinkedAccountsContainer" class="container-fluid border-bottom">
 	</div>
 	<div data-id="principalLinkToAnAccount" class="container">
-		<span class="font-weight-bold d-block pt-3"><span localize="link.account.to.label"></span><span data-id="identityConnectors" class="ml-1"></span></span>
+		<span class="font-weight-bold d-block pt-3"><span localize="link.account.to.label"></span><span data-id="identityConnectors" class="ms-1"></span></span>
 	</div>
 </div>
 
@@ -12,19 +12,19 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="linkAccountModalLabel" localize="link.account.modal.title.label"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"></span>
         </button>
       </div>
       <div class="modal-body">
         <div id="linkAccountModalBody">
         	<div id="linkAccountFor" class="pb-2 font-weight-bold">
         		<span localize="link.account.for.label"></span>
-        		<span id="linkAccountForUser" class="ml-1"></span>
+        		<span id="linkAccountForUser" class="ms-1"></span>
         	</div>
         	<div id="linkAccountCheckerSpinner" class="pb-3 d-none">
         		<i class="far fa-2x fa-spinner" style="position: relative;top: 5px;"></i>
-        		<span localize="link.account.check.already.linked.label" class="pl-2"></span>
+        		<span localize="link.account.check.already.linked.label" class="ps-2"></span>
         	</div>
         	<div id="linkAccountUsers"></div>
         </div>
@@ -281,7 +281,7 @@ legacyjQueryReadyFix(function() {
 					col1jq.append('<span class="font-weight-bold">' + connector + '</span>');
 					
 					var accountListId = 'account_list_' + rowId;
-					var list = '<ul class="pl-0 list-unstyled" id="' + accountListId + '"></ul>'
+					var list = '<ul class="ps-0 list-unstyled" id="' + accountListId + '"></ul>'
 					col2jq.append('<span>' + list + '</span>');
 					
 					

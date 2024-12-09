@@ -4,33 +4,33 @@
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header lb-modal-header-text-reverse">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-hidden="true"></button>
 					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
 					<form class="form" autocomplete="off">
 						<input type="hidden" name="token" id="csrfToken" value="${csrf}"/>
-						<div class="propertyItem form-group lb-row">
+						<div class="propertyItem form-group row g-2">
 							<label class="col-md-3 control-label" localize="attribute.name.label"></label>
 							<div class="propertyValue col-md-9">
 								<input type="text" id="attributeName" autocomplete="off" class="form-control" />
 								<div>
-									<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.name.info"></span>
+									<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.name.info"></span>
 								</div>
 							</div>
 						</div>
-						<div class="propertyItem form-group lb-row">
+						<div class="propertyItem form-group row g-2">
 							<label class="col-md-3 control-label" localize="attribute.category.label"></label>
 							<div class="propertyValue col-md-9">
 								<div id="attributeCategoryAutocomplete"></div>
 								<div>
-									<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.category.info">&nbsp;</span>
+									<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.category.info">&nbsp;</span>
 								</div>
 								
 							</div>
 						</div>
-						<div class="propertyItem form-group lb-row">
+						<div class="propertyItem form-group row g-2">
 							<label class="col-md-3 control-label">&nbsp;</label>
 							<div class="propertyValue col-md-9">
 								<button id="createCategory" class="btn btn-primary">
@@ -38,7 +38,7 @@
 									<span class="btn-text" localize="attribute.createCategory">&nbsp;</span>
 								</button>
 								<div>
-									<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.createCategory.info">&nbsp;</span>
+									<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.createCategory.info">&nbsp;</span>
 								</div>
 							</div>
 						</div>
@@ -47,16 +47,16 @@
 						<div id="attributePropertiesPanel" class="panel panel-default">
 							<div class="panel-heading">
 								<h2>
-									<i class="far fa-th"></i><span class="ml-2 break"></span>
+									<i class="far fa-th"></i><span class="ms-2 break"></span>
 								</h2>
 								<ul id="attributePropertiesTabs" class="nav nav-tabs" role="tablist">
-									<li id="tabAttributeInfoLi" role="presentation" class="active">
-										<a href="#tabAttributeInfo" role="tab" data-toggle="tab" aria-controls="tabAttributeInfo" class="attributePropertiesTab attributePropertiesTab2">
+									<li id="tabAttributeInfoLi" role="presentation">
+										<a href="#tabAttributeInfo" role="tab" data-bs-toggle="tab" aria-controls="tabAttributeInfo" class="attributePropertiesTab attributePropertiesTab2 active">
 											<span localize="attribute.attribute.label"></span>
 										</a>
 									</li>
 									<li id="tabOtherLi" role="presentation" >
-										<a href="#tabOther" role="tab" data-toggle="tab" aria-controls="tabOther" class="attributePropertiesTab attributePropertiesTab2">
+										<a href="#tabOther" role="tab" data-bs-toggle="tab" aria-controls="tabOther" class="attributePropertiesTab attributePropertiesTab2">
 											<span localize="attributeCategory.attributeOptions.label"></span>
 										</a>
 									</li>
@@ -65,42 +65,42 @@
 							<div class="panel-body">
 								<div class="tab-content">
 									<div id="tabAttributeInfo" role="tabpanel" class="tab-pane active">
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group row g-2">
 											<label class="col-md-3 control-label" localize="attribute.type.label"></label>
 											<div class="propertyValue col-md-9">
 												<div id="attributeType" class="propertyValue"></div>
 												<div>
-													<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.type.info"></span>
+													<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.type.info"></span>
 												</div>
 											</div>
 										</div>
 										
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group row g-2">
 											<label class="col-md-3 control-label" localize="attribute.variableName.label"></label>
 											<div class="propertyValue col-md-9">
 												<input type="text" id="attributeVariableName" autocomplete="off" class="form-control" />
 												<div>
-													<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.variableName.info"></span>
+													<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.variableName.info"></span>
 												</div>
 											</div>
 										</div>
 										
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group row g-2">
 											<label class="col-md-3 control-label" localize="attribute.defaultValue.label"></label>
 											<div class="propertyValue col-md-9">
 												<input type="text" id="attributeDefaultValue" autocomplete="off" class="form-control" />
 												<div>
-													<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.defaultValue.info"></span>
+													<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.defaultValue.info"></span>
 												</div>
 											</div>
 										</div>
 										
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group row g-2">
 											<label class="col-md-3 control-label" localize="attribute.description.label"></label>
 											<div class="propertyValue col-md-9">
 												<textarea maxlength="1024" rows="4" cols="50" id="attributeDescription" class="form-control" />
 												<div>
-													<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.description.info"></span>
+													<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.description.info"></span>
 												</div>
 											</div>
 										</div>
@@ -108,30 +108,30 @@
 										<input type="hidden" name="attributeId" id="attributeId">
 									</div>
 									<div id="tabOther" role="tabpanel" class="tab-pane">
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group row g-2">
 											<label class="col-md-3 control-label" localize="attribute.readOnly.label"></label>
 											<div class="propertyValue col-md-9">
 												<div id="attributeReadOnly" class="propertyValue"></div>
 												<div>
-													<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.readOnly.info"></span>
+													<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.readOnly.info"></span>
 												</div>
 											</div>
 										</div>
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group row g-2">
 											<label class="col-md-3 control-label" localize="attribute.encrypted.label"></label>
 											<div class="propertyValue col-md-9">
 												<div id="attributeEncrypted" class="propertyValue"></div>
 												<div>
-													<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.encrypted.info"></span>
+													<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.encrypted.info"></span>
 												</div>
 											</div>
 										</div>
-										<div class="propertyItem form-group lb-row">
+										<div class="propertyItem form-group row g-2">
 											<label class="col-md-3 control-label" localize="attribute.weight.label"></label>
 											<div class="propertyValue col-md-9">
 												<input type="number" id="attributeWeight" autocomplete="off" class="form-control" />
 												<div>
-													<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="attribute.weight.info"></span>
+													<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="attribute.weight.info"></span>
 												</div>
 											</div>
 										</div>

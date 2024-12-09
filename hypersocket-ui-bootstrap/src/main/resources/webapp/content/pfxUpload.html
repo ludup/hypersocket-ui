@@ -2,14 +2,14 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header lb-modal-header-text-reverse">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				<h4 class="modal-title" localize="uploadPfx.title"></h4>
 			</div>
 			<div class="modal-body">
-				<div class="propertyItem form-group lb-row">
+				<div class="propertyItem form-group row g-2">
 					<p id="pfxUploadInfo"></p>
 				</div>
-				<div id="replaceDefaultPfxDiv" class="propertyItem form-group lb-row">
+				<div id="replaceDefaultPfxDiv" class="propertyItem form-group row g-2">
 					<label id="localizeOnlyDefaultPresentLabelPfx" class="col-md-3 control-label"
 						localize="upload.replaceDefault.label"></label>
 					<label id="localizeMorePresentlabelPfx" class="col-md-3 control-label"
@@ -18,24 +18,24 @@
 						<div id="replaceDefaultPfx" class="d-inline-block"></div>
 						<span id="busyIndicatorPfx"><i class="fal fa-spinner fa-spin"></i></span>
 						<div>
-							<span id="localizeOnlyDefaultPresentInfoPfx" class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="upload.replaceDefault.info"></span>
-							<span id="localizeMorePresentInfoPfx" class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="upload.moreInterfacePresent.info"></span>
-							<span id="morePresentHelperMsgPfx" class="lb-help-block form-text text-info mt-2 mb-3 pl-1"></span>
+							<span id="localizeOnlyDefaultPresentInfoPfx" class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="upload.replaceDefault.info"></span>
+							<span id="localizeMorePresentInfoPfx" class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="upload.moreInterfacePresent.info"></span>
+							<span id="morePresentHelperMsgPfx" class="lb-help-block form-text text-info mt-2 mb-3 ps-1"></span>
 						</div>
 					</div>
 				</div>
-				<div id="keyDiv" class="propertyItem form-group lb-row">
+				<div id="keyDiv" class="propertyItem form-group row g-2">
 					<label id="fileLabel" class="col-md-3 control-label"
 						localize="uploadPfx.privateKey.label"></label>
 					<div class="propertyValue col-md-9">
 						<input type="file" class="form-control"
 							 id="pfxKey" maxlength="" name="key" value="">
 						<div>
-							<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="uploadPfx.privateKey.info"></span>
+							<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="uploadPfx.privateKey.info"></span>
 						</div>
 					</div>
 				</div>
-				<div id="passphraseDiv" class="propertyItem form-group lb-row">
+				<div id="passphraseDiv" class="propertyItem form-group row g-2">
 					<label id="fileLabel" class="col-md-3 control-label"
 						localize="uploadPfx.passphrase.label"></label>
 					<div class="propertyValue col-md-9">
@@ -43,7 +43,7 @@
 							 id="pfxPassphrase" maxlength="" name="passphrase"
 							value="">
 						<div>
-							<span class="lb-help-block form-text text-muted mt-2 mb-3 pl-1" localize="uploadPfx.passphrase.info"></span>
+							<span class="lb-help-block form-text text-muted mt-2 mb-3 ps-1" localize="uploadPfx.passphrase.info"></span>
 						</div>
 					</div>
 				</div>
