@@ -962,13 +962,19 @@ function loadComplete(pageChange) {
 			return false; /* Stop error message */
 		});
 	}
-	$(document).on('hide.bs.modal', '.modal', function() {
+	$(document).on('hide.bs.modal', '.modal', function(event) {
 	   log(`Modal with ID ${this.id} is closing.`);
-
-	    // Example: Reset all tabs inside the closing modal
-	    $(this).find('.tab-pane[role="tabpanel"]').each(function() {
-	        $(this).removeClass('show active'); // Reset tab-pane classes
-	    });
+	   //need to protect against generic i.e. no namespace events
+	   //datepicker known to fire empty namespaced 'hide' event, which is caught here.
+	   // 'hide.bs.model' does catches generic 'hide' too.
+	   if (event.namespace !== 'bs.modal') {
+	   		log('Ignoring non-Bootstrap modal hide event');
+	   		return;
+	   }
+		   
+	   $(this).find('.tab-pane[role="tabpanel"]').each(function() {
+	      $(this).removeClass('show active'); // Reset tab-pane classes
+	   });
 	});
 
 }
