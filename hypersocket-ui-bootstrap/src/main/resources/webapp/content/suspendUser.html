@@ -55,7 +55,7 @@
 		
 		$('#startDate').dateInput({ value: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() });
 		$('#startTime').timeInput({ value: date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() });
-		$('#duration').sliderInput({ value: 0,
+		$('#duration').spinnerInput({ value: 0,
 			min: 0,
 			max: 900,
 			labelResourceKey: "suspendUser.minutes"
