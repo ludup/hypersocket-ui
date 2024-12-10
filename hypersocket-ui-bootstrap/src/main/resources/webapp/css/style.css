@@ -2436,7 +2436,7 @@ button#logonButton {
 .lb-card-footer-bg {
     background-color: #f7f7f9;
 }
-.lb-help-block {display:block;}
+.lb-help-block {display:block; font-size: 9pt;}
 /*-----------------------------------------------------------------------
 For < 767px
 -----------------------------------------------------------------------*/
