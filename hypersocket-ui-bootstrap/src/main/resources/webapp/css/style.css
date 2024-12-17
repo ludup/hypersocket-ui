@@ -2053,6 +2053,13 @@ select[multiple] {
 	z-index: 99999 !important;
 }
 
+@media (max-width: 600px) {
+	.notifyjs-container span[data-notify-html], .notifyjs-container span[data-notify-text] {
+	    overflow-wrap: break-word !important;
+	    white-space: normal !important;
+	}
+}
+
 #feedbackPanel {
 	height: 400px;
 	overflow-y: auto;
