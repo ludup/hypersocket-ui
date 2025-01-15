@@ -1075,7 +1075,7 @@ function loadMenu(menu) {
 					+	'		<i class="far fa-2x ' + this.icon + '"></i><p class="hidden-sm hidden-xs">' + getResource(this.resourceKey + '.title') + '</p>'
 					+	'	</a>'
 					+	'</div>'
-					+	'<div class="col-2 d-md-table-cell d-lg-none d-xl-none" style="padding-bottom: 10px">'
+					+	'<div class="col-2 d-md-table-cell d-lg-none d-xl-none pb-2 ps-2 pe-2">'
 					+	'	<a class="small-button subMenuSmall" href="#menu=' + this.resourceKey + '" data-value="' + this.resourceKey + '" id="buttonSmall_' + this.resourceKey + '">'
 					+	'		<i class="far fa-2x ' + this.icon + '"></i>'
 					+	'	</a>'
