@@ -268,7 +268,7 @@ $.fn.resourceTable = function(params) {
 		getState(divName+'-infoPanel', true, function(data) {
 			if(data.resources.length == 0 || data.resources[0].show) {
 				theDiv.after('<div id="infoPanel" class="col-12 px-3"><div class="alert alert-' + options.infoLevel + '"><i class="far fa-xl ' + getIconForLevel(options.infoLevel) + ' align-middle"></i><i id="messageDismiss" '
-						+ 'class="far fa-times dismiss-icon float-right mt-2"></i>&nbsp;&nbsp;<span class="align-middle">' + options.infoHtml + '</span></div></div>');
+						+ 'class="far fa-times dismiss-icon float-end mt-2"></i>&nbsp;&nbsp;<span class="align-middle">' + options.infoHtml + '</span></div></div>');
 			
 				$('.dismiss-icon').click(function(e) {
 					var prefs = new Object();
@@ -1595,7 +1595,7 @@ $.fn.resourceTable = function(params) {
 		}
 		
 		
-		$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.float-right').append('<button id="' 
+		$('#' + divName).find('.fixed-table-toolbar').find('.columns.columns-right.btn-group.float-end').append('<button id="' 
 				+ divName + 'ToggleGrid" class="btn btn-secondary" type="button" name="grid" title="' 
 				+ getResource('text.toggleViewMode') + '"><i class="far ' + currentView.icon + '"></button>');
 		

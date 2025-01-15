@@ -609,7 +609,7 @@ $.fn.tabPage = function(opts) {
 		'<div class="row g-2"><div class="col-12 propertyFilter" id="' + propertyDiv + 'PropertyFilter"></div></div>'
 		+ '<div id="' + propertyDiv + 'Panel" class="panel panel-default"><div class="panel-heading"><h2><i class="far ' 
 		+ options.icon + '"></i><span class="ms-2 break"></span>' + options.title + '</h2><ul id="' 
-		+ propertyDiv + 'Tabs" class="nav nav-tabs float-right"/></div><div class="panel-body property-body"><div id="' 
+		+ propertyDiv + 'Tabs" class="nav nav-tabs float-end"/></div><div class="panel-body property-body"><div id="' 
 		+ propertyDiv + 'Content" class="tab-content"></div></div></div>');
 
 	var lastTab = null;
@@ -783,7 +783,7 @@ $.fn.propertyPage = function(opts) {
                 getState(propertyDiv+'-infoPanel', true, function(data) {
                     if(data.resources.length == 0 || data.resources[0].show) {
                         theDiv.after('<div id="infoPanel" class="col-12 px-3"><div class="alert alert-' + options.infoLevel + '"><i class="far fa-2x ' + getIconForLevel(options.infoLevel) + ' align-middle"></i><i id="messageDismiss" '
-                                + 'class="far fa-times dismiss-icon float-right mt-2"></i>&nbsp;&nbsp;<span class="align-middle">' + options.infoHtml + '</span></div></div>');
+                                + 'class="far fa-times dismiss-icon float-end mt-2"></i>&nbsp;&nbsp;<span class="align-middle">' + options.infoHtml + '</span></div></div>');
                     
                         $('.dismiss-icon').click(function(e) {
                             var prefs = new Object();
