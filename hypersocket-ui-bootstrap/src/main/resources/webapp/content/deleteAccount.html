@@ -1,11 +1,10 @@
 <div id="deleteAccount">
-	<div id="deleteDialog" class="modal fade">
+	<div id="deleteDialog" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-                <div class="modal-header lb-modal-header-text-reverse">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-hidden="true"></button>
-                    <h4 class="modal-title" localize="deleteAccount.title"></h4>
+                <div class="modal-header">
+                    <h5 class="modal-title" localize="deleteAccount.title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 				<div class="modal-body">
 					<div id="deleteAccountInfo" class="alert alert-warning" localize="deleteAccount.info"></div>
@@ -21,7 +20,7 @@
 						</div>
 					</div>
 				</div>
-				<!-- dialog buttons -->
+				
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary">Delete
 						Account</button>
@@ -39,6 +38,9 @@
 	
 	legacyjQueryReadyFix(function() {
 		$("#deleteDialog").localize();
+		
+		const deleteModal = getModalInstance('deleteDialog');
+		
 		$('#deleteAccount').data('action', function(resource) {
 			$('#deleteAccountInfo').html(getResource(resource.realmModule === 'local' ? 'deleteLocalAccount.info' : 'deleteAccount.info').format(he.escape(stripNull(resource.principalName))));
 			$("#deleteDialog").off("shown.bs.modal").on("shown.bs.modal", function() {
@@ -50,7 +52,9 @@
 							showError(data.message);
 						}
 					};					
-					$("#deleteDialog").modal('hide');
+
+					deleteModal.hide();
+					
 					$('#mainContainer').startSpin(getResource("text.deleting").format(he.escape(stripNull(resource.name))));
 					
 					
@@ -79,11 +83,10 @@
 				$('#removeRemoteContainer').hide();
 			else
 				$('#removeRemoteContainer').show();
-			$("#deleteDialog").modal({
-				"backdrop" : "static",
-				"keyboard" : true,
-				"show" : true
-			});
+			
+			// Show the modal
+			deleteModal.show();
+
 		});
 	});
 </script>

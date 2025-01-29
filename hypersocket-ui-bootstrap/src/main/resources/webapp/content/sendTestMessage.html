@@ -1,10 +1,12 @@
 <div id="sendTestMessage">
-	<div id="sendTestMessageDialog" class="modal fade">
+	<div id="sendTestMessageDialog" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
+				<div class="modal-header">
+	            	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	            </div>
 				<!-- dialog body -->
 				<div class="modal-body">
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 					<p localize="sendTestMessage.confirmText"></p>
 					<div class="propertyItem form-group row g-2">
 						<label class="col-3 control-label"
@@ -31,6 +33,9 @@
 <script type="text/javascript">
 	legacyjQueryReadyFix(function() {
 		$("#sendTestMessageDialog").localize();
+		
+		const modal = getModalInstance('sendTestMessageDialog');
+		
 		$('#sendTestMessage').data('action', function(resource) {
 			$("#sendTestMessageDialog").off("shown.bs.modal").on("shown.bs.modal", function() {
 				$("#sendTestMessageDialog .modal-footer button.btn").off("click").on("click", function(e) {
@@ -43,14 +48,13 @@
 							showError(data.message);
 						}
 					});
-					$("#sendTestMessage").modal('hide');
+					
+					modal.hide();
+					
 				});
 			});
-			$("#sendTestMessageDialog").modal({
-				"backdrop" : "static",
-				"keyboard" : true,
-				"show" : true
-			});
+			
+			modal.show();
 		});
 	});
 </script>

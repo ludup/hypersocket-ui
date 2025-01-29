@@ -1,12 +1,11 @@
 <div id="deleteGroup">
-	<div id="deleteDialog" class="modal fade">
+	<div id="deleteDialog" class="modal fade" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
-	            <div class="modal-header lb-modal-header-text-reverse">
-	                <button type="button" class="btn-close" data-bs-dismiss="modal"
-	                    aria-hidden="true"></button>
-	                <h4 class="modal-title" localize="deleteGroup.title"></h4>
-	            </div>
+				<div class="modal-header">
+					<h5 class="modal-title" localize="deleteGroup.title"></h5>
+                	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>    
 				<div class="modal-body">
 					<div id="deleteGroupInfo" class="alert alert-warning" localize="deleteGroup.info"></div>
 					<div id="removeRemoteContainer" class="propertyItem form-group">
@@ -39,6 +38,9 @@
 
     legacyjQueryReadyFix(function() {
 		$("#deleteDialog").localize();
+		
+		const modal = getModalInstance('deleteDialog');
+		
 		$('#deleteGroup').data('action', function(resource) {
 			$('#deleteGroupInfo').html(getResource(resource.realmModule === 'local' ? 'deleteLocalGroup.info' : 'deleteGroup.info').format(he.escape(stripNull(resource.principalName))));
 			$("#deleteDialog").off("shown.bs.modal").on("shown.bs.modal", function() {
@@ -50,7 +52,9 @@
 							showError(data.message);
 						}
 					};					
-					$("#deleteDialog").modal('hide');
+
+					modal.hide();
+					
 					$('#mainContainer').startSpin(getResource("text.deleting").format(he.escape(stripNull(resource.name))));
 					
 					
@@ -79,11 +83,8 @@
 				$('#removeRemoteContainer').hide();
 			else
 				$('#removeRemoteContainer').show();
-			$("#deleteDialog").modal({
-				"backdrop" : "static",
-				"keyboard" : true,
-				"show" : true
-			});
+			
+			modal.show();
 		});
 	});
 </script>

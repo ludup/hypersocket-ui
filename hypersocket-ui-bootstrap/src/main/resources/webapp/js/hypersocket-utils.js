@@ -1666,6 +1666,22 @@ function cleanValue(obj) {
 	return obj;
 }
 
+function getModalInstance(modalId) {
+	
+	const modalElement = document.getElementById(modalId);
+	
+	if (!modalElement) {
+		throw new Error("No madal by id: " + modalId);
+	}
+
+	// Initialise the modal with default options
+	return new bootstrap.Modal(modalElement, {
+	    backdrop: true,  // Enable backdrop click to close
+	    keyboard: true   // Enable Escape key to close
+	});
+	
+}
+
 legacyjQueryReadyFix(function() {
 	$.notify.addStyle("hypersocket", {
 		html: "<div>\n<span data-notify-html></span>\n</div>",
