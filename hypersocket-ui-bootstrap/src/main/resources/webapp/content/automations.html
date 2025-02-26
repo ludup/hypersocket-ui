@@ -43,6 +43,14 @@
 	window.elementMap = window.elementMap || new Map();
 	window.rootMap = window.rootMap || new Map();
 	
+	function remoteCallStart() {
+		$('#mainContainer').startSpin();
+	}
+	
+	function remoteCallStop() {
+		$('#mainContainer').stopSpin();
+	}
+	
 	function drawFlowDiagram(index, resource, element, clean) {
 		
 		if (clean) {
@@ -102,7 +110,6 @@
 	    return ids;
 	}
 
-	
 	function emptyDataMap() {
 		triggerMap.clear(); 
 		parentMap.clear();
@@ -115,21 +122,6 @@
 	
 	function clearNodesDataMap(nodes) {
 		nodes.forEach(n => clearInDataMap(n));
-	}
-	
-	function resetFlowDiagram(jsPlumbInstance, mainLeave) {
-		jsPlumbInstance.reset();
-		
-		if (!mainLeave) {
-			$('.triggerShape.triggerMain').remove();
-		}
-    	
-    	$('.triggerShape.triggerSub').remove();
-    	
-	}
-	
-	function resetFlowDiagramBox(jsPlumbInstance, mainLeave) {
-    	$('.triggerShape.triggerSub').remove();
 	}
 	
 	function getNodesTriggerObject(node) {
@@ -390,7 +382,9 @@
 				clearModalHiddenFields();
 				
 				var automation = getNodesTriggerObject($(this));
+				remoteCallStart();
 				getJSON('triggers/taskResults/' + automation.resourceKey, null, function(data) {
+					remoteCallStop();
 					$(document).data('triggerModalCallback').loadParent(automation, null, 1);
 					$('div[dialog-for="contentTriggers"]').resourceDialog('create');
 				});
@@ -400,7 +394,9 @@
         	var top = 125;
         	var left = 200;
         	if(triggerList.length > 0) {
+        		remoteCallStart();
         		getState(triggerList, false, function(data){
+        			remoteCallStop();
 					resourceList = data.resources;
 					$.each(automation.childTriggers, function(idx, obj) {
 	        			addTask(obj, automation, top+50, left+50, rootId, jsPlumbInstance);	
@@ -439,7 +435,10 @@
 						
 						const trigger = getNodesTriggerObject($(this));
 						
+						remoteCallStart();
+						
 						getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
+							remoteCallStop();
 							$(document).data('triggerModalCallback').loadParent(trigger, data.resources, 0);
 							$('div[dialog-for="contentTriggers"]').resourceDialog('create');
 						});
@@ -459,8 +458,10 @@
 							$(document).data('triggerModalCallback').loadParent(parentTrigger, null, 1);	
 							$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
 						} else {
+							remoteCallStart();
 							getJSON('triggers/parentEvents/' + trigger.parentId, null, function(data) {
 								getJSON('triggers/trigger/' + trigger.parentId, null, function(parent) {
+									remoteCallStop();
 									// triggerModalCallback is used in triggers-modal
 									$(document).data('triggerModalCallback').loadParent(parent, data.resources, 0);	
 									$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
@@ -480,9 +481,9 @@
 						if(!trigger.isRoot) {
 							bootbox.confirm(getResource("confirm.deleteTriggerItem").format(cleanValue(trigger.name)), function(result) {
 								  if(result) {
-												
+									remoteCallStart();			
 									deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
-										
+										remoteCallStop();
 										if(data.success) {
 										
 											showSuccess(data.message);
@@ -512,8 +513,10 @@
 						} else {
 							bootbox.confirm(getResource("confirm.deleteTrigger").format(cleanValue(trigger.name)), function(result) {
 								  if(result) {
+									  remoteCallStart();
 									  deleteJSON('automations/trigger/' + automation.id + '/' + trigger.id, null, function(data) {
-											if(data.success) {
+										  remoteCallStop();	
+										  if(data.success) {
 												
 												showSuccess(data.message);
 												

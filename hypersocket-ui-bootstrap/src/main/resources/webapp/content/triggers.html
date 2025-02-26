@@ -3,8 +3,140 @@
 <script type="text/javascript">
 	var triggerList = [];
 	var resourceList = [];
-	var triggerMap = [];
-	var selectedId;
+	
+	window.triggerMap = window.triggerMap || new Map();
+	window.parentMap = window.parentMap || new Map();
+	window.elementMap = window.elementMap || new Map();
+	window.rootMap = window.rootMap || new Map();
+	
+	function remoteCallStart() {
+		$('#mainContainer').startSpin();
+	}
+	
+	function remoteCallStop() {
+		$('#mainContainer').stopSpin();
+	}
+	
+	function setTriggerMapValue(k, v) {
+		triggerMap.set(k, v);
+	}
+	
+	function drawFlowDiagram(index, resource, element, clean) {
+		
+		if (clean) {
+			element.empty();
+		}
+		
+		// Here element is the jquery object where you can render the view and resource is the table rows resource.
+		element.append(
+				'<div data-rootid="' + resource.id + '" id="contentTrigger' + resource.id + '" class="panel panel-default triggerRootContainer" style="display: none;">'
+			+	'<div class="spacer20px"></div>'
+			+	'	<div class="row g-2">'
+			+	'		<div class="col-md-12" style="position:relative;" id="schemeArea' + resource.id + '">'	
+			+	'			<div id="triggerTasks' + resource.id + '" style="overflow: auto; height: 300px">'		
+			+	'				<div id="rootTrigger' + resource.id + '" class="triggerShape trigger-same-row" style="position: absolute; left: 50px; top: 50px;">'			
+			+	'					<span id="rootEvent' + resource.id + '" class="triggerContent"></span>'				
+			+	'				</div>'			
+			+	'			</div>'		
+			+	'			<div class="spacer20px"></div>'		
+			+	'		</div>'	
+			+	'		<div class="col-md-3" id="triggerArea' + resource.id + '">'
+			+	'			<div id="triggerIcons' + resource.id + '"></div>'				
+			+	'		</div>'
+			+	'	</div>'
+			+	'</div>');
+		
+		const jsPlumbInstanceObj = jsPlumb.getInstance();
+		window.jsPlumbInstanceObj = window.jsPlumbInstanceObj || jsPlumbInstanceObj;
+		rootMap.set(resource.id, resource);
+		
+		if (!jsPlumbInstanceObj.getContainer()) { 
+			jsPlumbInstanceObj.setContainer($('#schemeArea' + resource.id));
+		}
+		
+		renderDiagram(resource, resourcePage, resource.id, jsPlumbInstanceObj);
+	}
+	
+	function emptyDataMap() {
+		triggerMap.clear(); 
+		parentMap.clear();
+	}
+	
+	function clearInDataMap(triggerId) {
+		triggerMap.delete("triggerDiagram_" + triggerId); 
+		parentMap.delete("triggerDiagram_" + triggerId);
+	}
+	
+	function clearNodesDataMap(nodes) {
+		nodes.forEach(n => clearInDataMap(n));
+	}
+	
+	function getNodesRootId(node) {
+		const triggerRootContainer = node.closest('.triggerRootContainer');
+		return triggerRootContainer.data('rootid');
+	}
+	
+	function getNodesTriggerObject(node) {
+		const triggerShape = node.closest('.triggerShape');
+		const divId = triggerShape.attr('id');
+		return triggerMap.get(divId);
+	}
+	
+	function deleteNodes(trigger, jsPlumbInstance) {
+		const children = getAllChildIds(trigger);
+		
+		clearInDataMap(trigger.id);
+		clearNodesDataMap(children);
+		
+		if (children) {
+			children.forEach(child => {
+				const nodeId = "triggerDiagram_" + child;
+				
+				jsPlumbInstance.removeAllEndpoints(nodeId); // Remove connections
+			    document.getElementById(nodeId)?.remove(); // Remove from DOM
+			});
+		}
+		
+		
+		const nodeId = "triggerDiagram_" + trigger.id;
+		
+		jsPlumbInstance.removeAllEndpoints(nodeId); // Remove connections
+	    document.getElementById(nodeId)?.remove(); // Remove from DOM
+	}
+	
+	function clearModalHiddenFields() {
+		$("#triggerResourceId").val("");
+		$("#triggerParentId").val("");
+		$("#triggerAttachmentId").val("");
+	}
+	
+	function attachToRoot(node, rootResource) {
+		if (rootResource && rootResource.childTriggers && Array.isArray(rootResource.childTriggers)) {
+			let children = rootResource.childTriggers;
+			for (let i = 0; i < children.length; ++i) {
+				if (children[i].name == node.name) {
+					children[i] = node;
+				}
+			}
+        }
+	}
+	
+	function getAllChildIds(obj) {
+	    let ids = [];
+
+	    function traverse(node) {
+	        if (node && node.childTriggers && Array.isArray(node.childTriggers)) {
+	            node.childTriggers.forEach(child => {
+	                ids.push(child.id);
+	                traverse(child); // Recursively go deeper into childTriggers
+	            });
+	        }
+	    }
+
+	    traverse(obj);
+	    return ids;
+	}
+	
 	legacyjQueryReadyFix(function() {
 				$('#contentTriggers').localize();
 				$('#contentTrigger').localize();
@@ -53,8 +185,10 @@
 										$(document).data('triggerModalCallback').loadParent(null, null, 0);
 										$(document).data('triggerModalCallback').displayResource(resource);
 									} else {
+										remoteCallStart();
 										getJSON('triggers/parentEvents/' + resource.id, null, function(data) {
 											getJSON('triggers/trigger/' + resource.parentId, null, function(parent) {
+												remoteCallStop();
 												$(document).data('triggerModalCallback').loadParent(parent, data.resources, 0);
 												$(document).data('triggerModalCallback').displayResource(resource);	
 											});
@@ -73,38 +207,43 @@
 								},
 								detailView: true,
 								detailFormatter: function(index, resource, element) {
-									// Here element is the jquery object where you can render the view and resource is the table rows resource.
-									element.append(
-											'<div id="contentTrigger' + resource.id + '" class="panel panel-default" style="display: none;">'
-										+	'<div class="spacer20px"></div>'
-										+	'	<div class="row g-2">'
-										+	'		<div class="col-md-12" style="position:relative;" id="schemeArea' + resource.id + '">'	
-										+	'			<div id="triggerTasks' + resource.id + '" style="overflow: auto; height: 300px">'		
-										+	'				<div id="rootTrigger' + resource.id + '" class="triggerShape trigger-same-row" style="position: absolute; left: 50px; top: 50px;">'			
-										+	'					<span id="rootEvent' + resource.id + '" class="triggerContent"></span>'				
-										+	'				</div>'			
-										+	'			</div>'		
-										+	'			<div class="spacer20px"></div>'		
-										+	'		</div>'	
-										+	'		<div class="col-md-3" id="triggerArea' + resource.id + '">'
-										+	'			<div id="triggerIcons' + resource.id + '"></div>'				
-										+	'		</div>'
-										+	'	</div>'
-										+	'</div>');
-									var jsPlumbInstance = jsPlumb.getInstance();
-									jsPlumbInstance.setContainer($('#schemeArea' + resource.id));
-									renderDiagram(resource, resourcePage, resource.id, jsPlumbInstance);
+									elementMap.set(resource.id, { index, resource, element});
+									drawFlowDiagram(index, resource, element);
 								}
 								
 							});
+				
+					window.resourcePage = resourcePage;
 				});
 
 			});
 	
 	function renderDiagram(trigger, resourcePage, rootId, jsPlumbInstance) {
+		
+		const dialogOptions = $('div[dialog-for="contentTriggers"]').data('options');
+
+        // Ensure option resourceCreated does not exists before proceeding
+        // this is needed to register resource created event hook
+        if (dialogOptions && !dialogOptions.hasOwnProperty('resourceCreated')) {
+            $.extend(dialogOptions, {
+                resourceCreated: function(resourceGiven) {
+                	// pull and update resource updated sent by server nad given here to event handler
+                	const obj = elementMap.get(resourceGiven.id);
+                	obj.resource = resourceGiven;
+                	
+                	if (obj.resource.id !== resourceGiven.id) {
+                		throw new Error("Resource id mismatch.");
+                	}
+                	
+                	drawFlowDiagram(obj.index, resourceGiven, obj.element, true);
+                    
+                }
+            });
+        }
+        
 		//jsPlumb.empty($('#triggerView' + rootId));
 		triggerList = [];
-		triggerMap = [];
+		let triggerMap = [];
 		if(trigger) {
 
 			$('#contentTrigger' + trigger.id).show();
@@ -112,10 +251,12 @@
 
         	triggerList.push('triggerDiagram_' + trigger.id);
         	triggerMap[trigger.id] = trigger;
-        	createTriggerList(trigger.childTriggers);
+        	createTriggerList(trigger.childTriggers, triggerMap);
         	var top = 25;
         	var left = 200;
+        	remoteCallStart();
         	getState(triggerList, false, function(data){
+        		remoteCallStop();
         		resourceList = data.resources;
         		addTask(trigger, null, top+50, left+50, rootId, jsPlumbInstance);
         		jsPlumbInstance.connect({
@@ -127,63 +268,120 @@
     	            detachable:false,
     	            overlays:[["Arrow", {location: 1}]]
     	        });
-				jsPlumbInstance.draggable($('#triggerDiagram_' + trigger.id));				
-				$('#triggerDiagram_' + trigger.id).draggable({
-			        stop: function(e){
-			            if($(this).data('trigger')){
-			            	var preferences = {};
-			            	state = new Object();
-			            	preferences.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
-			            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
-				            if(preferences.leftpx < 0) {
-				            	preferences.leftpx = 0;
+        		
+				jsPlumbInstance.draggable($('.triggerDraggable').get(), {
+				    dragOptions: {} // Prevents "dragOptions is undefined" error
+				});
+				
+				/*
+				Loop over root keys to generate flow specfic div container jquery selector
+				*/
+				for (let key of rootMap.keys()) {
+					
+				    const container = '#triggerTasks' + key;
+				    
+				    $(container + ' .triggerDraggable').draggable({
+				        stop: function(e){
+				        	
+							const trigger = getNodesTriggerObject($(this));
+							
+							debugger;
+				        	
+							if(trigger){
+				            	var preferences = {};
+				            	state = new Object();
+				            	preferences.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
+				            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
+					            if(preferences.leftpx < 0) {
+					            	preferences.leftpx = 0;
+					            }
+					            if(preferences.top < 0) {
+					            	preferences.top = 0;
+					            }
+					            
+					            saveState('triggerDiagram_' + trigger.id, preferences, false);
 				            }
-				            if(preferences.top < 0) {
-				            	preferences.top = 0;
-				            }
-				            
-				            saveState('triggerDiagram_' + $(this).data('trigger').id, preferences, false);
-			            }
-			        },
-					containment: 'parent'
-			    });
+				        },
+				        containment: container
+				    });
+				}
 				
 				$('.addIcon').off('click');
 				$('.addIcon').on('click', function(e) {
 					e.preventDefault();
-					var trigger = $(this).closest('.triggerShape').data('trigger');
+					
+					clearModalHiddenFields();
+					
+					const trigger = getNodesTriggerObject($(this));
+					remoteCallStart();
 					getJSON('triggers/parentEvents/' + trigger.id, null, function(data) {
-							$(document).data('triggerModalCallback').loadParent(trigger, data.resources, 0);
-							$('div[dialog-for="contentTriggers"]').resourceDialog('create', { 
-								resourceCreated: function(resource) {
-									renderDiagram(resource, resourcePage, rootId, jsPlumbInstance);
-								}
-							});
+						remoteCallStop();
+						$(document).data('triggerModalCallback').loadParent(trigger, data.resources, 0);
+						$('div[dialog-for="contentTriggers"]').resourceDialog('create');
+							
 					});
 				});
 				
 				$('.editIcon').off('click');
 				$('.editIcon').on('click', function(e) {
 					e.preventDefault();
-					var triggerShape = $(this).closest('.triggerShape');
-					var trigger = triggerShape.data('trigger');
-					$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger); 
+					
+					const trigger = getNodesTriggerObject($(this));
+					
+					remoteCallStart();
+					
+					getJSON('triggers/parentEvents/' + trigger.parentId, null, function(data) {
+						getJSON('triggers/trigger/' + trigger.parentId, null, function(parent) {
+							remoteCallStop();
+							// triggerModalCallback is used in triggers-modal
+							$(document).data('triggerModalCallback').loadParent(parent, data.resources, 0);	
+							$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
+						});
+					});
+					
+					
 				});
 				  
 				$('.deleteTriggerIcon').off('click');
 				$('.deleteTriggerIcon').on('click', function(e) {
 					e.preventDefault();
-					var triggerShape = $(this).closest('.triggerShape');
-					var trigger = triggerShape.data('trigger');
+					
+					const node = $(this);
+					const rootId = getNodesRootId(node);
+					
+					const trigger = getNodesTriggerObject($(this));
 
 					if(!trigger.isRoot) {
 						bootbox.confirm(getResource("confirm.deleteTriggerItem").format(cleanValue(trigger.name)), function(result) {
 							  if(result) {
+								  remoteCallStart();
+								  
 								  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
-										if(data.success) {
+									    
+									  remoteCallStop();
+										
+									    if(data.success) {
+											
+											debugger;
+											
 											showSuccess(data.message);
-											renderDiagram(data.resource, resourcePage, rootId, jsPlumbInstance);
-											resourcePage.refresh();
+											
+											deleteNodes(trigger, jsPlumbInstance); 
+											
+						                	const obj = elementMap.get(data.resource.id);
+						                	
+						                	if (obj.resource.id !== data.resource.id) {
+						                		throw new Error("Resource id mismatch.");
+						                	}
+						                	
+						                	obj.resource = data.resource;
+						                	rootMap.set(rootId, data.resource)
+						                	
+						                	const { index, resource, element } = obj;
+						                	
+						                	drawFlowDiagram(index, resource, element, true);
+										    
+											resourcePage.refresh();	
 										} else {
 											showError(data.message)
 										}
@@ -193,10 +391,33 @@
 					} else {
 						bootbox.confirm(getResource("confirm.deleteTrigger").format(cleanValue(trigger.name)), function(result) {
 							  if(result) {
+								  
+								  remoteCallStart();
+								  
 								  deleteJSON('triggers/trigger/' + trigger.id, null, function(data) {
+									  
+									  	remoteCallStop();
+									  
 										if(data.success) {
+											
+											debugger;
+											
 											showSuccess(data.message);
-											renderDiagram(null, resourcePage, rootId, jsPlumbInstance);
+											
+											deleteNodes(trigger, jsPlumbInstance); 
+											
+											const rootResource = rootMap.get(rootId);
+										    
+										    const { index, resource, element } = elementMap.get(rootResource.id);
+						                	
+						                	if (resource.id !== rootResource.id) {
+						                		throw new Error("Resource id mismatch.");
+						                	}
+						                	
+						                	rootResource.childTriggers = [];
+						                	
+						                	elementMap.delete(rootResource.id);
+						                	
 											resourcePage.refresh();
 										} else {
 											showError(data.message)
@@ -214,12 +435,12 @@
 		}
 	}
 	
-	function createTriggerList(childTriggers){
+	function createTriggerList(childTriggers, triggerMap){
 		$.each(childTriggers, function(index, triggerValue){
 			triggerList.push('triggerDiagram_' + triggerValue.id);
 			triggerMap[triggerValue.id] = triggerValue;
 			if(triggerValue.childTriggers && triggerValue.childTriggers.length){
-				createTriggerList(triggerValue.childTriggers);
+				createTriggerList(triggerValue.childTriggers, triggerMap);
 			}
 		});
 	}
@@ -258,8 +479,10 @@
 				+	"	</div>"
 				+	"</div>");
 		
-		$('#triggerDiagram_' + trigger.id).data('trigger', trigger);
-		$('#triggerDiagram_' + trigger.id).data('parent', parent);
+		
+		setTriggerMapValue('triggerDiagram_' + trigger.id, trigger);
+		parentMap.set('triggerDiagram_' + trigger.id, parent);
+		
 		if(parent) {
 			jsPlumbInstance.connect({
 	            source:"triggerDiagram_" + parent.id,
@@ -270,27 +493,6 @@
 	            detachable:false,
 	            overlays:[["Arrow", {location: 1}]]
 	        });
-			
-			jsPlumbInstance.draggable($('#triggerDiagram_' + trigger.id));
-			$('#triggerDiagram_' + trigger.id).draggable({
-		        stop: function(e){
-		            if($(this).data('trigger')){
-		            	var preferences = {};
-		            	state = new Object();
-		            	preferences.top = Math.round($(this).css('top').substring(0, $(this).css('top').length - 2));
-		            	preferences.leftpx = Math.round($(this).css('left').substring(0, $(this).css('left').length - 2));
-			            if(preferences.leftpx < 0) {
-			            	preferences.leftpx = 0;
-			            }
-			            if(preferences.top < 0) {
-			            	preferences.top = 0;
-			            }
-			            
-			            saveState('triggerDiagram_' + $(this).data('trigger').id, preferences, false);
-		            }
-		        },
-		        containment: 'parent'
-		    });
 		}
 		
 		top+= 50;
