@@ -38,10 +38,10 @@
 <div id="contentTriggers"></div>
 <script type="text/javascript">
 
-	window.triggerMap = window.triggerMap || new Map();
-	window.parentMap = window.parentMap || new Map();
-	window.elementMap = window.elementMap || new Map();
-	window.rootMap = window.rootMap || new Map();
+	window.automationTriggerMap = window.automationTriggerMap || new Map();
+	window.automationParentMap = window.automationParentMap || new Map();
+	window.automationElementMap = window.automationElementMap || new Map();
+	window.automationRootMap = window.automationRootMap || new Map();
 	
 	function remoteCallStart() {
 		$('#mainContainer').startSpin();
@@ -75,12 +75,12 @@
 		
 		const jsPlumbInstanceObj = jsPlumb.getInstance();
 		window.jsPlumbInstanceObj = window.jsPlumbInstanceObj || jsPlumbInstanceObj;
-		rootMap.set(resource.id, resource);
+		automationRootMap.set(resource.id, resource);
 		
 		if (!jsPlumbInstanceObj.getContainer()) { 
 			jsPlumbInstanceObj.setContainer($('#schemeArea' + resource.id));
 		}
-		renderDiagram(resource, resourcePage, resource.id, jsPlumbInstanceObj);
+		renderDiagram(resource, automationResourcePage, resource.id, jsPlumbInstanceObj);
 	}
 	
 	function attachToRoot(node, rootResource) {
@@ -92,6 +92,11 @@
 				}
 			}
         }
+	}
+	
+	function removeChild(arr, resourceId) {
+	    const index = arr.findIndex(item => item.id === resourceId);
+	    if (index !== -1) arr.splice(index, 1);
 	}
 	
 	function getAllChildIds(obj) {
@@ -111,13 +116,13 @@
 	}
 
 	function emptyDataMap() {
-		triggerMap.clear(); 
-		parentMap.clear();
+		automationTriggerMap.clear(); 
+		automationParentMap.clear();
 	}
 	
 	function clearInDataMap(triggerId) {
-		triggerMap.delete("automationDiagram_" + triggerId); 
-		parentMap.delete("automationDiagram_" + triggerId);
+		automationTriggerMap.delete("automationDiagram_" + triggerId); 
+		automationParentMap.delete("automationDiagram_" + triggerId);
 	}
 	
 	function clearNodesDataMap(nodes) {
@@ -127,7 +132,7 @@
 	function getNodesTriggerObject(node) {
 		const triggerShape = node.closest('.triggerShape');
 		const divId = triggerShape.attr('id');
-		return triggerMap.get(divId);
+		return automationTriggerMap.get(divId);
 	}
 	
 	function getNodesRootId(node) {
@@ -232,7 +237,7 @@
 					}
 				});
 
-				var resourcePage = $('#contentAutomations').ajaxResourcePage(
+				var automationResourcePage = $('#contentAutomations').ajaxResourcePage(
 						{
 							id : "Automation",
 							tableUrl : "automations/table",
@@ -324,17 +329,17 @@
 							},
 							detailView: true,
 							detailFormatter: function(index, resource, element) {
-								elementMap.set(resource.id, { index, resource, element});
+								automationElementMap.set(resource.id, { index, resource, element});
 								drawFlowDiagram(index, resource, element);
 							}
 						});
 				
-				window.resourcePage = resourcePage;
+				window.automationResourcePage = automationResourcePage;
 		});
 
 	});
 	
-	function renderDiagram(automation, resourcePage, rootId, jsPlumbInstance) {
+	function renderDiagram(automation, automationResourcePage, rootId, jsPlumbInstance) {
 		
 		const dialogOptions = $('div[dialog-for="contentTriggers"]').data('options');
 
@@ -344,7 +349,7 @@
             $.extend(dialogOptions, {
                 resourceCreated: function(resourceGiven) {
                 	// pull and update resource updated sent by server nad given here to event handler
-                	const obj = elementMap.get(resourceGiven.id);
+                	const obj = automationElementMap.get(resourceGiven.id);
                 	obj.resource = resourceGiven;
                 	
                 	if (obj.resource.id !== resourceGiven.id) {
@@ -372,7 +377,7 @@
 				+	"	</div>"
 				+	"</div>");
 			
-			triggerMap.set('automationDiagram_' + automation.id, automation);
+			automationTriggerMap.set('automationDiagram_' + automation.id, automation);
 			
 			
 			$('.addTriggerIcon').off('click');
@@ -407,7 +412,7 @@
 					/*
 					Loop over root keys to generate flow specfic div container jquery selector
 					*/
-					for (let key of rootMap.keys()) {
+					for (let key of automationRootMap.keys()) {
 						
 					    const container = '#triggerTasks' + key;
 					    
@@ -454,7 +459,7 @@
 						
 						if(trigger.parentId==null) {
 							// triggerModalCallback is used in triggers-modal
-							const parentTrigger = parentMap.get('automationDiagram_' + trigger.id);
+							const parentTrigger = automationParentMap.get('automationDiagram_' + trigger.id);
 							$(document).data('triggerModalCallback').loadParent(parentTrigger, null, 1);	
 							$('div[dialog-for="contentTriggers"]').resourceDialog('edit', trigger);
 						} else {
@@ -490,9 +495,9 @@
 											
 											deleteNodes(trigger, jsPlumbInstance); 
 											
-											const rootResource = rootMap.get(rootId)
+											const rootResource = automationRootMap.get(rootId)
 										    
-										    const { index, resource, element } = elementMap.get(rootResource.id);
+										    const { index, resource, element } = automationElementMap.get(rootResource.id);
 						                	
 						                	if (resource.id !== rootResource.id) {
 						                		throw new Error("Resource id mismatch.");
@@ -502,7 +507,7 @@
 						                	
 						                	drawFlowDiagram(index, rootResource, element, true);
 										    
-											resourcePage.refresh();
+											automationResourcePage.refresh();
 										} else {
 											showError(data.message)
 										}
@@ -522,19 +527,23 @@
 												
 												deleteNodes(trigger, jsPlumbInstance); 
 												
-												const rootResource = rootMap.get(rootId);
+												const rootResource = automationRootMap.get(rootId);
 											    
-											    const { index, resource, element } = elementMap.get(rootResource.id);
+											    const { index, resource, element } = automationElementMap.get(rootResource.id);
 							                	
 							                	if (resource.id !== rootResource.id) {
 							                		throw new Error("Resource id mismatch.");
 							                	}
 							                	
-							                	rootResource.childTriggers = [];
+							                	if (rootResource.childTriggers.length > 1) {
+							                		removeChild(rootResource.childTriggers, trigger.id);
+							                	} else {
+							                		rootResource.childTriggers = [];
+							                	}
 							                	
 							                	drawFlowDiagram(index, rootResource, element, true);
 											    
-												resourcePage.refresh();
+												automationResourcePage.refresh();
 											} else {
 												showError(data.message)
 											}
@@ -636,8 +645,8 @@
 				+	"</div>");
 		
 		
-		triggerMap.set('automationDiagram_' + trigger.id, trigger);
-		parentMap.set('automationDiagram_' + trigger.id, parent);
+		automationTriggerMap.set('automationDiagram_' + trigger.id, trigger);
+		automationParentMap.set('automationDiagram_' + trigger.id, parent);
 		
 		if(parent) {
 			jsPlumbInstance.connect({

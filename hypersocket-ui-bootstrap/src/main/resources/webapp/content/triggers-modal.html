@@ -375,6 +375,12 @@
 		});
 		
 		$(document).data('triggerModalCallback', {
+			reloadTriggerEvents: function() {
+				if (triggerEvent) {
+					triggerEvent.clear();
+					triggerEvent.reset();
+				}
+			},
 			clearDialog: function(create) {
 				$('.requiresEvent').hide();
 				$('#rowAll').empty();
@@ -391,7 +397,7 @@
 				
 				var parentResource = $('#triggerModal').data('parentResource');
 				var triggerType = $('#triggerModal').data('triggerType');
-
+				
 				if(create && parentResource) {
 					getJSON('triggers/taskResults/' + parentResource.resourceKey, null, function(data) {
 						triggerEvent.setValue(data.resources[0].resourceKey);
@@ -495,8 +501,6 @@
 				return true;
 			},
 			createResource: function() {
-				
-				debugger;
 				
 				resource = new Object();
 				resource.id = $('#triggerResourceId').val();

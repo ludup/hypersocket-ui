@@ -5,9 +5,9 @@
 	var resourceList = [];
 	
 	window.triggerMap = window.triggerMap || new Map();
-	window.parentMap = window.parentMap || new Map();
-	window.elementMap = window.elementMap || new Map();
-	window.rootMap = window.rootMap || new Map();
+	window.triggerParentMap = window.triggerParentMap || new Map();
+	window.triggerElementMap = window.triggerElementMap || new Map();
+	window.triggerRootMap = window.triggerRootMap || new Map();
 	
 	function remoteCallStart() {
 		$('#mainContainer').startSpin();
@@ -48,23 +48,23 @@
 		
 		const jsPlumbInstanceObj = jsPlumb.getInstance();
 		window.jsPlumbInstanceObj = window.jsPlumbInstanceObj || jsPlumbInstanceObj;
-		rootMap.set(resource.id, resource);
+		triggerRootMap.set(resource.id, resource);
 		
 		if (!jsPlumbInstanceObj.getContainer()) { 
 			jsPlumbInstanceObj.setContainer($('#schemeArea' + resource.id));
 		}
 		
-		renderDiagram(resource, resourcePage, resource.id, jsPlumbInstanceObj);
+		renderDiagram(resource, triggerResourcePage, resource.id, jsPlumbInstanceObj);
 	}
 	
 	function emptyDataMap() {
 		triggerMap.clear(); 
-		parentMap.clear();
+		triggerParentMap.clear();
 	}
 	
 	function clearInDataMap(triggerId) {
 		triggerMap.delete("triggerDiagram_" + triggerId); 
-		parentMap.delete("triggerDiagram_" + triggerId);
+		triggerParentMap.delete("triggerDiagram_" + triggerId);
 	}
 	
 	function clearNodesDataMap(nodes) {
@@ -146,7 +146,7 @@
 				
 				$('#contentTriggers').load(uiPath + '/content/triggers-modal.html', function() {
 						
-				var resourcePage = $('#contentTriggers').ajaxResourcePage(
+				var triggerResourcePage = $('#contentTriggers').ajaxResourcePage(
 							{
 								id : "Trigger",
 								tableUrl : "triggers/table",
@@ -203,22 +203,22 @@
 								resourceUpdated: function(resource) {
 									$('._jsPlumb_connector').remove();
 									$('#schemeArea' + resource.id).find('.triggerDraggable').empty();
-									resourcePage.refresh();
+									triggerResourcePage.refresh();
 								},
 								detailView: true,
 								detailFormatter: function(index, resource, element) {
-									elementMap.set(resource.id, { index, resource, element});
+									triggerElementMap.set(resource.id, { index, resource, element});
 									drawFlowDiagram(index, resource, element);
 								}
 								
 							});
 				
-					window.resourcePage = resourcePage;
+					window.triggerResourcePage = triggerResourcePage;
 				});
 
 			});
 	
-	function renderDiagram(trigger, resourcePage, rootId, jsPlumbInstance) {
+	function renderDiagram(trigger, triggerResourcePage, rootId, jsPlumbInstance) {
 		
 		const dialogOptions = $('div[dialog-for="contentTriggers"]').data('options');
 
@@ -228,7 +228,7 @@
             $.extend(dialogOptions, {
                 resourceCreated: function(resourceGiven) {
                 	// pull and update resource updated sent by server nad given here to event handler
-                	const obj = elementMap.get(resourceGiven.id);
+                	const obj = triggerElementMap.get(resourceGiven.id);
                 	obj.resource = resourceGiven;
                 	
                 	if (obj.resource.id !== resourceGiven.id) {
@@ -276,7 +276,7 @@
 				/*
 				Loop over root keys to generate flow specfic div container jquery selector
 				*/
-				for (let key of rootMap.keys()) {
+				for (let key of triggerRootMap.keys()) {
 					
 				    const container = '#triggerTasks' + key;
 				    
@@ -285,8 +285,6 @@
 				        	
 							const trigger = getNodesTriggerObject($(this));
 							
-							debugger;
-				        	
 							if(trigger){
 				            	var preferences = {};
 				            	state = new Object();
@@ -362,26 +360,24 @@
 										
 									    if(data.success) {
 											
-											debugger;
-											
 											showSuccess(data.message);
 											
 											deleteNodes(trigger, jsPlumbInstance); 
 											
-						                	const obj = elementMap.get(data.resource.id);
+						                	const obj = triggerElementMap.get(data.resource.id);
 						                	
 						                	if (obj.resource.id !== data.resource.id) {
 						                		throw new Error("Resource id mismatch.");
 						                	}
 						                	
 						                	obj.resource = data.resource;
-						                	rootMap.set(rootId, data.resource)
+						                	triggerRootMap.set(rootId, data.resource)
 						                	
 						                	const { index, resource, element } = obj;
 						                	
 						                	drawFlowDiagram(index, resource, element, true);
 										    
-											resourcePage.refresh();	
+											triggerResourcePage.refresh();	
 										} else {
 											showError(data.message)
 										}
@@ -400,15 +396,13 @@
 									  
 										if(data.success) {
 											
-											debugger;
-											
 											showSuccess(data.message);
 											
 											deleteNodes(trigger, jsPlumbInstance); 
 											
-											const rootResource = rootMap.get(rootId);
+											const rootResource = triggerRootMap.get(rootId);
 										    
-										    const { index, resource, element } = elementMap.get(rootResource.id);
+										    const { index, resource, element } = triggerElementMap.get(rootResource.id);
 						                	
 						                	if (resource.id !== rootResource.id) {
 						                		throw new Error("Resource id mismatch.");
@@ -416,9 +410,9 @@
 						                	
 						                	rootResource.childTriggers = [];
 						                	
-						                	elementMap.delete(rootResource.id);
+						                	triggerElementMap.delete(rootResource.id);
 						                	
-											resourcePage.refresh();
+											triggerResourcePage.refresh();
 										} else {
 											showError(data.message)
 										}
@@ -481,7 +475,7 @@
 		
 		
 		setTriggerMapValue('triggerDiagram_' + trigger.id, trigger);
-		parentMap.set('triggerDiagram_' + trigger.id, parent);
+		triggerParentMap.set('triggerDiagram_' + trigger.id, parent);
 		
 		if(parent) {
 			jsPlumbInstance.connect({
