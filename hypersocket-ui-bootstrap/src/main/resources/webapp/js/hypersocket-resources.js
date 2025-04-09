@@ -611,8 +611,10 @@ $.fn.resourceTable = function(params) {
 			// crud ops
 			
 			// edit
-			renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.edit') + '" href="#"><i class="far ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i><span class="ms-1">' + getResource('text.edit') + '</span></a>';
+			
 			if(!options.disableEditView) {
+				renderedActions += '<a data-idx="' + index + '" class="dropdown-item row-' + getResource('text.edit') + '" href="#"><i class="far ' + (canUpdate && (options.checkReadOnly ? !row.readOnly : true) ? 'fa-edit' : 'fa-search') + '"></i><span class="ms-1">' + getResource('text.edit') + '</span></a>';
+				
 				addEditClickHandler('#' + id + 'ActionDropdown .row-' + getResource('text.edit'));
 				
 				// copy
