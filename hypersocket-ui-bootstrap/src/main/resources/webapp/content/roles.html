@@ -296,7 +296,12 @@
 				displayResource : function(resource, readOnly) {
 					$('#roleId').val(resource.id);
 					$('#name').val(resource.name);
-					$('#name').attr('disabled', readOnly);
+					
+					if ($('#name').val() == 'Everyone') {
+						$('#name').attr('disabled', true);
+					} else {
+						$('#name').attr('disabled', readOnly);
+					}
 					
 					$('#allUsers').widget().setValue(resource.allUsers);
 					if(resource.system) {
