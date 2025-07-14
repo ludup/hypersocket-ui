@@ -198,7 +198,7 @@ $.fn.passwordPolicy = function(data) {
 			}
 			
 			$(options.passwordElement).appendTo(parent);	
-            var ig = $('<span class="input-group-text gap-3"><span><a id="regeneratePassword" href="#" class="me-1"><i class="far fa-refresh"></i></a></span><span><a id="copyPassword" class="copyPassword" href="#"><i class="far fa-copy"></i></a></span></span>'); 
+            var ig = $('<span class="input-group-text gap-3"><span><a id="regeneratePassword" href="#" class="me-1"><i class="far fa-refresh"></i></a></span><span><a id="copyPassword" class="copyPassword" href="#" onclick="event.preventDefault();"><i class="far fa-copy"></i></a></span></span>'); 
 			parent.append(ig);
         }
 	}
@@ -474,7 +474,7 @@ $.fn.passwordPolicy = function(data) {
     				});
     				
     				
-    				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a id="copyPassword" href="javascript:" class="me-2 copyPassword" "><i class="far fa-2x fa-copy"></i></a>');
+    				$('#generatedPassword').append('<span>&nbsp;&nbsp;</span><a id="copyPassword" href="#" onclick="event.preventDefault();" class="me-2 copyPassword"><i class="far fa-2x fa-copy"></i></a>');
                 }
                 $('#copyPassword').attr('data-bs-toggle', 'tooltip');
                 $('#copyPassword').attr('data-bs-placement', 'top');
