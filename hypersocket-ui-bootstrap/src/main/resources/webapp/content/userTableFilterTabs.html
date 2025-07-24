@@ -1,0 +1,28 @@
+<div id="userTableFilter">
+	<div id="usertableFilterProperties"></div>
+</div>
+
+<script type="text/javascript">
+
+	legacyjQueryReadyFix(function() {
+		
+		var useNamespace = false;
+		if(currentRealm && currentRealm.resourceCategory) {
+			useNamespace = currentRealm.resourceCategory;
+		}
+		
+	    $('#usertableFilterProperties').propertyPage({
+	    	  url : 'configuration/realm/userTableFilter',
+	   	   title: getResource('user.table.filter.title'),
+	   	   icon: 'fa-th-list',
+	   	   disableDecoration: true,
+	   	   canUpdate: currentMenu.canUpdate,
+	   	   propertyTabsLast: false,
+	   	   i18nNamespace: useNamespace,
+	   	   	complete: function() {
+	   		   loadComplete();
+	   	   	}
+		  });
+	    
+	});
+</script>

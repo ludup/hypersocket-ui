@@ -135,14 +135,26 @@
 	
 	var apiUrl = 'currentRealm';
 	
+	var defaultUserFilter = '';
+	
 	var realmId = getAnchorByName('realmId');
-	if (realmId) {
-		getJSON("permissions/status/secondary.user.create,secondary.user.update", null, function(data) {
-			loadResourcePage(data);
-		});
-	} else {
-		loadResourcePage({});
-	}
+	
+	getJSON('configuration/values/defaultUserFilter', null, function(data) {
+		
+		if (data && data.resource && data.resource['defaultUserFilter']) {
+			defaultUserFilter = data.resource['defaultUserFilter'];
+		}
+		
+		if (realmId) {
+			getJSON("permissions/status/secondary.user.create,secondary.user.update", null, function(data) {
+				loadResourcePage(data);
+			});
+		} else {
+			loadResourcePage({});
+		}
+	
+	});
+	
 	
 	function loadResourcePage(ownerPermissions) {
 		legacyjQueryReadyFix(
@@ -826,6 +838,7 @@
 									return true;
 								},
 								searchFilters: searchFilters,
+								defaultFilter: defaultUserFilter,
 								searchFiltersUrl: 'realms/users/filters',
 								complete : function() {
 

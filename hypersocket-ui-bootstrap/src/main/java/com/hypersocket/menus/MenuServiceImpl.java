@@ -416,10 +416,19 @@ public class MenuServiceImpl extends AbstractAuthenticatedServiceImpl implements
 				new TableAction("pfxExport", "fa-download",
 						"pfxExport", CertificateResourcePermission.READ, 600,
 						null, null));
-
+		
 		registerMenu(
 				new MenuRegistration(RESOURCE_BUNDLE, "profileAttributes",
 						"fa-sticky-note", "userAttributeTabs", 4000,
+						UserAttributePermission.READ,
+						UserAttributePermission.CREATE,
+						UserAttributePermission.UPDATE,
+						UserAttributePermission.DELETE),
+				MenuService.MENU_USERS_DIRECTORY);
+		
+		registerMenu(
+				new MenuRegistration(RESOURCE_BUNDLE, "userTableFilter",
+						"fa-filter", "userTableFilterTabs", 5000,
 						UserAttributePermission.READ,
 						UserAttributePermission.CREATE,
 						UserAttributePermission.UPDATE,
