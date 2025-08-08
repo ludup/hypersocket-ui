@@ -323,7 +323,7 @@ function processLogon(data, opts, message) {
 									 ('<div class="clear"><span class="help-block text-muted mt-2 mb-2 ps-1 d-inline-block">' 
 									+  (this.label != null ? this.label : getResource(this.resourceKey + ".label"))
 									+ '</span></div>') : '')
-								+ '<input class="form-control" type="' + this.type + '" name="' + this.resourceKey + '"'
+								+ '<input class="form-control" type="' + this.type + '" name="' + this.resourceKey + '"' + (this.autocomplete ? ' autocomplete="new-password" ' : '')
 								+ (isIE() ? '' :
 										(' placeholder="' + (this.label != null ? this.label : getResource(this.resourceKey + ".label")) + '"'))
 								+ ' id="' + this.resourceKey + '" value="' + stripNull(this.defaultValue)
