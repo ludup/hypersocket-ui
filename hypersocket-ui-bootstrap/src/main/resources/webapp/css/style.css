@@ -1017,6 +1017,13 @@ header .navbar {
 	line-height: 50px;
 }
 
+#navMenu.navicons {
+  	margin-top: auto;
+  	margin-bottom: auto;
+  	margin-right: 0em;
+  	margin-left: auto;
+}
+
 .navicons i {
 	text-align: right;
 	vertical-align: middle;
