@@ -570,6 +570,7 @@ div.tablePages ul.pagination {
 	border-color: #000033;
 }
 
+.pagination>.active>a, .pagination>.active>a:hover, .pagination>.active>a:focus {color: white !important;}
 .pointer-hover:hover {cursor: pointer;}
 
 .tabContent {
