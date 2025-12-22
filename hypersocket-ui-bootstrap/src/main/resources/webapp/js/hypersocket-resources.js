@@ -1,5 +1,27 @@
 var newTable = true;
 
+function handleTableExpandedRows($table) {
+
+    const expandedIds = $table
+        .find('> tbody > tr.detail-view')
+        .prev('tr[data-uniqueid]')
+        .map(function() {
+            return this.getAttribute('data-uniqueid');
+        })
+        .get()
+        .filter(Boolean);
+		
+	if (expandedIds.length === 0) {
+		return;
+	}	
+
+    $table.one('post-body.bs.table', () => {
+        expandedIds.forEach(id => $table.bootstrapTable('expandRowByUniqueId', id));
+    });
+	
+    expandedIds.forEach(id => $table.bootstrapTable('collapseRowByUniqueId', id));
+}
+
 $.fn.ajaxResourcePageInsert = function(resource) {
 	$(this).data('dataTable').fnAddData(resource);
 };
@@ -1675,7 +1697,9 @@ $.fn.samePageResourceView = function(params, params2) {
 						else {
 							dialog.samePageResourceView('close');
 							if (dialogOptions.hasResourceTable) {
-								$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+								const $table = $('#' + dialogOptions.divName + 'Placeholder');
+								handleTableExpandedRows($table);
+								$table.bootstrapTable('refresh');
 							}
 						}
 						if(dialogOptions.resourceSaved) {
@@ -2169,7 +2193,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 					var func = function() {
 						dialog.bootstrapResourceDialog('close');
 						if (dialogOptions.hasResourceTable) {
-							$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+							const $table = $('#' + dialogOptions.divName + 'Placeholder');
+							handleTableExpandedRows($table);
+							$table.bootstrapTable('refresh');
 						}
 						if(dialogOptions.resourceSaved) {
 							dialogOptions.resourceSaved(savedResource);
@@ -2280,7 +2306,9 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 						var func = function() {
 							dialog.bootstrapResourceDialog('close');
 							if (dialogOptions.hasResourceTable) {
-								$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+								const $table = $('#' + dialogOptions.divName + 'Placeholder');
+								handleTableExpandedRows($table);
+								$table.bootstrapTable('refresh');
 							}
 							if(dialogOptions.resourceSaved) {
 								dialogOptions.resourceSaved(resource);
@@ -2302,8 +2330,10 @@ $.fn.bootstrapResourceDialog = function(params, params2) {
 							var func = function() {
 								dialog.bootstrapResourceDialog('close');
 								if (dialogOptions.hasResourceTable) {
-									$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('updateByUniqueId',	{ id: resource.id, row: resource });
-									$('#' + dialogOptions.divName + 'Placeholder').bootstrapTable('refresh');
+									const $table = $('#' + dialogOptions.divName + 'Placeholder');
+									handleTableExpandedRows($table);
+									$table.bootstrapTable('updateByUniqueId',	{ id: resource.id, row: resource });
+									$table.bootstrapTable('refresh');
 								}
 								if (dialogOptions.resourceUpdated) {
 									dialogOptions.resourceUpdated(resource);
