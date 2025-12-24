@@ -81,7 +81,7 @@ legacyjQueryReadyFix(function() {
 		_$('#principalLinkedAccountsContainer').empty();
 		_$('#identityConnectors').empty();
 		
-		function getData(map, realm, email) {
+		function getData(map, realm, name) {
 			
 			var list = map[realm];
 			
@@ -89,10 +89,9 @@ legacyjQueryReadyFix(function() {
 				return null;	
 			}
 			
-			var obj = null;
 			for(var i = 0; i < list.length; ++i) {
 				var val = list[i];
-				if (val['email'] === email) {
+				if (val['name'] === name) {
 					return val;
 				}
 			}
@@ -189,7 +188,7 @@ legacyjQueryReadyFix(function() {
 							}
 						});
 						
-						$('#linkAccountForUser').text(resource.email || resource.principalName);
+						$('#linkAccountForUser').text(resource.principalName || resource.email);
 						$('#linkAccountModal').modal('show');
 						
 						makeLinkButtonDisabled();
@@ -214,7 +213,6 @@ legacyjQueryReadyFix(function() {
 					}
 					
 					map[value.realm.name].push({
-						email: value.principal.email, 
 						name: value.principal.name, 
 						id: value.principal.id, 
 						realmName: value.realm.name, 
@@ -228,11 +226,11 @@ legacyjQueryReadyFix(function() {
 				
 				var keys = Object.keys(map).sort(sorter);
 				$.each(keys, function(idx, key) {
-					var emails = [];
+					var names = [];
 					$.each(map[key], function(idx, obj){
-						emails.push(obj['email'])
+						names.push(obj['name'])
 					});
-					var sorted = emails.sort(sorter);
+					var sorted = names.sort(sorter);
 					sortedData.push({key: key, value: sorted});
 				});
 				
@@ -301,7 +299,7 @@ legacyjQueryReadyFix(function() {
 						unLinkJq.on('click', function (e) {
 							e.preventDefault();
 							var $that = $(this);
-							bootbox.confirm(getResource('unlinkTo.text').format(cleanValue(accountInfo.email), cleanValue(resource.email)), function(result) {
+							bootbox.confirm(getResource('unlinkTo.text').format(cleanValue(accountInfo.name), cleanValue(resource.principalName)), function(result) {
 								if(result) {
 									var accountInfo = $that.data("accountInfo");
 									getJSON('ownerRealm/' + accountInfo.realmId + '/unlinkAccount/' + accountInfo.id, null, function(remote) {
