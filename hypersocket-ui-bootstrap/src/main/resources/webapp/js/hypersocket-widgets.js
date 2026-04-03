@@ -1677,7 +1677,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 			
 			filtered.forEach((value, i) => {
 				let key = getKeyFromMapLikeObject(value);
-				select.append('<option id="' + id + 'Element' + he.encode(key) + '" value="' + he.encode(key) + '"><span>' + he.encode(value[key]) + '</span></option>');
+				select.append('<option id="' + id + 'Element' + he.encode(key) + '" value="' + he.encode(key) + '">' + he.encode(value[key]) + '</option>');
 			});
 		}
 		
@@ -1696,6 +1696,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		} else {
 			fillValues($that.data('backingList'), "__No__Filter__");
 		}
+		
 	}
 
 	var getKeyFromMapLikeObject = function (object) {
@@ -1746,7 +1747,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		
 		toSelect.find('option').remove();
 		existingItems.forEach((v, i) => {
-			toSelect.append('<option id="' + id + 'Element' + he.encode(v.key) + '" value="' + he.encode(v.key) + '"><span>' + he.encode(v.value) + '</span></option>');	
+			toSelect.append('<option id="' + id + 'Element' + he.encode(v.key) + '" value="' + he.encode(v.key) + '">' + he.encode(v.value) + '</option>');	
 		});
 		
 		if ($that.data('widget').options().changed) {
@@ -1763,7 +1764,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 		if (options.allowOrdering) {
 			var placeFound = false;
 			$('#' + id + list).find('option').each(function(index, toActElement){
-				if($(newElement).find('span').text() < $(toActElement).find('span').text()){
+				if($(newElement).text() < $(toActElement).text()){
 					$(toActElement).before($(newElement));
 					placeFound = true;
 					return false;
@@ -1790,14 +1791,14 @@ $.fn.twoColumnMultipleSelect = function(data) {
 	var createElement = function (id, obj, options) {
 		let newElement = null;
 		if(options.valuesIsObjectList) {
-			newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '"><span>' + (options.nameIsResourceKey
+			newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '">' + (options.nameIsResourceKey
 					? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr])) == undefined ? he.encode(obj[options.nameAttr])
-						: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</span></option>');
+						: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj[options.nameAttr]))) : he.encode(obj[options.nameAttr])) + '</option>');
 
 		} else {
-			newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + obj + '"><span>' + (options.nameIsResourceKey
+			newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + obj + '">' + (options.nameIsResourceKey
 					? (getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj)) == undefined ? he.encode(obj)
-						: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</span></option>');
+						: getResourceNoDefaultWithNamespace(options.i18nNamespace, options.resourceKeyTemplate.format(obj))) : he.encode(obj)) + '</option>');
 		}
 		
 		return newElement;	
@@ -1867,9 +1868,9 @@ $.fn.twoColumnMultipleSelect = function(data) {
 
 		if (data && data.insert) {
 			$.each(data.insert,function(idx, obj) {
-				newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '"><span>'
+				newElement = $('<option id="' + id + 'Element' + he.encode(obj[options.valueAttr]) + '" value="' + he.encode(obj[options.valueAttr]) + '">'
 						+ (options.nameIsResourceKey ? (getResource(obj[options.nameAttr]) == undefined
-								? he.encode(obj[options.nameAttr]) : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + '</span></option>');
+								? he.encode(obj[options.nameAttr]) : getResource(obj[options.nameAttr])) : obj[options.nameAttr]) + '</option>');
 				removeElement(newElement);
 			});
 		}
@@ -2040,7 +2041,7 @@ $.fn.twoColumnMultipleSelect = function(data) {
 
 		$('#' + id + 'Excluded').append(
 					'<select multiple class="multiSelectList multiSelect"' + (!options.disabled ? '' : ' disabled="disabled" ') + 'id="' + id
-						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"/>');
+						+ 'ExcludedSelect" name="ExcludedSelect_' + name + '"></select>');
 		
 		$('#' + id + 'Excluded').append('<div class="pt-1"><button id="' + id + 'AddAll" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.addAllInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectAddAllButton multiSelect ms-1 mb-1">' + getResource(options.addAllResourceKey) + '</button><button id="' + id + 'Reset" ' + (options.disabled ? ' disabled="disabled"' : '') + ' title="' + getResource(options.resetInfoResourceKey) + '" class="btn btn-dark btn-sm multiselectResetButton multiSelect ms-1 mb-1">' + getResource(options.resetResourceKey) + '</button></div>');				
 
