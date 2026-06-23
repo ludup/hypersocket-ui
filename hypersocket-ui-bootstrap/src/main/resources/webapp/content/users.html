@@ -1,3 +1,8 @@
+<div id="contentExportUsersProfile">
+	<form id="csvProfileForm" action="${apiPath}/currentRealm/profile/csv" method="POST" autocomplete="off">
+		<input type="hidden" name="token" id="csrfToken" value="${csrf}"/>
+	</form>	
+</div>
 <div id="contentExportUsers">
 	<form id="csvForm" action="${apiPath}/currentRealm/csv" method="POST" autocomplete="off">
 		<input type="hidden" name="token" id="csrfToken" value="${csrf}"/>
@@ -191,9 +196,19 @@
 				} else {
 					realmId = currentRealm.id;	
 				}
+				
+				buttons.push({
+					resourceKey: 'exportProfileToCSV',
+					buttonClass: 'btn-primary',
+					icon: 'fa-download',
+					action: function(callback) {
+
+						$('#csvProfileForm').submit();
+		        	}
+				});
 
 				buttons.push({
-					resourceKey: 'exportToCSV',
+					resourceKey: 'exportUsersToCSV',
 					buttonClass: 'btn-primary',
 					icon: 'fa-download',
 					action: function(callback) {
