@@ -5,7 +5,7 @@ var hasShutdown = false;
 var polling = false;
 var pollingForSession = false;
 var pollHandle = false;
-var baseUrl = '${baseUrl}';
+var baseUrl = window.location.protocol + '//' + window.location.host;
 var basePath = '${appPath}';
 var uiPath = '${uiPath}';
 
